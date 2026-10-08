@@ -11,7 +11,7 @@ internal sealed class QCardDrag
 
     private readonly ItemsControl _qCardDragCollocation;
 
-    private CEditor _cEditor = null!;
+    private CCardList _cCardList = null!;
 
     private QCardGesture? _qCardDragGesture;
 
@@ -27,9 +27,9 @@ internal sealed class QCardDrag
         _qCardDragCollocation.MouseMove += QCardDragUpdate;
     }
 
-    internal void QCardDragIntroduce(CEditor editor)
+    internal void QCardDragIntroduce(CCardList list)
     {
-        _cEditor = editor;
+        _cCardList = list;
     }
 
     internal void QCardDragRefine(object sender, MouseButtonEventArgs e)
@@ -79,7 +79,7 @@ internal sealed class QCardDrag
 
         int target = gesture.QCardGestureResolve(e);
 
-        _cEditor.CEditorList.CCardMove(gesture.QCardGestureId, target);
+        _cCardList.CCardMove(gesture.QCardGestureId, target);
     }
 
     private void QCardDragReset(object sender, MouseEventArgs e)

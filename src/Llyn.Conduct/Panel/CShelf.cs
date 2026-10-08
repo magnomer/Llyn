@@ -56,14 +56,17 @@ public sealed class CShelf
             atelier.CAtelierEntryBundle.CEntryBundleVista,
             atelier.CAtelierPortraitPort,
             atelier.CAtelierSettingsPort,
-            editor,
+            editor.CEditorDesk,
             envoy,
             store => CShelfSession!.LSessionFinish(store),
             shownSeam);
+        CShelfFootnote.CFootnotePanel.CPanelCleared += editor.CEditorDesk.CDeskCancel;
+        CShelfFootnote.CFootnotePanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
+        editor.CEditorDisplay.CDisplayPanelAttach(CShelfFootnote.CFootnotePanel);
         CShelfSession = new CSession(
             CShelfImprint.CImprintDesk,
             [CShelfPanel.LPanelChangeCheck, CShelfFootnote.CFootnotePanel.LPanelChangeCheck],
-            editor,
+            editor.CEditorDesk,
             () => CShelfDiptych!.CDiptychChildSide,
             editor.LEditorFinish,
             static () => true,
@@ -100,7 +103,8 @@ public sealed class CShelf
         atelier.CAtelierWorkspace.LWorkspaceClosureAdd(() =>
         {
             CShelfImprint.CImprintByline.CBylineClose();
-            CShelfSession.LSessionEditorClose();
+            editor.CEditorClose();
+            editor.CEditorDisplay.CDisplayPlayback.CDisplayPlaybackCancel();
         });
         LShelfVistaRestore();
     }

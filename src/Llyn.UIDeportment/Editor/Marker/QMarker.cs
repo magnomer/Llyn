@@ -13,7 +13,7 @@ internal sealed class QMarker
 
     private readonly ObservableCollection<PMarkerChip> _qMarkerChip = [];
 
-    private CEditor _cEditor = null!;
+    private CCardSpeech _cCardSpeech = null!;
 
     private QCategory _qMarkerCategory = null!;
 
@@ -42,12 +42,12 @@ internal sealed class QMarker
 
     private QIconImage QMarkerIcon => QContract.QContractFind<QIconImage>(_qMarkerSurface, "PMarkerIcon");
 
-    internal void QMarkerIntroduce(CEditor editor, QCategory category, QUnit unit)
+    internal void QMarkerIntroduce(CCardSpeech speech, CEntry entry, QCategory category, QUnit unit)
     {
-        _cEditor = editor;
+        _cCardSpeech = speech;
         _qMarkerCategory = category;
         _qMarkerUnit = unit;
-        editor.CEditorEntry.CEntryDraftChanged += QMarkerRefine;
+        entry.CEntryDraftChanged += QMarkerRefine;
     }
 
     private void QMarkerApply(FrameworkElement container, object item, string? _)
@@ -78,7 +78,7 @@ internal sealed class QMarker
     {
         if (sender is FrameworkElement { DataContext: PMarkerChip chip })
         {
-            _cEditor.CEditorSpeech.CCardSpeechRemove(chip.PMarkerChipName);
+            _cCardSpeech.CCardSpeechRemove(chip.PMarkerChipName);
         }
     }
 
@@ -98,14 +98,14 @@ internal sealed class QMarker
             return;
         }
 
-        _cEditor.CEditorSpeech.CCardSpeechAdd(QMarkerField.Text);
+        _cCardSpeech.CCardSpeechAdd(QMarkerField.Text);
         e.Handled = true;
         QMarkerFieldRefine();
     }
 
     private void QMarkerTextObserve(object sender, TextChangedEventArgs e)
     {
-        QMarkerDropperRefine(_cEditor.CEditorSpeech.CCardSpeechSet(QMarkerField.Text));
+        QMarkerDropperRefine(_cCardSpeech.CCardSpeechSet(QMarkerField.Text));
     }
 
     private void QMarkerDropperRefine(CCategory category)
@@ -121,7 +121,7 @@ internal sealed class QMarker
 
     private void QMarkerRefine(CEntryDraft _)
     {
-        CMarker marker = _cEditor.CEditorSpeech.CCardSpeechRead();
+        CMarker marker = _cCardSpeech.CCardSpeechRead();
         _qMarkerChip.Clear();
         foreach (string speech in marker.CMarkerSpeeches)
         {

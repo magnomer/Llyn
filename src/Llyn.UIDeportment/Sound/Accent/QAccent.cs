@@ -20,7 +20,11 @@ internal sealed class QAccent
 
     private readonly ObservableCollection<QAccentItem> _qAccentItem = [];
 
-    private CEditor _cEditor = null!;
+    private CErrand _cErrand = null!;
+
+    private CPlayback _cPlayback = null!;
+
+    private CTimbre _cTimbre = null!;
 
     internal QAccent(FrameworkElement surface, QNotation notation, QClip menu, MediaPlayer player)
     {
@@ -55,21 +59,23 @@ internal sealed class QAccent
 
     private TextBlock QAccentLabel => QContract.QContractFind<TextBlock>(_qAccentSurface, "PPronunciationLabel");
 
-    internal void QAccentIntroduce(CEditor editor)
+    internal void QAccentIntroduce(CErrand errand, CEntry entry, CPlayback playback, CTimbre timbre)
     {
-        _cEditor = editor;
-        editor.CEditorEntry.CEntryDraftChanged += QAccentRefine;
-        editor.CEditorEntry.CEntryDraftChanged += QAccentEnsignRefine;
+        _cErrand = errand;
+        _cPlayback = playback;
+        _cTimbre = timbre;
+        entry.CEntryDraftChanged += QAccentRefine;
+        entry.CEntryDraftChanged += QAccentEnsignRefine;
     }
 
     private void QAccentAddObserve(object sender, ExecutedRoutedEventArgs e)
     {
-        _cEditor.CEditorTimbre.CTimbrePronunciationAdd((e.Parameter as QAccentItem)?.QAccentItemId);
+        _cTimbre.CTimbrePronunciationAdd((e.Parameter as QAccentItem)?.QAccentItemId);
     }
 
     private void QAccentRemoveObserve(object sender, ExecutedRoutedEventArgs e)
     {
-        _cEditor.CEditorTimbre.CTimbrePronunciationRemove((e.Parameter as QAccentItem)?.QAccentItemId);
+        _cTimbre.CTimbrePronunciationRemove((e.Parameter as QAccentItem)?.QAccentItemId);
     }
 
     private void QAccentNotationRefine(object sender, ExecutedRoutedEventArgs e)
@@ -84,7 +90,7 @@ internal sealed class QAccent
     {
         if (e.Parameter is QAccentItem row)
         {
-            _qNotation.QNotationStartRefine(_cEditor.CEditorDesk.CDeskErrand.CErrandTranscriptionStart(
+            _qNotation.QNotationStartRefine(_cErrand.CErrandTranscriptionStart(
                 row.QAccentItemId, string.Empty));
         }
     }
@@ -109,7 +115,7 @@ internal sealed class QAccent
     {
         if (e.Parameter is QAccentItem row)
         {
-            QAccentPlaybackRefine(_cEditor.CEditorPlayback.CPlaybackAccentStart(row.QAccentItemId));
+            QAccentPlaybackRefine(_cPlayback.CPlaybackAccentStart(row.QAccentItemId));
         }
     }
 
@@ -129,18 +135,18 @@ internal sealed class QAccent
 
     private void QAccentTypeObserve(QAccentItem row, string text)
     {
-        row.QAccentTypeRefine(_cEditor.CEditorTimbre.CTimbreAccentSet(row.QAccentItemId, text));
+        row.QAccentTypeRefine(_cTimbre.CTimbreAccentSet(row.QAccentItemId, text));
     }
 
     private void QAccentRefine(CEntryDraft _)
     {
-        QAccentList.Visibility = QLook.QLookVisibleRead(_cEditor.CEditorTimbre.CTimbreSpoken);
-        QAccentRefine(_cEditor.CEditorTimbre.CTimbreAccentRead());
+        QAccentList.Visibility = QLook.QLookVisibleRead(_cTimbre.CTimbreSpoken);
+        QAccentRefine(_cTimbre.CTimbreAccentRead());
     }
 
     private void QAccentRefine(CTimbreAccent accent)
     {
-        PCard.PCardRowShow(
+        QLookItem.QLookItemShow(
             _qAccentItem,
             accent.CTimbreAccentRows,
             static row => row.QAccentItemId,
@@ -186,7 +192,7 @@ internal sealed class QAccent
 
     private async void QAccentEnsignRefine(CEntryDraft _)
     {
-        QAccentFlagRefine(await _cEditor.CEditorTimbre.CTimbreFlagRead(QEnsignImage.QEnsignDraw));
+        QAccentFlagRefine(await _cTimbre.CTimbreFlagRead(QEnsignImage.QEnsignDraw));
     }
 
     private void QAccentFlagRefine(CTimbreAccent? accent)

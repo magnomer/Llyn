@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using Llyn.Core;
 using Llyn.ShellEngine;
 
 namespace Llyn.Conduct;
@@ -15,8 +17,6 @@ public sealed class CWorkspace
     private readonly List<Action> _cWorkspaceClosures = [];
 
     private readonly HashSet<string> _cWorkspaceShown = [];
-
-    private CEditor? _cWorkspaceInput;
 
     private bool _cWorkspaceHeard;
 
@@ -134,7 +134,7 @@ public sealed class CWorkspace
     {
         ArgumentNullException.ThrowIfNull(envoy);
 
-        bool unsaved = _cWorkspaceInput?.CEditorDesk.LDeskChangeCheck() ?? false;
+        bool unsaved = false;
         foreach ((Func<bool> pending, _) in _cWorkspaceDrafts)
         {
             unsaved |= pending();
@@ -151,7 +151,7 @@ public sealed class CWorkspace
             store = answer;
         }
 
-        bool finished = _cWorkspaceInput?.LEditorFinish(store) ?? true;
+        bool finished = true;
         foreach ((_, Func<bool, bool> closure) in _cWorkspaceDrafts)
         {
             finished &= closure(store);
@@ -213,18 +213,6 @@ public sealed class CWorkspace
         {
             restore();
         }
-
-        if (_cWorkspaceInput is CEditor input)
-        {
-            _cWorkspaceAtelier.LAtelierInputRestore(input);
-        }
-    }
-
-    internal void LWorkspaceInputSet(CEditor editor)
-    {
-        ArgumentNullException.ThrowIfNull(editor);
-
-        _cWorkspaceInput = editor;
     }
 
     private void LWorkspaceEstablishmentRaise(CEnvoy envoy)
@@ -232,7 +220,7 @@ public sealed class CWorkspace
         CEstablishment establishment;
         try
         {
-            establishment = _cWorkspaceAtelier.LAtelierEstablishmentRead();
+            establishment = LWorkspaceEstablishmentRead();
         }
         catch (Exception exception)
         {
@@ -242,5 +230,18 @@ public sealed class CWorkspace
         }
 
         CWorkspaceEstablishmentChanged?.Invoke(establishment);
+    }
+
+    internal CEstablishment LWorkspaceEstablishmentRead()
+    {
+        LEstablishment establishment = _cWorkspaceAtelier.CAtelierSettingsPort.LEngineEstablishmentRead();
+        return new CEstablishment(
+            establishment.LEstablishmentUnsaved,
+            establishment.LEstablishmentEntry,
+            establishment.LEstablishmentPending,
+            establishment.LEstablishmentSingle ? "Establishment.EntryOne" : "Establishment.Entry",
+            establishment.LEstablishmentLarge ? "Establishment.Megabyte" : "Establishment.Kilobyte",
+            establishment.LEstablishmentAmount.ToString(
+                establishment.LEstablishmentLarge ? "0.0" : "0", CultureInfo.CurrentCulture));
     }
 }

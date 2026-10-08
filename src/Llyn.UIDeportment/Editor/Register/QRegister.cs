@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Llyn.Conduct;
 
@@ -14,7 +16,7 @@ internal sealed class QRegister
 
     private readonly ObservableCollection<PCard> _qRegisterCollocation;
 
-    private CEditor _cEditor = null!;
+    private CCard _cCard = null!;
 
     private QProffer _qRegisterProffer = null!;
 
@@ -24,22 +26,34 @@ internal sealed class QRegister
         _qRegisterSurface = surface;
         _qRegisterMeaning = meaning;
         _qRegisterCollocation = collocation;
+        surface.AddHandler(TextBoxBase.TextChangedEvent, new TextChangedEventHandler(QRegisterTextObserve));
     }
 
-    internal void QRegisterIntroduce(CEditor editor, QProffer proffer)
+    internal void QRegisterIntroduce(CCard card, QProffer proffer)
     {
-        _cEditor = editor;
+        _cCard = card;
         _qRegisterProffer = proffer;
+    }
+
+    internal static void QRegisterShow(PCard card, IReadOnlyList<CRegisterDraft> drafts)
+    {
+        List<PRegister> chips = [];
+        foreach (CRegisterDraft draft in drafts)
+        {
+            chips.Add(new PRegister(draft.CRegisterDraftName, draft.CRegisterDraftId));
+        }
+
+        card.PCardRegister.PCaretShow(chips);
     }
 
     internal void QRegisterApply(FrameworkElement container, object item, string? _)
     {
-        if (item is PRegisterCaret caret)
+        if (item is PCaret<PRegister> caret)
         {
             if (QLook.QLookPartFind<TextBox>(container, "PRegisterEntry") is TextBox entry)
             {
-                entry.SetValue(QField.QFieldHintProperty, caret.PRegisterCaretHint);
-                entry.Text = caret.PRegisterCaretText;
+                entry.SetValue(QField.QFieldHintProperty, caret.PCaretHint);
+                entry.Text = caret.PCaretText;
                 entry.PreviewKeyDown -= _qRegisterProffer.QProfferKeyRefine;
                 entry.PreviewKeyDown -= _qRegisterProffer.QProfferKeyObserve;
                 entry.PreviewKeyDown -= QRegisterCommitObserve;
@@ -91,7 +105,8 @@ internal sealed class QRegister
         };
         QLookItem.QLookItemAttach(list, QRegisterApply);
         QLookItem.QLookItemAttach(
-            QBerth.QBerthBuild(list, card.PCardRegisterCaret, nameof(PRegisterCaret.PRegisterCaretAnchor)),
+            QBerth.QBerthBuild(
+                list, card.PCardRegister, nameof(PCaret<PRegister>.PCaretAnchor)),
             QRegisterApply);
         if (QLook.QLookPartFind<Border>(list, "PRegisterFrame") is Border frame)
         {
@@ -100,12 +115,13 @@ internal sealed class QRegister
         }
     }
 
-    internal void QRegisterTextObserve(PRegisterCaret caret, string text)
+    private void QRegisterTextObserve(object sender, TextChangedEventArgs e)
     {
-        if (QRegisterCardFind(caret) is PCard card)
+        if (e.OriginalSource is TextBox { DataContext: PCaret<PRegister> caret } box
+            && QRegisterCardFind(caret) is PCard card)
         {
-            _qRegisterProffer.QProfferRegisterRefine(card, _cEditor.CEditorCard.CCardRegisterAdd(
-                card.PCardId, text, card.PCardRegisterPosition, false));
+            _qRegisterProffer.QProfferRegisterRefine(card, _cCard.CCardRegisterAdd(
+                card.PCardId, box.Text, card.PCardRegister.PCaretPosition, false));
         }
     }
 
@@ -113,27 +129,28 @@ internal sealed class QRegister
     {
         if (sender is FrameworkElement { DataContext: PRegister chip } && QRegisterCardFind(chip) is PCard card)
         {
-            _cEditor.CEditorCard.CCardRegisterRemove(card.PCardId, chip.PRegisterId);
+            _cCard.CCardRegisterRemove(card.PCardId, chip.PRegisterId);
         }
     }
 
     internal void QRegisterCommitObserve(object sender, KeyEventArgs e)
     {
         if (e.Key != Key.Enter
-            || sender is not FrameworkElement { DataContext: PRegisterCaret row }
+            || sender is not FrameworkElement { DataContext: PCaret<PRegister> row }
             || QRegisterCardFind(row) is not PCard card)
         {
             return;
         }
 
         e.Handled = true;
-        _qRegisterProffer.QProfferRegisterRefine(card, _cEditor.CEditorCard.CCardRegisterAdd(
-            card.PCardId, card.PCardRegisterText, card.PCardRegisterPosition, true));
+        _qRegisterProffer.QProfferRegisterRefine(card, _cCard.CCardRegisterAdd(
+            card.PCardId, card.PCardRegister.PCaretText, card.PCardRegister.PCaretPosition, true));
     }
 
     internal void QRegisterEraseObserve(object sender, KeyEventArgs e)
     {
-        if (sender is not TextBox { DataContext: PRegisterCaret row } box || QRegisterCardFind(row) is not PCard card)
+        if (sender is not TextBox { DataContext: PCaret<PRegister> row } box
+            || QRegisterCardFind(row) is not PCard card)
         {
             return;
         }
@@ -145,16 +162,17 @@ internal sealed class QRegister
             box.SelectionLength,
             step =>
             {
-                if (card.PCardRegisterFind(step) is PRegister chip)
+                if (card.PCardRegister.PCaretFind(step) is PRegister chip)
                 {
-                    _cEditor.CEditorCard.CCardRegisterRemove(card.PCardId, chip.PRegisterId);
+                    _cCard.CCardRegisterRemove(card.PCardId, chip.PRegisterId);
                 }
             });
     }
 
     internal void QRegisterCaretRefine(object sender, KeyEventArgs e)
     {
-        if (sender is not TextBox { DataContext: PRegisterCaret row } box || QRegisterCardFind(row) is not PCard card)
+        if (sender is not TextBox { DataContext: PCaret<PRegister> row } box
+            || QRegisterCardFind(row) is not PCard card)
         {
             return;
         }
@@ -163,7 +181,7 @@ internal sealed class QRegister
             e.Key.ToString(),
             box.Text.Length,
             box.SelectionLength,
-            card.PCardRegisterMove,
+            card.PCardRegister.PCaretMove,
             () => QField.QFieldCaretApply(box, row, 0));
     }
 
@@ -174,10 +192,11 @@ internal sealed class QRegister
 
     internal void QRegisterCloseObserve(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PRegisterCaret row } && QRegisterCardFind(row) is PCard card)
+        if (sender is FrameworkElement { DataContext: PCaret<PRegister> row }
+            && QRegisterCardFind(row) is PCard card)
         {
-            _qRegisterProffer.QProfferRegisterRefine(card, _cEditor.CEditorCard.CCardRegisterAdd(
-                card.PCardId, card.PCardRegisterText, card.PCardRegisterPosition, true));
+            _qRegisterProffer.QProfferRegisterRefine(card, _cCard.CCardRegisterAdd(
+                card.PCardId, card.PCardRegister.PCaretText, card.PCardRegister.PCaretPosition, true));
         }
     }
 
@@ -203,8 +222,8 @@ internal sealed class QRegister
     {
         foreach (PCard card in _qRegisterMeaning)
         {
-            if ((row is PRegister chip && card.PCardRegister.Contains(chip))
-                || ReferenceEquals(card.PCardRegisterCaret, row))
+            if ((row is PRegister chip && card.PCardRegister.PCaretRow.Contains(chip))
+                || ReferenceEquals(card.PCardRegister, row))
             {
                 return card;
             }
@@ -212,8 +231,8 @@ internal sealed class QRegister
 
         foreach (PCard card in _qRegisterCollocation)
         {
-            if ((row is PRegister chip && card.PCardRegister.Contains(chip))
-                || ReferenceEquals(card.PCardRegisterCaret, row))
+            if ((row is PRegister chip && card.PCardRegister.PCaretRow.Contains(chip))
+                || ReferenceEquals(card.PCardRegister, row))
             {
                 return card;
             }

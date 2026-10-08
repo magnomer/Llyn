@@ -216,11 +216,11 @@ public sealed class TAtelier
         LSettingsVault throwing = TEngineFake.TEngineCreate<LSettingsVault>(answers);
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild() with { LRigSettings = throwing });
         LSettings before = engine.TEngineSettingsRead();
-        CEditor second = TInterfaceEditor.TEditorCreate(engine);
+        CFold second = new TEditorFixture(TInterfaceEditor.TEditorCreate(engine)).TEditorFixtureFold;
         int changed = 0;
-        second.CEditorFold.CFoldChanged += () => changed++;
+        second.CFoldChanged += () => changed++;
 
-        TInterfaceEditor.TEditorCreate(engine).CEditorFold.CFoldFanqieToggle(true);
+        new TEditorFixture(TInterfaceEditor.TEditorCreate(engine)).TEditorFixtureFold.CFoldFanqieToggle(true);
 
         Assert.Equal(before, engine.TEngineSettingsRead());
         Assert.Equal(0, changed);
@@ -342,15 +342,15 @@ public sealed class TAtelier
                 return false;
             },
         });
-        CEditor editor = atelier.CAtelierInputCreate(envoy);
-        editor.CEditorEntryOpen(null);
-        editor.CEditorEntry.CEntryHeadwordSet("water");
+        TEditorFixture editor = new(atelier.CAtelierInputCreate(envoy));
+        editor.TEditorFixtureOpen(null);
+        editor.TEditorFixtureEntry.CEntryHeadwordSet("water");
 
         atelier.CAtelierWorkspace.CWorkspaceChange(second.TWorkspaceFolder, envoy);
 
         Assert.Equal(["Leave"], asked);
-        Assert.True(editor.CEditorDesk.CDeskHeld);
-        Assert.False(editor.CEditorDesk.TDeskChangeCheck());
+        Assert.True(editor.TEditorFixtureDesk.CDeskHeld);
+        Assert.False(editor.TEditorFixtureDesk.TDeskChangeCheck());
         Assert.Equal(string.Empty, editor.TEditorDraftRead()?.CEntryDraftHeadword);
     }
 
@@ -363,9 +363,9 @@ public sealed class TAtelier
         List<string> asked = [];
         List<bool> closed = [];
         CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, asked);
-        CEditor editor = atelier.CAtelierInputCreate(envoy);
-        editor.CEditorEntryOpen(null);
-        editor.CEditorEntry.CEntryHeadwordSet("water");
+        TEditorFixture editor = new(atelier.CAtelierInputCreate(envoy));
+        editor.TEditorFixtureOpen(null);
+        editor.TEditorFixtureEntry.CEntryHeadwordSet("water");
         atelier.CAtelierWorkspace.TWorkspaceDraftAdd(static () => false, store => { closed.Add(store); return true; });
 
         bool quit = atelier.CAtelierQuitConfirm(envoy);
@@ -373,7 +373,7 @@ public sealed class TAtelier
         Assert.True(quit);
         Assert.Equal(["Leave"], asked);
         Assert.Equal([false], closed);
-        Assert.False(editor.CEditorDesk.CDeskHeld);
+        Assert.False(editor.TEditorFixtureDesk.CDeskHeld);
     }
 
     private static LMediaPort TAtelierMediaCreate(List<double> played)

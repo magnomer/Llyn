@@ -1,7 +1,7 @@
 # CReflex.cs
-Hash: `226f6693a43e8ed7`
+Hash: `e0ea5afa86f3d38d`
 
-## `public sealed record CReflex(long CReflexId, string CReflexLanguage, string CReflexKind, string CReflexText, string CReflexRomanization, string CReflexMeaning, string CReflexNote, bool CReflexMain, string CReflexRegion, IReadOnlyList<long> CReflexAnchors, CRespellingMark CReflexMark, bool CReflexFolded, bool CReflexLead)`
+## `public sealed record CReflex(long CReflexId, string CReflexLanguage, string CReflexKind, string CReflexText, string CReflexRomanization, string CReflexMeaning, string CReflexNote, bool CReflexMain, string? CReflexRegion, IReadOnlyList<long> CReflexAnchors, CRespellingMark CReflexMark, bool CReflexFolded, bool CReflexLead)`
 
 One reflex row of an entry, ready to show in the editor or the reading view.
 Conduct resolved its text and its mark, so no driver asks the pack about the row.
@@ -16,7 +16,8 @@ Conduct resolved its text and its mark, so no driver asks the pack about the row
 - `CReflexMeaning`: the meaning in that language.
 - `CReflexNote`: the note.
 - `CReflexMain`: whether the reflex is the language's main one.
-- `CReflexRegion`: the region the reflex is heard in.
+- `CReflexRegion`: the region the reflex is heard in, or null when the draft names none.
+  So a driver binds it as the language's tooltip as it stands.
 - `CReflexAnchors`: the fanqie readings the reflex anchors to.
 - `CReflexMark`: whether the text is the respelling, and the slashes around it.
 - `CReflexFolded`: whether the entry's pack folds the row's language away.
@@ -39,10 +40,11 @@ The localization key the row's kind is labelled under.
 
 Whether the row is hidden, true for a folded row while the fold is closed.
 
-## `internal string LReflexFieldRead(CReflexField field)`
+## `internal CReflex CReflexTypedApply(CReflexField field, string text)`
 
-The text the row shows in the cell `field`.
-`CKindred.CKindredSet` answers it for an edit it did not take.
+A copy of the row with the one cell `field` holding `text`.
+The lead and every other field stay as they were.
+`CKindred.CKindredSet` answers the copy, so the editor row holds no mirror of its own fields.
 
 ## `internal static IReadOnlyList<bool> LReflexLeadRead(IReadOnlyList<string> languages)`
 
@@ -64,4 +66,4 @@ Each caller passes its own envoy and `settings`, as `CCatalog.LCatalogGlyphOpen`
 
 The key a reflex language or kind is labelled under, `Reflex.` plus the name.
 A blank name keys nothing a catalog holds, so a driver prints it as it stands.
-`CReflexTyped` keys a typed language or kind by the same rule, so a typed label matches a stored one.
+A typed copy keys its language or kind by the same rule, so a typed label matches a stored one.

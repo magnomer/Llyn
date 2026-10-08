@@ -13,17 +13,17 @@ public sealed class TCardSpeech
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TCardSpeechPrepare(engine);
+        TEditorFixture editor = TCardSpeechPrepare(engine);
 
-        CCategory offered = editor.CEditorSpeech.CCardSpeechSet(" verb");
-        editor.CEditorDesk.CDeskDraft.CDeskDraftPersist();
+        CCategory offered = editor.TEditorFixtureSpeech.CCardSpeechSet(" verb");
+        editor.TEditorFixtureDesk.CDeskDraft.CDeskDraftPersist();
 
         Assert.True(offered.CCategoryShown);
         Assert.Equal(["verb"], TSpeechNamesRead(editor));
-        CMarker marker = editor.CEditorSpeech.CCardSpeechRead();
+        CMarker marker = editor.TEditorFixtureSpeech.CCardSpeechRead();
         Assert.Empty(marker.CMarkerSpeeches);
         Assert.Equal(" verb", marker.CMarkerTyped);
-        Assert.False(editor.CEditorSpeech.CCardSpeechSet("  ").CCategoryShown);
+        Assert.False(editor.TEditorFixtureSpeech.CCardSpeechSet("  ").CCategoryShown);
     }
 
     [Fact]
@@ -31,11 +31,11 @@ public sealed class TCardSpeech
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TCardSpeechPrepare(engine);
-        editor.CEditorSpeech.CCardSpeechAdd("Noun");
+        CCardSpeech speech = TCardSpeechPrepare(engine).TEditorFixtureSpeech;
+        speech.CCardSpeechAdd("Noun");
 
-        CCategory held = editor.CEditorSpeech.CCardSpeechSet("NOUN");
-        CCategory unmatched = editor.CEditorSpeech.CCardSpeechSet("zzqq");
+        CCategory held = speech.CCardSpeechSet("NOUN");
+        CCategory unmatched = speech.CCardSpeechSet("zzqq");
 
         Assert.Contains(new CCategoryRow("Noun", true), held.CCategoryRows);
         Assert.Contains(new CCategoryRow("Pronoun", false), held.CCategoryRows);
@@ -51,12 +51,12 @@ public sealed class TCardSpeech
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor empty = TInterfaceEditor.TEditorCreate(engine);
-        CEditor editor = TCardSpeechPrepare(engine);
-        editor.CEditorSpeech.CCardSpeechAdd("Verb");
+        CCardSpeech empty = new TEditorFixture(TInterfaceEditor.TEditorCreate(engine)).TEditorFixtureSpeech;
+        CCardSpeech speech = TCardSpeechPrepare(engine).TEditorFixtureSpeech;
+        speech.CCardSpeechAdd("Verb");
 
-        CCategory shown = editor.CEditorSpeech.CCardSpeechRead().CMarkerCategory;
-        CCategory absent = empty.CEditorSpeech.CCardSpeechRead().CMarkerCategory;
+        CCategory shown = speech.CCardSpeechRead().CMarkerCategory;
+        CCategory absent = empty.CCardSpeechRead().CMarkerCategory;
 
         Assert.Contains(new CCategoryRow("Verb", true), shown.CCategoryRows);
         Assert.Contains(new CCategoryRow("Noun", false), shown.CCategoryRows);
@@ -71,13 +71,13 @@ public sealed class TCardSpeech
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TCardSpeechPrepare(engine);
-        editor.CEditorSpeech.CCardSpeechSet("nou");
+        TEditorFixture editor = TCardSpeechPrepare(engine);
+        editor.TEditorFixtureSpeech.CCardSpeechSet("nou");
 
-        editor.CEditorSpeech.CCardSpeechAdd(" Noun ");
-        editor.CEditorSpeech.CCardSpeechAdd("noun");
+        editor.TEditorFixtureSpeech.CCardSpeechAdd(" Noun ");
+        editor.TEditorFixtureSpeech.CCardSpeechAdd("noun");
 
-        CMarker marker = editor.CEditorSpeech.CCardSpeechRead();
+        CMarker marker = editor.TEditorFixtureSpeech.CCardSpeechRead();
         Assert.Equal(["Noun"], marker.CMarkerSpeeches);
         Assert.Equal(string.Empty, marker.CMarkerTyped);
         Assert.Equal(["Noun"], TSpeechNamesRead(editor));
@@ -88,12 +88,12 @@ public sealed class TCardSpeech
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TCardSpeechPrepare(engine);
+        TEditorFixture editor = TCardSpeechPrepare(engine);
 
-        editor.CEditorSpeech.CCardSpeechAdd("   ");
+        editor.TEditorFixtureSpeech.CCardSpeechAdd("   ");
 
-        Assert.False(editor.CEditorDesk.CDeskDraft.CDeskDraftAltered);
-        Assert.Empty(editor.CEditorSpeech.CCardSpeechRead().CMarkerSpeeches);
+        Assert.False(editor.TEditorFixtureDesk.CDeskDraft.CDeskDraftAltered);
+        Assert.Empty(editor.TEditorFixtureSpeech.CCardSpeechRead().CMarkerSpeeches);
     }
 
     [Fact]
@@ -101,14 +101,14 @@ public sealed class TCardSpeech
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TCardSpeechPrepare(engine);
-        editor.CEditorSpeech.CCardSpeechAdd("Noun");
-        editor.CEditorSpeech.CCardSpeechAdd("Verb");
-        editor.CEditorSpeech.CCardSpeechSet("adj");
+        TEditorFixture editor = TCardSpeechPrepare(engine);
+        editor.TEditorFixtureSpeech.CCardSpeechAdd("Noun");
+        editor.TEditorFixtureSpeech.CCardSpeechAdd("Verb");
+        editor.TEditorFixtureSpeech.CCardSpeechSet("adj");
 
-        editor.CEditorSpeech.CCardSpeechRemove("Noun");
+        editor.TEditorFixtureSpeech.CCardSpeechRemove("Noun");
 
-        CMarker marker = editor.CEditorSpeech.CCardSpeechRead();
+        CMarker marker = editor.TEditorFixtureSpeech.CCardSpeechRead();
         Assert.Equal(["Verb"], marker.CMarkerSpeeches);
         Assert.Equal("adj", marker.CMarkerTyped);
         Assert.Equal(["Verb", "adj"], TSpeechNamesRead(editor));
@@ -119,13 +119,13 @@ public sealed class TCardSpeech
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TCardSpeechPrepare(engine);
-        editor.CEditorSpeech.CCardSpeechAdd("Noun");
-        editor.CEditorSpeech.CCardSpeechSet("adj");
+        TEditorFixture editor = TCardSpeechPrepare(engine);
+        editor.TEditorFixtureSpeech.CCardSpeechAdd("Noun");
+        editor.TEditorFixtureSpeech.CCardSpeechSet("adj");
 
-        editor.CEditorEntryOpen(null);
+        editor.TEditorFixtureOpen(null);
 
-        CMarker marker = editor.CEditorSpeech.CCardSpeechRead();
+        CMarker marker = editor.TEditorFixtureSpeech.CCardSpeechRead();
         Assert.Empty(marker.CMarkerSpeeches);
         Assert.Equal(string.Empty, marker.CMarkerTyped);
     }
@@ -135,33 +135,33 @@ public sealed class TCardSpeech
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TCardSpeechPrepare(engine);
-        editor.CEditorSpeech.CCardSpeechAdd("Noun");
+        TEditorFixture editor = TCardSpeechPrepare(engine);
+        editor.TEditorFixtureSpeech.CCardSpeechAdd("Noun");
 
-        editor.CEditorDesk.CDeskChronicle.CDeskChronicleUndo();
-        CMarker undone = editor.CEditorSpeech.CCardSpeechRead();
-        editor.CEditorSpeech.CCardSpeechAdd("Verb");
+        editor.TEditorFixtureDesk.CDeskChronicle.CDeskChronicleUndo();
+        CMarker undone = editor.TEditorFixtureSpeech.CCardSpeechRead();
+        editor.TEditorFixtureSpeech.CCardSpeechAdd("Verb");
 
         Assert.Empty(undone.CMarkerSpeeches);
-        Assert.Equal(["Verb"], editor.CEditorSpeech.CCardSpeechRead().CMarkerSpeeches);
+        Assert.Equal(["Verb"], editor.TEditorFixtureSpeech.CCardSpeechRead().CMarkerSpeeches);
         Assert.Equal(["Verb"], TSpeechNamesRead(editor));
     }
 
-    private static CEditor TCardSpeechPrepare(LEngine engine)
+    private static TEditorFixture TCardSpeechPrepare(LEngine engine)
     {
         engine.TEngineDelaySet(0);
-        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
+        TEditorFixture editor = new(TInterfaceEditor.TEditorCreate(engine));
         editor.TEditorVistaRestore(engine.TEngineVistaStart("input", LCatalogOrder.LCatalogOrderHeadword));
-        editor.CEditorEntryOpen(null);
-        editor.CEditorEntry.CEntryLanguageSet("English");
-        editor.CEditorSpeech.CCardSpeechRead();
+        editor.TEditorFixtureOpen(null);
+        editor.TEditorFixtureEntry.CEntryLanguageSet("English");
+        editor.TEditorFixtureSpeech.CCardSpeechRead();
         return editor;
     }
 
-    private static string[] TSpeechNamesRead(CEditor editor)
+    private static string[] TSpeechNamesRead(TEditorFixture editor)
     {
-        editor.CEditorDesk.CDeskDraft.CDeskDraftPersist();
-        return editor.CEditorDesk.TDeskRead()!.LDraftContent.LEntryDraftSpeeches
+        editor.TEditorFixtureDesk.CDeskDraft.CDeskDraftPersist();
+        return editor.TEditorFixtureDesk.TDeskRead()!.LDraftContent.LEntryDraftSpeeches
             .Select(static speech => speech.LSpeechDraftName)
             .ToArray();
     }

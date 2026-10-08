@@ -11,6 +11,6 @@ internal sealed class PLinkSelector : DataTemplateSelector
 
     public override DataTemplate? SelectTemplate(object item, DependencyObject container)
     {
-        return item is PLinkCaret ? PLinkSelectorCaret : PLinkSelectorChip;
+        return item is PCaret<QLinkChip> ? PLinkSelectorCaret : PLinkSelectorChip;
     }
 }

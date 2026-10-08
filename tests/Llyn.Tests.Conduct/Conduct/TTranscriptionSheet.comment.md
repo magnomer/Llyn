@@ -1,5 +1,5 @@
 # TTranscriptionSheet.cs
-Hash: `4194434764f13f9f`
+Hash: `4ad411b003b72096`
 
 ## `public sealed class TTranscriptionSheet`
 
@@ -22,9 +22,10 @@ The scheme and text of every row the block answers, in its order.
 
 The transcription gates of an editor over stub ports, whose desk holds nothing.
 
-## `private static CEditor TTranscriptionPrepare(LEngine engine, long entry)`
+## `private static TEditorFixture TTranscriptionPrepare(LEngine engine, long entry)`
 
 Opens the stored entry `entry` in an editor over the library vista.
+It answers the fixture, so a test reads only the facets it drives.
 
 ## `private static long TTranscriptionSave(LEngine engine, IReadOnlyList<LTranscriptionDraft> rows, string language = "Cantonese")`
 

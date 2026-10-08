@@ -1,5 +1,5 @@
 # PTenor.xaml
-Hash: `0b59d797692b32a2`
+Hash: `43e2e9147bc2d2ed`
 
 ## `<Grid Margin="34,20,34,38">`
 
@@ -13,6 +13,7 @@ So the catalog here is a Register, and the entry list beside it is what carries 
 
 The sorting button and the search field are one control over the register column.
 Both act on the register catalog and nothing else.
+The ordering picker is the shared `PChoiceOrder`, placed here as `PTenorOrder`.
 
 ## The third ordering
 
@@ -31,16 +32,19 @@ Each row carries the flag, the headword and the language, in the library catalog
 
 The search field and the language filter over the entry column.
 `PQuest` narrows the entries marked with the chosen Register by typed text.
-`PGrilleDropper` opens the menu of loaded languages, and `PGrilleMark` shows while any is hidden.
+The language filter is the shared `PChoiceFilter`, placed here as `PTenorFilter`.
+It opens the menu of loaded languages, and its mark shows while any is hidden.
 
-## `<local:QRail Grid.Row="0" Grid.Column="2" Margin="0,0,0,18">`
+## `<veneer:PPanelRail x:Name="PTenorRail" Grid.Row="0" Grid.Column="2" Margin="0,0,0,18" />`
 
 The entry actions over the reader, and the reader and editor toggle.
 Export and print stand here as on every panel that reads an entry.
+The command row is the shared `PPanelRail`, placed here as `PTenorRail`.
 
 ## Hooks
 
 The markup carries no hook.
-The Deportment driver `QTenor` sets icons, commands, clicks, popups and row fills.
-It also folds the two button pairs by mode.
-`PTenorChronicle` starts collapsed because the reader is the side shown first.
+The Deportment driver `QTenor` sets commands, the search hint and the register row fills.
+`QCohort` drives the entry column and its search field.
+The picker, the filter and the rail have their own drivers, which set their icons and popups.
+The rail's driver folds the two button pairs by mode.

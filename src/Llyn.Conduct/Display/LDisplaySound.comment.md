@@ -1,5 +1,5 @@
 # LDisplaySound.cs
-Hash: `a3518ef3fc5aff0d`
+Hash: `0897c31e079a7e77`
 
 ## `internal sealed class LDisplaySound`
 
@@ -61,6 +61,7 @@ A refused start raises `LDisplayMarkFailed` with `Sound.StartFailed`.
 
 Drops the shown draft, its id and the loaded reflexes.
 It stops its own playback, and a sound another view started plays on.
+A display that shows nothing has no playback, so clearing it again stops nothing.
 
 ## `internal void LDisplayFoldSet(bool opened)`
 

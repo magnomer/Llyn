@@ -46,62 +46,14 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <ToggleButton
-                        x:Name="PSequenceDropper"
-                        Grid.Column="0"
-                        Style="{StaticResource Theme.Search.Dropper}"
-                        ToolTip="{DynamicResource Sequence.Title}">
-                        <local:QIconImage x:Name="PSequenceIcon" Width="24" Height="24" />
-                    </ToggleButton>
+                    <veneer:PChoiceOrder x:Name="PPhonologyOrder" Grid.Column="0" />
                     <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
                     <TextBox
                         x:Name="PProbe"
                         Grid.Column="2"
                         Style="{StaticResource Theme.Search.Field}" />
                     <Rectangle Grid.Column="3" Margin="2,0,5,0" Style="{StaticResource Theme.Search.Divider}" />
-                    <ToggleButton
-                        x:Name="PLensDropper"
-                        Grid.Column="4"
-                        Style="{StaticResource Theme.Search.Dropper}"
-                        ToolTip="{DynamicResource Lens.Title}">
-                        <Grid Width="24" Height="24">
-                            <local:QIconImage x:Name="PLensIcon" Width="24" Height="24" />
-                            <Ellipse
-                                x:Name="PLensMark"
-                                Width="6"
-                                Height="6"
-                                Margin="0,2,1,0"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Top"
-                                Fill="{StaticResource Theme.Accent}"
-                                Visibility="Collapsed" />
-                        </Grid>
-                    </ToggleButton>
-                    <Popup
-                        x:Name="PSequenceDropdown"
-                        Width="252"
-                        AllowsTransparency="True"
-                        Placement="Bottom"
-                        StaysOpen="False"
-                        VerticalOffset="6">
-                        <Border Margin="10" Padding="8" Style="{StaticResource Theme.Popup.Surface}">
-                            <StackPanel x:Name="PSequenceList">
-                                <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Sequence.Title}" />
-                            </StackPanel>
-                        </Border>
-                    </Popup>
-                    <Popup
-                        x:Name="PLensDropdown"
-                        Width="190"
-                        AllowsTransparency="True"
-                        HorizontalOffset="-151"
-                        Placement="Bottom"
-                        StaysOpen="False"
-                        VerticalOffset="6">
-                        <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
-                            <StackPanel x:Name="PLensList" />
-                        </Border>
-                    </Popup>
+                    <veneer:PChoiceFilter x:Name="PPhonologyFilter" Grid.Column="4" />
                 </Grid>
             </Border>
             <ToggleButton
@@ -111,73 +63,7 @@
                 ToolTip="{DynamicResource Articulation.Title}" />
         </Grid>
 
-        <local:QRail Grid.Row="0" Grid.Column="1" Margin="0,0,0,18">
-            <Border Style="{StaticResource Theme.Command.Group}">
-                <StackPanel Orientation="Horizontal">
-                    <Button
-                        x:Name="PPhonologyFresh"
-                        Content="{DynamicResource Scribe.New}"
-                        Style="{StaticResource Theme.Command.Segment}" />
-                    <Button
-                        x:Name="PPhonologyStore"
-                        Content="{DynamicResource Scribe.Save}"
-                        IsEnabled="False"
-                        Style="{StaticResource Theme.Command.Primary}" />
-                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
-                    <StackPanel x:Name="PPhonologyVoyage" Orientation="Horizontal">
-                        <Button
-                            x:Name="PPhonologyEarlier"
-                            IsEnabled="False"
-                            Style="{StaticResource Theme.Command.Segment}"
-                            ToolTip="{DynamicResource Voyage.Retreat}" />
-                        <Button
-                            x:Name="PPhonologyLater"
-                            IsEnabled="False"
-                            Style="{StaticResource Theme.Command.Segment}"
-                            ToolTip="{DynamicResource Voyage.Advance}" />
-                    </StackPanel>
-                    <StackPanel x:Name="PPhonologyChronicle" Orientation="Horizontal" Visibility="Collapsed">
-                        <Button
-                            x:Name="PPhonologyBackward"
-                            IsEnabled="False"
-                            Style="{StaticResource Theme.Command.Segment}"
-                            ToolTip="{DynamicResource Chronicle.Undo}" />
-                        <Button
-                            x:Name="PPhonologyForward"
-                            IsEnabled="False"
-                            Style="{StaticResource Theme.Command.Segment}"
-                            ToolTip="{DynamicResource Chronicle.Redo}" />
-                    </StackPanel>
-                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
-                    <Button
-                        x:Name="PPhonologyPortrait"
-                        Content="{DynamicResource Scribe.Export}"
-                        Style="{StaticResource Theme.Command.Segment}" />
-                    <Button
-                        x:Name="PPhonologyPress"
-                        Content="{DynamicResource Scribe.Print}"
-                        Style="{StaticResource Theme.Command.Segment}" />
-                </StackPanel>
-            </Border>
-            <Border
-                x:Name="PPhonologyMode"
-                IsEnabled="False"
-                Style="{StaticResource Theme.Command.Group}">
-                <StackPanel Orientation="Horizontal">
-                    <RadioButton
-                        x:Name="PPhonologyViewer"
-                        Content="{DynamicResource Scribe.View}"
-                        GroupName="PPhonologyMode"
-                        IsChecked="True"
-                        Style="{StaticResource Theme.Command.Mode}" />
-                    <RadioButton
-                        x:Name="PPhonologyScribe"
-                        Content="{DynamicResource Scribe.Edit}"
-                        GroupName="PPhonologyMode"
-                        Style="{StaticResource Theme.Command.Mode}" />
-                </StackPanel>
-            </Border>
-        </local:QRail>
+        <veneer:PPanelRail x:Name="PPhonologyRail" Grid.Row="0" Grid.Column="1" Margin="0,0,0,18" />
 
         <veneer:PArticulation
             x:Name="PArticulation"

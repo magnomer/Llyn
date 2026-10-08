@@ -22,7 +22,7 @@ internal sealed class QSlate
 
     private readonly ObservableCollection<PSlateItem> _qSlateItem = [];
 
-    private CEditor _cEditor = null!;
+    private CCard _cCard = null!;
 
     internal QSlate(FrameworkElement surface, QLabel label)
     {
@@ -42,9 +42,9 @@ internal sealed class QSlate
 
     private Border QSlateContents => QContract.QContractFind<Border>(_qSlateSurface, "PContents");
 
-    internal void QSlateIntroduce(CEditor editor)
+    internal void QSlateIntroduce(CCard card)
     {
-        _cEditor = editor;
+        _cCard = card;
     }
 
     private void QSlateApply(FrameworkElement container, object item, string? _)
@@ -89,16 +89,16 @@ internal sealed class QSlate
     private void QSlatePickObserve(object sender, MouseButtonEventArgs e)
     {
         if (sender is not FrameworkElement { DataContext: PSlateItem item }
-            || Keyboard.FocusedElement is not FrameworkElement { DataContext: PLabelCaret row }
+            || Keyboard.FocusedElement is not FrameworkElement { DataContext: PCaret<PLabelChip> row }
             || _qSlateLabel.QLabelCardFind(row) is not PCard card)
         {
             return;
         }
 
-        _cEditor.CEditorCard.CCardTagInsert(card.PCardId, item.PSlateItemId, card.PCardLabelPosition);
+        _cCard.CCardTagInsert(card.PCardId, item.PSlateItemId, row.PCaretPosition);
         e.Handled = true;
         QSlateShutRefine();
-        card.PCardLabelClear();
+        row.PCaretClear();
     }
 
     internal void QSlateKeyRefine(object sender, KeyEventArgs e)
@@ -133,7 +133,7 @@ internal sealed class QSlate
     internal void QSlateKeyObserve(object sender, KeyEventArgs e)
     {
         if (e.Key != Key.Enter
-            || sender is not FrameworkElement { DataContext: PLabelCaret row }
+            || sender is not FrameworkElement { DataContext: PCaret<PLabelChip> row }
             || _qSlateLabel.QLabelCardFind(row) is not PCard card)
         {
             return;
@@ -144,15 +144,15 @@ internal sealed class QSlate
             return;
         }
 
-        _cEditor.CEditorCard.CCardTagInsert(card.PCardId, item.PSlateItemId, card.PCardLabelPosition);
+        _cCard.CCardTagInsert(card.PCardId, item.PSlateItemId, row.PCaretPosition);
         e.Handled = true;
         QSlateShutRefine();
-        card.PCardLabelClear();
+        row.PCaretClear();
     }
 
     internal void QSlateRefine(PCard card, CSlate slate)
     {
-        card.PCardLabelRefine(slate.CSlateText);
+        card.PCardLabel.PCaretRefine(slate.CSlateText);
         if (slate.CSlateShown)
         {
             QSlateOpenRefine(card, slate.CSlateRows);
@@ -189,7 +189,7 @@ internal sealed class QSlate
 
     private TextBox? QSlateBoxFind(PCard card)
     {
-        return Keyboard.FocusedElement is TextBox { DataContext: PLabelCaret row } box &&
+        return Keyboard.FocusedElement is TextBox { DataContext: PCaret<PLabelChip> row } box &&
             _qSlateLabel.QLabelCardFind(row) == card
             ? box
             : null;

@@ -16,13 +16,13 @@ public sealed class TEditorField
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorFieldPrepare(engine);
+        TEditorFixture editor = TEditorFieldPrepare(engine);
         long sheet = TEditorSheetAdd(editor);
 
-        editor.CEditorField.CCardTitleSet(sheet, "Heat");
-        editor.CEditorField.CCardExpressionSet(sheet, "on fire");
-        editor.CEditorField.CCardMeaningSet(sheet, "burning");
-        editor.CEditorDesk.CDeskDraft.CDeskDraftPersist();
+        editor.TEditorFixtureField.CCardTitleSet(sheet, "Heat");
+        editor.TEditorFixtureField.CCardExpressionSet(sheet, "on fire");
+        editor.TEditorFixtureField.CCardMeaningSet(sheet, "burning");
+        editor.TEditorFixtureDesk.CDeskDraft.CDeskDraftPersist();
 
         CCardDraft card = editor.TEditorDraftRead()!.CEntryDraftMeanings.Single(row => row.CCardDraftId == sheet);
         Assert.Equal("Heat", card.CCardDraftTitle.CStateWordingText);
@@ -37,11 +37,11 @@ public sealed class TEditorField
         using LEngine engine = workspace.TWorkspaceEngineStart();
         long chat = engine.TEngineTranslationCreate("chat", "French").LEntryId;
         long gato = engine.TEngineTranslationCreate("gato", "Spanish").LEntryId;
-        CEditor editor = TEditorFieldPrepare(engine);
+        TEditorFixture editor = TEditorFieldPrepare(engine);
         long sheet = TEditorSheetAdd(editor);
         long bare = TEditorSheetAdd(editor);
-        editor.CEditorCard.CCardTranslationInsert(sheet, gato, string.Empty, string.Empty, 0);
-        editor.CEditorCard.CCardTranslationInsert(sheet, chat, string.Empty, string.Empty, 0);
+        editor.TEditorFixtureCard.CCardTranslationInsert(sheet, gato, string.Empty, string.Empty, 0);
+        editor.TEditorFixtureCard.CCardTranslationInsert(sheet, chat, string.Empty, string.Empty, 0);
 
         IReadOnlyList<CTranslationTarget> targets = TEditorCardRead(editor, sheet).CCardDraftTranslation;
 
@@ -55,13 +55,13 @@ public sealed class TEditorField
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         long chat = engine.TEngineTranslationCreate("chat", "French").LEntryId;
-        CEditor editor = TEditorFieldPrepare(engine);
+        TEditorFixture editor = TEditorFieldPrepare(engine);
         long sheet = TEditorSheetAdd(editor);
-        editor.CEditorCard.CCardTranslationInsert(sheet, chat, string.Empty, string.Empty, 0);
+        editor.TEditorFixtureCard.CCardTranslationInsert(sheet, chat, string.Empty, string.Empty, 0);
         List<CEntryDraft> shown = [];
-        editor.CEditorEntry.CEntryDraftChanged += shown.Add;
+        editor.TEditorFixtureEntry.CEntryDraftChanged += shown.Add;
 
-        editor.CEditorDesk.CDeskDraft.CDeskDraftResonate();
+        editor.TEditorFixtureDesk.CDeskDraft.CDeskDraftResonate();
 
         CCardDraft card = shown[^1].CEntryDraftMeanings.Single(row => row.CCardDraftId == sheet);
         Assert.Equal(["chat"], card.CCardDraftTranslation.Select(static target => target.CTranslationTargetHeadword));
@@ -72,7 +72,7 @@ public sealed class TEditorField
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
+        TEditorFixture editor = new(TInterfaceEditor.TEditorCreate(engine));
 
         Assert.Null(editor.TEditorDraftRead());
     }
@@ -82,13 +82,14 @@ public sealed class TEditorField
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorFieldPrepare(engine);
+        TEditorFixture editor = TEditorFieldPrepare(engine);
         long sheet = TEditorSheetAdd(editor);
-        editor.CEditorDesk.TDeskDefer(TInterface.TImageAdditionCreate(editor.CEditorDesk.CDeskId, sheet, 0));
+        CDesk desk = editor.TEditorFixtureDesk;
+        desk.TDeskDefer(TInterface.TImageAdditionCreate(desk.CDeskId, sheet, 0));
         long image = TEditorCardRead(editor, sheet).CCardDraftImage[0].CImageDraftId;
 
-        editor.CEditorImage.CImageLocationSet(image, "cat.png");
-        editor.CEditorDesk.CDeskDraft.CDeskDraftPersist();
+        editor.TEditorFixtureImage.CImageLocationSet(image, "cat.png");
+        desk.CDeskDraft.CDeskDraftPersist();
 
         Assert.Equal("cat.png", TEditorCardRead(editor, sheet).CCardDraftImage[0].CImageDraftLocation.CStateValueShown);
     }
@@ -98,14 +99,15 @@ public sealed class TEditorField
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorFieldPrepare(engine);
+        TEditorFixture editor = TEditorFieldPrepare(engine);
         long sheet = TEditorSheetAdd(editor);
-        editor.CEditorDesk.TDeskDefer(TInterface.TVideoAdditionCreate(editor.CEditorDesk.CDeskId, sheet, 0));
+        CDesk desk = editor.TEditorFixtureDesk;
+        desk.TDeskDefer(TInterface.TVideoAdditionCreate(desk.CDeskId, sheet, 0));
         long video = TEditorCardRead(editor, sheet).CCardDraftVideo[0].CVideoDraftId;
 
-        editor.CEditorVideo.CVideoLocationSet(video, "cat.mp4");
-        editor.CEditorVideo.CVideoSpanSet(video, "0:01-0:03");
-        editor.CEditorDesk.CDeskDraft.CDeskDraftPersist();
+        editor.TEditorFixtureVideo.CVideoLocationSet(video, "cat.mp4");
+        editor.TEditorFixtureVideo.CVideoSpanSet(video, "0:01-0:03");
+        desk.CDeskDraft.CDeskDraftPersist();
 
         CVideoDraft row = TEditorCardRead(editor, sheet).CCardDraftVideo[0];
         Assert.Equal("cat.mp4", row.CVideoDraftLocation.CStateValueShown);
@@ -117,15 +119,15 @@ public sealed class TEditorField
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorFieldPrepare(engine);
+        TEditorFixture editor = TEditorFieldPrepare(engine);
         long sheet = TEditorSheetAdd(editor);
         long sentence = TEditorSentenceAdd(editor, sheet);
-        editor.CEditorDesk.TDeskDefer(
-            TInterface.TGlossAdditionCreate(editor.CEditorDesk.CDeskId, sheet, sentence, "French", 0));
+        editor.TEditorFixtureDesk.TDeskDefer(
+            TInterface.TGlossAdditionCreate(editor.TEditorFixtureDesk.CDeskId, sheet, sentence, "French", 0));
         long gloss = TEditorGlossRead(editor, sheet)[0].CGlossDraftId;
 
-        editor.CEditorSentence.CSentenceGlossSet(sheet, sentence, gloss, "le chat");
-        editor.CEditorDesk.CDeskDraft.CDeskDraftPersist();
+        editor.TEditorFixtureSentence.CSentenceGlossSet(sheet, sentence, gloss, "le chat");
+        editor.TEditorFixtureDesk.CDeskDraft.CDeskDraftPersist();
 
         Assert.Equal("le chat", TEditorGlossRead(editor, sheet)[0].CGlossDraftText.CStateValueShown);
     }
@@ -135,13 +137,13 @@ public sealed class TEditorField
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorFieldPrepare(engine);
+        TEditorFixture editor = TEditorFieldPrepare(engine);
         long sheet = TEditorSheetAdd(editor);
         long sentence = TEditorSentenceAdd(editor, sheet);
-        editor.CEditorDesk.TDeskDefer(
-            TInterface.TGlossAdditionCreate(editor.CEditorDesk.CDeskId, sheet, sentence, "French", 0));
+        editor.TEditorFixtureDesk.TDeskDefer(
+            TInterface.TGlossAdditionCreate(editor.TEditorFixtureDesk.CDeskId, sheet, sentence, "French", 0));
 
-        editor.CEditorSentence.CSentenceGlossAdd(sheet, sentence);
+        editor.TEditorFixtureSentence.CSentenceGlossAdd(sheet, sentence);
 
         IReadOnlyList<CGlossDraft> glosses = TEditorGlossRead(editor, sheet);
         Assert.Equal(["French", engine.TEngineGlossRead()], glosses.Select(static row => row.CGlossDraftLanguage));
@@ -152,12 +154,12 @@ public sealed class TEditorField
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorFieldPrepare(engine);
+        TEditorFixture editor = TEditorFieldPrepare(engine);
         long sheet = TEditorSheetAdd(editor);
         long sentence = TEditorSentenceAdd(editor, sheet);
-        long draft = editor.CEditorDesk.CDeskId;
-        editor.CEditorDesk.TDeskDefer(TInterface.TGlossAdditionCreate(draft, sheet, sentence, string.Empty, 0));
-        editor.CEditorDesk.TDeskDefer(TInterface.TGlossAdditionCreate(draft, sheet, sentence, "French", 1));
+        long draft = editor.TEditorFixtureDesk.CDeskId;
+        editor.TEditorFixtureDesk.TDeskDefer(TInterface.TGlossAdditionCreate(draft, sheet, sentence, string.Empty, 0));
+        editor.TEditorFixtureDesk.TDeskDefer(TInterface.TGlossAdditionCreate(draft, sheet, sentence, "French", 1));
 
         IReadOnlyList<CGlossDraft> glosses = TEditorGlossRead(editor, sheet);
 
@@ -172,15 +174,15 @@ public sealed class TEditorField
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorFieldPrepare(engine);
+        TEditorFixture editor = TEditorFieldPrepare(engine);
         long sheet = TEditorSheetAdd(editor);
         long sentence = TEditorSentenceAdd(editor, sheet);
-        editor.CEditorSentence.CSentenceGlossAdd(sheet, sentence);
-        editor.CEditorSentence.CSentenceGlossAdd(sheet, sentence);
+        editor.TEditorFixtureSentence.CSentenceGlossAdd(sheet, sentence);
+        editor.TEditorFixtureSentence.CSentenceGlossAdd(sheet, sentence);
         IReadOnlyList<CGlossDraft> added = TEditorGlossRead(editor, sheet);
 
-        editor.CEditorSentence.CSentenceGlossRemove(sheet, sentence, added[0].CGlossDraftId);
-        editor.CEditorSentence.CSentenceLanguageSet(sheet, sentence, added[1].CGlossDraftId, "German");
+        editor.TEditorFixtureSentence.CSentenceGlossRemove(sheet, sentence, added[0].CGlossDraftId);
+        editor.TEditorFixtureSentence.CSentenceLanguageSet(sheet, sentence, added[1].CGlossDraftId, "German");
 
         CGlossDraft kept = Assert.Single(TEditorGlossRead(editor, sheet));
         Assert.Equal(added[1].CGlossDraftId, kept.CGlossDraftId);
@@ -192,17 +194,17 @@ public sealed class TEditorField
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorFieldPrepare(engine);
-        editor.CEditorEntry.CEntryHeadwordSet("water");
-        editor.CEditorDesk.CDeskErrand.CErrandRecordingStart(0);
+        TEditorFixture editor = TEditorFieldPrepare(engine);
+        editor.TEditorFixtureEntry.CEntryHeadwordSet("water");
+        editor.TEditorFixtureDesk.CDeskErrand.CErrandRecordingStart(0);
 
-        editor.CEditorClose();
+        editor.TEditorFixtureClose();
 
-        Assert.False(editor.CEditorDesk.CDeskHeld);
-        Assert.Null(await editor.CEditorDesk.CDeskErrand.CErrandPreviewStart(
+        Assert.False(editor.TEditorFixtureDesk.CDeskHeld);
+        Assert.Null(await editor.TEditorFixtureDesk.CDeskErrand.CErrandPreviewStart(
             new CRecording("Tagged", "https://example.test/gb.mp3", 0, true, "British")));
-        Assert.Null(editor.CEditorDesk.CDeskStoredRead());
-        Assert.Equal(string.Empty, editor.CEditorEntry.CEntryLanguage);
+        Assert.Null(editor.TEditorFixtureDesk.CDeskStoredRead());
+        Assert.Equal(string.Empty, editor.TEditorFixtureEntry.CEntryLanguage);
     }
 
     [Fact]
@@ -210,13 +212,13 @@ public sealed class TEditorField
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CFold toggled = TEditorFieldPrepare(engine).CEditorFold;
-        CEditor editor = TEditorFieldPrepare(engine);
+        CFold toggled = TEditorFieldPrepare(engine).TEditorFixtureFold;
+        TEditorFixture editor = TEditorFieldPrepare(engine);
         int changed = 0;
-        editor.CEditorFold.CFoldChanged += () => changed++;
-        editor.CEditorClose();
+        editor.TEditorFixtureFold.CFoldChanged += () => changed++;
+        editor.TEditorFixtureClose();
 
-        editor.CEditorEntryOpen(null);
+        editor.TEditorFixtureOpen(null);
         toggled.CFoldScriptToggle(true);
 
         Assert.Equal(1, changed);
@@ -227,11 +229,11 @@ public sealed class TEditorField
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorFieldPrepare(engine);
+        CEntry entry = TEditorFieldPrepare(engine).TEditorFixtureEntry;
 
-        editor.CEditorEntry.CEntryLanguageSet("English");
+        entry.CEntryLanguageSet("English");
 
-        Assert.Equal("English", editor.CEditorEntry.CEntryLanguage);
+        Assert.Equal("English", entry.CEntryLanguage);
     }
 
     [Fact]
@@ -240,12 +242,12 @@ public sealed class TEditorField
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        CEditor editor = atelier.CAtelierInputCreate(TEnvoyFake.TEnvoyCreate(false, []));
+        TEditorFixture editor = new(atelier.CAtelierInputCreate(TEnvoyFake.TEnvoyCreate(false, [])));
 
         atelier.TAtelierStubOpen();
 
-        Assert.True(editor.CEditorDesk.CDeskHeld);
-        Assert.Null(editor.CEditorDesk.CDeskStoredRead());
+        Assert.True(editor.TEditorFixtureDesk.CDeskHeld);
+        Assert.Null(editor.TEditorFixtureDesk.CDeskStoredRead());
     }
 
     [Fact]
@@ -255,56 +257,57 @@ public sealed class TEditorField
         using LEngine engine = workspace.TWorkspaceEngineStart();
         int marshalled = 0;
         int shown = 0;
-        CEditor editor = TEditorFieldPrepare(engine, run =>
+        TEditorFixture editor = TEditorFieldPrepare(engine, run =>
         {
             marshalled++;
             run();
         });
-        editor.CEditorEntry.CEntryDraftChanged += _ => shown++;
+        editor.TEditorFixtureEntry.CEntryDraftChanged += _ => shown++;
 
-        editor.CEditorEntry.CEntryHeadwordSet("water");
-        editor.CEditorDesk.CDeskDraft.CDeskDraftPersist();
+        editor.TEditorFixtureEntry.CEntryHeadwordSet("water");
+        editor.TEditorFixtureDesk.CDeskDraft.CDeskDraftPersist();
 
         Assert.True(marshalled > 0);
         Assert.True(shown > 0);
     }
 
-    internal static CEditor TEditorFieldPrepare(LEngine engine)
+    internal static TEditorFixture TEditorFieldPrepare(LEngine engine)
     {
         return TEditorFieldPrepare(engine, static run => run());
     }
 
-    internal static CEditor TEditorFieldPrepare(LEngine engine, Action<Action> marshal)
+    internal static TEditorFixture TEditorFieldPrepare(LEngine engine, Action<Action> marshal)
     {
         engine.TEngineDelaySet(0);
-        CEditor editor = TInterfaceEditor.TEditorCreate(engine, marshal);
+        TEditorFixture editor = new(TInterfaceEditor.TEditorCreate(engine, marshal));
         editor.TEditorVistaRestore(engine.TEngineVistaStart("input", LCatalogOrder.LCatalogOrderHeadword));
-        editor.CEditorEntryOpen(null);
+        editor.TEditorFixtureOpen(null);
         return editor;
     }
 
-    internal static long TEditorSheetAdd(CEditor editor)
+    internal static long TEditorSheetAdd(TEditorFixture editor)
     {
-        editor.CEditorDesk.TDeskDefer(TInterface.TRequestAdditionCreate(
-            editor.CEditorDesk.CDeskId, LCardKind.LCardKindMeaning, 0, int.MaxValue));
+        editor.TEditorFixtureDesk.TDeskDefer(TInterface.TRequestAdditionCreate(
+            editor.TEditorFixtureDesk.CDeskId, LCardKind.LCardKindMeaning, 0, int.MaxValue));
         return editor.TEditorDraftRead()!.CEntryDraftMeanings[^1].CCardDraftId;
     }
 
-    internal static CCardDraft TEditorCardRead(CEditor editor, long sheet)
+    internal static CCardDraft TEditorCardRead(TEditorFixture editor, long sheet)
     {
         return editor.TEditorDraftRead()!.CEntryDraftMeanings.Single(row => row.CCardDraftId == sheet);
     }
 
-    private static long TEditorSentenceAdd(CEditor editor, long sheet)
+    private static long TEditorSentenceAdd(TEditorFixture editor, long sheet)
     {
-        editor.CEditorDesk.TDeskDefer(TInterface.TSentenceAdditionCreate(editor.CEditorDesk.CDeskId, sheet, 0));
+        CDesk desk = editor.TEditorFixtureDesk;
+        desk.TDeskDefer(TInterface.TSentenceAdditionCreate(desk.CDeskId, sheet, 0));
         long sentence = TEditorCardRead(editor, sheet).CCardDraftSentence[0].CSentenceDraftId;
-        editor.CEditorSentence.CSentenceTextSet(sheet, sentence, "the cat sat");
-        editor.CEditorDesk.CDeskDraft.CDeskDraftPersist();
+        editor.TEditorFixtureSentence.CSentenceTextSet(sheet, sentence, "the cat sat");
+        desk.CDeskDraft.CDeskDraftPersist();
         return sentence;
     }
 
-    private static IReadOnlyList<CGlossDraft> TEditorGlossRead(CEditor editor, long sheet)
+    private static IReadOnlyList<CGlossDraft> TEditorGlossRead(TEditorFixture editor, long sheet)
     {
         return TEditorCardRead(editor, sheet).CCardDraftSentence[0].CSentenceDraftExample!.CExampleDraftGloss;
     }

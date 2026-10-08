@@ -1,5 +1,5 @@
 # TFault.cs
-Hash: `c50872ff9ce774a8`
+Hash: `ab663076f0775967`
 
 ## `public sealed partial class TFault`
 
@@ -57,9 +57,10 @@ Starts a real engine on a prepared workspace, both disposed with the stage.
 Starts a real engine and the atelier over its faulted outlets, both disposed with the stage.
 Panel rows build their panel on it, so only the stage's member faults.
 
-## `private static CEditor TFaultEditorStart(TFaultStage stage, string json)`
+## `private static TEditorFixture TFaultEditorStart(TFaultStage stage, string json)`
 
 Starts an editor over an engine whose language and recording vaults forward to the real rig.
+It answers the fixture, so a row reads only the desk and timbre facets.
 Only the stage's member faults, so the draft and its search run as in the app.
 The engine is built straight from that rig, and its tenure delay is cleared so the run ends quickly.
 

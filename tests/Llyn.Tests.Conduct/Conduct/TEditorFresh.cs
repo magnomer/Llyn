@@ -15,15 +15,15 @@ public sealed class TEditorFresh
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LEntry entry = TEditor.TEditorEntryPrepare(engine);
-        CEditor editor = TEditor.TEditorPrepare(engine, "input");
-        editor.CEditorEntryOpen(entry.LEntryId);
+        TEditorFixture editor = TEditor.TEditorPrepare(engine, "input");
+        editor.TEditorFixtureOpen(entry.LEntryId);
 
-        editor.CEditorEntryOpen(null);
+        editor.TEditorFixtureOpen(null);
 
-        Assert.True(editor.CEditorDesk.CDeskHeld);
-        Assert.Null(editor.CEditorDesk.CDeskStoredRead());
+        Assert.True(editor.TEditorFixtureDesk.CDeskHeld);
+        Assert.Null(editor.TEditorFixtureDesk.CDeskStoredRead());
         Assert.Equal(string.Empty, editor.TEditorDraftRead()?.CEntryDraftHeadword);
-        Assert.True(editor.CEditorOwned);
+        Assert.True(editor.TEditorFixtureOwned);
     }
 
     [Fact]
@@ -31,12 +31,12 @@ public sealed class TEditorFresh
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditor.TEditorPrepare(engine, "library");
+        TEditorFixture editor = TEditor.TEditorPrepare(engine, "library");
 
-        editor.CEditorEntryOpen(987654);
+        editor.TEditorFixtureOpen(987654);
 
-        Assert.True(editor.CEditorDesk.CDeskHeld);
-        Assert.Null(editor.CEditorDesk.CDeskStoredRead());
+        Assert.True(editor.TEditorFixtureDesk.CDeskHeld);
+        Assert.Null(editor.TEditorFixtureDesk.CDeskStoredRead());
     }
 
     [Fact]
@@ -44,9 +44,9 @@ public sealed class TEditorFresh
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditor.TEditorPrepare(engine, "input");
+        TEditorFixture editor = TEditor.TEditorPrepare(engine, "input");
 
-        editor.CEditorEntryOpen(null);
+        editor.TEditorFixtureOpen(null);
 
         CEntryDraft? draft = editor.TEditorDraftRead();
         Assert.NotNull(draft);
@@ -61,16 +61,16 @@ public sealed class TEditorFresh
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LTag tag = engine.TEngineTagCreate("botany");
-        CEditor editor = TEditor.TEditorPrepare(engine, "membership");
-        editor.CEditorEntryOpen(null);
-        long replaced = editor.CEditorDesk.CDeskId;
+        TEditorFixture editor = TEditor.TEditorPrepare(engine, "membership");
+        editor.TEditorFixtureOpen(null);
+        long replaced = editor.TEditorFixtureDesk.CDeskId;
 
-        editor.CEditorDesk.TDeskMembershipStart(tag.LTagId);
+        editor.TEditorFixtureDesk.TDeskMembershipStart(tag.LTagId);
 
         Assert.Contains(
             editor.TEditorDraftRead()?.CEntryDraftMeanings[0].CCardDraftTag ?? [],
             row => row.CTagDraftId == tag.LTagId);
-        Assert.NotEqual(replaced, editor.CEditorDesk.CDeskId);
+        Assert.NotEqual(replaced, editor.TEditorFixtureDesk.CDeskId);
         Assert.Null(engine.TEngineDraftRead(replaced));
     }
 
@@ -80,16 +80,16 @@ public sealed class TEditorFresh
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LRegister register = engine.TEngineRegisterCreate("formal");
-        CEditor editor = TEditor.TEditorPrepare(engine, "cohort");
-        editor.CEditorEntryOpen(null);
-        long replaced = editor.CEditorDesk.CDeskId;
+        TEditorFixture editor = TEditor.TEditorPrepare(engine, "cohort");
+        editor.TEditorFixtureOpen(null);
+        long replaced = editor.TEditorFixtureDesk.CDeskId;
 
-        editor.CEditorDesk.TDeskCohortStart(register.LRegisterId);
+        editor.TEditorFixtureDesk.TDeskCohortStart(register.LRegisterId);
 
         Assert.Contains(
             editor.TEditorDraftRead()?.CEntryDraftMeanings[0].CCardDraftRegister ?? [],
             row => row.CRegisterDraftId == register.LRegisterId);
-        Assert.NotEqual(replaced, editor.CEditorDesk.CDeskId);
+        Assert.NotEqual(replaced, editor.TEditorFixtureDesk.CDeskId);
         Assert.Null(engine.TEngineDraftRead(replaced));
     }
 
@@ -100,14 +100,14 @@ public sealed class TEditorFresh
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LStateValue text = TInterfaceState.TStateValueCreate("at the market");
         LSituation situation = engine.TEngineSituationCreate(TInterface.TSituationCreate(0, text, text, text));
-        CEditor editor = TEditor.TEditorPrepare(engine, "occurrence");
+        TEditorFixture editor = TEditor.TEditorPrepare(engine, "occurrence");
         List<CEntryDraft> shown = [];
-        editor.CEditorEntry.CEntryDraftChanged += shown.Add;
+        editor.TEditorFixtureEntry.CEntryDraftChanged += shown.Add;
 
-        editor.CEditorDesk.TDeskOccurrenceStart(situation.LSituationId);
+        editor.TEditorFixtureDesk.TDeskOccurrenceStart(situation.LSituationId);
 
-        Assert.True(editor.CEditorDesk.CDeskHeld);
-        Assert.False(editor.CEditorDesk.CDeskStored);
+        Assert.True(editor.TEditorFixtureDesk.CDeskHeld);
+        Assert.False(editor.TEditorFixtureDesk.CDeskStored);
         Assert.Contains(
             Assert.Single(shown).CEntryDraftMeanings[0].CCardDraftSituation,
             row => row.CSituationDraftId == situation.LSituationId);
@@ -118,12 +118,12 @@ public sealed class TEditorFresh
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditor.TEditorPrepare(engine, "occurrence");
+        TEditorFixture editor = TEditor.TEditorPrepare(engine, "occurrence");
 
-        editor.CEditorDesk.TDeskOccurrenceStart(null);
+        editor.TEditorFixtureDesk.TDeskOccurrenceStart(null);
 
-        Assert.True(editor.CEditorDesk.CDeskHeld);
-        Assert.False(editor.CEditorDesk.CDeskDraft.CDeskDraftAltered);
+        Assert.True(editor.TEditorFixtureDesk.CDeskHeld);
+        Assert.False(editor.TEditorFixtureDesk.CDeskDraft.CDeskDraftAltered);
     }
 
     [Fact]
@@ -137,16 +137,16 @@ public sealed class TEditorFresh
             TInterfaceState.TStateValueCreate("Water is wet."),
             null,
             LStateAnchor.LStateAnchorUnspecified));
-        CEditor editor = TEditor.TEditorPrepare(engine, "quotation");
-        editor.CEditorEntryOpen(null);
-        long replaced = editor.CEditorDesk.CDeskId;
+        TEditorFixture editor = TEditor.TEditorPrepare(engine, "quotation");
+        editor.TEditorFixtureOpen(null);
+        long replaced = editor.TEditorFixtureDesk.CDeskId;
 
-        editor.CEditorDesk.TDeskQuotationStart(example.LExampleId);
+        editor.TEditorFixtureDesk.TDeskQuotationStart(example.LExampleId);
 
         CExampleDraft? cited =
             editor.TEditorDraftRead()?.CEntryDraftMeanings[0].CCardDraftSentence[0].CSentenceDraftExample;
         Assert.Equal("Water is wet.", cited?.CExampleDraftText.CStateValueText);
-        Assert.NotEqual(replaced, editor.CEditorDesk.CDeskId);
+        Assert.NotEqual(replaced, editor.TEditorFixtureDesk.CDeskId);
         Assert.Null(engine.TEngineDraftRead(replaced));
     }
 
@@ -156,10 +156,10 @@ public sealed class TEditorFresh
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LReference book = engine.TEngineCitationCreate("Book");
-        CEditor editor = TEditor.TEditorPrepare(engine, "footnote");
-        editor.CEditorEntryOpen(null);
+        TEditorFixture editor = TEditor.TEditorPrepare(engine, "footnote");
+        editor.TEditorFixtureOpen(null);
 
-        editor.CEditorDesk.TDeskFootnoteStart(book.LReferenceId);
+        editor.TEditorFixtureDesk.TDeskFootnoteStart(book.LReferenceId);
 
         CExampleDraft? cited =
             editor.TEditorDraftRead()?.CEntryDraftMeanings[0].CCardDraftSentence[0].CSentenceDraftExample;

@@ -1,11 +1,11 @@
 # QEtymologyEditor.cs
-Hash: `d4b681904a85ffe2`
+Hash: `5c4288f7bf9d2410`
 
 ## `internal sealed class QEtymologyEditor`
 
 The editor's driver for the etymology field: the source links, the narrative and its spans.
 The field itself draws both sides, and every change goes through one card gate.
-It drives the whole field, chips and prose, so it takes the Etymology base the registry gives that field.
+It drives the whole field, chips and prose, not only one half of it.
 Resolution goes through the prospect menu, as a translation does, and the engine trims the typed word.
 
 ## `internal QEtymologyEditor(FrameworkElement surface, QProspect prospect)`
@@ -14,13 +14,13 @@ Binds the field's commands on the editor and listens to the narrative box once, 
 It binds the mention pick on the field itself, so only a pick anchored at the narrative box reaches it.
 Holds the prospect driver that paints the menu of entries a word matches.
 
-## `internal void QEtymologyIntroduce(CEditor editor, CAtelier atelier)`
+## `internal void QEtymologyIntroduce(CCard card, CEntry entry, CAtelier atelier)`
 
-Holds the Conduct editor and the atelier, and repaints the field after each draft change.
+Holds the card and entry facets and the atelier, and repaints the field after each entry draft change.
 
 ## `internal QEtymology QEtymologyField`
 
-The field this driver paints, found by its markup ID, for the stack tab and the prospect pick.
+The field this driver paints, found by its markup ID.
 
 ## `internal static void QEtymologyCaretRefine(PEtymon caret)`
 

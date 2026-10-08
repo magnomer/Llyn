@@ -1,5 +1,5 @@
 # QSettings.cs
-Hash: `c42a6a392223357f`
+Hash: `d5b1fe64b7ba2672`
 
 ## `internal sealed class QSettings`
 
@@ -8,22 +8,24 @@ It owns the group catalog, the chosen group's page, and the stored choices it op
 Each choice is driven by its own driver in `Panel/Choice`, which hears and paints that choice's controls.
 What each choice costs, such as a catalog swap or a whole different workspace, lives in those drivers.
 
-## `internal QSettings(FrameworkElement surface, QLayout layout)`
+## `internal QSettings(FrameworkElement surface, QLayout layout, QPosture posture)`
 
 Takes the veneer's page as its surface, which the window pulls by contract ID.
 It builds one choice driver per concern over the surface, and each wires its own controls.
 The linked-panels switch is the exception, since it is a setting on the window's one `QLayout`.
 That keeper is handed in, and it wires the switch when the panel introduces it.
+The window's GUI-only posture is handed in too, read for the linked summary and cleared by the width reset.
 Nothing else is wired before the window introduces it.
 
 ## `private TextBox QSettingsWinnow`
 
 Each named part of the markup is pulled by its contract ID, which keeps the markup's names.
 
-## `internal void QSettingsIntroduce(QWindow host)`
+## `internal void QSettingsIntroduce(CAtelier atelier, CEnvoy envoy)`
 
+Keeps the atelier, whose gates every settings file calls, and the envoy.
 Sets the search hint and the two page icons, and subscribes the panel's own events.
-It introduces each choice driver to only the Conduct area it calls, or to the posture.
+It introduces each choice driver to only the Conduct area it calls.
 Each settings switch also receives the window's envoy, for a failed save.
 This happens before `CLedgerChanged` is subscribed, so the first state finds them ready.
 It also subscribes the posture's linked switch, so the summary row follows a tick.
@@ -106,16 +108,6 @@ Conduct keeps the text and matches it, so a console searches the same way.
 
 One row item per settings page, kept across states so a row keeps its chosen mark.
 
-### `private QWindow _qSettingsHost = null!;`
+### `private CEnvoy _cEnvoy = null!;`
 
-The window this panel sits in.
-Its envoy asks before a workspace change throws typed work away.
-It also owns the other panels that change moves onto the new workspace.
-
-### `private CAtelier QSettingsAtelier => _qSettingsHost.QWindowAtelier;`
-
-The host's atelier, whose gates every settings file calls.
-
-### `private QPosture QSettingsPosture => _qSettingsHost.QWindowPosture;`
-
-The host's GUI-only posture, read for the ledger's linked summary and cleared by the width reset.
+The window's envoy, which reports a failed epithet save or folder open.

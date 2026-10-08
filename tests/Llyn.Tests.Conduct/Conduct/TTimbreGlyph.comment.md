@@ -1,5 +1,5 @@
 # TTimbreGlyph.cs
-Hash: `726574b32a6f1b79`
+Hash: `a41a15856f584fdc`
 
 ## `public sealed class TTimbreGlyph`
 
@@ -9,9 +9,10 @@ A Korean draft splits its rows by the Hanja scheme, and the blank row stays amon
 A language without a glyph section, or an empty desk, answers the hidden block.
 The transcription text gate writes the typed text into the held glyph row, and a filling desk writes nothing.
 
-## `private static CEditor TTimbreGlyphPrepare(LEngine engine, long entry)`
+## `private static TEditorFixture TTimbreGlyphPrepare(LEngine engine, long entry)`
 
 Opens the stored entry `entry` in an editor over the library vista.
+It answers the fixture, so a test reads only the facets it drives.
 
 ## `private static long TTimbreGlyphSave(LEngine engine, string language)`
 

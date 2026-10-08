@@ -1,45 +1,50 @@
 # QLibrary.cs
-Hash: `4be0de25f56b7a43`
+Hash: `a89c6b41f99c31ee`
 
 ## `internal sealed class QLibrary`
 
 Drives the library panel by what it is made of and what it forwards.
 Every branch it once carried lives in the Conduct `CLibrary` and the `CPanel` it holds.
-The search, the ordering, the index, the read-only display, the editor and the import are all wired here.
+The search, the index, the read-only display, the editor and the import are wired here.
+The ordering, the filter and the command row each have their own shared driver.
 The panel itself is the veneer's `PLibrary` page, which the window places.
-
-## `internal QLectern QLibraryLectern { get; private set; } = null!;`
-
-Null until `QLibraryIntroduce` builds the lectern over the Conduct editor's display.
-The window reads it only after the panel is introduced.
 
 ## `internal QLibrary(UserControl surface)`
 
 Takes the page the window pulled under the contract ID `PLibrary`.
-It adds the print and export command bindings to the page and points the two buttons at those commands.
-It ties both droppers to their popups, sets every icon, and subscribes every click and the search field.
+It adds the print and export command bindings to the page.
+The rail's print and export buttons sit inside the page, so their commands reach these bindings.
+It hands the rail `PLibraryRail` to a `QPanelRail`, with the bin, the new-record button and the export button.
+It hands `PLibraryOrder` to a `QChoiceOrder`, whose menu hangs under the whole `POrder` bar.
+It hands `PLibraryFilter` to a `QChoiceFilter`.
+The import button stands beside the rail as its own group, so its icon and click stay here.
+It subscribes the search field and the rail's notices.
 
 ## `private Border QOrder`
 
 Each named part is pulled from the page by its contract ID on every read.
-`QLibraryLectern` is internal, because the window scrolls the lectern's card to a sense.
 
-## `internal void QLibraryIntroduce(QWindow host)`
+## `internal void QLibraryIntroduce(CAtelier atelier, CEnvoy envoy, QVolume volume, QMentionMenu mentionMenu)`
 
 Puts the panel to work through its Conduct `CLibrary`, which it builds over the atelier.
+It keeps the atelier and envoy for the catalog load, and hands the volume and mention menu on.
 Only the medium knows its dispatcher, so the marshal the area runs its notices through is built here.
 The Conduct builds its own entry editor, which this panel wraps for the editor view and the lectern.
-The lectern follows the panel, and the panel's notices reach its own controls.
-It builds the ordering menu once, from the orderings `CLibrary` offers.
+The display view builds the lectern over the editor's display, which Conduct attached to the panel.
+A stored Mention's sense, raised by `CMentionSenseChosen`, scrolls into view on that lectern's compass.
+The navigation's entry open lands in the library, so this display is the one showing the entry.
+It hands the picker and the filter the panel's aperture, titled `Order` and `Sieve`.
+The ordering menu is built once, from the orderings `CLibrary` offers.
 It subscribes the area's events and reads nothing yet.
 `QLibraryVistaRefine` fills it when the workspace opens, and every change after that arrives as an announcement.
 So the panel is current whether or not its tab is the one in front.
 The print and portrait command bindings live in the constructor, and their check answers false until the controller exists.
+The rail is introduced last, with the atelier's navigation for its trail and the editor for its chronicle.
 
 ## `private void QLibraryIndexIntroduce(ItemsControl view, FrameworkElement empty)`
 
 Builds the entry list over the page's controls and refills it whenever the panel announces new rows.
-The list is medium, so it moved here from the controller when the controller was sealed.
+The list is medium, so it lives here and not in Conduct.
 
 ## `private void QLibraryIndexRefine()`
 
@@ -51,13 +56,9 @@ Conduct counts the rows, so the empty notice needs no count kept here.
 Paints `rows` the area answered ready, so the paint itself asks Conduct nothing.
 The parameterless form reads them, and a flag-fill Refine hands in what its load answered.
 
-## `private void QLibrarySieveRefine()`
-
-Shows the mark on the sieve button while the vista hides any language.
-
 ## `private void QLibraryStoreRefine()`
 
-Enables the store button only while the editor's draft can be stored.
+Enables the rail's store button only while the editor's draft can be stored.
 
 ## `internal async void QLibraryVistaRefine()`
 
@@ -67,10 +68,6 @@ The flags are loaded before the first rows are built, because a row reads its fl
 It builds the filter menu from the languages the load answers, then reads the rows once.
 The observers that carry each announcement live in `CLibrary`, so this driver holds none.
 Its one request is `CLibraryRowsLoad`, which runs the flag fill and then answers the rows it paints.
-
-## `private void QSieveBuild(IReadOnlyList<string> languages)`
-
-Builds the filter menu from the languages the flag load answered.
 
 ## `private async void QLibraryWorkspaceRefine()`
 
@@ -89,20 +86,8 @@ The editor and the display stop through `CLibrary`'s closure, which the atelier'
 
 ## `private void QLibraryModeRefine()`
 
-Writes the mode and the enablement the controller holds into the eight controls that show them.
-
-## `private void QOrderObserve(object sender, RoutedEventArgs e)`
-
-A clicked order row sets the ordering its tag carries, then closes the dropdown.
-The row's enum is read here, so no ordering is spelled or parsed in the veneer.
-
-## `private void QOrderRefine()`
-
-Unchecks the order button, which closes its dropdown.
-
-## `private void QSieveObserve(object sender, RoutedEventArgs e)`
-
-A clicked language row sets the filter its list now stands for, then redraws the mark at once.
+Writes the mode and the enablement the controller holds into the editor, the display and the rail.
+The rail folds its own button pairs from the scribe flag it is handed.
 
 ## `private void QLibraryIndexObserve(object sender, RoutedEventArgs e)`
 
@@ -119,25 +104,22 @@ The click is removed first, so a refill never doubles it.
 
 The search field hands its text to the query gate.
 
-## `private void QLibraryFreshObserve(object sender, RoutedEventArgs e)`
+## `private void QLibraryFreshObserve()`
 
-The new button asks the panel for a fresh entry.
+Hears the rail's new-record notice and asks the panel for a fresh entry.
 
-## `private void QLibraryViewerObserve(object sender, RoutedEventArgs e)`
+## `private void QLibraryScribeObserve(bool scribe)`
 
-The viewer button asks the panel to leave writing.
+Hears the rail's mode toggle and hands the mode to the scribe gate.
+`scribe` is true for the editor and false for the read view.
 
-## `private void QLibraryScribeObserve(object sender, RoutedEventArgs e)`
+## `private void QLibraryStoreObserve()`
 
-The scribe button asks the panel to start writing.
+Hands the rail's store notice to the editor's save gate.
 
-## `private void QLibraryStoreObserve(object sender, RoutedEventArgs e)`
+## `private void QLibraryBinObserve()`
 
-The store button asks the editor to save the entry.
-
-## `private void QLibraryBinObserve(object sender, RoutedEventArgs e)`
-
-The bin button asks the panel to delete the chosen entry.
+Hands the rail's delete notice to the panel's delete gate.
 
 ## `private async void QLibraryMarkupObserve(object sender, RoutedEventArgs e)`
 
@@ -163,38 +145,17 @@ Exports the entry being read, as the engine portrays it.
 The gate asks for the file and the format through the envoy.
 The engine writes the document from stored rows.
 
+## `private void QLibraryChronicleRefine()`
+
+Lights the rail's two chronicle buttons only while the editor has a step to walk.
+It runs whenever the editor reports its state again.
+
 ## Inline notes
 
-### `_qLibraryEditor.QEditorIntroduce(host, _cLibrary.CLibraryEditor);`
+### `_qLibraryEditor.QEditorIntroduce(atelier, envoy, volume, mentionMenu, _cLibrary.CLibraryEditor);`
 
 The editor opens on no entry, and this panel puts it on one when the reader asks to write.
 The editor deportment was made for this panel, so its held work is told apart from the input panel's.
 A store may have changed the headword the index lists and the text the display shows.
 The engine announces it through the vista, so both are read again from what was written.
 It is the same announcement whether the store happened in this panel's editor or in another tab.
-
-## `internal void QLibraryVoyageRefine(bool past, bool future)`
-
-Lights the two trail buttons from the voyage state the navigation raises.
-The navigation owns the trail, so the panel only shows what it is told.
-
-## `private void QLibraryRetreatObserve(object sender, RoutedEventArgs e)`
-
-Steps the navigation's trail back one station.
-
-## `private void QLibraryAdvanceObserve(object sender, RoutedEventArgs e)`
-
-Steps the navigation's trail forward one station.
-
-## `private void QLibraryUndoObserve(object sender, RoutedEventArgs e)`
-
-Walks the chronicle of the editor back one step.
-
-## `private void QLibraryRedoObserve(object sender, RoutedEventArgs e)`
-
-Walks the chronicle of the editor forward one step.
-
-## `private void QLibraryChronicleRefine()`
-
-Lights the two chronicle buttons only while the editor has a step to walk.
-It runs whenever the editor reports its state again.

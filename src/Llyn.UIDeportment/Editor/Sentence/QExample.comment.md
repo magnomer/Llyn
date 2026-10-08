@@ -1,16 +1,16 @@
 # QExample.cs
-Hash: `a9d2d0bb0ba25e35`
+Hash: `5f90d6603b8d3066`
 
 ## `internal sealed class QExample`
 
 Fills the sentence row's template and shows its controls on hover.
 It hooks the row's parts to the observers of [QSentence](QSentence.comment.md), [QGloss](../Gloss/QGloss.comment.md) and [QCitation](QCitation.comment.md).
-It names no Conduct type, since every gate stays with the drivers whose handlers it hooks.
+It calls no Conduct gate, since every gate stays with the drivers whose handlers it hooks.
 
 ## `internal QExample(QSentence sentence, QGloss gloss, QCitation citation)`
 
 Holds the three drivers whose handlers a row's wiring takes.
-`QSentenceIntroduce` builds it once those drivers are introduced.
+`QEditorCard` builds it from the drivers it already holds.
 
 ## `internal void QExampleRefine(FrameworkElement container, object item)`
 
@@ -40,3 +40,24 @@ The two event overloads only hand their sender to it.
 ## `private void QExampleOpeningRefine(object sender, RoutedEventArgs e)`
 
 Opens or closes the row's frame.
+
+## `private static void QExampleRowRefine(FrameworkElement container, PSentence row)`
+
+Writes every part of a sentence row from the row, where bindings and data triggers stood.
+The frame switch, its sign, the frame and its gap follow whether the frame is open or written.
+Each frame field takes the column twice its slot in the frame's order.
+The gap between the two fields stands in column 1, so the fields take columns 0 and 2.
+The sentence and citation texts go through the same lookups the converters made.
+The three icons are set here, since an icon is drawn by code.
+
+## `private static void QExampleChoiceRefine(FrameworkElement container, string name, CStateWording value, ObservableCollection<string> catalog)`
+
+Fills one frame field.
+It sets the dropdown's offers, text and hint, the ghost copy and the hint shown when empty.
+
+## `private static void QExampleLayoutRefine(FrameworkElement container, TextBox text)`
+
+Binds the row's layout once, where element bindings stood in the markup.
+The sentence column and the citation drop to the frame's baseline through the font converter.
+The citation takes the sentence's font, and each dropdown the size of its field.
+A row already bound is left alone, so a refill binds nothing twice.

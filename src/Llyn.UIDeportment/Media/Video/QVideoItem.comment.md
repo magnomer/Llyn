@@ -1,5 +1,5 @@
 # QVideoItem.cs
-Hash: `a44283b39533c067`
+Hash: `21134000039ae78c`
 
 ## `internal sealed class QVideoItem : INotifyPropertyChanged`
 
@@ -21,32 +21,27 @@ The draft carries its moments ready, read by the engine, so the row parses nothi
 
 ## `internal QVideoItem(CVideoDraft written)`
 
-The row for a stored Video, holding the location and the span as the store knows them.
-It also holds the screen and the moments the draft carries ready, so the row asks nobody to resolve them.
+The row for a stored Video, holding the one draft the engine answered for it.
+The draft carries the screen and the moments ready, so the row asks nobody to resolve them.
 
 ## `internal long QVideoItemId`
 
 The id of the engine's row this one shows, which every request about it names.
-
-## `internal static string? QVideoItemOpen(Window owner)`
-
-Asks the user for a video file on this machine and answers its path, or null when they chose none.
-It lives on the row for the reason the picture chooser lives on its row.
+It is read off the held draft.
 
 ## `internal void QVideoItemShow(CVideoDraft written)`
 
-Redraws the row from the engine's row, location and span apart, only where the field says something else.
-A field already reading what the engine holds is left alone.
-The id is always taken.
-The screen and the moments are taken from the draft, and a row already showing them is left alone.
+Takes the engine's new draft whole, so the id is always taken.
+It then announces only the fields whose value differs from the draft it held.
+So a field already reading what the engine holds is left alone.
 
 ## `public CStateValue QVideoItemLocation`
 
-The location as the draft holds it, set only from the draft.
+The location as the held draft holds it.
 
 ## `public CStateValue QVideoItemTimestamp`
 
-The span as the draft holds it, set only from the draft.
+The span as the held draft holds it.
 
 ## `public CScreen? QVideoItemPreview`
 

@@ -1,5 +1,5 @@
 # PFavorite.xaml
-Hash: `dbb6bdd2f075ac56`
+Hash: `3d018f7389f8ecf5`
 
 ## `<Rectangle ... Style="{StaticResource Theme.Panel.SeamRow}" />`
 
@@ -14,7 +14,9 @@ A line marks a division, and a box would claim an object.
 
 The sort control and the search field are one control over the roster column.
 Its edge matches the catalog below, and the outline around both is drawn once.
-The panel has no new-record button, because an entry is written in the input tab and never here.
+The ordering picker is the shared `PChoiceOrder`, placed here as `PFavoriteOrder`.
+The language filter is the shared `PChoiceFilter`, placed here as `PFavoriteFilter`.
+The panel has no new-record button, because a new entry is written in the input tab and never here.
 
 ## `<veneer:PDisplay x:Name="PDisplay" />`
 
@@ -25,12 +27,13 @@ What differs between the panels is which entry is selected, not how it reads.
 ## Catalog spacing
 
 The catalog uses the shared Theme.Catalog.Frame and Theme.Catalog.Scroll styles.
-Rows keep 6 device-independent pixels on both sides, with a reserved scrollbar lane so their width stays stable.
+The scroll bar takes its lane only when the list overflows, and the rows then narrow to make room.
 The shared Theme.Catalog.Row preserves the same rounded shape, internal padding and row spacing across browse panels.
 
 ## Hooks
 
 The markup carries no hook.
-The Deportment driver `QFavorite` sets icons, commands, clicks, popups and row fills.
-It also folds the two button pairs by mode.
-`PFavoriteChronicle` starts collapsed because the reader is the side shown first.
+The Deportment driver `QFavorite` sets commands, the search hint and row fills.
+The picker and the filter have their own drivers, which set their icons and popups.
+The command row is the shared `PPanelRail`, placed here as `PFavoriteRail`.
+Its own driver folds the two button pairs by mode.

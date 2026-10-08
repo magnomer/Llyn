@@ -1,5 +1,5 @@
 # QWing.cs
-Hash: `299ee2f3f7a30180`
+Hash: `d6ba37357cf89a17`
 
 ## `internal sealed class QWing`
 
@@ -21,9 +21,10 @@ It attaches the index row fill and watches the list's visibility for the tray.
 
 Each named part is pulled from the place by its contract ID on every read.
 
-## `internal void QWingIntroduce(QWindow host, bool left)`
+## `internal void QWingIntroduce(CAtelier atelier, CEnvoy envoy, QVolume volume, QMentionMenu mentionMenu, bool left)`
 
-Puts the side to work on the host, building Conduct's side over the host's atelier and envoy.
+Puts the side to work, building Conduct's side over the atelier and envoy.
+It keeps both for the catalog load, and hands the volume and mention menu to the display.
 `left` tells Conduct which place this is, so the side picks its own tab and saved entry.
 The side's announcements re-list the matches on the list's thread.
 A loaded entry re-lists the matches, and the display's area opens it on the lectern itself.

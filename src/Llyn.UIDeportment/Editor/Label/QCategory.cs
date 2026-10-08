@@ -14,7 +14,7 @@ internal sealed class QCategory
 
     private readonly ObservableCollection<PCategoryItem> _qCategoryItem = [];
 
-    private CEditor _cEditor = null!;
+    private CCardSpeech _cCardSpeech = null!;
 
     internal QCategory(FrameworkElement surface, QMarker marker)
     {
@@ -34,9 +34,9 @@ internal sealed class QCategory
 
     private ItemsControl QCategoryList => QContract.QContractFind<ItemsControl>(_qCategorySurface, "PCategoryList");
 
-    internal void QCategoryIntroduce(CEditor editor)
+    internal void QCategoryIntroduce(CCardSpeech speech)
     {
-        _cEditor = editor;
+        _cCardSpeech = speech;
     }
 
     internal void QCategoryRefine(CCategory category)
@@ -86,7 +86,7 @@ internal sealed class QCategory
     {
         if (sender is FrameworkElement { DataContext: PCategoryItem item })
         {
-            _cEditor.CEditorSpeech.CCardSpeechAdd(item.PCategoryItemName);
+            _cCardSpeech.CCardSpeechAdd(item.PCategoryItemName);
             QCategoryPickRefine();
         }
     }

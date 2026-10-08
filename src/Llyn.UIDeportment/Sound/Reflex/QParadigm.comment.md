@@ -1,5 +1,5 @@
 # QParadigm.cs
-Hash: `ec20f091191f8d9d`
+Hash: `64fcce5d82c31306`
 
 ## `public sealed class QParadigm : Decorator`
 
@@ -35,8 +35,3 @@ Hands the new rows to the list and shows or collapses the box by their count.
 ## `public IReadOnlyList<QParadigmItem>? QParadigmItems`
 
 The rows shown, or `null` for none.
-
-## `internal void QParadigmRefine(IReadOnlyList<CParadigmSlot> slots)`
-
-The seam the lectern's sound draws through, mapping the slots to rows, and no slots collapse the box.
-It only sets a value, so the box redraws itself as for any other change.

@@ -67,6 +67,7 @@ public sealed class CEntryList
             scope + "." + list + "Unmatched");
         CEntryListPanel.CPanelCleared += () => editor.CEditorEntryOpen(null);
         CEntryListPanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
+        editor.CEditorDisplay.CDisplayPanelAttach(CEntryListPanel);
         atelier.CAtelierNavigation.LNavigationTabAdd(
             scope,
             CEntryListPanel.CPanelLeaveConfirm,

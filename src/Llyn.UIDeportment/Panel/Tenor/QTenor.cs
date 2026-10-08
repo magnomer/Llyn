@@ -1,13 +1,14 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
-internal sealed partial class QTenor
+internal sealed class QTenor
 {
     private readonly UserControl _qTenorSurface;
 
@@ -15,7 +16,19 @@ internal sealed partial class QTenor
 
     private readonly QDisplay _qTenorDisplay;
 
-    private QWindow _qTenorHost = null!;
+    private readonly QPanelRail _qTenorRail;
+
+    private readonly QChoiceOrder _qTenorOrder;
+
+    private readonly QChoiceFilter _qTenorFilter;
+
+    private readonly QCohort _qCohort;
+
+    private readonly ObservableCollection<QGamutItem> _qGamutList = [];
+
+    private CAtelier _cAtelier = null!;
+
+    private CEnvoy _cEnvoy = null!;
 
     private CTenor _cTenor = null!;
 
@@ -31,50 +44,22 @@ internal sealed partial class QTenor
             new CommandBinding(ApplicationCommands.Print, QTenorPressObserve, QTenorPressRefine));
         surface.CommandBindings.Add(new CommandBinding(
             PDisplayCommand.PDisplayCommandPortrait, QTenorPortraitObserve, QTenorPressRefine));
-        QTenorPortrait.Command = PDisplayCommand.PDisplayCommandPortrait;
-        QTenorPress.Command = ApplicationCommands.Print;
+        _qTenorRail = new QPanelRail(
+            QContract.QContractFind<UserControl>(surface, "PTenorRail"), QTenorBin, QTenorBinIcon, true, true);
+        _qTenorOrder = new QChoiceOrder(QContract.QContractFind<UserControl>(surface, "PTenorOrder"), QDegree);
+        _qTenorFilter = new QChoiceFilter(QContract.QContractFind<UserControl>(surface, "PTenorFilter"));
+        _qCohort = new QCohort(surface);
 
-        QChoice.QChoiceDropperAttach(QDegreeDropper, QDegreeDropdown, QDegree);
-        QChoice.QChoiceDropperAttach(QGrilleDropper, QGrilleDropdown, QGrilleDropper);
-
-        QDegreeIcon.QIconSource = QIcon.QIconResolve("sort", 24);
-        QGrilleIcon.QIconSource = QIcon.QIconResolve("filter", 24);
-        QTenorBinIcon.QIconSource = QIcon.QIconResolve("delete", 24);
         QSounding.SetResourceReference(QField.QFieldHintProperty, "Register.Search");
-        QQuest.SetResourceReference(QField.QFieldHintProperty, "Quest.Search");
-        QTenorFresh.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("new", 24));
-        QTenorStore.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("save", 24));
-        QTenorEarlier.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("retreat", 24));
-        QTenorLater.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("advance", 24));
-        QTenorBackward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("undo", 24));
-        QTenorForward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("redo", 24));
-        QTenorPortrait.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("export", 24));
-        QTenorPress.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("print", 24));
-        QTenorViewer.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("view", 24));
-        QTenorScribe.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("edit", 24));
 
         QSounding.TextChanged += QSoundingObserve;
-        QQuest.TextChanged += QQuestObserve;
-        QTenorFresh.Click += QTenorFreshObserve;
-        QTenorStore.Click += QTenorStoreObserve;
-        QTenorEarlier.Click += QTenorRetreatObserve;
-        QTenorLater.Click += QTenorAdvanceObserve;
-        QTenorBackward.Click += QTenorUndoObserve;
-        QTenorForward.Click += QTenorRedoObserve;
-        QTenorViewer.Click += QTenorViewerObserve;
-        QTenorScribe.Click += QTenorScribeObserve;
-        QTenorBin.Click += QTenorBinObserve;
+        _qTenorRail.QPanelRailCreated += QTenorFreshObserve;
+        _qTenorRail.QPanelRailStored += QTenorStoreObserve;
+        _qTenorRail.QPanelRailToggled += QTenorScribeObserve;
+        _qTenorRail.QPanelRailDeleted += QTenorBinObserve;
     }
 
     private Border QDegree => QContract.QContractFind<Border>(_qTenorSurface, "PDegree");
-
-    private ToggleButton QDegreeDropper => QContract.QContractFind<ToggleButton>(_qTenorSurface, "PDegreeDropper");
-
-    private QIconImage QDegreeIcon => QContract.QContractFind<QIconImage>(_qTenorSurface, "PDegreeIcon");
-
-    private Popup QDegreeDropdown => QContract.QContractFind<Popup>(_qTenorSurface, "PDegreeDropdown");
-
-    private StackPanel QDegreeList => QContract.QContractFind<StackPanel>(_qTenorSurface, "PDegreeList");
 
     private TextBox QSounding => QContract.QContractFind<TextBox>(_qTenorSurface, "PSounding");
 
@@ -82,85 +67,50 @@ internal sealed partial class QTenor
 
     private TextBlock QGamutEmpty => QContract.QContractFind<TextBlock>(_qTenorSurface, "PGamutEmpty");
 
-    private ItemsControl QCohort => QContract.QContractFind<ItemsControl>(_qTenorSurface, "PCohort");
-
-    private TextBlock QCohortEmpty => QContract.QContractFind<TextBlock>(_qTenorSurface, "PCohortEmpty");
-
-    private TextBox QQuest => QContract.QContractFind<TextBox>(_qTenorSurface, "PQuest");
-
-    private ToggleButton QGrilleDropper =>
-        QContract.QContractFind<ToggleButton>(_qTenorSurface, "PGrilleDropper");
-
-    private QIconImage QGrilleIcon => QContract.QContractFind<QIconImage>(_qTenorSurface, "PGrilleIcon");
-
-    private FrameworkElement QGrilleMark =>
-        QContract.QContractFind<FrameworkElement>(_qTenorSurface, "PGrilleMark");
-
-    private Popup QGrilleDropdown => QContract.QContractFind<Popup>(_qTenorSurface, "PGrilleDropdown");
-
-    private StackPanel QGrilleList => QContract.QContractFind<StackPanel>(_qTenorSurface, "PGrilleList");
-
-    private Button QTenorFresh => QContract.QContractFind<Button>(_qTenorSurface, "PTenorFresh");
-
-    private Button QTenorStore => QContract.QContractFind<Button>(_qTenorSurface, "PTenorStore");
-
-    private StackPanel QTenorVoyage => QContract.QContractFind<StackPanel>(_qTenorSurface, "PTenorVoyage");
-
-    private Button QTenorEarlier => QContract.QContractFind<Button>(_qTenorSurface, "PTenorEarlier");
-
-    private Button QTenorLater => QContract.QContractFind<Button>(_qTenorSurface, "PTenorLater");
-
-    private StackPanel QTenorChronicle =>
-        QContract.QContractFind<StackPanel>(_qTenorSurface, "PTenorChronicle");
-
-    private Button QTenorBackward => QContract.QContractFind<Button>(_qTenorSurface, "PTenorBackward");
-
-    private Button QTenorForward => QContract.QContractFind<Button>(_qTenorSurface, "PTenorForward");
-
-    private Button QTenorPortrait => QContract.QContractFind<Button>(_qTenorSurface, "PTenorPortrait");
-
-    private Button QTenorPress => QContract.QContractFind<Button>(_qTenorSurface, "PTenorPress");
-
-    private Border QTenorMode => QContract.QContractFind<Border>(_qTenorSurface, "PTenorMode");
-
-    private RadioButton QTenorViewer => QContract.QContractFind<RadioButton>(_qTenorSurface, "PTenorViewer");
-
-    private RadioButton QTenorScribe => QContract.QContractFind<RadioButton>(_qTenorSurface, "PTenorScribe");
-
     private Button QTenorBin => QContract.QContractFind<Button>(_qTenorSurface, "PTenorBin");
 
     private QIconImage QTenorBinIcon => QContract.QContractFind<QIconImage>(_qTenorSurface, "PTenorBinIcon");
 
-    internal void QTenorIntroduce(QWindow host)
+    internal void QTenorIntroduce(CAtelier atelier, CEnvoy envoy, QVolume volume, QMentionMenu mentionMenu)
     {
-        _qTenorHost = host;
+        ArgumentNullException.ThrowIfNull(atelier);
+
+        _cAtelier = atelier;
+        _cEnvoy = envoy;
         _cTenor = CTenor.CTenorCreate(
-            host.QWindowAtelier,
+            atelier,
             QTenorShownCheck,
-            host.QWindowEnvoy,
+            envoy,
             QObserver.QObserverCreate<Action>(static run => run()));
         _cTenor.CTenorRegisterOpened += QGamutRegisterRefine;
         _cTenor.CTenorAperture.CApertureRowsChanged += QGamutRefine;
         _cTenor.CTenorWorkspaceChanged += QTenorWorkspaceRefine;
+        _qTenorOrder.QChoiceOrderIntroduce(
+            _cTenor.CTenorAperture,
+            "Degree",
+            [
+                CCatalogOrder.CCatalogOrderName,
+                CCatalogOrder.CCatalogOrderReverse,
+                CCatalogOrder.CCatalogOrderUsage,
+            ]);
+        _qTenorFilter.QChoiceFilterIntroduce(_cTenor.CTenorAperture, "Grille");
         CPanel panel = _cTenor.CTenorCohort.CCohortPanel;
-        QLectern lectern = new(_cTenor.CTenorEditor.CEditorDisplay, panel);
         panel.CPanelChanged += QTenorModeRefine;
-        panel.CPanelAperture.CApertureRowsChanged += QCohortRefine;
+        _qCohort.QCohortIntroduce(_cTenor);
 
         QGamut.ItemsSource = _qGamutList;
-        QCohort.ItemsSource = _qCohortList;
         QLookItem.QLookItemAttach(QGamut, QGamutItemRefine);
-        QLookItem.QLookItemAttach(QCohort, QCohortItemRefine);
 
-        _qTenorDisplay.QDisplayIntroduce(host, lectern);
+        _qTenorDisplay.QDisplayIntroduce(atelier, envoy, volume, mentionMenu, _cTenor.CTenorEditor.CEditorDisplay);
         _cTenor.CTenorEditor.CEditorDesk.CDeskStateChanged += QTenorStoreRefine;
-        _qTenorEditor.QEditorIntroduce(host, _cTenor.CTenorEditor);
+        _qTenorEditor.QEditorIntroduce(atelier, envoy, volume, mentionMenu, _cTenor.CTenorEditor);
         _qTenorEditor.QEditorChronicleChanged += QTenorChronicleRefine;
+        _qTenorRail.QPanelRailIntroduce(atelier.CAtelierNavigation, _qTenorEditor);
     }
 
     private void QTenorStoreRefine()
     {
-        QTenorStore.IsEnabled = _cTenor.CTenorEditor.CEditorDesk.CDeskDraft.CDeskDraftStorable;
+        _qTenorRail.QEntryStorableRefine(_cTenor.CTenorEditor.CEditorDesk.CDeskDraft.CDeskDraftStorable);
     }
 
     internal void QTenorExitRefine()
@@ -183,37 +133,10 @@ internal sealed partial class QTenor
         await _cTenor.CTenorCohort.CCohortPortraitExport();
     }
 
-    internal void QTenorVoyageRefine(bool past, bool future)
-    {
-        QTenorEarlier.IsEnabled = past;
-        QTenorLater.IsEnabled = future;
-    }
-
-    private void QTenorRetreatObserve(object sender, RoutedEventArgs e)
-    {
-        _qTenorHost.QWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
-    }
-
-    private void QTenorAdvanceObserve(object sender, RoutedEventArgs e)
-    {
-        _qTenorHost.QWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
-    }
-
-    private void QTenorUndoObserve(object sender, RoutedEventArgs e)
-    {
-        _qTenorEditor.QChronicleUndoObserve();
-    }
-
-    private void QTenorRedoObserve(object sender, RoutedEventArgs e)
-    {
-        _qTenorEditor.QChronicleRedoObserve();
-    }
-
     private void QTenorChronicleRefine()
     {
         (bool undo, bool redo) = _cTenor.CTenorEditor.CEditorDesk.CDeskChronicle.CDeskChronicleRead();
-        QTenorBackward.IsEnabled = undo;
-        QTenorForward.IsEnabled = redo;
+        _qTenorRail.QChronicleRefine(undo, redo);
     }
 
     private bool QTenorShownCheck()
@@ -226,11 +149,113 @@ internal sealed partial class QTenor
         CPanel panel = _cTenor.CTenorCohort.CCohortPanel;
         _qTenorEditor.QEditorVisibleRefine(QLook.QLookVisibleRead(panel.CPanelEditing));
         _qTenorDisplay.QDisplayVisibleRefine(QLook.QLookVisibleRead(panel.CPanelViewerChecked));
-        QTenorViewer.IsChecked = panel.CPanelViewerChecked;
-        QTenorScribe.IsChecked = panel.CPanelScribeChecked;
-        QTenorVoyage.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
-        QTenorChronicle.Visibility = QLook.QLookVisibleRead(panel.CPanelScribeChecked);
-        QTenorMode.IsEnabled = panel.CPanelModeEnabled;
-        QTenorBin.IsEnabled = panel.CPanelBinEnabled;
+        _qTenorRail.QPanelRailRefine(panel.CPanelScribeChecked, panel.CPanelModeEnabled, panel.CPanelBinEnabled);
+    }
+
+    private async void QTenorWorkspaceRefine()
+    {
+        await _cAtelier.CAtelierCatalog.CCatalogEnsignLoad(_cEnvoy, QEnsignImage.QEnsignDraw);
+    }
+
+    private void QSoundingObserve(object sender, TextChangedEventArgs e)
+    {
+        _cTenor.CTenorAperture.CApertureQuerySet(QSounding.Text ?? string.Empty);
+    }
+
+    internal async void QTenorVistaRefine()
+    {
+        _qTenorOrder.QChoiceOrderRefine();
+        _qTenorFilter.QChoiceFilterRefine();
+        CEnsignSheet<IReadOnlyList<CCatalogRegister>> sheet =
+            await _cTenor.CTenorRowsLoad(QEnsignImage.QEnsignDraw);
+        _qTenorFilter.QChoiceFilterBuild(sheet.CEnsignSheetLanguages);
+        QGamutRefine(sheet.CEnsignSheetRows);
+    }
+
+    private void QGamutRefine()
+    {
+        QGamutRefine(_cTenor.CTenorRowsRead());
+    }
+
+    private void QGamutRefine(IReadOnlyList<CCatalogRegister> rows)
+    {
+        _qGamutList.Clear();
+        foreach (CCatalogRegister row in rows)
+        {
+            _qGamutList.Add(new QGamutItem(row));
+        }
+
+        QGamutEmpty.Visibility = _qGamutList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void QGamutObserve(object sender, RoutedEventArgs e)
+    {
+        if ((sender as FrameworkElement)?.DataContext is QGamutItem item)
+        {
+            _cTenor.CTenorRegisterToggle(item.QGamutItemId);
+        }
+    }
+
+    private void QGamutItemRefine(FrameworkElement container, object item, string? _)
+    {
+        if (item is not QGamutItem gamut)
+        {
+            return;
+        }
+
+        if (QLook.QLookPartFind<Button>(container, "PGamutRow") is Button row)
+        {
+            if (gamut.QGamutItemChosen)
+            {
+                row.SetValue(QLook.QLookCueProperty, QLookCue.QLookCueChosen);
+            }
+            else
+            {
+                row.ClearValue(QLook.QLookCueProperty);
+            }
+
+            row.Click -= QGamutObserve;
+            row.Click += QGamutObserve;
+        }
+
+        if (QLook.QLookPartFind<QIconImage>(container, "PGamutIcon") is QIconImage icon)
+        {
+            icon.QIconSource = gamut.QGamutItemIcon;
+        }
+
+        if (QLook.QLookPartFind<TextBlock>(container, "PGamutName") is TextBlock name)
+        {
+            name.Text = gamut.QGamutItemName;
+        }
+
+        if (QLook.QLookPartFind<TextBlock>(container, "PGamutCount") is TextBlock count)
+        {
+            count.Text = gamut.QGamutItemCount;
+        }
+    }
+
+    private void QGamutRegisterRefine()
+    {
+        QSounding.Text = string.Empty;
+    }
+
+    private void QTenorFreshObserve()
+    {
+        _cTenor.CTenorEntryCreate();
+    }
+
+    private void QTenorScribeObserve(bool scribe)
+    {
+        _cTenor.CTenorCohort.CCohortPanel.CPanelScribeToggle(scribe);
+    }
+
+    private void QTenorStoreObserve()
+    {
+        _cTenor.CTenorEditor.CEditorEntrySave();
+    }
+
+    private void QTenorBinObserve()
+    {
+        _cTenor.CTenorCohort.CCohortPanel.CPanelBin.CPanelBinDelete();
     }
 }

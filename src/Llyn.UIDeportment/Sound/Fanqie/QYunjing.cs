@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Llyn.Conduct;
 
@@ -11,12 +8,6 @@ namespace Llyn.UIDeportment;
 
 internal sealed class QYunjing
 {
-    private readonly ObservableCollection<PYunjingItem> _qShengmuList = [];
-
-    private readonly ObservableCollection<PYunjingItem> _qYunmuList = [];
-
-    private readonly ObservableCollection<PXiaoyunItem> _qXiaoyunList = [];
-
     private readonly UserControl _qYunjingSurface;
 
     private readonly QEditor _qYunjingEditor;
@@ -25,7 +16,15 @@ internal sealed class QYunjing
 
     private readonly QDiwei _qDiwei;
 
-    private QWindow _qYunjingHost = null!;
+    private readonly QPanelRail _qYunjingRail;
+
+    private readonly QChoiceOrder _qYunjingOrder;
+
+    private readonly QChoiceOrder _qYunmuOrder;
+
+    private readonly QDiweiIndex _qDiweiIndex;
+
+    private readonly QXiaoyun _qXiaoyun;
 
     private CYunjing _cYunjing = null!;
 
@@ -37,115 +36,26 @@ internal sealed class QYunjing
         _qYunjingEditor = new QEditor(QContract.QContractFind<FrameworkElement>(surface, "PEditor"));
         _qYunjingDisplay = new QDisplay(QContract.QContractFind<FrameworkElement>(surface, "PDisplay"));
         _qDiwei = new QDiwei(QYunjingDiwei);
+        _qYunjingRail = new QPanelRail(
+            QContract.QContractFind<UserControl>(surface, "PYunjingRail"),
+            QYunjingBin,
+            QYunjingBinIcon,
+            true,
+            true);
+        _qYunjingOrder = new QChoiceOrder(QContract.QContractFind<UserControl>(surface, "PYunjingOrder"), QLadder);
+        _qYunmuOrder = new QChoiceOrder(QContract.QContractFind<UserControl>(surface, "PYunmuOrder"), QStair);
+        _qDiweiIndex = new QDiweiIndex(surface);
+        _qXiaoyun = new QXiaoyun(surface);
 
-        QYunjingPortrait.Command = PDisplayCommand.PDisplayCommandPortrait;
-        QYunjingPress.Command = ApplicationCommands.Print;
-
-        QChoice.QChoiceDropperAttach(QLadderDropper, QLadderDropdown, QLadder);
-        QChoice.QChoiceDropperAttach(QStairDropper, QStairDropdown, QStair);
-
-        QLadderIcon.QIconSource = QIcon.QIconResolve("sort", 24);
-        QStairIcon.QIconSource = QIcon.QIconResolve("sort", 24);
-        QYunjingBinIcon.QIconSource = QIcon.QIconResolve("delete", 24);
-        QPlumb.SetResourceReference(QField.QFieldHintProperty, "Plumb.Search");
-        QFathom.SetResourceReference(QField.QFieldHintProperty, "Fathom.Search");
-        QBeacon.SetResourceReference(QField.QFieldHintProperty, "Beacon.Search");
-        QYunjingFresh.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("new", 24));
-        QYunjingStore.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("save", 24));
-        QYunjingEarlier.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("retreat", 24));
-        QYunjingLater.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("advance", 24));
-        QYunjingBackward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("undo", 24));
-        QYunjingForward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("redo", 24));
-        QYunjingPortrait.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("export", 24));
-        QYunjingPress.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("print", 24));
-        QYunjingViewer.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("view", 24));
-        QYunjingScribe.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("edit", 24));
-
-        QLookItem.QLookItemAttach(QShengmu, PYunjingItem.PYunjingItemRefine);
-        QLookItem.QLookItemAttach(QYunmu, PYunjingItem.PYunjingItemRefine);
-        QLookItem.QLookItemAttach(QXiaoyun, PXiaoyunItem.PXiaoyunItemRefine);
-        QShengmu.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QYunjingObserve));
-        QYunmu.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QYunjingObserve));
-        QXiaoyun.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QXiaoyunObserve));
-
-        QPlumb.TextChanged += QPlumbObserve;
-        QFathom.TextChanged += QFathomObserve;
-        QBeacon.TextChanged += QBeaconObserve;
-        QYunjingFresh.Click += QYunjingFreshObserve;
-        QYunjingStore.Click += QYunjingStoreObserve;
-        QYunjingEarlier.Click += QYunjingRetreatObserve;
-        QYunjingLater.Click += QYunjingAdvanceObserve;
-        QYunjingBackward.Click += QYunjingUndoObserve;
-        QYunjingForward.Click += QYunjingRedoObserve;
-        QYunjingViewer.Click += QYunjingViewerObserve;
-        QYunjingScribe.Click += QYunjingScribeObserve;
-        QYunjingBin.Click += QYunjingBinObserve;
+        _qYunjingRail.QPanelRailCreated += QYunjingFreshObserve;
+        _qYunjingRail.QPanelRailStored += QYunjingStoreObserve;
+        _qYunjingRail.QPanelRailToggled += QYunjingScribeObserve;
+        _qYunjingRail.QPanelRailDeleted += QYunjingBinObserve;
     }
 
     private Border QLadder => QContract.QContractFind<Border>(_qYunjingSurface, "PLadder");
 
-    private ToggleButton QLadderDropper => QContract.QContractFind<ToggleButton>(_qYunjingSurface, "PLadderDropper");
-
-    private QIconImage QLadderIcon => QContract.QContractFind<QIconImage>(_qYunjingSurface, "PLadderIcon");
-
-    private TextBox QPlumb => QContract.QContractFind<TextBox>(_qYunjingSurface, "PPlumb");
-
-    private Popup QLadderDropdown => QContract.QContractFind<Popup>(_qYunjingSurface, "PLadderDropdown");
-
-    private StackPanel QLadderList => QContract.QContractFind<StackPanel>(_qYunjingSurface, "PLadderList");
-
-    private ItemsControl QShengmu => QContract.QContractFind<ItemsControl>(_qYunjingSurface, "PShengmu");
-
-    private TextBlock QShengmuEmpty => QContract.QContractFind<TextBlock>(_qYunjingSurface, "PShengmuEmpty");
-
     private Border QStair => QContract.QContractFind<Border>(_qYunjingSurface, "PStair");
-
-    private ToggleButton QStairDropper => QContract.QContractFind<ToggleButton>(_qYunjingSurface, "PStairDropper");
-
-    private QIconImage QStairIcon => QContract.QContractFind<QIconImage>(_qYunjingSurface, "PStairIcon");
-
-    private TextBox QFathom => QContract.QContractFind<TextBox>(_qYunjingSurface, "PFathom");
-
-    private Popup QStairDropdown => QContract.QContractFind<Popup>(_qYunjingSurface, "PStairDropdown");
-
-    private StackPanel QStairList => QContract.QContractFind<StackPanel>(_qYunjingSurface, "PStairList");
-
-    private ItemsControl QYunmu => QContract.QContractFind<ItemsControl>(_qYunjingSurface, "PYunmu");
-
-    private TextBlock QYunmuEmpty => QContract.QContractFind<TextBlock>(_qYunjingSurface, "PYunmuEmpty");
-
-    private TextBox QBeacon => QContract.QContractFind<TextBox>(_qYunjingSurface, "PBeacon");
-
-    private ItemsControl QXiaoyun => QContract.QContractFind<ItemsControl>(_qYunjingSurface, "PXiaoyun");
-
-    private TextBlock QXiaoyunEmpty => QContract.QContractFind<TextBlock>(_qYunjingSurface, "PXiaoyunEmpty");
-
-    private Button QYunjingFresh => QContract.QContractFind<Button>(_qYunjingSurface, "PYunjingFresh");
-
-    private Button QYunjingStore => QContract.QContractFind<Button>(_qYunjingSurface, "PYunjingStore");
-
-    private StackPanel QYunjingVoyage => QContract.QContractFind<StackPanel>(_qYunjingSurface, "PYunjingVoyage");
-
-    private Button QYunjingEarlier => QContract.QContractFind<Button>(_qYunjingSurface, "PYunjingEarlier");
-
-    private Button QYunjingLater => QContract.QContractFind<Button>(_qYunjingSurface, "PYunjingLater");
-
-    private StackPanel QYunjingChronicle =>
-        QContract.QContractFind<StackPanel>(_qYunjingSurface, "PYunjingChronicle");
-
-    private Button QYunjingBackward => QContract.QContractFind<Button>(_qYunjingSurface, "PYunjingBackward");
-
-    private Button QYunjingForward => QContract.QContractFind<Button>(_qYunjingSurface, "PYunjingForward");
-
-    private Button QYunjingPortrait => QContract.QContractFind<Button>(_qYunjingSurface, "PYunjingPortrait");
-
-    private Button QYunjingPress => QContract.QContractFind<Button>(_qYunjingSurface, "PYunjingPress");
-
-    private Border QYunjingMode => QContract.QContractFind<Border>(_qYunjingSurface, "PYunjingMode");
-
-    private RadioButton QYunjingViewer => QContract.QContractFind<RadioButton>(_qYunjingSurface, "PYunjingViewer");
-
-    private RadioButton QYunjingScribe => QContract.QContractFind<RadioButton>(_qYunjingSurface, "PYunjingScribe");
 
     private UserControl QYunjingDiwei => QContract.QContractFind<UserControl>(_qYunjingSurface, "PYunjingDiwei");
 
@@ -153,37 +63,34 @@ internal sealed class QYunjing
 
     private QIconImage QYunjingBinIcon => QContract.QContractFind<QIconImage>(_qYunjingSurface, "PYunjingBinIcon");
 
-    internal void QYunjingIntroduce(QWindow host)
+    internal void QYunjingIntroduce(CAtelier atelier, CEnvoy envoy, QVolume volume, QMentionMenu mentionMenu)
     {
-        _qYunjingHost = host;
+        ArgumentNullException.ThrowIfNull(atelier);
+
         _cYunjing = CYunjing.CYunjingCreate(
-            host.QWindowAtelier,
+            atelier,
             QYunjingShownCheck,
-            host.QWindowEnvoy,
+            envoy,
             QObserver.QObserverCreate<Action>(static run => run()));
         CPanel panel = _cYunjing.CYunjingXiaoyun.CEntryListPanel;
-        QLectern lectern = new(_cYunjing.CYunjingXiaoyun.CEntryListEditor.CEditorDisplay, panel);
-        QChoice.QChoiceOrderBuild(QLadderList, "Ladder", QLadderObserve, CYunjing.CYunjingOrderRead());
-        QChoice.QChoiceOrderBuild(QStairList, "Stair", QStairObserve, CYunjing.CYunjingOrderRead());
-        _cYunjing.CYunjingDiweiOpened += QYunjingQueryRefine;
-        _cYunjing.CYunjingChanged += QShengmuRefine;
-        _cYunjing.CYunjingChanged += QYunmuRefine;
+        _qYunjingOrder.QChoiceOrderIntroduce(_cYunjing.CYunjingShengmu, "Ladder", CYunjing.CYunjingOrderRead());
+        _qYunmuOrder.QChoiceOrderIntroduce(_cYunjing.CYunjingYunmu, "Stair", CYunjing.CYunjingOrderRead());
+        _qDiweiIndex.QDiweiIndexIntroduce(_cYunjing, atelier);
         _cYunjing.CYunjingChanged += QYunjingDiweiRefine;
         _cYunjing.CYunjingChanged += QYunjingModeRefine;
         _cYunjing.CYunjingWorkspaceChanged += QYunjingWorkspaceRefine;
         panel.CPanelChanged += QYunjingModeRefine;
-        panel.CPanelAperture.CApertureRowsChanged += QXiaoyunRefine;
+        _qXiaoyun.QXiaoyunIntroduce(_cYunjing);
         panel.CPanelCleared += QYunjingDiweiRefine;
         _cYunjing.CYunjingXiaoyun.CEntryListEditor.CEditorDesk.CDeskStateChanged += QYunjingStoreRefine;
 
-        QShengmu.ItemsSource = _qShengmuList;
-        QYunmu.ItemsSource = _qYunmuList;
-        QXiaoyun.ItemsSource = _qXiaoyunList;
-
-        _qYunjingDisplay.QDisplayIntroduce(host, lectern);
+        _qYunjingDisplay.QDisplayIntroduce(
+            atelier, envoy, volume, mentionMenu, _cYunjing.CYunjingXiaoyun.CEntryListEditor.CEditorDisplay);
         _qDiwei.QDiweiIntroduce(_cYunjing);
-        _qYunjingEditor.QEditorIntroduce(host, _cYunjing.CYunjingXiaoyun.CEntryListEditor);
+        _qYunjingEditor.QEditorIntroduce(
+            atelier, envoy, volume, mentionMenu, _cYunjing.CYunjingXiaoyun.CEntryListEditor);
         _qYunjingEditor.QEditorChronicleChanged += QYunjingChronicleRefine;
+        _qYunjingRail.QPanelRailIntroduce(atelier.CAtelierNavigation, _qYunjingEditor);
 
         _qYunjingSurface.CommandBindings.Add(
             new CommandBinding(ApplicationCommands.Print, QYunjingPressObserve, QYunjingPressRefine));
@@ -193,27 +100,22 @@ internal sealed class QYunjing
 
     private void QYunjingStoreRefine()
     {
-        QYunjingStore.IsEnabled =
-            _cYunjing.CYunjingXiaoyun.CEntryListEditor.CEditorDesk.CDeskDraft.CDeskDraftStorable;
+        _qYunjingRail.QEntryStorableRefine(
+            _cYunjing.CYunjingXiaoyun.CEntryListEditor.CEditorDesk.CDeskDraft.CDeskDraftStorable);
     }
 
     internal void QYunjingVistaRefine()
     {
-        QChoice.QChoiceOrderApply(QLadderDropdown, _cYunjing.CYunjingShengmu.CApertureOrder);
-        QChoice.QChoiceOrderApply(QStairDropdown, _cYunjing.CYunjingYunmu.CApertureOrder);
+        _qYunjingOrder.QChoiceOrderRefine();
+        _qYunmuOrder.QChoiceOrderRefine();
         QYunjingModeRefine();
-        QXiaoyunRefine();
+        _qXiaoyun.QXiaoyunRefine();
     }
 
     private async void QYunjingWorkspaceRefine()
     {
-        QXiaoyunRefine((await _cYunjing.CYunjingXiaoyun.CEntryListLoad(QEnsignImage.QEnsignDraw)).CEnsignSheetRows);
-    }
-
-    private void QYunjingQueryRefine()
-    {
-        QPlumb.Text = string.Empty;
-        QFathom.Text = string.Empty;
+        _qXiaoyun.QXiaoyunRefine(
+            (await _cYunjing.CYunjingXiaoyun.CEntryListLoad(QEnsignImage.QEnsignDraw)).CEnsignSheetRows);
     }
 
     internal void QYunjingExitRefine()
@@ -224,45 +126,6 @@ internal sealed class QYunjing
     private bool QYunjingShownCheck()
     {
         return _qYunjingSurface.IsVisible;
-    }
-
-    internal void QShengmuRefine()
-    {
-        QSplice.QSpliceRefine(
-            _qShengmuList,
-            PYunjingItem.PYunjingItemBuild(_cYunjing.CYunjingShengmuRead()),
-            PYunjingItem.PYunjingItemMatch,
-            PYunjingItem.PYunjingItemSync);
-        QShengmuEmpty.SetResourceReference(TextBlock.TextProperty, _cYunjing.CYunjingShengmu.CApertureKey);
-        QShengmuEmpty.Visibility = QLook.QLookVisibleRead(_cYunjing.CYunjingShengmu.CApertureEmpty);
-    }
-
-    internal void QYunmuRefine()
-    {
-        QSplice.QSpliceRefine(
-            _qYunmuList,
-            PYunjingItem.PYunjingItemBuild(_cYunjing.CYunjingYunmuRead()),
-            PYunjingItem.PYunjingItemMatch,
-            PYunjingItem.PYunjingItemSync);
-        QYunmuEmpty.SetResourceReference(TextBlock.TextProperty, _cYunjing.CYunjingYunmu.CApertureKey);
-        QYunmuEmpty.Visibility = QLook.QLookVisibleRead(_cYunjing.CYunjingYunmu.CApertureEmpty);
-    }
-
-    private void QXiaoyunRefine()
-    {
-        QXiaoyunRefine(_cYunjing.CYunjingXiaoyun.CEntryListRead());
-    }
-
-    private void QXiaoyunRefine(IReadOnlyList<CVistaRow> rows)
-    {
-        QSplice.QSpliceRefine(
-            _qXiaoyunList,
-            PXiaoyunItem.PXiaoyunItemBuild(rows),
-            PXiaoyunItem.PXiaoyunItemMatch,
-            PXiaoyunItem.PXiaoyunItemSync);
-        QXiaoyunEmpty.SetResourceReference(TextBlock.TextProperty, _cYunjing.CYunjingXiaoyunKey);
-        QXiaoyunEmpty.Visibility = QLook.QLookVisibleRead(
-            _cYunjing.CYunjingXiaoyun.CEntryListPanel.CPanelAperture.CApertureEmpty);
     }
 
     internal void QYunjingDiweiRefine()
@@ -276,85 +139,25 @@ internal sealed class QYunjing
         _qYunjingEditor.QEditorVisibleRefine(QLook.QLookVisibleRead(_cYunjing.CYunjingXiaoyun.CEntryListEditing));
         _qYunjingDisplay.QDisplayVisibleRefine(QLook.QLookVisibleRead(_cYunjing.CYunjingDisplayShown));
         QYunjingDiwei.Visibility = QLook.QLookVisibleRead(_cYunjing.CYunjingDiweiShown);
-        QYunjingViewer.IsChecked = panel.CPanelViewerChecked;
-        QYunjingScribe.IsChecked = panel.CPanelScribeChecked;
-        QYunjingVoyage.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
-        QYunjingChronicle.Visibility = QLook.QLookVisibleRead(panel.CPanelScribeChecked);
-        QYunjingMode.IsEnabled = panel.CPanelModeEnabled;
-        QYunjingBin.IsEnabled = panel.CPanelBinEnabled;
+        _qYunjingRail.QPanelRailRefine(panel.CPanelScribeChecked, panel.CPanelModeEnabled, panel.CPanelBinEnabled);
     }
 
-    private void QPlumbObserve(object sender, TextChangedEventArgs e)
-    {
-        _cYunjing.CYunjingShengmu.CApertureQuerySet(QPlumb.Text);
-    }
-
-    private void QFathomObserve(object sender, TextChangedEventArgs e)
-    {
-        _cYunjing.CYunjingYunmu.CApertureQuerySet(QFathom.Text);
-    }
-
-    private void QBeaconObserve(object sender, TextChangedEventArgs e)
-    {
-        _cYunjing.CYunjingXiaoyun.CEntryListPanel.CPanelAperture.CApertureQuerySet(QBeacon.Text);
-    }
-
-    private void QLadderObserve(object sender, RoutedEventArgs e)
-    {
-        _cYunjing.CYunjingShengmu.CApertureOrderSet(QChoice.QChoiceOrderRead(sender));
-        QLadderRefine();
-    }
-
-    private void QLadderRefine()
-    {
-        QLadderDropper.IsChecked = false;
-    }
-
-    private void QStairObserve(object sender, RoutedEventArgs e)
-    {
-        _cYunjing.CYunjingYunmu.CApertureOrderSet(QChoice.QChoiceOrderRead(sender));
-        QStairRefine();
-    }
-
-    private void QStairRefine()
-    {
-        QStairDropper.IsChecked = false;
-    }
-
-    private void QYunjingObserve(object sender, RoutedEventArgs e)
-    {
-        _cYunjing.CYunjingDiweiSelect(
-            QSender.QSenderSourceRead<PYunjingItem>(e)?.PYunjingItemId,
-            QSender.QSenderSourceRead<PYunjingItem>(e)?.PYunjingItemFinal);
-    }
-
-    private void QXiaoyunObserve(object sender, RoutedEventArgs e)
-    {
-        _cYunjing.CYunjingXiaoyun.CEntryListPanel.CPanelRowSelect(
-            QSender.QSenderSourceRead<PXiaoyunItem>(e)?.PXiaoyunItemId);
-    }
-
-    private void QYunjingFreshObserve(object sender, RoutedEventArgs e)
+    private void QYunjingFreshObserve()
     {
         _cYunjing.CYunjingXiaoyun.CEntryListPanel.CPanelEntryCreate();
     }
 
-    private void QYunjingViewerObserve(object sender, RoutedEventArgs e)
+    private void QYunjingScribeObserve(bool scribe)
     {
-        _cYunjing.CYunjingXiaoyun.CEntryListPanel.CPanelScribeToggle(false);
+        _cYunjing.CYunjingXiaoyun.CEntryListPanel.CPanelScribeToggle(scribe);
     }
 
-    private void QYunjingScribeObserve(object sender, RoutedEventArgs e)
-    {
-        _cYunjing.CYunjingXiaoyun.CEntryListPanel.CPanelScribeToggle(true);
-    }
-
-    private void QYunjingStoreObserve(object sender, RoutedEventArgs e)
+    private void QYunjingStoreObserve()
     {
         _cYunjing.CYunjingXiaoyun.CEntryListEditor.CEditorEntrySave();
     }
 
-    private void QYunjingBinObserve(object sender, RoutedEventArgs e)
+    private void QYunjingBinObserve()
     {
         _cYunjing.CYunjingXiaoyun.CEntryListPanel.CPanelBin.CPanelBinDelete();
     }
@@ -374,37 +177,10 @@ internal sealed class QYunjing
         await _cYunjing.CYunjingXiaoyun.CEntryListExport();
     }
 
-    internal void QYunjingVoyageRefine(bool past, bool future)
-    {
-        QYunjingEarlier.IsEnabled = past;
-        QYunjingLater.IsEnabled = future;
-    }
-
-    private void QYunjingRetreatObserve(object sender, RoutedEventArgs e)
-    {
-        _qYunjingHost.QWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
-    }
-
-    private void QYunjingAdvanceObserve(object sender, RoutedEventArgs e)
-    {
-        _qYunjingHost.QWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
-    }
-
-    private void QYunjingUndoObserve(object sender, RoutedEventArgs e)
-    {
-        _qYunjingEditor.QChronicleUndoObserve();
-    }
-
-    private void QYunjingRedoObserve(object sender, RoutedEventArgs e)
-    {
-        _qYunjingEditor.QChronicleRedoObserve();
-    }
-
     private void QYunjingChronicleRefine()
     {
         (bool undo, bool redo) =
             _cYunjing.CYunjingXiaoyun.CEntryListEditor.CEditorDesk.CDeskChronicle.CDeskChronicleRead();
-        QYunjingBackward.IsEnabled = undo;
-        QYunjingForward.IsEnabled = redo;
+        _qYunjingRail.QChronicleRefine(undo, redo);
     }
 }

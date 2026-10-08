@@ -11,6 +11,6 @@ internal sealed class PContextSelector : DataTemplateSelector
 
     public override DataTemplate? SelectTemplate(object item, DependencyObject container)
     {
-        return item is PContextCaret ? PContextSelectorCaret : PContextSelectorChip;
+        return item is PCaret<PContext> ? PContextSelectorCaret : PContextSelectorChip;
     }
 }

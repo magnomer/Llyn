@@ -1,5 +1,5 @@
 # QCardDrag.cs
-Hash: `a1d496deb3e2f342`
+Hash: `02db6c80c5a91e0c`
 
 ## `internal sealed class QCardDrag`
 
@@ -18,16 +18,16 @@ Each press holds that state in one `QCardGesture`, made at the press and dropped
 Finds both card lists by their markup ids and hears the pointer on each.
 The lists, not the cards, hear the move and the release, since the capture is taken on the list.
 
-## `internal void QCardDragIntroduce(CEditor editor)`
+## `internal void QCardDragIntroduce(CCardList list)`
 
-Holds the Conduct editor whose move gate the drag reaches.
+Holds the Conduct card list facet whose move gate the drag reaches.
 
 ## `internal void QCardDragRefine(object sender, MouseButtonEventArgs e)`
 
 The press on a card's header, heard for both lists.
 It finds which list shows the card, starts a gesture where it was taken hold of, and takes the capture.
 The list is the one whose items hold the card, since each list shows exactly its cards.
-The gesture gets only the card as a list item and its id, the parts it uses.
+The gesture gets the card as a list item, its id, the list, its container and the press height.
 
 ## Inline notes
 
@@ -64,7 +64,7 @@ Capture can be taken away without the button ever coming up, by another window o
 A ghost left painted over the list would outlive the drag it belongs to.
 So the gesture is told to take its ghost away and let the capture go.
 
-### `_cEditor.CEditorList.CCardMove(gesture.QCardGestureId, target);`
+### `_cCardList.CCardMove(gesture.QCardGestureId, target);`
 
 The place the geometry found goes to the one move gate the position badge also uses.
 It is sent on every pointer move, even when the place is the one the card holds.

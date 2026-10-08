@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Llyn.Conduct;
 
@@ -16,7 +18,7 @@ internal sealed class QLink
 
     private readonly QProspect _qLinkProspect;
 
-    private CEditor _cEditor = null!;
+    private CCard _cCard = null!;
 
     internal QLink(
         FrameworkElement surface,
@@ -28,21 +30,34 @@ internal sealed class QLink
         _qLinkMeaning = meaning;
         _qLinkCollocation = collocation;
         _qLinkProspect = prospect;
+        surface.AddHandler(TextBoxBase.TextChangedEvent, new TextChangedEventHandler(QLinkTextObserve));
     }
 
-    internal void QLinkIntroduce(CEditor editor)
+    internal void QLinkIntroduce(CCard card)
     {
-        _cEditor = editor;
+        _cCard = card;
+    }
+
+    internal static void QLinkShow(PCard card, IReadOnlyList<CTranslationTarget> targets)
+    {
+        List<QLinkChip> chips = [];
+        foreach (CTranslationTarget target in targets)
+        {
+            chips.Add(new QLinkChip(
+                target.CTranslationTargetId, target.CTranslationTargetHeadword, target.CTranslationTargetLanguage));
+        }
+
+        card.PCardLink.PCaretShow(chips);
     }
 
     private void QLinkApply(FrameworkElement container, object item, string? _)
     {
-        if (item is PLinkCaret caret)
+        if (item is PCaret<QLinkChip> caret)
         {
             if (QLook.QLookPartFind<TextBox>(container, "PLinkEntry") is TextBox entry)
             {
-                entry.SetValue(QField.QFieldHintProperty, caret.PLinkCaretHint);
-                entry.Text = caret.PLinkCaretText;
+                entry.SetValue(QField.QFieldHintProperty, caret.PCaretHint);
+                entry.Text = caret.PCaretText;
                 entry.PreviewKeyDown -= _qLinkProspect.QProspectKeyRefine;
                 entry.PreviewKeyDown -= _qLinkProspect.QProspectKeyObserve;
                 entry.PreviewKeyDown -= QLinkCommitObserve;
@@ -74,12 +89,12 @@ internal sealed class QLink
 
         if (QLook.QLookPartFind<TextBlock>(container, "PLinkHeadword") is TextBlock headword)
         {
-            headword.Text = chip.QLinkChipTarget.CTranslationTargetHeadword;
+            headword.Text = chip.QLinkChipHeadword;
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PLinkLanguage") is TextBlock language)
         {
-            language.Text = chip.QLinkChipTarget.CTranslationTargetLanguage;
+            language.Text = chip.QLinkChipLanguage;
         }
 
         if (QLook.QLookPartFind<Button>(container, "PLinkEraser") is Button eraser)
@@ -104,7 +119,7 @@ internal sealed class QLink
         };
         QLookItem.QLookItemAttach(list, QLinkApply);
         QLookItem.QLookItemAttach(
-            QBerth.QBerthBuild(list, card.PCardLinkCaret, nameof(PLinkCaret.PLinkCaretAnchor)),
+            QBerth.QBerthBuild(list, card.PCardLink, nameof(PCaret<QLinkChip>.PCaretAnchor)),
             QLinkApply);
         if (QLook.QLookPartFind<Border>(list, "PLinkFrame") is Border frame)
         {
@@ -113,18 +128,19 @@ internal sealed class QLink
         }
     }
 
-    internal void QLinkTextObserve(PLinkCaret caret, string text)
+    private void QLinkTextObserve(object sender, TextChangedEventArgs e)
     {
-        if (QLinkCardFind(caret) is PCard card)
+        if (e.OriginalSource is TextBox { DataContext: PCaret<QLinkChip> caret } box
+            && QLinkCardFind(caret) is PCard card)
         {
-            QLinkRefine(card, _cEditor.CEditorCard.CCardTranslationAdd(
-                card.PCardId, text, card.PCardLinkPosition));
+            QLinkRefine(card, _cCard.CCardTranslationAdd(
+                card.PCardId, box.Text, card.PCardLink.PCaretPosition));
         }
     }
 
     private void QLinkRefine(PCard card, CProspect prospect)
     {
-        card.PCardLinkRefine(prospect.CProspectText);
+        card.PCardLink.PCaretRefine(prospect.CProspectText);
         if (prospect.CProspectShown)
         {
             _qLinkProspect.QProspectTranslationRefine(card, prospect);
@@ -138,29 +154,29 @@ internal sealed class QLink
     {
         if (sender is FrameworkElement { DataContext: QLinkChip chip } && QLinkCardFind(chip) is PCard card)
         {
-            _cEditor.CEditorCard.CCardTranslationRemove(
-                card.PCardId, chip.QLinkChipTarget.CTranslationTargetId);
+            _cCard.CCardTranslationRemove(card.PCardId, chip.QLinkChipId);
         }
     }
 
     private void QLinkCommitObserve(object sender, KeyEventArgs e)
     {
         if (e.Key != Key.Enter
-            || sender is not FrameworkElement { DataContext: PLinkCaret row }
+            || sender is not FrameworkElement { DataContext: PCaret<QLinkChip> row }
             || QLinkCardFind(row) is not PCard card)
         {
             return;
         }
 
-        CProspect prospect = _cEditor.CEditorCard.CCardTranslationResolve(
-            card.PCardId, row.PLinkCaretText, card.PCardLinkPosition, true);
+        CProspect prospect = _cCard.CCardTranslationResolve(
+            card.PCardId, row.PCaretText, row.PCaretPosition, true);
         e.Handled = true;
         QLinkRefine(card, prospect);
     }
 
     private void QLinkEraseObserve(object sender, KeyEventArgs e)
     {
-        if (sender is not TextBox { DataContext: PLinkCaret row } box || QLinkCardFind(row) is not PCard card)
+        if (sender is not TextBox { DataContext: PCaret<QLinkChip> row } box
+            || QLinkCardFind(row) is not PCard card)
         {
             return;
         }
@@ -172,17 +188,17 @@ internal sealed class QLink
             box.SelectionLength,
             step =>
             {
-                if (card.PCardLinkFind(step) is QLinkChip chip)
+                if (card.PCardLink.PCaretFind(step) is QLinkChip chip)
                 {
-                    _cEditor.CEditorCard.CCardTranslationRemove(
-                        card.PCardId, chip.QLinkChipTarget.CTranslationTargetId);
+                    _cCard.CCardTranslationRemove(card.PCardId, chip.QLinkChipId);
                 }
             });
     }
 
     private void QLinkCaretRefine(object sender, KeyEventArgs e)
     {
-        if (sender is not TextBox { DataContext: PLinkCaret row } box || QLinkCardFind(row) is not PCard card)
+        if (sender is not TextBox { DataContext: PCaret<QLinkChip> row } box
+            || QLinkCardFind(row) is not PCard card)
         {
             return;
         }
@@ -191,7 +207,7 @@ internal sealed class QLink
             e.Key.ToString(),
             box.Text.Length,
             box.SelectionLength,
-            card.PCardLinkMove,
+            card.PCardLink.PCaretMove,
             () => QField.QFieldCaretApply(box, row, 0));
     }
 
@@ -202,10 +218,11 @@ internal sealed class QLink
 
     private void QLinkCloseObserve(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PLinkCaret row } && QLinkCardFind(row) is PCard card)
+        if (sender is FrameworkElement { DataContext: PCaret<QLinkChip> row }
+            && QLinkCardFind(row) is PCard card)
         {
-            QLinkRefine(card, _cEditor.CEditorCard.CCardTranslationResolve(
-                card.PCardId, row.PLinkCaretText, card.PCardLinkPosition, false));
+            QLinkRefine(card, _cCard.CCardTranslationResolve(
+                card.PCardId, row.PCaretText, row.PCaretPosition, false));
         }
     }
 
@@ -231,18 +248,24 @@ internal sealed class QLink
     {
         foreach (PCard card in _qLinkMeaning)
         {
-            card.PCardFlagUpdate();
+            foreach (QLinkChip chip in card.PCardLink.PCaretRow)
+            {
+                chip.QLinkChipRefine();
+            }
         }
 
         foreach (PCard card in _qLinkCollocation)
         {
-            card.PCardFlagUpdate();
+            foreach (QLinkChip chip in card.PCardLink.PCaretRow)
+            {
+                chip.QLinkChipRefine();
+            }
         }
     }
 
     internal TextBox? QLinkBoxFind(PCard card)
     {
-        return Keyboard.FocusedElement is TextBox { DataContext: PLinkCaret row } box &&
+        return Keyboard.FocusedElement is TextBox { DataContext: PCaret<QLinkChip> row } box &&
             QLinkCardFind(row) == card
             ? box
             : null;
@@ -252,8 +275,8 @@ internal sealed class QLink
     {
         foreach (PCard card in _qLinkMeaning)
         {
-            if ((row is QLinkChip chip && card.PCardLink.Contains(chip))
-                || ReferenceEquals(card.PCardLinkCaret, row))
+            if ((row is QLinkChip chip && card.PCardLink.PCaretRow.Contains(chip))
+                || ReferenceEquals(card.PCardLink, row))
             {
                 return card;
             }
@@ -261,8 +284,8 @@ internal sealed class QLink
 
         foreach (PCard card in _qLinkCollocation)
         {
-            if ((row is QLinkChip chip && card.PCardLink.Contains(chip))
-                || ReferenceEquals(card.PCardLinkCaret, row))
+            if ((row is QLinkChip chip && card.PCardLink.PCaretRow.Contains(chip))
+                || ReferenceEquals(card.PCardLink, row))
             {
                 return card;
             }

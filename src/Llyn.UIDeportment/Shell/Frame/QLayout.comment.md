@@ -24,7 +24,7 @@ Every seam standing in that grid has its drag and release notices subscribed her
 ## `internal void QLayoutRefine()`
 
 Applies the stored widths to every registered grid before the first tab is shown.
-The window subscribes it to `CWorkspaceOpened`, so a workspace change applies that workspace's widths.
+The panel roster subscribes it to `CWorkspaceOpened`, so a workspace change applies that workspace's widths.
 A tab with no stored record keeps the width its markup declared.
 Only the fixed columns are written, because the last column stays flexible and fills the window.
 While the panels are linked, every tab is then set to one width, so the link holds before any drag.

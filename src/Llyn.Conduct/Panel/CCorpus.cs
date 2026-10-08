@@ -53,7 +53,7 @@ public sealed class CCorpus
         CCorpusSession = new CSession(
             CCorpusDesk,
             [CCorpusQuotation.CQuotationPanel.LPanelChangeCheck, CCorpusAnthology.CAnthologyPanel.LPanelChangeCheck],
-            editor,
+            editor.CEditorDesk,
             () => CCorpusQuotation.CQuotationPanel.CPanelEditing,
             editor.LEditorFinish,
             static () => true,
@@ -81,6 +81,7 @@ public sealed class CCorpus
                 CCorpusAnthology.LAnthologyDraftRead(draft));
         CCorpusQuotation.CQuotationPanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
         CCorpusQuotation.CQuotationPanel.CPanelCleared += editor.CEditorDesk.CDeskCancel;
+        editor.CEditorDisplay.CDisplayPanelAttach(CCorpusQuotation.CQuotationPanel);
         atelier.CAtelierNavigation.LNavigationTabAdd(
             "Corpus",
             () => CCorpusSession.LSessionLeaveConfirm(true),
@@ -89,7 +90,11 @@ public sealed class CCorpus
             LCorpusExampleOpen);
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(CCorpusSession.LSessionChangeCheck, CCorpusSession.LSessionFinish);
         atelier.CAtelierWorkspace.LWorkspaceVistaAdd(LCorpusVistaRestore);
-        atelier.CAtelierWorkspace.LWorkspaceClosureAdd(CCorpusSession.LSessionEditorClose);
+        atelier.CAtelierWorkspace.LWorkspaceClosureAdd(() =>
+        {
+            editor.CEditorClose();
+            editor.CEditorDisplay.CDisplayPlayback.CDisplayPlaybackCancel();
+        });
         CCorpusTranscript.LTranscriptObserverAttach(marshal);
         LCorpusVistaRestore();
     }

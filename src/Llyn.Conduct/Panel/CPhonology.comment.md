@@ -1,5 +1,5 @@
 # CPhonology.cs
-Hash: `24c97fa1cb0defa4`
+Hash: `fbf04be95f75b5f2`
 
 ## `public sealed class CPhonology`
 
@@ -13,6 +13,7 @@ It restores its vista itself, so no driver holds a port or a vista.
 Takes the atelier's ports and builds the panel's own entry editor.
 The panel asks the editor's desk before it leaves an entry, and finishes through the editor.
 A cleared panel empties the editor, and an edited row opens in it.
+The editor's display follows the panel, so each draft it loads opens the reading view.
 It registers its vista restore and its close with `CWorkspace`, as every area does.
 It restores its vistas last, so a built area already stands on started vistas.
 

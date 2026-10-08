@@ -10,7 +10,7 @@ internal sealed class QNotation
 {
     private readonly FrameworkElement _qNotationSurface;
 
-    private CEditor _cEditor = null!;
+    private CErrand _cErrand = null!;
 
     internal QNotation(FrameworkElement surface)
     {
@@ -35,10 +35,10 @@ internal sealed class QNotation
 
     private Button QPhonetician => QContract.QContractFind<Button>(_qNotationSurface, "PPhonetician");
 
-    internal void QNotationIntroduce(CEditor editor)
+    internal void QNotationIntroduce(CErrand errand)
     {
-        _cEditor = editor;
-        editor.CEditorDesk.CDeskErrand.CErrandNotationChanged += QNotationRefine;
+        _cErrand = errand;
+        errand.CErrandNotationChanged += QNotationRefine;
     }
 
     private void QPhoneticianRefine(object sender, RoutedEventArgs e)
@@ -48,12 +48,12 @@ internal sealed class QNotation
 
     private void QPhoneticianObserve(object sender, RoutedEventArgs e)
     {
-        QNotationStartRefine(_cEditor.CEditorDesk.CDeskErrand.CErrandTranscriptionStart(null, string.Empty));
+        QNotationStartRefine(_cErrand.CErrandTranscriptionStart(null, string.Empty));
     }
 
     private void QNotationClosedObserve(object? sender, EventArgs e)
     {
-        _cEditor.CEditorDesk.CDeskErrand.CErrandCancel();
+        _cErrand.CErrandCancel();
     }
 
     private void QNotationSelectorObserve(object sender, RoutedEventArgs e)
@@ -63,7 +63,7 @@ internal sealed class QNotation
             return;
         }
 
-        _cEditor.CEditorDesk.CDeskErrand.CErrandReadingSet(
+        _cErrand.CErrandReadingSet(
             reading.QNotationReadingPhonetic, reading.QNotationReadingVariety);
         QNotationCloseRefine();
     }
@@ -83,7 +83,7 @@ internal sealed class QNotation
     internal async void QNotationStartRefine(CNotationRoll roll)
     {
         QNotationRefine(roll);
-        QNotationRefine(await _cEditor.CEditorDesk.CDeskErrand.CErrandFlagLoad(QEnsignImage.QEnsignDraw));
+        QNotationRefine(await _cErrand.CErrandFlagLoad(QEnsignImage.QEnsignDraw));
     }
 
     private void QNotationRefine(CNotationRoll roll)

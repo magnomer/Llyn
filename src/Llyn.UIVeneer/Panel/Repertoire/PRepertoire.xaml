@@ -47,27 +47,8 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <ToggleButton
-                x:Name="PTierDropper"
-                Grid.Column="0"
-                Style="{StaticResource Theme.Search.Dropper}"
-                ToolTip="{DynamicResource Tier.Title}">
-                <local:QIconImage x:Name="PTierIcon" Width="24" Height="24" />
-            </ToggleButton>
+            <veneer:PChoiceOrder x:Name="PRepertoireOrder" Grid.Column="0" />
             <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
-            <Popup
-                x:Name="PTierDropdown"
-                Width="238"
-                AllowsTransparency="True"
-                Placement="Bottom"
-                StaysOpen="False"
-                VerticalOffset="6">
-                <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
-                    <StackPanel x:Name="PTierList">
-                        <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Tier.Title}" />
-                    </StackPanel>
-                </Border>
-            </Popup>
             <TextBox
                 x:Name="PInquest"
                 Grid.Column="2"
@@ -92,106 +73,11 @@
                     Grid.Column="0"
                     Style="{StaticResource Theme.Search.Field}" />
                 <Rectangle Grid.Column="1" Margin="2,0,5,0" Style="{StaticResource Theme.Search.Divider}" />
-                <ToggleButton
-                    x:Name="PMeshDropper"
-                    Grid.Column="2"
-                    Style="{StaticResource Theme.Search.Dropper}"
-                    ToolTip="{DynamicResource Mesh.Title}">
-                    <Grid Width="24" Height="24">
-                        <local:QIconImage x:Name="PMeshIcon" Width="24" Height="24" />
-                        <Ellipse
-                            x:Name="PMeshMark"
-                            Width="6"
-                            Height="6"
-                            Margin="0,2,1,0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Top"
-                            Fill="{StaticResource Theme.Accent}"
-                            Visibility="Collapsed" />
-                    </Grid>
-                </ToggleButton>
-                <Popup
-                    x:Name="PMeshDropdown"
-                    Width="190"
-                    AllowsTransparency="True"
-                    HorizontalOffset="-151"
-                    Placement="Bottom"
-                    StaysOpen="False"
-                    VerticalOffset="6">
-                    <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
-                        <StackPanel x:Name="PMeshList" />
-                    </Border>
-                </Popup>
+                <veneer:PChoiceFilter x:Name="PRepertoireFilter" Grid.Column="2" />
             </Grid>
         </Border>
 
-        <local:QRail Grid.Row="0" Grid.Column="2" Margin="0,0,0,18">
-            <Border Style="{StaticResource Theme.Command.Group}">
-                <StackPanel Orientation="Horizontal">
-                    <Button
-                        x:Name="PRepertoireFresh"
-                        Content="{DynamicResource Scribe.New}"
-                        Style="{StaticResource Theme.Command.Segment}" />
-                    <Button
-                        x:Name="PRepertoireStore"
-                        Content="{DynamicResource Scribe.Save}"
-                        IsEnabled="False"
-                        Style="{StaticResource Theme.Command.Primary}" />
-                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
-                    <StackPanel x:Name="PRepertoireVoyage" Orientation="Horizontal">
-                        <Button
-                            x:Name="PRepertoireEarlier"
-                            IsEnabled="False"
-                            Style="{StaticResource Theme.Command.Segment}"
-                            ToolTip="{DynamicResource Voyage.Retreat}" />
-                        <Button
-                            x:Name="PRepertoireLater"
-                            IsEnabled="False"
-                            Style="{StaticResource Theme.Command.Segment}"
-                            ToolTip="{DynamicResource Voyage.Advance}" />
-                    </StackPanel>
-                    <StackPanel x:Name="PRepertoireChronicle" Orientation="Horizontal" Visibility="Collapsed">
-                        <Button
-                            x:Name="PRepertoireBackward"
-                            IsEnabled="False"
-                            Style="{StaticResource Theme.Command.Segment}"
-                            ToolTip="{DynamicResource Chronicle.Undo}" />
-                        <Button
-                            x:Name="PRepertoireForward"
-                            IsEnabled="False"
-                            Style="{StaticResource Theme.Command.Segment}"
-                            ToolTip="{DynamicResource Chronicle.Redo}" />
-                    </StackPanel>
-                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
-                    <Button
-                        x:Name="PRepertoirePortrait"
-                        Content="{DynamicResource Scribe.Export}"
-                        Style="{StaticResource Theme.Command.Segment}" />
-                    <Button
-                        x:Name="PRepertoirePress"
-                        Content="{DynamicResource Scribe.Print}"
-                        Style="{StaticResource Theme.Command.Segment}" />
-                </StackPanel>
-            </Border>
-            <Border
-                x:Name="PRepertoireMode"
-                IsEnabled="False"
-                Style="{StaticResource Theme.Command.Group}">
-                <StackPanel Orientation="Horizontal">
-                    <RadioButton
-                        x:Name="PRepertoireViewer"
-                        Content="{DynamicResource Scribe.View}"
-                        GroupName="PRepertoireMode"
-                        IsChecked="True"
-                        Style="{StaticResource Theme.Command.Mode}" />
-                    <RadioButton
-                        x:Name="PRepertoireScribe"
-                        Content="{DynamicResource Scribe.Edit}"
-                        GroupName="PRepertoireMode"
-                        Style="{StaticResource Theme.Command.Mode}" />
-                </StackPanel>
-            </Border>
-        </local:QRail>
+        <veneer:PPanelRail x:Name="PRepertoireRail" Grid.Row="0" Grid.Column="2" Margin="0,0,0,18" />
 
         <Grid Grid.Row="1" Grid.Column="0" Style="{StaticResource Theme.Catalog.Frame}">
             <ScrollViewer Style="{StaticResource Theme.Catalog.Scroll}">

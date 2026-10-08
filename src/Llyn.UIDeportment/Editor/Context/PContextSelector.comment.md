@@ -1,7 +1,7 @@
 # PContextSelector.cs
-Hash: `37a2262b7cb0ebcc`
+Hash: `1633b5000b4cae23`
 
-## `internal sealed class PContextSelector`
+## `internal sealed class PContextSelector : DataTemplateSelector`
 
 Chooses which of the two shapes a Situation field item is drawn in.
 The field draws committed Situations and one open entry as a single run of items.

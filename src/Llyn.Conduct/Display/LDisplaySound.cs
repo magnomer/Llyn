@@ -84,6 +84,11 @@ internal sealed class LDisplaySound
 
     internal void LDisplaySoundClear()
     {
+        if (_lDisplaySoundDraft is null)
+        {
+            return;
+        }
+
         _lDisplaySoundEntry = null;
         _lDisplaySoundDraft = null;
         _lDisplaySoundReflex = null;

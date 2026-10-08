@@ -1,5 +1,5 @@
 # QLabel.cs
-Hash: `28cb1c9304fccd64`
+Hash: `37e2970d28fb1233`
 
 ## `internal sealed class QLabel`
 
@@ -16,15 +16,22 @@ Reaching the entry itself is shared with the Situation field, which is written t
 
 Holds the editor scope, since this driver has no control of its own to wire.
 It holds the two card lists the editor keeps, which its finds walk.
+It adds one routed text handler on the scope, which hears every Tag caret.
 
-## `internal void QLabelIntroduce(CEditor editor, QSlate slate)`
+## `internal void QLabelIntroduce(CCard card, QSlate slate)`
 
-Holds the Conduct editor whose card gates the handlers call.
+Holds the Conduct card facet whose gates the handlers call.
 Holds the slate driver too, since the slate finds its card through this one and cannot be built first.
 
-## `internal void QLabelTextObserve(PLabelCaret caret, string text)`
+## `internal static void QLabelShow(PCard card, IReadOnlyList<CTagDraft> drafts)`
+
+Turns the card's Tag drafts into chips and hands them to the card's caret.
+The caret knows only chips, so this driver is the one place a Tag draft is read.
+
+## `private void QLabelTextObserve(object sender, TextChangedEventArgs e)`
 
 Hears each edit of a Tag caret and hands the raw text to the tag gate, unsettled.
+Any other box's edit is ignored, since its data context is no Tag caret.
 `QSlateRefine` then paints the answer.
 That is the text the entry keeps and the dropdown of stored Tags.
 

@@ -1,24 +1,37 @@
 # QLinkChip.cs
-Hash: `2d39a5c48955b383`
+Hash: `961fb2f6e76128ff`
 
 ## `public sealed class QLinkChip : INotifyPropertyChanged`
 
-One committed link inside a card's Translation field, painted from its ready Conduct target.
-The target carries the id of another Entry and nothing else that is saved.
-Its headword and language are display state, refreshed whenever the card is shown.
+One committed link inside a card's Translation field, copied from a ready Conduct target.
+It holds plain values only, so no Conduct record rides a caret or a leaf.
+The id names another Entry and is the only saved part.
+Its headword and language are display state, fixed when the chip is built.
 A link whose target should change is closed and written again rather than edited in place.
 
-## `public QLinkChip(CTranslationTarget target)`
+## `public QLinkChip(long id, string headword, string language)`
 
-Holds the ready target and finds its flag for the target's language through `QEnsignImage`.
+Holds the target's id, headword and language, and finds the language's flag through `QEnsignImage`.
 
-## `public CTranslationTarget QLinkChipTarget { get; }`
+## `public long QLinkChipId { get; }`
 
-The ready target the chip paints, whose id a chip's pick or removal hands to its gate.
+The linked Entry's id, which a chip's pick or removal hands to its gate.
+
+## `public string QLinkChipHeadword { get; }`
+
+The linked Entry's headword the chip paints.
+
+## `public string QLinkChipLanguage { get; }`
+
+The linked Entry's language, which picks the chip's flag.
 
 ## `public ImageSource? QLinkChipFlag`
 
 The flag of the target's language, or null while that flag has not loaded.
+
+## `public event PropertyChangedEventHandler? PropertyChanged`
+
+Raised with `QLinkChipFlag` once a late flag is found.
 
 ## `internal void QLinkChipRefine()`
 

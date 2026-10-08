@@ -1,5 +1,5 @@
 # CWorkspace.cs
-Hash: `359d830f3008ef65`
+Hash: `e3533e69d610ae75`
 
 ## `public sealed class CWorkspace`
 
@@ -11,12 +11,13 @@ A driver reaches it to subscribe and to change the workspace.
 
 ## `private readonly List<(Func<bool> LWorkspacePending, Func<bool, bool> LWorkspaceClosure)> _cWorkspaceDrafts = [];`
 
-Every panel area's unsaved-work verdict and its finish, in the order the areas registered.
+Every panel area's unsaved-work verdict and its finish, in the order they registered.
+The input tab's editor registers too, from the atelier.
 Each area registers itself in its constructor, so no driver hands a seam up.
 
 ## `private readonly List<Action> _cWorkspaceVistas = [];`
 
-Every panel area's vista restore, in the order the areas registered.
+Every panel area's vista restore, and the input tab's, in the order they registered.
 A workspace change runs them all, so every area stands on the new workspace's vistas.
 
 ## `private readonly List<Action> _cWorkspaceClosures = [];`
@@ -28,11 +29,6 @@ Only the window's exit runs them, through `LWorkspaceClose`.
 
 The failure keys `LWorkspaceFailureShow` has already shown in this session.
 A key is added only when shown, so a fault before any open never spends the one notice.
-
-## `private CEditor? _cWorkspaceInput;`
-
-The input tab's editor, learned when the atelier restores its vista.
-It has no area of its own, so the quit asks it directly and a workspace change restores it directly.
 
 ## `private bool _cWorkspaceHeard;`
 
@@ -117,7 +113,7 @@ Each open keeps `envoy` as the latest, and the status bulletin shows through it.
 ## `internal bool LWorkspaceQuitConfirm(CEnvoy envoy)`
 
 Decides whether the session may end over every area that holds a draft.
-The input editor and every registered area are asked whether they hold unsaved work.
+Every registered area, the input tab's editor among them, is asked whether it holds unsaved work.
 Each is asked even after one answered yes, because the asking writes a pause-held keystroke down.
 Unsaved work is put to the user once, through `envoy`'s `CEnvoyLeaveConfirm`.
 Nothing unsaved closes every area without a question, as a discard.
@@ -130,12 +126,12 @@ A save the engine refuses answers no, so the window stays over the entry it fail
 ## `internal void LWorkspaceDraftAdd(Func<bool> pending, Func<bool, bool> closure)`
 
 Registers one area's unsaved-work verdict and its finish for the quit.
-Only the areas call it, each once from its constructor.
+Only the areas and the atelier's input editor call it.
 
 ## `internal void LWorkspaceVistaAdd(Action restore)`
 
 Registers one area's vista restore for a workspace change.
-Only the areas call it, each once from its constructor.
+Only the areas and the atelier's input editor call it.
 
 ## `internal void LWorkspaceClosureAdd(Action closure)`
 
@@ -159,15 +155,18 @@ So each fault is recorded exactly once, here where it ends.
 
 ## `private void LWorkspaceVistaRestore()`
 
-Restarts every registered area's vistas, then the input tab's, on the workspace just moved onto.
+Restarts every registered area's vistas, the input tab's among them, on the workspace just moved onto.
 Only `CWorkspaceChange` calls it, before the open events, so each view restores onto a started vista.
-
-## `internal void LWorkspaceInputSet(CEditor editor)`
-
-Keeps the input tab's editor, which `LAtelierInputRestore` hands over on every restore.
 
 ## `private void LWorkspaceEstablishmentRaise(CEnvoy envoy)`
 
 Reads the status and raises `CWorkspaceEstablishmentChanged` with it.
 A read that fails raises nothing, so the strip stays as it stood.
 The failure is shown through `envoy` under `Workspace.EstablishmentFailed`.
+
+## `internal CEstablishment LWorkspaceEstablishmentRead()`
+
+The workspace's size and unsaved work, as the status strip shows it.
+The engine judges the singular count and the unit, and the workspace chooses their wording keys.
+The amount is written with one decimal in megabytes and as a whole number in kilobytes.
+Only the status raise reads it, so it lives beside the raise and the atelier never names the status.

@@ -15,7 +15,7 @@ internal sealed class QSpeaker
 
     private readonly QLink _qSpeakerLink;
 
-    private CEditor _cEditor = null!;
+    private CEntry _cEntry = null!;
 
     private CAtelier _cAtelier = null!;
 
@@ -43,18 +43,18 @@ internal sealed class QSpeaker
 
     private ItemsControl QSpeakerList => QContract.QContractFind<ItemsControl>(_qSpeakerSurface, "PLanguageList");
 
-    internal void QSpeakerIntroduce(CEditor editor, CAtelier atelier, CEnvoy envoy)
+    internal void QSpeakerIntroduce(CEntry entry, CAtelier atelier, CEnvoy envoy)
     {
-        _cEditor = editor;
+        _cEntry = entry;
         _cAtelier = atelier;
         _qSpeakerEnvoy = envoy;
-        editor.CEditorEntry.CEntryDraftChanged += QSpeakerRefine;
+        entry.CEntryDraftChanged += QSpeakerRefine;
         atelier.CAtelierWorkspace.CWorkspaceOpened += QSpeakerLanguageRefine;
     }
 
     private void QSpeakerRefine(CEntryDraft _)
     {
-        QSpeakerName.Text = _cEditor.CEditorEntry.CEntryLanguage;
+        QSpeakerName.Text = _cEntry.CEntryLanguage;
         QSpeakerFlagRefine();
     }
 
@@ -69,7 +69,7 @@ internal sealed class QSpeaker
 
     private void QSpeakerObserve(object sender, RoutedEventArgs e)
     {
-        _cEditor.CEditorEntry.CEntryLanguageSet(PLanguageItem.PLanguageNameRead(sender));
+        _cEntry.CEntryLanguageSet(PLanguageItem.PLanguageNameRead(sender));
         QSpeakerChoiceRefine();
     }
 
@@ -86,7 +86,7 @@ internal sealed class QSpeaker
 
     private void QSpeakerEnsignRefine()
     {
-        QEnsignImage.QEnsignFlagRefine(QSpeakerFlag, QSpeakerGlobe, _cEditor.CEditorEntry.CEntryLanguage);
+        QEnsignImage.QEnsignFlagRefine(QSpeakerFlag, QSpeakerGlobe, _cEntry.CEntryLanguage);
     }
 
     private void QSpeakerApply(FrameworkElement container, object item, string? change)

@@ -5,24 +5,41 @@ using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
-internal sealed partial class PCard
+internal sealed class PCardSentence
 {
-    public ObservableCollection<PSentence> PCardSentence { get; } = [];
+    private readonly ObservableCollection<QCitationItem> _pCardSentenceCitation;
+    private readonly ObservableCollection<string> _pCardSentenceParticle;
+    private readonly ObservableCollection<string> _pCardSentenceDependence;
+    private readonly ObservableCollection<PLanguageItem> _pCardSentenceLanguage;
 
-    internal event Action<PCard, PSentence, PGloss, string>? PCardSentenceNotice;
+    internal PCardSentence(
+        ObservableCollection<QCitationItem> catalog,
+        ObservableCollection<string> particles,
+        ObservableCollection<string> dependences,
+        ObservableCollection<PLanguageItem> languages)
+    {
+        _pCardSentenceCitation = catalog;
+        _pCardSentenceParticle = particles;
+        _pCardSentenceDependence = dependences;
+        _pCardSentenceLanguage = languages;
+    }
+
+    public ObservableCollection<PSentence> PCardSentenceRow { get; } = [];
+
+    internal event Action<PSentence, PGloss, string>? PCardSentenceNotice;
 
     internal void PCardSentenceApply(CSentenceOrder order)
     {
-        foreach (PSentence row in PCardSentence)
+        foreach (PSentence row in PCardSentenceRow)
         {
-            row.PSentenceOrderApply(order);
+            row.PSentenceFrame.PSentenceFrameApply(order);
         }
     }
 
     internal void PCardSentenceShow(IReadOnlyList<CSentenceDraft> drafts, CSentenceOrder? order)
     {
-        PCardRowShow(
-            PCardSentence,
+        QLookItem.QLookItemShow(
+            PCardSentenceRow,
             drafts,
             static row => row.PSentenceRow,
             static draft => draft.CSentenceDraftId,
@@ -36,18 +53,19 @@ internal sealed partial class PCard
 
     internal int PCardSentenceFind(PSentence row)
     {
-        return PCardSentence.IndexOf(row);
+        return PCardSentenceRow.IndexOf(row);
     }
 
     private PSentence PCardSentenceCreate(CSentenceDraft draft, CSentenceOrder? order)
     {
-        PSentence row = new(_pCardCitation, _pCardParticle, _pCardDependence, _pCardLanguage, draft);
+        PSentence row = new(
+            _pCardSentenceCitation, _pCardSentenceParticle, _pCardSentenceDependence, _pCardSentenceLanguage, draft);
         if (order is not null)
         {
-            row.PSentenceOrderApply(order);
+            row.PSentenceFrame.PSentenceFrameApply(order);
         }
 
-        row.PSentenceGlossNotice += (gloss, language) => PCardSentenceNotice?.Invoke(this, row, gloss, language);
+        row.PSentenceGlossNotice += (gloss, language) => PCardSentenceNotice?.Invoke(row, gloss, language);
         return row;
     }
 }

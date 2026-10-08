@@ -68,7 +68,7 @@ public sealed class TTimbre
     [Fact]
     public void TimbreContourRead_LevelsOffScale_DropsThemAndTheTone()
     {
-        CEditor editor = TTimbreEditorPrepare(new()
+        TEditorFixture editor = TTimbreEditorPrepare(new()
         {
             ["LEngineContourRead"] = _ => new List<LContour>
             {
@@ -79,7 +79,7 @@ public sealed class TTimbre
             },
         });
 
-        IReadOnlyList<CContour> syllables = editor.CEditorTimbre.CTimbreContourRead("a b c");
+        IReadOnlyList<CContour> syllables = editor.TEditorFixtureTimbre.CTimbreContourRead("a b c");
 
         Assert.Equal(["a", "b", string.Empty, "c"], syllables.Select(static syllable => syllable.CContourText));
         Assert.Empty(syllables[0].CContourLevels);
@@ -89,7 +89,7 @@ public sealed class TTimbre
         Assert.Equal([false, true, false, true], syllables.Select(static syllable => syllable.CContourToned));
         Assert.All(
             syllables.SelectMany(static syllable => syllable.CContourLevels),
-            level => Assert.Contains(level, editor.CEditorDisplay.CDisplayAccent.CDisplayAccentScale));
+            level => Assert.Contains(level, editor.TEditorFixtureDisplay.CDisplayAccent.CDisplayAccentScale));
     }
 
     [Fact]
@@ -106,9 +106,9 @@ public sealed class TTimbre
         using TLanguageFixture pack = TDisplayAccent.TDisplayPackCreate();
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TTimbreFlaggedPrepare(engine, pack.TLanguageFixtureName);
+        CTimbre timbre = TTimbreFlaggedPrepare(engine, pack.TLanguageFixtureName).TEditorFixtureTimbre;
 
-        IReadOnlyList<CContour> syllables = editor.CEditorTimbre.CTimbreContourRead("ma˧˥ ma");
+        IReadOnlyList<CContour> syllables = timbre.CTimbreContourRead("ma˧˥ ma");
 
         Assert.Equal(2, syllables.Count);
         Assert.Equal("ma˧˥", syllables[0].CContourText);
@@ -123,9 +123,9 @@ public sealed class TTimbre
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TTimbreFlaggedPrepare(engine, "English");
+        CTimbre timbre = TTimbreFlaggedPrepare(engine, "English").TEditorFixtureTimbre;
 
-        Assert.Empty(editor.CEditorTimbre.CTimbreContourRead("ma˧˥ ma"));
+        Assert.Empty(timbre.CTimbreContourRead("ma˧˥ ma"));
     }
 
     [Fact]
@@ -134,9 +134,9 @@ public sealed class TTimbre
         using TLanguageFixture pack = TDisplayAccent.TDisplayPackCreate();
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TTimbreFlaggedPrepare(engine, pack.TLanguageFixtureName);
+        CTimbre timbre = TTimbreFlaggedPrepare(engine, pack.TLanguageFixtureName).TEditorFixtureTimbre;
 
-        Assert.Empty(editor.CEditorTimbre.CTimbreContourRead("/həˈləʊ/"));
+        Assert.Empty(timbre.CTimbreContourRead("/həˈləʊ/"));
     }
 
     [Fact]
@@ -144,9 +144,10 @@ public sealed class TTimbre
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
+        CDisplayAccent area =
+            new TEditorFixture(TInterfaceEditor.TEditorCreate(engine)).TEditorFixtureDisplay.CDisplayAccent;
 
-        Assert.Equal(new[] { 5, 4, 3, 2, 1 }, editor.CEditorDisplay.CDisplayAccent.CDisplayAccentScale);
+        Assert.Equal(new[] { 5, 4, 3, 2, 1 }, area.CDisplayAccentScale);
     }
 
     [Fact]
@@ -155,19 +156,19 @@ public sealed class TTimbre
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         engine.TEngineRespellingSave(true);
-        CEditor editor = TEditorField.TEditorFieldPrepare(engine);
-        long draft = editor.CEditorDesk.CDeskId;
-        editor.CEditorDesk.TDeskDefer(TInterface.TRequestLanguageCreate(draft, "English"));
-        editor.CEditorDesk.TDeskDefer(TInterface.TRequestIpaCreate(draft, "ˈwɔːtə"));
-        editor.CEditorDesk.TDeskVarietySet(true, 0, "British");
-        editor.CEditorDesk.TDeskDefer(TInterface.TPronunciationAdditionCreate(draft, "ˈwɑːtɚ", 1));
-        editor.CEditorDesk.TDeskDefer(TInterface.TPronunciationAdditionCreate(draft, string.Empty, 2));
-        long spoken = editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows[0].CAccentId;
-        editor.CEditorDesk.TDeskDefer(TInterface.TPronunciationVarietyCreate(draft, spoken, "American"));
-        editor.CEditorDesk.TDeskDefer(TInterface.TPronunciationRespellingCreate(draft, spoken, "WAH-ter"));
-        editor.CEditorDesk.TDeskDefer(TInterface.TPronunciationAudioCreate(draft, spoken, "row.mp3", "Forvo"));
+        TEditorFixture editor = TEditorField.TEditorFieldPrepare(engine);
+        long draft = editor.TEditorFixtureDesk.CDeskId;
+        editor.TEditorFixtureDesk.TDeskDefer(TInterface.TRequestLanguageCreate(draft, "English"));
+        editor.TEditorFixtureDesk.TDeskDefer(TInterface.TRequestIpaCreate(draft, "ˈwɔːtə"));
+        editor.TEditorFixtureDesk.TDeskVarietySet(true, 0, "British");
+        editor.TEditorFixtureDesk.TDeskDefer(TInterface.TPronunciationAdditionCreate(draft, "ˈwɑːtɚ", 1));
+        editor.TEditorFixtureDesk.TDeskDefer(TInterface.TPronunciationAdditionCreate(draft, string.Empty, 2));
+        long spoken = editor.TEditorFixtureTimbre.CTimbreAccentRead().CTimbreAccentRows[0].CAccentId;
+        editor.TEditorFixtureDesk.TDeskDefer(TInterface.TPronunciationVarietyCreate(draft, spoken, "American"));
+        editor.TEditorFixtureDesk.TDeskDefer(TInterface.TPronunciationRespellingCreate(draft, spoken, "WAH-ter"));
+        editor.TEditorFixtureDesk.TDeskDefer(TInterface.TPronunciationAudioCreate(draft, spoken, "row.mp3", "Forvo"));
 
-        CTimbreAccent accent = editor.CEditorTimbre.CTimbreAccentRead();
+        CTimbreAccent accent = editor.TEditorFixtureTimbre.CTimbreAccentRead();
 
         Assert.Equal(new CRespellingMark(true, "[", "]"), accent.CTimbreAccentMark);
         Assert.Equal(CVariety.CVarietyRead("English", "British"), accent.CTimbreAccentPrimary);
@@ -187,14 +188,14 @@ public sealed class TTimbre
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         engine.TEngineRespellingSave(false);
-        CEditor editor = TEditorField.TEditorFieldPrepare(engine);
-        long draft = editor.CEditorDesk.CDeskId;
-        editor.CEditorDesk.TDeskDefer(TInterface.TRequestLanguageCreate(draft, "English"));
-        editor.CEditorDesk.TDeskDefer(TInterface.TPronunciationAdditionCreate(draft, "ˈwɑːtɚ", 1));
-        long spoken = editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows[0].CAccentId;
-        editor.CEditorDesk.TDeskDefer(TInterface.TPronunciationRespellingCreate(draft, spoken, "WAH-ter"));
+        TEditorFixture editor = TEditorField.TEditorFieldPrepare(engine);
+        long draft = editor.TEditorFixtureDesk.CDeskId;
+        editor.TEditorFixtureDesk.TDeskDefer(TInterface.TRequestLanguageCreate(draft, "English"));
+        editor.TEditorFixtureDesk.TDeskDefer(TInterface.TPronunciationAdditionCreate(draft, "ˈwɑːtɚ", 1));
+        long spoken = editor.TEditorFixtureTimbre.CTimbreAccentRead().CTimbreAccentRows[0].CAccentId;
+        editor.TEditorFixtureDesk.TDeskDefer(TInterface.TPronunciationRespellingCreate(draft, spoken, "WAH-ter"));
 
-        CTimbreAccent accent = editor.CEditorTimbre.CTimbreAccentRead();
+        CTimbreAccent accent = editor.TEditorFixtureTimbre.CTimbreAccentRead();
 
         Assert.False(accent.CTimbreAccentMark.CRespellingMarkShown);
         Assert.Equal("ˈwɑːtɚ", Assert.Single(accent.CTimbreAccentRows).CAccentText);
@@ -219,15 +220,15 @@ public sealed class TTimbre
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         engine.TEngineRespellingSave(true);
-        CEditor editor = TTimbreAccentPrepare(engine, "ˈwɑːtɚ");
-        long spoken = editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows[0].CAccentId;
+        CTimbre timbre = TTimbreAccentPrepare(engine, "ˈwɑːtɚ").TEditorFixtureTimbre;
+        long spoken = timbre.CTimbreAccentRead().CTimbreAccentRows[0].CAccentId;
 
-        CAccentTyped typed = editor.CEditorTimbre.CTimbreAccentSet(spoken, "WAH-ter");
+        CAccentTyped typed = timbre.CTimbreAccentSet(spoken, "WAH-ter");
 
         Assert.Equal("WAH-ter", typed.CAccentTypedText);
-        Assert.Equal("WAH-ter", Assert.Single(editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows).CAccentText);
+        Assert.Equal("WAH-ter", Assert.Single(timbre.CTimbreAccentRead().CTimbreAccentRows).CAccentText);
         engine.TEngineRespellingSave(false);
-        Assert.Equal("ˈwɑːtɚ", Assert.Single(editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows).CAccentText);
+        Assert.Equal("ˈwɑːtɚ", Assert.Single(timbre.CTimbreAccentRead().CTimbreAccentRows).CAccentText);
     }
 
     [Fact]
@@ -236,13 +237,13 @@ public sealed class TTimbre
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         engine.TEngineRespellingSave(false);
-        CEditor editor = TTimbreAccentPrepare(engine, "ˈwɑːtɚ");
-        long spoken = editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows[0].CAccentId;
+        CTimbre timbre = TTimbreAccentPrepare(engine, "ˈwɑːtɚ").TEditorFixtureTimbre;
+        long spoken = timbre.CTimbreAccentRead().CTimbreAccentRows[0].CAccentId;
 
-        CAccentTyped typed = editor.CEditorTimbre.CTimbreAccentSet(spoken, "ˈwɔːtə");
+        CAccentTyped typed = timbre.CTimbreAccentSet(spoken, "ˈwɔːtə");
 
         Assert.Equal("ˈwɔːtə", typed.CAccentTypedText);
-        Assert.Equal("ˈwɔːtə", Assert.Single(editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows).CAccentText);
+        Assert.Equal("ˈwɔːtə", Assert.Single(timbre.CTimbreAccentRead().CTimbreAccentRows).CAccentText);
     }
 
     [Fact]
@@ -258,16 +259,16 @@ public sealed class TTimbre
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TTimbreAccentPrepare(engine, "a");
-        long spoken = editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows[0].CAccentId;
+        TEditorFixture editor = TTimbreAccentPrepare(engine, "a");
+        long spoken = editor.TEditorFixtureTimbre.CTimbreAccentRead().CTimbreAccentRows[0].CAccentId;
         string? answered = null;
-        editor.CEditorDesk.CDeskDraft.CDeskDraftChanged += _ =>
-            answered = editor.CEditorTimbre.CTimbreAccentSet(spoken, "b").CAccentTypedText;
+        editor.TEditorFixtureDesk.CDeskDraft.CDeskDraftChanged += _ =>
+            answered = editor.TEditorFixtureTimbre.CTimbreAccentSet(spoken, "b").CAccentTypedText;
 
-        editor.CEditorDesk.CDeskDraft.CDeskDraftResonate();
+        editor.TEditorFixtureDesk.CDeskDraft.CDeskDraftResonate();
 
         Assert.Equal("a", answered);
-        Assert.Equal("a", Assert.Single(editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows).CAccentText);
+        Assert.Equal("a", Assert.Single(editor.TEditorFixtureTimbre.CTimbreAccentRead().CTimbreAccentRows).CAccentText);
     }
 
     [Fact]
@@ -275,14 +276,14 @@ public sealed class TTimbre
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TTimbreAccentPrepare(engine, "a", "b");
-        long first = editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows[0].CAccentId;
+        CTimbre timbre = TTimbreAccentPrepare(engine, "a", "b").TEditorFixtureTimbre;
+        long first = timbre.CTimbreAccentRead().CTimbreAccentRows[0].CAccentId;
 
-        editor.CEditorTimbre.CTimbrePronunciationAdd(first);
+        timbre.CTimbrePronunciationAdd(first);
 
         Assert.Equal(
             ["a", string.Empty, "b"],
-            editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows.Select(static row => row.CAccentText));
+            timbre.CTimbreAccentRead().CTimbreAccentRows.Select(static row => row.CAccentText));
     }
 
     [Fact]
@@ -290,14 +291,14 @@ public sealed class TTimbre
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TTimbreAccentPrepare(engine, "a");
+        CTimbre timbre = TTimbreAccentPrepare(engine, "a").TEditorFixtureTimbre;
 
-        editor.CEditorTimbre.CTimbrePronunciationAdd(0);
-        editor.CEditorTimbre.CTimbrePronunciationAdd(long.MaxValue);
+        timbre.CTimbrePronunciationAdd(0);
+        timbre.CTimbrePronunciationAdd(long.MaxValue);
 
         Assert.Equal(
             [string.Empty, string.Empty, "a"],
-            editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows.Select(static row => row.CAccentText));
+            timbre.CTimbreAccentRead().CTimbreAccentRows.Select(static row => row.CAccentText));
     }
 
     [Fact]
@@ -305,12 +306,12 @@ public sealed class TTimbre
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TTimbreAccentPrepare(engine, "a", "b");
-        long first = editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows[0].CAccentId;
+        CTimbre timbre = TTimbreAccentPrepare(engine, "a", "b").TEditorFixtureTimbre;
+        long first = timbre.CTimbreAccentRead().CTimbreAccentRows[0].CAccentId;
 
-        editor.CEditorTimbre.CTimbrePronunciationRemove(first);
+        timbre.CTimbrePronunciationRemove(first);
 
-        Assert.Equal("b", Assert.Single(editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows).CAccentText);
+        Assert.Equal("b", Assert.Single(timbre.CTimbreAccentRead().CTimbreAccentRows).CAccentText);
     }
 
     [Fact]
@@ -318,11 +319,11 @@ public sealed class TTimbre
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TTimbreAccentPrepare(engine, "a", "b");
+        CTimbre timbre = TTimbreAccentPrepare(engine, "a", "b").TEditorFixtureTimbre;
 
-        editor.CEditorTimbre.CTimbrePronunciationRemove(0);
+        timbre.CTimbrePronunciationRemove(0);
 
-        Assert.Equal("b", Assert.Single(editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows).CAccentText);
+        Assert.Equal("b", Assert.Single(timbre.CTimbreAccentRead().CTimbreAccentRows).CAccentText);
     }
 
     [Fact]
@@ -330,7 +331,7 @@ public sealed class TTimbre
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CTimbre timbre = TTimbreAccentPrepare(engine).CEditorTimbre;
+        CTimbre timbre = TTimbreAccentPrepare(engine).TEditorFixtureTimbre;
 
         Assert.Equal(
             new CFont("Segoe UI", 40, CFontSlant.CFontSlantTheme),
@@ -353,44 +354,45 @@ public sealed class TTimbre
             timbre.CTimbreFontRead(CFontRole.CFontRoleGlyph));
     }
 
-    internal static CEditor TTimbreAccentPrepare(LEngine engine, params string[] accents)
+    internal static TEditorFixture TTimbreAccentPrepare(LEngine engine, params string[] accents)
     {
-        CEditor editor = TEditorField.TEditorFieldPrepare(engine);
-        long draft = editor.CEditorDesk.CDeskId;
-        editor.CEditorDesk.TDeskDefer(TInterface.TRequestLanguageCreate(draft, "English"));
-        editor.CEditorDesk.TDeskDefer(TInterface.TRequestIpaCreate(draft, "ˈwɔːtə"));
+        TEditorFixture editor = TEditorField.TEditorFieldPrepare(engine);
+        CDesk desk = editor.TEditorFixtureDesk;
+        long draft = desk.CDeskId;
+        desk.TDeskDefer(TInterface.TRequestLanguageCreate(draft, "English"));
+        desk.TDeskDefer(TInterface.TRequestIpaCreate(draft, "ˈwɔːtə"));
         for (int index = 0; index < accents.Length; index++)
         {
-            editor.CEditorDesk.TDeskDefer(TInterface.TPronunciationAdditionCreate(draft, accents[index], index + 1));
+            desk.TDeskDefer(TInterface.TPronunciationAdditionCreate(draft, accents[index], index + 1));
         }
 
         return editor;
     }
 
-    internal static CEditor TTimbreFlaggedPrepare(LEngine engine, string language)
+    internal static TEditorFixture TTimbreFlaggedPrepare(LEngine engine, string language)
     {
-        CEditor editor = TEditorField.TEditorFieldPrepare(engine);
-        long draft = editor.CEditorDesk.CDeskId;
-        editor.CEditorDesk.TDeskDefer(TInterface.TRequestLanguageCreate(draft, language));
-        editor.CEditorDesk.TDeskDefer(TInterface.TRequestIpaCreate(draft, "a˥"));
-        editor.CEditorDesk.TDeskVarietySet(true, 0, "British");
+        TEditorFixture editor = TEditorField.TEditorFieldPrepare(engine);
+        long draft = editor.TEditorFixtureDesk.CDeskId;
+        editor.TEditorFixtureDesk.TDeskDefer(TInterface.TRequestLanguageCreate(draft, language));
+        editor.TEditorFixtureDesk.TDeskDefer(TInterface.TRequestIpaCreate(draft, "a˥"));
+        editor.TEditorFixtureDesk.TDeskVarietySet(true, 0, "British");
         return editor;
     }
 
     internal static CTimbre TTimbrePrepare(Dictionary<string, Func<object?[]?, object?>> answers)
     {
-        return TTimbreEditorPrepare(answers).CEditorTimbre;
+        return TTimbreEditorPrepare(answers).TEditorFixtureTimbre;
     }
 
-    internal static CEditor TTimbreEditorPrepare(Dictionary<string, Func<object?[]?, object?>> answers)
+    internal static TEditorFixture TTimbreEditorPrepare(Dictionary<string, Func<object?[]?, object?>> answers)
     {
         answers.TryAdd("add_LEngineFoldChanged", _ => null);
         answers.TryAdd("remove_LEngineFoldChanged", _ => null);
-        return TInterfaceEditor.TEditorCreate(
+        return new(TInterfaceEditor.TEditorCreate(
             TEngineFake.TEngineStubCreate<LDraftPort>(),
             TInterfaceConduct.TEntryBundleCreate([]),
             TInterfaceConduct.TPhonologyBundleCreate(answers),
             TEngineFake.TEngineCreate<LSettingsPort>(answers),
-            TEngineFake.TEngineStubCreate<LMediaPort>());
+            TEngineFake.TEngineStubCreate<LMediaPort>()));
     }
 }

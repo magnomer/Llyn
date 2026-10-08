@@ -1,5 +1,5 @@
 # TErrandClip.cs
-Hash: `cf1b7f157622f567`
+Hash: `131e14f4053b3523`
 
 ## `public sealed class TErrandClip`
 
@@ -21,7 +21,7 @@ The preview then marks the recording refused, and the taking offers the retry wi
 
 A one-source pack whose recording source answers one British recording.
 
-## `private static async Task<CErrand> TErrandClipStart(CEditor editor, string language)`
+## `private static async Task<CErrand> TErrandClipStart(TEditorFixture editor, string language)`
 
 Opens a new entry with a headword in the language, and waits until its recording search ended.
 A pack without sources ends the search at once, so later steps are the test's own.
@@ -31,11 +31,12 @@ A pack without sources ends the search at once, so later steps are the test's ow
 Starts an engine on the workspace whose recording store faults on every save and fetch.
 Its audit recorder adds each recorded fault to `recorded`.
 
-## `private static CEditor TErrandClipPrepare(LEngine engine)`
+## `private static TEditorFixture TErrandClipPrepare(LEngine engine)`
 
 Builds an editor over the engine whose notices nobody reads.
 
-## `private static CEditor TErrandClipPrepare(LEngine engine, List<string> asked)`
+## `private static TEditorFixture TErrandClipPrepare(LEngine engine, List<string> asked)`
 
 Builds an editor over the engine and restores the input tab's vista, ordered by headword.
 Each notice the editor shows is added to `asked`.
+It answers the fixture, so a test reads only the entry and desk facets.

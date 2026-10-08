@@ -54,31 +54,12 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <ToggleButton
-                    x:Name="PRungDropper"
-                    Grid.Column="0"
-                    Style="{StaticResource Theme.Search.Dropper}"
-                    ToolTip="{DynamicResource Rung.Title}">
-                    <local:QIconImage x:Name="PRungIcon" Width="24" Height="24" />
-                </ToggleButton>
+                <veneer:PChoiceOrder x:Name="PXieshengOrder" Grid.Column="0" />
                 <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
                 <TextBox
                     x:Name="PLodestar"
                     Grid.Column="2"
                     Style="{StaticResource Theme.Search.Field}" />
-                <Popup
-                    x:Name="PRungDropdown"
-                    Width="252"
-                    AllowsTransparency="True"
-                    Placement="Bottom"
-                    StaysOpen="False"
-                    VerticalOffset="6">
-                    <Border Margin="10" Padding="8" Style="{StaticResource Theme.Popup.Surface}">
-                        <StackPanel x:Name="PRungList">
-                            <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Rung.Title}" />
-                        </StackPanel>
-                    </Border>
-                </Popup>
             </Grid>
         </Border>
 
@@ -129,73 +110,7 @@
                 Text="{DynamicResource Xiesheng.KindredEmpty}" />
         </Grid>
 
-        <local:QRail Grid.Row="0" Grid.Column="2" Margin="0,0,0,18">
-            <Border Style="{StaticResource Theme.Command.Group}">
-                <StackPanel Orientation="Horizontal">
-                    <Button
-                        x:Name="PXieshengFresh"
-                        Content="{DynamicResource Scribe.New}"
-                        Style="{StaticResource Theme.Command.Segment}" />
-                    <Button
-                        x:Name="PXieshengStore"
-                        Content="{DynamicResource Scribe.Save}"
-                        IsEnabled="False"
-                        Style="{StaticResource Theme.Command.Primary}" />
-                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
-                    <StackPanel x:Name="PXieshengVoyage" Orientation="Horizontal">
-                        <Button
-                            x:Name="PXieshengEarlier"
-                            IsEnabled="False"
-                            Style="{StaticResource Theme.Command.Segment}"
-                            ToolTip="{DynamicResource Voyage.Retreat}" />
-                        <Button
-                            x:Name="PXieshengLater"
-                            IsEnabled="False"
-                            Style="{StaticResource Theme.Command.Segment}"
-                            ToolTip="{DynamicResource Voyage.Advance}" />
-                    </StackPanel>
-                    <StackPanel x:Name="PXieshengChronicle" Orientation="Horizontal" Visibility="Collapsed">
-                        <Button
-                            x:Name="PXieshengBackward"
-                            IsEnabled="False"
-                            Style="{StaticResource Theme.Command.Segment}"
-                            ToolTip="{DynamicResource Chronicle.Undo}" />
-                        <Button
-                            x:Name="PXieshengForward"
-                            IsEnabled="False"
-                            Style="{StaticResource Theme.Command.Segment}"
-                            ToolTip="{DynamicResource Chronicle.Redo}" />
-                    </StackPanel>
-                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
-                    <Button
-                        x:Name="PXieshengPortrait"
-                        Content="{DynamicResource Scribe.Export}"
-                        Style="{StaticResource Theme.Command.Segment}" />
-                    <Button
-                        x:Name="PXieshengPress"
-                        Content="{DynamicResource Scribe.Print}"
-                        Style="{StaticResource Theme.Command.Segment}" />
-                </StackPanel>
-            </Border>
-            <Border
-                x:Name="PXieshengMode"
-                IsEnabled="False"
-                Style="{StaticResource Theme.Command.Group}">
-                <StackPanel Orientation="Horizontal">
-                    <RadioButton
-                        x:Name="PXieshengViewer"
-                        Content="{DynamicResource Scribe.View}"
-                        GroupName="PXieshengMode"
-                        IsChecked="True"
-                        Style="{StaticResource Theme.Command.Mode}" />
-                    <RadioButton
-                        x:Name="PXieshengScribe"
-                        Content="{DynamicResource Scribe.Edit}"
-                        GroupName="PXieshengMode"
-                        Style="{StaticResource Theme.Command.Mode}" />
-                </StackPanel>
-            </Border>
-        </local:QRail>
+        <veneer:PPanelRail x:Name="PXieshengRail" Grid.Row="0" Grid.Column="2" Margin="0,0,0,18" />
 
         <Border Grid.Row="1" Grid.Column="2" Margin="0,14,0,0" ClipToBounds="True" Style="{StaticResource Theme.Panel.Surface}">
             <Grid>

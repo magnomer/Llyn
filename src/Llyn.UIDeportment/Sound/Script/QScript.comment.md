@@ -1,5 +1,5 @@
 # QScript.cs
-Hash: `fa8283aaf0e3acc4`
+Hash: `748ac38e65c0ad35`
 
 ## `public sealed class QScript : Decorator`
 
@@ -67,7 +67,7 @@ The surface peer, so thirty glyph pictures and their captions are not reported o
 
 ## `public QScript()`
 
-Builds the box from the theme's script styles, unfocusable, collapsed until it has something to show.
+Builds the box from the theme's script styles, collapsed until it has something to show.
 Its list is attached to `QScriptItem.QScriptItemRefine`, which fills each row and its pictures.
 It also listens to the localization catalog, because the age under a picture is the box's own text to redraw.
 There are two boxes for the program's life, one per view, so the listening is never unhooked.
@@ -130,12 +130,12 @@ The head shows only when folded.
 The body is left to `QScriptFoldRefine`, which paints it from the remembered state.
 The box is visible when it has rows, a fetch runs, or a rebuild was handed over, and collapsed otherwise.
 
-## `internal void QScriptRefine(IReadOnlyList<CScriptGroup> groups, bool pending)`
+## `internal event Action<Exception>? QScriptFailureNotice;`
 
-The seam the lectern's sound draws through, mapping the groups to rows and setting whether a fetch runs.
-It only sets values, so the box redraws itself as for any other change.
+What a picture that would not decode runs, handed its fault.
+The editor and the reading view each subscribe once and show it through the ledger under `Display.ScriptFailed`.
 
 ## `internal void QScriptFailureRefine(Exception exception)`
 
-Shows a picture that would not decode through the window's failure notice under `Display.ScriptFailed`.
+Raises `QScriptFailureNotice` for a picture that would not decode.
 The notice is posted to the dispatcher, because a scan or a decode runs inside a layout pass.

@@ -3,7 +3,7 @@ Hash: `34a2b3923db6163d`
 
 ## `public sealed record CLedgerNotice(string CLedgerNoticeKey, string? CLedgerNoticeLabel, string? CLedgerNoticePath);`
 
-The detail a failure notice shows, as `CLedgerNoticeRead` answers it.
+The detail a failure notice shows, as `CLedger.LLedgerNoticeRead` answers it.
 
 **Parameters**
 

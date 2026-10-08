@@ -1,5 +1,5 @@
 # QNotation.cs
-Hash: `d50314ab9e3a7d64`
+Hash: `a365d17064fc01b0`
 
 ## `internal sealed class QNotation`
 
@@ -18,9 +18,9 @@ So the menu implements no contract and decides nothing about a step.
 Hands the notation list its row fill, and wires the lookup button and the menu's close.
 The lookup icon is set here, where the markup held an icon lookup.
 
-## `internal void QNotationIntroduce(CEditor editor)`
+## `internal void QNotationIntroduce(CErrand errand)`
 
-Holds the Conduct editor and repaints the menu on each search step the errand raises.
+Holds the desk's errand and repaints the menu on each search step the errand raises.
 
 ## `private void QPhoneticianRefine(object sender, RoutedEventArgs e)`
 

@@ -1,5 +1,5 @@
 # QScreenBrowser.cs
-Hash: `281237ea9374045d`
+Hash: `af60edbb3eadff2f`
 
 ## `internal sealed class QScreenBrowser`
 
@@ -55,7 +55,7 @@ The load itself is not waited on, because the surface must stay answerable while
 ## `private async Task QScreenLoadRefine()`
 
 The browser environment is the window's, made once and shared by every Screen under it.
-The host is found through the `Tag` of the loaded window above the Screen.
+The window's `QWindowScreen` is found through the `Tag` of the loaded window above the Screen.
 A Screen with no window above it is told so rather than shown an empty box.
 So is a machine without the browser runtime.
 The window drops its environment on that failure so a later attempt is a real attempt.

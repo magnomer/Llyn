@@ -1,10 +1,10 @@
 # QGloss.cs
-Hash: `4ec560ef56146fba`
+Hash: `490c78e4380ecf05`
 
 ## `internal sealed class QGloss`
 
 The Gloss gestures of a card's sentence row, each handed raw to one sentence gate.
-The sentence menu wires the add button and the remove command to it.
+The `QExample` sentence row driver wires the add button and the remove command to it.
 The editor routes typed Gloss text here.
 
 ## `internal QGloss(ObservableCollection<PCard> meaning, ObservableCollection<PCard> collocation, QSentence sentence)`
@@ -13,9 +13,9 @@ Holds the two card lists the editor keeps, which name the row a Gloss sits under
 It holds the sentence driver, which finds the card of a pressed sentence row.
 It has no control of its own to wire.
 
-## `internal void QGlossIntroduce(CEditor editor)`
+## `internal void QGlossIntroduce(CSentence sentence)`
 
-Holds the Conduct editor whose sentence gates the handlers call.
+Holds the Conduct sentence facet whose gates the handlers call.
 
 ## `internal void QGlossAddObserve(object sender, RoutedEventArgs e)`
 

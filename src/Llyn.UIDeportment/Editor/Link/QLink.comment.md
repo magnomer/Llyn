@@ -1,5 +1,5 @@
 # QLink.cs
-Hash: `b20bde9565d9dd67`
+Hash: `0630259d08571549`
 
 ## `internal sealed class QLink`
 
@@ -15,14 +15,21 @@ So each handler asks which card's collection holds the item, as the Tag field do
 
 Holds the editor scope, the two card lists the finds walk, and the Translation dropdown it opens and shuts.
 The field has no fixed control to wire, since its items are built per card.
+So it adds one routed text handler on the scope, which hears every Translation caret.
 
-## `internal void QLinkIntroduce(CEditor editor)`
+## `internal void QLinkIntroduce(CCard card)`
 
-Holds the Conduct editor whose card gates the handlers call.
+Holds the Conduct card facet whose gates the handlers call.
 
-## `internal void QLinkTextObserve(PLinkCaret caret, string text)`
+## `internal static void QLinkShow(PCard card, IReadOnlyList<CTranslationTarget> targets)`
+
+Turns the card's Translation targets into chips and hands them to the card's caret.
+Each chip copies the target's id, headword and language, so no Conduct record rides the caret.
+
+## `private void QLinkTextObserve(object sender, TextChangedEventArgs e)`
 
 Hears each edit of a Translation caret and hands the raw text to the translation gate.
+Any other box's edit is ignored, since its data context is no Translation caret.
 The gate links each completed word that resolves and answers the words that stay, with the dropdown for them.
 Every card the editor builds is heard, whether it was loaded or added by hand.
 
@@ -72,6 +79,7 @@ So the whole box behaves as the one input it looks like.
 ## `internal void QLinkFlagRefine()`
 
 Redraws every card's chips once the workspace's flags have finished loading.
+It walks each card's link chips itself, since the card holds no flag rule.
 
 ## `private void QLinkApply(FrameworkElement container, object item, string? _)`
 

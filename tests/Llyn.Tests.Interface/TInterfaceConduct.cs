@@ -228,7 +228,7 @@ internal static class TInterfaceConduct
     internal static bool TAtelierSplitRead(CAtelier atelier) => atelier.LAtelierSplitRead();
 
     internal static CEstablishment TAtelierEstablishmentRead(this CAtelier atelier) =>
-        atelier.LAtelierEstablishmentRead();
+        atelier.CAtelierWorkspace.LWorkspaceEstablishmentRead();
 
     internal static void TWorkspaceDraftAdd(this CWorkspace workspace, Func<bool> pending, Func<bool, bool> closure) =>
         workspace.LWorkspaceDraftAdd(pending, closure);
@@ -244,6 +244,9 @@ internal static class TInterfaceConduct
 
     internal static void TLedgerRepaintShow(this CAtelier atelier, CEnvoy envoy, string key, Exception exception) =>
         atelier.CAtelierLedger.LLedgerRepaint.LLedgerRepaintShow(envoy, atelier.CAtelierSettingsPort, key, exception);
+
+    internal static CLedgerNotice TLedgerNoticeRead(this CAtelier atelier, Exception exception) =>
+        CLedger.LLedgerNoticeRead(atelier.CAtelierSettingsPort, exception);
 
     internal static CWorkspaceState? TAtelierStateOpen(this CAtelier atelier)
     {

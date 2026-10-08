@@ -1,5 +1,5 @@
 # TTimbre.cs
-Hash: `35fed5e1a4654c41`
+Hash: `93a2a815059b2072`
 
 ## `public sealed class TTimbre`
 
@@ -20,14 +20,16 @@ The font read answers the held draft's pack typography role by role, and an empt
 The flag read is covered by `TTimbreEnsign`, and the reflex block by `TKindred`.
 The playback reads are covered by `TPlayback`.
 
-## `internal static CEditor TTimbreAccentPrepare(LEngine engine, params string[] accents)`
+## `internal static TEditorFixture TTimbreAccentPrepare(LEngine engine, params string[] accents)`
 
 An English editor holding a draft with a primary reading and one accent row per text in `accents`.
+It answers the fixture, so a test reads only the timbre or desk facet it drives.
 `TPlayback` builds its accent rows here too.
 
-## `internal static CEditor TTimbreFlaggedPrepare(LEngine engine, string language)`
+## `internal static TEditorFixture TTimbreFlaggedPrepare(LEngine engine, string language)`
 
 An editor holding a draft in `language` whose primary reading carries the British variety.
+It answers the fixture, so a test reads only the facet it drives.
 `TTimbreEnsign` builds its flagged drafts here too.
 
 ## `internal static CTimbre TTimbrePrepare(Dictionary<string, Func<object?[]?, object?>> answers)`
@@ -35,8 +37,8 @@ An editor holding a draft in `language` whose primary reading carries the Britis
 Builds an editor through `TTimbreEditorPrepare` and hands back its sound facts.
 `TTimbreEnsign` builds its empty desk here too.
 
-## `internal static CEditor TTimbreEditorPrepare(Dictionary<string, Func<object?[]?, object?>> answers)`
+## `internal static TEditorFixture TTimbreEditorPrepare(Dictionary<string, Func<object?[]?, object?>> answers)`
 
 Builds an editor over stub ports, with its sound and settings ports answering `answers`.
 The respelling checks sit on the settings port, so one map answers every sound fact.
-A fact that compares levels with the display's scale reads the editor itself.
+A fact that compares levels with the display's scale reads the fixture's display facet.

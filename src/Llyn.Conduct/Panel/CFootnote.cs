@@ -16,7 +16,7 @@ public sealed class CFootnote
 
     private readonly CEnvoy _cFootnoteEnvoy;
 
-    private readonly CEditor _cFootnoteEditor;
+    private readonly CDesk _cFootnoteDesk;
 
     private LVista? _cFootnoteParent;
 
@@ -24,7 +24,7 @@ public sealed class CFootnote
         LVistaPort vistas,
         LPortraitPort portraits,
         LSettingsPort settings,
-        CEditor editor,
+        CDesk desk,
         CEnvoy envoy,
         Func<bool, bool> finishSeam,
         Func<bool> shownSeam)
@@ -32,13 +32,13 @@ public sealed class CFootnote
         ArgumentNullException.ThrowIfNull(vistas);
         ArgumentNullException.ThrowIfNull(portraits);
         ArgumentNullException.ThrowIfNull(settings);
-        ArgumentNullException.ThrowIfNull(editor);
+        ArgumentNullException.ThrowIfNull(desk);
         ArgumentNullException.ThrowIfNull(envoy);
 
         _cFootnoteVistaPort = vistas;
         _cFootnotePortraitPort = portraits;
         _cFootnoteSettingsPort = settings;
-        _cFootnoteEditor = editor;
+        _cFootnoteDesk = desk;
         _cFootnoteEnvoy = envoy;
         CFootnotePanel = new CPanel(
             envoy,
@@ -46,13 +46,11 @@ public sealed class CFootnote
             vistas,
             "List.LoadFailed",
             null,
-            editor.CEditorDesk.LDeskChangeCheck,
+            desk.LDeskChangeCheck,
             finishSeam,
             shownSeam,
             "Source.Vacant",
             "Source.Unmatched");
-        CFootnotePanel.CPanelCleared += editor.CEditorDesk.CDeskCancel;
-        CFootnotePanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
     }
 
     public CPanel CFootnotePanel { get; }
@@ -109,7 +107,7 @@ public sealed class CFootnote
     {
         long? reference = _cFootnoteParent?.LVistaChosen;
         CFootnotePanel.CPanelFreshOpen();
-        _cFootnoteEditor.CEditorDesk.LDeskRun((drafts, vista) => drafts.LEngineFootnoteStart(vista, reference));
+        _cFootnoteDesk.LDeskRun((drafts, vista) => drafts.LEngineFootnoteStart(vista, reference));
     }
 
     internal Task LFootnotePortraitPrint(CEnvoy envoy, LSettingsPort settings)

@@ -44,6 +44,7 @@ public sealed class CLibrary
             shownSeam);
         CLibraryPanel.CPanelCleared += () => editor.CEditorEntryOpen(null);
         CLibraryPanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
+        editor.CEditorDisplay.CDisplayPanelAttach(CLibraryPanel);
         atelier.CAtelierNavigation.LNavigationTabAdd(
             "Library",
             CLibraryPanel.CPanelLeaveConfirm,

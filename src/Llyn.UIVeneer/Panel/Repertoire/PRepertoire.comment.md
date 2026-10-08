@@ -1,5 +1,5 @@
 # PRepertoire.xaml
-Hash: `511a9c06766aef15`
+Hash: `6960d537e086e69a`
 
 ## `<Rectangle ... Style="{StaticResource Theme.Panel.SeamRow}" />`
 
@@ -15,26 +15,26 @@ A line marks a division, and a box would claim an object.
 
 The ordering button and the search field are one control over the catalog column.
 The action row over the broader column stands in the same top row, as the tenor panel arranges it.
+The ordering picker is the shared `PChoiceOrder`, placed here as `PRepertoireOrder`.
+The panel anchors the picker's menu under the whole bar.
 
 ## `<Border x:Name="PMesh" ... Style="{StaticResource Theme.Search.Bar}">`
 
 The search field and the language filter over the middle column, copied from the tenor panel's `PGrille`.
 `PSortie` narrows the entries referencing the chosen Situation by typed text.
-`PMeshDropper` opens the menu of loaded languages, and `PMeshMark` shows while any is hidden.
+The language filter is the shared `PChoiceFilter`, placed here as `PRepertoireFilter`.
 
-## `<local:QRail Grid.Row="0" Grid.Column="2" Margin="0,0,0,18">`
+## `<veneer:PPanelRail x:Name="PRepertoireRail" Grid.Row="0" Grid.Column="2" Margin="0,0,0,18" />`
 
-The action row of the panel.
-`PRepertoireFresh` opens the editor on a Situation nothing references yet.
+The action row of the panel, the shared `PPanelRail` placed here as `PRepertoireRail`.
+While no Situation is held, Fresh opens the editor on a Situation nothing references yet.
+While one is held, Fresh opens a new Entry that already references it.
 This panel is the only place such a Situation can arise.
 Elsewhere one is written from the card that carries it.
-`PRepertoireStore` saves whichever editor is in front, the Entry in `PEditor` or the Situation in `PScenario`.
+Save stores whichever editor is in front, the Entry in `PEditor` or the Situation in `PScenario`.
 It is enabled only while one of them is, as the library panel enables its save beside its new.
-One slot sits between save and export, and it holds whichever pair the mode asks for.
-Reading shows `PRepertoireEarlier` and `PRepertoireLater`, which walk the window's trail of records.
-Writing shows `PRepertoireBackward` and `PRepertoireForward`, which walk the chronicle of the editor in front.
-Each carries no label, only the arrow and a tooltip, and is lit only while a step is there.
-`PRepertoirePortrait` and `PRepertoirePress` carry the panel's export and print commands.
+Reading walks the window's trail of records, and writing walks the chronicle of the editor in front.
+Export takes the Entry shown, and print takes what is read.
 
 ## `<ItemsControl x:Name="PAtlas">`
 
@@ -57,7 +57,8 @@ It stands in front only while an Entry is shown and the toggle is on the editing
 
 The reading of one Situation, laid out as `PDisplay` lays out an Entry.
 `PVignette` here stands on a Situation rather than on an Entry.
-What it shares with the entry panels is the read-and-edit mechanism, the `PRepertoireScribe` toggle, and the shape of the page.
+It shares the read-and-edit mechanism and the rail's mode toggle with the entry panels.
+It shares the shape of the page with them too.
 The title is drawn as a headword.
 The kind and the reference count stand as chips on the row beneath it.
 That row is where an Entry shows its parts of speech, so a classification stands where a classification stands.
@@ -102,7 +103,7 @@ The three fields are three-state, and an empty field says which kind of empty it
 A never-written field asks for its value, and an unknown one reads the unknown mark until typing clears it.
 The head row is fixed and the description scrolls beneath it, as the editor's head row stands over its cards.
 The editor carries no buttons of its own.
-Save is the rail's `PRepertoireStore`, delete is `PRepertoireBin`, and there is no discard.
+Save is the rail's save, delete is `PRepertoireBin`, and there is no discard.
 That is how the library panel arranges an Entry.
 Leaving the editor asks about the draft as it does there.
 Under the description stand `PScenarioImage` and `PScenarioVideo`, the card's own row templates over the draft's rows.
@@ -121,14 +122,13 @@ It is disabled while an Entry or an unsaved Situation is.
 ## Catalog spacing
 
 The catalog uses the shared Theme.Catalog.Frame and Theme.Catalog.Scroll styles.
-Rows keep 6 device-independent pixels on both sides, with a reserved scrollbar lane so their width stays stable.
+The scroll bar takes its lane only when the list overflows, and the rows then narrow to make room.
 The shared Theme.Catalog.Row preserves the same rounded shape, internal padding and row spacing across browse panels.
 
 ## Hooks
 
 The markup carries no hook.
-The Deportment driver `QRepertoire` sets icons, commands, clicks, text changes, popups and row fills.
-It also folds `PRepertoireVoyage` and `PRepertoireChronicle` by mode.
-`PRepertoireChronicle` starts collapsed because the reader is the side shown first.
+The Deportment driver `QRepertoire` and its helpers set icons, commands, clicks, text changes and row fills.
+The rail and the two pickers are driven by their own shared drivers, which the panel wires.
 The atlas and occurrence rows use `Theme.Catalog.Row` directly, and their fills mark the chosen row.
 The media lists are filled from code, and their styles hide an empty list through the look sheet.

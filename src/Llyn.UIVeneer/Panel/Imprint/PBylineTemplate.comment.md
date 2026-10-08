@@ -15,4 +15,4 @@ The pieces of the name are drawn as runs of one line rather than as three blocks
 A run carries no spacing of its own, so the name reads as one word broken only by weight.
 
 The row names no handler and binds nothing.
-The page merges it, and its driver `QImprint` fills the three runs and subscribes the press on `PBylineRow`.
+The page merges it, and its driver `QAuthor` fills the three runs and subscribes the press on `PBylineRow`.

@@ -1,5 +1,5 @@
 # CCatalog.cs
-Hash: `694963aaa7cffe6d`
+Hash: `fd257a496368d332`
 
 ## `public sealed class CCatalog`
 
@@ -30,7 +30,7 @@ The panels' flag loads reach it, so no driver orders the two engine calls itself
 
 Maps the engine's order into the Conduct shape.
 The two slots are always 0 and 1, one each, so no two fields share a column.
-Any other pair falls back to the particle first, as the engine's default order does.
+Any other pair falls back to `CSentenceOrder.CSentenceOrderPlain`, as the engine's default order does.
 The sentence frame hands it the engine's answer unread, so it names no engine record.
 
 ## `internal static long? LCatalogGlyphOpen(CEnvoy envoy, LSettingsPort settings, Func<long> resolve)`

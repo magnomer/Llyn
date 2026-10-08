@@ -1,5 +1,5 @@
 # PXiesheng.xaml
-Hash: `b686a463f813c9ee`
+Hash: `174da3828cc4c1a6`
 
 ## `<Grid Margin="34,20,34,38">`
 
@@ -9,7 +9,13 @@ The toolbars, the reader and the editor are the shape every catalog tab shares.
 
 ## `<Border x:Name="PRungBar"`
 
-The search bar of the series column, with the ordering dropper beside the field.
+The search bar of the series column, with the ordering picker beside the field.
+The picker is the shared `PChoiceOrder`, placed here as `PXieshengOrder`.
+
+## `<veneer:PPanelRail x:Name="PXieshengRail" Grid.Row="0" Grid.Column="2" Margin="0,0,0,18" />`
+
+The entry actions over the reader, and the reader and editor toggle.
+The command row is the shared `PPanelRail`, placed here as `PXieshengRail`.
 
 ## `<ItemsControl x:Name="PGrove"`
 

@@ -1,5 +1,5 @@
 # CAtelier.cs
-Hash: `6557a281d8393e54`
+Hash: `f47a17e14661cb82`
 
 ## `public sealed class CAtelier : IDisposable`
 
@@ -7,7 +7,7 @@ Conduct's root: the working session over one workspace, which Host builds and ha
 It holds the engine ports, the entry bundle and the session's posture.
 Its gates are the medium-free actions no single panel owns.
 Those are opening, quitting and closing the session, bulletins, vista start, volume and split.
-The workspace path read, the status read and the folder location opener sit here too.
+The workspace path read and the folder location opener sit here too.
 GUI-only state such as window geometry and panel widths never reaches it.
 
 ## `internal CAtelier(LPosture posture, LDraftPort drafts, CEntryBundle entries, LSettingsPort settings, CPhonologyBundle phonology, LMediaPort media, LPortraitPort portraits, Action<Action> marshal)`
@@ -46,7 +46,7 @@ It is internal, since the posture is an engine handle.
 
 ## `internal LDraftPort CAtelierDraftPort { get; }`
 
-A transitional handle for the deportments not yet moved into Conduct.
+The draft port the editors, the mention gates and the panel areas build their desks over.
 It is internal, since every port is an engine handle no driver may hold.
 
 ## `internal CEntryBundle CAtelierEntryBundle { get; }`
@@ -65,7 +65,7 @@ The phonology bundle whose sound and script ports the pronunciation areas read t
 
 ## `internal LMediaPort CAtelierMediaPort { get; }`
 
-The media port that plays sound, sets the volume and opens locations.
+The media port that plays recordings, sets the volume and opens locations.
 
 ## `internal LPortraitPort CAtelierPortraitPort { get; }`
 
@@ -80,12 +80,13 @@ Every editor the atelier or a panel area builds takes it, so no driver attaches 
 
 Builds the input tab's editor and binds it to the input vista at once.
 The input tab has no area of its own, so the atelier builds its editor.
+It registers the editor's change check, finish and vista restore with the workspace, like a panel area.
+So the workspace holds no editor, and the quit and a workspace change reach it as any area.
 
-## `internal void LAtelierInputRestore(CEditor editor)`
+## `private void LAtelierInputRestore(CEditor editor)`
 
 Binds `editor` to the input tab's vista, which lists entries by headword.
 It runs again after a workspace change, so the input tab follows the new workspace.
-The workspace keeps the editor, so the quit can ask whether it holds unsaved work.
 
 ## `internal LVista CAtelierVistaStart(string tab, CSubject? subject, CCatalogOrder fallback, bool blank = false)`
 
@@ -150,13 +151,6 @@ The workspace folder in use, as a settings view shows it in its path field.
 ## `internal static CWorkspaceState LAtelierStateRead(LWorkspaceState state)`
 
 The plain map from the engine's state row to the entries the duplex wings last stood on.
-
-## `internal CEstablishment LAtelierEstablishmentRead()`
-
-The workspace's size and unsaved work, as the status strip shows it.
-The engine judges the singular count and the unit, and the atelier chooses their wording keys.
-The amount is written with one decimal in megabytes and as a whole number in kilobytes.
-Only the workspace's status raise reads it.
 
 ## `public void CAtelierLocationOpen(string target)`
 

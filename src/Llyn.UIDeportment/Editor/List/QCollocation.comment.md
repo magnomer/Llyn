@@ -1,5 +1,5 @@
 # QCollocation.cs
-Hash: `12c65ccfc8ab4677`
+Hash: `3f18052e6475fa98`
 
 ## `internal sealed class QCollocation`
 
@@ -10,9 +10,9 @@ The cards themselves answer to `QCard`, which this list hands its fill to.
 
 Hands the collocation list its cards and the card fill, and hears the add button.
 
-## `internal void QCollocationIntroduce(CEditor editor)`
+## `internal void QCollocationIntroduce(CCardList list)`
 
-Holds the Conduct editor whose add gate the button reaches.
+Holds the Conduct card list facet whose add gate the button reaches.
 
 ## Inline notes
 

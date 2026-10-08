@@ -12,7 +12,7 @@ internal sealed class QPlayback
 
     private readonly MediaPlayer _qPlaybackPlayer;
 
-    private CEditor _cEditor = null!;
+    private CPlayback _cPlayback = null!;
 
     internal QPlayback(FrameworkElement surface, MediaPlayer player)
     {
@@ -26,27 +26,27 @@ internal sealed class QPlayback
 
     private Border QPlaybackTray => QContract.QContractFind<Border>(_qPlaybackSurface, "PPlayback");
 
-    internal void QPlaybackIntroduce(CEditor editor)
+    internal void QPlaybackIntroduce(CEntry entry, CPlayback playback)
     {
-        _cEditor = editor;
-        editor.CEditorEntry.CEntryDraftChanged += QPlaybackRefine;
+        _cPlayback = playback;
+        entry.CEntryDraftChanged += QPlaybackRefine;
     }
 
     private void QPlaybackRefine(CEntryDraft _)
     {
-        QPlaybackAudioRefine(_cEditor.CEditorPlayback.CPlaybackRead());
+        QPlaybackAudioRefine(_cPlayback.CPlaybackRead());
     }
 
     private void QPlaybackActionObserve(object sender, RoutedEventArgs e)
     {
-        QPlaybackActionRefine(_cEditor.CEditorPlayback.CPlaybackStart((sender as FrameworkElement)?.Tag as string));
+        QPlaybackActionRefine(_cPlayback.CPlaybackStart((sender as FrameworkElement)?.Tag as string));
     }
 
     private void QPlaybackActionRefine(Uri? address)
     {
         if (address is null)
         {
-            QPlaybackAudioRefine(_cEditor.CEditorPlayback.CPlaybackRead());
+            QPlaybackAudioRefine(_cPlayback.CPlaybackRead());
             return;
         }
 

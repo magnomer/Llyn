@@ -1,5 +1,5 @@
 # CTaxonomy.cs
-Hash: `a3abd244bea7e477`
+Hash: `25df419e063a091b`
 
 ## `public sealed class CTaxonomy`
 
@@ -14,6 +14,7 @@ Builds the aperture over the tag vista first, under `Tag.LoadFailed`.
 Then it builds the entry editor and the entry list over the atelier's ports.
 The entry list's panel asks the editor's desk before it leaves an entry, and it finishes through the editor.
 A cleared panel cancels the editor's draft, and an edited row opens the editor on it.
+The editor's display follows the panel, so each draft it loads opens the reading view.
 It registers its close with the workspace beside its draft finish and its vista restore.
 It restores its vistas last, so a built area already stands on started vistas.
 

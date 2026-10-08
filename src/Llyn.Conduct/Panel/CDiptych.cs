@@ -55,8 +55,6 @@ public sealed class CDiptych
 
     public bool CDiptychScribeChecked => CDiptychParentEditing || CDiptychChildEditing;
 
-    public bool CDiptychViewerChecked => !CDiptychScribeChecked;
-
     public bool CDiptychModeEnabled => CDiptychChildSide || _cDiptychParent.CPanelModeEnabled;
 
     public bool CDiptychBinEnabled => !CDiptychChildSide && _cDiptychParent.CPanelBinEnabled;

@@ -33,6 +33,10 @@ internal sealed class QEditorSound
 
     private CEditor _cEditor = null!;
 
+    private CLedger _qEditorSoundLedger = null!;
+
+    private CEnvoy _qEditorSoundEnvoy = null!;
+
     internal QEditorSound(FrameworkElement surface)
     {
         ArgumentNullException.ThrowIfNull(surface);
@@ -70,29 +74,34 @@ internal sealed class QEditorSound
 
     private PContour QEditorSoundContour => QContract.QContractFind<PContour>(_qEditorSoundSurface, "PContour");
 
-    internal void QEditorSoundIntroduce(CEditor editor, QVolume volume)
+    internal void QEditorSoundIntroduce(CEditor editor, QVolume volume, CLedger ledger, CEnvoy envoy)
     {
         _cEditor = editor;
-        _qCadence.QCadenceIntroduce(editor);
-        _qNotation.QNotationIntroduce(editor);
-        _qTranscription.QTranscriptionIntroduce(editor);
-        _qGlyph.QGlyphIntroduce(editor);
-        _qAccent.QAccentIntroduce(editor);
-        _qReflex.QReflexIntroduce(editor);
-        _qAnchor.QAnchorIntroduce(CSoundingAnchor.CSoundingAnchorCreate(editor));
-        _qClip.QClipIntroduce(editor);
-        _qPlayback.QPlaybackIntroduce(editor);
+        CDesk desk = editor.CEditorDesk;
+        CErrand errand = desk.CDeskErrand;
+        CEntry entry = editor.CEditorEntry;
+        CTimbre timbre = editor.CEditorTimbre;
+        CTranscription transcription = editor.CEditorTranscription;
+        _qCadence.QCadenceIntroduce(desk, timbre, editor.CEditorSounding, editor.CEditorFold, ledger, envoy);
+        _qNotation.QNotationIntroduce(errand);
+        _qTranscription.QTranscriptionIntroduce(errand, entry, transcription);
+        _qGlyph.QGlyphIntroduce(errand, entry, timbre, transcription);
+        _qAccent.QAccentIntroduce(errand, entry, editor.CEditorPlayback, timbre);
+        _qReflex.QReflexIntroduce(
+            desk, editor.CEditorDisplay.CDisplaySound, entry, editor.CEditorKindred, editor.CEditorSounding);
+        _qAnchor.QAnchorIntroduce(CSoundingAnchor.CSoundingAnchorCreate(editor.CEditorKindred));
+        _qClip.QClipIntroduce(errand);
+        _qPlayback.QPlaybackIntroduce(entry, editor.CEditorPlayback);
         volume.QVolumeSliderAttach(_qEditorSoundSurface);
         volume.QVolumePlayerAttach(_qEditorSoundPlayer);
-        _qEditorSoundPlayer.MediaFailed += QEditorFailureRefine;
+        _qEditorSoundLedger = ledger;
+        _qEditorSoundEnvoy = envoy;
+        _qEditorSoundPlayer.MediaFailed += QEditorFailureObserve;
     }
 
-    private void QEditorFailureRefine(object? sender, ExceptionEventArgs e)
+    private void QEditorFailureObserve(object? sender, ExceptionEventArgs e)
     {
-        if (Window.GetWindow(_qEditorSoundSurface)?.Tag is QWindow host)
-        {
-            host.QWindowFailureRefine("Sound.PlayFailed", e.ErrorException);
-        }
+        _qEditorSoundLedger.CLedgerFailureShow(_qEditorSoundEnvoy, "Sound.PlayFailed", e.ErrorException);
     }
 
     internal void QEditorPlayerRefine()

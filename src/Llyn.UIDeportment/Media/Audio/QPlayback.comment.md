@@ -1,5 +1,5 @@
 # QPlayback.cs
-Hash: `2ea4720cebe2b940`
+Hash: `490b1f668fbb68ec`
 
 ## `internal sealed class QPlayback`
 
@@ -15,9 +15,9 @@ So a headword or language change drops recordings in the engine, and the draft r
 Wires the play button's click and icon once the editor has taken over its markup's name scope.
 The player is the editor's one player, shared with the clip preview and the accent rows.
 
-## `internal void QPlaybackIntroduce(CEditor editor)`
+## `internal void QPlaybackIntroduce(CEntry entry, CPlayback playback)`
 
-Holds the Conduct editor and repaints after each draft change.
+Holds the playback facet and repaints after each entry draft change.
 
 ## `private void QPlaybackRefine(CEntryDraft _)`
 

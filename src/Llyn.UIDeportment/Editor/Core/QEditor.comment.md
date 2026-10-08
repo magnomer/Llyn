@@ -1,5 +1,5 @@
 # QEditor.cs
-Hash: `aa345e0e97c20480`
+Hash: `acc94345d7e05196`
 
 ## `internal sealed class QEditor : QChronicleHost`
 
@@ -33,9 +33,12 @@ The Translation and mention dropdown, which the corpus opens over its transcript
 Says the chronicle may now stand differently, so a host panel can light its own buttons.
 An embedded editor hides its own rail, and the panel around it carries undo and redo.
 
-## `internal void QEditorIntroduce(QWindow host, CEditor editor)`
+## `internal void QEditorIntroduce(CAtelier atelier, CEnvoy envoy, QVolume volume, QMentionMenu mentionMenu, CEditor editor)`
 
-Takes the Conduct editor the panel's area built, and hands it to every part in turn.
+Takes the Conduct editor the panel's area built, and hands each part only the facets it uses.
+The sound half is a composer too, so it takes the whole editor.
+The card half takes the editor's entry, card, sentence, list, field, image and video facets.
+The atelier, envoy, volume and mention menu are the only window facets its parts use.
 It then subscribes each of the editor's notices to one Refine of a part.
 Every subscriber makes at most one Conduct read, so a notice fans out here and never inside a member.
 The draft's writes follow the order the draft once showed in, so the sentence frame precedes the cards.

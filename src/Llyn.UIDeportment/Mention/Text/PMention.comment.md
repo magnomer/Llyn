@@ -1,5 +1,5 @@
 # PMention.cs
-Hash: `e684c80b87352e02`
+Hash: `929e2b72494c0155`
 
 ## `public sealed class PMention : TextBlock`
 
@@ -7,7 +7,7 @@ The one control that draws a sentence a reader may click word by word.
 It knows where every Mention lies and reports a click as surface values over its whole text.
 It never talks to the engine.
 Its host hands it the sentence already divided into pieces by Conduct, so it never divides a text itself.
-The host window reaches it as an inherited attached property the window sets once on itself.
+The host mention menu reaches it as an inherited attached property the menu sets once on the window.
 A block not yet under the window reports no click.
 It places a popup from a ready UTF-16 unit in its whole text, and converts nothing.
 The driver that placed it hands the click values to a gate, which decides what to open.
@@ -16,7 +16,7 @@ Each answers a click in its own way.
 
 ## `public static readonly DependencyProperty PMentionHostProperty`
 
-The host window, inherited down the tree so a block inside a template still finds it.
+The host `QMentionMenu`, inherited down the tree so a block inside a template still finds it.
 The block reads it only to tell whether it stands under the window yet.
 Neither a click nor a popup place calls a gate, so no surface is handed a Conduct object.
 
@@ -28,8 +28,23 @@ It draws nothing, so a change to it redraws nothing.
 
 ## `public PMention()`
 
-The face and size come from the card example keys, as the text block it replaced read them.
-The display sets those keys on itself for the entry it shows, so nothing there changes.
+The face and size come from the card example keys.
+
+## `public static readonly DependencyProperty PMentionPieceProperty`
+
+The pieces to draw, whose change redraws the runs.
+
+## `public static readonly RoutedEvent PMentionClickEvent`
+
+The bubbling event a click on a tagged run raises.
+
+## `public event EventHandler<PMentionArgument> PMentionClick`
+
+Hears a click on a word, so a driver makes the one gate call.
+
+## `public long PMentionSentence`
+
+The CLR face of `PMentionSentenceProperty`.
 
 ## `internal IReadOnlyList<QMentionPiece>? PMentionPiece`
 

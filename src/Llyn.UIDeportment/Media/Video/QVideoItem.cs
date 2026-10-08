@@ -9,101 +9,25 @@ namespace Llyn.UIDeportment;
 
 internal sealed class QVideoItem : INotifyPropertyChanged
 {
-    private CStateValue _qVideoItemLocation = CStateValue.CStateValueEmpty;
-    private CStateValue _qVideoItemTimestamp = CStateValue.CStateValueEmpty;
-    private CScreen? _qVideoItemPreview;
-    private TimeSpan _qVideoItemFrom = TimeSpan.Zero;
-    private TimeSpan? _qVideoItemUntil;
+    private CVideoDraft _qVideoItemDraft;
     private bool _qVideoItemPlaying;
-    private long _qVideoItemRow;
 
     internal QVideoItem(CVideoDraft written)
     {
         ArgumentNullException.ThrowIfNull(written);
 
-        _qVideoItemRow = written.CVideoDraftId;
-
-        QVideoItemLocation = written.CVideoDraftLocation;
-        QVideoItemTimestamp = written.CVideoDraftSpan;
-        QVideoItemPreview = written.CVideoDraftScreen;
-        QVideoItemFrom = written.CVideoDraftFrom;
-        QVideoItemUntil = written.CVideoDraftUntil;
+        _qVideoItemDraft = written;
     }
 
-    public CStateValue QVideoItemLocation
-    {
-        get => _qVideoItemLocation;
-        private set
-        {
-            if (_qVideoItemLocation == value)
-            {
-                return;
-            }
+    public CStateValue QVideoItemLocation => _qVideoItemDraft.CVideoDraftLocation;
 
-            _qVideoItemLocation = value;
-            QVideoItemRaise(nameof(QVideoItemLocation));
-        }
-    }
+    public CStateValue QVideoItemTimestamp => _qVideoItemDraft.CVideoDraftSpan;
 
-    public CStateValue QVideoItemTimestamp
-    {
-        get => _qVideoItemTimestamp;
-        private set
-        {
-            if (_qVideoItemTimestamp == value)
-            {
-                return;
-            }
+    public CScreen? QVideoItemPreview => _qVideoItemDraft.CVideoDraftScreen;
 
-            _qVideoItemTimestamp = value;
-            QVideoItemRaise(nameof(QVideoItemTimestamp));
-        }
-    }
+    public TimeSpan QVideoItemFrom => _qVideoItemDraft.CVideoDraftFrom;
 
-    public CScreen? QVideoItemPreview
-    {
-        get => _qVideoItemPreview;
-        private set
-        {
-            if (Equals(_qVideoItemPreview, value))
-            {
-                return;
-            }
-
-            _qVideoItemPreview = value;
-            QVideoItemRaise(nameof(QVideoItemPreview));
-        }
-    }
-
-    public TimeSpan QVideoItemFrom
-    {
-        get => _qVideoItemFrom;
-        private set
-        {
-            if (_qVideoItemFrom == value)
-            {
-                return;
-            }
-
-            _qVideoItemFrom = value;
-            QVideoItemRaise(nameof(QVideoItemFrom));
-        }
-    }
-
-    public TimeSpan? QVideoItemUntil
-    {
-        get => _qVideoItemUntil;
-        private set
-        {
-            if (_qVideoItemUntil == value)
-            {
-                return;
-            }
-
-            _qVideoItemUntil = value;
-            QVideoItemRaise(nameof(QVideoItemUntil));
-        }
-    }
+    public TimeSpan? QVideoItemUntil => _qVideoItemDraft.CVideoDraftUntil;
 
     public bool QVideoItemPlaying
     {
@@ -120,30 +44,39 @@ internal sealed class QVideoItem : INotifyPropertyChanged
         }
     }
 
-    internal long QVideoItemId => _qVideoItemRow;
-
-    internal static string? QVideoItemOpen(Window owner)
-    {
-        Microsoft.Win32.OpenFileDialog dialog = new()
-        {
-            Title = "Choose a video",
-            Filter = "Video files|*.mp4;*.m4v;*.mov;*.avi;*.wmv;*.mkv;*.webm|All files|*.*",
-            CheckFileExists = true,
-        };
-
-        return dialog.ShowDialog(owner) == true ? dialog.FileName : null;
-    }
+    internal long QVideoItemId => _qVideoItemDraft.CVideoDraftId;
 
     internal void QVideoItemShow(CVideoDraft written)
     {
         ArgumentNullException.ThrowIfNull(written);
 
-        _qVideoItemRow = written.CVideoDraftId;
-        QVideoItemLocation = written.CVideoDraftLocation;
-        QVideoItemTimestamp = written.CVideoDraftSpan;
-        QVideoItemPreview = written.CVideoDraftScreen;
-        QVideoItemFrom = written.CVideoDraftFrom;
-        QVideoItemUntil = written.CVideoDraftUntil;
+        CVideoDraft held = _qVideoItemDraft;
+        _qVideoItemDraft = written;
+
+        if (held.CVideoDraftLocation != written.CVideoDraftLocation)
+        {
+            QVideoItemRaise(nameof(QVideoItemLocation));
+        }
+
+        if (held.CVideoDraftSpan != written.CVideoDraftSpan)
+        {
+            QVideoItemRaise(nameof(QVideoItemTimestamp));
+        }
+
+        if (!Equals(held.CVideoDraftScreen, written.CVideoDraftScreen))
+        {
+            QVideoItemRaise(nameof(QVideoItemPreview));
+        }
+
+        if (held.CVideoDraftFrom != written.CVideoDraftFrom)
+        {
+            QVideoItemRaise(nameof(QVideoItemFrom));
+        }
+
+        if (held.CVideoDraftUntil != written.CVideoDraftUntil)
+        {
+            QVideoItemRaise(nameof(QVideoItemUntil));
+        }
     }
 
     internal static void QVideoItemRefine(FrameworkElement container, object item, string? changed)

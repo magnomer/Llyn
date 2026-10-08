@@ -151,6 +151,7 @@ public sealed class TDisplayFailure
         asked.Clear();
 
         CLecternFanqie fanqie = wing.CWingDisplay.CDisplaySound.CDisplayFanqieRead();
+        wing.CWingDisplay.CDisplaySound.CDisplayReflexRead();
 
         Assert.Empty(fanqie.CLecternFanqieGroups);
         Assert.Contains("Display.AnchorFailed", asked);

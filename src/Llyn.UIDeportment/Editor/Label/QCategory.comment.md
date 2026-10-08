@@ -1,5 +1,5 @@
 # QCategory.cs
-Hash: `4f271babba69ddf3`
+Hash: `f15ccd018c275318`
 
 ## `internal sealed class QCategory`
 
@@ -21,9 +21,9 @@ Holds the marker driver whose field a picked row empties.
 Hands the category list its rows and fill, and ties the marker switch to the category menu.
 The menu hangs under the marker field, where a binding named its target.
 
-## `internal void QCategoryIntroduce(CEditor editor)`
+## `internal void QCategoryIntroduce(CCardSpeech speech)`
 
-Holds the Conduct editor whose speech gate a picked row calls.
+Holds the Conduct speech facet whose gate a picked row calls.
 
 ## `internal void QCategoryRefine(CCategory category)`
 

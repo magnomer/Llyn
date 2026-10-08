@@ -1,5 +1,5 @@
 # TCardSpeech.cs
-Hash: `03126abda2e7ff3a`
+Hash: `8c3b0ecae8677f2f`
 
 ## `public sealed class TCardSpeech`
 
@@ -14,10 +14,11 @@ A typed noun also offers pronoun, since the presets are bare roles matched anywh
 A text matching none carries its own key.
 The read carries the same menu for the settled text, and a desk with no draft carries the empty-catalog key.
 
-## `private static CEditor TCardSpeechPrepare(LEngine engine)`
+## `private static TEditorFixture TCardSpeechPrepare(LEngine engine)`
 
 Builds an input editor, opens an English draft and settles the speech read once.
+It answers the fixture, so each test reads only the speech and desk facets.
 
-## `private static string[] TSpeechNamesRead(CEditor editor)`
+## `private static string[] TSpeechNamesRead(TEditorFixture editor)`
 
 Flushes the deferred requests and answers the names the draft carries.

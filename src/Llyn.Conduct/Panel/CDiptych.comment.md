@@ -1,5 +1,5 @@
 # CDiptych.cs
-Hash: `ee66f025167b59c0`
+Hash: `a0f45daf855a9029`
 
 ## `public sealed class CDiptych`
 
@@ -43,10 +43,6 @@ True while the child side is in front outside edit mode.
 
 True while either side edits.
 
-## `public bool CDiptychViewerChecked`
-
-True while neither side edits.
-
 ## `public bool CDiptychModeEnabled`
 
 Holds on the child side, and on the parent side follows the parent panel.
@@ -60,7 +56,7 @@ Holds only on the parent side, where it follows the parent panel.
 Shows the clicked parent row once the user agrees to leave unsaved changes.
 The mode is read before the question, because a save from the dialog must not drop the scribe.
 The voyage is recorded only after the user agreed, so a refused leave keeps the Forward history.
-A save from the dialog finishes through the session, so the row loads once.
+A save from the dialog closes the desk through the session, so the row loads once.
 
 ## `internal void LDiptychParentShow(long id, bool editing)`
 

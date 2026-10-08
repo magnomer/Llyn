@@ -17,11 +17,9 @@ public sealed class CSoundingAnchor
         _cSoundingAnchorKindred = kindred;
     }
 
-    public static CSoundingAnchor CSoundingAnchorCreate(CEditor editor)
+    public static CSoundingAnchor CSoundingAnchorCreate(CKindred kindred)
     {
-        ArgumentNullException.ThrowIfNull(editor);
-
-        return new CSoundingAnchor(editor.CEditorKindred);
+        return new CSoundingAnchor(kindred);
     }
 
     public CAnchor CSoundingAnchorOpen(long reflex)

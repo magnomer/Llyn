@@ -7,7 +7,7 @@ namespace Llyn.UIDeportment;
 
 internal sealed class QMeaning
 {
-    private CEditor _cEditor = null!;
+    private CCardList _cCardList = null!;
 
     internal QMeaning(FrameworkElement surface, ObservableCollection<PCard> cards, QCard card)
     {
@@ -17,13 +17,13 @@ internal sealed class QMeaning
         QContract.QContractFind<Button>(surface, "PMeaningAddition").Click += QMeaningAddObserve;
     }
 
-    internal void QMeaningIntroduce(CEditor editor)
+    internal void QMeaningIntroduce(CCardList list)
     {
-        _cEditor = editor;
+        _cCardList = list;
     }
 
     private void QMeaningAddObserve(object sender, RoutedEventArgs e)
     {
-        _cEditor.CEditorList.CCardMeaningAdd();
+        _cCardList.CCardMeaningAdd();
     }
 }

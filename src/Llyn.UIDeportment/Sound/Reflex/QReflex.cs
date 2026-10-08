@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -11,20 +10,23 @@ internal sealed class QReflex
 {
     private readonly FrameworkElement _qReflexSurface;
 
-    private readonly ObservableCollection<QReflexItem> _qReflexItem = [];
+    private readonly QReflexList _qReflexRow;
 
     private readonly QAnchor _qReflexAnchor;
 
-    private CEditor _cEditor = null!;
+    private CDisplaySound _cDisplaySound = null!;
+
+    private CKindred _cKindred = null!;
 
     internal QReflex(FrameworkElement surface, QAnchor anchor)
     {
         _qReflexSurface = surface;
         _qReflexAnchor = anchor;
-        QReflexList.ItemsSource = _qReflexItem;
-        QLookItem.QLookItemAttach(QReflexList, QReflexItem.QReflexItemRefine);
-        QQuill.QQuillIntroduce(QReflexList);
-        QAccentControl.QAccentControlAttach(QReflexList);
+        ItemsControl list = QContract.QContractFind<ItemsControl>(_qReflexSurface, "PReflex");
+        _qReflexRow = new QReflexList(list, QReflexFold);
+        _qReflexRow.QReflexListTyped += QReflexTypeObserve;
+        QQuill.QQuillIntroduce(list);
+        QAccentControl.QAccentControlAttach(list);
         StackPanel sound = QContract.QContractFind<StackPanel>(_qReflexSurface, "PEditorSound");
         sound.CommandBindings.Add(new CommandBinding(
             QReflexCommand.QReflexCommandAddition, QReflexAddObserve));
@@ -46,34 +48,34 @@ internal sealed class QReflex
 
     private StackPanel QReflexTable => QContract.QContractFind<StackPanel>(_qReflexSurface, "PReflexTable");
 
-    private ItemsControl QReflexList => QContract.QContractFind<ItemsControl>(_qReflexSurface, "PReflex");
-
     private TextBlock QReflexLoading => QContract.QContractFind<TextBlock>(_qReflexSurface, "PReflexLoading");
 
     private ToggleButton QReflexFold => QContract.QContractFind<ToggleButton>(_qReflexSurface, "PReflexFold");
 
     private Button QReflexRenewal => QContract.QContractFind<Button>(_qReflexSurface, "PReflexRenewal");
 
-    internal void QReflexIntroduce(CEditor editor)
+    internal void QReflexIntroduce(
+        CDesk desk, CDisplaySound displaySound, CEntry entry, CKindred kindred, CSounding sounding)
     {
-        _cEditor = editor;
-        editor.CEditorDesk.CDeskStarted += QReflexAnchorRefine;
-        editor.CEditorSounding.CSoundingChanged += QReflexAnchorRefine;
-        editor.CEditorKindred.CKindredChanged += QReflexPendingRefine;
-        editor.CEditorDisplay.CDisplaySound.CDisplayFoldChanged += QReflexFoldRefine;
-        editor.CEditorEntry.CEntryDraftChanged += QReflexRefine;
+        _cDisplaySound = displaySound;
+        _cKindred = kindred;
+        desk.CDeskStarted += QReflexAnchorRefine;
+        sounding.CSoundingChanged += QReflexAnchorRefine;
+        kindred.CKindredChanged += QReflexPendingRefine;
+        displaySound.CDisplayFoldChanged += QReflexFoldRefine;
+        entry.CEntryDraftChanged += QReflexRefine;
     }
 
     private void QReflexAddObserve(object sender, ExecutedRoutedEventArgs e)
     {
-        _cEditor.CEditorKindred.CKindredAdd((e.Parameter as QReflexItem)?.QReflexItemId);
+        _cKindred.CKindredAdd((e.Parameter as QReflexItem)?.QReflexItemId);
     }
 
     private void QReflexRemoveObserve(object sender, ExecutedRoutedEventArgs e)
     {
         if (e.Parameter is QReflexItem row)
         {
-            _cEditor.CEditorKindred.CKindredRemove(row.QReflexItemId);
+            _cKindred.CKindredRemove(row.QReflexItemId);
         }
     }
 
@@ -81,7 +83,7 @@ internal sealed class QReflex
     {
         if (e.Parameter is QReflexItem row)
         {
-            _cEditor.CEditorKindred.CKindredToggle(row.QReflexItemId);
+            _cKindred.CKindredToggle(row.QReflexItemId);
         }
     }
 
@@ -93,51 +95,45 @@ internal sealed class QReflex
 
     private void QReflexRebuildObserve(object sender, ExecutedRoutedEventArgs e)
     {
-        _cEditor.CEditorKindred.CKindredRebuild();
+        _cKindred.CKindredRebuild();
         QReflexPendingRefine();
     }
 
     private void QReflexTypeObserve(QReflexItem row, CReflexField field, string text)
     {
-        CReflexTyped typed = _cEditor.CEditorKindred.CKindredSet(row.QReflexItemId, field, text);
-        row.QReflexTypeRefine(typed);
-        QReflexItem.QReflexLeadRefine(_qReflexItem, typed.CReflexTypedHeads);
+        CReflexTyped typed = _cKindred.CKindredSet(row.QReflexItemId, field, text);
+        row.QReflexTypeRefine(typed.CReflexTypedRow);
+        _qReflexRow.QReflexLeadRefine(typed.CReflexTypedHeads);
     }
 
     private void QReflexRefine(CEntryDraft _)
     {
-        QReflexRefine(_cEditor.CEditorKindred.CKindredRead());
+        QReflexRefine(_cKindred.CKindredRead());
     }
 
     private void QReflexRefine(CTimbreReflex reflex)
     {
         QReflexBlock.Visibility = QLook.QLookVisibleRead(reflex.CTimbreReflexShown);
         QReflexRenewal.Visibility = QReflexBlock.Visibility;
-        PCard.PCardRowShow(
-            _qReflexItem,
-            reflex.CTimbreReflexRows,
-            static row => row.QReflexItemId,
-            static row => row.CReflexId,
-            QReflexRowRefine,
-            QReflexStateRefine);
-        QReflexItem.QReflexFoldRefine(_qReflexItem, QReflexFold, reflex.CTimbreReflexOpened);
+        _qReflexRow.QReflexListShow(reflex.CTimbreReflexRows);
+        _qReflexRow.QReflexFoldRefine(reflex.CTimbreReflexOpened);
         QReflexAnchorRefine(reflex.CTimbreReflexAnchor);
         QReflexPendingRefine(reflex.CTimbreReflexPending);
     }
 
     private void QReflexAnchorRefine()
     {
-        QReflexAnchorRefine(_cEditor.CEditorKindred.CKindredRead().CTimbreReflexAnchor);
+        QReflexAnchorRefine(_cKindred.CKindredRead().CTimbreReflexAnchor);
     }
 
     private void QReflexAnchorRefine(CLecternAnchor anchor)
     {
-        QReflexItem.QReflexAnchorRefine(_qReflexItem, anchor.CLecternAnchorOffered, anchor.CLecternAnchorTexts);
+        _qReflexRow.QReflexAnchorRefine(anchor);
     }
 
     private void QReflexPendingRefine()
     {
-        QReflexPendingRefine(_cEditor.CEditorKindred.CKindredPending);
+        QReflexPendingRefine(_cKindred.CKindredPending);
     }
 
     private void QReflexPendingRefine(bool pending)
@@ -156,26 +152,12 @@ internal sealed class QReflex
 
     private void QReflexFoldObserve(object sender, RoutedEventArgs e)
     {
-        _cEditor.CEditorDisplay.CDisplaySound.CDisplayReflexToggle(
+        _cDisplaySound.CDisplayReflexToggle(
             QLook.QLookCheckedRead(QReflexFold.IsChecked));
     }
 
     private void QReflexFoldRefine()
     {
-        QReflexItem.QReflexFoldRefine(
-            _qReflexItem, QReflexFold, _cEditor.CEditorDisplay.CDisplaySound.CDisplayFoldOpened);
-    }
-
-    private QReflexItem QReflexRowRefine(CReflex reflex)
-    {
-        QReflexItem row = new(reflex);
-        row.QReflexItemTyped += QReflexTypeObserve;
-        return row;
-    }
-
-    private static QReflexItem QReflexStateRefine(QReflexItem row, CReflex reflex)
-    {
-        row.QReflexStateRefine(reflex);
-        return row;
+        _qReflexRow.QReflexFoldRefine(_cDisplaySound.CDisplayFoldOpened);
     }
 }

@@ -58,10 +58,7 @@ public sealed class CKindred
         }
 
         LEntryDraft content = draft.LDraftContent;
-        IReadOnlyList<CReflex> rows = CRespelling.LRespellingReflexScan(
-            _cKindredReflexPort,
-            content.LEntryDraftLanguage,
-            CReflexDraft.CReflexDraftRead(content.LEntryDraftReflexes));
+        IReadOnlyList<CReflex> rows = LKindredRowRead(content);
         return new CTimbreReflex(
             new LQuillReflex(held, _cKindredReflexPort).LQuillReflexCheck(),
             rows,
@@ -109,15 +106,17 @@ public sealed class CKindred
     {
         ArgumentNullException.ThrowIfNull(text);
 
+        CReflex? held = LKindredFind(reflex);
         if (LKindredQuill is not LQuillReflex quill)
         {
-            return new CReflexTyped(field, LKindredFind(reflex, field), []);
+            return new CReflexTyped(held, []);
         }
 
         switch (field)
         {
             case CReflexField.CReflexFieldLanguage:
-                return new CReflexTyped(field, text, LKindredLeadRead(quill.LQuillLanguageSet(reflex, text)));
+                return new CReflexTyped(
+                    held?.CReflexTypedApply(field, text), LKindredLeadRead(quill.LQuillLanguageSet(reflex, text)));
             case CReflexField.CReflexFieldKind:
                 quill.LQuillKindSet(reflex, text);
                 break;
@@ -137,14 +136,25 @@ public sealed class CKindred
                 throw new ArgumentOutOfRangeException(nameof(field), field, null);
         }
 
-        return new CReflexTyped(field, text, []);
+        return new CReflexTyped(held?.CReflexTypedApply(field, text), []);
     }
 
-    private string LKindredFind(long reflex, CReflexField field)
+    private CReflex? LKindredFind(long reflex)
     {
-        return CKindredRead().CTimbreReflexRows.FirstOrDefault(row => row.CReflexId == reflex) is CReflex row
-            ? row.LReflexFieldRead(field)
-            : string.Empty;
+        if (_cKindredDesk.CDeskDraft.CDeskDraftTenure is not LTenure held || held.LTenureRead() is not { } draft)
+        {
+            return null;
+        }
+
+        return LKindredRowRead(draft.LDraftContent).FirstOrDefault(row => row.CReflexId == reflex);
+    }
+
+    private IReadOnlyList<CReflex> LKindredRowRead(LEntryDraft content)
+    {
+        return CRespelling.LRespellingReflexScan(
+            _cKindredReflexPort,
+            content.LEntryDraftLanguage,
+            CReflexDraft.CReflexDraftRead(content.LEntryDraftReflexes));
     }
 
     private static IReadOnlyList<CReflexHead> LKindredLeadRead(IReadOnlyList<LReflexDraft> typed)

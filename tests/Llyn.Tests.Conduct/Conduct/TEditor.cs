@@ -17,17 +17,17 @@ public sealed class TEditor
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LEntry entry = TEditorEntryPrepare(engine);
-        CEditor editor = TEditorPrepare(engine, "library");
+        TEditorFixture editor = TEditorPrepare(engine, "library");
 
-        editor.CEditorEntryOpen(entry.LEntryId);
+        editor.TEditorFixtureOpen(entry.LEntryId);
 
-        Assert.True(editor.CEditorDesk.CDeskHeld);
-        Assert.Equal(entry.LEntryId, editor.CEditorDesk.CDeskStoredRead());
+        Assert.True(editor.TEditorFixtureDesk.CDeskHeld);
+        Assert.Equal(entry.LEntryId, editor.TEditorFixtureDesk.CDeskStoredRead());
         Assert.Equal("water", editor.TEditorDraftRead()?.CEntryDraftHeadword);
         Assert.Equal(
-            "English", engine.TEngineDraftRead(editor.CEditorDesk.CDeskId)?.LDraftContent.LEntryDraftLanguage);
-        Assert.False(editor.CEditorOwned);
-        Assert.Equal("library", engine.TEngineDraftRead(editor.CEditorDesk.CDeskId)?.LDraftOrigin);
+            "English", engine.TEngineDraftRead(editor.TEditorFixtureDesk.CDeskId)?.LDraftContent.LEntryDraftLanguage);
+        Assert.False(editor.TEditorFixtureOwned);
+        Assert.Equal("library", engine.TEngineDraftRead(editor.TEditorFixtureDesk.CDeskId)?.LDraftOrigin);
     }
 
     [Fact]
@@ -36,11 +36,11 @@ public sealed class TEditor
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LEntry entry = TEditorEntryPrepare(engine);
-        CEditor editor = TEditorPrepare(engine, "library");
+        TEditorFixture editor = TEditorPrepare(engine, "library");
         List<string> shown = [];
-        editor.CEditorEntry.CEntryDraftChanged += draft => shown.Add(draft.CEntryDraftHeadword);
+        editor.TEditorFixtureEntry.CEntryDraftChanged += draft => shown.Add(draft.CEntryDraftHeadword);
 
-        editor.CEditorEntryOpen(entry.LEntryId);
+        editor.TEditorFixtureOpen(entry.LEntryId);
 
         Assert.Equal(["water"], shown);
     }
@@ -50,15 +50,15 @@ public sealed class TEditor
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorPrepare(engine, "input");
-        editor.CEditorEntryOpen(null);
-        editor.CEditorEntry.CEntryHeadwordSet("salt");
+        TEditorFixture editor = TEditorPrepare(engine, "input");
+        editor.TEditorFixtureOpen(null);
+        editor.TEditorFixtureEntry.CEntryHeadwordSet("salt");
 
-        editor.CEditorEntrySave();
+        editor.TEditorFixtureSave();
 
         Assert.Contains(engine.TEngineEntryFind("salt"), row => row.LEntryHeadword == "salt");
-        Assert.True(editor.CEditorDesk.CDeskHeld);
-        Assert.Null(editor.CEditorDesk.CDeskStoredRead());
+        Assert.True(editor.TEditorFixtureDesk.CDeskHeld);
+        Assert.Null(editor.TEditorFixtureDesk.CDeskStoredRead());
     }
 
     [Fact]
@@ -67,15 +67,15 @@ public sealed class TEditor
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LEntry entry = TEditorEntryPrepare(engine);
-        CEditor editor = TEditorPrepare(engine, "library");
-        editor.CEditorEntryOpen(entry.LEntryId);
-        editor.CEditorEntry.CEntryHeadwordSet("waters");
+        TEditorFixture editor = TEditorPrepare(engine, "library");
+        editor.TEditorFixtureOpen(entry.LEntryId);
+        editor.TEditorFixtureEntry.CEntryHeadwordSet("waters");
 
-        editor.CEditorEntrySave();
+        editor.TEditorFixtureSave();
 
-        Assert.Equal(entry.LEntryId, editor.CEditorDesk.CDeskStoredRead());
+        Assert.Equal(entry.LEntryId, editor.TEditorFixtureDesk.CDeskStoredRead());
         Assert.Equal("waters", editor.TEditorDraftRead()?.CEntryDraftHeadword);
-        Assert.False(editor.CEditorDesk.CDeskDraft.CDeskDraftStorable);
+        Assert.False(editor.TEditorFixtureDesk.CDeskDraft.CDeskDraftStorable);
     }
 
     [Fact]
@@ -83,15 +83,15 @@ public sealed class TEditor
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorPrepare(engine, "input");
+        TEditorFixture editor = TEditorPrepare(engine, "input");
         int finished = 0;
-        editor.CEditorDesk.CDeskFinished += _ => finished++;
-        editor.CEditorEntryOpen(null);
+        editor.TEditorFixtureDesk.CDeskFinished += _ => finished++;
+        editor.TEditorFixtureOpen(null);
 
-        editor.CEditorEntrySave();
+        editor.TEditorFixtureSave();
 
         Assert.Equal(0, finished);
-        Assert.True(editor.CEditorDesk.CDeskHeld);
+        Assert.True(editor.TEditorFixtureDesk.CDeskHeld);
     }
 
     [Fact]
@@ -99,20 +99,20 @@ public sealed class TEditor
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorPrepare(engine, "input");
-        editor.CEditorEntryOpen(null);
-        editor.CEditorEntry.CEntryHeadwordSet("salt");
+        TEditorFixture editor = TEditorPrepare(engine, "input");
+        editor.TEditorFixtureOpen(null);
+        editor.TEditorFixtureEntry.CEntryHeadwordSet("salt");
 
         Assert.True(editor.TEditorFinish(true));
 
-        Assert.True(editor.CEditorDesk.CDeskHeld);
-        Assert.Null(editor.CEditorDesk.CDeskStoredRead());
+        Assert.True(editor.TEditorFixtureDesk.CDeskHeld);
+        Assert.Null(editor.TEditorFixtureDesk.CDeskStoredRead());
         Assert.Contains(engine.TEngineEntryFind("salt"), row => row.LEntryHeadword == "salt");
 
         Assert.True(editor.TEditorFinish(false));
 
-        Assert.False(editor.CEditorDesk.CDeskHeld);
-        Assert.False(editor.CEditorDesk.CDeskChronicle.CDeskChronicleRunning);
+        Assert.False(editor.TEditorFixtureDesk.CDeskHeld);
+        Assert.False(editor.TEditorFixtureDesk.CDeskChronicle.CDeskChronicleRunning);
     }
 
     [Fact]
@@ -121,13 +121,13 @@ public sealed class TEditor
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LEntry entry = TEditorEntryPrepare(engine);
-        CEditor editor = TEditorPrepare(engine, "library");
-        editor.CEditorEntryOpen(entry.LEntryId);
-        editor.CEditorEntry.CEntryHeadwordSet("waters");
+        TEditorFixture editor = TEditorPrepare(engine, "library");
+        editor.TEditorFixtureOpen(entry.LEntryId);
+        editor.TEditorFixtureEntry.CEntryHeadwordSet("waters");
 
-        editor.CEditorEntryUndo();
+        editor.TEditorFixtureUndo();
 
-        Assert.Equal(entry.LEntryId, editor.CEditorDesk.CDeskStoredRead());
+        Assert.Equal(entry.LEntryId, editor.TEditorFixtureDesk.CDeskStoredRead());
         Assert.Equal("water", editor.TEditorDraftRead()?.CEntryDraftHeadword);
     }
 
@@ -137,12 +137,12 @@ public sealed class TEditor
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LEntry entry = TEditorEntryPrepare(engine);
-        CEditor editor = TEditorPrepare(engine, "library");
-        editor.CEditorEntryOpen(entry.LEntryId);
+        TEditorFixture editor = TEditorPrepare(engine, "library");
+        editor.TEditorFixtureOpen(entry.LEntryId);
 
-        editor.CEditorDesk.TDeskVarietySet(true, 0, "British");
+        editor.TEditorFixtureDesk.TDeskVarietySet(true, 0, "British");
 
-        Assert.Equal("British", editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentPrimary.CVarietyName);
+        Assert.Equal("British", editor.TEditorFixtureTimbre.CTimbreAccentRead().CTimbreAccentPrimary.CVarietyName);
     }
 
     [Fact]
@@ -151,13 +151,13 @@ public sealed class TEditor
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LEntry entry = TEditorEntryPrepare(engine);
-        CEditor editor = TEditorPrepare(engine, "library");
-        editor.CEditorEntryOpen(entry.LEntryId);
+        TEditorFixture editor = TEditorPrepare(engine, "library");
+        editor.TEditorFixtureOpen(entry.LEntryId);
 
-        editor.CEditorDesk.TDeskVarietySet(true, 0, string.Empty);
-        editor.CEditorDesk.TDeskVarietySet(false, 0, "British");
+        editor.TEditorFixtureDesk.TDeskVarietySet(true, 0, string.Empty);
+        editor.TEditorFixtureDesk.TDeskVarietySet(false, 0, "British");
 
-        Assert.False(editor.CEditorDesk.CDeskDraft.CDeskDraftAltered);
+        Assert.False(editor.TEditorFixtureDesk.CDeskDraft.CDeskDraftAltered);
     }
 
     [Fact]
@@ -165,16 +165,16 @@ public sealed class TEditor
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorPrepare(engine, "input");
+        TEditorFixture editor = TEditorPrepare(engine, "input");
         bool filling = false;
-        editor.CEditorDesk.CDeskDraft.CDeskDraftChanged += _ =>
+        editor.TEditorFixtureDesk.CDeskDraft.CDeskDraftChanged += _ =>
         {
-            filling = editor.CEditorDesk.CDeskDraft.CDeskDraftFilling;
-            editor.CEditorEntry.CEntryHeadwordSet("echo");
+            filling = editor.TEditorFixtureDesk.CDeskDraft.CDeskDraftFilling;
+            editor.TEditorFixtureEntry.CEntryHeadwordSet("echo");
         };
 
-        editor.CEditorEntryOpen(null);
-        editor.CEditorDesk.CDeskDraft.CDeskDraftPersist();
+        editor.TEditorFixtureOpen(null);
+        editor.TEditorFixtureDesk.CDeskDraft.CDeskDraftPersist();
 
         Assert.True(filling);
         Assert.Equal(string.Empty, editor.TEditorDraftRead()?.CEntryDraftHeadword);
@@ -186,9 +186,9 @@ public sealed class TEditor
             "water", "English", "ˈwɔːtə", string.Empty, [TInterface.TCardCreate("a liquid", 1)], []));
     }
 
-    internal static CEditor TEditorPrepare(LEngine engine, string tab)
+    internal static TEditorFixture TEditorPrepare(LEngine engine, string tab)
     {
-        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
+        TEditorFixture editor = new(TInterfaceEditor.TEditorCreate(engine));
         editor.TEditorVistaRestore(engine.TEngineVistaStart(tab, LCatalogOrder.LCatalogOrderHeadword));
         return editor;
     }

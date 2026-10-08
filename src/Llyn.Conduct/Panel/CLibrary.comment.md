@@ -1,5 +1,5 @@
 # CLibrary.cs
-Hash: `4822886c2bfea286`
+Hash: `a3b95d579c260cd2`
 
 ## `public sealed class CLibrary`
 
@@ -14,6 +14,7 @@ Takes the atelier's ports and the marshal, and builds the panel's own entry edit
 It registers its vista restore and its close with the workspace.
 The panel asks the editor's desk before it leaves an entry, and finishes through the editor.
 A cleared panel empties the editor, and an edited row opens in it.
+The editor's display follows the panel, so each draft it loads opens the reading view.
 It restores its vistas last, so a built area already stands on started vistas.
 
 ## `public static CLibrary CLibraryCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`

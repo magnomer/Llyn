@@ -1,5 +1,5 @@
 # QEditorCard.cs
-Hash: `43b74f38ef246e93`
+Hash: `e327065159a87ec0`
 
 ## `internal sealed class QEditorCard`
 
@@ -17,7 +17,8 @@ It keeps the one list of loaded languages, which the language menu fills and eve
 ## `internal QEditorCard(FrameworkElement surface)`
 
 Builds the card drivers over the editor scope in the order the editor once built them.
-The routed text handler is added where the editor once added it, after the language toggle.
+The routed text handler for Gloss and picture fields is added after the language toggle.
+The sentence row's template filler `QExample` is built here and handed to the card driver, its only reader.
 
 ## `internal QSentence QEditorCardSentence { get; }`
 
@@ -28,11 +29,14 @@ The frame must draw before the cards and the mention chips after them, so the ed
 
 The Translation and mention dropdown, handed out so the corpus can open it over its transcript.
 
-## `internal void QEditorCardIntroduce(QWindow host, CEditor editor)`
+## `internal void QEditorCardIntroduce(CAtelier atelier, CEnvoy envoy, QMentionMenu mentionMenu, CEntry entry, CCard card, CSentence sentence, CCardList list, CCardField field, CImage image, CVideo video)`
 
-Hands the Conduct editor to each card driver, in the order the editor once introduced them.
-The card, drag and list drivers are handed it last.
-The language toggle also takes the window's envoy, which its catalog load reports a failure through.
+Takes only the editor facets its drivers use, never the whole editor.
+Hands each card driver its facets, in the order the editor once introduced them.
+The editor reads the list facet once, so the card, drag and list drivers share one.
+They are handed it last.
+The language toggle also takes the envoy, which its catalog load reports a failure through.
+The sentence driver takes the atelier's mention area and the window's mention menu.
 
 ## `internal void QEditorStartRefine()`
 
@@ -46,10 +50,10 @@ Both hand their list to `QCard`, which pairs each control with its card by id.
 
 ## `private void QEditorTextObserve(object sender, TextChangedEventArgs e)`
 
-The one routed handler left, for the fields inside cards that come and go with them.
+The routed handler for the Gloss and picture fields inside cards that come and go with them.
 The spine's own boxes report through their own handlers.
 Card, sentence and film fields are hooked by their own drivers, so no box name is read here.
-A chip field's entry hands its text to that field's text observer, which calls one gate.
+Each chip field's driver adds its own routed handler on the surface, so its caret types stay with it.
 
 ## `private void QEditorFieldObserve(TextBox box)`
 

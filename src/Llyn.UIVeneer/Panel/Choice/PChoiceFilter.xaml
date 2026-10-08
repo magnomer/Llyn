@@ -1,0 +1,38 @@
+<UserControl
+    x:Class="Llyn.UIVeneer.PChoiceFilter"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Llyn.UIDeportment;assembly=Llyn.UIDeportment"
+    >
+
+    <Grid>
+        <ToggleButton
+            x:Name="PChoiceFilterDropper"
+            Style="{StaticResource Theme.Search.Dropper}">
+            <Grid Width="24" Height="24">
+                <local:QIconImage x:Name="PChoiceFilterIcon" Width="24" Height="24" />
+                <Ellipse
+                    x:Name="PChoiceFilterMark"
+                    Width="6"
+                    Height="6"
+                    Margin="0,2,1,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Fill="{StaticResource Theme.Accent}"
+                    Visibility="Collapsed" />
+            </Grid>
+        </ToggleButton>
+        <Popup
+            x:Name="PChoiceFilterDropdown"
+            Width="190"
+            AllowsTransparency="True"
+            HorizontalOffset="-151"
+            Placement="Bottom"
+            StaysOpen="False"
+            VerticalOffset="6">
+            <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
+                <StackPanel x:Name="PChoiceFilterList" />
+            </Border>
+        </Popup>
+    </Grid>
+</UserControl>

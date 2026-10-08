@@ -1,5 +1,5 @@
 # QMeaning.cs
-Hash: `ec7e14491ab73053`
+Hash: `d6f0fefdea6d93fc`
 
 ## `internal sealed class QMeaning`
 
@@ -10,9 +10,9 @@ The cards themselves answer to `QCard`, which this list hands its fill to.
 
 Hands the meaning list its cards and the card fill, and hears the add button.
 
-## `internal void QMeaningIntroduce(CEditor editor)`
+## `internal void QMeaningIntroduce(CCardList list)`
 
-Holds the Conduct editor whose add gate the button reaches.
+Holds the Conduct card list facet whose add gate the button reaches.
 
 ## Inline notes
 

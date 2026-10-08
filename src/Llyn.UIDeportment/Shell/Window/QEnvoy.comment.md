@@ -1,5 +1,5 @@
 # QEnvoy.cs
-Hash: `da58f762afed9c1b`
+Hash: `986742fbcfa55234`
 
 ## `internal sealed class QEnvoy : CEnvoy`
 
@@ -11,9 +11,9 @@ It puts up a message box over the main window, worded from the key Conduct chose
 The device-independent pixels in one inch, the unit the print dialog measures a sheet in.
 The conversion stays here, so Conduct and the engine only ever see inches.
 
-## `internal QEnvoy(Window surface, QWindow host)`
+## `internal QEnvoy(Window surface)`
 
-Takes the loaded window that owns every box, and the host the customs window is placed over.
+Takes the loaded window that owns every box, the customs window included.
 
 ## `public bool CEnvoyConfirm(string key)`
 

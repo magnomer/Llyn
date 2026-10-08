@@ -1,5 +1,5 @@
 # TSoundingAnchor.cs
-Hash: `9b011cab2e19ea4c`
+Hash: `d81e0fda8c148553`
 
 ## `public sealed class TSoundingAnchor`
 
@@ -36,6 +36,7 @@ It answers the entry id and the reading id.
 
 Saves an English entry with one reflex row and no stored reading.
 
-## `private static CEditor TSoundingAnchorPrepare(LEngine engine, long? entry)`
+## `private static TEditorFixture TSoundingAnchorPrepare(LEngine engine, long? entry)`
 
 An input editor on the library vista with `entry` opened on its desk.
+The anchor menu is built over the editor's kindred, so a test hands it the fixture's kindred.

@@ -192,7 +192,7 @@ public sealed class CDisplaySound
     {
         if (LDisplayShown is null || LDisplayEntry is not long id)
         {
-            return new CLecternFanqie([], false, string.Empty, _cDisplayUnanchored, _cDisplayBare);
+            return new CLecternFanqie([], false, string.Empty, _cDisplayBare);
         }
 
         string headword = _cDisplayHeader.CDisplayShown.CLecternHeadword;
@@ -202,7 +202,6 @@ public sealed class CDisplaySound
             _cDisplayVoice.LDisplayFanqieCheck(id),
             _cDisplayNoticed.LLedgerRepaintRead(_cDisplayEnvoy, _cDisplaySettings,
                 () => _cDisplayFanqie.LEngineReadingRead(id, headword), string.Empty, "Display.ReadingFailed"),
-            LDisplayAnchorRead(LDisplayReflexScan()),
             CDisplayFontRead(CFontRole.CFontRoleGlyph));
     }
 

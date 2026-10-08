@@ -1,5 +1,5 @@
 # TEditorFresh.cs
-Hash: `d085429fc639bcb1`
+Hash: `0f095b23c43c4cd3`
 
 ## `public sealed class TEditorFresh`
 

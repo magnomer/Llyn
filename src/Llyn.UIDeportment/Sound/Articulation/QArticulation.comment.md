@@ -1,5 +1,5 @@
 # QArticulation.cs
-Hash: `a8a9ef4c9bc85fdc`
+Hash: `3604f1f3de45e235`
 
 ## `internal sealed class QArticulation`
 
@@ -8,9 +8,11 @@ It holds the two charts and the one thing they do, which is insert a character.
 Both charts are laid out by one builder, since only the table and the chart differ.
 The aid itself is the veneer's `PArticulation` page, nested in the phonology page.
 
-## `internal QArticulation(UserControl surface)`
+## `internal QArticulation(UserControl surface, ToggleButton helper, Rectangle seam)`
 
 Takes the page `QPhonology` pulled under the contract ID `PArticulation`.
+It also takes the fold toggle `PArticulationHelper` and the row seam `PArticulationSeam` of the phonology page.
+The aid owns its own fold, so the toggle's icon is set here.
 It registers the page's own styles with `QLook`, so the glyph chip lights on hover and press.
 It subscribes the lane's size change, and builds no chart until the catalog arrives.
 
@@ -42,6 +44,11 @@ A hidden field is skipped, and the first field still on screen takes the charact
 
 A selection is replaced rather than left in place, which is what typing the character would do.
 The caret is put after the inserted character, so a second character continues the transcription.
+
+### `private void QArticulationFoldRefine(object sender, RoutedEventArgs e)`
+
+Shows the aid and its seam while the fold toggle is checked, and hides both otherwise.
+The toggle is the only state, so the handler reads it and keeps nothing.
 
 ### `private void QArticulationLaneRefine(object sender, SizeChangedEventArgs e)`
 

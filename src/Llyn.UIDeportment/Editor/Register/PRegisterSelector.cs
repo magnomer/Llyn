@@ -11,6 +11,6 @@ internal sealed class PRegisterSelector : DataTemplateSelector
 
     public override DataTemplate? SelectTemplate(object item, DependencyObject container)
     {
-        return item is PRegisterCaret ? PRegisterSelectorCaret : PRegisterSelectorChip;
+        return item is PCaret<PRegister> ? PRegisterSelectorCaret : PRegisterSelectorChip;
     }
 }

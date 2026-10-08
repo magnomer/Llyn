@@ -33,6 +33,21 @@ public sealed class TReflexRow
         Assert.False(TReflexRowCreate("Wu", string.Empty, false).CReflexHiddenCheck(false));
     }
 
+    [Fact]
+    public void ReflexTypedApply_TypedCell_ChangesThatCellAlone()
+    {
+        CReflex held = TReflexRowCreate("Wu", "Go-on", true);
+
+        CReflex language = held.CReflexTypedApply(CReflexField.CReflexFieldLanguage, "Jin");
+        CReflex note = held.CReflexTypedApply(CReflexField.CReflexFieldNote, "literary");
+
+        Assert.Equal(held with { CReflexLanguage = "Jin" }, language);
+        Assert.Equal("Reflex.Jin", language.CReflexLanguageKey);
+        Assert.Equal(held with { CReflexNote = "literary" }, note);
+        Assert.Equal("Wu", held.CReflexLanguage);
+        Assert.True(note.CReflexLead);
+    }
+
     private static CReflex TReflexRowCreate(string language, string kind, bool folded)
     {
         return new CReflex(

@@ -1,5 +1,5 @@
 # CDisplaySound.cs
-Hash: `d705d21e721a8ada`
+Hash: `bbe49df09e613d1d`
 
 ## `public sealed class CDisplaySound`
 
@@ -97,8 +97,7 @@ The editor's reflex block and the reading view share the one fold.
 
 ## `public CLecternFanqie CDisplayFanqieRead()`
 
-The shown entry's rime-book block, ready to draw, with its reading, anchors and font.
-The anchors are read again, since new fanqie rows can change which reflex rows anchor.
+The shown entry's rime-book block, ready to draw, with its reading and font.
 A refused row read shows `Display.FanqieReadFailed` through the voice's failure event.
 
 ## `public void CDisplayFanqieSet(long fanqieId, int rank, bool raise)`

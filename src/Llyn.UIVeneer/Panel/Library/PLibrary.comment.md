@@ -1,5 +1,5 @@
 # PLibrary.xaml
-Hash: `a07825a004abc071`
+Hash: `83b94e908469cc1d`
 
 ## `<Rectangle ... Style="{StaticResource Theme.Panel.SeamRow}" />`
 
@@ -17,13 +17,22 @@ The bar owns the ground and the focus ring, so both children are drawn bare.
 Its outline shows only under the pointer or on focus.
 Its width is the index column's, so its edge is the same as the catalog below.
 The viewer deliberately has no control in this row.
-The dropdowns, icons and field events are wired by the panel, so every part carries a name.
+The ordering picker is the shared `PChoiceOrder`, placed here as `PLibraryOrder`.
+The language filter is the shared `PChoiceFilter`, placed here as `PLibraryFilter`.
+Their own drivers set their icons and popups, and the panel wires the search field.
+
+## `<local:QRail Grid.Row="0" Grid.Column="1" Margin="0,0,0,18">`
+
+The entry actions over the reader, and the reader and editor toggle.
+The command row is the shared `PPanelRail`, placed here as `PLibraryRail`.
+The import button `PLibraryMarkup` stands after it as its own group, because no other panel imports.
+The outer rail sets the shared row and the import group side by side.
+It stacks them when the room is too narrow.
 
 ## `<ItemsControl x:Name="PIndex">`
 
 The entry catalog, one `Theme.Catalog.Row` per Entry.
 Its row parts are named, and the shared index fill paints them and marks the chosen row.
-The command row names its buttons, pairs and icons, and the panel sets each from code.
 
 ## `<veneer:PDisplay x:Name="PDisplay" />`
 
@@ -34,5 +43,5 @@ What differs between the panels is which entry is selected, not how it reads.
 ## Catalog spacing
 
 The catalog uses the shared Theme.Catalog.Frame and Theme.Catalog.Scroll styles.
-Rows keep 6 device-independent pixels on both sides, with a reserved scrollbar lane so their width stays stable.
+The scroll bar takes its lane only when the list overflows, and the rows then narrow to make room.
 The shared Theme.Catalog.Row preserves the same rounded shape, internal padding and row spacing across browse panels.

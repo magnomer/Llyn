@@ -44,25 +44,17 @@
     "hub": { "parts": 5 }
   },
   "ceiling": {
-    "hydra": 1,
-    "kraken": 3,
-    "spider": 3,
-    "chameleon": 7,
-    "octopus": 6,
-    "centipede": 18,
-    "serpent": 5,
-    "hub": 2
+    "hydra": 0,
+    "kraken": 0,
+    "spider": 1,
+    "chameleon": 0,
+    "octopus": 3,
+    "centipede": 1,
+    "serpent": 1,
+    "hub": 0
   },
   "parts": {
-    "Llyn.Infrastructure.LEntryArchive": 2,
-    "Llyn.UIDeportment.PCard": 9,
-    "Llyn.UIDeportment.PSentence": 3,
-    "Llyn.UIDeportment.QWindow": 7,
-    "Llyn.UIDeportment.QCorpus": 9,
-    "Llyn.UIDeportment.QFavorite": 2,
-    "Llyn.UIDeportment.QRepertoire": 7,
-    "Llyn.UIDeportment.QTaxonomy": 3,
-    "Llyn.UIDeportment.QTenor": 3
+    "Llyn.Infrastructure.LEntryArchive": 2
   },
   "console": {
     "top": 25

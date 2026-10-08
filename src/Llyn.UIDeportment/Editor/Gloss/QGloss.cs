@@ -13,7 +13,7 @@ internal sealed class QGloss
 
     private readonly QSentence _qGlossSentence;
 
-    private CEditor _cEditor = null!;
+    private CSentence _cSentence = null!;
 
     internal QGloss(
         ObservableCollection<PCard> meaning,
@@ -25,9 +25,9 @@ internal sealed class QGloss
         _qGlossSentence = sentence;
     }
 
-    internal void QGlossIntroduce(CEditor editor)
+    internal void QGlossIntroduce(CSentence sentence)
     {
-        _cEditor = editor;
+        _cSentence = sentence;
     }
 
     internal void QGlossAddObserve(object sender, RoutedEventArgs e)
@@ -35,7 +35,7 @@ internal sealed class QGloss
         if (sender is FrameworkElement { DataContext: PSentence row }
             && _qGlossSentence.QSentenceCardFind(row) is PCard card)
         {
-            _cEditor.CEditorSentence.CSentenceGlossAdd(card.PCardId, row.PSentenceRow);
+            _cSentence.CSentenceGlossAdd(card.PCardId, row.PSentenceRow);
         }
     }
 
@@ -45,7 +45,7 @@ internal sealed class QGloss
             && e.Source is FrameworkElement { DataContext: PSentence row }
             && _qGlossSentence.QSentenceCardFind(row) is PCard card)
         {
-            _cEditor.CEditorSentence.CSentenceGlossRemove(card.PCardId, row.PSentenceRow, gloss.PGlossId);
+            _cSentence.CSentenceGlossRemove(card.PCardId, row.PSentenceRow, gloss.PGlossId);
         }
     }
 
@@ -53,7 +53,7 @@ internal sealed class QGloss
     {
         if (QGlossSentenceFind(gloss) is (PCard card, PSentence row))
         {
-            _cEditor.CEditorSentence.CSentenceGlossSet(
+            _cSentence.CSentenceGlossSet(
                 card.PCardId, row.PSentenceRow, gloss.PGlossId, text);
         }
     }
@@ -62,7 +62,7 @@ internal sealed class QGloss
     {
         foreach (PCard card in _qGlossMeaning)
         {
-            foreach (PSentence row in card.PCardSentence)
+            foreach (PSentence row in card.PCardSentence.PCardSentenceRow)
             {
                 if (row.PSentenceGloss.Contains(gloss))
                 {
@@ -73,7 +73,7 @@ internal sealed class QGloss
 
         foreach (PCard card in _qGlossCollocation)
         {
-            foreach (PSentence row in card.PCardSentence)
+            foreach (PSentence row in card.PCardSentence.PCardSentenceRow)
             {
                 if (row.PSentenceGloss.Contains(gloss))
                 {

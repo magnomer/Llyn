@@ -1,5 +1,5 @@
 # CShelf.cs
-Hash: `a7b11b8b857948e1`
+Hash: `830c910a5faa8c34`
 
 ## `public sealed class CShelf`
 
@@ -15,6 +15,8 @@ It restores both vistas itself and chooses which side prints or exports.
 Builds the entry editor, the source editor, the Source panel and the entry list over the atelier's ports.
 The source editor also takes the atelier's repaint memory, for its byline's search.
 The Source panel asks the source desk before it leaves a Source, and both panels finish through the session.
+The entry list and the session take only the entry editor's desk.
+So the shelf wires the entry list's clear and edit to the editor and attaches the editor's display to it.
 The session runs over the source desk and defers to the entry editor while the entry side is in front.
 The diptych is built right after it, with the source editor's open and cancel as its seams.
 Its create seam drops the source draft and opens a fresh entry citing the chosen Source.
@@ -26,7 +28,7 @@ The Source panel's row notices reach the entry list, whose rows follow the chose
 The source editor hears its desk notices through `marshal`.
 The shelf keeps `marshal` for the observers it attaches at each vista restore.
 The shelf's close joins the workspace's closures, so it runs when the atelier closes.
-It closes the byline first and then the session's entry editor with its playback.
+It closes the byline first and then the entry editor with its playback.
 It restores its vistas last, so a built area already stands on started vistas.
 
 ## `public static CShelf CShelfCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`

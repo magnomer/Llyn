@@ -1,5 +1,5 @@
 # QClip.cs
-Hash: `04b0756edcc0240a`
+Hash: `73c0340db4b50623`
 
 ## `internal sealed class QClip`
 
@@ -23,9 +23,9 @@ Hands the audio list its fill, and wires the download button and the menu's clos
 The button's open is heard before its start, since placing the popup shuts it and cancels the search.
 The download icon is set here, where the markup held an icon lookup.
 
-## `internal void QClipIntroduce(CEditor editor)`
+## `internal void QClipIntroduce(CErrand errand)`
 
-Holds the Conduct handle and subscribes the menu's Refine to the errand's clip notice.
+Holds the desk's errand and subscribes the menu's Refine to the errand's clip notice.
 
 ## `private void QClipButtonRefine(object sender, RoutedEventArgs e)`
 

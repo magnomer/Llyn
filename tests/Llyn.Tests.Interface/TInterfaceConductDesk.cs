@@ -111,9 +111,10 @@ internal static class TInterfaceConductDesk
             storedSeam,
             TEnvoyFake.TEnvoyCreate(false, []));
 
-    internal static CSession TSessionCreate(CDesk desk, CEditor editor, Func<bool> shownSeam, List<string> seen) =>
+    internal static CSession TSessionCreate(
+        CDesk desk, TEditorFixture editor, Func<bool> shownSeam, List<string> seen) =>
         new(
-            desk, [], editor, shownSeam,
+            desk, [], editor.TEditorFixtureDesk, shownSeam,
             store =>
             {
                 seen.Add(store ? "Finish" : "Drop");

@@ -1,68 +1,94 @@
 # QCorpus.cs
-Hash: `49243208d01c2fdd`
+Hash: `627d781c19c24a28`
 
-## `internal sealed partial class QCorpus : QChronicleHost`
+## `internal sealed class QCorpus : QChronicleHost`
 
 The Corpus panel's driver is the view of the shared stock of sentences itself.
 An Example is independent data owned by nothing, so this panel is not a view of one Entry's sentences.
-It holds the surface, the editor, the display, the drawer, the host, the corpus Conduct and its transcript.
-The browsing behavior lives in `QCorpusBrowse.cs` and the editing in `QCorpusEditor.cs`, one file per responsibility.
-The held draft the editor writes into lives in `QCorpusHold.cs`, apart from the controls it reads.
-The linking gesture over the transcript lives in `QCorpusMention.cs`.
+It holds the surface, the editor, the display, the rail, the two pickers, the atelier and the corpus Conduct.
+The catalog, the quotation column and the reading page are the sub-drivers `QAnthology`, `QQuotation` and `QExcerpt`.
+The sentence field, the speaker chip and the edit Gloss rows are `QTranscript`, `QTranscriptSpeaker` and `QTranscriptGloss`.
+The citation field and the linking gesture are `QTranscriptCitation` and `QTranscriptMention`.
+The print and export commands are `QCorpusPortrait`.
+Each sub-driver holds its own Conduct reference, so the owner's `_cCorpus` serves only the mode, rail, vista and chronicle.
+The panel answers two questions rather than one.
+They are what this sentence is, and where it is quoted.
+An Example is quoted by any number of cards, so rewriting it here rewrites what every one of them quotes.
+The panel offers no way to fork an Example while editing it.
+A sentence meant for one card alone is a new Example on that card.
 It answers the window's undo and redo keys as `QChronicleHost`, attached to its surface since the surface is no driver.
+The driver keeps no draft id, halted flag or timer of its own, since the engine owns each of those.
 
 ## `private CCorpus _cCorpus`
 
 The corpus Conduct, holding the anthology, the quotation list, the transcript, the session and the panel's mode.
 The anthology's vista carries the order, the query, and the languages hidden from the entry column.
 The driver keeps no copy of any of them and asks the Conduct for each where it needs it.
-It is null until the window hands one over, so the command checks answer false before that.
-
-## `private CTranscript _cTranscript`
-
-The corpus's transcript, read once from `CCorpusTranscript` at introduce.
-The mention and hold parts call its gates and hear its notices without reaching through the corpus.
-It is null until the window hands the corpus over.
-
-## `private readonly QDrawer _qDrawer`
-
-The citation drawer, which holds the offered Sources and the row the arrow keys stand on.
-It is built over the drawer's parts here, with the press on a row answered by this driver.
+It is null until the window hands one over.
 
 ## `internal QCorpus(UserControl surface)`
 
 Takes the veneer's page as its surface, which the window pulls by contract ID.
 The page merges the excerpt and transcript dictionaries itself, so their local styles reach the look sheet here.
 The driver attaches itself to the page as the host of the undo and redo keys.
-It adds the print, export and five Mention command bindings, and points the two buttons at their commands.
-It ties the three droppers to their popups, sets every icon, and subscribes every click and field event.
-It attaches the row fills of the catalog, the quotations and the speaker list.
+It builds the rail with Fresh and Portrait shown, and the two pickers over their placed controls.
+It builds the nine sub-drivers over the same page.
+The order picker hangs its menu under the whole `PRank` bar.
+It subscribes the rail's four notices.
 
 ## `private Border QRank`
 
 Each named part of the page is pulled through `QContract.QContractFind` by its contract ID.
 
-## `internal void QCorpusIntroduce(QWindow host)`
+## `internal void QCorpusIntroduce(CAtelier atelier, CEnvoy envoy, QVolume volume, QMentionMenu mentionMenu)`
 
 Builds the corpus Conduct with the window's envoy, and the corpus builds its editor and its desk.
+It keeps only the atelier, which a dropped inquest reads the languages from.
 Only the medium knows its dispatcher, so the marshal the area runs its notices through is built here.
-It reads `_cTranscript` first, since `QTranscriptDeskIntroduce` subscribes the transcript's draft notice on it.
 The desk and the transcript show their own failures through the envoy.
-The lectern follows the quotation panel, whose loads and clears reach the display's area, never the veneer.
-It binds its lists and subscribes to the engine, and reads nothing yet.
-The chip line and the two Gloss lists are attached to their fills, since their templates carry no bindings.
-The transcript Gloss list takes the driver's own fill, which wires the row's handlers around the shared fill.
-It attaches the entry display and editor to the same host and engine, so an Entry is read and written.
-The transcript hears the mention pick through its own command binding, since that field is the corpus's, not the editor's.
-The transcript's mention offer is wired to the editor's picker Refine, so no record is handed across.
-It builds the ordering menu once, from the orderings `CAnthology.CAnthologyOrderRead` offers.
-The engine's change notices drive the mode, and its row notices drive the two lists and the tally chips.
-Its transcript and example notices paint the sheet, and its workspace notice reloads the speaker menu.
+The display view builds the lectern over the editor's display, which Conduct attached to the quotation panel.
+It introduces the nine sub-drivers, which subscribe what they paint.
+The speaker chip takes the atelier and the envoy, never the window, for its workspace reload.
+Both Gloss lists offer the languages of `QTranscriptSpeakerLanguage`.
+The reading page's word offers go to the window's mention menu through `+=`.
+The linking gesture takes the menu itself, and hears each sense pick on the ask it opened.
+So neither this driver nor any sub-driver holds the window.
+It introduces the entry display and editor with the same atelier, envoy and volume.
+So an Entry is read and written.
+`QTranscriptMention` takes the editor's picker after the editor is introduced.
+It hands the rail the window's navigation and itself as the chronicle host.
+It hands both pickers the anthology's aperture, and the order picker the orderings `CAnthology.CAnthologyOrderRead` offers.
+The engine's change notices drive the mode.
 Its failures reach the window through the envoy, which the Conduct asks directly.
-A dropped search empties the search box and the language menu.
-The window fills the example catalog when it restores the stored ordering.
+A dropped search rebuilds the language menu, while the catalog empties its own search box.
+`QCorpusVistaRefine` fills the example catalog when the workspace opens.
 Every change after that arrives as an announcement.
 The panel is current whether or not its tab is in front.
+
+## `internal async void QCorpusVistaRefine()`
+
+Answers `CWorkspaceOpened`, after the corpus restored its vistas, carried the queries and attached its observers.
+The two pickers draw the ordering and the filter mark from the anthology first.
+The flags are loaded before any row is built, since a row keeps the flag it was built with.
+The same read answers the languages for the filter menu and the menu `QTranscriptSpeaker` fills.
+`QAnthology` then paints the catalog, which is the panel's first paint in the workspace.
+Its one request is `CCorpusRowsLoad`, which runs the flag fill and then answers the rows it paints.
+
+## `internal void QCorpusExitRefine()`
+
+Releases the editor's player and has the citation drawer, the speaker chip and both pickers close their popups.
+So none outlives the window.
+It calls no gate.
+The window's exit gate `CAtelierClose` stops the editor and its playback in Conduct.
+
+## `public void QChronicleUndoObserve()`
+
+Steps whichever draft is in front one snapshot back, through the corpus session.
+The step runs inside `QChronicle.QChronicleCaretRefine`, so the caret stays at the end of the focused box.
+
+## `public void QChronicleRedoObserve()`
+
+Steps whichever draft is in front one snapshot forward again.
 
 ## `private bool QCorpusShownCheck()`
 
@@ -71,35 +97,35 @@ Whether the page is on screen, so the engine knows when a notice needs painting.
 ## `private void QCorpusModeUpdate()`
 
 Paints the mode the engine decides.
-It sets which page shows, which toggle is checked and which button is live.
-The transcript is live while the corpus says so, through `CCorpusTranscriptEnabled`.
+The transcript and the reading page each light their own parts.
+The rail takes the scribe verdict, the mode and bin enablement, and the store verdict.
 It ends by refreshing the rail's undo and redo.
 
-## `internal void QCorpusExitRefine()`
+## `private void QCorpusChronicleRefine()`
 
-Releases the editor's player and closes the popups the panel owns, the citation drawer among them.
-So none outlives the window.
-It calls no gate.
-The window's exit gate `CAtelierClose` stops the editor and its playback in Conduct.
+Lights the rail's two chronicle buttons only when the draft in front has a step to walk.
+The session reads the entry editor's chronicle while `PEditor` is in front, and the held sentence's otherwise.
 
-## `private void QCorpusPressCheck(object sender, CanExecuteRoutedEventArgs e)`
+## `private void QCorpusClearRefine()`
 
-Whether the print button is live, which holds while an entry or an example is read.
-An editor on screen prints nothing, because what is printed is what is read.
+Has the filter picker rebuild its language menu after an arrival dropped the query on the vista.
+The picker then redraws its mark.
+`QAnthology` empties its own search box on the same notice.
 
-## `private async void QCorpusPressObserve(object sender, ExecutedRoutedEventArgs e)`
+## `private void QCorpusFreshObserve()`
 
-Hears the print command and calls the one gate `CCorpusPortraitPrint`.
-The gate picks the page from the side in front and asks for the printer.
-The engine builds the page from stored rows.
+The rail's Fresh asks the diptych's gate `CDiptychEntryCreate`, which decides between a fresh Example and a new quotation.
 
-## `private void QCorpusPortraitCheck(object sender, CanExecuteRoutedEventArgs e)`
+## `private void QCorpusBinObserve()`
 
-Whether the export button is live, exactly when an entry is read in the display.
-Print may also act on the other page this panel reads, but export acts on entries alone.
+Hands the rail's delete to the diptych's gate `CDiptychEntryDelete`.
+That gate acts only while an Example and not an Entry is shown.
 
-## `private async void QCorpusPortraitObserve(object sender, ExecutedRoutedEventArgs e)`
+## `private void QCorpusStoreObserve()`
 
-Hears the export command and calls the one gate `CQuotationPortraitExport`, which exports the entry being read.
-The gate asks for the file and the format through the envoy.
-The engine writes the document from stored rows.
+The rail's save, standing for whichever editor is in front.
+
+## `private void QCorpusScribeObserve(bool scribe)`
+
+Asks the diptych's `CDiptychScribeToggle` for the side the rail's toggle names, on whichever side the corpus stands.
+The gate asks before leaving an editor, so unsaved wording is never lost silently.

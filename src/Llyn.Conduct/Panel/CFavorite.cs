@@ -41,6 +41,7 @@ public sealed class CFavorite
             shownSeam);
         CFavoritePanel.CPanelCleared += () => editor.CEditorEntryOpen(null);
         CFavoritePanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
+        editor.CEditorDisplay.CDisplayPanelAttach(CFavoritePanel);
         atelier.CAtelierNavigation.LNavigationTabAdd(
             "Favorite",
             CFavoritePanel.CPanelLeaveConfirm,

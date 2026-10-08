@@ -47,7 +47,6 @@ internal static class QChoice
         {
             RadioButton choice = new()
             {
-                GroupName = list.Name,
                 Tag = QChoiceWord[order],
             };
             choice.SetResourceReference(FrameworkElement.StyleProperty, "Theme.Choice.Order");

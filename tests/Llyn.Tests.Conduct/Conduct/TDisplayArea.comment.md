@@ -1,5 +1,5 @@
 # TDisplayArea.cs
-Hash: `11569ba2b79af9dc`
+Hash: `a27204159e3bc5ec`
 
 ## `public sealed class TDisplayArea`
 
@@ -23,6 +23,7 @@ Closing drops the shown draft and blanks the header.
 ## `public void DisplayPanelAttach_PanelLoadsAndCloses_OpensAndClosesTheView()`
 
 A followed panel's load opens its entry here, and its clearing closes the view.
+The library attaches its display to its panel when it is created, so the test attaches nothing.
 
 ## `public void DisplayEntryResonate_ChosenEntry_ReopensItsDraft()`
 

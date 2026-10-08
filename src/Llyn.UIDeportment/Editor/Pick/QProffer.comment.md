@@ -1,5 +1,5 @@
 # QProffer.cs
-Hash: `ca7b178961c2ebb5`
+Hash: `b6854fd93d6f1f9a`
 
 ## `internal sealed class QProffer`
 
@@ -90,9 +90,9 @@ What is offered is read as what will be taken.
 It carries no line around it, because the shadow already says where it ends.
 A line as well made it a second card.
 
-## `internal void QProfferIntroduce(CEditor editor)`
+## `internal void QProfferIntroduce(CCard card, CSentence sentence)`
 
-Holds the editor area whose gates a pick calls.
+Holds the card and sentence facets whose gates a pick calls.
 
 ## Inline notes
 

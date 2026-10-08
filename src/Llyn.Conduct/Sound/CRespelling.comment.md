@@ -1,5 +1,5 @@
 # CRespelling.cs
-Hash: `cfc0ee8f72ea8f63`
+Hash: `190720faba77d3b3`
 
 ## `public static class CRespelling`
 
@@ -18,6 +18,7 @@ The editor and the reading view's sound area both read their rows here, so the r
 
 One reflex row under the mark its guise picks.
 A phonemic language stands between slashes whatever the switch shows, and any other reading stands bare.
+A blank region becomes null, so a driver binds the region tooltip as it stands.
 The text is resolved by `LRespellingResolve`.
 
 ## `internal static string LRespellingResolve(CRespellingMark mark, string phonetic, string? respelling)`

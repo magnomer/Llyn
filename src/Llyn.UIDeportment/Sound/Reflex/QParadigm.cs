@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -33,11 +32,6 @@ public sealed class QParadigm : Decorator
     {
         get => (IReadOnlyList<QParadigmItem>?)GetValue(QParadigmItemsProperty);
         set => SetValue(QParadigmItemsProperty, value);
-    }
-
-    internal void QParadigmRefine(IReadOnlyList<CParadigmSlot> slots)
-    {
-        SetCurrentValue(QParadigmItemsProperty, QParadigmItem.QParadigmItemScan(slots));
     }
 
     private static void QParadigmItemRefine(FrameworkElement container, object item, string? _)

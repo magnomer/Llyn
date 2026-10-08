@@ -1,5 +1,5 @@
 # CFavorite.cs
-Hash: `c9dcb0ad9b87b64e`
+Hash: `cbae86831e4a3dd1`
 
 ## `public sealed class CFavorite`
 
@@ -15,6 +15,7 @@ It keeps the marshal, so every engine notice it answers runs on the driver's thr
 It registers its vista restore and its close with the workspace.
 The panel asks the editor's desk before it leaves an entry, and finishes through the editor.
 A cleared panel empties the editor, and an edited row opens in it.
+The editor's display follows the panel, so each draft it loads opens the reading view.
 It restores its vistas last, so a built area already stands on started vistas.
 
 ## `public static CFavorite CFavoriteCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`

@@ -1,5 +1,5 @@
 # QVita.cs
-Hash: `6d84b1873a1caa23`
+Hash: `dc331a23b6b6c734`
 
 ## `internal sealed class QVita`
 
@@ -16,9 +16,9 @@ Subscribes the clicks of both lists and attaches the co-author and citation row 
 
 Each part of the page is pulled by its contract ID through `QContract.QContractFind`.
 
-## `internal void QVitaAttach(QWindow host, CGuild guild)`
+## `internal void QVitaAttach(CNavigation navigation, CGuild guild)`
 
-Keeps the window and the panel the guild driver built, for the two row clicks.
+Keeps the atelier's navigation and the panel the guild driver built, for the two row clicks.
 
 ## `internal void QVitaShow(CVita vita, bool held)`
 

@@ -1,5 +1,5 @@
 # TFootnote.cs
-Hash: `3641cf4b0d4eff8f`
+Hash: `ab8f0e092db8fcaa`
 
 ## `public sealed class TFootnote`
 
@@ -10,9 +10,9 @@ A fresh entry opens in the editor, citing the chosen Source, or citing nothing w
 The create and the vista restore are internal helpers, reached through relays.
 Its flag-fill load answers the rows and the catalog languages once the fill has run.
 
-## `private static (CFootnote, LVista, CEditor) TFootnotePrepare(LEngine engine, CAtelier atelier)`
+## `private static (CFootnote, LVista, TEditorFixture) TFootnotePrepare(LEngine engine, CAtelier atelier)`
 
-Builds the list over the atelier's ports and a fresh entry editor.
+Builds the list over the atelier's ports and the desk of a fresh entry editor, held through its fixture.
 It starts a source vista as the parent and a footnote vista that the list and the editor share.
 Its seams answer that the tab is in front and that every finish succeeds.
 

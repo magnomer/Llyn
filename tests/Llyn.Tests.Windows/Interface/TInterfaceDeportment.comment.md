@@ -1,5 +1,5 @@
 # TInterfaceDeportment.cs
-Hash: `b7136271b67f9e05`
+Hash: `ad9481ca967bcfcc`
 
 ## `[assembly: CollectionBehavior(DisableTestParallelization = true)]`
 
@@ -16,7 +16,7 @@ Each relay is transparent and carries no test logic of its own.
 The posture relay builds its deportment over a real workspace folder.
 The index item and caret key relays reach internal statics and make no WPF object.
 The lectern fold relays hand a WPF toggle through, so their caller runs them on an STA thread.
-The reflex type relay wraps typed text in a gate answer without heads and hands it to the row's refine.
+The reflex type relay copies the held row with the typed text and hands it to the row's refine.
 The etymology relays reach the field's internal show and read its two faces by their place in the body.
 The card position attach hangs one card in a bare list with only the number box in its row.
 It lays the list out so its row exists, then hands the row painter to the real item watcher.
@@ -27,9 +27,11 @@ The localization relays build the settings language choice over a given surface 
 The choice is internal, so its create relay hands it back as an object, as the card relay does.
 Its surface holds a WPF combo box, so the caller runs the localization relays on an STA thread.
 
-## `internal static QLectern TLecternCreate(CEditor editor)`
+## `internal static QLecternReflex TLecternCreate(CDisplay display, FrameworkElement surface)`
 
-Builds a lectern over the editor's display alone, with no panel.
+Builds the reflex section over the editor's `display`, pulling its list, loading line and fold toggle from `surface`.
+The section subscribes the toggle itself, so the test wires no observer.
+The surface holds WPF controls, so the caller runs it on an STA thread.
 
 ## `internal static (bool CDeskBackward, bool CDeskForward) TDeskChronicleRead(this CDesk desk)`
 
@@ -59,22 +61,13 @@ Reaches the internal edge rule of the caret keys and answers whether it handled 
 
 Reaches the internal step rule of the caret keys and answers whether it handled the key.
 
-## `internal static void TDisplayFoldSet(this CEditor editor, bool opened)`
+## `internal static void TDisplayFoldSet(this CDisplay display, bool opened)`
 
 Sets the reflex fold of the editor's display open or shut.
 
-## `internal static bool TDisplayFoldRead(this CEditor editor)`
+## `internal static bool TDisplayFoldRead(this CDisplay display)`
 
 Reads whether the reflex fold of the editor's display is open.
-
-## `internal static void TLecternReflexAttach(this QLectern lectern, ItemsControl reflex, UIElement loading, ToggleButton fold)`
-
-Introduces the reflex list, its loading line and its fold toggle to the lectern's sound.
-The toggle is a WPF object, so the caller runs it on an STA thread.
-
-## `internal static void TLecternFoldObserve(this QLectern lectern)`
-
-Has the lectern's sound observe the display fold.
 
 ## `internal static void TEtymologySourceShow(this QEtymology etymology, bool linked)`
 
@@ -84,13 +77,13 @@ Shows the field with no etymon and the source link on or off as given.
 
 Reads the visibility of the field's two faces by their place in the body.
 
-## `internal static void TReflexFoldRefine(IReadOnlyList<QReflexItem> rows, ToggleButton fold, bool opened)`
+## `internal static void TReflexFoldRefine(ToggleButton fold, bool opened)`
 
-Hands the rows and a WPF toggle to the internal fold refine.
+Builds an empty `QReflexList` over a bare list and the WPF toggle, then runs its fold refine.
 
 ## `internal static void TReflexTypeRefine(QReflexItem row, CReflexField field, string text)`
 
-Wraps the typed text in a gate answer without heads and hands it to the row's refine.
+Copies the held row through `CReflex.CReflexTypedApply`, as the gate does, and hands it to the row's refine.
 
 ## `internal static object TCardCreate()`
 
@@ -99,7 +92,7 @@ The card is internal, so the relay hands it back as an object.
 
 ## `internal static void TCardLabelShow(object card, IReadOnlyList<CTagDraft> drafts)`
 
-Shows the tag drafts on the card's label.
+Shows the tag drafts on the card's label through `QLabel.QLabelShow`, as the card list does.
 
 ## `internal static bool TCardLabelMove(object card, int step)`
 

@@ -14,16 +14,16 @@ public sealed class TTranscriptionSheet
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TTranscriptionPrepare(
+        CTranscription transcription = TTranscriptionPrepare(
             engine,
             TTranscriptionSave(
                 engine,
                 [
                     TInterface.TTranscriptionDraftCreate("Jyutping", "hoeng1 gong2"),
                     TInterface.TTranscriptionDraftCreate("Yale", "hēung góng"),
-                ]));
+                ])).TEditorFixtureTranscription;
 
-        CTranscriptionSheet sheet = editor.CEditorTranscription.CTranscriptionRead();
+        CTranscriptionSheet sheet = transcription.CTranscriptionRead();
 
         Assert.True(sheet.CTranscriptionSheetShown);
         Assert.False(sheet.CTranscriptionSheetFree);
@@ -40,10 +40,11 @@ public sealed class TTranscriptionSheet
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TTranscriptionPrepare(
-            engine, TTranscriptionSave(engine, [TInterface.TTranscriptionDraftCreate("Yale", "wai")], "English"));
+        CTranscription transcription = TTranscriptionPrepare(
+            engine, TTranscriptionSave(engine, [TInterface.TTranscriptionDraftCreate("Yale", "wai")], "English"))
+            .TEditorFixtureTranscription;
 
-        CTranscriptionSheet sheet = editor.CEditorTranscription.CTranscriptionRead();
+        CTranscriptionSheet sheet = transcription.CTranscriptionRead();
 
         Assert.False(sheet.CTranscriptionSheetShown);
         Assert.False(sheet.CTranscriptionSheetFree);
@@ -67,19 +68,19 @@ public sealed class TTranscriptionSheet
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TTranscriptionPrepare(
+        TEditorFixture editor = TTranscriptionPrepare(
             engine, TTranscriptionSave(engine, [TInterface.TTranscriptionDraftCreate("Jyutping", "hoeng1")]));
-        Assert.True(editor.CEditorTranscription.CTranscriptionRead().CTranscriptionSheetFree);
+        Assert.True(editor.TEditorFixtureTranscription.CTranscriptionRead().CTranscriptionSheetFree);
 
-        editor.CEditorTranscription.CTranscriptionAdd(0);
-        editor.CEditorTranscription.CTranscriptionAdd(0);
+        editor.TEditorFixtureTranscription.CTranscriptionAdd(0);
+        editor.TEditorFixtureTranscription.CTranscriptionAdd(0);
 
-        CTranscriptionSheet sheet = editor.CEditorTranscription.CTranscriptionRead();
+        CTranscriptionSheet sheet = editor.TEditorFixtureTranscription.CTranscriptionRead();
         Assert.Equal(
             [("Jyutping", "hoeng1"), ("Yale", string.Empty)],
             TTranscriptionRowsRead(sheet));
         Assert.False(sheet.CTranscriptionSheetFree);
-        Assert.True(editor.CEditorDesk.TDeskChangeCheck());
+        Assert.True(editor.TEditorFixtureDesk.TDeskChangeCheck());
     }
 
     [Fact]
@@ -92,22 +93,24 @@ public sealed class TTranscriptionSheet
             TInterface.TTranscriptionDraftCreate("Jyutping", "hoeng1"),
             TInterface.TTranscriptionDraftCreate("Wade", "hsiang"),
         ];
-        CEditor editor = TTranscriptionPrepare(engine, TTranscriptionSave(engine, rows));
-        long jyutping = editor.CEditorTranscription.CTranscriptionRead()
+        CTranscription transcription =
+            TTranscriptionPrepare(engine, TTranscriptionSave(engine, rows)).TEditorFixtureTranscription;
+        long jyutping = transcription.CTranscriptionRead()
             .CTranscriptionSheetRows[0].CTranscriptionRowDraft.CTranscriptionDraftId;
 
-        editor.CEditorTranscription.CTranscriptionAdd(jyutping);
+        transcription.CTranscriptionAdd(jyutping);
 
         Assert.Equal(
             ["Jyutping", "Yale", "Wade"],
-            TTranscriptionRowsRead(editor.CEditorTranscription.CTranscriptionRead()).Select(static row => row.Item1));
+            TTranscriptionRowsRead(transcription.CTranscriptionRead()).Select(static row => row.Item1));
 
-        CEditor other = TTranscriptionPrepare(engine, TTranscriptionSave(engine, rows));
-        other.CEditorTranscription.CTranscriptionAdd(0);
+        CTranscription other =
+            TTranscriptionPrepare(engine, TTranscriptionSave(engine, rows)).TEditorFixtureTranscription;
+        other.CTranscriptionAdd(0);
 
         Assert.Equal(
             ["Jyutping", "Wade", "Yale"],
-            TTranscriptionRowsRead(other.CEditorTranscription.CTranscriptionRead()).Select(static row => row.Item1));
+            TTranscriptionRowsRead(other.CTranscriptionRead()).Select(static row => row.Item1));
     }
 
     [Fact]
@@ -115,7 +118,7 @@ public sealed class TTranscriptionSheet
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TTranscriptionPrepare(
+        TEditorFixture editor = TTranscriptionPrepare(
             engine,
             TTranscriptionSave(
                 engine,
@@ -124,16 +127,17 @@ public sealed class TTranscriptionSheet
                     TInterface.TTranscriptionDraftCreate("Romanization", "hanja"),
                 ],
                 "Korean"));
-        long roman = Assert.Single(editor.CEditorTranscription.CTranscriptionRead().CTranscriptionSheetRows)
+        long roman = Assert.Single(editor.TEditorFixtureTranscription.CTranscriptionRead().CTranscriptionSheetRows)
             .CTranscriptionRowDraft.CTranscriptionDraftId;
 
-        editor.CEditorTranscription.CTranscriptionAdd(roman);
+        editor.TEditorFixtureTranscription.CTranscriptionAdd(roman);
 
         Assert.Equal(
             [("Romanization", "hanja"), ("Phonetic", string.Empty)],
-            TTranscriptionRowsRead(editor.CEditorTranscription.CTranscriptionRead()));
+            TTranscriptionRowsRead(editor.TEditorFixtureTranscription.CTranscriptionRead()));
         Assert.Equal(
-            "Hanja", Assert.Single(editor.CEditorTimbre.CTimbreGlyphRead().CTimbreGlyphRows).CTranscriptionDraftScheme);
+            "Hanja",
+            Assert.Single(editor.TEditorFixtureTimbre.CTimbreGlyphRead().CTimbreGlyphRows).CTranscriptionDraftScheme);
     }
 
     [Fact]
@@ -141,23 +145,23 @@ public sealed class TTranscriptionSheet
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TTranscriptionPrepare(
+        CTranscription transcription = TTranscriptionPrepare(
             engine,
             TTranscriptionSave(
                 engine,
                 [
                     TInterface.TTranscriptionDraftCreate("Jyutping", "hoeng1"),
                     TInterface.TTranscriptionDraftCreate("Wade", "hsiang"),
-                ]));
+                ])).TEditorFixtureTranscription;
         IReadOnlyList<CTranscriptionRow> rows =
-            editor.CEditorTranscription.CTranscriptionRead().CTranscriptionSheetRows;
+            transcription.CTranscriptionRead().CTranscriptionSheetRows;
 
-        editor.CEditorTranscription.CTranscriptionSchemeSet(
+        transcription.CTranscriptionSchemeSet(
             rows[1].CTranscriptionRowDraft.CTranscriptionDraftId, "Yale");
-        editor.CEditorTranscription.CTranscriptionSchemeSet(
+        transcription.CTranscriptionSchemeSet(
             rows[0].CTranscriptionRowDraft.CTranscriptionDraftId, "Yale");
 
-        CTranscriptionSheet sheet = editor.CEditorTranscription.CTranscriptionRead();
+        CTranscriptionSheet sheet = transcription.CTranscriptionRead();
         Assert.Equal([("Jyutping", "hoeng1"), ("Yale", "hsiang")], TTranscriptionRowsRead(sheet));
         Assert.False(sheet.CTranscriptionSheetFree);
     }
@@ -167,7 +171,7 @@ public sealed class TTranscriptionSheet
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TTranscriptionPrepare(
+        TEditorFixture editor = TTranscriptionPrepare(
             engine,
             TTranscriptionSave(
                 engine,
@@ -175,15 +179,15 @@ public sealed class TTranscriptionSheet
                     TInterface.TTranscriptionDraftCreate("Jyutping", "hoeng1"),
                     TInterface.TTranscriptionDraftCreate("Yale", "hēung"),
                 ]));
-        long yale = editor.CEditorTranscription.CTranscriptionRead()
+        long yale = editor.TEditorFixtureTranscription.CTranscriptionRead()
             .CTranscriptionSheetRows[1].CTranscriptionRowDraft.CTranscriptionDraftId;
 
-        editor.CEditorTranscription.CTranscriptionRemove(yale);
+        editor.TEditorFixtureTranscription.CTranscriptionRemove(yale);
 
-        CTranscriptionSheet sheet = editor.CEditorTranscription.CTranscriptionRead();
+        CTranscriptionSheet sheet = editor.TEditorFixtureTranscription.CTranscriptionRead();
         Assert.Equal([("Jyutping", "hoeng1")], TTranscriptionRowsRead(sheet));
         Assert.True(sheet.CTranscriptionSheetFree);
-        Assert.True(editor.CEditorDesk.TDeskChangeCheck());
+        Assert.True(editor.TEditorFixtureDesk.TDeskChangeCheck());
     }
 
     [Fact]
@@ -192,20 +196,20 @@ public sealed class TTranscriptionSheet
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         long entry = TTranscriptionSave(engine, [TInterface.TTranscriptionDraftCreate("Jyutping", "hoeng1")]);
-        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
+        TEditorFixture editor = new(TInterfaceEditor.TEditorCreate(engine));
+        CTranscription transcription = editor.TEditorFixtureTranscription;
         editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
         bool filling = false;
-        editor.CEditorDesk.CDeskDraft.CDeskDraftChanged += _ =>
+        editor.TEditorFixtureDesk.CDeskDraft.CDeskDraftChanged += _ =>
         {
-            filling = editor.CEditorDesk.CDeskDraft.CDeskDraftFilling;
-            editor.CEditorTranscription.CTranscriptionAdd(0);
+            filling = editor.TEditorFixtureDesk.CDeskDraft.CDeskDraftFilling;
+            transcription.CTranscriptionAdd(0);
         };
 
-        editor.CEditorEntryOpen(entry);
+        editor.TEditorFixtureOpen(entry);
 
         Assert.True(filling);
-        Assert.Equal(
-            [("Jyutping", "hoeng1")], TTranscriptionRowsRead(editor.CEditorTranscription.CTranscriptionRead()));
+        Assert.Equal([("Jyutping", "hoeng1")], TTranscriptionRowsRead(transcription.CTranscriptionRead()));
     }
 
     [Fact]
@@ -214,24 +218,24 @@ public sealed class TTranscriptionSheet
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         long entry = TTranscriptionSave(engine, [TInterface.TTranscriptionDraftCreate("Jyutping", "hoeng1")]);
-        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
+        TEditorFixture editor = new(TInterfaceEditor.TEditorCreate(engine));
+        CTranscription transcription = editor.TEditorFixtureTranscription;
         editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
         bool filling = false;
-        editor.CEditorDesk.CDeskDraft.CDeskDraftChanged += _ =>
+        editor.TEditorFixtureDesk.CDeskDraft.CDeskDraftChanged += _ =>
         {
-            filling = editor.CEditorDesk.CDeskDraft.CDeskDraftFilling;
-            foreach (CTranscriptionRow row in editor.CEditorTranscription.CTranscriptionRead().CTranscriptionSheetRows)
+            filling = editor.TEditorFixtureDesk.CDeskDraft.CDeskDraftFilling;
+            foreach (CTranscriptionRow row in transcription.CTranscriptionRead().CTranscriptionSheetRows)
             {
-                editor.CEditorTranscription.CTranscriptionSchemeSet(
+                transcription.CTranscriptionSchemeSet(
                     row.CTranscriptionRowDraft.CTranscriptionDraftId, "Yale");
             }
         };
 
-        editor.CEditorEntryOpen(entry);
+        editor.TEditorFixtureOpen(entry);
 
         Assert.True(filling);
-        Assert.Equal(
-            [("Jyutping", "hoeng1")], TTranscriptionRowsRead(editor.CEditorTranscription.CTranscriptionRead()));
+        Assert.Equal([("Jyutping", "hoeng1")], TTranscriptionRowsRead(transcription.CTranscriptionRead()));
     }
 
     [Fact]
@@ -240,23 +244,23 @@ public sealed class TTranscriptionSheet
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         long entry = TTranscriptionSave(engine, [TInterface.TTranscriptionDraftCreate("Jyutping", "hoeng1")]);
-        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
+        TEditorFixture editor = new(TInterfaceEditor.TEditorCreate(engine));
+        CTranscription transcription = editor.TEditorFixtureTranscription;
         editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
         bool filling = false;
-        editor.CEditorDesk.CDeskDraft.CDeskDraftChanged += _ =>
+        editor.TEditorFixtureDesk.CDeskDraft.CDeskDraftChanged += _ =>
         {
-            filling = editor.CEditorDesk.CDeskDraft.CDeskDraftFilling;
-            foreach (CTranscriptionRow row in editor.CEditorTranscription.CTranscriptionRead().CTranscriptionSheetRows)
+            filling = editor.TEditorFixtureDesk.CDeskDraft.CDeskDraftFilling;
+            foreach (CTranscriptionRow row in transcription.CTranscriptionRead().CTranscriptionSheetRows)
             {
-                editor.CEditorTranscription.CTranscriptionRemove(row.CTranscriptionRowDraft.CTranscriptionDraftId);
+                transcription.CTranscriptionRemove(row.CTranscriptionRowDraft.CTranscriptionDraftId);
             }
         };
 
-        editor.CEditorEntryOpen(entry);
+        editor.TEditorFixtureOpen(entry);
 
         Assert.True(filling);
-        Assert.Equal(
-            [("Jyutping", "hoeng1")], TTranscriptionRowsRead(editor.CEditorTranscription.CTranscriptionRead()));
+        Assert.Equal([("Jyutping", "hoeng1")], TTranscriptionRowsRead(transcription.CTranscriptionRead()));
     }
 
     private static IReadOnlyList<(string, string)> TTranscriptionRowsRead(CTranscriptionSheet sheet)
@@ -269,7 +273,7 @@ public sealed class TTranscriptionSheet
 
     private static CTranscription TTranscriptionEmptyPrepare()
     {
-        return TInterfaceEditor.TEditorCreate(
+        return new TEditorFixture(TInterfaceEditor.TEditorCreate(
                 TEngineFake.TEngineStubCreate<LDraftPort>(),
                 TInterfaceConduct.TEntryBundleCreate([]),
                 TInterfaceConduct.TPhonologyBundleCreate([]),
@@ -278,15 +282,15 @@ public sealed class TTranscriptionSheet
                     ["add_LEngineFoldChanged"] = _ => null,
                     ["remove_LEngineFoldChanged"] = _ => null,
                 }),
-                TEngineFake.TEngineStubCreate<LMediaPort>())
-            .CEditorTranscription;
+                TEngineFake.TEngineStubCreate<LMediaPort>()))
+            .TEditorFixtureTranscription;
     }
 
-    private static CEditor TTranscriptionPrepare(LEngine engine, long entry)
+    private static TEditorFixture TTranscriptionPrepare(LEngine engine, long entry)
     {
-        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
+        TEditorFixture editor = new(TInterfaceEditor.TEditorCreate(engine));
         editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
-        editor.CEditorEntryOpen(entry);
+        editor.TEditorFixtureOpen(entry);
         return editor;
     }
 

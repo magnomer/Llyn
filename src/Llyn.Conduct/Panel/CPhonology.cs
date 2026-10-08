@@ -46,6 +46,7 @@ public sealed class CPhonology
             shownSeam);
         CPhonologyPanel.CPanelCleared += () => editor.CEditorEntryOpen(null);
         CPhonologyPanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
+        editor.CEditorDisplay.CDisplayPanelAttach(CPhonologyPanel);
         atelier.CAtelierNavigation.LNavigationTabAdd(
             "Phonology",
             CPhonologyPanel.CPanelLeaveConfirm,

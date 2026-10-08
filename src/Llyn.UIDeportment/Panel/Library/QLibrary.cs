@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Llyn.Conduct;
 
@@ -16,13 +15,19 @@ internal sealed class QLibrary
 
     private readonly QDisplay _qLibraryDisplay;
 
-    private QWindow _qLibraryHost = null!;
+    private readonly QPanelRail _qLibraryRail;
+
+    private readonly QChoiceOrder _qLibraryOrder;
+
+    private readonly QChoiceFilter _qLibraryFilter;
+
+    private CAtelier _cAtelier = null!;
+
+    private CEnvoy _cEnvoy = null!;
 
     private CLibrary _cLibrary = null!;
 
     private QIndex _qIndex = null!;
-
-    internal QLectern QLibraryLectern { get; private set; } = null!;
 
     internal QLibrary(UserControl surface)
     {
@@ -36,108 +41,46 @@ internal sealed class QLibrary
             new CommandBinding(ApplicationCommands.Print, QLibraryPressObserve, QLibraryPressRefine));
         surface.CommandBindings.Add(new CommandBinding(
             PDisplayCommand.PDisplayCommandPortrait, QLibraryPortraitObserve, QLibraryPressRefine));
-        QLibraryPortrait.Command = PDisplayCommand.PDisplayCommandPortrait;
-        QLibraryPress.Command = ApplicationCommands.Print;
+        _qLibraryRail = new QPanelRail(
+            QContract.QContractFind<UserControl>(surface, "PLibraryRail"), QLibraryBin, QLibraryBinIcon, true, true);
+        _qLibraryOrder = new QChoiceOrder(QContract.QContractFind<UserControl>(surface, "PLibraryOrder"), QOrder);
+        _qLibraryFilter = new QChoiceFilter(QContract.QContractFind<UserControl>(surface, "PLibraryFilter"));
 
-        QChoice.QChoiceDropperAttach(QOrderDropper, QOrderDropdown, QOrder);
-        QChoice.QChoiceDropperAttach(QSieveDropper, QSieveDropdown, QSieveDropper);
-
-        QOrderIcon.QIconSource = QIcon.QIconResolve("sort", 24);
-        QSieveIcon.QIconSource = QIcon.QIconResolve("filter", 24);
-        QLibraryBinIcon.QIconSource = QIcon.QIconResolve("delete", 24);
         QInquiry.SetResourceReference(QField.QFieldHintProperty, "List.Search");
-        QLibraryFresh.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("new", 24));
-        QLibraryStore.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("save", 24));
-        QLibraryEarlier.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("retreat", 24));
-        QLibraryLater.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("advance", 24));
-        QLibraryBackward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("undo", 24));
-        QLibraryForward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("redo", 24));
         QLibraryMarkup.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("import", 24));
-        QLibraryPortrait.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("export", 24));
-        QLibraryPress.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("print", 24));
-        QLibraryViewer.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("view", 24));
-        QLibraryScribe.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("edit", 24));
 
         QInquiry.TextChanged += QInquiryObserve;
-        QLibraryFresh.Click += QLibraryFreshObserve;
-        QLibraryStore.Click += QLibraryStoreObserve;
-        QLibraryEarlier.Click += QLibraryRetreatObserve;
-        QLibraryLater.Click += QLibraryAdvanceObserve;
-        QLibraryBackward.Click += QLibraryUndoObserve;
-        QLibraryForward.Click += QLibraryRedoObserve;
         QLibraryMarkup.Click += QLibraryMarkupObserve;
-        QLibraryViewer.Click += QLibraryViewerObserve;
-        QLibraryScribe.Click += QLibraryScribeObserve;
-        QLibraryBin.Click += QLibraryBinObserve;
+        _qLibraryRail.QPanelRailCreated += QLibraryFreshObserve;
+        _qLibraryRail.QPanelRailStored += QLibraryStoreObserve;
+        _qLibraryRail.QPanelRailToggled += QLibraryScribeObserve;
+        _qLibraryRail.QPanelRailDeleted += QLibraryBinObserve;
     }
 
     private Border QOrder => QContract.QContractFind<Border>(_qLibrarySurface, "POrder");
 
-    private ToggleButton QOrderDropper => QContract.QContractFind<ToggleButton>(_qLibrarySurface, "POrderDropper");
-
-    private QIconImage QOrderIcon => QContract.QContractFind<QIconImage>(_qLibrarySurface, "POrderIcon");
-
     private TextBox QInquiry => QContract.QContractFind<TextBox>(_qLibrarySurface, "PInquiry");
 
-    private ToggleButton QSieveDropper => QContract.QContractFind<ToggleButton>(_qLibrarySurface, "PSieveDropper");
-
-    private QIconImage QSieveIcon => QContract.QContractFind<QIconImage>(_qLibrarySurface, "PSieveIcon");
-
-    private FrameworkElement QSieveMark => QContract.QContractFind<FrameworkElement>(_qLibrarySurface, "PSieveMark");
-
-    private Popup QOrderDropdown => QContract.QContractFind<Popup>(_qLibrarySurface, "POrderDropdown");
-
-    private StackPanel QOrderList => QContract.QContractFind<StackPanel>(_qLibrarySurface, "POrderList");
-
-    private Popup QSieveDropdown => QContract.QContractFind<Popup>(_qLibrarySurface, "PSieveDropdown");
-
-    private StackPanel QSieveList => QContract.QContractFind<StackPanel>(_qLibrarySurface, "PSieveList");
-
-    private Button QLibraryFresh => QContract.QContractFind<Button>(_qLibrarySurface, "PLibraryFresh");
-
-    private Button QLibraryStore => QContract.QContractFind<Button>(_qLibrarySurface, "PLibraryStore");
-
-    private StackPanel QLibraryVoyage => QContract.QContractFind<StackPanel>(_qLibrarySurface, "PLibraryVoyage");
-
-    private Button QLibraryEarlier => QContract.QContractFind<Button>(_qLibrarySurface, "PLibraryEarlier");
-
-    private Button QLibraryLater => QContract.QContractFind<Button>(_qLibrarySurface, "PLibraryLater");
-
-    private StackPanel QLibraryChronicle =>
-        QContract.QContractFind<StackPanel>(_qLibrarySurface, "PLibraryChronicle");
-
-    private Button QLibraryBackward => QContract.QContractFind<Button>(_qLibrarySurface, "PLibraryBackward");
-
-    private Button QLibraryForward => QContract.QContractFind<Button>(_qLibrarySurface, "PLibraryForward");
-
     private Button QLibraryMarkup => QContract.QContractFind<Button>(_qLibrarySurface, "PLibraryMarkup");
-
-    private Button QLibraryPortrait => QContract.QContractFind<Button>(_qLibrarySurface, "PLibraryPortrait");
-
-    private Button QLibraryPress => QContract.QContractFind<Button>(_qLibrarySurface, "PLibraryPress");
-
-    private Border QLibraryMode => QContract.QContractFind<Border>(_qLibrarySurface, "PLibraryMode");
-
-    private RadioButton QLibraryViewer => QContract.QContractFind<RadioButton>(_qLibrarySurface, "PLibraryViewer");
-
-    private RadioButton QLibraryScribe => QContract.QContractFind<RadioButton>(_qLibrarySurface, "PLibraryScribe");
 
     private Button QLibraryBin => QContract.QContractFind<Button>(_qLibrarySurface, "PLibraryBin");
 
     private QIconImage QLibraryBinIcon => QContract.QContractFind<QIconImage>(_qLibrarySurface, "PLibraryBinIcon");
 
-    internal void QLibraryIntroduce(QWindow host)
+    internal void QLibraryIntroduce(CAtelier atelier, CEnvoy envoy, QVolume volume, QMentionMenu mentionMenu)
     {
-        _qLibraryHost = host;
+        ArgumentNullException.ThrowIfNull(atelier);
+
+        _cAtelier = atelier;
+        _cEnvoy = envoy;
         _cLibrary = CLibrary.CLibraryCreate(
-            host.QWindowAtelier,
+            atelier,
             QLibraryShownCheck,
-            host.QWindowEnvoy,
+            envoy,
             QObserver.QObserverCreate<Action>(static run => run()));
         CPanel panel = _cLibrary.CLibraryPanel;
-        QLectern lectern = new(_cLibrary.CLibraryEditor.CEditorDisplay, panel);
-        QLibraryLectern = lectern;
-        QChoice.QChoiceOrderBuild(QOrderList, "Order", QOrderObserve, CLibrary.CLibraryOrderRead());
+        _qLibraryOrder.QChoiceOrderIntroduce(panel.CPanelAperture, "Order", CLibrary.CLibraryOrderRead());
+        _qLibraryFilter.QChoiceFilterIntroduce(panel.CPanelAperture, "Sieve");
         panel.CPanelChanged += QLibraryModeRefine;
         _cLibrary.CLibraryWorkspaceChanged += QLibraryWorkspaceRefine;
         _cLibrary.CLibraryEditor.CEditorDesk.CDeskStateChanged += QLibraryStoreRefine;
@@ -146,11 +89,15 @@ internal sealed class QLibrary
             QContract.QContractFind<ItemsControl>(_qLibrarySurface, "PIndex"),
             QContract.QContractFind<FrameworkElement>(_qLibrarySurface, "PIndexEmpty"));
 
-        _qLibraryDisplay.QDisplayIntroduce(host, lectern);
+        _qLibraryDisplay.QDisplayIntroduce(
+            atelier, envoy, volume, mentionMenu, _cLibrary.CLibraryEditor.CEditorDisplay);
+        atelier.CAtelierMention.CMentionSenseChosen +=
+            _qLibraryDisplay.QDisplayLectern.QLecternCompass.QCompassSpotlightRefine;
 
-        _qLibraryEditor.QEditorIntroduce(host, _cLibrary.CLibraryEditor);
+        _qLibraryEditor.QEditorIntroduce(atelier, envoy, volume, mentionMenu, _cLibrary.CLibraryEditor);
 
         _qLibraryEditor.QEditorChronicleChanged += QLibraryChronicleRefine;
+        _qLibraryRail.QPanelRailIntroduce(atelier.CAtelierNavigation, _qLibraryEditor);
     }
 
     private void QLibraryIndexIntroduce(ItemsControl view, FrameworkElement empty)
@@ -170,36 +117,24 @@ internal sealed class QLibrary
         _qIndex.QIndexRefine(rows, _cLibrary.CLibraryPanel.CPanelAperture.CApertureEmpty);
     }
 
-    private void QLibrarySieveRefine()
-    {
-        QSieveMark.Visibility = QLook.QLookVisibleRead(_cLibrary.CLibraryPanel.CPanelAperture.CApertureFiltered);
-    }
-
     private void QLibraryStoreRefine()
     {
-        QLibraryStore.IsEnabled = _cLibrary.CLibraryEditor.CEditorDesk.CDeskDraft.CDeskDraftStorable;
+        _qLibraryRail.QEntryStorableRefine(_cLibrary.CLibraryEditor.CEditorDesk.CDeskDraft.CDeskDraftStorable);
     }
 
     internal async void QLibraryVistaRefine()
     {
-        QChoice.QChoiceOrderApply(QOrderDropdown, _cLibrary.CLibraryPanel.CPanelAperture.CApertureOrder);
-        QLibrarySieveRefine();
+        _qLibraryOrder.QChoiceOrderRefine();
+        _qLibraryFilter.QChoiceFilterRefine();
         CEnsignSheet<IReadOnlyList<CVistaRow>> sheet =
             await _cLibrary.CLibraryRowsLoad(QEnsignImage.QEnsignDraw);
-        QSieveBuild(sheet.CEnsignSheetLanguages);
+        _qLibraryFilter.QChoiceFilterBuild(sheet.CEnsignSheetLanguages);
         QLibraryIndexRefine(sheet.CEnsignSheetRows);
-    }
-
-    private void QSieveBuild(IReadOnlyList<string> languages)
-    {
-        QChoice.QChoiceFilterBuild(
-            QSieveList, languages, _cLibrary.CLibraryPanel.CPanelAperture.CApertureFilter, QSieveObserve);
     }
 
     private async void QLibraryWorkspaceRefine()
     {
-        await _qLibraryHost.QWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad(
-            _qLibraryHost.QWindowEnvoy, QEnsignImage.QEnsignDraw);
+        await _cAtelier.CAtelierCatalog.CCatalogEnsignLoad(_cEnvoy, QEnsignImage.QEnsignDraw);
     }
 
     private bool QLibraryShownCheck()
@@ -217,34 +152,12 @@ internal sealed class QLibrary
         CPanel panel = _cLibrary.CLibraryPanel;
         _qLibraryEditor.QEditorVisibleRefine(QLook.QLookVisibleRead(panel.CPanelEditing));
         _qLibraryDisplay.QDisplayVisibleRefine(QLook.QLookVisibleRead(panel.CPanelViewerChecked));
-        QLibraryViewer.IsChecked = panel.CPanelViewerChecked;
-        QLibraryScribe.IsChecked = panel.CPanelScribeChecked;
-        QLibraryVoyage.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
-        QLibraryChronicle.Visibility = QLook.QLookVisibleRead(panel.CPanelScribeChecked);
-        QLibraryMode.IsEnabled = panel.CPanelModeEnabled;
-        QLibraryBin.IsEnabled = panel.CPanelBinEnabled;
+        _qLibraryRail.QPanelRailRefine(panel.CPanelScribeChecked, panel.CPanelModeEnabled, panel.CPanelBinEnabled);
     }
 
     private void QInquiryObserve(object sender, TextChangedEventArgs e)
     {
         _cLibrary.CLibraryPanel.CPanelAperture.CApertureQuerySet(QInquiry.Text);
-    }
-
-    private void QOrderObserve(object sender, RoutedEventArgs e)
-    {
-        _cLibrary.CLibraryPanel.CPanelAperture.CApertureOrderSet(QChoice.QChoiceOrderRead(sender));
-        QOrderRefine();
-    }
-
-    private void QOrderRefine()
-    {
-        QOrderDropper.IsChecked = false;
-    }
-
-    private void QSieveObserve(object sender, RoutedEventArgs e)
-    {
-        _cLibrary.CLibraryPanel.CPanelAperture.CApertureFilterSet(QChoice.QChoiceFilterRead(sender));
-        QLibrarySieveRefine();
     }
 
     private void QLibraryIndexObserve(object sender, RoutedEventArgs e)
@@ -264,27 +177,22 @@ internal sealed class QLibrary
         }
     }
 
-    private void QLibraryFreshObserve(object sender, RoutedEventArgs e)
+    private void QLibraryFreshObserve()
     {
         _cLibrary.CLibraryPanel.CPanelEntryCreate();
     }
 
-    private void QLibraryViewerObserve(object sender, RoutedEventArgs e)
+    private void QLibraryScribeObserve(bool scribe)
     {
-        _cLibrary.CLibraryPanel.CPanelScribeToggle(false);
+        _cLibrary.CLibraryPanel.CPanelScribeToggle(scribe);
     }
 
-    private void QLibraryScribeObserve(object sender, RoutedEventArgs e)
-    {
-        _cLibrary.CLibraryPanel.CPanelScribeToggle(true);
-    }
-
-    private void QLibraryStoreObserve(object sender, RoutedEventArgs e)
+    private void QLibraryStoreObserve()
     {
         _cLibrary.CLibraryEditor.CEditorEntrySave();
     }
 
-    private void QLibraryBinObserve(object sender, RoutedEventArgs e)
+    private void QLibraryBinObserve()
     {
         _cLibrary.CLibraryPanel.CPanelBin.CPanelBinDelete();
     }
@@ -309,36 +217,9 @@ internal sealed class QLibrary
         await _cLibrary.CLibraryPortraitExport();
     }
 
-    internal void QLibraryVoyageRefine(bool past, bool future)
-    {
-        QLibraryEarlier.IsEnabled = past;
-        QLibraryLater.IsEnabled = future;
-    }
-
-    private void QLibraryRetreatObserve(object sender, RoutedEventArgs e)
-    {
-        _qLibraryHost.QWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
-    }
-
-    private void QLibraryAdvanceObserve(object sender, RoutedEventArgs e)
-    {
-        _qLibraryHost.QWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
-    }
-
-    private void QLibraryUndoObserve(object sender, RoutedEventArgs e)
-    {
-        _qLibraryEditor.QChronicleUndoObserve();
-    }
-
-    private void QLibraryRedoObserve(object sender, RoutedEventArgs e)
-    {
-        _qLibraryEditor.QChronicleRedoObserve();
-    }
-
     private void QLibraryChronicleRefine()
     {
         (bool undo, bool redo) = _cLibrary.CLibraryEditor.CEditorDesk.CDeskChronicle.CDeskChronicleRead();
-        QLibraryBackward.IsEnabled = undo;
-        QLibraryForward.IsEnabled = redo;
+        _qLibraryRail.QChronicleRefine(undo, redo);
     }
 }

@@ -1,5 +1,5 @@
 # QReflex.cs
-Hash: `dcd2e0b6a8d474a1`
+Hash: `281f5bd9e75ac686`
 
 ## `internal sealed class QReflex`
 
@@ -10,9 +10,10 @@ The region is only a hover on the language field.
 The folded languages hide under the same fold the view has, and the fold state is shared with it.
 Every change goes through a `CKindred` gate, and the rows are rebuilt from the draft it answers with.
 
-## `internal void QReflexIntroduce(CEditor editor)`
+## `internal void QReflexIntroduce(CDesk desk, CDisplaySound displaySound, CEntry entry, CKindred kindred, CSounding sounding)`
 
-Holds the Conduct editor and subscribes the draft, desk start, sounding, reflex and fold changes.
+Holds the display sound and kindred facets, the only ones a later member reads.
+It subscribes the draft, desk start, sounding, reflex and fold changes.
 
 ## `private void QReflexAddObserve(object sender, ExecutedRoutedEventArgs e)`
 
@@ -40,8 +41,9 @@ The gate does nothing for a draft not yet stored, and the repaint then lets the 
 
 ## `private void QReflexTypeObserve(QReflexItem row, CReflexField field, string text)`
 
-Hands the typed cell to `CKindred.CKindredSet`, then writes its answer back to the row.
-The lead marks of every row are taken from the same answer.
+Hears a row's typed cell through `QReflexList.QReflexListTyped` and hands it to `CKindred.CKindredSet`.
+It then hands the answer's row to the row as it stands, so it replays no Conduct rule.
+The list takes the lead marks of every row from the same answer.
 
 ## `private void QReflexRefine(CEntryDraft _)`
 
@@ -50,7 +52,7 @@ The bulletin's draft is not read, since the block comes whole from Conduct.
 
 ## `private void QReflexRefine(CTimbreReflex reflex)`
 
-Rebuilds the rows from the ready block, keeping a row that is still being typed into.
+Has the list bring its rows up to the ready block, keeping a row that is still being typed into.
 The stack and the fetch-again button show and hide together, by the block's shown verdict.
 The fold, the anchor labels and the fetching line are painted after the rows.
 
@@ -60,7 +62,7 @@ Answers a desk start and a fanqie change by painting the anchor labels of a fres
 
 ## `private void QReflexAnchorRefine(CLecternAnchor anchor)`
 
-Writes every row's ready anchor label and whether a row may be anchored at all.
+Has the list write every row's ready anchor label and whether a row may be anchored at all.
 
 ## `private void QReflexPendingRefine()`
 
@@ -78,20 +80,13 @@ Hands the fold toggle's state to the display's fold gate `CDisplaySound.CDisplay
 
 ## `private void QReflexFoldRefine()`
 
-Answers the display's fold change by hiding the folded rows and setting the toggle.
+Answers the display's fold change by having the list hide the folded rows and set the toggle.
 The same change redraws every reading view over the same display.
-
-## `private QReflexItem QReflexRowRefine(CReflex reflex)`
-
-A row for a ready reflex, listened to for changes.
-
-## `private static QReflexItem QReflexStateRefine(QReflexItem row, CReflex reflex)`
-
-Brings a row up to the ready reflex in place, its mark and fold included.
 
 ## `internal QReflex(FrameworkElement surface, QAnchor anchor)`
 
-Binds the reflex list to its rows and attaches its look, quill and control behaviour.
+Builds the `QReflexList` over the reflex list and the fold toggle, and hears its typed cells.
+It attaches the list's quill and control behaviour.
 It also binds the row commands on the sound panel.
 The anchor command is heard by the anchor menu's Observe on `QAnchor`.
 The fetch-again command is bound on its own button, as the markup had it.

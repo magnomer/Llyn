@@ -15,7 +15,7 @@ internal sealed class QClip
 
     private readonly MediaPlayer _qClipPlayer;
 
-    private CEditor _cEditor = null!;
+    private CErrand _cErrand = null!;
 
     internal QClip(FrameworkElement surface, MediaPlayer player)
     {
@@ -40,10 +40,10 @@ internal sealed class QClip
 
     private Button QClipButton => QContract.QContractFind<Button>(_qClipSurface, "PDownloader");
 
-    internal void QClipIntroduce(CEditor editor)
+    internal void QClipIntroduce(CErrand errand)
     {
-        _cEditor = editor;
-        editor.CEditorDesk.CDeskErrand.CErrandClipChanged += QClipRefine;
+        _cErrand = errand;
+        errand.CErrandClipChanged += QClipRefine;
     }
 
     private void QClipButtonRefine(object sender, RoutedEventArgs e)
@@ -58,7 +58,7 @@ internal sealed class QClip
 
     private void QClipClosedObserve(object? sender, EventArgs e)
     {
-        _cEditor.CEditorDesk.CDeskErrand.CErrandCancel();
+        _cErrand.CErrandCancel();
     }
 
     internal void QClipOpenRefine(UIElement anchor)
@@ -70,13 +70,13 @@ internal sealed class QClip
 
     internal void QClipRecordingStart(long? id)
     {
-        QClipEnsignRefine(_cEditor.CEditorDesk.CDeskErrand.CErrandRecordingStart(id));
+        QClipEnsignRefine(_cErrand.CErrandRecordingStart(id));
     }
 
     private async void QClipEnsignRefine(CClipRoll roll)
     {
         QClipRefine(roll);
-        QClipRefine(await _cEditor.CEditorDesk.CDeskErrand.CErrandEnsignLoad(QEnsignImage.QEnsignDraw));
+        QClipRefine(await _cErrand.CErrandEnsignLoad(QEnsignImage.QEnsignDraw));
     }
 
     private void QClipRefine(CClipRoll roll)
@@ -172,7 +172,7 @@ internal sealed class QClip
         if (sender is FrameworkElement { DataContext: QClipReading reading })
         {
             QClipPreviewRefine(
-                await _cEditor.CEditorDesk.CDeskErrand.CErrandPreviewStart(reading.QClipReadingModel));
+                await _cErrand.CErrandPreviewStart(reading.QClipReadingModel));
         }
     }
 
@@ -189,7 +189,7 @@ internal sealed class QClip
 
     private void QClipEndObserve(object? sender, EventArgs e)
     {
-        _cEditor.CEditorDesk.CDeskErrand.CErrandPreviewFinish();
+        _cErrand.CErrandPreviewFinish();
     }
 
     private async void QClipSelectorObserve(object sender, RoutedEventArgs e)
@@ -197,7 +197,7 @@ internal sealed class QClip
         if (sender is FrameworkElement { DataContext: QClipReading reading })
         {
             QClipCloseRefine(
-                await _cEditor.CEditorDesk.CDeskErrand.CErrandRecordingSave(reading.QClipReadingModel));
+                await _cErrand.CErrandRecordingSave(reading.QClipReadingModel));
         }
     }
 

@@ -149,13 +149,13 @@ public sealed class TEaselDesk
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorField.TEditorFieldPrepare(engine);
+        TEditorFixture editor = TEditorField.TEditorFieldPrepare(engine);
         long sheet = TEditorField.TEditorSheetAdd(editor);
         long other = TEditorField.TEditorSheetAdd(editor);
-        editor.CEditorImage.CImageAdd(other);
+        editor.TEditorFixtureImage.CImageAdd(other);
         long first = TEditorField.TEditorCardRead(editor, other).CCardDraftImage[0].CImageDraftId;
 
-        editor.CEditorImage.CImageAdd(other);
+        editor.TEditorFixtureImage.CImageAdd(other);
 
         Assert.Empty(TEditorField.TEditorCardRead(editor, sheet).CCardDraftImage);
         IReadOnlyList<CImageDraft> rows = TEditorField.TEditorCardRead(editor, other).CCardDraftImage;
@@ -168,14 +168,14 @@ public sealed class TEaselDesk
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorField.TEditorFieldPrepare(engine);
+        TEditorFixture editor = TEditorField.TEditorFieldPrepare(engine);
         long sheet = TEditorField.TEditorSheetAdd(editor);
         long other = TEditorField.TEditorSheetAdd(editor);
-        editor.CEditorImage.CImageAdd(sheet);
-        editor.CEditorImage.CImageAdd(other);
+        editor.TEditorFixtureImage.CImageAdd(sheet);
+        editor.TEditorFixtureImage.CImageAdd(other);
         long image = TEditorField.TEditorCardRead(editor, other).CCardDraftImage[0].CImageDraftId;
 
-        editor.CEditorImage.CImageRemove(image);
+        editor.TEditorFixtureImage.CImageRemove(image);
 
         Assert.Empty(TEditorField.TEditorCardRead(editor, other).CCardDraftImage);
         Assert.Single(TEditorField.TEditorCardRead(editor, sheet).CCardDraftImage);
@@ -186,13 +186,13 @@ public sealed class TEaselDesk
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorField.TEditorFieldPrepare(engine);
+        TEditorFixture editor = TEditorField.TEditorFieldPrepare(engine);
         long sheet = TEditorField.TEditorSheetAdd(editor);
-        editor.CEditorImage.CImageAdd(sheet);
+        editor.TEditorFixtureImage.CImageAdd(sheet);
         long image = TEditorField.TEditorCardRead(editor, sheet).CCardDraftImage[0].CImageDraftId;
 
         engine.TEngineDelaySet(TEaselDeskHold);
-        editor.CEditorImage.CImageFileSet(image, "cat.png");
+        editor.TEditorFixtureImage.CImageFileSet(image, "cat.png");
 
         CImageDraft row = TEditorField.TEditorCardRead(editor, sheet).CCardDraftImage[0];
         Assert.Equal("cat.png", row.CImageDraftLocation.CStateValueShown);
@@ -203,14 +203,14 @@ public sealed class TEaselDesk
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorField.TEditorFieldPrepare(engine);
+        TEditorFixture editor = TEditorField.TEditorFieldPrepare(engine);
         long sheet = TEditorField.TEditorSheetAdd(editor);
-        editor.CEditorImage.CImageAdd(sheet);
+        editor.TEditorFixtureImage.CImageAdd(sheet);
         long image = TEditorField.TEditorCardRead(editor, sheet).CCardDraftImage[0].CImageDraftId;
         string file = Path.Combine(workspace.TWorkspaceFolder, "cat.png");
         File.WriteAllBytes(file, [0]);
 
-        editor.CEditorImage.CImageFileSet(image, file);
+        editor.TEditorFixtureImage.CImageFileSet(image, file);
 
         Assert.Equal(new Uri(file), TEditorField.TEditorCardRead(editor, sheet).CCardDraftImage[0].CImageDraftAddress);
     }
@@ -220,12 +220,12 @@ public sealed class TEaselDesk
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorField.TEditorFieldPrepare(engine);
+        TEditorFixture editor = TEditorField.TEditorFieldPrepare(engine);
         long sheet = TEditorField.TEditorSheetAdd(editor);
-        editor.CEditorImage.CImageAdd(sheet);
+        editor.TEditorFixtureImage.CImageAdd(sheet);
         long image = TEditorField.TEditorCardRead(editor, sheet).CCardDraftImage[0].CImageDraftId;
 
-        editor.CEditorImage.CImageFileSet(image, Path.Combine(workspace.TWorkspaceFolder, "gone.png"));
+        editor.TEditorFixtureImage.CImageFileSet(image, Path.Combine(workspace.TWorkspaceFolder, "gone.png"));
 
         Assert.Null(TEditorField.TEditorCardRead(editor, sheet).CCardDraftImage[0].CImageDraftAddress);
     }
@@ -235,14 +235,14 @@ public sealed class TEaselDesk
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorField.TEditorFieldPrepare(engine);
+        TEditorFixture editor = TEditorField.TEditorFieldPrepare(engine);
         long sheet = TEditorField.TEditorSheetAdd(editor);
-        editor.CEditorVideo.CVideoAdd(sheet);
+        editor.TEditorFixtureVideo.CVideoAdd(sheet);
         long video = TEditorField.TEditorCardRead(editor, sheet).CCardDraftVideo[0].CVideoDraftId;
         string file = Path.Combine(workspace.TWorkspaceFolder, "cat.mp4");
         File.WriteAllBytes(file, [0]);
 
-        editor.CEditorVideo.CVideoFileSet(video, file);
+        editor.TEditorFixtureVideo.CVideoFileSet(video, file);
 
         CScreen? screen = TEditorField.TEditorCardRead(editor, sheet).CCardDraftVideo[0].CVideoDraftScreen;
         Assert.Equal(new CScreen(new Uri(file), null), screen);
@@ -253,12 +253,12 @@ public sealed class TEaselDesk
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorField.TEditorFieldPrepare(engine);
+        TEditorFixture editor = TEditorField.TEditorFieldPrepare(engine);
         long sheet = TEditorField.TEditorSheetAdd(editor);
-        editor.CEditorVideo.CVideoAdd(sheet);
+        editor.TEditorFixtureVideo.CVideoAdd(sheet);
         long video = TEditorField.TEditorCardRead(editor, sheet).CCardDraftVideo[0].CVideoDraftId;
 
-        editor.CEditorVideo.CVideoFileSet(video, Path.Combine(workspace.TWorkspaceFolder, "gone.mp4"));
+        editor.TEditorFixtureVideo.CVideoFileSet(video, Path.Combine(workspace.TWorkspaceFolder, "gone.mp4"));
 
         Assert.Null(TEditorField.TEditorCardRead(editor, sheet).CCardDraftVideo[0].CVideoDraftScreen);
     }
@@ -268,13 +268,13 @@ public sealed class TEaselDesk
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorField.TEditorFieldPrepare(engine);
+        TEditorFixture editor = TEditorField.TEditorFieldPrepare(engine);
         long sheet = TEditorField.TEditorSheetAdd(editor);
         long other = TEditorField.TEditorSheetAdd(editor);
-        editor.CEditorVideo.CVideoAdd(other);
+        editor.TEditorFixtureVideo.CVideoAdd(other);
         long first = TEditorField.TEditorCardRead(editor, other).CCardDraftVideo[0].CVideoDraftId;
 
-        editor.CEditorVideo.CVideoAdd(other);
+        editor.TEditorFixtureVideo.CVideoAdd(other);
 
         Assert.Empty(TEditorField.TEditorCardRead(editor, sheet).CCardDraftVideo);
         IReadOnlyList<CVideoDraft> rows = TEditorField.TEditorCardRead(editor, other).CCardDraftVideo;
@@ -287,14 +287,14 @@ public sealed class TEaselDesk
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorField.TEditorFieldPrepare(engine);
+        TEditorFixture editor = TEditorField.TEditorFieldPrepare(engine);
         long sheet = TEditorField.TEditorSheetAdd(editor);
         long other = TEditorField.TEditorSheetAdd(editor);
-        editor.CEditorVideo.CVideoAdd(sheet);
-        editor.CEditorVideo.CVideoAdd(other);
+        editor.TEditorFixtureVideo.CVideoAdd(sheet);
+        editor.TEditorFixtureVideo.CVideoAdd(other);
         long video = TEditorField.TEditorCardRead(editor, other).CCardDraftVideo[0].CVideoDraftId;
 
-        editor.CEditorVideo.CVideoRemove(video);
+        editor.TEditorFixtureVideo.CVideoRemove(video);
 
         Assert.Empty(TEditorField.TEditorCardRead(editor, other).CCardDraftVideo);
         Assert.Single(TEditorField.TEditorCardRead(editor, sheet).CCardDraftVideo);
@@ -305,13 +305,13 @@ public sealed class TEaselDesk
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorField.TEditorFieldPrepare(engine);
+        TEditorFixture editor = TEditorField.TEditorFieldPrepare(engine);
         long sheet = TEditorField.TEditorSheetAdd(editor);
-        editor.CEditorVideo.CVideoAdd(sheet);
+        editor.TEditorFixtureVideo.CVideoAdd(sheet);
         long video = TEditorField.TEditorCardRead(editor, sheet).CCardDraftVideo[0].CVideoDraftId;
 
         engine.TEngineDelaySet(TEaselDeskHold);
-        editor.CEditorVideo.CVideoFileSet(video, "cat.mp4");
+        editor.TEditorFixtureVideo.CVideoFileSet(video, "cat.mp4");
 
         CVideoDraft row = TEditorField.TEditorCardRead(editor, sheet).CCardDraftVideo[0];
         Assert.Equal("cat.mp4", row.CVideoDraftLocation.CStateValueShown);

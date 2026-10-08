@@ -6,5 +6,4 @@ public sealed record CLecternFanqie(
     IReadOnlyList<CFanqieGroup> CLecternFanqieGroups,
     bool CLecternFanqiePending,
     string CLecternFanqieReading,
-    CLecternAnchor CLecternFanqieAnchor,
     CFont CLecternFanqieFont);

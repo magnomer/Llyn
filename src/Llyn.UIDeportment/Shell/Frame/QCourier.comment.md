@@ -1,5 +1,5 @@
 # QCourier.cs
-Hash: `97be4a38a0ad0f71`
+Hash: `a500f6f9e4cfed13`
 
 ## `internal sealed class QCourier`
 
@@ -13,7 +13,7 @@ This driver hears the two buttons and paints what the courier hands back.
 Takes the status bar `QEstablishment` drives, which builds this driver over it.
 Wires both buttons once, as the window is built.
 
-## `internal void QCourierIntroduce(QWindow host)`
+## `internal void QCourierIntroduce(CAtelier atelier, CEnvoy envoy)`
 
 Creates its own courier from the window's atelier through `CCourierCreate`, so both buttons share one busy mark.
 It subscribes `CCourierChanged` through `QObserver`, so a state change repaints on the surface's thread.

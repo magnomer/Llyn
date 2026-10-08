@@ -1,5 +1,5 @@
 # QSlate.cs
-Hash: `576ebc68a3a5fcdb`
+Hash: `525de4286a88bcfa`
 
 ## `internal sealed class QSlate`
 
@@ -19,9 +19,9 @@ A user cannot pick from a catalogue they were never shown.
 
 Hands the slate list its rows and fill, gives the dropdown its placement, and clears its selection as it shuts.
 
-## `internal void QSlateIntroduce(CEditor editor)`
+## `internal void QSlateIntroduce(CCard card)`
 
-Holds the Conduct handle the pick gates are called on.
+Holds the Conduct card facet the pick gates are called on.
 
 ## `private void QSlateApply(FrameworkElement container, object item, string? _)`
 
@@ -49,13 +49,13 @@ The gate already trimmed, filtered, limited and split the rows, so the list show
 
 Fills the dropdown with the ready rows and opens it against the card's Tag entry, with no row selected.
 
-## `private void QSlateShutRefine()`
+## `internal void QSlateShutRefine()`
 
 Shuts the dropdown and forgets its rows.
 
 ## Inline notes
 
-### `private void QSlateKeyRefine(object sender, KeyEventArgs e)`
+### `internal void QSlateKeyRefine(object sender, KeyEventArgs e)`
 
 The dropdown never takes focus, so the Tag entry's keys drive it.
 The arrows ask `CLanternMove` which row to light, sending the lit row, the row count and the direction.
@@ -67,7 +67,7 @@ Escape shuts the dropdown only while it stands open.
 A shut dropdown keeps no selected row and no rows, however it was shut.
 So Enter reaches a stored tag only while the list stands open.
 
-### `private void QSlateKeyObserve(object sender, KeyEventArgs e)`
+### `internal void QSlateKeyObserve(object sender, KeyEventArgs e)`
 
 Enter on a selected row hands that stored tag to the card gate at the caret.
 The list then shuts and the entry empties.

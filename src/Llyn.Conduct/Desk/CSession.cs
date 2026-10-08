@@ -9,7 +9,7 @@ public sealed class CSession
 
     private readonly IReadOnlyList<Func<bool>> _cSessionPending;
 
-    private readonly CEditor? _cSessionEditor;
+    private readonly CDesk? _cSessionEditorDesk;
 
     private readonly Func<bool> _cSessionShownSeam;
 
@@ -24,7 +24,7 @@ public sealed class CSession
     internal CSession(
         CDesk desk,
         IReadOnlyList<Func<bool>> pending,
-        CEditor? editor,
+        CDesk? editorDesk,
         Func<bool> shownSeam,
         Func<bool, bool> finishSeam,
         Func<bool> readySeam,
@@ -41,16 +41,16 @@ public sealed class CSession
 
         _cSessionDesk = desk;
         _cSessionPending = pending;
-        _cSessionEditor = editor;
+        _cSessionEditorDesk = editorDesk;
         _cSessionShownSeam = shownSeam;
         _cSessionFinishSeam = finishSeam;
         _cSessionReadySeam = readySeam;
         _cSessionStoredSeam = storedSeam;
         _cSessionEnvoy = envoy;
         desk.CDeskStateChanged += LSessionStateUpdate;
-        if (editor is not null)
+        if (editorDesk is not null)
         {
-            editor.CEditorDesk.CDeskStateChanged += LSessionStateUpdate;
+            editorDesk.CDeskStateChanged += LSessionStateUpdate;
         }
     }
 
@@ -65,7 +65,7 @@ public sealed class CSession
             return null;
         }
 
-        return _cSessionEditor?.CEditorDesk;
+        return _cSessionEditorDesk;
     }
 
     public void CSessionStart(long? id)
@@ -195,12 +195,6 @@ public sealed class CSession
         }
 
         return shown ? LSessionFinish(true) : CSessionClose(true);
-    }
-
-    internal void LSessionEditorClose()
-    {
-        _cSessionEditor?.CEditorClose();
-        _cSessionEditor?.CEditorDisplay.CDisplayPlayback.CDisplayPlaybackCancel();
     }
 
     internal bool LSessionChangeCheck()

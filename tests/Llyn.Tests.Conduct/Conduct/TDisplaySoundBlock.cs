@@ -23,11 +23,12 @@ public sealed class TDisplaySoundBlock
         CLecternFanqie fanqie = area.CDisplayFanqieRead();
         CLecternScript script = area.CDisplayScriptRead();
         CLecternParadigm paradigm = area.CDisplayParadigmRead();
+        CLecternReflex reflex = area.CDisplayReflexRead();
 
         Assert.Empty(fanqie.CLecternFanqieGroups);
         Assert.False(fanqie.CLecternFanqiePending);
         Assert.Empty(fanqie.CLecternFanqieReading);
-        Assert.False(fanqie.CLecternFanqieAnchor.CLecternAnchorOffered);
+        Assert.False(reflex.CLecternReflexAnchor.CLecternAnchorOffered);
         Assert.Empty(script.CLecternScriptGroups);
         Assert.False(script.CLecternScriptPending);
         Assert.Empty(paradigm.CLecternParadigmSlots);
@@ -47,10 +48,11 @@ public sealed class TDisplaySoundBlock
         CLecternFanqie fanqie = area.CDisplayFanqieRead();
         CLecternScript script = area.CDisplayScriptRead();
         CLecternParadigm paradigm = area.CDisplayParadigmRead();
+        CLecternReflex reflex = area.CDisplayReflexRead();
 
         Assert.Empty(fanqie.CLecternFanqieGroups);
         Assert.False(fanqie.CLecternFanqiePending);
-        Assert.Empty(fanqie.CLecternFanqieAnchor.CLecternAnchorTexts);
+        Assert.Empty(reflex.CLecternReflexAnchor.CLecternAnchorTexts);
         Assert.Empty(script.CLecternScriptGroups);
         Assert.False(script.CLecternScriptPending);
         Assert.Empty(paradigm.CLecternParadigmSlots);
@@ -160,7 +162,7 @@ public sealed class TDisplaySoundBlock
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         List<string> set = [];
-        CEditor editor = TInterfaceEditor.TEditorCreate(
+        CDisplay display = new TEditorFixture(TInterfaceEditor.TEditorCreate(
             engine,
             TInterfaceConduct.TPhonologyBundleCreate(new Dictionary<string, Func<object?[]?, object?>>
             {
@@ -170,12 +172,12 @@ public sealed class TDisplaySoundBlock
                     set.Add(string.Join(",", args!));
                     return null;
                 },
-            }));
-        editor.CEditorDisplay.CDisplaySound.CDisplayFanqieSet(3, 1, false);
-        editor.CEditorDisplay.LDisplayRule.LDisplaySound.TDisplaySoundShow(
+            }))).TEditorFixtureDisplay;
+        display.CDisplaySound.CDisplayFanqieSet(3, 1, false);
+        display.LDisplayRule.LDisplaySound.TDisplaySoundShow(
             7, TDisplaySound.TDisplayDraftCreate("國", "Korean", []));
 
-        editor.CEditorDisplay.CDisplaySound.CDisplayFanqieSet(3, 2, true);
+        display.CDisplaySound.CDisplayFanqieSet(3, 2, true);
 
         Assert.Equal(["7,3,2,True"], set);
     }

@@ -7,7 +7,7 @@ namespace Llyn.UIDeportment;
 
 internal sealed class QCollocation
 {
-    private CEditor _cEditor = null!;
+    private CCardList _cCardList = null!;
 
     internal QCollocation(FrameworkElement surface, ObservableCollection<PCard> cards, QCard card)
     {
@@ -17,13 +17,13 @@ internal sealed class QCollocation
         QContract.QContractFind<Button>(surface, "PCollocationAddition").Click += QCollocationAddObserve;
     }
 
-    internal void QCollocationIntroduce(CEditor editor)
+    internal void QCollocationIntroduce(CCardList list)
     {
-        _cEditor = editor;
+        _cCardList = list;
     }
 
     private void QCollocationAddObserve(object sender, RoutedEventArgs e)
     {
-        _cEditor.CEditorList.CCardCollocationAdd();
+        _cCardList.CCardCollocationAdd();
     }
 }

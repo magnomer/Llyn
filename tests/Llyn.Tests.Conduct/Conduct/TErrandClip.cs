@@ -28,11 +28,11 @@ public sealed class TErrandClip
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate("uk=https://example.test/gb.mp3", Task.CompletedTask));
         engine.TEngineDelaySet(0);
-        CEditor editor = TErrandClipPrepare(engine);
-        editor.CEditorEntryOpen(null);
-        editor.CEditorEntry.CEntryLanguageSet(pack.TLanguageFixtureName);
-        editor.CEditorEntry.CEntryHeadwordSet(" tomato ");
-        CErrand errand = editor.CEditorDesk.CDeskErrand;
+        TEditorFixture editor = TErrandClipPrepare(engine);
+        editor.TEditorFixtureOpen(null);
+        editor.TEditorFixtureEntry.CEntryLanguageSet(pack.TLanguageFixtureName);
+        editor.TEditorFixtureEntry.CEntryHeadwordSet(" tomato ");
+        CErrand errand = editor.TEditorFixtureDesk.CDeskErrand;
         List<string> notices = [];
         TaskCompletionSource<CClipRoll> finished = new(TaskCreationOptions.RunContinuationsAsynchronously);
         errand.CErrandClipChanged += roll =>
@@ -72,18 +72,18 @@ public sealed class TErrandClip
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         engine.TEngineDelaySet(0);
-        CEditor editor = TErrandClipPrepare(engine);
-        editor.CEditorEntryOpen(null);
-        editor.CEditorEntry.CEntryLanguageSet("English");
-        editor.CEditorEntry.CEntryHeadwordSet("   ");
+        TEditorFixture editor = TErrandClipPrepare(engine);
+        editor.TEditorFixtureOpen(null);
+        editor.TEditorFixtureEntry.CEntryLanguageSet("English");
+        editor.TEditorFixtureEntry.CEntryHeadwordSet("   ");
 
-        CClipRoll roll = editor.CEditorDesk.CDeskErrand.CErrandRecordingStart(0);
+        CClipRoll roll = editor.TEditorFixtureDesk.CDeskErrand.CErrandRecordingStart(0);
 
         Assert.Empty(roll.CClipRollRows);
         Assert.True(roll.CClipRollEmpty);
         Assert.False(roll.CClipRollSearching);
         Assert.Equal("Downloader.Empty", roll.CClipRollNotice);
-        Assert.Null(await editor.CEditorDesk.CDeskErrand.CErrandPreviewStart(
+        Assert.Null(await editor.TEditorFixtureDesk.CDeskErrand.CErrandPreviewStart(
             new CRecording("Tagged", "https://example.test/gb.mp3", 0, true, "British")));
         editor.TEditorFinish(false);
     }
@@ -104,11 +104,11 @@ public sealed class TErrandClip
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate("uk=https://example.test/gb.mp3", gate.Task));
         engine.TEngineDelaySet(0);
-        CEditor editor = TErrandClipPrepare(engine);
-        editor.CEditorEntryOpen(null);
-        editor.CEditorEntry.CEntryLanguageSet(pack.TLanguageFixtureName);
-        editor.CEditorEntry.CEntryHeadwordSet("hill");
-        CErrand errand = editor.CEditorDesk.CDeskErrand;
+        TEditorFixture editor = TErrandClipPrepare(engine);
+        editor.TEditorFixtureOpen(null);
+        editor.TEditorFixtureEntry.CEntryLanguageSet(pack.TLanguageFixtureName);
+        editor.TEditorFixtureEntry.CEntryHeadwordSet("hill");
+        CErrand errand = editor.TEditorFixtureDesk.CDeskErrand;
         errand.CErrandRecordingStart(0);
         List<string> stored = [];
 
@@ -130,10 +130,10 @@ public sealed class TErrandClip
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TErrandClipPrepare(engine);
+        CErrand errand = TErrandClipPrepare(engine).TEditorFixtureDesk.CDeskErrand;
         int stored = 0;
 
-        CClipRoll roll = await editor.CEditorDesk.CDeskErrand.CErrandEnsignLoad((_, _) =>
+        CClipRoll roll = await errand.CErrandEnsignLoad((_, _) =>
         {
             stored++;
             return static () => { };
@@ -153,7 +153,7 @@ public sealed class TErrandClip
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate("audio", gate.Task));
         engine.TEngineDelaySet(0);
-        CEditor editor = TErrandClipPrepare(engine);
+        TEditorFixture editor = TErrandClipPrepare(engine);
         CErrand errand = await TErrandClipStart(editor, pack.TLanguageFixtureName);
         CRecording found = new("Tagged", "https://example.test/gb.mp3", 0, true, "British");
         errand.TErrandHarvestResonate(new CHarvestStep("Tagged", 0, found, false));
@@ -194,7 +194,7 @@ public sealed class TErrandClip
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate(new Dictionary<string, string>()));
         engine.TEngineDelaySet(0);
-        CEditor editor = TErrandClipPrepare(engine);
+        TEditorFixture editor = TErrandClipPrepare(engine);
         CErrand errand = await TErrandClipStart(editor, pack.TLanguageFixtureName);
         CRecording found = new("Tagged", "https://example.test/gb.mp3", 0, true, "British");
         errand.TErrandHarvestResonate(new CHarvestStep("Tagged", 0, found, false));
@@ -222,7 +222,7 @@ public sealed class TErrandClip
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate("audio", gate.Task));
         engine.TEngineDelaySet(0);
-        CEditor editor = TErrandClipPrepare(engine);
+        TEditorFixture editor = TErrandClipPrepare(engine);
         CErrand errand = await TErrandClipStart(editor, pack.TLanguageFixtureName);
         CRecording found = new("Tagged", "https://example.test/gb.mp3", 0, true, "British");
         errand.TErrandHarvestResonate(new CHarvestStep("Tagged", 0, found, false));
@@ -247,7 +247,7 @@ public sealed class TErrandClip
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate("audio", gate.Task));
         engine.TEngineDelaySet(0);
-        CEditor editor = TErrandClipPrepare(engine);
+        TEditorFixture editor = TErrandClipPrepare(engine);
         CErrand errand = await TErrandClipStart(editor, pack.TLanguageFixtureName);
         CRecording found = new("Tagged", "https://example.test/gb.mp3", 0, true, "British");
         errand.TErrandHarvestResonate(new CHarvestStep("Tagged", 0, found, false));
@@ -270,7 +270,7 @@ public sealed class TErrandClip
         CClipReading done = changes[^1].CClipRollRows[0].CClipItemReading[0];
         Assert.Equal("Downloader.Saved", done.CClipReadingAction);
         Assert.False(done.CClipReadingReady);
-        LPronunciationDraft? spoken = editor.CEditorDesk.TDeskRead()?.LDraftContent.LEntryDraftPronunciation;
+        LPronunciationDraft? spoken = editor.TEditorFixtureDesk.TDeskRead()?.LDraftContent.LEntryDraftPronunciation;
         Assert.Equal("British", spoken?.LPronunciationDraftVariety);
         Assert.NotEqual(string.Empty, spoken?.LPronunciationDraftAudio ?? string.Empty);
         editor.TEditorFinish(false);
@@ -284,7 +284,7 @@ public sealed class TErrandClip
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate(new Dictionary<string, string>()));
         engine.TEngineDelaySet(0);
-        CEditor editor = TErrandClipPrepare(engine);
+        TEditorFixture editor = TErrandClipPrepare(engine);
         CErrand errand = await TErrandClipStart(editor, pack.TLanguageFixtureName);
         CRecording found = new("Tagged", "https://example.test/gb.mp3", 0, true, "British");
         errand.TErrandHarvestResonate(new CHarvestStep("Tagged", 0, found, false));
@@ -299,7 +299,7 @@ public sealed class TErrandClip
         Assert.True(retry.CClipReadingReady);
         Assert.Equal(
             string.Empty,
-            editor.CEditorDesk.TDeskRead()?.LDraftContent.LEntryDraftPronunciation?.LPronunciationDraftAudio
+            editor.TEditorFixtureDesk.TDeskRead()?.LDraftContent.LEntryDraftPronunciation?.LPronunciationDraftAudio
             ?? string.Empty);
         editor.TEditorFinish(false);
     }
@@ -356,7 +356,7 @@ public sealed class TErrandClip
         List<Exception> recorded = [];
         using LEngine engine = TErrandFaultStart(workspace, recorded);
         List<string> asked = [];
-        CEditor editor = TErrandClipPrepare(engine, asked);
+        TEditorFixture editor = TErrandClipPrepare(engine, asked);
         CErrand errand = await TErrandClipStart(editor, pack.TLanguageFixtureName);
         CRecording found = new("Tagged", "https://example.test/gb.mp3", 0, true, "British");
         errand.TErrandHarvestResonate(new CHarvestStep("Tagged", 0, found, false));
@@ -373,7 +373,7 @@ public sealed class TErrandClip
         Assert.True(retry.CClipReadingReady);
         Assert.Equal(
             string.Empty,
-            editor.CEditorDesk.TDeskRead()?.LDraftContent.LEntryDraftPronunciation?.LPronunciationDraftAudio
+            editor.TEditorFixtureDesk.TDeskRead()?.LDraftContent.LEntryDraftPronunciation?.LPronunciationDraftAudio
             ?? string.Empty);
         editor.TEditorFinish(false);
     }
@@ -386,7 +386,7 @@ public sealed class TErrandClip
         List<Exception> recorded = [];
         using LEngine engine = TErrandFaultStart(workspace, recorded);
         List<string> asked = [];
-        CEditor editor = TErrandClipPrepare(engine, asked);
+        TEditorFixture editor = TErrandClipPrepare(engine, asked);
         CErrand errand = await TErrandClipStart(editor, pack.TLanguageFixtureName);
         CRecording found = new("Tagged", "https://example.test/gb.mp3", 0, true, "British");
         errand.TErrandHarvestResonate(new CHarvestStep("Tagged", 0, found, false));
@@ -424,12 +424,12 @@ public sealed class TErrandClip
         Assert.False(roll.CClipRollSearching);
     }
 
-    private static async Task<CErrand> TErrandClipStart(CEditor editor, string language)
+    private static async Task<CErrand> TErrandClipStart(TEditorFixture editor, string language)
     {
-        editor.CEditorEntryOpen(null);
-        editor.CEditorEntry.CEntryLanguageSet(language);
-        editor.CEditorEntry.CEntryHeadwordSet("hill");
-        CErrand errand = editor.CEditorDesk.CDeskErrand;
+        editor.TEditorFixtureOpen(null);
+        editor.TEditorFixtureEntry.CEntryLanguageSet(language);
+        editor.TEditorFixtureEntry.CEntryHeadwordSet("hill");
+        CErrand errand = editor.TEditorFixtureDesk.CDeskErrand;
         TaskCompletionSource finished = new(TaskCreationOptions.RunContinuationsAsynchronously);
         errand.CErrandClipChanged += roll =>
         {
@@ -469,11 +469,11 @@ public sealed class TErrandClip
         return engine;
     }
 
-    private static CEditor TErrandClipPrepare(LEngine engine) => TErrandClipPrepare(engine, []);
+    private static TEditorFixture TErrandClipPrepare(LEngine engine) => TErrandClipPrepare(engine, []);
 
-    private static CEditor TErrandClipPrepare(LEngine engine, List<string> asked)
+    private static TEditorFixture TErrandClipPrepare(LEngine engine, List<string> asked)
     {
-        CEditor editor = TInterfaceEditor.TEditorCreate(engine, TEnvoyFake.TEnvoyCreate(false, asked));
+        TEditorFixture editor = new(TInterfaceEditor.TEditorCreate(engine, TEnvoyFake.TEnvoyCreate(false, asked)));
         editor.TEditorVistaRestore(engine.TEngineVistaStart("input", LCatalogOrder.LCatalogOrderHeadword));
         return editor;
     }

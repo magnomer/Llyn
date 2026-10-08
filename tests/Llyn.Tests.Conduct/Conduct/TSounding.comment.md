@@ -1,5 +1,5 @@
 # TSounding.cs
-Hash: `12b86abc1baf7527`
+Hash: `a509bcc3975061d0`
 
 ## `public sealed class TSounding`
 
@@ -77,7 +77,7 @@ The kind reads initial for an initial key and rime for the other.
 
 A blank key of either kind never reaches the navigation.
 
-## `private static CEditor TSoundingDiweiPrepare(LEngine engine, CAtelier atelier, List<string> cells)`
+## `private static TEditorFixture TSoundingDiweiPrepare(LEngine engine, CAtelier atelier, List<string> cells)`
 
 An editor holding a stored English entry, beside a yunjing tab whose opener records each cell in `cells`.
 
@@ -85,11 +85,12 @@ An editor holding a stored English entry, beside a yunjing tab whose opener reco
 
 Stores one English entry and answers its id.
 
-## `private static CEditor TSoundingEditorPrepare(LEngine engine, long? entry)`
+## `private static TEditorFixture TSoundingEditorPrepare(LEngine engine, long? entry)`
 
 An editor on the library tab, holding `entry` or a fresh draft.
+It answers the fixture, so a test reads only the desk or sounding facet.
 
-## `private static CSounding TSoundingCreate(CEditor editor, Dictionary<string, Func<object?[]?, object?>> answers, List<string> notices, LSettingsPort? pack = null)`
+## `private static CSounding TSoundingCreate(CDesk desk, Dictionary<string, Func<object?[]?, object?>> answers, List<string> notices, LSettingsPort? pack = null)`
 
 A sound sheet over the editor's desk with fake ports answering `answers`.
 Every notice the envoy is asked to show lands in `notices`.

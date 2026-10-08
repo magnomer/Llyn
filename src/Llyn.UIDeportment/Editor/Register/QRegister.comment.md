@@ -1,5 +1,5 @@
 # QRegister.cs
-Hash: `8cb2a277996528d2`
+Hash: `886cc728a50a1213`
 
 ## `internal sealed class QRegister`
 
@@ -8,21 +8,28 @@ Each Observe hears one event and ends in one card gate, and each Refine only cha
 The entry's keys are heard by several handlers in order, and the first to handle a key ends its route.
 The dropdown's key handlers come first, so an open dropdown hears a key before the entry does.
 A chip or caret item's data context is the item, not the card.
-So each handler finds the owning card by asking which card's collection holds the item.
+So each handler finds the owning card by asking which card's caret is the item or holds it.
 Reaching the entry itself is shared with the Tag field, which is written the same way.
 
 ## `internal QRegister(FrameworkElement surface, ObservableCollection<PCard> meaning, ObservableCollection<PCard> collocation)`
 
 Holds the editor scope, since this driver has no control of its own to wire.
 It holds the two card lists the editor keeps, which its finds walk.
+It adds one routed text handler on the scope, which hears every Register caret.
 
-## `internal void QRegisterIntroduce(CEditor editor, QProffer proffer)`
+## `internal void QRegisterIntroduce(CCard card, QProffer proffer)`
 
-Holds the Conduct editor whose card gates the handlers call, and the dropdown driver they paint.
+Holds the Conduct card facet whose gates the handlers call, and the dropdown driver they paint.
 
-## `internal void QRegisterTextObserve(PRegisterCaret caret, string text)`
+## `internal static void QRegisterShow(PCard card, IReadOnlyList<CRegisterDraft> drafts)`
+
+Turns the card's Register drafts into chips and hands them to the card's caret.
+The caret knows only chips, so this driver is the one place a Register draft is read.
+
+## `private void QRegisterTextObserve(object sender, TextChangedEventArgs e)`
 
 Hears each edit of a Register caret and hands the raw text to the register gate, unsettled.
+Any other box's edit is ignored, since its data context is no Register caret.
 `QProfferRegisterRefine` then paints the answer.
 That is the kept text and the offered Registers.
 

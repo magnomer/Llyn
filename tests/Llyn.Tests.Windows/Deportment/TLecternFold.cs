@@ -16,8 +16,7 @@ public sealed class TLecternFold
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
-        QLectern lectern = TInterfaceDeportment.TLecternCreate(editor);
+        CDisplay display = new TEditorFixture(TInterfaceEditor.TEditorCreate(engine)).TEditorFixtureDisplay;
         bool? shown = null;
         Exception? failure = null;
 
@@ -25,13 +24,15 @@ public sealed class TLecternFold
         {
             try
             {
-                ToggleButton fold = new();
-                lectern.TLecternReflexAttach(new ItemsControl(), new TextBlock(), fold);
-                fold.Checked += (_, _) => lectern.TLecternFoldObserve();
-                fold.Unchecked += (_, _) => lectern.TLecternFoldObserve();
+                ToggleButton fold = new() { Name = "PDisplayReflexFold" };
+                StackPanel surface = new();
+                surface.Children.Add(new ItemsControl { Name = "PDisplayReflex" });
+                surface.Children.Add(new TextBlock { Name = "PDisplayReflexLoading" });
+                surface.Children.Add(fold);
+                _ = TInterfaceDeportment.TLecternCreate(display, surface);
 
-                editor.TDisplayFoldSet(true);
-                TInterfaceDeportment.TReflexFoldRefine([], fold, editor.TDisplayFoldRead());
+                display.TDisplayFoldSet(true);
+                TInterfaceDeportment.TReflexFoldRefine(fold,display.TDisplayFoldRead());
                 shown = fold.IsChecked;
             }
             catch (Exception caught)
@@ -44,7 +45,7 @@ public sealed class TLecternFold
         thread.Join();
 
         Assert.Null(failure);
-        Assert.True(editor.TDisplayFoldRead());
+        Assert.True(display.TDisplayFoldRead());
         Assert.True(shown);
     }
 }

@@ -1,16 +1,24 @@
 # QHeadquarter.cs
-Hash: `2d8e7abf172f7038`
+Hash: `77429c1948810be1`
 
-## `public partial class QWindow`
+## `public sealed class QHeadquarter`
 
 The product menu the mark opens, and what its two lines do.
 The mark is the only opener the window has that is not a caption button.
 Clicking it toggles the menu, so a second click on the mark puts it away.
 It decides nothing, so each handler is a refine of the menu or the window.
 
-## `private Popup QHeadquarter`
+## `public QHeadquarter(Window window)`
+
+Keeps the loaded window whose mark and menu it drives.
+
+## `private Popup QHeadquarterPopup`
 
 The menu is read through the loaded window's name scope.
+
+## `public void QHeadquarterIntroduce()`
+
+The mark and the two menu lines are subscribed here after the load.
 
 ## `private void QLogoRefine(object sender, MouseButtonEventArgs e)`
 

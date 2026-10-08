@@ -1,5 +1,5 @@
 # QSpeaker.cs
-Hash: `71b2daa749568f70`
+Hash: `298952da7f1049c7`
 
 ## `internal sealed class QSpeaker`
 
@@ -18,9 +18,9 @@ The link driver is held for its flags, which wait on the same catalog load.
 The language pill is drawn as the reading view draws it, so one entry reads the same in both.
 The toggle keeps its arrow and its menu, because here the language is chosen rather than reported.
 
-## `internal void QSpeakerIntroduce(CEditor editor, CAtelier atelier, CEnvoy envoy)`
+## `internal void QSpeakerIntroduce(CEntry entry, CAtelier atelier, CEnvoy envoy)`
 
-Holds the Conduct editor and the window's atelier, whose catalog draws the flags.
+Holds the Conduct entry facet and the window's atelier, whose catalog draws the flags.
 It holds the window's envoy too, since the catalog load reports its own failure through it.
 Subscribes the draft's language Refine and the language menu's fill for each opened workspace.
 

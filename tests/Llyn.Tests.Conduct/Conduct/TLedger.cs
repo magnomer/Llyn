@@ -419,8 +419,8 @@ public sealed class TLedger
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         Exception wrapped = new InvalidOperationException("outer", TInterface.TRefusalCreate(LRefusal.LRefusalStale));
 
-        Assert.Equal(
-            new CLedgerNotice(LRefusal.LRefusalStale, null, null), atelier.CAtelierLedger.CLedgerNoticeRead(wrapped));
+        CLedgerNotice notice = atelier.TLedgerNoticeRead(wrapped);
+        Assert.Equal(new CLedgerNotice(LRefusal.LRefusalStale, null, null), notice);
     }
 
     [Fact]
@@ -429,9 +429,9 @@ public sealed class TLedger
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        Exception bare = new InvalidOperationException("bare");
 
-        CLedgerNotice notice = atelier.CAtelierLedger.CLedgerNoticeRead(new InvalidOperationException("bare"));
-
+        CLedgerNotice notice = atelier.TLedgerNoticeRead(bare);
         Assert.Equal("Notice.Unexpected", notice.CLedgerNoticeKey);
         Assert.Equal("Notice.Recorded", notice.CLedgerNoticeLabel);
         Assert.True(File.Exists(notice.CLedgerNoticePath));

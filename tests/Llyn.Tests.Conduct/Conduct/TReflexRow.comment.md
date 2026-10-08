@@ -1,9 +1,9 @@
 # TReflexRow.cs
-Hash: `ca3aab315c60f731`
+Hash: `f65e1ea1223e53ac`
 
 ## `public sealed class TReflexRow`
 
-Covers the reflex row rules, namely the label keys, the lead and the hidden row.
+Covers the reflex row rules, namely the label keys, the lead, the hidden row and the typed copy.
 
 ## `public void ReflexLanguageKey_NamedOrBlank_PrefixesTheReflexKey()`
 
@@ -18,6 +18,11 @@ Languages compare as stored, so a trailing space opens a run of its own.
 ## `public void ReflexHiddenCheck_FoldAndOpening_HidesAFoldedRowWhileClosed()`
 
 Only a folded row under a closed fold is hidden.
+
+## `public void ReflexTypedApply_TypedCell_ChangesThatCellAlone()`
+
+A typed cell changes only that cell, and the label key follows a typed language.
+The held row stays as it was, and the lead is kept.
 
 ## `private static CReflex TReflexRowCreate(string language, string kind, bool folded)`
 

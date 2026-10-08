@@ -1,7 +1,7 @@
 # PLinkSelector.cs
-Hash: `84b5657006aefb46`
+Hash: `d070f64083422ea2`
 
-## `internal sealed class PLinkSelector`
+## `internal sealed class PLinkSelector : DataTemplateSelector`
 
 Chooses which of the two shapes a Translation field item is drawn in.
 The field holds committed chips and one open entry in a single collection.

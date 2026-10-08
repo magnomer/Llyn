@@ -79,7 +79,7 @@ public sealed class TFootnote
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         LReference book = engine.TEngineCitationCreate("Book");
-        (CFootnote footnote, LVista parent, CEditor editor) = TFootnotePrepare(engine, atelier);
+        (CFootnote footnote, LVista parent, TEditorFixture editor) = TFootnotePrepare(engine, atelier);
         parent.TVistaSelect(book.LReferenceId);
 
         footnote.TFootnoteEntryCreate();
@@ -97,7 +97,7 @@ public sealed class TFootnote
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        (CFootnote footnote, _, CEditor editor) = TFootnotePrepare(engine, atelier);
+        (CFootnote footnote, _, TEditorFixture editor) = TFootnotePrepare(engine, atelier);
 
         footnote.TFootnoteEntryCreate();
 
@@ -107,16 +107,16 @@ public sealed class TFootnote
             sentence => Assert.Null(sentence.CSentenceDraftExample?.CExampleDraftReference));
     }
 
-    private static (CFootnote, LVista, CEditor) TFootnotePrepare(
+    private static (CFootnote, LVista, TEditorFixture) TFootnotePrepare(
         LEngine engine, CAtelier atelier)
     {
         CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, []);
-        CEditor editor = CEditor.CEditorCreate(atelier, envoy);
+        TEditorFixture editor = TEditorFixture.TEditorFixtureCreate(atelier, envoy);
         CFootnote footnote = new(
             atelier.CAtelierEntryBundle.CEntryBundleVista,
             atelier.CAtelierPortraitPort,
             atelier.CAtelierSettingsPort,
-            editor,
+            editor.TEditorFixtureDesk,
             envoy,
             static _ => true,
             static () => true);

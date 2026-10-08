@@ -1,7 +1,7 @@
 # PSentence.cs
-Hash: `685f7673bf2c4933`
+Hash: `90fa6d54bdf5b393`
 
-## `internal sealed partial class PSentence : INotifyPropertyChanged`
+## `internal sealed class PSentence : INotifyPropertyChanged`
 
 One Example row on a card.
 The row carries the id of the row itself.
@@ -16,12 +16,8 @@ The row holds that value and nothing typed.
 What is typed leaves through the editor as written text, and the draft answers with the state.
 So the row never resolves a state and never holds a second copy of one.
 
-The row's Mentions and the chip line that shows them live in `PSentenceMention.cs`.
-
-The row also carries the frame the card reads the sentence under, a marker and a role.
-Nothing offers a value for either, because nothing ships one.
-Which of the two is written first is the language pack's to say and never the row's.
-The row is told the two places and puts each field where it was told.
+The frame the card reads the sentence under lives in [PSentenceFrame](PSentenceFrame.comment.md).
+The row re-raises every change the frame announces, so a list watching the row repaints it.
 
 Each of the two frame fields offers what has already been saved for the language.
 Nothing is shipped, so an empty store offers nothing.
@@ -48,6 +44,10 @@ The list driver reads it to keep a cited row's citation box shown while the list
 The Sources the whole form offers, shared by every row.
 So a Source written on one row is on offer to the next without reloading anything.
 
+## `public ObservableCollection<PLanguageItem> PSentenceLanguageCatalog { get; }`
+
+The languages the Gloss pickers offer, shared by every row.
+
 ## `public ObservableCollection<string> PSentenceParticleCatalog { get; }`
 
 The markers already saved for the language, shared by every row.
@@ -58,21 +58,30 @@ Nothing ships one, so the list is empty until a user writes and saves one.
 The roles already saved for the language, shared by every row.
 Nothing ships one, so the list is empty until a user writes and saves one.
 
-## `public int PSentenceParticleColumn`
+## `public PSentenceFrame PSentenceFrame { get; }`
 
-The grid column of the marker field, twice the slot the language pack states.
-The gap between the two fields stands in column 1, so the fields take columns 0 and 2.
-`PSentenceDependenceColumn` does the same for the role.
+The marker, the role and their placement, built once from the row's first draft.
+Later drafts reach it through `PSentenceShow`, so the frame is never replaced.
 
-## `internal void PSentenceOrderApply(CSentenceOrder order)`
+## `public ObservableCollection<PGloss> PSentenceGloss { get; }`
 
-Puts the marker and the role in the places the language pack states.
-The row states no order of its own, so it holds only what it was told.
+The Gloss rows the row shows under its sentence, in the order the Example keeps them.
+
+## `public PMentionLine PSentenceChip { get; }`
+
+The chip line under the sentence field, showing the Mentions its Example holds.
+The editor paints the chips from the sentence area's ready read after each redraw.
+The row never resolves a Mention itself.
+Every change goes out through a gate and comes back through the redraw.
+
+## `internal event Action<PGloss, string>? PSentenceGlossNotice;`
+
+Where a language picked in one of the Gloss rows goes, with the raw language.
+The card subscribes when it builds the row, so the pick reaches the editor with its sentence.
 
 ## `public CStateWording PSentenceText`
 
 The sentence as the draft holds it, set only from the draft.
-The same holds for the marker and the role.
 
 ## `public long? PSentenceCitation`
 
@@ -93,46 +102,17 @@ The field then looks the byline up afresh.
 ## `internal static string PSentenceCitationFind(ObservableCollection<QCitationItem> catalog, long? anchor)`
 
 The `Author (Year)` line of the Source an anchor names, or nothing when it names none.
-The citation converter calls it when a field is drawn, and the editor when it compares a typed line.
-The row fill and the citation reset call it too, where a multi-binding read it before.
+The row fill calls it when a citation field is drawn.
+The citation driver calls it to reset the field once a typed line is settled or abandoned.
 
-## `internal static void PSentenceRowApply(FrameworkElement container, PSentence row)`
+## `public event PropertyChangedEventHandler? PropertyChanged;`
 
-Writes every part of a sentence row from the row, where bindings and data triggers stood.
-The frame switch, its sign, the frame and its gap follow whether the frame is open or written.
-Each frame field takes the column the row was told to take.
-The sentence and citation texts go through the same lookups the converters made.
-The three icons are set here, since an icon is drawn by code.
+Raised for the row's own text and Source, and for every change its frame announces.
 
-## `private static void PSentenceChoiceApply(FrameworkElement container, string name, CStateWording value, ObservableCollection<string> catalog)`
+## `private void PSentenceGlossShow(IReadOnlyList<CGlossDraft> drafts)`
 
-Fills one frame field.
-It sets the dropdown's offers, text and hint, the ghost copy and the hint shown when empty.
+Redraws the Gloss rows from the drafts, keeping the rows whose ids survive.
 
-## `private static void PSentenceLayoutApply(FrameworkElement container, TextBox text)`
+## `private PGloss PSentenceGlossCreate(CGlossDraft draft)`
 
-Binds the row's layout once, where element bindings stood in the markup.
-The sentence column and the citation drop to the frame's baseline through the font converter.
-The citation takes the sentence's font, and each dropdown the size of its ghost copy.
-A row already bound is left alone, so a refill binds nothing twice.
-
-## `public bool PSentenceFrameVisible`
-
-Whether the row shows its frame at all.
-A row that carries a marker or a role always shows one, because the reading view draws it.
-A row carrying neither shows one only when the card has been asked for it.
-
-## `public bool PSentenceFrameWritten`
-
-Whether the frame stands on what the row holds rather than on the card being asked for one.
-The card's switch stands down while it does, because a frame already written cannot be opened or closed by asking.
-It gives its room back rather than keeping it.
-The handles beside it are not read across a gap that holds nothing.
-A frame field says something unless Conduct words it muted.
-It then holds text or the unknown mark.
-
-## `public string PSentenceFrameGap`
-
-The separator drawn between the marker and the role inside the frame.
-It is one space when both are written and nothing otherwise.
-The writing view spaces the frame exactly as the reading view does.
+One Gloss row, subscribed so its language pick reaches the card through the notice.

@@ -1,5 +1,5 @@
 # QContext.cs
-Hash: `0dd28f82951e5578`
+Hash: `4d00328832f5556b`
 
 ## `internal sealed class QContext`
 
@@ -8,20 +8,27 @@ Each Observe hears one event and ends in one card gate, and each Refine only cha
 The entry's keys are heard by several handlers in order, and the first to handle a key ends its route.
 The dropdown's key handlers come first, so an open dropdown hears a key before the entry does.
 An item's data context is the Situation or the entry, not the card.
-So each handler finds the owning card by asking which card's collection holds the item.
+So each handler finds the owning card by asking which card's caret is the item or holds it.
 
 ## `internal QContext(FrameworkElement surface, ObservableCollection<PCard> meaning, ObservableCollection<PCard> collocation)`
 
 Holds the editor scope, since this driver has no control of its own to wire.
 It holds the two card lists the editor keeps, which its finds walk.
+It adds one routed text handler on the scope, which hears every Situation caret.
 
-## `internal void QContextIntroduce(CEditor editor, QProffer proffer)`
+## `internal void QContextIntroduce(CCard card, QProffer proffer)`
 
-Holds the Conduct editor whose card gates the handlers call, and the dropdown driver they paint.
+Holds the Conduct card facet whose gates the handlers call, and the dropdown driver they paint.
 
-## `internal void QContextTextObserve(PContextCaret caret, string text)`
+## `internal static void QContextShow(PCard card, IReadOnlyList<CSituationDraft> drafts)`
+
+Turns the card's Situation drafts into chips and hands them to the card's caret.
+The caret knows only chips, so this driver is the one place a Situation draft is read.
+
+## `private void QContextTextObserve(object sender, TextChangedEventArgs e)`
 
 Hears each edit of a Situation caret and hands the raw text to the situation gate, unsettled.
+Any other box's edit is ignored, since its data context is no Situation caret.
 The gate adds every Situation a comma completed and answers what the entry keeps.
 `QProfferSituationRefine` then paints that answer and the dropdown of stored Situations.
 

@@ -14,7 +14,11 @@ internal sealed class QGlyph
 
     private readonly ObservableCollection<QTranscriptionItem> _qGlyphItem = [];
 
-    private CEditor _cEditor = null!;
+    private CErrand _cErrand = null!;
+
+    private CTimbre _cTimbre = null!;
+
+    private CTranscription _cTranscription = null!;
 
     internal QGlyph(FrameworkElement surface, QNotation notation)
     {
@@ -30,10 +34,12 @@ internal sealed class QGlyph
 
     private ItemsControl QGlyphList => QContract.QContractFind<ItemsControl>(_qGlyphSurface, "PGlyph");
 
-    internal void QGlyphIntroduce(CEditor editor)
+    internal void QGlyphIntroduce(CErrand errand, CEntry entry, CTimbre timbre, CTranscription transcription)
     {
-        _cEditor = editor;
-        editor.CEditorEntry.CEntryDraftChanged += QGlyphRefine;
+        _cErrand = errand;
+        _cTimbre = timbre;
+        _cTranscription = transcription;
+        entry.CEntryDraftChanged += QGlyphRefine;
     }
 
     private void QGlyphNotationRefine(object sender, ExecutedRoutedEventArgs e)
@@ -49,7 +55,7 @@ internal sealed class QGlyph
         if (e.Parameter is QTranscriptionItem row)
         {
             _qNotation.QNotationStartRefine(
-                _cEditor.CEditorDesk.CDeskErrand.CErrandTranscriptionStart(
+                _cErrand.CErrandTranscriptionStart(
                     row.QTranscriptionItemId, row.QTranscriptionItemScheme));
         }
     }
@@ -100,17 +106,17 @@ internal sealed class QGlyph
     {
         if (sender is TextBox { DataContext: QTranscriptionItem row } field)
         {
-            _cEditor.CEditorTranscription.CTranscriptionSet(row.QTranscriptionItemId, field.Text);
+            _cTranscription.CTranscriptionSet(row.QTranscriptionItemId, field.Text);
         }
     }
 
     private void QGlyphRefine(CEntryDraft _)
     {
-        CTimbreGlyph glyph = _cEditor.CEditorTimbre.CTimbreGlyphRead();
+        CTimbreGlyph glyph = _cTimbre.CTimbreGlyphRead();
         QGlyphList.Visibility = QLook.QLookVisibleRead(glyph.CTimbreGlyphShown);
         QGlyphList.Tag = glyph.CTimbreGlyphSourced;
 
-        PCard.PCardRowShow(
+        QLookItem.QLookItemShow(
             _qGlyphItem,
             glyph.CTimbreGlyphRows,
             static row => row.QTranscriptionItemId,

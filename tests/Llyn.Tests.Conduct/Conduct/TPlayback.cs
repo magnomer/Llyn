@@ -25,11 +25,12 @@ public sealed class TPlayback
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorField.TEditorFieldPrepare(engine);
+        TEditorFixture editor = TEditorField.TEditorFieldPrepare(engine);
         string file = TPlaybackFileSave(workspace, "kindle.mp3");
-        editor.CEditorDesk.TDeskDefer(TInterface.TRequestAudioCreate(editor.CEditorDesk.CDeskId, file, "Forvo"));
+        editor.TEditorFixtureDesk.TDeskDefer(
+            TInterface.TRequestAudioCreate(editor.TEditorFixtureDesk.CDeskId, file, "Forvo"));
 
-        CTimbrePlayback playback = editor.CEditorPlayback.CPlaybackRead();
+        CTimbrePlayback playback = editor.TEditorFixturePlayback.CPlaybackRead();
 
         Assert.Equal(file, playback.CTimbrePlaybackAudio);
         Assert.True(playback.CTimbrePlaybackAudible);
@@ -40,11 +41,12 @@ public sealed class TPlayback
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorField.TEditorFieldPrepare(engine);
+        TEditorFixture editor = TEditorField.TEditorFieldPrepare(engine);
         string file = Path.Combine(workspace.TWorkspaceFolder, "audio", "gone.mp3");
-        editor.CEditorDesk.TDeskDefer(TInterface.TRequestAudioCreate(editor.CEditorDesk.CDeskId, file, "Forvo"));
+        editor.TEditorFixtureDesk.TDeskDefer(
+            TInterface.TRequestAudioCreate(editor.TEditorFixtureDesk.CDeskId, file, "Forvo"));
 
-        CTimbrePlayback playback = editor.CEditorPlayback.CPlaybackRead();
+        CTimbrePlayback playback = editor.TEditorFixturePlayback.CPlaybackRead();
 
         Assert.Null(playback.CTimbrePlaybackAudio);
         Assert.False(playback.CTimbrePlaybackAudible);
@@ -55,13 +57,13 @@ public sealed class TPlayback
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorField.TEditorFieldPrepare(engine);
-        long draft = editor.CEditorDesk.CDeskId;
-        editor.CEditorDesk.TDeskDefer(TInterface.TPronunciationAdditionCreate(draft, string.Empty, 1));
-        long accent = editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows[0].CAccentId;
-        editor.CEditorDesk.TDeskDefer(TInterface.TPronunciationAudioCreate(draft, accent, "row.mp3", "Forvo"));
+        TEditorFixture editor = TEditorField.TEditorFieldPrepare(engine);
+        long draft = editor.TEditorFixtureDesk.CDeskId;
+        editor.TEditorFixtureDesk.TDeskDefer(TInterface.TPronunciationAdditionCreate(draft, string.Empty, 1));
+        long accent = editor.TEditorFixtureTimbre.CTimbreAccentRead().CTimbreAccentRows[0].CAccentId;
+        editor.TEditorFixtureDesk.TDeskDefer(TInterface.TPronunciationAudioCreate(draft, accent, "row.mp3", "Forvo"));
 
-        CTimbrePlayback playback = editor.CEditorPlayback.CPlaybackRead();
+        CTimbrePlayback playback = editor.TEditorFixturePlayback.CPlaybackRead();
 
         Assert.Null(playback.CTimbrePlaybackAudio);
         Assert.True(playback.CTimbrePlaybackAudible);
@@ -72,10 +74,10 @@ public sealed class TPlayback
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorField.TEditorFieldPrepare(engine);
+        CPlayback playback = TEditorField.TEditorFieldPrepare(engine).TEditorFixturePlayback;
         string file = TPlaybackFileSave(workspace, "ember.mp3");
 
-        Assert.Equal(new Uri(file), editor.CEditorPlayback.CPlaybackStart(file));
+        Assert.Equal(new Uri(file), playback.CPlaybackStart(file));
     }
 
     [Fact]
@@ -83,11 +85,11 @@ public sealed class TPlayback
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorField.TEditorFieldPrepare(engine);
+        CPlayback playback = TEditorField.TEditorFieldPrepare(engine).TEditorFixturePlayback;
         string file = Path.Combine(workspace.TWorkspaceFolder, "audio", "gone.mp3");
 
-        Assert.Null(editor.CEditorPlayback.CPlaybackStart(file));
-        Assert.Null(editor.CEditorPlayback.CPlaybackStart(null));
+        Assert.Null(playback.CPlaybackStart(file));
+        Assert.Null(playback.CPlaybackStart(null));
     }
 
     [Fact]
@@ -95,14 +97,15 @@ public sealed class TPlayback
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TTimbre.TTimbreAccentPrepare(engine, "a");
-        long spoken = editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows[0].CAccentId;
+        TEditorFixture editor = TTimbre.TTimbreAccentPrepare(engine, "a");
+        long spoken = editor.TEditorFixtureTimbre.CTimbreAccentRead().CTimbreAccentRows[0].CAccentId;
         string file = TPlaybackFileSave(workspace, "row.mp3");
-        editor.CEditorDesk.TDeskDefer(
-            TInterface.TPronunciationAudioCreate(editor.CEditorDesk.CDeskId, spoken, file, "Forvo"));
+        editor.TEditorFixtureDesk.TDeskDefer(
+            TInterface.TPronunciationAudioCreate(editor.TEditorFixtureDesk.CDeskId, spoken, file, "Forvo"));
 
-        Assert.Equal(new Uri(file), editor.CEditorPlayback.CPlaybackAccentStart(spoken));
-        Assert.Equal(file, Assert.Single(editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows).CAccentAudio);
+        Assert.Equal(new Uri(file), editor.TEditorFixturePlayback.CPlaybackAccentStart(spoken));
+        Assert.Equal(
+            file, Assert.Single(editor.TEditorFixtureTimbre.CTimbreAccentRead().CTimbreAccentRows).CAccentAudio);
     }
 
     [Fact]
@@ -110,14 +113,14 @@ public sealed class TPlayback
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TTimbre.TTimbreAccentPrepare(engine, "a");
-        long spoken = editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows[0].CAccentId;
+        TEditorFixture editor = TTimbre.TTimbreAccentPrepare(engine, "a");
+        long spoken = editor.TEditorFixtureTimbre.CTimbreAccentRead().CTimbreAccentRows[0].CAccentId;
         string file = Path.Combine(workspace.TWorkspaceFolder, "audio", "gone.mp3");
-        editor.CEditorDesk.TDeskDefer(
-            TInterface.TPronunciationAudioCreate(editor.CEditorDesk.CDeskId, spoken, file, "Forvo"));
+        editor.TEditorFixtureDesk.TDeskDefer(
+            TInterface.TPronunciationAudioCreate(editor.TEditorFixtureDesk.CDeskId, spoken, file, "Forvo"));
 
-        Assert.Null(editor.CEditorPlayback.CPlaybackAccentStart(spoken));
-        Assert.Empty(Assert.Single(editor.CEditorTimbre.CTimbreAccentRead().CTimbreAccentRows).CAccentAudio);
+        Assert.Null(editor.TEditorFixturePlayback.CPlaybackAccentStart(spoken));
+        Assert.Empty(Assert.Single(editor.TEditorFixtureTimbre.CTimbreAccentRead().CTimbreAccentRows).CAccentAudio);
     }
 
     [Fact]
@@ -125,10 +128,10 @@ public sealed class TPlayback
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TTimbre.TTimbreAccentPrepare(engine, "a");
+        CPlayback playback = TTimbre.TTimbreAccentPrepare(engine, "a").TEditorFixturePlayback;
 
-        Assert.Null(editor.CEditorPlayback.CPlaybackAccentStart(long.MaxValue));
-        Assert.Null(editor.CEditorPlayback.CPlaybackAccentStart(0));
+        Assert.Null(playback.CPlaybackAccentStart(long.MaxValue));
+        Assert.Null(playback.CPlaybackAccentStart(0));
         Assert.Null(TPlaybackPrepare().CPlaybackAccentStart(1));
     }
 
@@ -143,7 +146,7 @@ public sealed class TPlayback
 
     private static CPlayback TPlaybackPrepare()
     {
-        return TInterfaceEditor.TEditorCreate(
+        return new TEditorFixture(TInterfaceEditor.TEditorCreate(
                 TEngineFake.TEngineStubCreate<LDraftPort>(),
                 TInterfaceConduct.TEntryBundleCreate([]),
                 TInterfaceConduct.TPhonologyBundleCreate([]),
@@ -152,7 +155,7 @@ public sealed class TPlayback
                     ["add_LEngineFoldChanged"] = _ => null,
                     ["remove_LEngineFoldChanged"] = _ => null,
                 }),
-                TEngineFake.TEngineStubCreate<LMediaPort>())
-            .CEditorPlayback;
+                TEngineFake.TEngineStubCreate<LMediaPort>()))
+            .TEditorFixturePlayback;
     }
 }

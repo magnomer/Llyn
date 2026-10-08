@@ -1,5 +1,5 @@
 # CRepertoire.cs
-Hash: `5af75deed1baf887`
+Hash: `6214813554895a4d`
 
 ## `public sealed class CRepertoire`
 
@@ -17,8 +17,10 @@ The session defers to the entry editor while the occurrence list edits.
 A stored Situation is shown again outside the scribe through `LRepertoireStoredShow`.
 The diptych is built right after the session, over the two panels and the playwright desk's start and cancel.
 The occurrence panel opens the editor on the entry it edits, and a clear cancels the editor's desk.
+The editor's display follows the occurrence panel, so each draft it loads opens the reading view.
 The atlas's row notices reach the occurrence panel, whose rows follow the chosen Situation.
-It registers the session's editor close with the workspace, so the window's exit gate stops the entry editor.
+It registers its own editor close with the workspace, so the window's exit gate stops the entry editor.
+The session holds only the editor's desk, so the repertoire that owns the editor closes it.
 The leave question is the session's, which the navigation's tab and every repertoire gate ask.
 The session's held notice reaches the playwright, which raises the scenario.
 It keeps the marshal, so each vista restore attaches the lists' observers on the fresh vistas.
@@ -30,19 +32,19 @@ Builds the repertoire over the atelier and the panel's own editor.
 Building it is no user action, so it is no gate on the atelier.
 `shownSeam` answers whether the tab is in front, which only the surface knows until `CNavigation` owns it.
 
-## `public event Action? CRepertoireChanged`
+## `public event Action? CRepertoireChanged;`
 
 Raised when the playwright's desk or the entry editor changes state, so a driver repaints the mode.
 
-## `public event Action<CSituation>? CRepertoireSituationChanged`
+## `public event Action<CSituation>? CRepertoireSituationChanged;`
 
 Raised with the Situation a loaded atlas draft carries, ready for the vignette to paint.
 
-## `public event Action? CRepertoireWorkspaceChanged`
+## `public event Action? CRepertoireWorkspaceChanged;`
 
 Raised after a workspace notice closed the shown rows, so a driver reloads what belongs to the workspace.
 
-## `public event Action? CRepertoireQueryCleared`
+## `public event Action? CRepertoireQueryCleared;`
 
 Raised once an arrival drops the query and the language filter, so a driver empties both controls.
 
@@ -84,7 +86,7 @@ Its create seam is `LRepertoireOccurrenceCreate`, so a chosen row starts an occu
 The diptych's flags answer the side questions, and these flags add the rest.
 `CRepertoireVignetteHeld` and `CRepertoireVignetteBlank` say whether the situation list has a chosen row.
 `CRepertoireStoreEnabled` follows the entry editor while it shows, and the playwright's desk otherwise.
-`CRepertoireScenarioEnabled` holds while the playwright's desk runs a tenure, so the scenario area is enabled.
+`CRepertoireScenarioEnabled` holds while the playwright's desk chronicle runs, so the scenario area is enabled.
 
 ## `public bool CRepertoirePressAllowed`
 

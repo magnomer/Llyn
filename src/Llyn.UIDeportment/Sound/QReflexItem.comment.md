@@ -1,5 +1,5 @@
 # QReflexItem.cs
-Hash: `074d998969cf1720`
+Hash: `b80f70e3c6fed0da`
 
 ## `public sealed class QReflexItem : INotifyPropertyChanged`
 
@@ -13,17 +13,10 @@ Every value comes ready from a `CReflex` or from the gate's answer to an edit.
 So the row holds no session and asks nothing.
 `PropertyChanged` only tells the view a value changed and never carries a request.
 
-## `private CReflex _qReflexItemReflex`
+## `private CReflex _qReflexItemReflex;`
 
-The ready reflex the row last took, which answers whether the row hides under the fold.
-
-## `private string _qReflexItemTitle`
-
-The localization key of the row's language, as Conduct chose it.
-
-## `private string _qReflexItemRubric`
-
-The localization key of the row's kind, as Conduct chose it.
+The ready reflex the row last took, or its copy after a typed answer.
+Every value the row prints reads it, label keys included, so the row mirrors no field of it.
 
 ## `public QReflexItem(CReflex reflex)`
 
@@ -34,7 +27,7 @@ The fold refine that follows every build decides whether it starts hidden.
 
 The draft row's id, by which the panel's gates name it.
 
-## `public bool QReflexItemFolded { get; private set; }`
+## `public bool QReflexItemFolded`
 
 Whether the row belongs to a language the pack folds away.
 
@@ -51,7 +44,7 @@ The closer Conduct chose for the row's language.
 The binding's only notice that a property changed, raised through `QReflexChangeRefine`.
 It names the property and carries no request.
 
-## `internal event Action<QReflexItem, CReflexField, string>? QReflexItemTyped`
+## `internal event Action<QReflexItem, CReflexField, string>? QReflexItemTyped;`
 
 The edit channel carries a cell editor's write, with the cell it names and the text typed.
 Writing an editable property raises it and changes nothing on the row.
@@ -93,11 +86,11 @@ Conduct marks it on every read, and the panel asks Conduct again while a languag
 ## `public bool QReflexItemHidden`
 
 Whether the row is hidden in the stack, true for a folded row while the fold is closed.
-The panel and the view set it from the shared fold state.
+The panel's and the view's `QReflexList` set it from the shared fold state.
 
 ## `public string QReflexItemAnchor`
 
-The anchored placements printed after the note, written by the pane that holds the fanqie rows.
+The anchored placements printed after the note, written through `QReflexList.QReflexAnchorRefine`.
 
 ## `public bool QReflexItemAnchorable`
 
@@ -114,14 +107,19 @@ Writing it sends the language through `QReflexItemTyped`, so typing into a blank
 The localized language on a lead row, or nothing beneath it, for the reading view.
 A typed language takes its key from the gate's answer, so the label follows the edit at once.
 
-## `public string QReflexItemArea`
+## `public string? QReflexItemArea`
 
-The region on a lead row, or nothing beneath it, so the language name alone carries the hover.
+The region on a lead row, or null beneath it, so the language name alone carries the hover.
+Conduct hands a blank region as null, so the value binds as the tooltip as it stands.
 The region is the place the reading is taken from, as fetched, never typed.
 
 ## `public string QReflexItemTag`
 
 The localized kind, or nothing when the row has none.
+
+## `internal CReflex QReflexItemReflex`
+
+The reflex the row holds, which `QReflexList` asks whether the row hides under the fold.
 
 ## `internal static void QReflexItemRefine(FrameworkElement container, object item, string? _)`
 
@@ -142,43 +140,29 @@ Sets one named text of a row, in the accent colour for a row in common use.
 
 Takes every value of a ready reflex in place, except its anchors.
 So a changed mark or fold needs no new row.
-The anchor labels arrive apart, through `QReflexAnchorRefine`.
-It keeps the reflex and copies its label keys and its lead.
-The respelled mark is taken before the text, so the text arrives under the mark it is shown with.
+The anchor labels arrive apart, through `QReflexList.QReflexAnchorRefine`.
+It keeps the reflex and copies its lead.
 Each field announces only a real change, and no announcement sends a request.
 
-## `internal void QReflexTypeRefine(CReflexTyped typed)`
+## `internal void QReflexTypeRefine(CReflex? reflex)`
 
-Writes the one cell the gate's answer names with the text the gate says it holds.
+Keeps the row `CKindred.CKindredSet` answered, which Conduct copied through `CReflex.CReflexTypedApply`.
+A null answer names a row the draft lacks, so the row keeps what it holds.
 It is the edit path's only writer, so the row never keeps a typed copy of its own.
 The binding reads the cell back after the write, so the editor shows the answer.
-A language or kind cell also takes the answer's key, so the label and tag name the typed text.
+A typed language or kind keys its label from the copy, so the label and tag name the typed text.
+The lead is left alone, since the answer's heads reach it through `QReflexList.QReflexLeadRefine`.
 
 ## `private static string QReflexLabelRefine(string key, string name)`
 
 A language or kind as the view prints it, looked up under the key Conduct chose.
 A missing translation prints the name as the pack spells it, and a blank name prints nothing.
 
-## `internal static void QReflexLeadRefine(IReadOnlyList<QReflexItem> rows, IReadOnlyList<CReflexHead> heads)`
+## `private void QReflexValueRefine(CReflex reflex)`
 
-Pairs each row with the answer `CKindred.CKindredSet` gave for its id and copies its lead.
-The editor calls it while a language is typed, before the draft brings the marks back.
-
-## `internal static void QReflexAnchorRefine(IReadOnlyList<QReflexItem> rows, bool anchorable, IReadOnlyDictionary<long, string> texts)`
-
-Writes each row's anchor label by its id, and whether the row may be anchored at all.
-It is the one writer of both, so the reading view's ready labels and the editor's land alike.
-A row the labels do not name shows no anchor.
-
-## `internal static void QReflexFoldRefine(IReadOnlyList<QReflexItem> rows, ToggleButton fold, bool opened)`
-
-Hides each row its reflex's `CReflexHiddenCheck` hides, and shows the fold state on the toggle.
-The toggle is visible only when some row is folded.
-
-## `private void QReflexValueRefine(ref string field, string value, params string[] names)`
-
-Writes one text field and announces each named property, only when the text changed.
-The names are the properties that read the field, such as the head and label of the language.
+Keeps `reflex` and announces each property whose value differs from the held reflex.
+The respelled mark is compared before the text, so the text arrives under the mark it is shown with.
+A changed language announces the head and label, and a changed kind announces the kind and tag.
 
 ## `private void QReflexChangeRefine(string name)`
 

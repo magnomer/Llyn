@@ -11,6 +11,6 @@ internal sealed class PLabelSelector : DataTemplateSelector
 
     public override DataTemplate? SelectTemplate(object item, DependencyObject container)
     {
-        return item is PLabelCaret ? PLabelSelectorCaret : PLabelSelectorChip;
+        return item is PCaret<PLabelChip> ? PLabelSelectorCaret : PLabelSelectorChip;
     }
 }

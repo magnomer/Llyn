@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Media;
-using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -9,15 +8,22 @@ public sealed class QLinkChip : INotifyPropertyChanged
 {
     private ImageSource? _qLinkChipFlag;
 
-    public QLinkChip(CTranslationTarget target)
+    public QLinkChip(long id, string headword, string language)
     {
-        ArgumentNullException.ThrowIfNull(target);
+        ArgumentNullException.ThrowIfNull(headword);
+        ArgumentNullException.ThrowIfNull(language);
 
-        QLinkChipTarget = target;
-        _qLinkChipFlag = QEnsignImage.QEnsignRead(target.CTranslationTargetLanguage);
+        QLinkChipId = id;
+        QLinkChipHeadword = headword;
+        QLinkChipLanguage = language;
+        _qLinkChipFlag = QEnsignImage.QEnsignRead(language);
     }
 
-    public CTranslationTarget QLinkChipTarget { get; }
+    public long QLinkChipId { get; }
+
+    public string QLinkChipHeadword { get; }
+
+    public string QLinkChipLanguage { get; }
 
     public ImageSource? QLinkChipFlag => _qLinkChipFlag;
 
@@ -30,7 +36,7 @@ public sealed class QLinkChip : INotifyPropertyChanged
             return;
         }
 
-        _qLinkChipFlag = QEnsignImage.QEnsignRead(QLinkChipTarget.CTranslationTargetLanguage);
+        _qLinkChipFlag = QEnsignImage.QEnsignRead(QLinkChipLanguage);
         if (_qLinkChipFlag is not null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(QLinkChipFlag)));

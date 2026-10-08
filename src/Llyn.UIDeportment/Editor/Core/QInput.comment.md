@@ -1,5 +1,5 @@
 # QInput.cs
-Hash: `545a1b1b9ab3b94b`
+Hash: `3268e212c7a17a65`
 
 ## `internal sealed class QInput`
 
@@ -17,7 +17,7 @@ Takes the veneer's page as its surface, which the window pulls by contract ID.
 It builds the editor's driver over the editor the page places, pulled by its contract ID `PEditor`.
 Nothing reaches Conduct before the window introduces it.
 
-## `internal void QInputIntroduce(QWindow host)`
+## `internal void QInputIntroduce(CAtelier atelier, CEnvoy envoy, QVolume volume, QMentionMenu mentionMenu)`
 
 Puts the panel to work on the input editor the atelier builds, and opens the form empty.
 The atelier builds it with the input vista already restored.
@@ -30,7 +30,7 @@ Closes the editor as the window closes, before the engine goes.
 
 ## Inline notes
 
-### `_qInputEditor.QEditorIntroduce(host, host.QWindowAtelier.CAtelierInputCreate(host.QWindowEnvoy));`
+### `_qInputEditor.QEditorIntroduce(atelier, envoy, volume, mentionMenu, atelier.CAtelierInputCreate(envoy));`
 
 The editor this panel attaches stands on no entry, because this panel creates them.
 A form that stood on one would turn the next store into an update of it.

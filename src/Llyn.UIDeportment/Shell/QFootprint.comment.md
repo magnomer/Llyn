@@ -1,11 +1,11 @@
 # QFootprint.cs
-Hash: `3c5265be4b52dbbb`
+Hash: `7fa0031e0f667eb8`
 
 ## `public sealed class QFootprint`
 
 Where the window was and how big it was, carried from one run to the next.
 The window's posture holds it, so a workspace opens the way its owner left it.
-It names no window, so the window view reads the screen and applies what it answers.
+It reads the screen and places the window it was handed, so the window view only calls it.
 
 ## `private const double QFootprintShare = 0.8;`
 
@@ -17,9 +17,32 @@ A designed pixel size cannot fit every desktop, so the default is measured again
 The rest in milliseconds the posture waits after a move before it writes.
 A drag raises a change for every pixel, and one write per pixel would be a file write per pixel.
 
-## `public QFootprint(QPosture posture)`
+## `public QFootprint(Window window, QPosture posture)`
 
-Keeps the posture.
+Keeps the window it places and the posture that stores its geometry.
+
+## `public void QFootprintRefine()`
+
+Runs before the window is shown, while position and size can still be set.
+It places the stored geometry inside the virtual screen it reads here.
+With nothing stored the window takes its share of the work area and stays centred.
+Stored geometry sets the startup location to manual, since the designed default centres the window.
+
+## `public void QFootprintAttach()`
+
+Listens for the window being moved, resized or maximized, once it is loaded.
+Nothing is written before then, so the restore does not save what it has just read.
+Geometry is written down while the program runs rather than only as it closes.
+A killed process, a launcher window shut and a machine turned off all end without closing.
+
+## `public void QFootprintSave(bool closing)`
+
+Hands the window's restored rectangle and its minimized flag to `QFootprintDefer`.
+A move waits, and a certain close passes `closing` so it writes at once.
+
+## `private LCapsuleWindow QFootprintWindowRead()`
+
+The window's restored rectangle, which `RestoreBounds` supplies whenever the window is not normal.
 
 ## `public LCapsuleWindow? QFootprintRead(double left, double top, double width, double height, double minWidth, double minHeight)`
 

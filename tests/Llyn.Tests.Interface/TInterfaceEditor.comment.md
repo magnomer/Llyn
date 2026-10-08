@@ -1,5 +1,5 @@
 # TInterfaceEditor.cs
-Hash: `832f84a17265baa9`
+Hash: `5199ebdf09021f35`
 
 ## `internal static class TInterfaceEditor`
 
@@ -41,6 +41,15 @@ Its marshal runs each notice at once.
 
 Relays the restore of a saved vista into the editor, which only the navigation runs in production.
 
+## `internal static void TEditorVistaRestore(this TEditorFixture fixture, LVista vista)`
+
+Relays the same restore into the editor a fixture wraps.
+A test holding only the fixture thus restores a vista without naming the editor.
+
+## `internal static CEntryDraft? TEditorDraftRead(this TEditorFixture fixture)`
+
+The held draft of the editor a fixture wraps, read as the plain overload reads it.
+
 ## `internal static CEntryDraft? TEditorDraftRead(this CEditor editor)`
 
 The held draft of `editor` mapped through the folio, or null without one.
@@ -50,3 +59,8 @@ No driver reads the whole draft back, so tests inspect it through this relay.
 
 Relays the editor's finish, stored or dropped as `store` says.
 It answers whether the finish went through.
+
+## `internal static bool TEditorFinish(this TEditorFixture fixture, bool store)`
+
+Relays the same finish into the editor a fixture wraps.
+A test holding only the fixture thus ends its draft without naming the editor.

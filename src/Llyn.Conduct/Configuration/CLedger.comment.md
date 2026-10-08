@@ -1,5 +1,5 @@
 # CLedger.cs
-Hash: `0cd9797f49ac5407`
+Hash: `e18ee13b15938b3d`
 
 ## `public sealed class CLedger`
 
@@ -75,17 +75,18 @@ Stores whether transcriptions show respelled.
 A failed save is shown through `envoy` as `Settings.SaveFailed`.
 The ledger is then raised again, so the driver repaints from the saved settings.
 
-## `public CLedgerNotice CLedgerNoticeRead(Exception exception)`
+## `public void CLedgerFailureShow(CEnvoy envoy, string key, Exception exception)`
 
-The notice a failure shows, ready for a driver to word.
-A refusal shows its own reason, since it is a position the user can act on.
-A fault shows `Notice.Unexpected`, and names its audit file under `Notice.Recorded` when one was written.
-The engine answers in one call with the two keys this read hands down, and the map holds no rule.
-A driver catch site that still owns its failure asks it, until its own gate reports through `CEnvoy`.
+Shows a failure a driver's own medium raised, under the headline `key` names.
+A player's refusal or a picture that will not decode has no gate, so the driver hands it here.
+It reads the notice through the atelier's settings port, as every gate's failure policy does.
 
 ## `internal static CLedgerNotice LLedgerNoticeRead(LSettingsPort settings, Exception exception)`
 
-The one owner of the notice read, which `CLedgerNoticeRead` and every gate's failure policy share.
+The one owner of the notice read, which every gate's failure policy shares.
+A refusal shows its own reason, since it is a position the user can act on.
+A fault shows `Notice.Unexpected`, and names its audit file under `Notice.Recorded` when one was written.
+The engine answers in one call with the two keys this read hands down, and the map holds no rule.
 
 ## `internal static void LLedgerFailureShow(CEnvoy envoy, LSettingsPort settings, string key, Exception exception)`
 

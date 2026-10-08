@@ -1,5 +1,5 @@
 # PYunjing.xaml
-Hash: `589aa3a7964813d1`
+Hash: `d9c0aa22d09f72d9`
 
 ## `<Grid Margin="34,20,34,38">`
 
@@ -15,11 +15,13 @@ Only the first two widths persist, as the layout store keeps a left and a middle
 
 ## `<Border x:Name="PLadder" ...>`
 
-The sorting button and the search field over the onset column, one control like the tenor panel's.
+The ordering picker and the search field over the onset column, one control like the tenor panel's.
+The picker is the shared `PChoiceOrder`, placed here as `PYunjingOrder`.
 
 ## `<Border x:Name="PStair" ...>`
 
 The same control over the rime column, with its own ordering and search.
+Its picker is a second `PChoiceOrder`, placed here as `PYunmuOrder`.
 
 ## `<TextBox x:Name="PBeacon" ...>`
 
@@ -36,10 +38,7 @@ The size is this panel's alone, and the entry column keeps the catalog size.
 One category row: its key and the count of entries under it, shared by the onset and rime columns.
 Its parts are named, and `PYunjingItem.PYunjingItemRefine` fills them and marks the chosen row.
 
-## `<local:QRail Grid.Row="0" Grid.Column="3" Margin="0,0,0,18">`
+## `<veneer:PPanelRail x:Name="PYunjingRail" Grid.Row="0" Grid.Column="3" Margin="0,0,0,18" />`
 
-The command rail over the reader: new, save, export and print, then the view and edit switch.
-One slot sits between save and export, and it holds whichever pair the mode asks for.
-Reading shows `PYunjingEarlier` and `PYunjingLater`, which walk the window's trail of records.
-Writing shows `PYunjingBackward` and `PYunjingForward`, which walk the chronicle of the editor in front.
-Each carries no label, only the arrow and a tooltip, and is lit only while a step is there.
+The entry actions over the reader, and the reader and editor toggle.
+The command row is the shared `PPanelRail`, placed here as `PYunjingRail`.

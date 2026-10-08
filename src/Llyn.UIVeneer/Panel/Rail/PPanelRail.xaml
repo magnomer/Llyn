@@ -1,0 +1,73 @@
+<UserControl
+    x:Class="Llyn.UIVeneer.PPanelRail"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Llyn.UIDeportment;assembly=Llyn.UIDeportment"
+    >
+
+    <local:QRail>
+        <Border Style="{StaticResource Theme.Command.Group}">
+            <StackPanel Orientation="Horizontal">
+                <Button
+                    x:Name="PPanelRailFresh"
+                    Content="{DynamicResource Scribe.New}"
+                    Style="{StaticResource Theme.Command.Segment}" />
+                <Button
+                    x:Name="PPanelRailStore"
+                    Content="{DynamicResource Scribe.Save}"
+                    IsEnabled="False"
+                    Style="{StaticResource Theme.Command.Primary}" />
+                <Rectangle Style="{StaticResource Theme.Command.Divider}" />
+                <StackPanel x:Name="PPanelRailVoyage" Orientation="Horizontal">
+                    <Button
+                        x:Name="PPanelRailEarlier"
+                        IsEnabled="False"
+                        Style="{StaticResource Theme.Command.Segment}"
+                        ToolTip="{DynamicResource Voyage.Retreat}" />
+                    <Button
+                        x:Name="PPanelRailLater"
+                        IsEnabled="False"
+                        Style="{StaticResource Theme.Command.Segment}"
+                        ToolTip="{DynamicResource Voyage.Advance}" />
+                </StackPanel>
+                <StackPanel x:Name="PPanelRailChronicle" Orientation="Horizontal" Visibility="Collapsed">
+                    <Button
+                        x:Name="PPanelRailBackward"
+                        IsEnabled="False"
+                        Style="{StaticResource Theme.Command.Segment}"
+                        ToolTip="{DynamicResource Chronicle.Undo}" />
+                    <Button
+                        x:Name="PPanelRailForward"
+                        IsEnabled="False"
+                        Style="{StaticResource Theme.Command.Segment}"
+                        ToolTip="{DynamicResource Chronicle.Redo}" />
+                </StackPanel>
+                <Rectangle Style="{StaticResource Theme.Command.Divider}" />
+                <Button
+                    x:Name="PPanelRailPortrait"
+                    Content="{DynamicResource Scribe.Export}"
+                    Style="{StaticResource Theme.Command.Segment}" />
+                <Button
+                    x:Name="PPanelRailPress"
+                    Content="{DynamicResource Scribe.Print}"
+                    Style="{StaticResource Theme.Command.Segment}" />
+            </StackPanel>
+        </Border>
+        <Border
+            x:Name="PPanelRailMode"
+            IsEnabled="False"
+            Style="{StaticResource Theme.Command.Group}">
+            <StackPanel Orientation="Horizontal">
+                <RadioButton
+                    x:Name="PPanelRailViewer"
+                    Content="{DynamicResource Scribe.View}"
+                    IsChecked="True"
+                    Style="{StaticResource Theme.Command.Mode}" />
+                <RadioButton
+                    x:Name="PPanelRailScribe"
+                    Content="{DynamicResource Scribe.Edit}"
+                    Style="{StaticResource Theme.Command.Mode}" />
+            </StackPanel>
+        </Border>
+    </local:QRail>
+</UserControl>

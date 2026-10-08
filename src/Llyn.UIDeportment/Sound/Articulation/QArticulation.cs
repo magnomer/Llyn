@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Shapes;
 using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
@@ -15,16 +17,27 @@ internal sealed class QArticulation
 
     private readonly List<TextBox> _qArticulationTarget = [];
 
+    private readonly ToggleButton _qArticulationHelper;
+
+    private readonly Rectangle _qArticulationSeam;
+
     private TextBox? _qArticulationField;
 
-    internal QArticulation(UserControl surface)
+    internal QArticulation(UserControl surface, ToggleButton helper, Rectangle seam)
     {
         ArgumentNullException.ThrowIfNull(surface);
+        ArgumentNullException.ThrowIfNull(helper);
+        ArgumentNullException.ThrowIfNull(seam);
 
         _qArticulationSurface = surface;
+        _qArticulationHelper = helper;
+        _qArticulationSeam = seam;
         QLook.QLookStyleAttach(surface);
+        helper.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("articulation", 24));
 
         QArticulationLane.SizeChanged += QArticulationLaneRefine;
+        helper.Checked += QArticulationFoldRefine;
+        helper.Unchecked += QArticulationFoldRefine;
     }
 
     private ScrollViewer QArticulationLane =>
@@ -39,6 +52,13 @@ internal sealed class QArticulation
     private Grid QVowel => QContract.QContractFind<Grid>(_qArticulationSurface, "PVowel");
 
     private Grid QConsonant => QContract.QContractFind<Grid>(_qArticulationSurface, "PConsonant");
+
+    private void QArticulationFoldRefine(object sender, RoutedEventArgs e)
+    {
+        _qArticulationSurface.Visibility =
+            QLook.QLookVisibleRead(QLook.QLookCheckedRead(_qArticulationHelper.IsChecked));
+        _qArticulationSeam.Visibility = _qArticulationSurface.Visibility;
+    }
 
     private void QArticulationLaneRefine(object sender, SizeChangedEventArgs e)
     {

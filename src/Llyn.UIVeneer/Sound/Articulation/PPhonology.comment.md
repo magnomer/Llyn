@@ -1,5 +1,5 @@
 # PPhonology.xaml
-Hash: `2d7e9266376af1ec`
+Hash: `4c2070af2e07035a`
 
 ## `<Rectangle ... Style="{StaticResource Theme.Panel.SeamRow}" />`
 
@@ -17,6 +17,8 @@ That is the whole rule, since a line marks a division and a box would claim an o
 The ordering button and the search field are one control over the inventory column.
 The library panel joins its own two controls the same way.
 The articulation fold stands outside this bar, because it shapes the editor rather than the catalog.
+The ordering picker is the shared `PChoiceOrder`, placed here as `PPhonologyOrder`.
+The language filter is the shared `PChoiceFilter`, placed here as `PPhonologyFilter`.
 
 ## `<ToggleButton x:Name="PArticulationHelper" ... />`
 
@@ -29,16 +31,16 @@ The aid is two full charts, so it is folded away until it is asked for.
 ## `<Rectangle x:Name="PArticulationSeam" ... Visibility="Collapsed" />`
 
 The seam and the aid start folded, because the toggle starts unchecked.
-`QPhonology` shows both when the toggle is checked, since the markup carries no fold binding.
+`QArticulation` shows both when the toggle is checked, since the markup carries no fold binding.
 
-## `<StackPanel Grid.Row="0" Grid.Column="1" ...>`
+## `<veneer:PPanelRail x:Name="PPhonologyRail" Grid.Row="0" Grid.Column="1" Margin="0,0,0,18" />`
 
 The action row of a browse-style panel, on the broader side.
+The command row is the shared `PPanelRail`, placed here as `PPhonologyRail`.
 It is the same row the library panel carries, and it names the same four actions.
 One slot sits between save and export, and it holds whichever pair the mode asks for.
-Reading shows `PPhonologyEarlier` and `PPhonologyLater`, which walk the window's trail of records.
-Writing shows `PPhonologyBackward` and `PPhonologyForward`, which walk the chronicle of the editor in front.
-Each carries no label, only the arrow and a tooltip, and is lit only while a step is there.
+Reading shows the pair that walks the window's trail of records.
+Writing shows the pair that walks the chronicle of the editor in front.
 The mode toggle stands there rather than inside the display, because the display is shared.
 
 ## `<veneer:PArticulation ... Grid.ColumnSpan="2" />`
@@ -53,15 +55,10 @@ Neither column owns it.
 
 A row reads as the pronunciation first and the word after it.
 That is the order this panel browses in.
-The catalog keeps 6 device-independent pixels between each row and either panel seam.
-The left inset offsets the panel's wider command margin.
-The right inset is the reserved 6-pixel scroll lane.
-Its compact scrollbar stays inside the catalog, and rows retain their width when the list starts scrolling.
-The row's own padding and vertical spacing remain separate from these outer gutters.
 The word is quieter than the pronunciation, because the pronunciation is what is being looked for.
 
 ## Catalog spacing
 
 The catalog uses the shared Theme.Catalog.Frame and Theme.Catalog.Scroll styles.
-Rows keep 6 device-independent pixels on both sides, with a reserved scrollbar lane so their width stays stable.
+The scroll bar takes its lane only when the list overflows, and the rows then narrow to make room.
 The shared Theme.Catalog.Row preserves the same rounded shape, internal padding and row spacing across browse panels.

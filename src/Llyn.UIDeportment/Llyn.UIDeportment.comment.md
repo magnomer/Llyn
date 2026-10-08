@@ -104,5 +104,5 @@ A panel's edit requests are built in ShellEngine, over the tenure the desk holds
 - It defers when the request it replaced was deferred, and sends otherwise.
 - A driver hands a member its input and never builds a request.
 - A driver over a veneer page answers the undo and redo keys through `QChronicle.QChronicleIntroduce`.
-- A row's buttons each subscribe to their own gate, as `QImprint` does for the four credit handles.
+- A row's buttons each subscribe to their own gate, as `QAuthor` does for the four credit handles.
   No handler reads an action from a part's name.

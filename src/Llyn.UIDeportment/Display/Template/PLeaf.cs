@@ -199,12 +199,12 @@ internal static class PLeaf
 
         if (QLook.QLookPartFind<TextBlock>(container, "PLinkHeadword") is TextBlock headword)
         {
-            headword.Text = chip.QLinkChipTarget.CTranslationTargetHeadword;
+            headword.Text = chip.QLinkChipHeadword;
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PLinkLanguage") is TextBlock language)
         {
-            language.Text = chip.QLinkChipTarget.CTranslationTargetLanguage;
+            language.Text = chip.QLinkChipLanguage;
         }
     }
 }

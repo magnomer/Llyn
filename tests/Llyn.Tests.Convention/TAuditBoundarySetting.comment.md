@@ -1,11 +1,15 @@
 # TAuditBoundarySetting.cs
-Hash: `76bffae538d95a22`
+Hash: `163492586168a88a`
 
 ## `internal static class TAuditBoundarySetting`
 
 Hand-written and tracked.
 It holds the names and files the boundary facts hold the shell to.
 No script writes this file.
+
+## `public const int TAuditGeneration`
+
+Numbers the revision of the boundary settings this file holds.
 
 ## `public static readonly string[] TAuditBoundaryForbidden`
 
@@ -46,6 +50,7 @@ The type a panel used to hold its own debounce timer in, before the tenure owned
 ## `public static readonly string[] TAuditBoundaryHold`
 
 The file name patterns of the sources that hold a draft and may not keep a timer.
+Empty, since no file holds a draft by name any more.
 
 ## `public const string TAuditBoundaryPanel`
 

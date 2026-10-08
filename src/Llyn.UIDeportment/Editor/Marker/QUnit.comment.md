@@ -1,5 +1,5 @@
 # QUnit.cs
-Hash: `14fc9a800d0ff0a2`
+Hash: `65408138208702ba`
 
 ## `internal sealed class QUnit`
 
@@ -13,9 +13,9 @@ Each menu row is a `QUnitItem`.
 
 The key the dropper shows while no unit is held.
 
-## `internal void QUnitIntroduce(CEditor editor)`
+## `internal void QUnitIntroduce(CEntry entry)`
 
-Takes the editor, whose gate a pick goes to.
+Takes the entry facet, whose unit gate a pick goes to.
 
 ## `internal void QUnitRefine(IReadOnlyList<(string, bool)> units)`
 

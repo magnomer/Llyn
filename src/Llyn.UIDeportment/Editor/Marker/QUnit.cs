@@ -15,7 +15,7 @@ internal sealed class QUnit
 
     private readonly ObservableCollection<QUnitItem> _qUnitItem = [];
 
-    private CEditor _cEditor = null!;
+    private CEntry _cEntry = null!;
 
     internal QUnit(FrameworkElement surface)
     {
@@ -33,9 +33,9 @@ internal sealed class QUnit
 
     private TextBlock QUnitName => QContract.QContractFind<TextBlock>(_qUnitSurface, "PUnitName");
 
-    internal void QUnitIntroduce(CEditor editor)
+    internal void QUnitIntroduce(CEntry entry)
     {
-        _cEditor = editor;
+        _cEntry = entry;
     }
 
     internal void QUnitRefine(IReadOnlyList<(string, bool)> units)
@@ -84,7 +84,7 @@ internal sealed class QUnit
         if (sender is FrameworkElement { DataContext: QUnitItem item })
         {
             QUnitDropper.IsChecked = false;
-            _cEditor.CEditorEntry.CEntryUnitSet(item.QUnitItemKey);
+            _cEntry.CEntryUnitSet(item.QUnitItemKey);
         }
     }
 }

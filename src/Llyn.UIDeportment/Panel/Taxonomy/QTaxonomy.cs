@@ -1,13 +1,14 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
-internal sealed partial class QTaxonomy
+internal sealed class QTaxonomy
 {
     private readonly UserControl _qTaxonomySurface;
 
@@ -15,7 +16,19 @@ internal sealed partial class QTaxonomy
 
     private readonly QDisplay _qTaxonomyDisplay;
 
-    private QWindow _qTaxonomyHost = null!;
+    private readonly QPanelRail _qTaxonomyRail;
+
+    private readonly QChoiceOrder _qTaxonomyOrder;
+
+    private readonly QChoiceFilter _qTaxonomyFilter;
+
+    private readonly QMembership _qMembership;
+
+    private readonly ObservableCollection<QDirectoryItem> _qDirectoryList = [];
+
+    private CAtelier _cAtelier = null!;
+
+    private CEnvoy _cEnvoy = null!;
 
     private CTaxonomy _cTaxonomy = null!;
 
@@ -31,50 +44,26 @@ internal sealed partial class QTaxonomy
             new CommandBinding(ApplicationCommands.Print, QTaxonomyPressObserve, QTaxonomyPressRefine));
         surface.CommandBindings.Add(new CommandBinding(
             PDisplayCommand.PDisplayCommandPortrait, QTaxonomyPortraitObserve, QTaxonomyPressRefine));
-        QTaxonomyPortrait.Command = PDisplayCommand.PDisplayCommandPortrait;
-        QTaxonomyPress.Command = ApplicationCommands.Print;
+        _qTaxonomyRail = new QPanelRail(
+            QContract.QContractFind<UserControl>(surface, "PTaxonomyRail"),
+            QTaxonomyBin,
+            QTaxonomyBinIcon,
+            true,
+            true);
+        _qTaxonomyOrder = new QChoiceOrder(QContract.QContractFind<UserControl>(surface, "PTaxonomyOrder"), QFunnel);
+        _qTaxonomyFilter = new QChoiceFilter(QContract.QContractFind<UserControl>(surface, "PTaxonomyFilter"));
+        _qMembership = new QMembership(surface);
 
-        QChoice.QChoiceDropperAttach(QFunnelDropper, QFunnelDropdown, QFunnel);
-        QChoice.QChoiceDropperAttach(QLatticeDropper, QLatticeDropdown, QLatticeDropper);
-
-        QFunnelIcon.QIconSource = QIcon.QIconResolve("sort", 24);
-        QLatticeIcon.QIconSource = QIcon.QIconResolve("filter", 24);
-        QTaxonomyBinIcon.QIconSource = QIcon.QIconResolve("delete", 24);
         QExploration.SetResourceReference(QField.QFieldHintProperty, "Tag.Search");
-        QScout.SetResourceReference(QField.QFieldHintProperty, "Scout.Search");
-        QTaxonomyFresh.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("new", 24));
-        QTaxonomyStore.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("save", 24));
-        QTaxonomyEarlier.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("retreat", 24));
-        QTaxonomyLater.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("advance", 24));
-        QTaxonomyBackward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("undo", 24));
-        QTaxonomyForward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("redo", 24));
-        QTaxonomyPortrait.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("export", 24));
-        QTaxonomyPress.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("print", 24));
-        QTaxonomyViewer.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("view", 24));
-        QTaxonomyScribe.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("edit", 24));
 
         QExploration.TextChanged += QExplorationObserve;
-        QScout.TextChanged += QScoutObserve;
-        QTaxonomyFresh.Click += QTaxonomyFreshObserve;
-        QTaxonomyStore.Click += QTaxonomyStoreObserve;
-        QTaxonomyEarlier.Click += QTaxonomyRetreatObserve;
-        QTaxonomyLater.Click += QTaxonomyAdvanceObserve;
-        QTaxonomyBackward.Click += QTaxonomyUndoObserve;
-        QTaxonomyForward.Click += QTaxonomyRedoObserve;
-        QTaxonomyViewer.Click += QTaxonomyViewerObserve;
-        QTaxonomyScribe.Click += QTaxonomyScribeObserve;
-        QTaxonomyBin.Click += QTaxonomyBinObserve;
+        _qTaxonomyRail.QPanelRailCreated += QTaxonomyFreshObserve;
+        _qTaxonomyRail.QPanelRailStored += QTaxonomyStoreObserve;
+        _qTaxonomyRail.QPanelRailToggled += QTaxonomyScribeObserve;
+        _qTaxonomyRail.QPanelRailDeleted += QTaxonomyBinObserve;
     }
 
     private Border QFunnel => QContract.QContractFind<Border>(_qTaxonomySurface, "PFunnel");
-
-    private ToggleButton QFunnelDropper => QContract.QContractFind<ToggleButton>(_qTaxonomySurface, "PFunnelDropper");
-
-    private QIconImage QFunnelIcon => QContract.QContractFind<QIconImage>(_qTaxonomySurface, "PFunnelIcon");
-
-    private Popup QFunnelDropdown => QContract.QContractFind<Popup>(_qTaxonomySurface, "PFunnelDropdown");
-
-    private StackPanel QFunnelList => QContract.QContractFind<StackPanel>(_qTaxonomySurface, "PFunnelList");
 
     private TextBox QExploration => QContract.QContractFind<TextBox>(_qTaxonomySurface, "PExploration");
 
@@ -82,85 +71,50 @@ internal sealed partial class QTaxonomy
 
     private TextBlock QDirectoryEmpty => QContract.QContractFind<TextBlock>(_qTaxonomySurface, "PDirectoryEmpty");
 
-    private ItemsControl QMembership => QContract.QContractFind<ItemsControl>(_qTaxonomySurface, "PMembership");
-
-    private TextBlock QMembershipEmpty => QContract.QContractFind<TextBlock>(_qTaxonomySurface, "PMembershipEmpty");
-
-    private TextBox QScout => QContract.QContractFind<TextBox>(_qTaxonomySurface, "PScout");
-
-    private ToggleButton QLatticeDropper =>
-        QContract.QContractFind<ToggleButton>(_qTaxonomySurface, "PLatticeDropper");
-
-    private QIconImage QLatticeIcon => QContract.QContractFind<QIconImage>(_qTaxonomySurface, "PLatticeIcon");
-
-    private FrameworkElement QLatticeMark =>
-        QContract.QContractFind<FrameworkElement>(_qTaxonomySurface, "PLatticeMark");
-
-    private Popup QLatticeDropdown => QContract.QContractFind<Popup>(_qTaxonomySurface, "PLatticeDropdown");
-
-    private StackPanel QLatticeList => QContract.QContractFind<StackPanel>(_qTaxonomySurface, "PLatticeList");
-
-    private Button QTaxonomyFresh => QContract.QContractFind<Button>(_qTaxonomySurface, "PTaxonomyFresh");
-
-    private Button QTaxonomyStore => QContract.QContractFind<Button>(_qTaxonomySurface, "PTaxonomyStore");
-
-    private StackPanel QTaxonomyVoyage => QContract.QContractFind<StackPanel>(_qTaxonomySurface, "PTaxonomyVoyage");
-
-    private Button QTaxonomyEarlier => QContract.QContractFind<Button>(_qTaxonomySurface, "PTaxonomyEarlier");
-
-    private Button QTaxonomyLater => QContract.QContractFind<Button>(_qTaxonomySurface, "PTaxonomyLater");
-
-    private StackPanel QTaxonomyChronicle =>
-        QContract.QContractFind<StackPanel>(_qTaxonomySurface, "PTaxonomyChronicle");
-
-    private Button QTaxonomyBackward => QContract.QContractFind<Button>(_qTaxonomySurface, "PTaxonomyBackward");
-
-    private Button QTaxonomyForward => QContract.QContractFind<Button>(_qTaxonomySurface, "PTaxonomyForward");
-
-    private Button QTaxonomyPortrait => QContract.QContractFind<Button>(_qTaxonomySurface, "PTaxonomyPortrait");
-
-    private Button QTaxonomyPress => QContract.QContractFind<Button>(_qTaxonomySurface, "PTaxonomyPress");
-
-    private Border QTaxonomyMode => QContract.QContractFind<Border>(_qTaxonomySurface, "PTaxonomyMode");
-
-    private RadioButton QTaxonomyViewer => QContract.QContractFind<RadioButton>(_qTaxonomySurface, "PTaxonomyViewer");
-
-    private RadioButton QTaxonomyScribe => QContract.QContractFind<RadioButton>(_qTaxonomySurface, "PTaxonomyScribe");
-
     private Button QTaxonomyBin => QContract.QContractFind<Button>(_qTaxonomySurface, "PTaxonomyBin");
 
     private QIconImage QTaxonomyBinIcon => QContract.QContractFind<QIconImage>(_qTaxonomySurface, "PTaxonomyBinIcon");
 
-    internal void QTaxonomyIntroduce(QWindow host)
+    internal void QTaxonomyIntroduce(CAtelier atelier, CEnvoy envoy, QVolume volume, QMentionMenu mentionMenu)
     {
-        _qTaxonomyHost = host;
+        ArgumentNullException.ThrowIfNull(atelier);
+
+        _cAtelier = atelier;
+        _cEnvoy = envoy;
         _cTaxonomy = CTaxonomy.CTaxonomyCreate(
-            host.QWindowAtelier,
+            atelier,
             QTaxonomyShownCheck,
-            host.QWindowEnvoy,
+            envoy,
             QObserver.QObserverCreate<Action>(static run => run()));
         _cTaxonomy.CTaxonomyTagOpened += QDirectoryTagRefine;
         _cTaxonomy.CTaxonomyAperture.CApertureRowsChanged += QDirectoryRefine;
         _cTaxonomy.CTaxonomyWorkspaceChanged += QTaxonomyWorkspaceRefine;
+        _qTaxonomyOrder.QChoiceOrderIntroduce(
+            _cTaxonomy.CTaxonomyAperture,
+            "Funnel",
+            [
+                CCatalogOrder.CCatalogOrderName,
+                CCatalogOrder.CCatalogOrderReverse,
+            ]);
+        _qTaxonomyFilter.QChoiceFilterIntroduce(_cTaxonomy.CTaxonomyAperture, "Lattice");
         CPanel panel = _cTaxonomy.CTaxonomyMembership.CMembershipPanel;
-        QLectern lectern = new(_cTaxonomy.CTaxonomyEditor.CEditorDisplay, panel);
         panel.CPanelChanged += QTaxonomyModeRefine;
-        panel.CPanelAperture.CApertureRowsChanged += QMembershipRefine;
+        _qMembership.QMembershipIntroduce(_cTaxonomy);
 
         QDirectory.ItemsSource = _qDirectoryList;
-        QMembership.ItemsSource = _qMembershipList;
         QLookItem.QLookItemAttach(QDirectory, QDirectoryItemRefine);
-        QLookItem.QLookItemAttach(QMembership, QMembershipItemRefine);
 
-        _qTaxonomyDisplay.QDisplayIntroduce(host, lectern);
+        _qTaxonomyDisplay.QDisplayIntroduce(
+            atelier, envoy, volume, mentionMenu, _cTaxonomy.CTaxonomyEditor.CEditorDisplay);
         _cTaxonomy.CTaxonomyEditor.CEditorDesk.CDeskStateChanged += QTaxonomyStoreRefine;
-        _qTaxonomyEditor.QEditorIntroduce(host, _cTaxonomy.CTaxonomyEditor);
+        _qTaxonomyEditor.QEditorIntroduce(atelier, envoy, volume, mentionMenu, _cTaxonomy.CTaxonomyEditor);
         _qTaxonomyEditor.QEditorChronicleChanged += QTaxonomyChronicleRefine;
+        _qTaxonomyRail.QPanelRailIntroduce(atelier.CAtelierNavigation, _qTaxonomyEditor);
     }
 
     private void QTaxonomyStoreRefine()
     {
-        QTaxonomyStore.IsEnabled = _cTaxonomy.CTaxonomyEditor.CEditorDesk.CDeskDraft.CDeskDraftStorable;
+        _qTaxonomyRail.QEntryStorableRefine(_cTaxonomy.CTaxonomyEditor.CEditorDesk.CDeskDraft.CDeskDraftStorable);
     }
 
     internal void QTaxonomyExitRefine()
@@ -183,37 +137,10 @@ internal sealed partial class QTaxonomy
         await _cTaxonomy.CTaxonomyMembership.CMembershipPortraitExport();
     }
 
-    internal void QTaxonomyVoyageRefine(bool past, bool future)
-    {
-        QTaxonomyEarlier.IsEnabled = past;
-        QTaxonomyLater.IsEnabled = future;
-    }
-
-    private void QTaxonomyRetreatObserve(object sender, RoutedEventArgs e)
-    {
-        _qTaxonomyHost.QWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
-    }
-
-    private void QTaxonomyAdvanceObserve(object sender, RoutedEventArgs e)
-    {
-        _qTaxonomyHost.QWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
-    }
-
-    private void QTaxonomyUndoObserve(object sender, RoutedEventArgs e)
-    {
-        _qTaxonomyEditor.QChronicleUndoObserve();
-    }
-
-    private void QTaxonomyRedoObserve(object sender, RoutedEventArgs e)
-    {
-        _qTaxonomyEditor.QChronicleRedoObserve();
-    }
-
     private void QTaxonomyChronicleRefine()
     {
         (bool undo, bool redo) = _cTaxonomy.CTaxonomyEditor.CEditorDesk.CDeskChronicle.CDeskChronicleRead();
-        QTaxonomyBackward.IsEnabled = undo;
-        QTaxonomyForward.IsEnabled = redo;
+        _qTaxonomyRail.QChronicleRefine(undo, redo);
     }
 
     private bool QTaxonomyShownCheck()
@@ -226,11 +153,110 @@ internal sealed partial class QTaxonomy
         CPanel panel = _cTaxonomy.CTaxonomyMembership.CMembershipPanel;
         _qTaxonomyEditor.QEditorVisibleRefine(QLook.QLookVisibleRead(panel.CPanelEditing));
         _qTaxonomyDisplay.QDisplayVisibleRefine(QLook.QLookVisibleRead(panel.CPanelViewerChecked));
-        QTaxonomyViewer.IsChecked = panel.CPanelViewerChecked;
-        QTaxonomyScribe.IsChecked = panel.CPanelScribeChecked;
-        QTaxonomyVoyage.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
-        QTaxonomyChronicle.Visibility = QLook.QLookVisibleRead(panel.CPanelScribeChecked);
-        QTaxonomyMode.IsEnabled = panel.CPanelModeEnabled;
-        QTaxonomyBin.IsEnabled = panel.CPanelBinEnabled;
+        _qTaxonomyRail.QPanelRailRefine(
+            panel.CPanelScribeChecked, panel.CPanelModeEnabled, panel.CPanelBinEnabled);
+    }
+
+    private async void QTaxonomyWorkspaceRefine()
+    {
+        await _cAtelier.CAtelierCatalog.CCatalogEnsignLoad(_cEnvoy, QEnsignImage.QEnsignDraw);
+    }
+
+    private void QExplorationObserve(object sender, TextChangedEventArgs e)
+    {
+        _cTaxonomy.CTaxonomyAperture.CApertureQuerySet(QExploration.Text ?? string.Empty);
+    }
+
+    internal async void QTaxonomyVistaRefine()
+    {
+        _qTaxonomyOrder.QChoiceOrderRefine();
+        _qTaxonomyFilter.QChoiceFilterRefine();
+        CEnsignSheet<IReadOnlyList<CCatalogTag>> sheet =
+            await _cTaxonomy.CTaxonomyRowsLoad(QEnsignImage.QEnsignDraw);
+        _qTaxonomyFilter.QChoiceFilterBuild(sheet.CEnsignSheetLanguages);
+        QDirectoryRefine(sheet.CEnsignSheetRows);
+    }
+
+    private void QDirectoryRefine()
+    {
+        QDirectoryRefine(_cTaxonomy.CTaxonomyRowsRead());
+    }
+
+    private void QDirectoryRefine(IReadOnlyList<CCatalogTag> rows)
+    {
+        _qDirectoryList.Clear();
+        foreach (CCatalogTag row in rows)
+        {
+            _qDirectoryList.Add(new QDirectoryItem(
+                row.CCatalogTagStored.CTagId, row.CCatalogTagStored.CTagText, row.CCatalogTagChosen));
+        }
+
+        QDirectoryEmpty.Visibility = _qDirectoryList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void QDirectoryObserve(object sender, RoutedEventArgs e)
+    {
+        if ((sender as FrameworkElement)?.DataContext is QDirectoryItem item)
+        {
+            _cTaxonomy.CTaxonomyTagToggle(item.QDirectoryItemId);
+        }
+    }
+
+    private void QDirectoryItemRefine(FrameworkElement container, object item, string? _)
+    {
+        if (item is not QDirectoryItem directory)
+        {
+            return;
+        }
+
+        if (QLook.QLookPartFind<Button>(container, "PDirectoryRow") is Button row)
+        {
+            if (directory.QDirectoryItemChosen)
+            {
+                row.SetValue(QLook.QLookCueProperty, QLookCue.QLookCueChosen);
+            }
+            else
+            {
+                row.ClearValue(QLook.QLookCueProperty);
+            }
+
+            row.Click -= QDirectoryObserve;
+            row.Click += QDirectoryObserve;
+        }
+
+        if (QLook.QLookPartFind<QIconImage>(container, "PDirectoryIcon") is QIconImage icon)
+        {
+            icon.QIconSource = QIcon.QIconResolve("tag", 16);
+        }
+
+        if (QLook.QLookPartFind<TextBlock>(container, "PDirectoryText") is TextBlock text)
+        {
+            text.Text = directory.QDirectoryItemText;
+        }
+    }
+
+    private void QDirectoryTagRefine()
+    {
+        QExploration.Text = string.Empty;
+    }
+
+    private void QTaxonomyFreshObserve()
+    {
+        _cTaxonomy.CTaxonomyEntryCreate();
+    }
+
+    private void QTaxonomyScribeObserve(bool scribe)
+    {
+        _cTaxonomy.CTaxonomyMembership.CMembershipPanel.CPanelScribeToggle(scribe);
+    }
+
+    private void QTaxonomyStoreObserve()
+    {
+        _cTaxonomy.CTaxonomyEditor.CEditorEntrySave();
+    }
+
+    private void QTaxonomyBinObserve()
+    {
+        _cTaxonomy.CTaxonomyMembership.CMembershipPanel.CPanelBin.CPanelBinDelete();
     }
 }

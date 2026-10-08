@@ -1,5 +1,5 @@
 # QYunjing.cs
-Hash: `96c99078f39513fc`
+Hash: `0893207efc19de56`
 
 ## `internal sealed class QYunjing`
 
@@ -7,39 +7,43 @@ The yunjing panel's driver, which browses the workspace as a rime table by onset
 It is shown only while a loaded language pack carries rime books, since without them there is no table.
 Every decision lives in [CYunjing](../../../Llyn.Conduct/Panel/CYunjing.comment.md), and this file writes controls on notice.
 It drives the Veneer page `PYunjing`, so the page holds only markup.
-The two columns, the entry list, the category page, the reader and the editor are all driven from one file.
+The category page, the reader and the editor are served from this file.
+The two columns have their own driver, `QDiweiIndex`, and the entry list has its own driver, `QXiaoyun`.
 
 ## `internal QYunjing(UserControl surface)`
 
-Takes the Veneer page the main window places and pulls its parts by contract ID.
-It points the export and print buttons at their commands.
-It ties the droppers to their popups, sets every icon, and attaches the row fills.
-Row clicks are taken on each list, and every button and search field is subscribed here.
+Takes the Veneer page the main window places and builds the category page driver.
+It hands `PYunjingRail` to a `QPanelRail`, with the bin, the new-record button and the export button.
+It hands `PYunjingOrder` and `PYunmuOrder` to two `QChoiceOrder`, whose menus hang under the onset and rime search bars.
+It hands the page to the column driver `QDiweiIndex` and the entry list driver `QXiaoyun`.
+It then subscribes the rail's notices.
 
 ## `private Border QLadder`
 
 Each named part of the page is pulled through `QContract` under the page's own `x:Name`.
 
-## `internal void QYunjingIntroduce(QWindow host)`
+## `internal void QYunjingIntroduce(CAtelier atelier, CEnvoy envoy, QVolume volume, QMentionMenu mentionMenu)`
 
 Builds the Conduct session, wraps its entry list's editor, and subscribes the notices.
 Only the medium knows its dispatcher, so the marshal the area runs its notices through is built here.
-The lectern is built here to follow the panel, so the session names no driver type.
-Both order menus are built once from `CYunjingOrderRead`, since the offered orders need no session.
-Each column, the page and the mode answer the area's change with their own read.
-It then wires the lists, the page and the editor.
+The display view builds the lectern over the editor's display, which Conduct attached to the panel.
+It hands the pickers the onset and rime apertures, titled `Ladder` and `Stair`, with the orders `CYunjingOrderRead` offers.
+The column and entry list drivers are introduced with the session, so they subscribe their own rows.
+The category page and the mode answer the area's change with their own Refines.
+It then attaches the reader, the category page and the editor.
+The rail is introduced with the atelier's navigation for its trail and the editor for its chronicle.
 The print and portrait command bindings are added last, so no can-execute query meets a session not yet built.
 
 ## `private void QYunjingStoreRefine()`
 
-Lights the store button only while the desk holds something to save.
+Enables the rail's store button while the editor holds something storable.
 It runs whenever the desk reports its state again.
 
 ## `internal void QYunjingVistaRefine()`
 
 Answers the workspace's opening once the session restored its vistas and attached its observers.
-It marks the ordering of both columns and paints the mode and the entry list.
-The columns and the page answer the same opening with their own Refines.
+It marks the ordering of both pickers and paints the mode and the entry list.
+The category page and both columns answer the same opening with their own Refines.
 
 ## `private async void QYunjingWorkspaceRefine()`
 
@@ -50,12 +54,6 @@ So rows built while the load ran, after a cell was chosen, gain their flags.
 A failed flag load is reported by Conduct, and the rows are still painted without flags.
 Its one request is the entry list's `CEntryListLoad`, which runs the flag fill and then answers the rows it paints.
 
-## `private void QYunjingQueryRefine()`
-
-Answers the area's opening of a cell a fanqie chip names by emptying both search fields.
-The area has already emptied both queries, so the fields only show it.
-The fields' own handlers still hear the change, and their gates find the queries already empty.
-
 ## `internal void QYunjingExitRefine()`
 
 Releases the editor's player as the window closes.
@@ -65,23 +63,6 @@ The area's own close, run by the atelier, lets the draft go and stops the playba
 
 Tells the session whether the page is on screen, since the session cannot see the window.
 
-## `internal void QShengmuRefine()`
-
-Lists the initial column afresh with the empty text the session names.
-
-## `internal void QYunmuRefine()`
-
-Lists the rime column afresh with the empty text the session names.
-
-## `private void QXiaoyunRefine()`
-
-Lists the entries at the chosen cell afresh with the empty text the session names.
-
-## `private void QXiaoyunRefine(IReadOnlyList<CVistaRow> rows)`
-
-Paints `rows` the area answered ready, so the paint itself asks Conduct nothing.
-The parameterless form reads them, and a flag-fill Refine hands in what its load answered.
-
 ## `internal void QYunjingDiweiRefine()`
 
 Hands the page its composed content, blank while it is hidden.
@@ -89,64 +70,24 @@ It answers the area's change, a cleared entry list and the workspace's opening.
 
 ## `private void QYunjingModeRefine()`
 
-Writes every visibility and enablement off the session's verdicts.
+Writes the reader, editor and page visibility off the session's verdicts.
+It hands the rail the scribe, mode and bin states.
 
-## `private void QPlumbObserve(object sender, TextChangedEventArgs e)`
+## `private void QYunjingFreshObserve()`
 
-A change of the initial search field hands its text to the find gate.
+The rail's new-record notice asks the panel for a new entry.
 
-## `private void QFathomObserve(object sender, TextChangedEventArgs e)`
+## `private void QYunjingScribeObserve(bool scribe)`
 
-A change of the rime search field hands its text to the find gate.
+The rail's toggle hands its side to the scribe gate.
 
-## `private void QBeaconObserve(object sender, TextChangedEventArgs e)`
+## `private void QYunjingStoreObserve()`
 
-A change of the entry search field hands its text to the find gate.
+The rail's store notice asks the editor to save the entry.
 
-## `private void QLadderObserve(object sender, RoutedEventArgs e)`
+## `private void QYunjingBinObserve()`
 
-Hands the picked ordering to the initial column's gate, then closes the menu.
-
-## `private void QLadderRefine()`
-
-Closes the initial column's order menu.
-
-## `private void QStairObserve(object sender, RoutedEventArgs e)`
-
-Hands the picked ordering to the rime column's gate, then closes the menu.
-
-## `private void QStairRefine()`
-
-Closes the rime column's order menu.
-
-## `private void QYunjingObserve(object sender, RoutedEventArgs e)`
-
-A click on either column hands the cell's id and final flag to the select gate.
-
-## `private void QXiaoyunObserve(object sender, RoutedEventArgs e)`
-
-A click on the entry list hands the row's id to the select gate.
-
-## `private void QYunjingFreshObserve(object sender, RoutedEventArgs e)`
-
-The fresh button asks the panel for a new entry.
-
-## `private void QYunjingViewerObserve(object sender, RoutedEventArgs e)`
-
-The view switch hands the scribe gate a false.
-Each switch has its own handler, so no sender is compared.
-
-## `private void QYunjingScribeObserve(object sender, RoutedEventArgs e)`
-
-The edit switch hands the scribe gate a true.
-
-## `private void QYunjingStoreObserve(object sender, RoutedEventArgs e)`
-
-The store button asks the editor to save the entry.
-
-## `private void QYunjingBinObserve(object sender, RoutedEventArgs e)`
-
-The bin button asks the panel to delete the entry.
+The rail's bin notice asks the panel to delete the entry.
 
 ## `private void QYunjingPressRefine(object sender, CanExecuteRoutedEventArgs e)`
 
@@ -160,28 +101,7 @@ The print command asks the session to print the portrait.
 
 The portrait command asks the session to export the portrait.
 
-## `internal void QYunjingVoyageRefine(bool past, bool future)`
-
-Lights the two trail buttons from the voyage state the navigation raises.
-The navigation owns the trail, so the panel only shows what it is told.
-
-## `private void QYunjingRetreatObserve(object sender, RoutedEventArgs e)`
-
-Steps the navigation's trail back one station.
-
-## `private void QYunjingAdvanceObserve(object sender, RoutedEventArgs e)`
-
-Steps the navigation's trail forward one station.
-
-## `private void QYunjingUndoObserve(object sender, RoutedEventArgs e)`
-
-Walks the chronicle of the editor back one step.
-
-## `private void QYunjingRedoObserve(object sender, RoutedEventArgs e)`
-
-Walks the chronicle of the editor forward one step.
-
 ## `private void QYunjingChronicleRefine()`
 
-Lights the two chronicle buttons only while the editor has a step to walk.
+Lights the rail's two chronicle buttons only while the editor has a step to walk.
 It runs whenever the editor reports its state again.

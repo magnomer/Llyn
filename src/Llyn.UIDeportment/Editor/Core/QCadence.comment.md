@@ -1,5 +1,5 @@
 # QCadence.cs
-Hash: `9ed0edc2ed98e643`
+Hash: `788974b77e69128d`
 
 ## `internal sealed class QCadence`
 
@@ -7,10 +7,12 @@ The editor's sound panels read from the entry's timbre: the paradigm, the fanqie
 It finds its controls through `QContract.QContractFind` on the editor, keeping their `PEditor` markup names.
 Each panel paints one ready block its sounding read answers, font first, then its rows.
 
-## `internal void QCadenceIntroduce(CEditor editor)`
+## `internal void QCadenceIntroduce(CDesk desk, CTimbre timbre, CSounding sounding, CFold fold, CLedger ledger, CEnvoy envoy)`
 
-Takes the editor for every sounding and fold read and gate.
-Each panel answers a tenure start and its own change event from the editor, one subscriber each.
+Holds the sounding and fold facets for every read and gate.
+The desk and the timbre are only heard, so they are not held.
+The script panel's failure notice shows through `ledger` and `envoy` under `Display.ScriptFailed`.
+Each panel answers a desk tenure start and its own change event, one subscriber each.
 Both panels' renewal notices and the fanqie panel's diwei and representative notices are wired once, to their observers.
 Both panels' fold notices go straight to the fold's toggle gates, since each hands one raw value on.
 The fold paint answers a tenure start and the fold's change event.
@@ -21,7 +23,7 @@ Paints both panels' open switches and bodies from the open states the fold remem
 
 ## `private void QCadenceScriptRefine()`
 
-Scans the rows with the panel's `QScriptFailureRefine`, so a picture that fails to decode reaches the failure notice.
+Scans the rows with the panel's `QScriptFailureRefine`, so a picture that fails to decode raises the panel's failure notice.
 It also hands the block's verdict on whether the rows may be fetched again.
 The panel shows its refresh button from that flag, and `QCadenceFanqieRefine` does the same for the rime books.
 

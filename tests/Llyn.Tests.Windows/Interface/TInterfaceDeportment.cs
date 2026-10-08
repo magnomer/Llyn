@@ -17,7 +17,8 @@ namespace Llyn.Tests;
 
 internal static class TInterfaceDeportment
 {
-    internal static QLectern TLecternCreate(CEditor editor) => new(editor.CEditorDisplay);
+    internal static QLecternReflex TLecternCreate(CDisplay display, FrameworkElement surface) =>
+        new(surface, display.CDisplaySound);
 
     internal static (bool CDeskBackward, bool CDeskForward) TDeskChronicleRead(this CDesk desk) =>
         desk.CDeskChronicle.CDeskChronicleRead();
@@ -42,17 +43,11 @@ internal static class TInterfaceDeportment
     internal static bool TCaretStepApply(string key, int length, int selection, Func<int, bool> move, Action place) =>
         QCaret.QCaretStepApply(key, length, selection, move, place);
 
-    internal static void TDisplayFoldSet(this CEditor editor, bool opened) =>
-        editor.CEditorDisplay.CDisplaySound.CDisplayReflexToggle(opened);
+    internal static void TDisplayFoldSet(this CDisplay display, bool opened) =>
+        display.CDisplaySound.CDisplayReflexToggle(opened);
 
-    internal static bool TDisplayFoldRead(this CEditor editor) =>
-        editor.CEditorDisplay.LDisplayRule.LDisplaySound.LDisplayFoldOpened;
-
-    internal static void TLecternReflexAttach(
-        this QLectern lectern, ItemsControl reflex, UIElement loading, ToggleButton fold) =>
-        lectern.QLecternSound.QLecternReflexIntroduce(reflex, loading, fold);
-
-    internal static void TLecternFoldObserve(this QLectern lectern) => lectern.QLecternSound.QLecternFoldObserve();
+    internal static bool TDisplayFoldRead(this CDisplay display) =>
+        display.LDisplayRule.LDisplaySound.LDisplayFoldOpened;
 
     internal static void TEtymologySourceShow(this QEtymology etymology, bool linked) =>
         etymology.QEtymologySourceShow([], linked);
@@ -63,11 +58,11 @@ internal static class TInterfaceDeportment
         return (faces[0].Visibility, faces[1].Visibility);
     }
 
-    internal static void TReflexFoldRefine(IReadOnlyList<QReflexItem> rows, ToggleButton fold, bool opened) =>
-        QReflexItem.QReflexFoldRefine(rows, fold, opened);
+    internal static void TReflexFoldRefine(ToggleButton fold, bool opened) =>
+        new QReflexList(new ItemsControl(), fold).QReflexFoldRefine(opened);
 
     internal static void TReflexTypeRefine(QReflexItem row, CReflexField field, string text) =>
-        row.QReflexTypeRefine(new CReflexTyped(field, text, []));
+        row.QReflexTypeRefine(row.QReflexItemReflex.CReflexTypedApply(field, text));
 
     internal static object TCardCreate()
     {
@@ -82,22 +77,23 @@ internal static class TInterfaceDeportment
     }
 
     internal static void TCardLabelShow(object card, IReadOnlyList<CTagDraft> drafts) =>
-        ((PCard)card).PCardLabelShow(drafts);
+        QLabel.QLabelShow((PCard)card, drafts);
 
-    internal static bool TCardLabelMove(object card, int step) => ((PCard)card).PCardLabelMove(step);
+    internal static bool TCardLabelMove(object card, int step) => ((PCard)card).PCardLabel.PCaretMove(step);
 
-    internal static long? TCardLabelFind(object card, int step) => ((PCard)card).PCardLabelFind(step)?.PLabelChipId;
+    internal static long? TCardLabelFind(object card, int step) =>
+        ((PCard)card).PCardLabel.PCaretFind(step)?.PLabelChipId;
 
     internal static (List<long>, int) TCardLabelRead(object card)
     {
         PCard held = (PCard)card;
         List<long> ids = [];
-        foreach (object row in held.PCardLabel)
+        foreach (object row in held.PCardLabel.PCaretRow)
         {
             ids.Add(((PLabelChip)row).PLabelChipId);
         }
 
-        return (ids, held.PCardLabelPosition);
+        return (ids, held.PCardLabel.PCaretPosition);
     }
 
     internal static TextBox TCardPositionAttach(object card)
@@ -116,7 +112,7 @@ internal static class TInterfaceDeportment
         list.Arrange(new Rect(0, 0, 400, 400));
         list.UpdateLayout();
         QLookItem.QLookItemAttach(
-            list, (container, item, changed) => PCard.PCardRowApply(container, (PCard)item, changed));
+            list, (container, item, changed) => QCard.QCardRowRefine(container, (PCard)item, changed));
         FrameworkElement row = (FrameworkElement)list.ItemContainerGenerator.ContainerFromIndex(0);
         return QLook.QLookPartFind<TextBox>(row, "PCardPositionText")!;
     }
@@ -129,7 +125,7 @@ internal static class TInterfaceDeportment
 
     internal static void TCardRowShow(
         ObservableCollection<QTranscriptionItem> rows, IReadOnlyList<CTranscriptionDraft> drafts) =>
-        PCard.PCardRowShow(
+        QLookItem.QLookItemShow(
             rows,
             drafts,
             static row => row.QTranscriptionItemId,

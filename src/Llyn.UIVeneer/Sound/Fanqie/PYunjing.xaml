@@ -56,31 +56,12 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <ToggleButton
-                    x:Name="PLadderDropper"
-                    Grid.Column="0"
-                    Style="{StaticResource Theme.Search.Dropper}"
-                    ToolTip="{DynamicResource Ladder.Title}">
-                    <local:QIconImage x:Name="PLadderIcon" Width="24" Height="24" />
-                </ToggleButton>
+                <veneer:PChoiceOrder x:Name="PYunjingOrder" Grid.Column="0" />
                 <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
                 <TextBox
                     x:Name="PPlumb"
                     Grid.Column="2"
                     Style="{StaticResource Theme.Search.Field}" />
-                <Popup
-                    x:Name="PLadderDropdown"
-                    Width="252"
-                    AllowsTransparency="True"
-                    Placement="Bottom"
-                    StaysOpen="False"
-                    VerticalOffset="6">
-                    <Border Margin="10" Padding="8" Style="{StaticResource Theme.Popup.Surface}">
-                        <StackPanel x:Name="PLadderList">
-                            <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Ladder.Title}" />
-                        </StackPanel>
-                    </Border>
-                </Popup>
             </Grid>
         </Border>
 
@@ -106,31 +87,12 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <ToggleButton
-                    x:Name="PStairDropper"
-                    Grid.Column="0"
-                    Style="{StaticResource Theme.Search.Dropper}"
-                    ToolTip="{DynamicResource Stair.Title}">
-                    <local:QIconImage x:Name="PStairIcon" Width="24" Height="24" />
-                </ToggleButton>
+                <veneer:PChoiceOrder x:Name="PYunmuOrder" Grid.Column="0" />
                 <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
                 <TextBox
                     x:Name="PFathom"
                     Grid.Column="2"
                     Style="{StaticResource Theme.Search.Field}" />
-                <Popup
-                    x:Name="PStairDropdown"
-                    Width="252"
-                    AllowsTransparency="True"
-                    Placement="Bottom"
-                    StaysOpen="False"
-                    VerticalOffset="6">
-                    <Border Margin="10" Padding="8" Style="{StaticResource Theme.Popup.Surface}">
-                        <StackPanel x:Name="PStairList">
-                            <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Stair.Title}" />
-                        </StackPanel>
-                    </Border>
-                </Popup>
             </Grid>
         </Border>
 
@@ -181,73 +143,7 @@
                 Text="{DynamicResource Yunjing.XiaoyunEmpty}" />
         </Grid>
 
-        <local:QRail Grid.Row="0" Grid.Column="3" Margin="0,0,0,18">
-            <Border Style="{StaticResource Theme.Command.Group}">
-                <StackPanel Orientation="Horizontal">
-                    <Button
-                        x:Name="PYunjingFresh"
-                        Content="{DynamicResource Scribe.New}"
-                        Style="{StaticResource Theme.Command.Segment}" />
-                    <Button
-                        x:Name="PYunjingStore"
-                        Content="{DynamicResource Scribe.Save}"
-                        IsEnabled="False"
-                        Style="{StaticResource Theme.Command.Primary}" />
-                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
-                    <StackPanel x:Name="PYunjingVoyage" Orientation="Horizontal">
-                        <Button
-                            x:Name="PYunjingEarlier"
-                            IsEnabled="False"
-                            Style="{StaticResource Theme.Command.Segment}"
-                            ToolTip="{DynamicResource Voyage.Retreat}" />
-                        <Button
-                            x:Name="PYunjingLater"
-                            IsEnabled="False"
-                            Style="{StaticResource Theme.Command.Segment}"
-                            ToolTip="{DynamicResource Voyage.Advance}" />
-                    </StackPanel>
-                    <StackPanel x:Name="PYunjingChronicle" Orientation="Horizontal" Visibility="Collapsed">
-                        <Button
-                            x:Name="PYunjingBackward"
-                            IsEnabled="False"
-                            Style="{StaticResource Theme.Command.Segment}"
-                            ToolTip="{DynamicResource Chronicle.Undo}" />
-                        <Button
-                            x:Name="PYunjingForward"
-                            IsEnabled="False"
-                            Style="{StaticResource Theme.Command.Segment}"
-                            ToolTip="{DynamicResource Chronicle.Redo}" />
-                    </StackPanel>
-                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
-                    <Button
-                        x:Name="PYunjingPortrait"
-                        Content="{DynamicResource Scribe.Export}"
-                        Style="{StaticResource Theme.Command.Segment}" />
-                    <Button
-                        x:Name="PYunjingPress"
-                        Content="{DynamicResource Scribe.Print}"
-                        Style="{StaticResource Theme.Command.Segment}" />
-                </StackPanel>
-            </Border>
-            <Border
-                x:Name="PYunjingMode"
-                IsEnabled="False"
-                Style="{StaticResource Theme.Command.Group}">
-                <StackPanel Orientation="Horizontal">
-                    <RadioButton
-                        x:Name="PYunjingViewer"
-                        Content="{DynamicResource Scribe.View}"
-                        GroupName="PYunjingMode"
-                        IsChecked="True"
-                        Style="{StaticResource Theme.Command.Mode}" />
-                    <RadioButton
-                        x:Name="PYunjingScribe"
-                        Content="{DynamicResource Scribe.Edit}"
-                        GroupName="PYunjingMode"
-                        Style="{StaticResource Theme.Command.Mode}" />
-                </StackPanel>
-            </Border>
-        </local:QRail>
+        <veneer:PPanelRail x:Name="PYunjingRail" Grid.Row="0" Grid.Column="3" Margin="0,0,0,18" />
 
         <Border Grid.Row="1" Grid.Column="3" Margin="0,14,0,0" ClipToBounds="True" Style="{StaticResource Theme.Panel.Surface}">
             <Grid>

@@ -30,11 +30,11 @@ public sealed class TErrandNotation
         TaskCompletionSource gate = new();
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate("uk=hɪl", gate.Task));
-        CEditor editor = TErrandNotationPrepare(engine, pack.TLanguageFixtureName, " hill ");
-        CErrand errand = editor.CEditorDesk.CDeskErrand;
-        editor.CEditorDesk.TDeskRead();
+        TEditorFixture editor = TErrandNotationPrepare(engine, pack.TLanguageFixtureName, " hill ");
+        CErrand errand = editor.TEditorFixtureDesk.CDeskErrand;
+        editor.TEditorFixtureDesk.TDeskRead();
         Channel<Action> marshalled = Channel.CreateUnbounded<Action>();
-        editor.CEditorDesk.CDeskObserverAttach(run => marshalled.Writer.TryWrite(run));
+        editor.TEditorFixtureDesk.CDeskObserverAttach(run => marshalled.Writer.TryWrite(run));
         List<string> notices = [];
         CNotationRoll? ended = null;
         errand.CErrandNotationChanged += roll =>
@@ -72,12 +72,13 @@ public sealed class TErrandNotation
         TaskCompletionSource gate = new();
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate("uk=hɪl", gate.Task));
-        CEditor editor = TErrandNotationPrepare(engine, pack.TLanguageFixtureName, "hill");
-        CErrand errand = editor.CEditorDesk.CDeskErrand;
-        editor.CEditorTimbre.CTimbrePronunciationAdd(0);
-        long accent = editor.CEditorDesk.TDeskRead()!.LDraftContent.LEntryDraftPronunciations[1].LPronunciationDraftId;
+        TEditorFixture editor = TErrandNotationPrepare(engine, pack.TLanguageFixtureName, "hill");
+        CDesk desk = editor.TEditorFixtureDesk;
+        CErrand errand = desk.CDeskErrand;
+        editor.TEditorFixtureTimbre.CTimbrePronunciationAdd(0);
+        long accent = desk.TDeskRead()!.LDraftContent.LEntryDraftPronunciations[1].LPronunciationDraftId;
         Channel<Action> marshalled = Channel.CreateUnbounded<Action>();
-        editor.CEditorDesk.CDeskObserverAttach(run => marshalled.Writer.TryWrite(run));
+        desk.CDeskObserverAttach(run => marshalled.Writer.TryWrite(run));
         List<string> notices = [];
         errand.CErrandNotationChanged += roll => notices.Add(TErrandNotationRead(roll));
 
@@ -103,10 +104,10 @@ public sealed class TErrandNotation
         TaskCompletionSource gate = new();
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate("uk=hɪl", gate.Task));
-        CEditor editor = TErrandNotationPrepare(engine, pack.TLanguageFixtureName, "hill");
-        CErrand errand = editor.CEditorDesk.CDeskErrand;
+        TEditorFixture editor = TErrandNotationPrepare(engine, pack.TLanguageFixtureName, "hill");
+        CErrand errand = editor.TEditorFixtureDesk.CDeskErrand;
         errand.CErrandRecordingStart(0);
-        editor.CEditorEntry.CEntryHeadwordSet("   ");
+        editor.TEditorFixtureEntry.CEntryHeadwordSet("   ");
 
         CNotationRoll started = errand.CErrandTranscriptionStart(0, string.Empty);
 
@@ -134,8 +135,8 @@ public sealed class TErrandNotation
         TaskCompletionSource gate = new();
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate("uk=hɪl", gate.Task));
-        CEditor editor = TErrandNotationPrepare(engine, pack.TLanguageFixtureName, "hill");
-        CErrand errand = editor.CEditorDesk.CDeskErrand;
+        TEditorFixture editor = TErrandNotationPrepare(engine, pack.TLanguageFixtureName, "hill");
+        CErrand errand = editor.TEditorFixtureDesk.CDeskErrand;
         List<string> stored = [];
         Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store = (rows, _) =>
         {
@@ -170,13 +171,13 @@ public sealed class TErrandNotation
             roll.CNotationRollRows.Select(static row => row.CNotationItemSource + ":"
                 + string.Join("|", row.CNotationItemReading.Select(static reading => reading.CNotationReadingText))));
 
-    internal static CEditor TErrandNotationPrepare(LEngine engine, string language, string headword)
+    internal static TEditorFixture TErrandNotationPrepare(LEngine engine, string language, string headword)
     {
-        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
+        TEditorFixture editor = new(TInterfaceEditor.TEditorCreate(engine));
         editor.TEditorVistaRestore(engine.TEngineVistaStart("input", LCatalogOrder.LCatalogOrderHeadword));
-        editor.CEditorEntryOpen(null);
-        editor.CEditorEntry.CEntryLanguageSet(language);
-        editor.CEditorEntry.CEntryHeadwordSet(headword);
+        editor.TEditorFixtureOpen(null);
+        editor.TEditorFixtureEntry.CEntryLanguageSet(language);
+        editor.TEditorFixtureEntry.CEntryHeadwordSet(headword);
         return editor;
     }
 }

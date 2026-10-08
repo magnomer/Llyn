@@ -1,5 +1,5 @@
 # TSession.cs
-Hash: `84bca283b062f1fa`
+Hash: `b4e7142879e4bb5a`
 
 ## `public sealed class TSession`
 

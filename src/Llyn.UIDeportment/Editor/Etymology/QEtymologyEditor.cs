@@ -10,7 +10,9 @@ internal sealed class QEtymologyEditor
 {
     private readonly FrameworkElement _qEtymologySurface;
 
-    private CEditor _cEditor = null!;
+    private CCard _cCard = null!;
+
+    private CEntry _cEntry = null!;
 
     private CAtelier _cAtelier = null!;
 
@@ -39,12 +41,13 @@ internal sealed class QEtymologyEditor
 
     internal QEtymology QEtymologyField => QContract.QContractFind<QEtymology>(_qEtymologySurface, "PEtymologyField");
 
-    internal void QEtymologyIntroduce(CEditor editor, CAtelier atelier)
+    internal void QEtymologyIntroduce(CCard card, CEntry entry, CAtelier atelier)
     {
-        _cEditor = editor;
+        _cCard = card;
+        _cEntry = entry;
         _cAtelier = atelier;
-        editor.CEditorEntry.CEntryDraftChanged += QEtymologyRefine;
-        editor.CEditorEntry.CEntryDraftChanged += QEtymologyMentionRefine;
+        entry.CEntryDraftChanged += QEtymologyRefine;
+        entry.CEntryDraftChanged += QEtymologyMentionRefine;
     }
 
     internal static void QEtymologyCaretRefine(PEtymon caret)
@@ -55,7 +58,7 @@ internal sealed class QEtymologyEditor
     private void QEtymologyRefine(CEntryDraft draft)
     {
         QEtymologyField.QEtymologyText = draft.CEntryDraftEtymology.CEtymologyDraftText;
-        QEtymologyField.QEtymologySourceShow(_cEditor.CEditorEntry.CEntryEtymonRead()
+        QEtymologyField.QEtymologySourceShow(_cEntry.CEntryEtymonRead()
             .Select(static target => new PEtymon(
                 target.CTranslationTargetId, target.CTranslationTargetHeadword, target.CTranslationTargetLanguage))
             .ToList(),
@@ -65,12 +68,12 @@ internal sealed class QEtymologyEditor
     private void QEtymologyMentionRefine(CEntryDraft _)
     {
         QEtymologyField.QEtymologyLine.PMentionLineRefine(
-            QMentionChip.QMentionChipCreate(_cEditor.CEditorCard.CCardEtymologyRead()));
+            QMentionChip.QMentionChipCreate(_cCard.CCardEtymologyRead()));
     }
 
     private void QEtymologyWriteObserve(object sender, TextChangedEventArgs e)
     {
-        _cEditor.CEditorCard.CCardEtymologySet(QEtymologyField.QEtymologyBox.Text);
+        _cCard.CCardEtymologySet(QEtymologyField.QEtymologyBox.Text);
     }
 
     private void QEtymologyAddRefine(object sender, ExecutedRoutedEventArgs e)
@@ -78,12 +81,12 @@ internal sealed class QEtymologyEditor
         TextBox box = (TextBox)e.OriginalSource;
         _qEtymologyProspect.QProspectPlaceRefine(box, PMentionSelection.PMentionSelectionPlace(box));
         _qEtymologyProspect.QProspectOpenRefine(
-            _cEditor.CEditorCard.CCardMentionRead(((PEtymon)e.Parameter).PEtymonText));
+            _cCard.CCardMentionRead(((PEtymon)e.Parameter).PEtymonText));
     }
 
     private void QEtymologyRemoveObserve(object sender, ExecutedRoutedEventArgs e)
     {
-        _cEditor.CEditorCard.CCardEtymonRemove(((PEtymon)e.Parameter).PEtymonId);
+        _cCard.CCardEtymonRemove(((PEtymon)e.Parameter).PEtymonId);
     }
 
     private void QEtymologyEntryObserve(object sender, ExecutedRoutedEventArgs e)
@@ -95,14 +98,14 @@ internal sealed class QEtymologyEditor
     {
         TextBox box = QEtymologyField.QEtymologyBox;
         _qEtymologyProspect.QProspectPlaceRefine(box, PMentionSelection.PMentionSelectionPlace(box));
-        _qEtymologyProspect.QProspectOpenRefine(_cEditor.CEditorCard.CCardMentionRead(box.SelectedText));
+        _qEtymologyProspect.QProspectOpenRefine(_cCard.CCardMentionRead(box.SelectedText));
     }
 
     private void QEtymologyPickObserve(object sender, ExecutedRoutedEventArgs e)
     {
         if (e.Source is TextBox box)
         {
-            _cEditor.CEditorCard.CCardMentionSave(
+            _cCard.CCardMentionSave(
                 box.Text, box.SelectionStart, box.SelectionLength, e.Parameter as long?);
         }
     }
@@ -110,7 +113,7 @@ internal sealed class QEtymologyEditor
     private void QEtymologyUnlinkObserve(object sender, ExecutedRoutedEventArgs e)
     {
         TextBox box = QEtymologyField.QEtymologyBox;
-        _cEditor.CEditorCard.CCardMentionDelete(box.Text, box.SelectionStart, box.SelectionLength);
+        _cCard.CCardMentionDelete(box.Text, box.SelectionStart, box.SelectionLength);
     }
 
     private void QEtymologyLinkCheck(object sender, CanExecuteRoutedEventArgs e)
@@ -123,7 +126,7 @@ internal sealed class QEtymologyEditor
     private void QEtymologyUnlinkCheck(object sender, CanExecuteRoutedEventArgs e)
     {
         TextBox box = QEtymologyField.QEtymologyBox;
-        e.CanExecute = _cEditor.CEditorCard.CCardMentionCheck(
+        e.CanExecute = _cCard.CCardMentionCheck(
             box.Text, box.SelectionStart, box.SelectionLength);
     }
 }

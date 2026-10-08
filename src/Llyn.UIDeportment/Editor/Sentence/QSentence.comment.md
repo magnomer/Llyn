@@ -1,23 +1,22 @@
 # QSentence.cs
-Hash: `d11e55033a7b1175`
+Hash: `fe52c754a27a97b9`
 
 ## `internal sealed class QSentence`
 
 The sentence row's driver.
 It hears the row's adding, dropping and typing, its mention commands and its frame.
 The row's template is filled by [QExample](QExample.comment.md), which hooks these handlers to the row's parts.
-It walks the editor's two card lists and holds the Conduct editor area once introduced.
+It walks the editor's two card lists and holds the Conduct card and sentence facets once introduced.
 The citation field is [QCitation](QCitation.comment.md), the Gloss rows are [QGloss](../Gloss/QGloss.comment.md) and the mention dropdown is `QProspect`.
 
 ## `internal QSentence(ObservableCollection<PCard> meaning, ObservableCollection<PCard> collocation)`
 
 Holds the two card lists the editor keeps.
 
-## `internal void QSentenceIntroduce(CEditor editor, QWindow host, QProspect prospect, QGloss gloss, QCitation citation)`
+## `internal void QSentenceIntroduce(CCard card, CSentence sentence, CMention mention, QMentionMenu mentionMenu, QProspect prospect)`
 
-Holds the editor area, the window that opens the meaning menu, the mention dropdown and the citation driver.
-It builds the template filler with the Gloss and citation drivers a row's wiring hands events to.
-They are handed in because each of them was built with this driver.
+Holds the card and sentence facets, the span-checking mention area, the meaning menu and the mention dropdown.
+The dropdown is handed in because it was built with this driver.
 
 ## `internal ObservableCollection<string> QSentenceParticle { get; }`
 
@@ -31,10 +30,6 @@ The dependences the frame last offered, shared by every row's dependence field.
 
 The word order the frame last painted, which is the GUI's own copy of what the rows show.
 A row built between two frame reads takes it, so no card reads the engine for an order.
-
-## `internal QExample QSentenceExample { get; private set; }`
-
-The row template's filler, built once the drivers it hooks are introduced.
 
 ## `internal PCard? QSentenceCardFind(PSentence row)`
 
@@ -53,9 +48,9 @@ The gate owns the language and the empty lists a failed read leaves.
 Paints the chip lines under the rows from one mention read.
 It answers the draft change after the cards, so a new row already stands.
 
-## `internal void QSentenceGlossObserve(PCard card, PSentence row, PGloss gloss, string language)`
+## `internal void QSentenceGlossObserve(PSentence row, PGloss gloss, string language)`
 
-Hands a Gloss's language pick to the sentence gate.
+Finds the row's card and hands a Gloss's language pick to the sentence gate.
 
 ## `internal void QSentenceTextObserve(object sender, TextChangedEventArgs e)`
 
@@ -68,10 +63,6 @@ Only a field with the keyboard in it reports, since a write from the draft echoe
 Hands the particle choice's typed text to the particle gate.
 The choice hears the text change of its inner box, which is the raw text handed on.
 `QSentenceDependenceObserve` does the same for the dependence choice.
-
-## `internal void QSentenceCitationRefine(object sender, TextChangedEventArgs e)`
-
-Finds the row's card and lets `QCitationFieldRefine` offer the references for the typed citation.
 
 ## `private static void QSentenceListRefine(ObservableCollection<string> catalog, IReadOnlyList<string> values)`
 
@@ -99,11 +90,12 @@ Places the mention dropdown under the selection and fills it from the card gate'
 ## `internal void QSentenceMeaningRefine(object sender, ExecutedRoutedEventArgs e)`
 
 Asks the gate for the selection's senses and opens the meaning menu under it.
-The menu hands the pick to `QSentenceSenseObserve` with the box as its anchor.
+It subscribes the `QMentionAsk` the menu answers, so it hears only its own pick.
 
 ## `private void QSentenceSenseObserve(FrameworkElement anchor, long sense)`
 
-Hands the picked sense and the selection to the gate.
+Hands the picked sense and the selection of the asking box to the gate.
+Only this driver's own ask reaches it, so the box is always one of its sentence rows.
 
 ## `internal void QSentenceSilenceObserve(object sender, ExecutedRoutedEventArgs e)`
 

@@ -1,13 +1,13 @@
 # PCorpus.xaml
-Hash: `ac9ca89779fe6dd8`
+Hash: `8feb695097304fad`
 
 ## `<Rectangle ... Style="{StaticResource Theme.Panel.SeamRow}" />`
 
 The seams that part the example catalog, the entries quoting the chosen example, and the example itself.
 The row seam runs under the ordering bar and the command row.
 It is bled past the panel margin so it meets the navigation's own edge.
-The column seam sits in the middle of the gutter and reaches the foot of the window.
-Neither seam encloses anything, which is the whole rule.
+The two column seams sit in the middle of their gutters and reach the foot of the window.
+No seam encloses anything, which is the whole rule.
 A line marks a division, and a box would claim an object.
 
 ## `<Border x:Name="PRank" ... Style="{StaticResource Theme.Search.Bar}">`
@@ -15,36 +15,27 @@ A line marks a division, and a box would claim an object.
 The ordering button and the search field are one control over the catalog column.
 The action row over the broader column stands in the same top row, as the repertoire panel arranges it.
 The catalog column is wider than the entry panels take, because it holds sentences rather than headwords.
-The catalog carries no language filter of its own, as the tag catalog carries none.
-The entries in the middle column are what is filtered.
+The ordering picker is the shared `PChoiceOrder`, placed here as `PCorpusOrder`.
+The panel anchors the picker's menu under the whole bar.
+Ordering by recency is not offered, because the `example` row carries no creation or modification time.
+An Example whose text is unwritten still has a place in every ordering, ordered by its mark rather than dropped.
 
 ## `<Border x:Name="PGauze" ... Style="{StaticResource Theme.Search.Bar}">`
 
 The search field and the language filter over the middle column, copied from the tenor panel's `PGrille`.
 `PDredge` narrows the entries quoting the chosen Example by typed text.
-`PGauzeDropper` opens the menu of loaded languages, and `PGauzeMark` shows while any is hidden.
+The language filter is the shared `PChoiceFilter`, placed here as `PCorpusFilter`.
 
-## `<Popup x:Name="PRankDropdown" ...>`
+## `<veneer:PPanelRail x:Name="PCorpusRail" Grid.Row="0" Grid.Column="2" Margin="0,0,0,18" />`
 
-The orderings the catalog may be listed in, one radio row each, carrying its choice in `Tag`.
-Ordering by recency is not offered, because the `example` row carries no creation or modification time.
-An Example whose text is unwritten still has a place in every ordering, ordered by its mark rather than dropped.
-
-## `<local:QRail Grid.Row="0" Grid.Column="2" Margin="0,0,0,18">`
-
-The action row of the panel.
-`PCorpusFresh` opens the editor on an Example nothing quotes yet.
+The action row of the panel, the shared `PPanelRail` placed here as `PCorpusRail`.
+Fresh opens the editor on an Example nothing quotes yet.
 This panel is the only place such an Example can arise.
 Elsewhere one is written from the card that quotes it.
-`PCorpusStore` saves whichever editor is in front, the Entry open in `PEditor` or the held Example.
+Save stores whichever editor is in front, the Entry open in `PEditor` or the held Example.
 It stands in the rail at all times, as the repertoire panel's save does.
-One slot sits between save and export, and it holds whichever pair the mode asks for.
-Reading shows `PCorpusEarlier` and `PCorpusLater`, which walk the window's trail of records.
-Writing shows `PCorpusBackward` and `PCorpusForward`, which walk the chronicle of the editor in front.
-Each carries no label, only the arrow and a tooltip, and is lit only while a step is there.
-The pairs stand in `PCorpusVoyage` and `PCorpusChronicle`, and the panel shows one per mode.
-Export and print are `PCorpusPortrait` and `PCorpusPress`, and the panel sets their commands.
-Every icon and click of the row is set by the panel, so the markup names each part.
+Reading walks the window's trail of records, and writing walks the chronicle of the editor in front.
+Export takes the Entry shown, and print takes what is read.
 
 ## `<ItemsControl x:Name="PAnthology">`
 
@@ -73,7 +64,8 @@ It stands in front only while an Entry is shown and the toggle is on the editing
 
 The reading of one Example, laid out as the repertoire panel lays out a Situation.
 `PExcerpt` here stands on an Example rather than on an Entry.
-What it shares with the entry panels is the read-and-edit mechanism, the `PCorpusScribe` toggle, and the shape of the page.
+It shares the read-and-edit mechanism and the rail's mode toggle with the entry panels.
+It shares the shape of the page with them too.
 The sentence stands at the head of the page.
 The language and the usage count stand as chips on the row beneath it.
 The translations and the cited Source are headings over their values, as a situation's description is.
@@ -106,7 +98,7 @@ An Example nothing quotes shows the empty state rather than hiding the column.
 ## `<Grid x:Name="PTranscript" Margin="21,18,0,0" Visibility="Collapsed">`
 
 The editable view of the selected Example, laid out as the reading side lays it out.
-The panel adds the four Mention command bindings to this grid from code.
+The panel adds the five Mention command bindings to this grid from code.
 So the transcript's menu and its chip line reach the same handlers.
 The transcript field carries the shared linking menu, and the chip line stands right under it.
 Every slot the reading side draws is drawn here in the same place.
@@ -130,7 +122,7 @@ Its plus stands in `PTranscriptShelf`, which the look sheet reveals under the po
 `PCitationField` holds the single Source the Example cites, a pointer that is cleared without touching the Source itself.
 It is drawn as the text the reading side draws, and typing into it opens `PCitationDrawer` with the matching Sources.
 The editor carries no buttons of its own.
-Save is the rail's `PCorpusStore`, delete is `PCorpusBin`, and there is no discard.
+Save is the rail's save, delete is `PCorpusBin`, and there is no discard.
 That is how the repertoire panel arranges a Situation.
 Leaving the editor asks about the draft as it does there.
 
@@ -154,5 +146,4 @@ It is disabled too while the editor stands on an Example nothing has stored yet.
 ## Catalog spacing
 
 The catalog uses the shared Theme.Catalog.Frame and Theme.Catalog.Scroll styles.
-Rows keep 6 device-independent pixels on both sides, with a reserved scrollbar lane so their width stays stable.
 The shared Theme.Catalog.Row preserves the same rounded shape, internal padding and row spacing across browse panels.

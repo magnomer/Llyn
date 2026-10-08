@@ -13,12 +13,12 @@ public sealed class TEditorUnit
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorUnitPrepare(engine, "English");
+        CCardSpeech speech = TEditorUnitPrepare(engine, "English").TEditorFixtureSpeech;
 
         Assert.Equal(
             ["Unit.Content", "Unit.Function", "Unit.Morpheme"],
-            editor.CEditorSpeech.CCardSpeechRead().CMarkerUnits.Select(static row => row.Item1));
-        Assert.DoesNotContain(editor.CEditorSpeech.CCardSpeechRead().CMarkerUnits, static row => row.Item2);
+            speech.CCardSpeechRead().CMarkerUnits.Select(static row => row.Item1));
+        Assert.DoesNotContain(speech.CCardSpeechRead().CMarkerUnits, static row => row.Item2);
     }
 
     [Fact]
@@ -26,11 +26,11 @@ public sealed class TEditorUnit
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorUnitPrepare(engine, "Thai");
+        CCardSpeech speech = TEditorUnitPrepare(engine, "Thai").TEditorFixtureSpeech;
 
         Assert.Equal(
             ["Unit.Word", "Unit.Morpheme"],
-            editor.CEditorSpeech.CCardSpeechRead().CMarkerUnits.Select(static row => row.Item1));
+            speech.CCardSpeechRead().CMarkerUnits.Select(static row => row.Item1));
     }
 
     [Fact]
@@ -38,14 +38,14 @@ public sealed class TEditorUnit
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorUnitPrepare(engine, "English");
+        TEditorFixture editor = TEditorUnitPrepare(engine, "English");
 
-        editor.CEditorEntry.CEntryUnitSet("Unit.Function");
+        editor.TEditorFixtureEntry.CEntryUnitSet("Unit.Function");
 
         Assert.Equal(
             ("Unit.Function", true),
-            Assert.Single(editor.CEditorSpeech.CCardSpeechRead().CMarkerUnits, static row => row.Item2));
-        Assert.Equal(LUnit.LUnitFunction, editor.CEditorDesk.TDeskRead()!.LDraftContent.LEntryDraftUnit);
+            Assert.Single(editor.TEditorFixtureSpeech.CCardSpeechRead().CMarkerUnits, static row => row.Item2));
+        Assert.Equal(LUnit.LUnitFunction, editor.TEditorFixtureDesk.TDeskRead()!.LDraftContent.LEntryDraftUnit);
     }
 
     [Fact]
@@ -53,21 +53,21 @@ public sealed class TEditorUnit
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorUnitPrepare(engine, "English");
-        editor.CEditorEntry.CEntryUnitSet("Unit.Morpheme");
+        TEditorFixture editor = TEditorUnitPrepare(engine, "English");
+        editor.TEditorFixtureEntry.CEntryUnitSet("Unit.Morpheme");
 
-        editor.CEditorEntry.CEntryUnitSet("Unit.Morpheme");
+        editor.TEditorFixtureEntry.CEntryUnitSet("Unit.Morpheme");
 
-        Assert.DoesNotContain(editor.CEditorSpeech.CCardSpeechRead().CMarkerUnits, static row => row.Item2);
+        Assert.DoesNotContain(editor.TEditorFixtureSpeech.CCardSpeechRead().CMarkerUnits, static row => row.Item2);
     }
 
-    private static CEditor TEditorUnitPrepare(LEngine engine, string language)
+    private static TEditorFixture TEditorUnitPrepare(LEngine engine, string language)
     {
         engine.TEngineDelaySet(0);
-        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
+        TEditorFixture editor = new(TInterfaceEditor.TEditorCreate(engine));
         editor.TEditorVistaRestore(engine.TEngineVistaStart("input", LCatalogOrder.LCatalogOrderHeadword));
-        editor.CEditorEntryOpen(null);
-        editor.CEditorEntry.CEntryLanguageSet(language);
+        editor.TEditorFixtureOpen(null);
+        editor.TEditorFixtureEntry.CEntryLanguageSet(language);
         return editor;
     }
 }

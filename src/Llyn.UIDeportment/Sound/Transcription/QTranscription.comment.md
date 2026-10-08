@@ -1,5 +1,5 @@
 # QTranscription.cs
-Hash: `a2b2e6fc84c1b2af`
+Hash: `a65918dc4ef4ceba`
 
 ## `internal sealed class QTranscription`
 
@@ -18,9 +18,9 @@ The rows are rendered as a diff on each draft bulletin, so a row being typed int
 Hands the transcription list its rows and fill, and binds the three row commands on the sound panel.
 The lookup menu is the editor's one `QNotation`.
 
-## `internal void QTranscriptionIntroduce(CEditor editor)`
+## `internal void QTranscriptionIntroduce(CErrand errand, CEntry entry, CTranscription transcription)`
 
-Holds the Conduct editor and repaints the block after each draft change.
+Holds the errand and transcription facets the rows reach, and repaints the block after each entry draft change.
 
 ## `private void QTranscriptionRefine(FrameworkElement container, object item, string? name)`
 
@@ -68,7 +68,7 @@ Asks the errand for a search on the pressed row in that row's scheme, then paint
 Paints the ready block `CTranscription.CTranscriptionRead`, a row per transcription keyed by its id.
 The block shows while the read answers it shown.
 It stores the read's free verdict for the plus and asks the commands to requery.
-Each row's dropdown takes the schemes its ready row carries, inside the pairing of `PCard.PCardRowShow`.
+Each row's dropdown takes the schemes its ready row carries, inside the pairing of `QLookItem.QLookItemShow`.
 That pairing matches rows one to one, so a repeated id never gives one row two scheme lists.
 A stored row in a scheme the pack no longer declares is still shown, because it is the entry's data.
 The read leaves out the glyph row the glyph block shows beneath.

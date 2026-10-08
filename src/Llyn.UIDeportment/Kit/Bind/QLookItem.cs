@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -54,6 +55,62 @@ internal static class QLookItem
         if (QLookList.TryGetValue(list, out Action<FrameworkElement, object, string?>? fill))
         {
             QLookItemScan(list, fill, true);
+        }
+    }
+
+    internal static void QLookItemShow<QLookItemRow, QLookItemDraft>(
+        ObservableCollection<QLookItemRow> rows,
+        IReadOnlyList<QLookItemDraft> drafts,
+        Func<QLookItemRow, long?> key,
+        Func<QLookItemDraft, long> id,
+        Func<QLookItemDraft, QLookItemRow> create,
+        Func<QLookItemRow, QLookItemDraft, QLookItemRow> update)
+    {
+        List<QLookItemRow> shown = [];
+        bool[] taken = new bool[rows.Count];
+        foreach (QLookItemDraft draft in drafts)
+        {
+            long wanted = id(draft);
+            int found = -1;
+            for (int index = 0; index < rows.Count && found < 0; index++)
+            {
+                if (!taken[index] && key(rows[index]) == wanted)
+                {
+                    found = index;
+                }
+            }
+
+            if (found < 0)
+            {
+                shown.Add(create(draft));
+                continue;
+            }
+
+            taken[found] = true;
+            shown.Add(update(rows[found], draft));
+        }
+
+        List<QLookItemRow> standing = [.. rows];
+        int next = 0;
+        foreach (QLookItemRow row in standing)
+        {
+            if (key(row) is null)
+            {
+                continue;
+            }
+
+            if (next < shown.Count && ReferenceEquals(row, shown[next]))
+            {
+                next++;
+                continue;
+            }
+
+            rows.Remove(row);
+        }
+
+        for (; next < shown.Count; next++)
+        {
+            rows.Add(shown[next]);
         }
     }
 

@@ -1,5 +1,5 @@
 # QGlyph.cs
-Hash: `c8e31e9d8d21c32e`
+Hash: `2def43d2f0684beb`
 
 ## `internal sealed class QGlyph`
 
@@ -14,9 +14,10 @@ Its typed text goes to the one transcription text gate, `CTranscription.CTranscr
 Hands the glyph list its rows and fill, and binds the lookup command on the sound panel.
 The lookup menu is the editor's one `QNotation`.
 
-## `internal void QGlyphIntroduce(CEditor editor)`
+## `internal void QGlyphIntroduce(CErrand errand, CEntry entry, CTimbre timbre, CTranscription transcription)`
 
-Holds the Conduct editor and repaints the row after each draft change.
+Holds the errand, timbre and transcription facets the row reaches.
+It repaints the row after each entry draft change.
 The row's typography is written by `QEditorFont`.
 
 ## `private void QGlyphNotationRefine(object sender, ExecutedRoutedEventArgs e)`

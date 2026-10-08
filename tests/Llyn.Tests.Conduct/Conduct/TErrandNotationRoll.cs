@@ -21,9 +21,9 @@ public sealed class TErrandNotationRoll
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         engine.TEngineRespellingSave(respelled);
-        CEditor editor = TErrandNotation.TErrandNotationPrepare(engine, "English", "water");
-        CErrand errand = editor.CEditorDesk.CDeskErrand;
-        LForay foray = editor.CEditorDesk.TDeskForayStart(string.Empty)!;
+        TEditorFixture editor = TErrandNotation.TErrandNotationPrepare(engine, "English", "water");
+        CErrand errand = editor.TEditorFixtureDesk.CDeskErrand;
+        LForay foray = editor.TEditorFixtureDesk.TDeskForayStart(string.Empty)!;
         CNotationRoll? shown = null;
         errand.CErrandNotationChanged += roll => shown = roll;
 
@@ -57,9 +57,9 @@ public sealed class TErrandNotationRoll
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         engine.TEngineRespellingSave(true);
-        CEditor editor = TErrandNotation.TErrandNotationPrepare(engine, "English", "water");
-        CErrand errand = editor.CEditorDesk.CDeskErrand;
-        LForay foray = editor.CEditorDesk.TDeskForayStart("Yale")!;
+        TEditorFixture editor = TErrandNotation.TErrandNotationPrepare(engine, "English", "water");
+        CErrand errand = editor.TEditorFixtureDesk.CDeskErrand;
+        LForay foray = editor.TEditorFixtureDesk.TDeskForayStart("Yale")!;
         CNotationRoll? shown = null;
         errand.CErrandNotationChanged += roll => shown = roll;
 
@@ -80,9 +80,9 @@ public sealed class TErrandNotationRoll
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TErrandNotation.TErrandNotationPack);
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TErrandNotation.TErrandNotationPrepare(engine, pack.TLanguageFixtureName, "hill");
-        CErrand errand = editor.CEditorDesk.CDeskErrand;
-        LForay foray = editor.CEditorDesk.TDeskForayStart(string.Empty)!;
+        TEditorFixture editor = TErrandNotation.TErrandNotationPrepare(engine, pack.TLanguageFixtureName, "hill");
+        CErrand errand = editor.TEditorFixtureDesk.CDeskErrand;
+        LForay foray = editor.TEditorFixtureDesk.TDeskForayStart(string.Empty)!;
         CNotationRoll? shown = null;
         errand.CErrandNotationChanged += roll => shown = roll;
 
@@ -112,13 +112,13 @@ public sealed class TErrandNotationRoll
         TaskCompletionSource gate = new();
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate("uk=hɪl", gate.Task));
-        CEditor editor = TErrandNotation.TErrandNotationPrepare(engine, pack.TLanguageFixtureName, "hill");
-        CErrand errand = editor.CEditorDesk.CDeskErrand;
-        editor.CEditorDesk.CDeskObserverAttach(static _ => { });
+        TEditorFixture editor = TErrandNotation.TErrandNotationPrepare(engine, pack.TLanguageFixtureName, "hill");
+        CErrand errand = editor.TEditorFixtureDesk.CDeskErrand;
+        editor.TEditorFixtureDesk.CDeskObserverAttach(static _ => { });
         List<CNotationRoll> shown = [];
         errand.CErrandNotationChanged += shown.Add;
         CNotationRoll started = errand.CErrandTranscriptionStart(0, "Yale");
-        LForay foray = editor.CEditorDesk.TDeskForayStart("Yale")!;
+        LForay foray = editor.TEditorFixtureDesk.TDeskForayStart("Yale")!;
 
         errand.TErrandLookupResonate(new CLookupStep("Late", 2, null, false), foray);
         errand.TErrandLookupResonate(new CLookupStep("Early", 1, null, false), foray);

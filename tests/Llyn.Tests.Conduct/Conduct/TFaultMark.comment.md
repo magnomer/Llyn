@@ -1,5 +1,5 @@
 # TFaultMark.cs
-Hash: `951623606cecb82c`
+Hash: `cd3593836f09863a`
 
 ## `public sealed partial class TFault`
 
@@ -24,9 +24,10 @@ The display resonate and panel resonate rows open the entry first, so a chosen e
 
 Stores a plain English entry and answers its id, the entry every mark row writes to.
 
-## `private static CEditor TFaultDeskOpen(TFaultStage stage)`
+## `private static TEditorFixture TFaultDeskOpen(TFaultStage stage)`
 
 Builds an editor over the faulted atelier and opens a stored entry in a library vista.
+It answers the fixture, so a row reads only the esteem, sounding or kindred facet.
 Esteem, sounding and reflex gates act only on a stored entry, so a fresh draft would reach no port.
 
 ## `private static CWing TFaultWingOpen(TFaultStage stage)`

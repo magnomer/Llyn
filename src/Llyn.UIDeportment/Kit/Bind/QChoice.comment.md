@@ -1,5 +1,5 @@
 # QChoice.cs
-Hash: `df35e25695e58d68`
+Hash: `bb3bf58d7960e558`
 
 ## `internal static class QChoice`
 
@@ -23,8 +23,9 @@ Fills `list` with one row per ordering in `orders`, tagged with the ordering's w
 The surface holds only the driver's word, never a Conduct ordering.
 Each row's label is the resource `prefix` names joined to that word.
 Every row reports its click to `handler`, which is the panel's own order handler.
-The rows are built here so eleven panels share one row shape.
-Each hands the deportment the enum, not a word.
+The rows carry no group name, because radio buttons sharing `list` already exclude each other.
+The rows are built here so every browse panel shares one row shape.
+The click handler reads a row back as an ordering through `QChoiceOrderRead`.
 
 ## `internal static void QChoiceDropperAttach(ToggleButton dropper, Popup dropdown, UIElement anchor)`
 
@@ -53,13 +54,13 @@ Nothing is marked when no row offers that ordering.
 
 Fills `list` with one ticked row per language in `languages`, unticking those `filter` hides.
 Every row reports its click to `handler`, which is the panel's own filter handler.
-The rows are built here so six panels share one row shape and one reading of a stored filter.
+The rows are built here so every filtered panel shares one row shape and one reading of a stored filter.
 `QChoiceFilterRead` reads the ticked rows back, so the deportment owns the filter a click stands for.
 
 ## `internal static void QChoiceKindRefine(Panel list, CCatalogFilter filter, RoutedEventHandler handler, IReadOnlyList<CReferenceKind> kinds)`
 
 Builds one ticked box per kind in `kinds`, its stored word the tag and its localized name the content.
-The guild hands in `CImprint.CImprintKindRead`, the one kind read the imprint's menu uses too.
+The owner hands in the kinds ready, in the order its roll gives them.
 A box is ticked unless `filter` hides its kind.
 
 ## `internal static void QChoiceMenuRefine(Panel list, RoutedEventHandler handler, IReadOnlyList<CReferenceKind> kinds)`
@@ -77,7 +78,7 @@ Marks the kind row whose tag is `tag` and unmarks every other, so the chip menu 
 The filter the rows beside a clicked box now stand for.
 Every unticked row is hidden.
 The list is read from the clicked box, so no surface field feeds the gate.
-The panel maps a filter hiding nothing to the engine's shared empty filter.
+The engine maps a filter hiding nothing to its shared empty filter.
 
 ## `internal static CCatalogOrder? QChoiceOrderRead(object sender)`
 

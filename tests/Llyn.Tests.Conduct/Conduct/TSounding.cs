@@ -14,8 +14,7 @@ public sealed class TSounding
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TSoundingEditorPrepare(engine, null);
-        CSounding sounding = editor.CEditorSounding;
+        CSounding sounding = TSoundingEditorPrepare(engine, null).TEditorFixtureSounding;
 
         CLecternParadigm paradigm = sounding.CSoundingParadigmRead();
 
@@ -31,12 +30,12 @@ public sealed class TSounding
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TSoundingEditorPrepare(engine, TSoundingEntrySave(engine));
+        CDesk desk = TSoundingEditorPrepare(engine, TSoundingEntrySave(engine)).TEditorFixtureDesk;
         List<object?> asked = [];
         IReadOnlyList<LFanqieGroup> groups = TInterface.TFanqieGroupScan(
             [TInterface.TFanqieRowCreate("水", "Guangyun", "式軌切", id: 7)],
             [TInterface.TFanqieBookCreate("Guangyun", "Guangyun")]);
-        CSounding sounding = TSoundingCreate(editor, new Dictionary<string, Func<object?[]?, object?>>
+        CSounding sounding = TSoundingCreate(desk, new Dictionary<string, Func<object?[]?, object?>>
         {
             ["LEngineFanqieRead"] = args =>
             {
@@ -48,7 +47,7 @@ public sealed class TSounding
         CFanqieGroup group = Assert.Single(sounding.CSoundingFanqieRead().CSoundingFanqieGroups);
 
         Assert.Equal(7, Assert.Single(group.CFanqieGroupRows).CFanqieRowId);
-        Assert.Equal([editor.CEditorDesk.CDeskStoredRead()], asked);
+        Assert.Equal([desk.CDeskStoredRead()], asked);
     }
 
     [Fact]
@@ -56,8 +55,8 @@ public sealed class TSounding
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TSoundingEditorPrepare(engine, TSoundingEntrySave(engine));
-        CSounding sounding = TSoundingCreate(editor, [], []);
+        CDesk desk = TSoundingEditorPrepare(engine, TSoundingEntrySave(engine)).TEditorFixtureDesk;
+        CSounding sounding = TSoundingCreate(desk, [], []);
 
         CSoundingFanqie fanqie = sounding.CSoundingFanqieRead();
         CSoundingScript script = sounding.CSoundingScriptRead();
@@ -74,9 +73,9 @@ public sealed class TSounding
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TSoundingEditorPrepare(engine, TSoundingEntrySave(engine));
+        CDesk desk = TSoundingEditorPrepare(engine, TSoundingEntrySave(engine)).TEditorFixtureDesk;
         List<string> notices = [];
-        CSounding sounding = TSoundingCreate(editor, [], notices);
+        CSounding sounding = TSoundingCreate(desk, [], notices);
 
         Assert.Equal(string.Empty, sounding.CSoundingReadingRead("water"));
         Assert.Equal(["Display.ReadingFailed"], notices);
@@ -86,14 +85,14 @@ public sealed class TSounding
     public void SoundingParadigmRead_RefusedMorphology_ShowsTheMorphologyFailure()
     {
         List<string> notices = [];
-        CSounding sounding = TInterfaceEditor.TEditorCreate(
+        CSounding sounding = new TEditorFixture(TInterfaceEditor.TEditorCreate(
                 TEngineFake.TEngineStubCreate<LDraftPort>(),
                 TInterfaceConduct.TEntryBundleCreate([]),
                 TInterfaceConduct.TPhonologyBundleCreate([]),
                 TInterfaceConduct.TSettingsCreate(),
                 TEngineFake.TEngineStubCreate<LMediaPort>(),
-                TEnvoyFake.TEnvoyCreate(false, notices))
-            .CEditorSounding;
+                TEnvoyFake.TEnvoyCreate(false, notices)))
+            .TEditorFixtureSounding;
 
         Assert.Empty(sounding.CSoundingParadigmRead().CLecternParadigmSlots);
         Assert.Equal(["Sound.MorphologyFailed"], notices);
@@ -104,9 +103,9 @@ public sealed class TSounding
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TSoundingEditorPrepare(engine, TSoundingEntrySave(engine));
+        CDesk desk = TSoundingEditorPrepare(engine, TSoundingEntrySave(engine)).TEditorFixtureDesk;
         List<string> notices = [];
-        CSounding sounding = TSoundingCreate(editor, new Dictionary<string, Func<object?[]?, object?>>
+        CSounding sounding = TSoundingCreate(desk, new Dictionary<string, Func<object?[]?, object?>>
         {
             ["LEngineFanqieRebuild"] = _ => null,
         }, notices);
@@ -124,9 +123,9 @@ public sealed class TSounding
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TSoundingEditorPrepare(engine, TSoundingEntrySave(engine));
+        CDesk desk = TSoundingEditorPrepare(engine, TSoundingEntrySave(engine)).TEditorFixtureDesk;
         List<string> notices = [];
-        CSounding sounding = TSoundingCreate(editor, [], notices);
+        CSounding sounding = TSoundingCreate(desk, [], notices);
         int changes = 0;
         sounding.CSoundingChanged += () => changes++;
 
@@ -145,9 +144,9 @@ public sealed class TSounding
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TSoundingEditorPrepare(engine, TSoundingEntrySave(engine));
+        CDesk desk = TSoundingEditorPrepare(engine, TSoundingEntrySave(engine)).TEditorFixtureDesk;
         List<object?> sent = [];
-        CSounding sounding = TSoundingCreate(editor, new Dictionary<string, Func<object?[]?, object?>>
+        CSounding sounding = TSoundingCreate(desk, new Dictionary<string, Func<object?[]?, object?>>
         {
             ["LEngineFanqieSet"] = args =>
             {
@@ -158,7 +157,7 @@ public sealed class TSounding
 
         sounding.CSoundingFanqieSet(7, 2, true);
 
-        Assert.Equal([editor.CEditorDesk.CDeskStoredRead(), 7L, 2, true], sent);
+        Assert.Equal([desk.CDeskStoredRead(), 7L, 2, true], sent);
     }
 
     [Fact]
@@ -178,12 +177,12 @@ public sealed class TSounding
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TSoundingEditorPrepare(engine, TSoundingEntrySave(engine));
+        CDesk desk = TSoundingEditorPrepare(engine, TSoundingEntrySave(engine)).TEditorFixtureDesk;
         LSpeechValue noun = TInterface.TSpeechValueCreate("English", 1, "noun", 0) with { LSpeechValueId = 1 };
         LMorphology plural = TInterfaceInflection.TMorphologyCreate(1, 1, "plural", 0);
         IReadOnlyList<LParadigmRow> rows = TInterface.TParadigmRowScan(
             [TInterface.TParadigmSlotCreate(noun, plural, null, LState.LStateUnspecified)]);
-        CSounding sounding = TSoundingCreate(editor, new Dictionary<string, Func<object?[]?, object?>>
+        CSounding sounding = TSoundingCreate(desk,new Dictionary<string, Func<object?[]?, object?>>
         {
             ["LEngineParadigmScan"] = _ => rows,
             ["LEngineLanguageResolve"] = _ => "Latin",
@@ -200,7 +199,7 @@ public sealed class TSounding
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TSoundingEditorPrepare(engine, TSoundingEntrySave(engine));
+        CDesk desk = TSoundingEditorPrepare(engine, TSoundingEntrySave(engine)).TEditorFixtureDesk;
         LSpeechValue noun = TInterface.TSpeechValueCreate("English", 1, "noun", 0) with { LSpeechValueId = 1 };
         LSpeechValue verb = TInterface.TSpeechValueCreate("English", 2, "verb", 1) with { LSpeechValueId = 2 };
         LMorphology plural = TInterfaceInflection.TMorphologyCreate(1, 1, "plural", 0);
@@ -213,7 +212,7 @@ public sealed class TSounding
             TInterface.TParadigmSlotCreate(verb, past, null, LState.LStateUnknown),
         ]);
         List<(string, LFontRole)> asked = [];
-        CSounding sounding = TSoundingCreate(editor, new Dictionary<string, Func<object?[]?, object?>>
+        CSounding sounding = TSoundingCreate(desk, new Dictionary<string, Func<object?[]?, object?>>
         {
             ["LEngineParadigmScan"] = _ => rows,
             ["LEngineLanguageResolve"] = _ => "Latin",
@@ -237,10 +236,10 @@ public sealed class TSounding
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TSoundingEditorPrepare(engine, TSoundingEntrySave(engine));
+        CDesk desk = TSoundingEditorPrepare(engine, TSoundingEntrySave(engine)).TEditorFixtureDesk;
         List<(string, LFontRole)> asked = [];
         List<string> packs = [];
-        CSounding sounding = TSoundingCreate(editor, new Dictionary<string, Func<object?[]?, object?>>
+        CSounding sounding = TSoundingCreate(desk,new Dictionary<string, Func<object?[]?, object?>>
         {
             ["LEngineScriptRead"] = _ => new List<LScriptGroup>(),
             ["LEngineFanqieRead"] = _ => new List<LFanqieGroup>(),
@@ -273,7 +272,7 @@ public sealed class TSounding
     [Fact]
     public void SoundingFanqieRead_NoStoredEntry_OffersNoRebuildAndWaitsForNothing()
     {
-        CSounding sounding = TInterfaceEditor.TEditorCreate(
+        CSounding sounding = new TEditorFixture(TInterfaceEditor.TEditorCreate(
                 TEngineFake.TEngineStubCreate<LDraftPort>(),
                 TInterfaceConduct.TEntryBundleCreate([]),
                 TInterfaceConduct.TPhonologyBundleCreate(new Dictionary<string, Func<object?[]?, object?>>
@@ -290,8 +289,8 @@ public sealed class TSounding
                     ["add_LEngineFoldChanged"] = _ => null,
                     ["remove_LEngineFoldChanged"] = _ => null,
                 }),
-                TEngineFake.TEngineStubCreate<LMediaPort>())
-            .CEditorSounding;
+                TEngineFake.TEngineStubCreate<LMediaPort>()))
+            .TEditorFixtureSounding;
 
         CSoundingFanqie fanqie = sounding.CSoundingFanqieRead();
         CSoundingScript script = sounding.CSoundingScriptRead();
@@ -310,10 +309,10 @@ public sealed class TSounding
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> cells = [];
-        CEditor editor = TSoundingDiweiPrepare(engine, atelier, cells);
+        CSounding sounding = TSoundingDiweiPrepare(engine, atelier, cells).TEditorFixtureSounding;
 
-        editor.CEditorSounding.CSoundingDiweiOpen(true, "sh");
-        editor.CEditorSounding.CSoundingDiweiOpen(false, "寒 I");
+        sounding.CSoundingDiweiOpen(true, "sh");
+        sounding.CSoundingDiweiOpen(false, "寒 I");
 
         Assert.Equal(["English initial sh", "English rime 寒 I"], cells);
     }
@@ -325,19 +324,19 @@ public sealed class TSounding
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<string> cells = [];
-        CEditor editor = TSoundingDiweiPrepare(engine, atelier, cells);
+        CSounding sounding = TSoundingDiweiPrepare(engine, atelier, cells).TEditorFixtureSounding;
 
-        editor.CEditorSounding.CSoundingDiweiOpen(true, string.Empty);
-        editor.CEditorSounding.CSoundingDiweiOpen(false, string.Empty);
+        sounding.CSoundingDiweiOpen(true, string.Empty);
+        sounding.CSoundingDiweiOpen(false, string.Empty);
 
         Assert.Empty(cells);
     }
 
-    private static CEditor TSoundingDiweiPrepare(LEngine engine, CAtelier atelier, List<string> cells)
+    private static TEditorFixture TSoundingDiweiPrepare(LEngine engine, CAtelier atelier, List<string> cells)
     {
-        CEditor editor = CEditor.CEditorCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []));
+        TEditorFixture editor = TEditorFixture.TEditorFixtureCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []));
         editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
-        editor.CEditorEntryOpen(TSoundingEntrySave(engine));
+        editor.TEditorFixtureOpen(TSoundingEntrySave(engine));
         CNavigation navigation = atelier.CAtelierNavigation;
         navigation.TNavigationTabAdd("Yunjing", static () => true, static () => 0, static _ => { }, static _ => { });
         navigation.TNavigationDiweiAttach((language, kind, key) => cells.Add(language + " " + kind + " " + key));
@@ -350,22 +349,22 @@ public sealed class TSounding
             "water", "English", "ˈwɔːtə", string.Empty, [TInterface.TCardCreate("a liquid", 1)], [])).LEntryId;
     }
 
-    private static CEditor TSoundingEditorPrepare(LEngine engine, long? entry)
+    private static TEditorFixture TSoundingEditorPrepare(LEngine engine, long? entry)
     {
-        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
+        TEditorFixture editor = new(TInterfaceEditor.TEditorCreate(engine));
         editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
-        editor.CEditorEntryOpen(entry);
+        editor.TEditorFixtureOpen(entry);
         return editor;
     }
 
     private static CSounding TSoundingCreate(
-        CEditor editor,
+        CDesk desk,
         Dictionary<string, Func<object?[]?, object?>> answers,
         List<string> notices,
         LSettingsPort? pack = null)
     {
         return TInterfaceConductSound.TSoundingCreate(
-            editor.CEditorDesk,
+            desk,
             TInterfaceConduct.TPhonologyBundleCreate(answers),
             TEnvoyFake.TEnvoyCreate(false, notices),
             pack);

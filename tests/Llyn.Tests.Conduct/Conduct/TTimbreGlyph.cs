@@ -14,9 +14,9 @@ public sealed class TTimbreGlyph
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TTimbreGlyphPrepare(engine, TTimbreGlyphSave(engine, "Korean"));
+        TEditorFixture editor = TTimbreGlyphPrepare(engine, TTimbreGlyphSave(engine, "Korean"));
 
-        CTimbreGlyph glyph = editor.CEditorTimbre.CTimbreGlyphRead();
+        CTimbreGlyph glyph = editor.TEditorFixtureTimbre.CTimbreGlyphRead();
 
         Assert.True(glyph.CTimbreGlyphShown);
         Assert.True(glyph.CTimbreGlyphSourced);
@@ -24,7 +24,7 @@ public sealed class TTimbreGlyph
         Assert.Equal(("Hanja", "漢字"), (row.CTranscriptionDraftScheme, row.CTranscriptionDraftText));
         Assert.Equal(
             [("Revised Romanization", "hanja"), ("Yale", string.Empty)],
-            editor.CEditorTranscription.CTranscriptionRead().CTranscriptionSheetRows.Select(
+            editor.TEditorFixtureTranscription.CTranscriptionRead().CTranscriptionSheetRows.Select(
                 static other => (other.CTranscriptionRowDraft.CTranscriptionDraftScheme,
                     other.CTranscriptionRowDraft.CTranscriptionDraftText)));
     }
@@ -35,9 +35,9 @@ public sealed class TTimbreGlyph
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CTimbreGlyph blank = TTimbre.TTimbrePrepare([]).CTimbreGlyphRead();
-        CEditor editor = TTimbreGlyphPrepare(engine, TTimbreGlyphSave(engine, "English"));
+        TEditorFixture editor = TTimbreGlyphPrepare(engine, TTimbreGlyphSave(engine, "English"));
 
-        CTimbreGlyph glyph = editor.CEditorTimbre.CTimbreGlyphRead();
+        CTimbreGlyph glyph = editor.TEditorFixtureTimbre.CTimbreGlyphRead();
 
         Assert.False(blank.CTimbreGlyphShown);
         Assert.False(blank.CTimbreGlyphSourced);
@@ -46,7 +46,7 @@ public sealed class TTimbreGlyph
         Assert.Empty(glyph.CTimbreGlyphRows);
         Assert.Equal(
             ["Revised Romanization", "Hanja", "Yale"],
-            editor.CEditorTranscription.CTranscriptionRead().CTranscriptionSheetRows.Select(
+            editor.TEditorFixtureTranscription.CTranscriptionRead().CTranscriptionSheetRows.Select(
                 static row => row.CTranscriptionRowDraft.CTranscriptionDraftScheme));
     }
 
@@ -55,19 +55,20 @@ public sealed class TTimbreGlyph
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TTimbreGlyphPrepare(engine, TTimbreGlyphSave(engine, "Korean"));
-        long glyph = Assert.Single(editor.CEditorTimbre.CTimbreGlyphRead().CTimbreGlyphRows).CTranscriptionDraftId;
+        TEditorFixture editor = TTimbreGlyphPrepare(engine, TTimbreGlyphSave(engine, "Korean"));
+        CTimbre timbre = editor.TEditorFixtureTimbre;
+        long glyph = Assert.Single(timbre.CTimbreGlyphRead().CTimbreGlyphRows).CTranscriptionDraftId;
 
-        editor.CEditorTranscription.CTranscriptionSet(glyph, "韓字");
-        editor.CEditorDesk.CDeskDraft.CDeskDraftPersist();
+        editor.TEditorFixtureTranscription.CTranscriptionSet(glyph, "韓字");
+        editor.TEditorFixtureDesk.CDeskDraft.CDeskDraftPersist();
 
-        CTimbreGlyph written = editor.CEditorTimbre.CTimbreGlyphRead();
+        CTimbreGlyph written = timbre.CTimbreGlyphRead();
         Assert.Equal("韓字", Assert.Single(written.CTimbreGlyphRows).CTranscriptionDraftText);
         Assert.Equal(
             ["hanja", string.Empty],
-            editor.CEditorTranscription.CTranscriptionRead().CTranscriptionSheetRows.Select(
+            editor.TEditorFixtureTranscription.CTranscriptionRead().CTranscriptionSheetRows.Select(
                 static row => row.CTranscriptionRowDraft.CTranscriptionDraftText));
-        Assert.True(editor.CEditorDesk.TDeskChangeCheck());
+        Assert.True(editor.TEditorFixtureDesk.TDeskChangeCheck());
     }
 
     [Fact]
@@ -76,31 +77,32 @@ public sealed class TTimbreGlyph
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         long entry = TTimbreGlyphSave(engine, "Korean");
-        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
+        TEditorFixture editor = new(TInterfaceEditor.TEditorCreate(engine));
         editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
         bool filling = false;
-        editor.CEditorDesk.CDeskDraft.CDeskDraftChanged += _ =>
+        editor.TEditorFixtureDesk.CDeskDraft.CDeskDraftChanged += _ =>
         {
-            filling = editor.CEditorDesk.CDeskDraft.CDeskDraftFilling;
-            foreach (CTranscriptionDraft row in editor.CEditorTimbre.CTimbreGlyphRead().CTimbreGlyphRows)
+            filling = editor.TEditorFixtureDesk.CDeskDraft.CDeskDraftFilling;
+            foreach (CTranscriptionDraft row in editor.TEditorFixtureTimbre.CTimbreGlyphRead().CTimbreGlyphRows)
             {
-                editor.CEditorTranscription.CTranscriptionSet(row.CTranscriptionDraftId, "韓字");
+                editor.TEditorFixtureTranscription.CTranscriptionSet(row.CTranscriptionDraftId, "韓字");
             }
         };
 
-        editor.CEditorEntryOpen(entry);
-        editor.CEditorDesk.CDeskDraft.CDeskDraftPersist();
+        editor.TEditorFixtureOpen(entry);
+        editor.TEditorFixtureDesk.CDeskDraft.CDeskDraftPersist();
 
         Assert.True(filling);
         Assert.Equal(
-            "漢字", Assert.Single(editor.CEditorTimbre.CTimbreGlyphRead().CTimbreGlyphRows).CTranscriptionDraftText);
+            "漢字",
+            Assert.Single(editor.TEditorFixtureTimbre.CTimbreGlyphRead().CTimbreGlyphRows).CTranscriptionDraftText);
     }
 
-    private static CEditor TTimbreGlyphPrepare(LEngine engine, long entry)
+    private static TEditorFixture TTimbreGlyphPrepare(LEngine engine, long entry)
     {
-        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
+        TEditorFixture editor = new(TInterfaceEditor.TEditorCreate(engine));
         editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
-        editor.CEditorEntryOpen(entry);
+        editor.TEditorFixtureOpen(entry);
         return editor;
     }
 

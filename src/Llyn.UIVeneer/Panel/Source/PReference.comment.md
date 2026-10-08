@@ -1,5 +1,5 @@
 # PReference.xaml
-Hash: `f481a1001b5ed713`
+Hash: `bc37229db77dd1ab`
 
 ## `<UserControl.Resources>`
 
@@ -27,35 +27,28 @@ A line marks a division, and a box would claim an object.
 The ordering button and the search field are one control over the catalog column.
 The action row over the broader column stands in the same top row, as the corpus panel arranges it.
 The catalog column takes 380, because a row carries a name beside an author-and-year line.
-The dropdowns, icons and field events are wired by the panel, so every part carries a name.
+The ordering picker is the shared `PChoiceOrder`, placed here as `PReferenceOrder`.
+The panel anchors the picker's menu under the whole bar.
+There is no ordering by kind of material, because no Source-type discriminator is stored.
+Ordering by recency is not offered, because the `source` row carries no creation or modification time.
+A field standing Unspecified or Unknown still has a place in every ordering, ordered by its state.
 
 ## `<Border x:Name="PTrellis" ... Style="{StaticResource Theme.Search.Bar}">`
 
 The search field and the language filter over the middle column, copied from the tenor panel's `PGrille`.
 `PRummage` narrows the entries citing the chosen Source by typed text.
-`PTrellisDropper` opens the menu of loaded languages, and `PTrellisMark` shows while any is hidden.
+The language filter is the shared `PChoiceFilter`, placed here as `PReferenceFilter`.
 
-## `<Popup x:Name="PGradeDropdown" ...>`
+## `<veneer:PPanelRail x:Name="PReferenceRail" Grid.Row="0" Grid.Column="2" Margin="0,0,0,18" />`
 
-The orderings the shelf may be listed in, one radio row each, carrying its choice in `Tag`.
-There is no ordering by kind of material, because no Source-type discriminator is stored.
-Ordering by recency is not offered, because the `source` row carries no creation or modification time.
-A field standing Unspecified or Unknown still has a place in every ordering, ordered by its state.
-
-## `<local:QRail Grid.Row="0" Grid.Column="2" ...>`
-
-The action row of the panel.
-`PReferenceFresh` opens the edit area on a Source nothing cites yet.
+The action row of the panel, the shared `PPanelRail` placed here as `PReferenceRail`.
+While no Source is held, Fresh opens the edit area on a Source nothing cites yet.
 That is the normal case, because a Source is written down first and cited afterwards.
-`PReferenceStore` saves whichever editor is in front, the Entry open in `PEditor` or the held Source.
+While one is held, Fresh opens a new Entry for the held Source to cite.
+Save stores whichever editor is in front, the Entry open in `PEditor` or the held Source.
 It stands in the rail at all times, as the repertoire panel's save does.
-One slot sits between save and export, and it holds whichever pair the mode asks for.
-Reading shows `PReferenceVoyage`, whose `PReferenceEarlier` and `PReferenceLater` walk the window's trail of records.
-Writing shows `PReferenceChronicle`, whose `PReferenceBackward` and `PReferenceForward` walk the editor's chronicle.
-`PReferenceChronicle` starts collapsed, because the panel opens reading.
-Each carries no label, only the arrow and a tooltip, and is lit only while a step is there.
-`PReferencePortrait` exports the Entry shown, and `PReferencePress` prints what is read.
-Every button is named, and the panel sets its icon, command and click from code.
+The undo pair walks the editor's chronicle.
+Export takes the Entry shown, and print takes what is read.
 
 ## `<ItemsControl x:Name="PShelf" ...>`
 
@@ -97,7 +90,7 @@ A citation is set or cleared where it is held.
 ## `<veneer:PImprint x:Name="PImprint" Margin="21,18,0,0" Visibility="Collapsed" />`
 
 The edit area, a control of its own and described in `PImprint.comment.md`.
-It sits over the read area in the same cell and at the same inset.
+It sits over the read area in the same cell and at the same top inset.
 One Source is either being read or being written.
 The panel decides which is shown, so the mode toggle stays in the action row.
 
@@ -107,10 +100,10 @@ Deletes the shown Source, from the reading side or the editing side alike.
 It stands in the corner of the surface as the repertoire panel's bin does, apart from the browsing beside it.
 It is disabled while nothing is selected and while an Entry is shown.
 It is disabled too while the edit area stands on a Source nothing has stored yet.
-Its icon is the named `PReferenceBinIcon`, set by the panel.
+Its icon is the named `PReferenceBinIcon`, set by the rail driver, which also takes its click.
 
 ## Catalog spacing
 
 The catalog uses the shared Theme.Catalog.Frame and Theme.Catalog.Scroll styles.
-Rows keep 6 device-independent pixels on both sides, with a reserved scrollbar lane so their width stays stable.
+The scroll bar takes its lane only when the list overflows, and the rows then narrow to make room.
 The shared Theme.Catalog.Row preserves the same rounded shape, internal padding and row spacing across browse panels.

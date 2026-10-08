@@ -21,13 +21,13 @@ public sealed class TErrandNotationReading
         TaskCompletionSource gate = new();
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate("uk=hɪl", gate.Task));
-        CEditor editor = TErrandNotation.TErrandNotationPrepare(engine, pack.TLanguageFixtureName, "hill");
-        CErrand errand = editor.CEditorDesk.CDeskErrand;
+        TEditorFixture editor = TErrandNotation.TErrandNotationPrepare(engine, pack.TLanguageFixtureName, "hill");
+        CErrand errand = editor.TEditorFixtureDesk.CDeskErrand;
         errand.CErrandTranscriptionStart(0, string.Empty);
 
         errand.CErrandReadingSet("hɪl", "British");
 
-        LPronunciationDraft? spoken = editor.CEditorDesk.TDeskHeldRead()?.LDraftContent.LEntryDraftPronunciation;
+        LPronunciationDraft? spoken = editor.TEditorFixtureDesk.TDeskHeldRead()?.LDraftContent.LEntryDraftPronunciation;
         Assert.Equal("hɪl", spoken?.LPronunciationDraftIpa);
         Assert.Equal("British", spoken?.LPronunciationDraftVariety);
         gate.SetResult();
@@ -42,24 +42,25 @@ public sealed class TErrandNotationReading
         TaskCompletionSource gate = new();
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate("uk=hɪl", gate.Task));
-        CEditor editor = TErrandNotation.TErrandNotationPrepare(engine, pack.TLanguageFixtureName, "hill");
-        CErrand errand = editor.CEditorDesk.CDeskErrand;
-        editor.CEditorTimbre.CTimbrePronunciationAdd(0);
-        long accent = editor.CEditorDesk.TDeskRead()!.LDraftContent.LEntryDraftPronunciations[1].LPronunciationDraftId;
+        TEditorFixture editor = TErrandNotation.TErrandNotationPrepare(engine, pack.TLanguageFixtureName, "hill");
+        CDesk desk = editor.TEditorFixtureDesk;
+        CErrand errand = desk.CDeskErrand;
+        editor.TEditorFixtureTimbre.CTimbrePronunciationAdd(0);
+        long accent = desk.TDeskRead()!.LDraftContent.LEntryDraftPronunciations[1].LPronunciationDraftId;
         errand.CErrandTranscriptionStart(accent, string.Empty);
 
         errand.CErrandReadingSet("hɪl", "British");
 
         IReadOnlyList<LPronunciationDraft> written =
-            editor.CEditorDesk.TDeskHeldRead()!.LDraftContent.LEntryDraftPronunciations;
+            desk.TDeskHeldRead()!.LDraftContent.LEntryDraftPronunciations;
         Assert.Equal(
             [(string.Empty, string.Empty), ("hɪl", "British")],
             written.Select(static row => (row.LPronunciationDraftIpa, row.LPronunciationDraftVariety)));
-        editor.CEditorTimbre.CTimbrePronunciationRemove(accent);
+        editor.TEditorFixtureTimbre.CTimbrePronunciationRemove(accent);
         errand.CErrandReadingSet("hɪːl", "British");
         Assert.Equal(
             [string.Empty],
-            editor.CEditorDesk.TDeskRead()!.LDraftContent.LEntryDraftPronunciations.Select(
+            desk.TDeskRead()!.LDraftContent.LEntryDraftPronunciations.Select(
                 static row => row.LPronunciationDraftIpa));
         gate.SetResult();
         editor.TEditorFinish(false);
@@ -81,17 +82,18 @@ public sealed class TErrandNotationReading
             [TInterface.TCardCreate("a rise", 1)],
             [],
             transcriptions: [TInterface.TTranscriptionDraftCreate("Yale", string.Empty)])).LEntryId;
-        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
+        TEditorFixture editor = new(TInterfaceEditor.TEditorCreate(engine));
         editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
-        editor.CEditorEntryOpen(entry);
-        CErrand errand = editor.CEditorDesk.CDeskErrand;
-        long row = Assert.Single(editor.CEditorDesk.TDeskRead()!.LDraftContent.LEntryDraftTranscriptions)
+        editor.TEditorFixtureOpen(entry);
+        CDesk desk = editor.TEditorFixtureDesk;
+        CErrand errand = desk.CDeskErrand;
+        long row = Assert.Single(desk.TDeskRead()!.LDraftContent.LEntryDraftTranscriptions)
             .LTranscriptionDraftId;
         errand.CErrandTranscriptionStart(row, "Yale");
 
         errand.CErrandReadingSet("hil", "British");
 
-        LEntryDraft? content = editor.CEditorDesk.TDeskHeldRead()?.LDraftContent;
+        LEntryDraft? content = desk.TDeskHeldRead()?.LDraftContent;
         Assert.Equal("hil", Assert.Single(content?.LEntryDraftTranscriptions ?? []).LTranscriptionDraftText);
         Assert.Equal(string.Empty, content?.LEntryDraftPronunciation?.LPronunciationDraftVariety ?? string.Empty);
         gate.SetResult();
@@ -106,23 +108,24 @@ public sealed class TErrandNotationReading
         TaskCompletionSource gate = new();
         using LEngine engine = workspace.TWorkspaceEngineStart(
             TPronunciationHelper.TSourceClientCreate("uk=hɪl", gate.Task));
-        CEditor editor = TErrandNotation.TErrandNotationPrepare(engine, pack.TLanguageFixtureName, "hill");
-        CErrand errand = editor.CEditorDesk.CDeskErrand;
+        TEditorFixture editor = TErrandNotation.TErrandNotationPrepare(engine, pack.TLanguageFixtureName, "hill");
+        CDesk desk = editor.TEditorFixtureDesk;
+        CErrand errand = desk.CDeskErrand;
         errand.CErrandReadingSet("hɪl", "British");
         errand.CErrandTranscriptionStart(0, string.Empty);
         bool filling = false;
-        editor.CEditorDesk.CDeskDraft.CDeskDraftChanged += _ =>
+        desk.CDeskDraft.CDeskDraftChanged += _ =>
         {
-            filling = editor.CEditorDesk.CDeskDraft.CDeskDraftFilling;
+            filling = desk.CDeskDraft.CDeskDraftFilling;
             errand.CErrandReadingSet("hɪl", "British");
         };
 
-        editor.CEditorDesk.CDeskDraft.CDeskDraftResonate();
+        desk.CDeskDraft.CDeskDraftResonate();
 
         Assert.True(filling);
         Assert.Equal(
             string.Empty,
-            editor.CEditorDesk.TDeskRead()?.LDraftContent.LEntryDraftPronunciation?.LPronunciationDraftIpa
+            desk.TDeskRead()?.LDraftContent.LEntryDraftPronunciation?.LPronunciationDraftIpa
             ?? string.Empty);
         gate.SetResult();
         editor.TEditorFinish(false);

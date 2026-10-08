@@ -33,62 +33,14 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <ToggleButton
-                    x:Name="PSeriesDropper"
-                    Grid.Column="0"
-                    Style="{StaticResource Theme.Search.Dropper}"
-                    ToolTip="{DynamicResource Series.Title}">
-                    <local:QIconImage x:Name="PSeriesIcon" Width="24" Height="24" />
-                </ToggleButton>
+                <veneer:PChoiceOrder x:Name="PFavoriteOrder" Grid.Column="0" />
                 <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
                 <TextBox
                     x:Name="PRecall"
                     Grid.Column="2"
                     Style="{StaticResource Theme.Search.Field}" />
                 <Rectangle Grid.Column="3" Margin="2,0,5,0" Style="{StaticResource Theme.Search.Divider}" />
-                <ToggleButton
-                    x:Name="PStrainerDropper"
-                    Grid.Column="4"
-                    Style="{StaticResource Theme.Search.Dropper}"
-                    ToolTip="{DynamicResource Strainer.Title}">
-                    <Grid Width="24" Height="24">
-                        <local:QIconImage x:Name="PStrainerIcon" Width="24" Height="24" />
-                        <Ellipse
-                            x:Name="PStrainerMark"
-                            Width="6"
-                            Height="6"
-                            Margin="0,2,1,0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Top"
-                            Fill="{StaticResource Theme.Accent}"
-                            Visibility="Collapsed" />
-                    </Grid>
-                </ToggleButton>
-                <Popup
-                    x:Name="PSeriesDropdown"
-                    Width="252"
-                    AllowsTransparency="True"
-                    Placement="Bottom"
-                    StaysOpen="False"
-                    VerticalOffset="6">
-                    <Border Margin="10" Padding="8" Style="{StaticResource Theme.Popup.Surface}">
-                        <StackPanel x:Name="PSeriesList">
-                            <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Series.Title}" />
-                        </StackPanel>
-                    </Border>
-                </Popup>
-                <Popup
-                    x:Name="PStrainerDropdown"
-                    Width="190"
-                    AllowsTransparency="True"
-                    HorizontalOffset="-151"
-                    Placement="Bottom"
-                    StaysOpen="False"
-                    VerticalOffset="6">
-                    <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
-                        <StackPanel x:Name="PStrainerList" />
-                    </Border>
-                </Popup>
+                <veneer:PChoiceFilter x:Name="PFavoriteFilter" Grid.Column="4" />
             </Grid>
         </Border>
 
@@ -121,69 +73,7 @@
                 Text="{DynamicResource Favorite.Empty}" />
         </Grid>
 
-        <local:QRail Grid.Row="0" Grid.Column="1" Margin="0,0,0,18">
-            <Border Style="{StaticResource Theme.Command.Group}">
-                <StackPanel Orientation="Horizontal">
-                    <Button
-                        x:Name="PFavoriteStore"
-                        Content="{DynamicResource Scribe.Save}"
-                        IsEnabled="False"
-                        Style="{StaticResource Theme.Command.Primary}" />
-                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
-                    <StackPanel x:Name="PFavoriteVoyage" Orientation="Horizontal">
-                        <Button
-                            x:Name="PFavoriteEarlier"
-                            IsEnabled="False"
-                            Style="{StaticResource Theme.Command.Segment}"
-                            ToolTip="{DynamicResource Voyage.Retreat}" />
-                        <Button
-                            x:Name="PFavoriteLater"
-                            IsEnabled="False"
-                            Style="{StaticResource Theme.Command.Segment}"
-                            ToolTip="{DynamicResource Voyage.Advance}" />
-                    </StackPanel>
-                    <StackPanel x:Name="PFavoriteChronicle" Orientation="Horizontal" Visibility="Collapsed">
-                        <Button
-                            x:Name="PFavoriteBackward"
-                            IsEnabled="False"
-                            Style="{StaticResource Theme.Command.Segment}"
-                            ToolTip="{DynamicResource Chronicle.Undo}" />
-                        <Button
-                            x:Name="PFavoriteForward"
-                            IsEnabled="False"
-                            Style="{StaticResource Theme.Command.Segment}"
-                            ToolTip="{DynamicResource Chronicle.Redo}" />
-                    </StackPanel>
-                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
-                    <Button
-                        x:Name="PFavoritePortrait"
-                        Content="{DynamicResource Scribe.Export}"
-                        Style="{StaticResource Theme.Command.Segment}" />
-                    <Button
-                        x:Name="PFavoritePress"
-                        Content="{DynamicResource Scribe.Print}"
-                        Style="{StaticResource Theme.Command.Segment}" />
-                </StackPanel>
-            </Border>
-            <Border
-                x:Name="PFavoriteMode"
-                IsEnabled="False"
-                Style="{StaticResource Theme.Command.Group}">
-                <StackPanel Orientation="Horizontal">
-                    <RadioButton
-                        x:Name="PFavoriteViewer"
-                        Content="{DynamicResource Scribe.View}"
-                        GroupName="PFavoriteMode"
-                        IsChecked="True"
-                        Style="{StaticResource Theme.Command.Mode}" />
-                    <RadioButton
-                        x:Name="PFavoriteScribe"
-                        Content="{DynamicResource Scribe.Edit}"
-                        GroupName="PFavoriteMode"
-                        Style="{StaticResource Theme.Command.Mode}" />
-                </StackPanel>
-            </Border>
-        </local:QRail>
+        <veneer:PPanelRail x:Name="PFavoriteRail" Grid.Row="0" Grid.Column="1" Margin="0,0,0,18" />
 
         <Border Grid.Row="1" Grid.Column="1" Margin="0,14,0,0" ClipToBounds="True" Style="{StaticResource Theme.Panel.Surface}">
             <Grid>

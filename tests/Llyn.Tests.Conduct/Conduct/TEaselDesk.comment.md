@@ -1,5 +1,5 @@
 # TEaselDesk.cs
-Hash: `d44c345556e5c778`
+Hash: `d9a92700b2cd8765`
 
 ## `public sealed class TEaselDesk`
 

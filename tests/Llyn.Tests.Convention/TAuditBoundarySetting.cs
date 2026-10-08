@@ -47,10 +47,7 @@ internal static class TAuditBoundarySetting
 
     public const string TAuditBoundaryTimer = @"\bCancellationTokenSource\b";
 
-    public static readonly string[] TAuditBoundaryHold =
-    [
-        @"Hold\.cs$",
-    ];
+    public static readonly string[] TAuditBoundaryHold = [];
 
     public const string TAuditBoundaryPanel = @"\b(class|struct|record)\s+PS?[A-Z]";
 }

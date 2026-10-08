@@ -1,5 +1,5 @@
 # TEditor.cs
-Hash: `35cf57b292287bcf`
+Hash: `6f943e488d6bccfd`
 
 ## `public sealed class TEditor`
 
@@ -19,7 +19,8 @@ A field edit made while the desk fills its controls is dropped.
 Stores the English entry water with one card, so an editor has something to open.
 `TEditorFresh` and `TEntry` share it.
 
-## `internal static CEditor TEditorPrepare(LEngine engine, string tab)`
+## `internal static TEditorFixture TEditorPrepare(LEngine engine, string tab)`
 
 Builds an editor over the engine and restores the vista of the named tab, ordered by headword.
+It answers the editor wrapped in the fixture relay, so the tests reach its facets and gates there.
 `TEditorFresh` and `TEntry` share it.

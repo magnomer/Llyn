@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using Llyn.Application;
 using System.Collections.Generic;
 using Llyn.Core;
@@ -80,15 +79,14 @@ public sealed class CAtelier : IDisposable
     public CEditor CAtelierInputCreate(CEnvoy envoy)
     {
         CEditor editor = CEditor.CEditorCreate(this, envoy);
+        CAtelierWorkspace.LWorkspaceDraftAdd(editor.CEditorDesk.LDeskChangeCheck, editor.LEditorFinish);
+        CAtelierWorkspace.LWorkspaceVistaAdd(() => LAtelierInputRestore(editor));
         LAtelierInputRestore(editor);
         return editor;
     }
 
-    internal void LAtelierInputRestore(CEditor editor)
+    private void LAtelierInputRestore(CEditor editor)
     {
-        ArgumentNullException.ThrowIfNull(editor);
-
-        CAtelierWorkspace.LWorkspaceInputSet(editor);
         editor.LEditorVistaRestore(
             CAtelierVistaStart("input", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword));
     }
@@ -159,19 +157,6 @@ public sealed class CAtelier : IDisposable
     internal static CWorkspaceState LAtelierStateRead(LWorkspaceState state)
     {
         return new CWorkspaceState(state.LWorkspaceStateLeft, state.LWorkspaceStateRight);
-    }
-
-    internal CEstablishment LAtelierEstablishmentRead()
-    {
-        LEstablishment establishment = CAtelierSettingsPort.LEngineEstablishmentRead();
-        return new CEstablishment(
-            establishment.LEstablishmentUnsaved,
-            establishment.LEstablishmentEntry,
-            establishment.LEstablishmentPending,
-            establishment.LEstablishmentSingle ? "Establishment.EntryOne" : "Establishment.Entry",
-            establishment.LEstablishmentLarge ? "Establishment.Megabyte" : "Establishment.Kilobyte",
-            establishment.LEstablishmentAmount.ToString(
-                establishment.LEstablishmentLarge ? "0.0" : "0", CultureInfo.CurrentCulture));
     }
 
     public void CAtelierLocationOpen(string target)

@@ -17,7 +17,7 @@ internal sealed class QCitation
 
     private readonly QProffer _qCitationProffer;
 
-    private CEditor _cEditor = null!;
+    private CCard _cCard = null!;
 
     internal QCitation(
         ObservableCollection<PCard> meaning,
@@ -33,10 +33,10 @@ internal sealed class QCitation
 
     internal ObservableCollection<QCitationItem> QCitationCatalog { get; } = [];
 
-    internal void QCitationIntroduce(CEditor editor, CAtelier atelier)
+    internal void QCitationIntroduce(CCard card, CSentence sentence, CAtelier atelier)
     {
-        _cEditor = editor;
-        editor.CEditorSentence.CSentenceReferenceChanged += QCitationCatalogRefine;
+        _cCard = card;
+        sentence.CSentenceReferenceChanged += QCitationCatalogRefine;
         atelier.CAtelierWorkspace.CWorkspaceOpened += QCitationCatalogRefine;
     }
 
@@ -44,6 +44,8 @@ internal sealed class QCitation
     {
         if (QLook.QLookPartFind<TextBox>(container, "PSentenceCitation") is TextBox citation)
         {
+            citation.TextChanged -= QCitationFieldRefine;
+            citation.TextChanged += QCitationFieldRefine;
             citation.PreviewKeyDown -= _qCitationProffer.QProfferKeyRefine;
             citation.PreviewKeyDown -= _qCitationProffer.QProfferKeyObserve;
             citation.PreviewKeyDown -= QCitationCommitObserve;
@@ -57,23 +59,27 @@ internal sealed class QCitation
         }
     }
 
-    internal void QCitationFieldRefine(PCard card, PSentence row, TextBox box)
+    private void QCitationFieldRefine(object sender, TextChangedEventArgs e)
     {
-        _qCitationProffer.QProfferCitationRefine(
-            box, _cEditor.CEditorCard.CCardReferenceFind(card.PCardId, row.PSentenceRow, box.Text));
+        if (sender is TextBox { IsKeyboardFocusWithin: true, DataContext: PSentence row } box
+            && _qCitationSentence.QSentenceCardFind(row) is PCard card)
+        {
+            _qCitationProffer.QProfferCitationRefine(
+                box, _cCard.CCardReferenceFind(card.PCardId, row.PSentenceRow, box.Text));
+        }
     }
 
     private void QCitationCatalogRefine()
     {
         QCitationCatalog.Clear();
-        foreach (CCatalogReference row in _cEditor.CEditorCard.CCardReferenceRead())
+        foreach (CCatalogReference row in _cCard.CCardReferenceRead())
         {
             QCitationCatalog.Add(QCitationItem.QCitationItemCreate(row));
         }
 
         foreach (PCard card in _qCitationMeaning.Concat(_qCitationCollocation))
         {
-            foreach (PSentence row in card.PCardSentence)
+            foreach (PSentence row in card.PCardSentence.PCardSentenceRow)
             {
                 row.PSentenceCitationShow();
             }
@@ -90,7 +96,7 @@ internal sealed class QCitation
         }
 
         e.Handled = true;
-        _cEditor.CEditorCard.CCardCitationSet(card.PCardId, row.PSentenceRow, box.Text);
+        _cCard.CCardCitationSet(card.PCardId, row.PSentenceRow, box.Text);
         _qCitationProffer.QProfferShutRefine();
         QCitationTextRefine(box);
     }

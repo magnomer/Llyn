@@ -107,11 +107,11 @@ internal static class TInterfaceConductSound
     internal static string TRespellingResolve(CRespellingMark mark, string phonetic, string? respelling) =>
         CRespelling.LRespellingResolve(mark, phonetic, respelling);
 
-    internal static CKindred TKindredCreate(CEditor editor, CPhonologyBundle phonology, LDraftPort drafts) =>
+    internal static CKindred TKindredCreate(TEditorFixture editor, CPhonologyBundle phonology, LDraftPort drafts) =>
         new(
-            editor.CEditorDesk,
+            editor.TEditorFixtureDesk,
             phonology.CPhonologyBundleReflex,
-            editor.CEditorDisplay.LDisplayRule,
+            editor.TEditorFixtureDisplay.LDisplayRule,
             drafts,
             TInterfaceConduct.TSettingsCreate(),
             TEnvoyFake.TEnvoyCreate(false, []));

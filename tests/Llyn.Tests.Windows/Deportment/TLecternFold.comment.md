@@ -1,10 +1,10 @@
 # TLecternFold.cs
-Hash: `eb875323ffad58ff`
+Hash: `da21492030f2ea49`
 
 ## `public sealed class TLecternFold`
 
 Covers the reflex fold toggle the reading view shares with the editor through one display.
-The toggle lives on its own STA thread, since a WPF control demands one.
+The reflex section and its named parts live on their own STA thread, since a WPF control demands one.
 
 ## `public void FoldObserve_DisagreeingToggle_SettlesOnFlag()`
 

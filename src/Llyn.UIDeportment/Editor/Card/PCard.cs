@@ -1,21 +1,15 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
-internal sealed partial class PCard : INotifyPropertyChanged
+internal sealed class PCard : INotifyPropertyChanged
 {
     private readonly string _pCardPrefix;
-    private readonly ObservableCollection<QCitationItem> _pCardCitation;
-    private readonly ObservableCollection<string> _pCardParticle;
-    private readonly ObservableCollection<string> _pCardDependence;
-    private readonly ObservableCollection<PLanguageItem> _pCardLanguage;
     private int _pCardPosition;
     private bool _pCardPositionActive;
     private CStateWording _pTitle;
@@ -36,15 +30,39 @@ internal sealed partial class PCard : INotifyPropertyChanged
         _pTitle = draft.CCardDraftTitle;
         _pCardDefinition = draft.CCardDraftMeaning;
         _pCardExpression = draft.CCardDraftExpression;
-        _pCardCitation = catalog;
-        _pCardParticle = particles;
-        _pCardDependence = dependences;
-        _pCardLanguage = languages;
-        PCardContextStart();
-        PCardRegisterStart();
-        PCardLinkStart();
-        PCardLabelStart();
+        PCardSentence = new PCardSentence(catalog, particles, dependences, languages);
     }
+
+    public PCardSentence PCardSentence { get; }
+
+    public ObservableCollection<QImageItem> PCardImage { get; } = [];
+
+    public ObservableCollection<QVideoItem> PCardVideo { get; } = [];
+
+    public PCaret<QLinkChip> PCardLink { get; } = new(
+        "Card.TranslationHint",
+        static chip => chip.QLinkChipId,
+        static (row, fresh) =>
+            string.Equals(row.QLinkChipHeadword, fresh.QLinkChipHeadword, StringComparison.Ordinal)
+            && string.Equals(row.QLinkChipLanguage, fresh.QLinkChipLanguage, StringComparison.Ordinal)
+                ? row
+                : fresh);
+
+    public PCaret<PLabelChip> PCardLabel { get; } = new(
+        "Card.LabelHint",
+        static chip => chip.PLabelChipId,
+        static (row, fresh) =>
+            string.Equals(row.PLabelChipName, fresh.PLabelChipName, StringComparison.Ordinal) ? row : fresh);
+
+    public PCaret<PContext> PCardContext { get; } = new(
+        "Card.SituationHint",
+        static chip => chip.PContextId,
+        static (row, fresh) => fresh.PContextText == row.PContextText ? row : fresh);
+
+    public PCaret<PRegister> PCardRegister { get; } = new(
+        "Card.RegisterHint",
+        static chip => chip.PRegisterId,
+        static (row, fresh) => fresh.PRegisterText == row.PRegisterText ? row : fresh);
 
     public long PCardId { get; set; }
 
@@ -133,85 +151,34 @@ internal sealed partial class PCard : INotifyPropertyChanged
         PCardRaise(nameof(PCardExpression));
     }
 
-    internal static void PCardRowApply(FrameworkElement container, PCard card, string? changed)
+    internal void PCardImageShow(IReadOnlyList<CImageDraft> rows)
     {
-        ArgumentNullException.ThrowIfNull(card);
-
-        if (QLook.QLookPartFind<Border>(container, "PCardPosition") is Border position)
-        {
-            if (card.PCardPositionActive)
+        QLookItem.QLookItemShow(
+            PCardImage,
+            rows,
+            static row => row.QImageItemId,
+            static draft => draft.CImageDraftId,
+            static draft => new QImageItem(draft),
+            (row, draft) =>
             {
-                position.SetResourceReference(Border.BorderBrushProperty, "Theme.Accent");
-            }
-            else
+                row.QImageItemShow(draft);
+                return row;
+            });
+    }
+
+    internal void PCardVideoShow(IReadOnlyList<CVideoDraft> rows)
+    {
+        QLookItem.QLookItemShow(
+            PCardVideo,
+            rows,
+            static row => row.QVideoItemId,
+            static draft => draft.CVideoDraftId,
+            static draft => new QVideoItem(draft),
+            (row, draft) =>
             {
-                position.ClearValue(Border.BorderBrushProperty);
-            }
-        }
-
-        if (QLook.QLookPartFind<TextBox>(container, "PCardPositionText") is TextBox ordinal)
-        {
-            if (changed is null or nameof(PCardPosition) or nameof(PCardPositionActive))
-            {
-                ordinal.Text = card.PCardPositionText;
-            }
-
-            if (card.PCardPositionActive)
-            {
-                ordinal.IsReadOnly = false;
-                ordinal.IsHitTestVisible = true;
-            }
-            else
-            {
-                ordinal.ClearValue(TextBoxBase.IsReadOnlyProperty);
-                ordinal.ClearValue(UIElement.IsHitTestVisibleProperty);
-            }
-        }
-
-        if (QLook.QLookPartFind<TextBox>(container, "PTitle") is TextBox title)
-        {
-            if (changed is null or nameof(PTitle))
-            {
-                title.Text = card.PTitle.CStateWordingText;
-            }
-
-            QStateConverter.QStateHintRefine(title, QField.QFieldHintProperty, card.PTitle);
-        }
-
-        if (QLook.QLookPartFind<TextBox>(container, "PCardExpression") is TextBox expression)
-        {
-            if (changed is null or nameof(PCardExpression))
-            {
-                expression.Text = card.PCardExpression.CStateWordingText;
-            }
-
-            QStateConverter.QStateHintRefine(expression, QField.QFieldHintProperty, card.PCardExpression);
-        }
-
-        if (QLook.QLookPartFind<TextBox>(container, "PCardDefinition") is TextBox definition)
-        {
-            if (changed is null or nameof(PCardDefinition))
-            {
-                definition.Text = card.PCardDefinition.CStateWordingText;
-            }
-
-            QStateConverter.QStateHintRefine(definition, QField.QFieldHintProperty, card.PCardDefinition);
-        }
-
-        if (QLook.QLookPartFind<QIconImage>(container, "PCardIcon") is QIconImage icon)
-        {
-            icon.QIconSource = QIcon.QIconResolve("close", 12);
-        }
-
-        if (QLook.QLookPartFind<QIconImage>(container, "PCardImageIcon") is QIconImage image)
-        {
-            image.QIconSource = QIcon.QIconResolve("image", 24);
-        }
-
-        if (QLook.QLookPartFind<QIconImage>(container, "PCardVideoIcon") is QIconImage video)
-        {
-            video.QIconSource = QIcon.QIconResolve("video", 24);
-        }
+                row.QVideoItemShow(draft);
+                return row;
+            });
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

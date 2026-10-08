@@ -10,7 +10,7 @@ internal sealed class QVita
 {
     private readonly UserControl _qVitaSurface;
 
-    private QWindow _qVitaHost = null!;
+    private CNavigation _cNavigation = null!;
 
     private CGuild _cGuild = null!;
 
@@ -46,9 +46,9 @@ internal sealed class QVita
 
     private TextBlock QVitaUnselected => QContract.QContractFind<TextBlock>(_qVitaSurface, "PVitaUnselected");
 
-    internal void QVitaAttach(QWindow host, CGuild guild)
+    internal void QVitaAttach(CNavigation navigation, CGuild guild)
     {
-        _qVitaHost = host;
+        _cNavigation = navigation;
         _cGuild = guild;
     }
 
@@ -75,7 +75,7 @@ internal sealed class QVita
 
     private void QVitaCitationObserve(object sender, RoutedEventArgs e)
     {
-        _qVitaHost.QWindowAtelier.CAtelierNavigation.CNavigationUsageOpen(
+        _cNavigation.CNavigationUsageOpen(
             QSender.QSenderSourceRead<QUsageItem>(e)?.QUsageItemUsage);
     }
 }

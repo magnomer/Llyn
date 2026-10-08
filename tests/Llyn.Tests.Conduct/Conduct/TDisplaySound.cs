@@ -141,14 +141,14 @@ public sealed class TDisplaySound
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
+        CDisplay display = new TEditorFixture(TInterfaceEditor.TEditorCreate(engine)).TEditorFixtureDisplay;
         LEntry kindle = engine.TEngineEntrySave(
             TDisplayDraftCreate("kindle", "English", [TInterface.TReflexDraftCreate("Korean", string.Empty, "a")]));
-        editor.CEditorDisplay.LDisplayRule.LDisplaySound.TDisplaySoundShow(
+        display.LDisplayRule.LDisplaySound.TDisplaySoundShow(
             kindle.LEntryId, TDisplayDraftCreate("kindle", "English", []));
-        CLecternReflex shown = editor.CEditorDisplay.CDisplaySound.CDisplayReflexRead();
+        CLecternReflex shown = display.CDisplaySound.CDisplayReflexRead();
 
-        CLecternReflex reloaded = editor.CEditorDisplay.CDisplaySound.CDisplayReflexResonate();
+        CLecternReflex reloaded = display.CDisplaySound.CDisplayReflexResonate();
 
         Assert.Empty(shown.CLecternReflexRows);
         Assert.Equal("a", Assert.Single(reloaded.CLecternReflexRows).CReflexText);
@@ -159,15 +159,15 @@ public sealed class TDisplaySound
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
-        CDisplaySound area = editor.CEditorDisplay.CDisplaySound;
+        CDisplay display = new TEditorFixture(TInterfaceEditor.TEditorCreate(engine)).TEditorFixtureDisplay;
+        CDisplaySound area = display.CDisplaySound;
         int changed = 0;
         area.CDisplayFoldChanged += () => changed++;
 
         area.CDisplayReflexToggle(true);
 
         Assert.True(area.CDisplayFoldOpened);
-        Assert.True(editor.CEditorDisplay.LDisplayRule.LDisplaySound.LDisplayFoldOpened);
+        Assert.True(display.LDisplayRule.LDisplaySound.LDisplayFoldOpened);
         Assert.Equal(1, changed);
     }
 

@@ -1,5 +1,5 @@
 # CKindred.cs
-Hash: `c68bf904a47f566a`
+Hash: `78ceb564cfeb62e7`
 
 ## `public sealed class CKindred`
 
@@ -63,17 +63,25 @@ The engine flips the main mark the draft holds, so a row it no longer holds send
 
 The user typed `text` into the cell `field` of reflex row `reflex`.
 Each cell has its own engine member, and the engine defers every one.
-The answer names the text the cell now holds, which the driver writes in place of its own copy.
+The answer is the row as it now reads, which the driver keeps in place of its own copy.
+It finds the row in the held draft before the write and copies it through `CReflex.CReflexTypedApply`.
 A taken edit answers the typed text, since the deferred draft has not caught up yet.
-A desk that fills its view takes no edit, and answers the text its block holds for the cell.
+A desk that fills its view takes no edit, and answers the row as the draft holds it.
+A row the held draft lacks answers no row.
 A typed language answers every row's lead, with the typed language standing in for the row's stored one.
 Other cells answer no lead, and neither does an edit not taken.
 Only the edit in hand is overlaid, so another row's edit still deferred reads as stored.
 The lead compares the raw typed language, as the scan compares the stored one.
 
-## `private string LKindredFind(long reflex, CReflexField field)`
+## `private CReflex? LKindredFind(long reflex)`
 
-The text the held block shows in one cell of one row, or nothing for a row it lacks.
+The row `reflex` as the held draft reads, or null for a row it lacks or an empty desk.
+It scans the rows alone, so a keystroke reads no anchor.
+
+## `private IReadOnlyList<CReflex> LKindredRowRead(LEntryDraft content)`
+
+The rows of `content`, each resolved by the shared reflex scan.
+`CKindredRead` and `LKindredFind` both read their rows here.
 
 ## `private static IReadOnlyList<CReflexHead> LKindredLeadRead(IReadOnlyList<LReflexDraft> typed)`
 

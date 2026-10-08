@@ -45,6 +45,7 @@ public sealed class CTenor
         CPanel panel = CTenorCohort.CCohortPanel;
         panel.CPanelCleared += editor.CEditorDesk.CDeskCancel;
         panel.CPanelEdited += id => editor.CEditorEntryOpen(id);
+        editor.CEditorDisplay.CDisplayPanelAttach(panel);
         atelier.CAtelierNavigation.LNavigationTabAdd(
             "Tenor",
             panel.CPanelLeaveConfirm,

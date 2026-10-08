@@ -1,69 +1,33 @@
 # QLecternSound.cs
-Hash: `4425103e4bd23758`
+Hash: `503903e110ee8e89`
 
 ## `public sealed class QLecternSound`
 
-The reading view's sound driver, drawing what [CDisplaySound](../../Llyn.Conduct/Display/CDisplaySound.comment.md) answers.
-It draws the transcriptions, the glyph row and the reflex rows.
-It fills the fanqie, script and paradigm controls through the seams handed over.
+The reading view's phonology section, drawing the fanqie, script and paradigm boxes [CDisplaySound](../../Llyn.Conduct/Display/CDisplaySound.comment.md) answers.
+[QLectern](QLectern.comment.md) builds it once in its constructor over the view's page.
+It pulls its own boxes by contract ID and hears their notices.
+The lectern subscribes its redraws to the display's open, close and notices.
 Each block arrives ready with its font, so no Refine asks Conduct twice.
-[QLectern](QLectern.comment.md) subscribes its Refines to the area's open, close and notice events.
+It reads each block itself and turns it into the box's own rows, as `QCadence` does in the editor.
+So no box takes a Conduct list, and each box stays a plain view of rows and flags.
+The glyph row lives on [QLecternGlyph](QLecternGlyph.comment.md), the transcriptions on [QLecternTranscription](QLecternTranscription.comment.md).
+The reflex rows live on [QLecternReflex](QLecternReflex.comment.md).
 The primary pronunciation and the accents live on [QLecternAccent](QLecternAccent.comment.md).
 The play button and the volume live on [QLecternPlayback](QLecternPlayback.comment.md).
 
-## `public void QLecternGlyphIntroduce(ItemsControl transcriptions, UIElement section, ColumnDefinition lead, TextBlock label, ItemsControl glyph)`
+## `public QLecternSound(FrameworkElement surface, CDisplaySound area, CLedger ledger, CEnvoy envoy)`
 
-Holds the glyph section, and binds the transcription and glyph lists to their rows.
-The chip list is attached to `QGlyphItem.QGlyphItemRefine`, which fills each chip.
-The transcription list is attached to `QTranscriptionItem.QTranscriptionItemRefine` the same way.
-
-## `public void QLecternReflexIntroduce(ItemsControl reflex, UIElement loading, ToggleButton fold)`
-
-Binds the reflex list to its rows and holds the loading line and the fold toggle.
-The list is attached to `QReflexItem.QReflexItemRefine`, which fills each row.
-The fold repaint is subscribed to the area's fold change, so every lectern follows one toggle.
-
-## `public void QLecternFanqieIntroduce(DependencyObject fanqie, TextBlock reading, Action<IReadOnlyList<CFanqieGroup>, bool> fanqieSeam)`
-
-Holds the fanqie box for its font, the reading line and the seam the box owns.
-`fanqieSeam` draws the groups and the pending state, so no veneer type is named here.
-
-## `public void QLecternScriptIntroduce(DependencyObject script, Action<IReadOnlyList<CScriptGroup>, bool> scriptSeam)`
-
-Holds the script box for its font and the seam that draws its groups.
-
-## `public void QLecternParadigmIntroduce(DependencyObject paradigm, Action<IReadOnlyList<CParadigmSlot>> paradigmSeam)`
-
-Holds the paradigm box for its font and the seam that draws its slots.
-
-## `public void QLecternGlyphRefine()`
-
-Rebuilds the chips from the ready glyph row, and hides the section while it has no cell.
-The glyph font goes into the list's resources, so the chips take it and the label does not.
-The heading is looked up from the key Conduct chose, with the scheme's name as the fallback.
-
-## `public void QLecternTranscriptionRefine()`
-
-Rebuilds the transcription rows from the area's answer.
-
-## `public void QLecternReflexRefine()`
-
-Draws the reflex block of an entry just opened.
-
-## `public void QLecternRenewalRefine()`
-
-Draws the reflex block again after a reflex fill, through the area's resonate, which reloads the rows.
-
-## `public void QLecternFoldRefine()`
-
-Hides or shows the folded rows from the shared fold, and sets the toggle to match.
-It runs after the rows are rebuilt and whenever the fold gate changes the fold.
-Writing the toggle back to the same value lets its event settle at once.
+Holds the fanqie, script and paradigm boxes and the reading line, all pulled from `surface`.
+`area` is the display's sound area, the only part it reads.
+Each box is held as its own type, so it draws through its own member.
+The fanqie's category and stem notices go to this section's observers, so a click reaches the shown entry's language.
+Its representative notice goes straight to the sound area's gate, since the notice already carries raw values.
+The script box's failure notice shows through `ledger` and `envoy` under `Display.ScriptFailed`.
 
 ## `public void QLecternFanqieRefine()`
 
-Draws the fanqie box, the reading and the reflex anchors from one ready block.
-It runs after the reflex rows, so the anchors land on the rows just drawn.
+Draws the fanqie box and the reading from one ready block.
+The reflex anchors a fanqie change moves are rewritten by the reflex section, which the lectern subscribes first.
 
 ## `public void QLecternScriptRefine()`
 
@@ -72,30 +36,16 @@ Draws the script box with its font and whether a fetch runs.
 ## `public void QLecternParadigmRefine()`
 
 Draws the paradigm box with the font of the paradigm's own language.
+The lectern subscribes the paradigm, script and fanqie Refines to open and close, in that order.
+A closed display answers empty blocks, so the same Refines empty the boxes and the reading.
+Each also answers its own notice, marshalled onto the page through `QObserver`.
 
-## `public void QLecternSilenceRefine()`
+## `private void QLecternDiweiObserve(bool initial, string key)`
 
-Empties every row and collapses the glyph section when the entry closes.
-The reflex rows, the fold, the loading line and the reading empty, and the seams draw nothing pending.
+Hears a rime-cell click in the fanqie box and hands it to the gate.
+The gate raises the choice with the shown entry's language when an entry is shown.
 
-## `public void QLecternFoldObserve()`
+## `private void QLecternStemObserve(string? key)`
 
-Hears the fold toggle and hands its state to the fold gate.
-
-## `public void QLecternDiweiObserve(bool initial, string key)`
-
-Hears a rime-cell click in the fanqie box and hands it to the gate, which asks the navigation.
-
-## `public void QLecternStemObserve(string? key)`
-
-Hears a phonetic-series click in the fanqie box and hands it to the gate, which asks the navigation.
-
-## `public void QLecternGlyphObserve(object parameter)`
-
-Hears a chip's command and hands the chip's character and language to the glyph gate.
-The gate hands what it resolved to the navigation, which opens it in the library tab.
-An inert chip or anything else is ignored, since only a linked chip opens an entry.
-
-## `private void QLecternReflexRefine(CLecternReflex reflex)`
-
-Rebuilds the rows, writes their ready anchors and shows the loading line while a fill runs.
+Hears a phonetic-series click in the fanqie box and hands it to the gate.
+The gate raises the choice with the shown entry's language when an entry is shown.

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,13 +8,13 @@ using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
-internal sealed class QGuild
+internal sealed class QGuild : QChronicleHost
 {
     private readonly ObservableCollection<QRollItem> _qRollList = [];
 
-    private readonly ObservableCollection<QShelfItem> _qOeuvreList = [];
-
     private readonly UserControl _qGuildSurface;
+
+    private readonly QOeuvre _qGuildOeuvre;
 
     private readonly QVita _qVita;
 
@@ -23,7 +22,11 @@ internal sealed class QGuild
 
     private readonly QColophon _qColophon;
 
-    private QWindow _qGuildHost = null!;
+    private readonly QPanelRail _qGuildRail;
+
+    private readonly QChoiceOrder _qGuildOrder;
+
+    private readonly QChoiceFilter _qGuildFilter;
 
     private CGuild _cGuild = null!;
 
@@ -35,101 +38,32 @@ internal sealed class QGuild
         _qVita = new QVita(QContract.QContractFind<UserControl>(surface, "PVita"));
         _qAutograph = new QAutograph(QContract.QContractFind<UserControl>(surface, "PAutograph"));
         _qColophon = new QColophon(QGuildColophon);
+        _qGuildRail = new QPanelRail(
+            QContract.QContractFind<UserControl>(surface, "PGuildRail"), QGuildBin, QGuildBinIcon, true, false);
+        _qGuildOrder = new QChoiceOrder(QContract.QContractFind<UserControl>(surface, "PGuildOrder"), QEchelon);
+        _qGuildFilter = new QChoiceFilter(QContract.QContractFind<UserControl>(surface, "PGuildFilter"));
+        _qGuildOeuvre = new QOeuvre(surface);
 
-        QGuildPress.Command = ApplicationCommands.Print;
-
-        QChoice.QChoiceDropperAttach(QEchelonDropper, QEchelonDropdown, QEchelon);
-        QChoice.QChoiceDropperAttach(QLouverDropper, QLouverDropdown, QLouverDropper);
-
-        QEchelonIcon.QIconSource = QIcon.QIconResolve("sort", 24);
-        QLouverIcon.QIconSource = QIcon.QIconResolve("filter", 24);
-        QGuildBinIcon.QIconSource = QIcon.QIconResolve("delete", 24);
         QMuster.SetResourceReference(QField.QFieldHintProperty, "Muster.Search");
-        QComb.SetResourceReference(QField.QFieldHintProperty, "Comb.Search");
-        QGuildFresh.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("new", 24));
-        QGuildStore.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("save", 24));
-        QGuildEarlier.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("retreat", 24));
-        QGuildLater.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("advance", 24));
-        QGuildBackward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("undo", 24));
-        QGuildForward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("redo", 24));
-        QGuildPress.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("print", 24));
-        QGuildViewer.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("view", 24));
-        QGuildScribe.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("edit", 24));
 
         QMuster.TextChanged += QMusterObserve;
-        QComb.TextChanged += QCombObserve;
-        QGuildFresh.Click += QGuildFreshObserve;
-        QGuildStore.Click += QGuildStoreObserve;
-        QGuildEarlier.Click += QGuildRetreatObserve;
-        QGuildLater.Click += QGuildAdvanceObserve;
-        QGuildBackward.Click += QGuildUndoObserve;
-        QGuildForward.Click += QGuildRedoObserve;
-        QGuildViewer.Click += QGuildViewerObserve;
-        QGuildScribe.Click += QGuildScribeObserve;
-        QGuildBin.Click += QGuildBinObserve;
+        _qGuildRail.QPanelRailCreated += QGuildFreshObserve;
+        _qGuildRail.QPanelRailStored += QGuildStoreObserve;
+        _qGuildRail.QPanelRailToggled += QGuildScribeObserve;
+        _qGuildRail.QPanelRailDeleted += QGuildBinObserve;
 
         QRoll.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QRollObserve));
-        QOeuvre.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QOeuvreObserve));
 
         QLookItem.QLookItemAttach(QRoll, QRollItem.QRollItemApply);
-        QLookItem.QLookItemAttach(QOeuvre, QShelfItem.QShelfItemRefine);
     }
 
     private Border QEchelon => QContract.QContractFind<Border>(_qGuildSurface, "PEchelon");
 
-    private ToggleButton QEchelonDropper => QContract.QContractFind<ToggleButton>(_qGuildSurface, "PEchelonDropper");
-
-    private QIconImage QEchelonIcon => QContract.QContractFind<QIconImage>(_qGuildSurface, "PEchelonIcon");
-
     private TextBox QMuster => QContract.QContractFind<TextBox>(_qGuildSurface, "PMuster");
-
-    private Popup QEchelonDropdown => QContract.QContractFind<Popup>(_qGuildSurface, "PEchelonDropdown");
-
-    private StackPanel QEchelonList => QContract.QContractFind<StackPanel>(_qGuildSurface, "PEchelonList");
-
-    private TextBox QComb => QContract.QContractFind<TextBox>(_qGuildSurface, "PComb");
-
-    private ToggleButton QLouverDropper => QContract.QContractFind<ToggleButton>(_qGuildSurface, "PLouverDropper");
-
-    private QIconImage QLouverIcon => QContract.QContractFind<QIconImage>(_qGuildSurface, "PLouverIcon");
-
-    private FrameworkElement QLouverMark => QContract.QContractFind<FrameworkElement>(_qGuildSurface, "PLouverMark");
-
-    private Popup QLouverDropdown => QContract.QContractFind<Popup>(_qGuildSurface, "PLouverDropdown");
-
-    private StackPanel QLouverList => QContract.QContractFind<StackPanel>(_qGuildSurface, "PLouverList");
-
-    private Button QGuildFresh => QContract.QContractFind<Button>(_qGuildSurface, "PGuildFresh");
-
-    private Button QGuildStore => QContract.QContractFind<Button>(_qGuildSurface, "PGuildStore");
-
-    private StackPanel QGuildVoyage => QContract.QContractFind<StackPanel>(_qGuildSurface, "PGuildVoyage");
-
-    private Button QGuildEarlier => QContract.QContractFind<Button>(_qGuildSurface, "PGuildEarlier");
-
-    private Button QGuildLater => QContract.QContractFind<Button>(_qGuildSurface, "PGuildLater");
-
-    private StackPanel QGuildChronicle => QContract.QContractFind<StackPanel>(_qGuildSurface, "PGuildChronicle");
-
-    private Button QGuildBackward => QContract.QContractFind<Button>(_qGuildSurface, "PGuildBackward");
-
-    private Button QGuildForward => QContract.QContractFind<Button>(_qGuildSurface, "PGuildForward");
-
-    private Button QGuildPress => QContract.QContractFind<Button>(_qGuildSurface, "PGuildPress");
-
-    private Border QGuildMode => QContract.QContractFind<Border>(_qGuildSurface, "PGuildMode");
-
-    private RadioButton QGuildViewer => QContract.QContractFind<RadioButton>(_qGuildSurface, "PGuildViewer");
-
-    private RadioButton QGuildScribe => QContract.QContractFind<RadioButton>(_qGuildSurface, "PGuildScribe");
 
     private ItemsControl QRoll => QContract.QContractFind<ItemsControl>(_qGuildSurface, "PRoll");
 
     private TextBlock QRollEmpty => QContract.QContractFind<TextBlock>(_qGuildSurface, "PRollEmpty");
-
-    private ItemsControl QOeuvre => QContract.QContractFind<ItemsControl>(_qGuildSurface, "POeuvre");
-
-    private TextBlock QOeuvreEmpty => QContract.QContractFind<TextBlock>(_qGuildSurface, "POeuvreEmpty");
 
     private UserControl QGuildColophon => QContract.QContractFind<UserControl>(_qGuildSurface, "PColophon");
 
@@ -137,30 +71,32 @@ internal sealed class QGuild
 
     private QIconImage QGuildBinIcon => QContract.QContractFind<QIconImage>(_qGuildSurface, "PGuildBinIcon");
 
-    internal void QGuildIntroduce(QWindow host)
+    internal void QGuildIntroduce(CAtelier atelier, CEnvoy envoy)
     {
-        _qGuildHost = host;
+        ArgumentNullException.ThrowIfNull(atelier);
+
         _cGuild = CGuild.CGuildCreate(
-            host.QWindowAtelier,
+            atelier,
             QGuildShownCheck,
-            host.QWindowEnvoy,
+            envoy,
             QObserver.QObserverCreate<Action>(static run => run()));
         _cGuild.CGuildChanged += QGuildModeUpdate;
         _cGuild.CGuildPanel.CPanelChanged += QGuildModeUpdate;
         _cGuild.CGuildPanel.CPanelAperture.CApertureRowsChanged += QRollRefine;
         _cGuild.CGuildOeuvre.COeuvrePanel.CPanelChanged += QGuildModeUpdate;
-        _cGuild.CGuildOeuvre.COeuvrePanel.CPanelAperture.CApertureRowsChanged += QOeuvreRefine;
         _cGuild.CGuildOeuvre.COeuvrePanel.CPanelAperture.CApertureRowsChanged += QTallyRefine;
         _cGuild.CGuildOeuvre.COeuvrePanel.CPanelCleared += _qColophon.QColophonClearRefine;
         _cGuild.CGuildOeuvre.COeuvreColophonChanged += _qColophon.QColophonRefine;
-        _qVita.QVitaAttach(host, _cGuild);
+        _qVita.QVitaAttach(atelier.CAtelierNavigation, _cGuild);
         _qAutograph.QAutographIntroduce(_cGuild);
+        _qGuildOeuvre.QOeuvreIntroduce(_cGuild, atelier);
         _cGuild.CGuildAutograph.CDeskStateChanged += QGuildChronicleUpdate;
 
-        QChoice.QChoiceOrderBuild(QEchelonList, "Echelon", QEchelonObserve, CGuild.CGuildOrderRead());
+        _qGuildRail.QPanelRailIntroduce(atelier.CAtelierNavigation, this);
+        _qGuildOrder.QChoiceOrderIntroduce(_cGuild.CGuildPanel.CPanelAperture, "Echelon", CGuild.CGuildOrderRead());
+        _qGuildFilter.QChoiceFilterIntroduce(_cGuild.CGuildPanel.CPanelAperture, "Louver");
 
         QRoll.ItemsSource = _qRollList;
-        QOeuvre.ItemsSource = _qOeuvreList;
 
         _qGuildSurface.CommandBindings.Add(
             new CommandBinding(ApplicationCommands.Print, QGuildPressObserve, QGuildPressCheck));
@@ -169,16 +105,16 @@ internal sealed class QGuild
     internal void QGuildVistaRefine()
     {
         CGuildRoll roll = _cGuild.CGuildRollRead();
-        QChoice.QChoiceOrderApply(QEchelonDropdown, _cGuild.CGuildPanel.CPanelAperture.CApertureOrder);
-        QLouverBuild(roll.CGuildRollKind);
-        QLouverRefine();
+        _qGuildOrder.QChoiceOrderRefine();
+        _qGuildFilter.QChoiceFilterBuild(roll.CGuildRollKind);
+        _qGuildFilter.QChoiceFilterRefine();
         QRollShow(roll);
     }
 
     internal void QGuildClose()
     {
-        QEchelonDropdown.IsOpen = false;
-        QLouverDropdown.IsOpen = false;
+        _qGuildOrder.QChoiceOrderClose();
+        _qGuildFilter.QChoiceFilterClose();
     }
 
     private bool QGuildShownCheck()
@@ -203,18 +139,6 @@ internal sealed class QGuild
         _qAutograph.QAutographTallyShow(roll.CGuildRollVita);
     }
 
-    internal void QOeuvreRefine()
-    {
-        QSplice.QSpliceRefine(
-            _qOeuvreList,
-            QShelfItem.QShelfItemBuild(_cGuild.CGuildOeuvre.COeuvreRowsRead()),
-            QShelfItem.QShelfItemMatch,
-            QShelfItem.QShelfItemSync);
-        QOeuvreEmpty.SetResourceReference(TextBlock.TextProperty, _cGuild.CGuildOeuvre.COeuvreEmptyKey);
-        QOeuvreEmpty.Visibility = QLook.QLookVisibleRead(
-            _cGuild.CGuildOeuvre.COeuvrePanel.CPanelAperture.CApertureEmpty);
-    }
-
     internal void QTallyRefine()
     {
         _qColophon.QColophonTallyRefine(_cGuild.CGuildOeuvre.COeuvreTallyRead());
@@ -227,25 +151,10 @@ internal sealed class QGuild
         QContract.QContractFind<UserControl>(_qGuildSurface, "PVita").Visibility =
             QLook.QLookVisibleRead(_cGuild.CGuildDiptych.CDiptychParentShown);
         QGuildColophon.Visibility = QLook.QLookVisibleRead(_cGuild.CGuildDiptych.CDiptychChildSide);
-        QGuildViewer.IsChecked = _cGuild.CGuildDiptych.CDiptychViewerChecked;
-        QGuildScribe.IsChecked = _cGuild.CGuildDiptych.CDiptychScribeChecked;
-        QGuildVoyage.Visibility = QLook.QLookVisibleRead(_cGuild.CGuildDiptych.CDiptychViewerChecked);
-        QGuildChronicle.Visibility = QLook.QLookVisibleRead(_cGuild.CGuildDiptych.CDiptychScribeChecked);
-        QGuildMode.IsEnabled = _cGuild.CGuildModeEnabled;
-        QGuildBin.IsEnabled = _cGuild.CGuildBinEnabled;
-        QGuildStore.IsEnabled = _cGuild.CGuildStoreEnabled;
+        _qGuildRail.QPanelRailRefine(
+            _cGuild.CGuildDiptych.CDiptychScribeChecked, _cGuild.CGuildModeEnabled, _cGuild.CGuildBinEnabled);
+        _qGuildRail.QEntryStorableRefine(_cGuild.CGuildStoreEnabled);
         _qAutograph.QAutographModeUpdate();
-    }
-
-    private void QLouverBuild(IReadOnlyList<CReferenceKind> kinds)
-    {
-        QChoice.QChoiceKindRefine(
-            QLouverList, _cGuild.CGuildPanel.CPanelAperture.CApertureFilter, QLouverObserve, kinds);
-    }
-
-    private void QLouverRefine()
-    {
-        QLouverMark.Visibility = QLook.QLookVisibleRead(_cGuild.CGuildPanel.CPanelAperture.CApertureFiltered);
     }
 
     private void QMusterObserve(object sender, TextChangedEventArgs e)
@@ -253,59 +162,27 @@ internal sealed class QGuild
         _cGuild.CGuildPanel.CPanelAperture.CApertureQuerySet(QMuster.Text);
     }
 
-    private void QCombObserve(object sender, TextChangedEventArgs e)
-    {
-        _cGuild.CGuildOeuvre.COeuvrePanel.CPanelAperture.CApertureQuerySet(QComb.Text);
-    }
-
-    private void QEchelonObserve(object sender, RoutedEventArgs e)
-    {
-        _cGuild.CGuildPanel.CPanelAperture.CApertureOrderSet(QChoice.QChoiceOrderRead(sender));
-        QEchelonDropperRefine();
-    }
-
-    private void QEchelonDropperRefine()
-    {
-        QEchelonDropper.IsChecked = false;
-    }
-
-    private void QLouverObserve(object sender, RoutedEventArgs e)
-    {
-        _cGuild.CGuildPanel.CPanelAperture.CApertureFilterSet(QChoice.QChoiceFilterRead(sender));
-        QLouverRefine();
-    }
-
     private void QRollObserve(object sender, RoutedEventArgs e)
     {
         _cGuild.CGuildAuthorSelect(QSender.QSenderSourceRead<QRollItem>(e)?.QRollItemId);
     }
 
-    private void QOeuvreObserve(object sender, RoutedEventArgs e)
-    {
-        _cGuild.CGuildSourceSelect(QSender.QSenderSourceRead<QShelfItem>(e)?.QShelfItemId);
-    }
-
-    private void QGuildFreshObserve(object sender, RoutedEventArgs e)
+    private void QGuildFreshObserve()
     {
         _cGuild.CGuildDiptych.CDiptychEntryCreate();
     }
 
-    private void QGuildViewerObserve(object sender, RoutedEventArgs e)
+    private void QGuildScribeObserve(bool scribe)
     {
-        _cGuild.CGuildScribeToggle(false);
+        _cGuild.CGuildScribeToggle(scribe);
     }
 
-    private void QGuildScribeObserve(object sender, RoutedEventArgs e)
-    {
-        _cGuild.CGuildScribeToggle(true);
-    }
-
-    private void QGuildStoreObserve(object sender, RoutedEventArgs e)
+    private void QGuildStoreObserve()
     {
         _cGuild.CGuildSession.CSessionSave();
     }
 
-    private void QGuildBinObserve(object sender, RoutedEventArgs e)
+    private void QGuildBinObserve()
     {
         _cGuild.CGuildDiptych.CDiptychEntryDelete();
     }
@@ -320,28 +197,12 @@ internal sealed class QGuild
         await _cGuild.CGuildPortraitPrint();
     }
 
-    internal void QGuildVoyageShow(bool past, bool future)
-    {
-        QGuildEarlier.IsEnabled = past;
-        QGuildLater.IsEnabled = future;
-    }
-
-    private void QGuildRetreatObserve(object sender, RoutedEventArgs e)
-    {
-        _qGuildHost.QWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
-    }
-
-    private void QGuildAdvanceObserve(object sender, RoutedEventArgs e)
-    {
-        _qGuildHost.QWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
-    }
-
-    private void QGuildUndoObserve(object sender, RoutedEventArgs e)
+    public void QChronicleUndoObserve()
     {
         QChronicle.QChronicleCaretRefine(_cGuild.CGuildSession.CSessionUndo);
     }
 
-    private void QGuildRedoObserve(object sender, RoutedEventArgs e)
+    public void QChronicleRedoObserve()
     {
         QChronicle.QChronicleCaretRefine(_cGuild.CGuildSession.CSessionRedo);
     }
@@ -349,7 +210,6 @@ internal sealed class QGuild
     private void QGuildChronicleUpdate()
     {
         (bool undo, bool redo) = _cGuild.CGuildSession.CSessionChronicleRead();
-        QGuildBackward.IsEnabled = undo;
-        QGuildForward.IsEnabled = redo;
+        _qGuildRail.QChronicleRefine(undo, redo);
     }
 }

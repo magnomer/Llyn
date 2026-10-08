@@ -15,15 +15,11 @@ internal sealed class QEnvoy : CEnvoy
 
     private readonly Window _qEnvoySurface;
 
-    private readonly QWindow _qEnvoyHost;
-
-    internal QEnvoy(Window surface, QWindow host)
+    internal QEnvoy(Window surface)
     {
         ArgumentNullException.ThrowIfNull(surface);
-        ArgumentNullException.ThrowIfNull(host);
 
         _qEnvoySurface = surface;
-        _qEnvoyHost = host;
     }
 
     public bool CEnvoyConfirm(string key)
@@ -107,12 +103,12 @@ internal sealed class QEnvoy : CEnvoy
 
     public bool CEnvoyCustomsRead(CSCustoms customs)
     {
-        return QSCustoms.QSCustomsConsult(_qEnvoyHost, customs);
+        return QSCustoms.QSCustomsConsult(_qEnvoySurface, customs);
     }
 
     public void CEnvoyOmissionShow(IReadOnlyList<CMarkupOmission> omissions)
     {
-        QSCustoms.QSCustomsOmissionConsult(_qEnvoyHost, omissions);
+        QSCustoms.QSCustomsOmissionConsult(_qEnvoySurface, omissions);
     }
 
     public (string? CEnvoyFile, CPortraitMedium CEnvoyMedium) CEnvoyFileRead(

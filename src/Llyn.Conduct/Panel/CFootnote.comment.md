@@ -1,5 +1,5 @@
 # CFootnote.cs
-Hash: `16e868eb190fb332`
+Hash: `c6a3443e8e24aa1b`
 
 ## `public sealed class CFootnote`
 
@@ -9,12 +9,12 @@ Its own vista sits in the panel's aperture.
 The engine narrows the rows by the parent's choice, so the list decides nothing about matching.
 Its panel has no delete scope, because an entry is never deleted from this list.
 
-## `internal CFootnote(LVistaPort vistas, LPortraitPort portraits, LSettingsPort settings, CEditor editor, CEnvoy envoy, Func<bool, bool> finishSeam, Func<bool> shownSeam)`
+## `internal CFootnote(LVistaPort vistas, LPortraitPort portraits, LSettingsPort settings, CDesk desk, CEnvoy envoy, Func<bool, bool> finishSeam, Func<bool> shownSeam)`
 
-Builds the list's panel under the `List.LoadFailed` key over the shelf's entry editor.
+Builds the list's panel under the `List.LoadFailed` key over the desk of the shelf's entry editor.
 The empty list reads `Source.Vacant` when nothing cites the Source, and `Source.Unmatched` under a search.
-The panel asks the editor's desk before it leaves an entry, and finishes through the shelf's seam.
-A cleared panel drops the editor's draft, and an edited row opens in it.
+The panel asks the desk before it leaves an entry, and finishes through the shelf's seam.
+The shelf owns the editor, so it wires the panel's clear and edit to it and attaches the display.
 A fresh entry is started by `LFootnoteEntryCreate` alone, so no blank draft paints before the cited one.
 It keeps `envoy` too, so a failed flag fill in `CFootnoteRowsLoad` can be shown.
 

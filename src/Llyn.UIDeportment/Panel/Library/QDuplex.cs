@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Controls;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -17,9 +18,9 @@ internal sealed class QDuplex
         _qRightWing = new QWing(QContract.QContractFind<UserControl>(surface, "PRightWing"));
     }
 
-    internal void QDuplexIntroduce(QWindow host)
+    internal void QDuplexIntroduce(CAtelier atelier, CEnvoy envoy, QVolume volume, QMentionMenu mentionMenu)
     {
-        _qLeftWing.QWingIntroduce(host, true);
-        _qRightWing.QWingIntroduce(host, false);
+        _qLeftWing.QWingIntroduce(atelier, envoy, volume, mentionMenu, true);
+        _qRightWing.QWingIntroduce(atelier, envoy, volume, mentionMenu, false);
     }
 }

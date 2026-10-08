@@ -1,42 +1,45 @@
 # QXiesheng.cs
-Hash: `a083f4c37a2f0027`
+Hash: `1702227497750344`
 
 ## `internal sealed class QXiesheng`
 
 The xiesheng panel browses the workspace by the phonetic series its characters belong to.
 It is shown only while a loaded language pack declares a series source, since without one there is no series.
 Every decision lives in [CXiesheng](../../../Llyn.Conduct/Panel/CXiesheng.comment.md), and this file writes controls on notice.
-The series column, the entry list, the reader and the editor are served from one file.
-The series page has its own driver, `QStem`, which this one builds over the nested page.
+The series column, the reader and the editor are served from this file.
+The entry list has its own driver, `QKindred`, and the series page has its own driver, `QStem`.
 
 ## `internal QXiesheng(UserControl surface)`
 
 Takes the veneer page as its surface, builds the series page driver, and binds the print and export commands.
-It points the export and print buttons at their commands.
-It ties the droppers to their popups, sets every icon, and attaches the row fills.
-Row clicks are taken on each list, and every button and search field is subscribed here.
+It hands `PXieshengRail` to a `QPanelRail`, with the bin, the new-record button and the export button.
+It hands `PXieshengOrder` to a `QChoiceOrder`, whose menu hangs under the whole series search bar.
+It hands the page to the entry list driver `QKindred`.
+It attaches the series row fill and subscribes the series search field and the rail's notices.
 
 ## `private Border QRungBar`
 
 Each named part of the page is pulled through `QContract.QContractFind`.
 
-## `internal void QXieshengIntroduce(QWindow host)`
+## `internal void QXieshengIntroduce(CAtelier atelier, CEnvoy envoy, QVolume volume, QMentionMenu mentionMenu)`
 
-Builds the Conduct session, wraps its entry list's editor, and subscribes the notices.
+Builds the Conduct session and subscribes its notices.
 Only the medium knows its dispatcher, so the marshal the area runs its notices through is built here.
-The lectern is built here to follow the panel, so the session names no driver type.
-It builds the ordering menu of the series column once, from the orders the session offers.
+The display view builds the lectern over the display that the session's entry list editor holds.
+It hands the picker the series aperture, titled `Rung`, with the orders the session offers.
 The column, the series page and the mode each answer the session's change with their own Refine.
+The entry list driver is introduced with the session, so it subscribes its own rows.
 It then attaches the reader, the series page and the editor.
+The rail is introduced last, with the atelier's navigation for its trail and the editor for its chronicle.
 
 ## `private void QXieshengStoreRefine()`
 
-Enables the save button while the editor holds something storable.
+Enables the rail's store button while the editor holds something storable.
 
 ## `internal void QXieshengVistaRefine()`
 
 Answers the workspace's opening once the session restored its vistas and attached its observers.
-It marks the column's ordering and paints the mode and the entry list.
+It marks the picker's ordering and paints the mode and the entry list.
 The column and the series page answer the same opening with their own Refines.
 
 ## `private async void QXieshengWorkspaceRefine()`
@@ -67,15 +70,6 @@ True while the panel is the visible tab.
 
 Copies the series column and its empty line again.
 
-## `private void QKindredRefine()`
-
-Copies the entry list and its empty line again.
-
-## `private void QKindredRefine(IReadOnlyList<CVistaRow> rows)`
-
-Paints `rows` the area answered ready, so the paint itself asks Conduct nothing.
-The parameterless form reads them, and a flag-fill Refine hands in what its load answered.
-
 ## `internal void QXieshengStemRefine()`
 
 Hands the page of the chosen series to the series page driver.
@@ -83,49 +77,31 @@ It also answers the panel's clearing, while the lectern empties the reader itsel
 
 ## `private void QXieshengModeRefine()`
 
-Shows the reader, the page or the editor, and enables the mode and bin buttons.
+Shows the reader, the page or the editor.
+The rail folds its own button pairs and enables the mode and bin buttons.
 
 ## `private void QLodestarObserve(object sender, TextChangedEventArgs e)`
 
 Narrows the series column as the field is typed into.
 
-## `private void QSextantObserve(object sender, TextChangedEventArgs e)`
-
-Narrows the entry list as the field is typed into.
-
-## `private void QRungObserve(object sender, RoutedEventArgs e)`
-
-Lists the series column in the ordering picked, then closes the dropper.
-
-## `private void QRungRefine()`
-
-Closes the dropper once an ordering is picked.
-
 ## `private void QGroveObserve(object sender, RoutedEventArgs e)`
 
 Chooses the series of the pressed row.
 
-## `private void QKindredObserve(object sender, RoutedEventArgs e)`
-
-Hands the pressed row to the panel's row gate, which records the voyage station and opens it.
-
-## `private void QXieshengFreshObserve(object sender, RoutedEventArgs e)`
+## `private void QXieshengFreshObserve()`
 
 Starts a fresh entry in the editor.
 
-## `private void QXieshengViewerObserve(object sender, RoutedEventArgs e)`
+## `private void QXieshengScribeObserve(bool scribe)`
 
-Switches to reading.
+Hears the rail's mode toggle and swaps the read view and the editor through the shared panel.
+`scribe` is true for the editor and false for the read view.
 
-## `private void QXieshengScribeObserve(object sender, RoutedEventArgs e)`
-
-Switches to editing.
-
-## `private void QXieshengStoreObserve(object sender, RoutedEventArgs e)`
+## `private void QXieshengStoreObserve()`
 
 Saves what the editor holds.
 
-## `private void QXieshengBinObserve(object sender, RoutedEventArgs e)`
+## `private void QXieshengBinObserve()`
 
 Deletes the entry the panel holds.
 
@@ -142,26 +118,6 @@ Prints the read entry on the printer the gate asks for.
 
 Exports the read entry as a portrait file.
 
-## `internal void QXieshengVoyageRefine(bool past, bool future)`
-
-Enables the back and forward buttons of the rail.
-
-## `private void QXieshengRetreatObserve(object sender, RoutedEventArgs e)`
-
-Sails one station back.
-
-## `private void QXieshengAdvanceObserve(object sender, RoutedEventArgs e)`
-
-Sails one station forward.
-
-## `private void QXieshengUndoObserve(object sender, RoutedEventArgs e)`
-
-Undoes one editor change.
-
-## `private void QXieshengRedoObserve(object sender, RoutedEventArgs e)`
-
-Redoes one editor change.
-
 ## `private void QXieshengChronicleRefine()`
 
-Enables the undo and redo buttons as the editor's chronicle changes.
+Lights the rail's two chronicle buttons only while the editor has a step to walk.

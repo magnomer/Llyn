@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Llyn.Conduct;
 
@@ -16,7 +18,7 @@ internal sealed class QLabel
 
     private QSlate _qLabelSlate = null!;
 
-    private CEditor _cEditor = null!;
+    private CCard _cCard = null!;
 
     internal QLabel(
         FrameworkElement surface, ObservableCollection<PCard> meaning, ObservableCollection<PCard> collocation)
@@ -24,22 +26,34 @@ internal sealed class QLabel
         _qLabelSurface = surface;
         _qLabelMeaning = meaning;
         _qLabelCollocation = collocation;
+        surface.AddHandler(TextBoxBase.TextChangedEvent, new TextChangedEventHandler(QLabelTextObserve));
     }
 
-    internal void QLabelIntroduce(CEditor editor, QSlate slate)
+    internal void QLabelIntroduce(CCard card, QSlate slate)
     {
-        _cEditor = editor;
+        _cCard = card;
         _qLabelSlate = slate;
+    }
+
+    internal static void QLabelShow(PCard card, IReadOnlyList<CTagDraft> drafts)
+    {
+        List<PLabelChip> chips = [];
+        foreach (CTagDraft draft in drafts)
+        {
+            chips.Add(new PLabelChip(draft.CTagDraftId, draft.CTagDraftText));
+        }
+
+        card.PCardLabel.PCaretShow(chips);
     }
 
     internal void QLabelApply(FrameworkElement container, object item, string? _)
     {
-        if (item is PLabelCaret caret)
+        if (item is PCaret<PLabelChip> caret)
         {
             if (QLook.QLookPartFind<TextBox>(container, "PLabelEntry") is TextBox entry)
             {
-                entry.SetValue(QField.QFieldHintProperty, caret.PLabelCaretHint);
-                entry.Text = caret.PLabelCaretText;
+                entry.SetValue(QField.QFieldHintProperty, caret.PCaretHint);
+                entry.Text = caret.PCaretText;
                 entry.PreviewKeyDown -= _qLabelSlate.QSlateKeyRefine;
                 entry.PreviewKeyDown -= _qLabelSlate.QSlateKeyObserve;
                 entry.PreviewKeyDown -= QLabelCommitObserve;
@@ -91,7 +105,7 @@ internal sealed class QLabel
         };
         QLookItem.QLookItemAttach(list, QLabelApply);
         QLookItem.QLookItemAttach(
-            QBerth.QBerthBuild(list, card.PCardLabelCaret, nameof(PLabelCaret.PLabelCaretAnchor)),
+            QBerth.QBerthBuild(list, card.PCardLabel, nameof(PCaret<PLabelChip>.PCaretAnchor)),
             QLabelApply);
         if (QLook.QLookPartFind<Border>(list, "PLabelFrame") is Border frame)
         {
@@ -100,12 +114,13 @@ internal sealed class QLabel
         }
     }
 
-    internal void QLabelTextObserve(PLabelCaret caret, string text)
+    private void QLabelTextObserve(object sender, TextChangedEventArgs e)
     {
-        if (QLabelCardFind(caret) is PCard card)
+        if (e.OriginalSource is TextBox { DataContext: PCaret<PLabelChip> caret } box
+            && QLabelCardFind(caret) is PCard card)
         {
-            _qLabelSlate.QSlateRefine(card, _cEditor.CEditorCard.CCardTagAdd(
-                card.PCardId, text, card.PCardLabelPosition, false));
+            _qLabelSlate.QSlateRefine(card, _cCard.CCardTagAdd(
+                card.PCardId, box.Text, card.PCardLabel.PCaretPosition, false));
         }
     }
 
@@ -113,29 +128,30 @@ internal sealed class QLabel
     {
         if (sender is FrameworkElement { DataContext: PLabelChip chip } && QLabelCardFind(chip) is PCard card)
         {
-            _cEditor.CEditorCard.CCardTagRemove(card.PCardId, chip.PLabelChipId);
+            _cCard.CCardTagRemove(card.PCardId, chip.PLabelChipId);
         }
     }
 
     internal void QLabelCommitObserve(object sender, KeyEventArgs e)
     {
         if (e.Key != Key.Enter
-            || sender is not FrameworkElement { DataContext: PLabelCaret row }
+            || sender is not FrameworkElement { DataContext: PCaret<PLabelChip> row }
             || QLabelCardFind(row) is not PCard card)
         {
             return;
         }
 
-        _cEditor.CEditorCard.CCardTagAdd(
-            card.PCardId, card.PCardLabelText, card.PCardLabelPosition, true);
+        _cCard.CCardTagAdd(
+            card.PCardId, row.PCaretText, row.PCaretPosition, true);
         e.Handled = true;
         _qLabelSlate.QSlateShutRefine();
-        card.PCardLabelClear();
+        row.PCaretClear();
     }
 
     internal void QLabelEraseObserve(object sender, KeyEventArgs e)
     {
-        if (sender is not TextBox { DataContext: PLabelCaret row } box || QLabelCardFind(row) is not PCard card)
+        if (sender is not TextBox { DataContext: PCaret<PLabelChip> row } box
+            || QLabelCardFind(row) is not PCard card)
         {
             return;
         }
@@ -147,16 +163,17 @@ internal sealed class QLabel
             box.SelectionLength,
             step =>
             {
-                if (card.PCardLabelFind(step) is PLabelChip chip)
+                if (row.PCaretFind(step) is PLabelChip chip)
                 {
-                    _cEditor.CEditorCard.CCardTagRemove(card.PCardId, chip.PLabelChipId);
+                    _cCard.CCardTagRemove(card.PCardId, chip.PLabelChipId);
                 }
             });
     }
 
     internal void QLabelCaretRefine(object sender, KeyEventArgs e)
     {
-        if (sender is not TextBox { DataContext: PLabelCaret row } box || QLabelCardFind(row) is not PCard card)
+        if (sender is not TextBox { DataContext: PCaret<PLabelChip> row } box
+            || QLabelCardFind(row) is null)
         {
             return;
         }
@@ -165,7 +182,7 @@ internal sealed class QLabel
             e.Key.ToString(),
             box.Text.Length,
             box.SelectionLength,
-            card.PCardLabelMove,
+            row.PCaretMove,
             () => QField.QFieldCaretApply(box, row, 0));
     }
 
@@ -176,11 +193,12 @@ internal sealed class QLabel
 
     internal void QLabelCloseObserve(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PLabelCaret row } && QLabelCardFind(row) is PCard card)
+        if (sender is FrameworkElement { DataContext: PCaret<PLabelChip> row }
+            && QLabelCardFind(row) is PCard card)
         {
-            _cEditor.CEditorCard.CCardTagAdd(
-                card.PCardId, card.PCardLabelText, card.PCardLabelPosition, true);
-            card.PCardLabelClear();
+            _cCard.CCardTagAdd(
+                card.PCardId, row.PCaretText, row.PCaretPosition, true);
+            row.PCaretClear();
         }
     }
 
@@ -206,8 +224,8 @@ internal sealed class QLabel
     {
         foreach (PCard card in _qLabelMeaning)
         {
-            if ((row is PLabelChip chip && card.PCardLabel.Contains(chip))
-                || ReferenceEquals(card.PCardLabelCaret, row))
+            if ((row is PLabelChip chip && card.PCardLabel.PCaretRow.Contains(chip))
+                || ReferenceEquals(card.PCardLabel, row))
             {
                 return card;
             }
@@ -215,8 +233,8 @@ internal sealed class QLabel
 
         foreach (PCard card in _qLabelCollocation)
         {
-            if ((row is PLabelChip chip && card.PCardLabel.Contains(chip))
-                || ReferenceEquals(card.PCardLabelCaret, row))
+            if ((row is PLabelChip chip && card.PCardLabel.PCaretRow.Contains(chip))
+                || ReferenceEquals(card.PCardLabel, row))
             {
                 return card;
             }

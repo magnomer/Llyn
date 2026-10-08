@@ -148,7 +148,7 @@ public sealed class TSession
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CDesk desk = TSessionDeskPrepare(engine);
-        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
+        TEditorFixture editor = new(TInterfaceEditor.TEditorCreate(engine));
         List<string> seen = [];
         CSession session = TInterfaceConductDesk.TSessionCreate(desk, editor, static () => true, seen);
 
@@ -165,7 +165,7 @@ public sealed class TSession
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CDesk desk = TSessionDeskPrepare(engine);
-        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
+        TEditorFixture editor = new(TInterfaceEditor.TEditorCreate(engine));
         List<string> seen = [];
         CSession session = TInterfaceConductDesk.TSessionCreate(desk, editor, static () => false, seen);
         session.CSessionStart(null);

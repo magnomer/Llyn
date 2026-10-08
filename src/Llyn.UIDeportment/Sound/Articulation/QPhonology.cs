@@ -22,7 +22,11 @@ internal sealed class QPhonology
 
     private readonly QArticulation _qArticulation;
 
-    private QWindow _qPhonologyHost = null!;
+    private readonly QPanelRail _qPhonologyRail;
+
+    private readonly QChoiceOrder _qPhonologyOrder;
+
+    private readonly QChoiceFilter _qPhonologyFilter;
 
     private CPhonology _cPhonology = null!;
 
@@ -33,109 +37,40 @@ internal sealed class QPhonology
         _qPhonologySurface = surface;
         _qPhonologyEditor = new QEditor(QContract.QContractFind<FrameworkElement>(surface, "PEditor"));
         _qPhonologyDisplay = new QDisplay(QContract.QContractFind<FrameworkElement>(surface, "PDisplay"));
-        _qArticulation = new QArticulation(QPhonologyArticulation);
+        _qArticulation = new QArticulation(
+            QPhonologyArticulation,
+            QContract.QContractFind<ToggleButton>(surface, "PArticulationHelper"),
+            QContract.QContractFind<Rectangle>(surface, "PArticulationSeam"));
 
         surface.CommandBindings.Add(
             new CommandBinding(ApplicationCommands.Print, QPhonologyPressObserve, QPhonologyPressRefine));
         surface.CommandBindings.Add(new CommandBinding(
             PDisplayCommand.PDisplayCommandPortrait, QPhonologyPortraitObserve, QPhonologyPressRefine));
-        QPhonologyPortrait.Command = PDisplayCommand.PDisplayCommandPortrait;
-        QPhonologyPress.Command = ApplicationCommands.Print;
+        _qPhonologyRail = new QPanelRail(
+            QContract.QContractFind<UserControl>(surface, "PPhonologyRail"),
+            QPhonologyBin,
+            QPhonologyBinIcon,
+            true,
+            true);
+        _qPhonologyOrder = new QChoiceOrder(
+            QContract.QContractFind<UserControl>(surface, "PPhonologyOrder"), QSequence);
+        _qPhonologyFilter = new QChoiceFilter(QContract.QContractFind<UserControl>(surface, "PPhonologyFilter"));
 
-        QChoice.QChoiceDropperAttach(QSequenceDropper, QSequenceDropdown, QSequence);
-        QChoice.QChoiceDropperAttach(QLensDropper, QLensDropdown, QLensDropper);
-
-        QSequenceIcon.QIconSource = QIcon.QIconResolve("sort", 24);
-        QLensIcon.QIconSource = QIcon.QIconResolve("filter", 24);
-        QPhonologyBinIcon.QIconSource = QIcon.QIconResolve("delete", 24);
         QProbe.SetResourceReference(QField.QFieldHintProperty, "Sound.Search");
-        QArticulationHelper.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("articulation", 24));
-        QPhonologyFresh.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("new", 24));
-        QPhonologyStore.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("save", 24));
-        QPhonologyEarlier.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("retreat", 24));
-        QPhonologyLater.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("advance", 24));
-        QPhonologyBackward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("undo", 24));
-        QPhonologyForward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("redo", 24));
-        QPhonologyPortrait.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("export", 24));
-        QPhonologyPress.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("print", 24));
-        QPhonologyViewer.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("view", 24));
-        QPhonologyScribe.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("edit", 24));
 
         QLookItem.QLookItemAttach(QInventory, QInventoryItem.QInventoryItemRefine);
         QInventory.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QInventoryObserve));
 
         QProbe.TextChanged += QProbeObserve;
-        QArticulationHelper.Checked += QArticulationFoldRefine;
-        QArticulationHelper.Unchecked += QArticulationFoldRefine;
-        QPhonologyFresh.Click += QPhonologyFreshObserve;
-        QPhonologyStore.Click += QPhonologyStoreObserve;
-        QPhonologyEarlier.Click += QPhonologyRetreatObserve;
-        QPhonologyLater.Click += QPhonologyAdvanceObserve;
-        QPhonologyBackward.Click += QPhonologyUndoObserve;
-        QPhonologyForward.Click += QPhonologyRedoObserve;
-        QPhonologyViewer.Click += QPhonologyViewerObserve;
-        QPhonologyScribe.Click += QPhonologyScribeObserve;
-        QPhonologyBin.Click += QPhonologyBinObserve;
+        _qPhonologyRail.QPanelRailCreated += QPhonologyFreshObserve;
+        _qPhonologyRail.QPanelRailStored += QPhonologyStoreObserve;
+        _qPhonologyRail.QPanelRailToggled += QPhonologyScribeObserve;
+        _qPhonologyRail.QPanelRailDeleted += QPhonologyBinObserve;
     }
-
-    private Rectangle QArticulationSeam =>
-        QContract.QContractFind<Rectangle>(_qPhonologySurface, "PArticulationSeam");
 
     private Border QSequence => QContract.QContractFind<Border>(_qPhonologySurface, "PSequence");
 
-    private ToggleButton QSequenceDropper =>
-        QContract.QContractFind<ToggleButton>(_qPhonologySurface, "PSequenceDropper");
-
-    private QIconImage QSequenceIcon => QContract.QContractFind<QIconImage>(_qPhonologySurface, "PSequenceIcon");
-
     private TextBox QProbe => QContract.QContractFind<TextBox>(_qPhonologySurface, "PProbe");
-
-    private ToggleButton QLensDropper => QContract.QContractFind<ToggleButton>(_qPhonologySurface, "PLensDropper");
-
-    private QIconImage QLensIcon => QContract.QContractFind<QIconImage>(_qPhonologySurface, "PLensIcon");
-
-    private FrameworkElement QLensMark => QContract.QContractFind<FrameworkElement>(_qPhonologySurface, "PLensMark");
-
-    private Popup QSequenceDropdown => QContract.QContractFind<Popup>(_qPhonologySurface, "PSequenceDropdown");
-
-    private StackPanel QSequenceList => QContract.QContractFind<StackPanel>(_qPhonologySurface, "PSequenceList");
-
-    private Popup QLensDropdown => QContract.QContractFind<Popup>(_qPhonologySurface, "PLensDropdown");
-
-    private StackPanel QLensList => QContract.QContractFind<StackPanel>(_qPhonologySurface, "PLensList");
-
-    private ToggleButton QArticulationHelper =>
-        QContract.QContractFind<ToggleButton>(_qPhonologySurface, "PArticulationHelper");
-
-    private Button QPhonologyFresh => QContract.QContractFind<Button>(_qPhonologySurface, "PPhonologyFresh");
-
-    private Button QPhonologyStore => QContract.QContractFind<Button>(_qPhonologySurface, "PPhonologyStore");
-
-    private StackPanel QPhonologyVoyage =>
-        QContract.QContractFind<StackPanel>(_qPhonologySurface, "PPhonologyVoyage");
-
-    private Button QPhonologyEarlier => QContract.QContractFind<Button>(_qPhonologySurface, "PPhonologyEarlier");
-
-    private Button QPhonologyLater => QContract.QContractFind<Button>(_qPhonologySurface, "PPhonologyLater");
-
-    private StackPanel QPhonologyChronicle =>
-        QContract.QContractFind<StackPanel>(_qPhonologySurface, "PPhonologyChronicle");
-
-    private Button QPhonologyBackward => QContract.QContractFind<Button>(_qPhonologySurface, "PPhonologyBackward");
-
-    private Button QPhonologyForward => QContract.QContractFind<Button>(_qPhonologySurface, "PPhonologyForward");
-
-    private Button QPhonologyPortrait => QContract.QContractFind<Button>(_qPhonologySurface, "PPhonologyPortrait");
-
-    private Button QPhonologyPress => QContract.QContractFind<Button>(_qPhonologySurface, "PPhonologyPress");
-
-    private Border QPhonologyMode => QContract.QContractFind<Border>(_qPhonologySurface, "PPhonologyMode");
-
-    private RadioButton QPhonologyViewer =>
-        QContract.QContractFind<RadioButton>(_qPhonologySurface, "PPhonologyViewer");
-
-    private RadioButton QPhonologyScribe =>
-        QContract.QContractFind<RadioButton>(_qPhonologySurface, "PPhonologyScribe");
 
     private UserControl QPhonologyArticulation =>
         QContract.QContractFind<UserControl>(_qPhonologySurface, "PArticulation");
@@ -149,33 +84,35 @@ internal sealed class QPhonology
     private QIconImage QPhonologyBinIcon =>
         QContract.QContractFind<QIconImage>(_qPhonologySurface, "PPhonologyBinIcon");
 
-    internal void QPhonologyIntroduce(QWindow host)
+    internal void QPhonologyIntroduce(CAtelier atelier, CEnvoy envoy, QVolume volume, QMentionMenu mentionMenu)
     {
-        _qPhonologyHost = host;
+        ArgumentNullException.ThrowIfNull(atelier);
+
         _cPhonology = CPhonology.CPhonologyCreate(
-            host.QWindowAtelier,
+            atelier,
             QPhonologyShownCheck,
-            host.QWindowEnvoy,
+            envoy,
             QObserver.QObserverCreate<Action>(static run => run()));
         CPanel panel = _cPhonology.CPhonologyPanel;
-        QLectern lectern = new(_cPhonology.CPhonologyEditor.CEditorDisplay, panel);
-        QChoice.QChoiceOrderBuild(QSequenceList, "Sequence", QSequenceObserve, CPhonology.CPhonologyOrderRead());
+        _qPhonologyOrder.QChoiceOrderIntroduce(panel.CPanelAperture, "Sequence", CPhonology.CPhonologyOrderRead());
+        _qPhonologyFilter.QChoiceFilterIntroduce(panel.CPanelAperture, "Lens");
         panel.CPanelChanged += QPhonologyModeRefine;
         panel.CPanelAperture.CApertureRowsChanged += QInventoryRefine;
-        panel.CPanelAperture.CApertureRowsChanged += QLensRefine;
         _cPhonology.CPhonologyWorkspaceChanged += QPhonologyWorkspaceRefine;
         _cPhonology.CPhonologyEditor.CEditorDesk.CDeskStateChanged += QPhonologyStoreRefine;
 
         QInventory.ItemsSource = _qInventoryList;
 
-        _qPhonologyDisplay.QDisplayIntroduce(host, lectern);
+        _qPhonologyDisplay.QDisplayIntroduce(
+            atelier, envoy, volume, mentionMenu, _cPhonology.CPhonologyEditor.CEditorDisplay);
 
-        _qPhonologyEditor.QEditorIntroduce(host, _cPhonology.CPhonologyEditor);
+        _qPhonologyEditor.QEditorIntroduce(atelier, envoy, volume, mentionMenu, _cPhonology.CPhonologyEditor);
 
         _qPhonologyEditor.QEditorChronicleChanged += QPhonologyChronicleRefine;
+        _qPhonologyRail.QPanelRailIntroduce(atelier.CAtelierNavigation, _qPhonologyEditor);
 
         _qArticulation.QArticulationIntroduce(
-            host.QWindowAtelier.CAtelierCatalog,
+            atelier.CAtelierCatalog,
             QProbe,
             QContract.QContractFind<TextBox>(
                 QContract.QContractFind<FrameworkElement>(_qPhonologySurface, "PEditor"), "PPronunciationField"));
@@ -183,23 +120,17 @@ internal sealed class QPhonology
 
     private void QPhonologyStoreRefine()
     {
-        QPhonologyStore.IsEnabled = _cPhonology.CPhonologyEditor.CEditorDesk.CDeskDraft.CDeskDraftStorable;
+        _qPhonologyRail.QEntryStorableRefine(_cPhonology.CPhonologyEditor.CEditorDesk.CDeskDraft.CDeskDraftStorable);
     }
 
     internal async void QPhonologyVistaRefine()
     {
-        QChoice.QChoiceOrderApply(QSequenceDropdown, _cPhonology.CPhonologyPanel.CPanelAperture.CApertureOrder);
-        QLensRefine();
+        _qPhonologyOrder.QChoiceOrderRefine();
+        _qPhonologyFilter.QChoiceFilterRefine();
         CEnsignSheet<IReadOnlyList<CCatalogPronunciation>> sheet =
             await _cPhonology.CPhonologyRowsLoad(QEnsignImage.QEnsignDraw);
-        QLensListRefine(sheet.CEnsignSheetLanguages);
+        _qPhonologyFilter.QChoiceFilterBuild(sheet.CEnsignSheetLanguages);
         QInventoryRefine(sheet.CEnsignSheetRows);
-    }
-
-    private void QLensListRefine(IReadOnlyList<string> languages)
-    {
-        QChoice.QChoiceFilterBuild(
-            QLensList, languages, _cPhonology.CPhonologyPanel.CPanelAperture.CApertureFilter, QLensObserve);
     }
 
     private async void QPhonologyWorkspaceRefine()
@@ -237,45 +168,12 @@ internal sealed class QPhonology
         CPanel panel = _cPhonology.CPhonologyPanel;
         _qPhonologyEditor.QEditorVisibleRefine(QLook.QLookVisibleRead(panel.CPanelEditing));
         _qPhonologyDisplay.QDisplayVisibleRefine(QLook.QLookVisibleRead(panel.CPanelViewerChecked));
-        QPhonologyViewer.IsChecked = panel.CPanelViewerChecked;
-        QPhonologyScribe.IsChecked = panel.CPanelScribeChecked;
-        QPhonologyVoyage.Visibility = QLook.QLookVisibleRead(panel.CPanelViewerChecked);
-        QPhonologyChronicle.Visibility = QLook.QLookVisibleRead(panel.CPanelScribeChecked);
-        QPhonologyMode.IsEnabled = panel.CPanelModeEnabled;
-        QPhonologyBin.IsEnabled = panel.CPanelBinEnabled;
-    }
-
-    private void QLensRefine()
-    {
-        QLensMark.Visibility = QLook.QLookVisibleRead(_cPhonology.CPhonologyPanel.CPanelAperture.CApertureFiltered);
-    }
-
-    private void QArticulationFoldRefine(object sender, RoutedEventArgs e)
-    {
-        QPhonologyArticulation.Visibility =
-            QLook.QLookVisibleRead(QLook.QLookCheckedRead(QArticulationHelper.IsChecked));
-        QArticulationSeam.Visibility = QPhonologyArticulation.Visibility;
+        _qPhonologyRail.QPanelRailRefine(panel.CPanelScribeChecked, panel.CPanelModeEnabled, panel.CPanelBinEnabled);
     }
 
     private void QProbeObserve(object sender, TextChangedEventArgs e)
     {
         _cPhonology.CPhonologyPanel.CPanelAperture.CApertureQuerySet(QProbe.Text);
-    }
-
-    private void QSequenceObserve(object sender, RoutedEventArgs e)
-    {
-        _cPhonology.CPhonologyPanel.CPanelAperture.CApertureOrderSet(QChoice.QChoiceOrderRead(sender));
-        QSequenceRefine();
-    }
-
-    private void QSequenceRefine()
-    {
-        QSequenceDropper.IsChecked = false;
-    }
-
-    private void QLensObserve(object sender, RoutedEventArgs e)
-    {
-        _cPhonology.CPhonologyPanel.CPanelAperture.CApertureFilterSet(QChoice.QChoiceFilterRead(sender));
     }
 
     private void QInventoryObserve(object sender, RoutedEventArgs e)
@@ -284,27 +182,22 @@ internal sealed class QPhonology
             QSender.QSenderSourceRead<QInventoryItem>(e)?.QInventoryItemId);
     }
 
-    private void QPhonologyFreshObserve(object sender, RoutedEventArgs e)
+    private void QPhonologyFreshObserve()
     {
         _cPhonology.CPhonologyPanel.CPanelEntryCreate();
     }
 
-    private void QPhonologyViewerObserve(object sender, RoutedEventArgs e)
+    private void QPhonologyScribeObserve(bool scribe)
     {
-        _cPhonology.CPhonologyPanel.CPanelScribeToggle(false);
+        _cPhonology.CPhonologyPanel.CPanelScribeToggle(scribe);
     }
 
-    private void QPhonologyScribeObserve(object sender, RoutedEventArgs e)
-    {
-        _cPhonology.CPhonologyPanel.CPanelScribeToggle(true);
-    }
-
-    private void QPhonologyStoreObserve(object sender, RoutedEventArgs e)
+    private void QPhonologyStoreObserve()
     {
         _cPhonology.CPhonologyEditor.CEditorEntrySave();
     }
 
-    private void QPhonologyBinObserve(object sender, RoutedEventArgs e)
+    private void QPhonologyBinObserve()
     {
         _cPhonology.CPhonologyPanel.CPanelBin.CPanelBinDelete();
     }
@@ -324,36 +217,9 @@ internal sealed class QPhonology
         await _cPhonology.CPhonologyPortraitExport();
     }
 
-    internal void QPhonologyVoyageRefine(bool past, bool future)
-    {
-        QPhonologyEarlier.IsEnabled = past;
-        QPhonologyLater.IsEnabled = future;
-    }
-
-    private void QPhonologyRetreatObserve(object sender, RoutedEventArgs e)
-    {
-        _qPhonologyHost.QWindowAtelier.CAtelierNavigation.CNavigationStationUndo();
-    }
-
-    private void QPhonologyAdvanceObserve(object sender, RoutedEventArgs e)
-    {
-        _qPhonologyHost.QWindowAtelier.CAtelierNavigation.CNavigationStationRedo();
-    }
-
-    private void QPhonologyUndoObserve(object sender, RoutedEventArgs e)
-    {
-        _qPhonologyEditor.QChronicleUndoObserve();
-    }
-
-    private void QPhonologyRedoObserve(object sender, RoutedEventArgs e)
-    {
-        _qPhonologyEditor.QChronicleRedoObserve();
-    }
-
     private void QPhonologyChronicleRefine()
     {
         (bool undo, bool redo) = _cPhonology.CPhonologyEditor.CEditorDesk.CDeskChronicle.CDeskChronicleRead();
-        QPhonologyBackward.IsEnabled = undo;
-        QPhonologyForward.IsEnabled = redo;
+        _qPhonologyRail.QChronicleRefine(undo, redo);
     }
 }

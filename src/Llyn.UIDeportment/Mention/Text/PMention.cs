@@ -12,7 +12,7 @@ public sealed class PMention : TextBlock
 {
     public static readonly DependencyProperty PMentionHostProperty = DependencyProperty.RegisterAttached(
         "PMentionHost",
-        typeof(QWindow),
+        typeof(QMentionMenu),
         typeof(PMention),
         new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits));
 
@@ -123,7 +123,7 @@ public sealed class PMention : TextBlock
         }
     }
 
-    private QWindow? PMentionHost => (QWindow?)GetValue(PMentionHostProperty);
+    private QMentionMenu? PMentionHost => (QMentionMenu?)GetValue(PMentionHostProperty);
 
     private void PMentionShow()
     {

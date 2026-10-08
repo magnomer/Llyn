@@ -1,5 +1,5 @@
 # CTenor.cs
-Hash: `d0ffc8daf52a39ef`
+Hash: `3aca57e497ef871a`
 
 ## `public sealed class CTenor`
 
@@ -14,6 +14,7 @@ Builds the aperture over the register vista first, under `Register.LoadFailed`.
 Then it builds the entry editor and the entry list over the atelier's ports.
 The entry list's panel asks the editor's desk before it leaves an entry, and it finishes through the editor.
 A cleared panel cancels the editor's draft, and an edited row opens the editor on it.
+The editor's display follows the panel, so each draft it loads opens the reading view.
 It registers its close with the workspace beside its draft finish and its vista restore.
 It restores its vistas last, so a built area already stands on started vistas.
 
@@ -116,7 +117,8 @@ The driver awaits it from an event handler, where a fault would end the app.
 
 Makes the Register from the raw wording and opens it as an arrival does.
 The clerk below refuses a blank wording.
-The panel is cleared first, so an unsaved fresh entry the leave check already settled does not linger.
+The panel is cleared before the Register opens.
+So an unsaved fresh entry the leave check already settled does not linger.
 A refused Register is shown through `CEnvoy` as `Register.CreateFailed`, and nothing opens.
 
 ## `public void CTenorEntryCreate()`

@@ -13,7 +13,7 @@ public sealed record CReflex(
     string CReflexMeaning,
     string CReflexNote,
     bool CReflexMain,
-    string CReflexRegion,
+    string? CReflexRegion,
     IReadOnlyList<long> CReflexAnchors,
     CRespellingMark CReflexMark,
     bool CReflexFolded,
@@ -30,16 +30,18 @@ public sealed record CReflex(
         return CReflexFolded && !opened;
     }
 
-    internal string LReflexFieldRead(CReflexField field)
+    internal CReflex CReflexTypedApply(CReflexField field, string text)
     {
+        ArgumentNullException.ThrowIfNull(text);
+
         return field switch
         {
-            CReflexField.CReflexFieldLanguage => CReflexLanguage,
-            CReflexField.CReflexFieldKind => CReflexKind,
-            CReflexField.CReflexFieldText => CReflexText,
-            CReflexField.CReflexFieldRomanization => CReflexRomanization,
-            CReflexField.CReflexFieldMeaning => CReflexMeaning,
-            CReflexField.CReflexFieldNote => CReflexNote,
+            CReflexField.CReflexFieldLanguage => this with { CReflexLanguage = text },
+            CReflexField.CReflexFieldKind => this with { CReflexKind = text },
+            CReflexField.CReflexFieldText => this with { CReflexText = text },
+            CReflexField.CReflexFieldRomanization => this with { CReflexRomanization = text },
+            CReflexField.CReflexFieldMeaning => this with { CReflexMeaning = text },
+            CReflexField.CReflexFieldNote => this with { CReflexNote = text },
             _ => throw new ArgumentOutOfRangeException(nameof(field), field, null),
         };
     }

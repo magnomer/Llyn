@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Llyn.Conduct;
 
@@ -14,7 +16,7 @@ internal sealed class QContext
 
     private readonly ObservableCollection<PCard> _qContextCollocation;
 
-    private CEditor _cEditor = null!;
+    private CCard _cCard = null!;
 
     private QProffer _qContextProffer = null!;
 
@@ -24,22 +26,34 @@ internal sealed class QContext
         _qContextSurface = surface;
         _qContextMeaning = meaning;
         _qContextCollocation = collocation;
+        surface.AddHandler(TextBoxBase.TextChangedEvent, new TextChangedEventHandler(QContextTextObserve));
     }
 
-    internal void QContextIntroduce(CEditor editor, QProffer proffer)
+    internal void QContextIntroduce(CCard card, QProffer proffer)
     {
-        _cEditor = editor;
+        _cCard = card;
         _qContextProffer = proffer;
+    }
+
+    internal static void QContextShow(PCard card, IReadOnlyList<CSituationDraft> drafts)
+    {
+        List<PContext> chips = [];
+        foreach (CSituationDraft draft in drafts)
+        {
+            chips.Add(new PContext(draft.CSituationDraftWording, draft.CSituationDraftId));
+        }
+
+        card.PCardContext.PCaretShow(chips);
     }
 
     internal void QContextApply(FrameworkElement container, object item, string? _)
     {
-        if (item is PContextCaret caret)
+        if (item is PCaret<PContext> caret)
         {
             if (QLook.QLookPartFind<TextBox>(container, "PContextEntry") is TextBox entry)
             {
-                entry.SetValue(QField.QFieldHintProperty, caret.PContextCaretHint);
-                entry.Text = caret.PContextCaretText;
+                entry.SetValue(QField.QFieldHintProperty, caret.PCaretHint);
+                entry.Text = caret.PCaretText;
                 entry.PreviewKeyDown -= _qContextProffer.QProfferKeyRefine;
                 entry.PreviewKeyDown -= _qContextProffer.QProfferKeyObserve;
                 entry.PreviewKeyDown -= QContextCommitObserve;
@@ -91,7 +105,8 @@ internal sealed class QContext
         };
         QLookItem.QLookItemAttach(list, QContextApply);
         QLookItem.QLookItemAttach(
-            QBerth.QBerthBuild(list, card.PCardContextCaret, nameof(PContextCaret.PContextCaretAnchor)),
+            QBerth.QBerthBuild(
+                list, card.PCardContext, nameof(PCaret<PContext>.PCaretAnchor)),
             QContextApply);
         if (QLook.QLookPartFind<Border>(list, "PContextFrame") is Border frame)
         {
@@ -100,12 +115,13 @@ internal sealed class QContext
         }
     }
 
-    internal void QContextTextObserve(PContextCaret caret, string text)
+    private void QContextTextObserve(object sender, TextChangedEventArgs e)
     {
-        if (QContextCardFind(caret) is PCard card)
+        if (e.OriginalSource is TextBox { DataContext: PCaret<PContext> caret } box
+            && QContextCardFind(caret) is PCard card)
         {
-            _qContextProffer.QProfferSituationRefine(card, _cEditor.CEditorCard.CCardSituationAdd(
-                card.PCardId, text, card.PCardContextPosition, false));
+            _qContextProffer.QProfferSituationRefine(card, _cCard.CCardSituationAdd(
+                card.PCardId, box.Text, card.PCardContext.PCaretPosition, false));
         }
     }
 
@@ -113,29 +129,30 @@ internal sealed class QContext
     {
         if (sender is FrameworkElement { DataContext: PContext chip } && QContextCardFind(chip) is PCard card)
         {
-            _cEditor.CEditorCard.CCardSituationRemove(card.PCardId, chip.PContextId);
+            _cCard.CCardSituationRemove(card.PCardId, chip.PContextId);
         }
     }
 
     internal void QContextCommitObserve(object sender, KeyEventArgs e)
     {
         if (e.Key != Key.Enter
-            || sender is not TextBox { DataContext: PContextCaret row }
+            || sender is not TextBox { DataContext: PCaret<PContext> row }
             || QContextCardFind(row) is not PCard card)
         {
             return;
         }
 
-        _cEditor.CEditorCard.CCardSituationAdd(
-            card.PCardId, card.PCardContextText, card.PCardContextPosition, true);
+        _cCard.CCardSituationAdd(
+            card.PCardId, card.PCardContext.PCaretText, card.PCardContext.PCaretPosition, true);
         e.Handled = true;
         _qContextProffer.QProfferShutRefine();
-        card.PCardContextClear();
+        card.PCardContext.PCaretClear();
     }
 
     internal void QContextEraseObserve(object sender, KeyEventArgs e)
     {
-        if (sender is not TextBox { DataContext: PContextCaret row } box || QContextCardFind(row) is not PCard card)
+        if (sender is not TextBox { DataContext: PCaret<PContext> row } box
+            || QContextCardFind(row) is not PCard card)
         {
             return;
         }
@@ -147,16 +164,17 @@ internal sealed class QContext
             box.SelectionLength,
             step =>
             {
-                if (card.PCardContextFind(step) is PContext chip)
+                if (card.PCardContext.PCaretFind(step) is PContext chip)
                 {
-                    _cEditor.CEditorCard.CCardSituationRemove(card.PCardId, chip.PContextId);
+                    _cCard.CCardSituationRemove(card.PCardId, chip.PContextId);
                 }
             });
     }
 
     internal void QContextCaretRefine(object sender, KeyEventArgs e)
     {
-        if (sender is not TextBox { DataContext: PContextCaret row } box || QContextCardFind(row) is not PCard card)
+        if (sender is not TextBox { DataContext: PCaret<PContext> row } box
+            || QContextCardFind(row) is not PCard card)
         {
             return;
         }
@@ -165,7 +183,7 @@ internal sealed class QContext
             e.Key.ToString(),
             box.Text.Length,
             box.SelectionLength,
-            card.PCardContextMove,
+            card.PCardContext.PCaretMove,
             () => QField.QFieldCaretApply(box, row, 0));
     }
 
@@ -176,11 +194,12 @@ internal sealed class QContext
 
     internal void QContextCloseObserve(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PContextCaret row } && QContextCardFind(row) is PCard card)
+        if (sender is FrameworkElement { DataContext: PCaret<PContext> row }
+            && QContextCardFind(row) is PCard card)
         {
-            _cEditor.CEditorCard.CCardSituationAdd(
-                card.PCardId, card.PCardContextText, card.PCardContextPosition, true);
-            card.PCardContextClear();
+            _cCard.CCardSituationAdd(
+                card.PCardId, card.PCardContext.PCaretText, card.PCardContext.PCaretPosition, true);
+            card.PCardContext.PCaretClear();
         }
     }
 
@@ -206,8 +225,8 @@ internal sealed class QContext
     {
         foreach (PCard card in _qContextMeaning)
         {
-            if ((row is PContext chip && card.PCardContext.Contains(chip))
-                || ReferenceEquals(card.PCardContextCaret, row))
+            if ((row is PContext chip && card.PCardContext.PCaretRow.Contains(chip))
+                || ReferenceEquals(card.PCardContext, row))
             {
                 return card;
             }
@@ -215,8 +234,8 @@ internal sealed class QContext
 
         foreach (PCard card in _qContextCollocation)
         {
-            if ((row is PContext chip && card.PCardContext.Contains(chip))
-                || ReferenceEquals(card.PCardContextCaret, row))
+            if ((row is PContext chip && card.PCardContext.PCaretRow.Contains(chip))
+                || ReferenceEquals(card.PCardContext, row))
             {
                 return card;
             }

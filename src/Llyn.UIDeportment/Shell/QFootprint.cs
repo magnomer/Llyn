@@ -1,4 +1,5 @@
 using System;
+using System.Windows;
 using Llyn.Conduct;
 using Llyn.UIDeportment.Capsule;
 
@@ -10,13 +11,69 @@ public sealed class QFootprint
 
     private const int QFootprintDelay = 700;
 
+    private readonly Window _qFootprintWindow;
+
     private readonly QPosture _qFootprintPosture;
 
-    public QFootprint(QPosture posture)
+    public QFootprint(Window window, QPosture posture)
     {
+        ArgumentNullException.ThrowIfNull(window);
         ArgumentNullException.ThrowIfNull(posture);
 
+        _qFootprintWindow = window;
         _qFootprintPosture = posture;
+    }
+
+    public void QFootprintRefine()
+    {
+        Window window = _qFootprintWindow;
+        if (QFootprintRead(
+                SystemParameters.VirtualScreenLeft,
+                SystemParameters.VirtualScreenTop,
+                SystemParameters.VirtualScreenWidth,
+                SystemParameters.VirtualScreenHeight,
+                window.MinWidth,
+                window.MinHeight) is not LCapsuleWindow state)
+        {
+            Rect area = SystemParameters.WorkArea;
+            (window.Width, window.Height) =
+                QFootprintSizeRead(area.Width, area.Height, window.MinWidth, window.MinHeight);
+            return;
+        }
+
+        window.WindowStartupLocation = WindowStartupLocation.Manual;
+        window.Left = state.LCapsuleWindowLeft;
+        window.Top = state.LCapsuleWindowTop;
+        window.Width = state.LCapsuleWindowWidth;
+        window.Height = state.LCapsuleWindowHeight;
+
+        if (state.LCapsuleWindowMaximized)
+        {
+            window.WindowState = WindowState.Maximized;
+        }
+    }
+
+    public void QFootprintAttach()
+    {
+        _qFootprintWindow.LocationChanged += (_, _) => QFootprintSave(false);
+        _qFootprintWindow.SizeChanged += (_, _) => QFootprintSave(false);
+        _qFootprintWindow.StateChanged += (_, _) => QFootprintSave(false);
+    }
+
+    public void QFootprintSave(bool closing)
+    {
+        QFootprintDefer(QFootprintWindowRead(), _qFootprintWindow.WindowState == WindowState.Minimized, closing);
+    }
+
+    private LCapsuleWindow QFootprintWindowRead()
+    {
+        Window window = _qFootprintWindow;
+        Rect bounds = window.WindowState == WindowState.Normal
+            ? new Rect(window.Left, window.Top, window.Width, window.Height)
+            : window.RestoreBounds;
+
+        return new LCapsuleWindow(
+            bounds.Left, bounds.Top, bounds.Width, bounds.Height, window.WindowState == WindowState.Maximized);
     }
 
     public LCapsuleWindow? QFootprintRead(

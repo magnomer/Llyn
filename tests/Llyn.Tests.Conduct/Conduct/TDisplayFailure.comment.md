@@ -1,5 +1,5 @@
 # TDisplayFailure.cs
-Hash: `4933af704f07a740`
+Hash: `79830de55ef6fadd`
 
 ## `public sealed class TDisplayFailure`
 
@@ -49,7 +49,7 @@ A failed waiting check shows `Sound.PendingFailed` through the voice's failure e
 
 ## `public void DisplayFanqieRead_AnchorPortFails_ShowsTheAnchorFailure()`
 
-A failed anchor read shows `Display.AnchorFailed` through the shared anchor map, and the block draws no groups.
+The fanqie block draws no groups, and the reflex read that follows a fanqie notice shows `Display.AnchorFailed`.
 
 ## `public void DisplayFavoriteRead_PortFails_ShowsTheReadFailure()`
 

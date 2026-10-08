@@ -77,6 +77,7 @@ internal sealed class QEditorCard
             _qLabel,
             QEditorCardSentence,
             _qCitation,
+            new QExample(QEditorCardSentence, _qGloss, _qCitation),
             _qImage,
             _qVideo,
             _qEditorCardLanguage,
@@ -91,27 +92,37 @@ internal sealed class QEditorCard
 
     internal QProspect QEditorCardProspect { get; }
 
-    internal void QEditorCardIntroduce(QWindow host, CEditor editor)
+    internal void QEditorCardIntroduce(
+        CAtelier atelier,
+        CEnvoy envoy,
+        QMentionMenu mentionMenu,
+        CEntry entry,
+        CCard card,
+        CSentence sentence,
+        CCardList list,
+        CCardField field,
+        CImage image,
+        CVideo video)
     {
-        _qImage.QImageIntroduce(editor.CEditorImage);
-        _qVideo.QVideoIntroduce(editor.CEditorVideo);
-        _qContext.QContextIntroduce(editor, _qProffer);
-        _qRegister.QRegisterIntroduce(editor, _qProffer);
-        _qProffer.QProfferIntroduce(editor);
-        QEditorCardProspect.QProspectIntroduce(editor, _qLink);
-        _qLink.QLinkIntroduce(editor);
-        _qSpeaker.QSpeakerIntroduce(editor, host.QWindowAtelier, host.QWindowEnvoy);
-        _qGloss.QGlossIntroduce(editor);
+        _qImage.QImageIntroduce(image);
+        _qVideo.QVideoIntroduce(video);
+        _qContext.QContextIntroduce(card, _qProffer);
+        _qRegister.QRegisterIntroduce(card, _qProffer);
+        _qProffer.QProfferIntroduce(card, sentence);
+        QEditorCardProspect.QProspectIntroduce(card, sentence, _qLink);
+        _qLink.QLinkIntroduce(card);
+        _qSpeaker.QSpeakerIntroduce(entry, atelier, envoy);
+        _qGloss.QGlossIntroduce(sentence);
         QEditorCardSentence.QSentenceIntroduce(
-            editor, host, QEditorCardProspect, _qGloss, _qCitation);
-        _qCitation.QCitationIntroduce(editor, host.QWindowAtelier);
-        _qLabel.QLabelIntroduce(editor, _qSlate);
-        _qSlate.QSlateIntroduce(editor);
-        _qEtymologyEditor.QEtymologyIntroduce(editor, host.QWindowAtelier);
-        _qCardDrag.QCardDragIntroduce(editor);
-        _qCard.QCardIntroduce(editor);
-        _qMeaning.QMeaningIntroduce(editor);
-        _qCollocation.QCollocationIntroduce(editor);
+            card, sentence, atelier.CAtelierMention, mentionMenu, QEditorCardProspect);
+        _qCitation.QCitationIntroduce(card, sentence, atelier);
+        _qLabel.QLabelIntroduce(card, _qSlate);
+        _qSlate.QSlateIntroduce(card);
+        _qEtymologyEditor.QEtymologyIntroduce(card, entry, atelier);
+        _qCardDrag.QCardDragIntroduce(list);
+        _qCard.QCardIntroduce(field, list);
+        _qMeaning.QMeaningIntroduce(list);
+        _qCollocation.QCollocationIntroduce(list);
     }
 
     internal void QEditorStartRefine()
@@ -132,23 +143,9 @@ internal sealed class QEditorCard
 
     private void QEditorTextObserve(object sender, TextChangedEventArgs e)
     {
-        switch (e.OriginalSource)
+        if (e.OriginalSource is TextBox { DataContext: PGloss or QImageItem } box)
         {
-            case TextBox { DataContext: PGloss or QImageItem } box:
-                QEditorFieldObserve(box);
-                break;
-            case TextBox { DataContext: PContextCaret caret } box:
-                _qContext.QContextTextObserve(caret, box.Text);
-                break;
-            case TextBox { DataContext: PRegisterCaret caret } box:
-                _qRegister.QRegisterTextObserve(caret, box.Text);
-                break;
-            case TextBox { DataContext: PLinkCaret caret } box:
-                _qLink.QLinkTextObserve(caret, box.Text);
-                break;
-            case TextBox { DataContext: PLabelCaret caret } box:
-                _qLabel.QLabelTextObserve(caret, box.Text);
-                break;
+            QEditorFieldObserve(box);
         }
     }
 

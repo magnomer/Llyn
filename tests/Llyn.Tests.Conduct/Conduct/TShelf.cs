@@ -106,7 +106,7 @@ public sealed class TShelf
 
         Assert.True(shelf.CShelfDiptych.CDiptychParentShown);
         Assert.True(shelf.CShelfDiptych.CDiptychBinEnabled);
-        Assert.True(shelf.CShelfDiptych.CDiptychViewerChecked);
+        Assert.False(shelf.CShelfDiptych.CDiptychScribeChecked);
     }
 
     [Fact]
@@ -226,7 +226,7 @@ public sealed class TShelf
 
         Assert.True(shelf.CShelfDiptych.CDiptychParentShown);
         Assert.False(shelf.CShelfImprint.CImprintHeld);
-        Assert.True(shelf.CShelfDiptych.CDiptychViewerChecked);
+        Assert.False(shelf.CShelfDiptych.CDiptychScribeChecked);
     }
 
     [Fact]

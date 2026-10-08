@@ -1,5 +1,5 @@
 # PEditor.xaml
-Hash: `c06a674cd8c47a22`
+Hash: `a43dacb11f3b75c7`
 
 ## `UserControl`
 
@@ -15,7 +15,7 @@ Keep Auto row sizes unrounded and round each section's contents like PDisplay.
 
 The form's shape stays here and the rules its parts are drawn by stand beside it.
 Fields, the card the lists end with, and the dropdown shells are each a dictionary of their own.
-So are the sentence, picture, video, translation, meaning, collocation and language templates.
+So are the sentence, picture, video, meaning, collocation and language templates, and the rest the form uses.
 A reader of this file sees where things sit, not how each of them is painted.
 
 ## `<Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">`
@@ -143,12 +143,8 @@ The fetch-again button, pinned to the top right of the sound rows.
 It sits outside the reflex block so the rows never push it down.
 The editor shows it with the block and sets its `Pending` cue to turn the icon while a fetch runs.
 
-## `<Popup x:Name="PNotation" ...>`
+## `<veneer:PEditorDropdown x:Name="PEditorDropdown" />`
 
-The pronunciation menu, declared once beside the other popups the editor owns.
-It has no placement target of its own, because the row button that opens it becomes the target.
-Closing it, by a pick or a click elsewhere, calls the search off.
-
-## `<Popup x:Name="PClip" ...>`
-
-The audio menu, declared once for the same reason and opened the same way.
+The five dropdowns a caret or a row button opens, kept in a control of their own.
+So this file holds the form's shape and nothing that floats over it.
+The drivers still find each dropdown from the editor, through its logical tree.

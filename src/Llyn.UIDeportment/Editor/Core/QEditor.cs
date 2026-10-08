@@ -76,18 +76,29 @@ internal sealed class QEditor : QChronicleHost
 
     internal event Action? QEditorChronicleChanged;
 
-    internal void QEditorIntroduce(QWindow host, CEditor editor)
+    internal void QEditorIntroduce(
+        CAtelier atelier, CEnvoy envoy, QVolume volume, QMentionMenu mentionMenu, CEditor editor)
     {
-        ArgumentNullException.ThrowIfNull(host);
+        ArgumentNullException.ThrowIfNull(atelier);
         ArgumentNullException.ThrowIfNull(editor);
 
         _cEditor = editor;
-        _qRegard.QRegardIntroduce(editor);
-        _qEditorSound.QEditorSoundIntroduce(editor, host.QWindowVolume);
-        _qEditorCard.QEditorCardIntroduce(host, editor);
-        _qCategory.QCategoryIntroduce(editor);
-        _qUnit.QUnitIntroduce(editor);
-        _qMarker.QMarkerIntroduce(editor, _qCategory, _qUnit);
+        _qRegard.QRegardIntroduce(editor.CEditorDesk, editor.CEditorEsteem);
+        _qEditorSound.QEditorSoundIntroduce(editor, volume, atelier.CAtelierLedger, envoy);
+        _qEditorCard.QEditorCardIntroduce(
+            atelier,
+            envoy,
+            mentionMenu,
+            editor.CEditorEntry,
+            editor.CEditorCard,
+            editor.CEditorSentence,
+            editor.CEditorList,
+            editor.CEditorField,
+            editor.CEditorImage,
+            editor.CEditorVideo);
+        _qCategory.QCategoryIntroduce(editor.CEditorSpeech);
+        _qUnit.QUnitIntroduce(editor.CEditorEntry);
+        _qMarker.QMarkerIntroduce(editor.CEditorSpeech, editor.CEditorEntry, _qCategory, _qUnit);
 
         CDesk desk = editor.CEditorDesk;
         desk.CDeskStarted += _qEditorCard.QEditorStartRefine;
@@ -98,7 +109,7 @@ internal sealed class QEditor : QChronicleHost
         editor.CEditorEntry.CEntryDraftChanged += QEditorDraftRefine;
         editor.CEditorEntry.CEntryDraftChanged += _qEditorSound.QEditorPronunciationRefine;
         editor.CEditorEntry.CEntryDraftChanged += _qEditorSound.QEditorTimbreRefine;
-        _qEditorFont.QEditorFontIntroduce(editor);
+        _qEditorFont.QEditorFontIntroduce(editor.CEditorEntry, editor.CEditorTimbre);
         editor.CEditorEntry.CEntryDraftChanged += _qEditorCard.QEditorCardSentence.QSentenceFrameRefine;
         editor.CEditorEntry.CEntryDraftChanged += _qEditorCard.QEditorMeaningRefine;
         editor.CEditorEntry.CEntryDraftChanged += _qEditorCard.QEditorCollocationRefine;

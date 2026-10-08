@@ -12,99 +12,51 @@ public sealed class QLecternAccent
 
     private readonly ObservableCollection<QAccentItem> _qLecternAccentRow = [];
 
-    private UIElement _qLecternAccentSurface = null!;
+    private readonly QLecternLead _qLecternAccentLead;
 
-    private ColumnDefinition _qLecternAccentLead = null!;
+    private readonly Image _qLecternAccentFlag;
 
-    private Image _qLecternAccentFlag = null!;
+    private readonly TextBlock _qLecternAccentLabel;
 
-    private TextBlock _qLecternAccentLabel = null!;
+    private readonly TextBlock _qLecternAccentOpener;
 
-    private TextBlock _qLecternAccentOpener = null!;
+    private readonly TextBlock _qLecternAccentPronunciation;
 
-    private TextBlock _qLecternAccentPronunciation = null!;
+    private readonly TextBlock _qLecternAccentCloser;
 
-    private TextBlock _qLecternAccentCloser = null!;
+    private readonly PContour _qLecternAccentContour;
 
-    private FrameworkElement _qLecternAccentContour = null!;
-
-    private DependencyProperty _qLecternAccentSyllables = null!;
-
-    public QLecternAccent(CDisplayAccent area)
+    public QLecternAccent(FrameworkElement surface, CDisplayAccent area)
     {
+        ArgumentNullException.ThrowIfNull(surface);
         ArgumentNullException.ThrowIfNull(area);
 
         _qLecternAccentArea = area;
-    }
+        _qLecternAccentLead = new QLecternLead(
+            QContract.QContractFind<Border>(surface, "PDisplayPronunciationSurface"),
+            QContract.QContractFind<ColumnDefinition>(surface, "PDisplayPronunciationLead"));
+        _qLecternAccentFlag = QContract.QContractFind<Image>(surface, "PDisplayPronunciationFlag");
+        _qLecternAccentLabel = QContract.QContractFind<TextBlock>(surface, "PDisplayPronunciationLabel");
+        _qLecternAccentOpener = QContract.QContractFind<TextBlock>(surface, "PDisplayPronunciationOpener");
+        _qLecternAccentPronunciation = QContract.QContractFind<TextBlock>(surface, "PDisplayPronunciation");
+        _qLecternAccentCloser = QContract.QContractFind<TextBlock>(surface, "PDisplayPronunciationCloser");
+        _qLecternAccentContour = QContract.QContractFind<PContour>(surface, "PDisplayContour");
+        ItemsControl accents = QContract.QContractFind<ItemsControl>(surface, "PDisplayAccent");
 
-    public void QLecternAccentIntroduce(
-        UIElement surface,
-        ColumnDefinition lead,
-        Image flag,
-        TextBlock label,
-        TextBlock opener,
-        TextBlock pronunciation,
-        TextBlock closer,
-        ItemsControl accents,
-        FrameworkElement contour,
-        DependencyProperty syllables,
-        DependencyProperty scale)
-    {
-        ArgumentNullException.ThrowIfNull(surface);
-        ArgumentNullException.ThrowIfNull(lead);
-        ArgumentNullException.ThrowIfNull(flag);
-        ArgumentNullException.ThrowIfNull(label);
-        ArgumentNullException.ThrowIfNull(opener);
-        ArgumentNullException.ThrowIfNull(pronunciation);
-        ArgumentNullException.ThrowIfNull(closer);
-        ArgumentNullException.ThrowIfNull(accents);
-        ArgumentNullException.ThrowIfNull(contour);
-        ArgumentNullException.ThrowIfNull(syllables);
-        ArgumentNullException.ThrowIfNull(scale);
-
-        _qLecternAccentSurface = surface;
-        _qLecternAccentLead = lead;
-        _qLecternAccentFlag = flag;
-        _qLecternAccentLabel = label;
-        _qLecternAccentOpener = opener;
-        _qLecternAccentPronunciation = pronunciation;
-        _qLecternAccentCloser = closer;
-        _qLecternAccentContour = contour;
-        _qLecternAccentSyllables = syllables;
-        contour.SetValue(scale, _qLecternAccentArea.CDisplayAccentScale);
+        _qLecternAccentContour.PContourScale = _qLecternAccentArea.CDisplayAccentScale;
         accents.ItemsSource = _qLecternAccentRow;
         QLookItem.QLookItemAttach(accents, QAccentItem.QAccentItemRefine);
     }
 
     public void QLecternAccentRefine()
     {
-        QLecternAccentRefine(_qLecternAccentArea.CDisplayAccentRead());
-    }
-
-    public async void QLecternEnsignRefine()
-    {
-        QLecternFlagRefine(await _qLecternAccentArea.CDisplayAccentLoad(QEnsignImage.QEnsignDraw));
-    }
-
-    public void QLecternMuteRefine()
-    {
-        _qLecternAccentSurface.Visibility = Visibility.Collapsed;
-        _qLecternAccentLead.SharedSizeGroup = null;
-        _qLecternAccentRow.Clear();
-        _qLecternAccentFlag.Source = null;
-        _qLecternAccentLabel.Text = string.Empty;
-    }
-
-    private void QLecternAccentRefine(CLecternAccent accent)
-    {
+        CLecternAccent accent = _qLecternAccentArea.CDisplayAccentRead();
         _qLecternAccentOpener.Text = accent.CLecternAccentMark.CRespellingMarkOpener;
         _qLecternAccentCloser.Text = accent.CLecternAccentMark.CRespellingMarkCloser;
-        _qLecternAccentContour.SetValue(
-            _qLecternAccentSyllables,
-            QContourInk.QContourInkBuild(accent.CLecternAccentContour, _qLecternAccentContour));
+        _qLecternAccentContour.PContourSyllables =
+            QContourInk.QContourInkBuild(accent.CLecternAccentContour, _qLecternAccentContour);
         _qLecternAccentPronunciation.Text = accent.CLecternAccentText;
-        _qLecternAccentSurface.Visibility = QLook.QLookVisibleRead(accent.CLecternAccentSpoken);
-        _qLecternAccentLead.SharedSizeGroup = accent.CLecternAccentSpoken ? "PReadingLabel" : null;
+        _qLecternAccentLead.QLecternLeadRefine(accent.CLecternAccentSpoken);
 
         _qLecternAccentRow.Clear();
         foreach (CAccent row in accent.CLecternAccentRows)
@@ -114,6 +66,11 @@ public sealed class QLecternAccent
         }
 
         QLecternPrimaryRefine(accent);
+    }
+
+    public async void QLecternEnsignRefine()
+    {
+        QLecternFlagRefine(await _qLecternAccentArea.CDisplayAccentLoad(QEnsignImage.QEnsignDraw));
     }
 
     private void QLecternFlagRefine(CLecternAccent? accent)

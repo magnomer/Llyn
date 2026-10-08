@@ -1,5 +1,5 @@
 # TInterfaceConduct.cs
-Hash: `761d4512f16f1974`
+Hash: `255f4b7e20f64257`
 
 ## `internal static class TInterfaceConduct`
 
@@ -59,7 +59,7 @@ Every sound port a fake answering from `answers`, so one map answers each port a
 The scale, the cell kind and the paradigm status answer by the engine's own rule unless `answers` names them.
 Those were rules with no engine state, so a fake keeps them true without a test naming them.
 
-## `internal static LSettingsPort TSettingsOutletCreate(LEngine engine) => new LSettingsOutlet(engine);`
+## `internal static LSettingsPort TSettingsOutletCreate(LEngine engine)`
 
 The settings port over the real `engine`, so a test drives the engine through the port the atelier holds.
 
@@ -85,16 +85,16 @@ The settings and portrait ports are outlets on `engine`, and the media port answ
 It adds the leftover sweep and the recording stop, so disposing the atelier needs no answer from the test.
 It also relays the side save to the real `engine`, so a stored side survives a fake vista port.
 
-## `internal static LMediaPort TMediaCreate(LEngine engine) => new LMediaOutlet(engine);`
+## `internal static LMediaPort TMediaCreate(LEngine engine)`
 
 Builds the real media outlet over the given engine, in place of the fake port.
 
-## `internal static LMediaPort TMediaCreate() =>`
+## `internal static LMediaPort TMediaCreate()`
 
 A media port that only resolves locations and screens, each to nothing.
 The card and atlas map relays hand it on, so a fact without an engine still reads its rows.
 
-## `internal static LSettingsPort TSettingsCreate() =>`
+## `internal static LSettingsPort TSettingsCreate()`
 
 A settings port that answers only failure notices, text keys and fonts.
 It also takes the fold event's subscribe and unsubscribe, since the editor attaches to that event.
@@ -104,51 +104,67 @@ A font reads as one with nothing set, as for a language whose pack sets none.
 The font rule catches no refusal, so without that answer a font read would throw.
 A gate over fakes can then show its failure without a real engine behind the notice.
 
-## `internal static CVoyageState TVoyageRead(this CVoyage voyage) => voyage.LVoyageRead();`
+## `internal static CVoyageState TVoyageRead(this CVoyage voyage)`
 
 Relays the voyage's state, and the three relays below relay its record and its two steps.
 
-## `internal static bool TAtelierSplitRead(CAtelier atelier) => atelier.LAtelierSplitRead();`
+## `internal static void TVoyageStationAdd(this CVoyage voyage, string tab, long id)`
+
+Relays the record of a station, so a test can lay down the trail it walks.
+
+## `internal static bool TVoyageUndo(this CVoyage voyage, string tab, long id, Func<string, long, bool> show)`
+
+Relays the step back, which hands `show` the station it lands on.
+
+## `internal static bool TVoyageRedo(this CVoyage voyage, string tab, long id, Func<string, long, bool> show)`
+
+Relays the step forward, which hands `show` the station it lands on.
+
+## `internal static bool TAtelierSplitRead(CAtelier atelier)`
 
 Relays the stored split the navigation restores the open tab's editor from.
 
-## `internal static CEstablishment TAtelierEstablishmentRead(this CAtelier atelier) =>`
+## `internal static CEstablishment TAtelierEstablishmentRead(this CAtelier atelier)`
 
-Relays the atelier's status read, which the workspace raises on every open and bulletin.
+Relays the status read of the atelier's workspace, which the workspace raises on every open and bulletin.
 
-## `internal static void TWorkspaceDraftAdd(this CWorkspace workspace, Func<bool> pending, Func<bool, bool> closure) =>`
+## `internal static void TWorkspaceDraftAdd(this CWorkspace workspace, Func<bool> pending, Func<bool, bool> closure)`
 
 Hands the workspace a draft's pending question and its closing step.
 A test can then see how the workspace asks and closes drafts.
 
-## `internal static void TWorkspaceObserverAttach(this CWorkspace workspace, Action<Action> marshal) =>`
+## `internal static void TWorkspaceObserverAttach(this CWorkspace workspace, Action<Action> marshal)`
 
 Attaches the workspace observer with the given `marshal`, as the atelier open does.
 
-## `internal static void TWorkspaceStateAdd(this CWorkspace workspace, Action<CWorkspaceState> heard) =>`
+## `internal static void TWorkspaceStateAdd(this CWorkspace workspace, Action<CWorkspaceState> heard)`
 
 Subscribes `heard` to the workspace's internal state event, so a test hears what the wings restore from.
 
-## `internal static void TLedgerFailureShow(this CAtelier atelier, CEnvoy envoy, string key, Exception exception) =>`
+## `internal static void TLedgerFailureShow(this CAtelier atelier, CEnvoy envoy, string key, Exception exception)`
 
 Relays a gate's failure policy over the atelier's own settings port, so a test can show a chosen key twice.
 
-## `internal static void TLedgerRepaintShow(this CAtelier atelier, CEnvoy envoy, string key, Exception exception) =>`
+## `internal static void TLedgerRepaintShow(this CAtelier atelier, CEnvoy envoy, string key, Exception exception)`
 
 Relays a repaint read's failure through the atelier's repaint memory, so a test can watch repeats merge.
+
+## `internal static CLedgerNotice TLedgerNoticeRead(this CAtelier atelier, Exception exception)`
+
+Relays the ledger's notice read over the atelier's own settings port, so a test can read a failure's notice.
 
 ## `internal static CWorkspaceState? TAtelierStateOpen(this CAtelier atelier)`
 
 Opens the atelier through `TAtelierStubOpen` and returns the workspace state it announced, or nothing when none came.
 The subscription is removed again before it returns.
 
-## `internal static void TAtelierStubOpen(this CAtelier atelier) =>`
+## `internal static void TAtelierStubOpen(this CAtelier atelier)`
 
 Opens the atelier with a stub envoy and a marshal that runs at once.
 So a test opens it without a window.
 The stub answers every call with nothing.
 
-## `internal static void TAtelierOpen(this CAtelier atelier, CEnvoy envoy) =>`
+## `internal static void TAtelierOpen(this CAtelier atelier, CEnvoy envoy)`
 
 Opens the atelier with the given `envoy` and a marshal that runs at once.
 So a test reads the notices the open shows, a layout failure among them.

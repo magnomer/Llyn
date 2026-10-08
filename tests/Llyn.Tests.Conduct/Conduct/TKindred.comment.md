@@ -1,5 +1,5 @@
 # TKindred.cs
-Hash: `c6ef6e63e1096a19`
+Hash: `1a01fb8bc067ff16`
 
 ## `public sealed class TKindred`
 
@@ -60,27 +60,27 @@ Each press flips the held row's main mark.
 
 A typed language is written and the leads answer the rows with the typed language standing in.
 Leads follow the shown order, so a run of one language prints its name once.
-The answer names the typed language as the text the cell now holds, with the key it is labelled under.
-A desk holding no entry takes nothing and answers an empty cell.
+The answered row holds the typed language, with the key it is labelled under.
+A desk holding no entry takes nothing and answers no row.
 
 ## `public void KindredSet_TextOfARespelledRow_WritesTheRespelling()`
 
-Text typed into a respelled row is written as its respelling.
+Text typed into a respelled row is written as its respelling, and the answered row shows it.
 The phonetic text of that row stays as stored.
 
 ## `public void KindredSet_TextOfAPlainRow_WritesThePhoneticText()`
 
-Text typed into a plain row is written as its phonetic text.
+Text typed into a plain row is written as its phonetic text, and the answered row shows it.
 
 ## `public void KindredSet_OtherCells_WriteEachAndAnswerNoLeads()`
 
 Kind, romanization, meaning and note are each written, and none answers a lead.
-Each answer names its own cell and the typed text.
+Each answer is the typed row, holding the typed text in its own cell.
 
 ## `public void KindredSet_WhileTheDeskFills_TakesNothingAndAnswersTheHeldText()`
 
 An edit sent while the desk fills its view is refused.
-The answer then names the text the held block shows, so the driver's cell drops the refused text.
+The answer is then the row as the draft holds it, so the driver's cell drops the refused text.
 
 ## Inline notes
 
@@ -88,13 +88,14 @@ The answer then names the text the held block shows, so the driver's cell drops 
 
 Saves a Chinese entry with three reflex rows.
 
-### `private static IReadOnlyList<CReflex> TKindredRowsRead(CEditor editor)`
+### `private static IReadOnlyList<CReflex> TKindredRowsRead(TEditorFixture editor)`
 
 Reads the block's rows after the desk persists the draft.
 
-### `private static CEditor TKindredPrepare(LEngine engine, long? entry)`
+### `private static TEditorFixture TKindredPrepare(LEngine engine, long? entry)`
 
 Builds an editor over the library vista and opens the entry.
+It answers the fixture, so a test reads only the facet it drives.
 
 ### `private static long TKindredSave(LEngine engine, string headword, string language, IReadOnlyList<LReflexDraft> reflexes)`
 

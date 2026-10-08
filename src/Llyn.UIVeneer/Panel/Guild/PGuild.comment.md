@@ -1,5 +1,5 @@
 # PGuild.xaml
-Hash: `c58dab4c06c111ef`
+Hash: `8a0db9acdb8c1c9d`
 
 ## `<UserControl.Resources>`
 
@@ -17,34 +17,24 @@ The column seams sit in the gutters and reach the foot of the window.
 
 The ordering button and the search field are one control over the roll column.
 The roll column takes 300, because a row carries a name and two counts and no second line.
-The dropdowns, icons and field events are wired by the panel, so every part carries a name.
-
-## `<Popup x:Name="PEchelonDropdown" ...>`
-
-The orderings the roll may be listed in, one radio row each, carrying its choice in `Tag`.
+The ordering picker is the shared `PChoiceOrder`, placed here as `PGuildOrder`.
 Name both ways, then the two counts busiest first, because that is all an Author can be ordered by.
-The panel ties it to its dropper and anchors it under the whole bar.
+The panel anchors the picker's menu under the whole bar.
 
 ## `<Border x:Name="PLouver" ... Style="{StaticResource Theme.Search.Bar}">`
 
 The search field and the kind filter over the middle column, shaped as the sources panel's `PTrellis`.
 `PComb` narrows the sources crediting the chosen Author by typed text.
-`PLouverDropper` opens the menu of source kinds, and `PLouverMark` shows while any is hidden.
-The kinds are drawn in code, because their words come from the sources panel's own keys.
+The kind filter is the shared `PChoiceFilter`, placed here as `PGuildFilter`.
+The kinds are drawn in code, because the engine lists them and each carries its own word key.
 
-## `<local:QRail Grid.Row="0" Grid.Column="2" ...>`
+## `<veneer:PPanelRail x:Name="PGuildRail" Grid.Row="0" Grid.Column="2" Margin="0,0,0,18" />`
 
-The action row of the panel.
-`PGuildFresh` opens the edit area on an Author nothing credits yet.
-`PGuildStore` saves the held Author, and stands in the rail at all times.
-One slot sits between save and print, and it holds whichever pair the mode asks for.
-Reading shows `PGuildVoyage`, whose `PGuildEarlier` and `PGuildLater` walk the window's trail of records.
-Writing shows `PGuildChronicle`, whose `PGuildBackward` and `PGuildForward` walk the chronicle of the held Author.
-`PGuildChronicle` starts collapsed, because the panel opens reading.
-Each carries no label, only the arrow and a tooltip, and is lit only while a step is there.
-`PGuildPress` puts the Source read in the colophon on paper, and is dead while an Author is read instead.
-Export is not offered, because it belongs to an Entry and no Entry is read here.
-Every button is named, and the panel sets its icon, command and click from code.
+The action row of the panel, the shared `PPanelRail` placed here as `PGuildRail`.
+Fresh opens the edit area on an Author nothing credits yet.
+Save stands in the rail at all times, and the undo pair walks the chronicle of the held Author.
+Print puts the Source read in the colophon on paper, and is dead while an Author is read instead.
+Export is hidden, because it belongs to an Entry and no Entry is read here.
 
 ## `<ItemsControl x:Name="PRoll" ...>`
 
@@ -75,11 +65,11 @@ It stands in the same cell as the colophon and is shown while an Author is read.
 
 The edit area, a veneer page of its own and described in `PAutograph.comment.md`.
 The guild driver gives it its own `QAutograph`.
-It sits over the read area in the same cell and at the same inset.
+It sits over the read area in the same cell and at the same top inset.
 The panel decides which is shown, so the mode toggle stays in the action row.
 
 ## `<Button x:Name="PGuildBin" ...>`
 
 Deletes the shown Author, from the reading side or the editing side alike.
 It is disabled while nothing is selected, while a Source is shown, and while the edited Author is unsaved.
-Its icon is the named `PGuildBinIcon`, set by the panel.
+Its icon is the named `PGuildBinIcon`, set by the rail driver, which also takes its click.

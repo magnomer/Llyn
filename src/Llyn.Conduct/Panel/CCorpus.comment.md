@@ -1,5 +1,5 @@
 # CCorpus.cs
-Hash: `d8cc5a798b30655c`
+Hash: `28fd61a422f56c0c`
 
 ## `public sealed class CCorpus`
 
@@ -20,8 +20,10 @@ The session defers to the entry editor while the quotation list edits.
 A stored Example is shown again outside the scribe through `LCorpusStoredShow`.
 The diptych is built right after the session, over the two panels and the desk's start and cancel.
 The quotation panel opens the editor on the entry it edits, and a clear cancels the editor's desk.
+The editor's display follows the quotation panel, so each draft it loads opens the reading view.
 The anthology's row notices reach the quotation panel, whose rows follow the chosen Example.
-It registers the session's editor close with the workspace, so the window's exit gate stops the entry editor.
+It registers its own editor close with the workspace, so the window's exit gate stops the entry editor.
+The session holds only the editor's desk, so the corpus that owns the editor closes it.
 The leave question is the session's, which the navigation's tab and every corpus gate ask.
 It hands `marshal`, which only the medium knows, to the transcript to attach the desk's notices.
 The transcript answers the desk's draft notices itself, so no driver wires the desk.

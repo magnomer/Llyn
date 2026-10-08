@@ -23,9 +23,9 @@ public sealed class TSoundingAnchor
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         (long entry, long fanqie) = TSoundingAnchorPlace(engine, workspace, pack.TLanguageFixtureName);
-        CEditor editor = TSoundingAnchorPrepare(engine, entry);
-        CSoundingAnchor anchor = CSoundingAnchor.CSoundingAnchorCreate(editor);
-        long reflex = editor.CEditorKindred.CKindredRead().CTimbreReflexRows.Single().CReflexId;
+        TEditorFixture editor = TSoundingAnchorPrepare(engine, entry);
+        CSoundingAnchor anchor = CSoundingAnchor.CSoundingAnchorCreate(editor.TEditorFixtureKindred);
+        long reflex = editor.TEditorFixtureKindred.CKindredRead().CTimbreReflexRows.Single().CReflexId;
 
         CAnchor menu = anchor.CSoundingAnchorOpen(reflex);
         CAnchor unknown = anchor.CSoundingAnchorOpen(reflex + 1000);
@@ -43,8 +43,8 @@ public sealed class TSoundingAnchor
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TSoundingAnchorPrepare(engine, null);
-        CSoundingAnchor anchor = CSoundingAnchor.CSoundingAnchorCreate(editor);
+        CSoundingAnchor anchor =
+            CSoundingAnchor.CSoundingAnchorCreate(TSoundingAnchorPrepare(engine, null).TEditorFixtureKindred);
 
         CAnchor menu = anchor.CSoundingAnchorOpen(7);
 
@@ -57,17 +57,18 @@ public sealed class TSoundingAnchor
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TSoundingAnchorPrepare(engine, TSoundingAnchorSave(engine));
-        CSoundingAnchor anchor = CSoundingAnchor.CSoundingAnchorCreate(editor);
-        long reflex = editor.CEditorKindred.CKindredRead().CTimbreReflexRows.Single().CReflexId;
+        TEditorFixture editor = TSoundingAnchorPrepare(engine, TSoundingAnchorSave(engine));
+        CSoundingAnchor anchor = CSoundingAnchor.CSoundingAnchorCreate(editor.TEditorFixtureKindred);
+        CKindred kindred = editor.TEditorFixtureKindred;
+        long reflex = kindred.CKindredRead().CTimbreReflexRows.Single().CReflexId;
         anchor.CSoundingAnchorOpen(reflex);
 
         anchor.CSoundingAnchorSet(7, true);
-        IReadOnlyList<long> tied = editor.CEditorKindred.CKindredRead().CTimbreReflexRows.Single().CReflexAnchors;
+        IReadOnlyList<long> tied = kindred.CKindredRead().CTimbreReflexRows.Single().CReflexAnchors;
         anchor.CSoundingAnchorSet(7, false);
 
         Assert.Equal([7L], tied);
-        Assert.Empty(editor.CEditorKindred.CKindredRead().CTimbreReflexRows.Single().CReflexAnchors);
+        Assert.Empty(kindred.CKindredRead().CTimbreReflexRows.Single().CReflexAnchors);
     }
 
     [Fact]
@@ -75,16 +76,16 @@ public sealed class TSoundingAnchor
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TSoundingAnchorPrepare(engine, TSoundingAnchorSave(engine));
-        CSoundingAnchor anchor = CSoundingAnchor.CSoundingAnchorCreate(editor);
-        long reflex = editor.CEditorKindred.CKindredRead().CTimbreReflexRows.Single().CReflexId;
+        TEditorFixture editor = TSoundingAnchorPrepare(engine, TSoundingAnchorSave(engine));
+        CSoundingAnchor anchor = CSoundingAnchor.CSoundingAnchorCreate(editor.TEditorFixtureKindred);
+        long reflex = editor.TEditorFixtureKindred.CKindredRead().CTimbreReflexRows.Single().CReflexId;
         anchor.CSoundingAnchorOpen(reflex);
 
         anchor.CSoundingAnchorClose();
         anchor.CSoundingAnchorSet(7, true);
 
-        Assert.Empty(editor.CEditorKindred.CKindredRead().CTimbreReflexRows.Single().CReflexAnchors);
-        Assert.False(editor.CEditorDesk.CDeskDraft.CDeskDraftAltered);
+        Assert.Empty(editor.TEditorFixtureKindred.CKindredRead().CTimbreReflexRows.Single().CReflexAnchors);
+        Assert.False(editor.TEditorFixtureDesk.CDeskDraft.CDeskDraftAltered);
     }
 
     private static (long, long) TSoundingAnchorPlace(LEngine engine, TWorkspace workspace, string language)
@@ -117,11 +118,11 @@ public sealed class TSoundingAnchor
             reflexes: [TInterface.TReflexDraftCreate("Korean", "", "워터")])).LEntryId;
     }
 
-    private static CEditor TSoundingAnchorPrepare(LEngine engine, long? entry)
+    private static TEditorFixture TSoundingAnchorPrepare(LEngine engine, long? entry)
     {
-        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
+        TEditorFixture editor = new(TInterfaceEditor.TEditorCreate(engine));
         editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
-        editor.CEditorEntryOpen(entry);
+        editor.TEditorFixtureOpen(entry);
         return editor;
     }
 }

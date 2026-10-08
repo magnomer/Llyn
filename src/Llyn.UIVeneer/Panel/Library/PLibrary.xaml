@@ -33,62 +33,14 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <ToggleButton
-                    x:Name="POrderDropper"
-                    Grid.Column="0"
-                    Style="{StaticResource Theme.Search.Dropper}"
-                    ToolTip="{DynamicResource Order.Title}">
-                    <local:QIconImage x:Name="POrderIcon" Width="24" Height="24" />
-                </ToggleButton>
+                <veneer:PChoiceOrder x:Name="PLibraryOrder" Grid.Column="0" />
                 <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
                 <TextBox
                     x:Name="PInquiry"
                     Grid.Column="2"
                     Style="{StaticResource Theme.Search.Field}" />
                 <Rectangle Grid.Column="3" Margin="2,0,5,0" Style="{StaticResource Theme.Search.Divider}" />
-                <ToggleButton
-                    x:Name="PSieveDropper"
-                    Grid.Column="4"
-                    Style="{StaticResource Theme.Search.Dropper}"
-                    ToolTip="{DynamicResource Sieve.Title}">
-                    <Grid Width="24" Height="24">
-                        <local:QIconImage x:Name="PSieveIcon" Width="24" Height="24" />
-                        <Ellipse
-                            x:Name="PSieveMark"
-                            Width="6"
-                            Height="6"
-                            Margin="0,2,1,0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Top"
-                            Fill="{StaticResource Theme.Accent}"
-                            Visibility="Collapsed" />
-                    </Grid>
-                </ToggleButton>
-                <Popup
-                    x:Name="POrderDropdown"
-                    Width="252"
-                    AllowsTransparency="True"
-                    Placement="Bottom"
-                    StaysOpen="False"
-                    VerticalOffset="6">
-                    <Border Margin="10" Padding="8" Style="{StaticResource Theme.Popup.Surface}">
-                        <StackPanel x:Name="POrderList">
-                            <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Order.Title}" />
-                        </StackPanel>
-                    </Border>
-                </Popup>
-                <Popup
-                    x:Name="PSieveDropdown"
-                    Width="190"
-                    AllowsTransparency="True"
-                    HorizontalOffset="-151"
-                    Placement="Bottom"
-                    StaysOpen="False"
-                    VerticalOffset="6">
-                    <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
-                        <StackPanel x:Name="PSieveList" />
-                    </Border>
-                </Popup>
+                <veneer:PChoiceFilter x:Name="PLibraryFilter" Grid.Column="4" />
             </Grid>
         </Border>
 
@@ -122,74 +74,12 @@
         </Grid>
 
         <local:QRail Grid.Row="0" Grid.Column="1" Margin="0,0,0,18">
+            <veneer:PPanelRail x:Name="PLibraryRail" />
             <Border Style="{StaticResource Theme.Command.Group}">
-                <StackPanel Orientation="Horizontal">
-                    <Button
-                        x:Name="PLibraryFresh"
-                        Content="{DynamicResource Scribe.New}"
-                        Style="{StaticResource Theme.Command.Segment}" />
-                    <Button
-                        x:Name="PLibraryStore"
-                        Content="{DynamicResource Scribe.Save}"
-                        IsEnabled="False"
-                        Style="{StaticResource Theme.Command.Primary}" />
-                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
-                    <StackPanel x:Name="PLibraryVoyage" Orientation="Horizontal">
-                        <Button
-                            x:Name="PLibraryEarlier"
-                            IsEnabled="False"
-                            Style="{StaticResource Theme.Command.Segment}"
-                            ToolTip="{DynamicResource Voyage.Retreat}" />
-                        <Button
-                            x:Name="PLibraryLater"
-                            IsEnabled="False"
-                            Style="{StaticResource Theme.Command.Segment}"
-                            ToolTip="{DynamicResource Voyage.Advance}" />
-                    </StackPanel>
-                    <StackPanel x:Name="PLibraryChronicle" Orientation="Horizontal" Visibility="Collapsed">
-                        <Button
-                            x:Name="PLibraryBackward"
-                            IsEnabled="False"
-                            Style="{StaticResource Theme.Command.Segment}"
-                            ToolTip="{DynamicResource Chronicle.Undo}" />
-                        <Button
-                            x:Name="PLibraryForward"
-                            IsEnabled="False"
-                            Style="{StaticResource Theme.Command.Segment}"
-                            ToolTip="{DynamicResource Chronicle.Redo}" />
-                    </StackPanel>
-                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
-                    <Button
-                        x:Name="PLibraryMarkup"
-                        Content="{DynamicResource List.Import}"
-                        Style="{StaticResource Theme.Command.Segment}" />
-                    <Button
-                        x:Name="PLibraryPortrait"
-                        Content="{DynamicResource Scribe.Export}"
-                        Style="{StaticResource Theme.Command.Segment}" />
-                    <Button
-                        x:Name="PLibraryPress"
-                        Content="{DynamicResource Scribe.Print}"
-                        Style="{StaticResource Theme.Command.Segment}" />
-                </StackPanel>
-            </Border>
-            <Border
-                x:Name="PLibraryMode"
-                IsEnabled="False"
-                Style="{StaticResource Theme.Command.Group}">
-                <StackPanel Orientation="Horizontal">
-                    <RadioButton
-                        x:Name="PLibraryViewer"
-                        Content="{DynamicResource Scribe.View}"
-                        GroupName="PLibraryMode"
-                        IsChecked="True"
-                        Style="{StaticResource Theme.Command.Mode}" />
-                    <RadioButton
-                        x:Name="PLibraryScribe"
-                        Content="{DynamicResource Scribe.Edit}"
-                        GroupName="PLibraryMode"
-                        Style="{StaticResource Theme.Command.Mode}" />
-                </StackPanel>
+                <Button
+                    x:Name="PLibraryMarkup"
+                    Content="{DynamicResource List.Import}"
+                    Style="{StaticResource Theme.Command.Segment}" />
             </Border>
         </local:QRail>
 

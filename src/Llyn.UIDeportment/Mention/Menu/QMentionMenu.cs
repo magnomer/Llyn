@@ -9,42 +9,72 @@ using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
-public partial class QWindow
+internal sealed class QMentionMenu
 {
+    private readonly CNavigation _qMentionMenuNavigation;
+
     private readonly ObservableCollection<PMentionItem> _qMentionItem = [];
 
-    private Action<PMentionItem> _qMentionChosen = static _ => { };
+    private QMentionAsk? _qMentionMeaningAsk;
 
-    private Popup QMentionMenu => (Popup)_qWindowSurface.FindName("PMentionMenu");
-
-    private TextBlock QMentionTitle => (TextBlock)_qWindowSurface.FindName("PMentionTitle");
-
-    private ListBox QMentionList => (ListBox)_qWindowSurface.FindName("PMentionList");
-
-    internal void QMentionOfferRefine(FrameworkElement anchor, Rect place, CMentionOffer offer)
+    internal QMentionMenu(Window surface, CNavigation navigation)
     {
-        ArgumentNullException.ThrowIfNull(offer);
+        ArgumentNullException.ThrowIfNull(surface);
+        ArgumentNullException.ThrowIfNull(navigation);
 
-        QMentionMenuRefine(
-            anchor,
-            place,
-            offer.CMentionOfferKey,
-            PMentionItem.PMentionItemCreate(offer.CMentionOfferEntry),
-            item => _cNavigation.CNavigationEntryOpen(item.PMentionItemEntry));
+        QMentionPopup = (Popup)surface.FindName("PMentionMenu");
+        QMentionTitle = (TextBlock)surface.FindName("PMentionTitle");
+        QMentionList = (ListBox)surface.FindName("PMentionList");
+        _qMentionMenuNavigation = navigation;
+
+        surface.SetValue(PMention.PMentionHostProperty, this);
+        QMentionList.ItemsSource = _qMentionItem;
+        QLookItem.QLookItemAttach(QMentionList, QMentionRowRefine);
+        QMentionPopup.Closed += (_, _) => QMentionMenuHide();
+        surface.PreviewKeyDown += QMentionKeyObserve;
+        surface.Deactivated += QMentionLeaveRefine;
+        navigation.CNavigationArrived += QMentionMenuHide;
     }
 
-    internal void QMentionMeaningRefine(
-        FrameworkElement anchor, Rect place, CMentionSense sense, Action<FrameworkElement, long> chosen)
+    private Popup QMentionPopup { get; }
+
+    private TextBlock QMentionTitle { get; }
+
+    private ListBox QMentionList { get; }
+
+    internal void QMentionOfferRefine(PMention anchor, CMentionOffer? offer)
+    {
+        ArgumentNullException.ThrowIfNull(anchor);
+
+        if (offer is null)
+        {
+            return;
+        }
+
+        QMentionEntryRefine(anchor, anchor.PMentionPlaceRead(offer.CMentionOfferUnit), offer);
+    }
+
+    internal QMentionAsk QMentionMeaningRefine(FrameworkElement anchor, Rect place, CMentionSense sense)
     {
         ArgumentNullException.ThrowIfNull(sense);
-        ArgumentNullException.ThrowIfNull(chosen);
 
         QMentionMenuRefine(
             anchor,
             place,
             sense.CMentionSenseKey,
-            PMentionItem.PMentionItemCreate(sense.CMentionSenseRow),
-            item => chosen(anchor, item.PMentionItemSense));
+            PMentionItem.PMentionItemCreate(sense.CMentionSenseRow));
+        QMentionAsk ask = new(anchor);
+        _qMentionMeaningAsk = ask;
+        return ask;
+    }
+
+    private void QMentionEntryRefine(FrameworkElement anchor, Rect place, CMentionOffer offer)
+    {
+        QMentionMenuRefine(
+            anchor,
+            place,
+            offer.CMentionOfferKey,
+            PMentionItem.PMentionItemCreate(offer.CMentionOfferEntry));
     }
 
     private void QMentionRowRefine(FrameworkElement container, object item, string? _)
@@ -94,19 +124,15 @@ public partial class QWindow
         e.Handled = true;
     }
 
-    internal void QMentionMenuHide()
+    private void QMentionMenuHide()
     {
-        QMentionMenu.IsOpen = false;
+        QMentionPopup.IsOpen = false;
         QMentionList.SelectedIndex = -1;
         _qMentionItem.Clear();
+        _qMentionMeaningAsk = null;
     }
 
-    private void QMentionMenuRefine(
-        FrameworkElement anchor,
-        Rect place,
-        string key,
-        IReadOnlyList<PMentionItem> rows,
-        Action<PMentionItem> chosen)
+    private void QMentionMenuRefine(FrameworkElement anchor, Rect place, string key, IReadOnlyList<PMentionItem> rows)
     {
         ArgumentNullException.ThrowIfNull(anchor);
 
@@ -121,12 +147,11 @@ public partial class QWindow
             return;
         }
 
-        _qMentionChosen = chosen;
         QMentionTitle.SetResourceReference(TextBlock.TextProperty, key);
-        QMentionMenu.PlacementTarget = anchor;
-        QMentionMenu.HorizontalOffset = place.X;
-        QMentionMenu.VerticalOffset = place.Bottom - anchor.ActualHeight;
-        QMentionMenu.IsOpen = true;
+        QMentionPopup.PlacementTarget = anchor;
+        QMentionPopup.HorizontalOffset = place.X;
+        QMentionPopup.VerticalOffset = place.Bottom - anchor.ActualHeight;
+        QMentionPopup.IsOpen = true;
         QMentionList.SelectedIndex = 0;
     }
 
@@ -146,7 +171,7 @@ public partial class QWindow
             return;
         }
 
-        if (e.Key == Key.Escape && QMentionMenu.IsOpen)
+        if (e.Key == Key.Escape && QMentionPopup.IsOpen)
         {
             QMentionMenuHide();
             e.Handled = true;
@@ -168,7 +193,20 @@ public partial class QWindow
 
     private void QMentionMenuSelect(PMentionItem item)
     {
+        QMentionAsk? ask = _qMentionMeaningAsk;
         QMentionMenuHide();
-        _qMentionChosen(item);
+
+        if (ask is null)
+        {
+            _qMentionMenuNavigation.CNavigationEntryOpen(item.PMentionItemEntry);
+            return;
+        }
+
+        ask.QMentionAskSettle(item.PMentionItemSense);
+    }
+
+    private void QMentionLeaveRefine(object? sender, EventArgs e)
+    {
+        QMentionMenuHide();
     }
 }

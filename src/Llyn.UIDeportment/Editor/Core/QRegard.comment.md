@@ -1,5 +1,5 @@
 # QRegard.cs
-Hash: `527f877405e74e29`
+Hash: `36d9c266748a4e06`
 
 ## `internal sealed class QRegard`
 
@@ -11,8 +11,9 @@ It holds no draft state, and every write reads the editor deportment's esteem.
 
 Wires the strip's clicks once, right after the editor has taken over its markup's name scope.
 
-## `internal void QRegardIntroduce(CEditor editor)`
+## `internal void QRegardIntroduce(CDesk desk, CEsteem esteem)`
 
+Holds the desk, whose stored verdict enables the strip, and the esteem facet the strip reads and writes.
 Subscribes the favourite, grasp and frequency notices, and sets how many grasp steps the mark draws.
 A tenure start reads every part of the strip again, one subscriber each, since a bulletin comes only on change.
 
@@ -20,7 +21,7 @@ A tenure start reads every part of the strip again, one subscriber each, since a
 
 The label previews the step under the pointer, so a click never lands on an unread step.
 
-## `private Border QRegardFrequencyChip => QContract.QContractFind<Border>(_qRegardSurface, "PEditorFrequencyChip");`
+## `private Border QRegardFrequencyChip`
 
 The frequency chip sits under the part-of-speech chips, drawn as the reading view draws it.
 It is read only here as there, since a frequency is fetched rather than typed.

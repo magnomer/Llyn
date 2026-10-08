@@ -1,5 +1,5 @@
 # TErrandNotation.cs
-Hash: `4adafd8bf93e48a8`
+Hash: `2cf220a9fd7b420f`
 
 ## `public sealed class TErrandNotation`
 
@@ -24,7 +24,8 @@ Takes the next step the desk's marshal queued, failing after five seconds so a l
 
 Reads a notation state as each row's source and reading texts, for comparing the raised states in order.
 
-## `internal static CEditor TErrandNotationPrepare(LEngine engine, string language, string headword)`
+## `internal static TEditorFixture TErrandNotationPrepare(LEngine engine, string language, string headword)`
 
 Opens a new draft in the pack's language with the headword typed, as the input tab holds it.
 `TErrandNotationRoll` and most of `TErrandNotationReading` build their editor through it.
+It answers the fixture, so a test reads only the desk, entry and timbre facets.

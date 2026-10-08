@@ -1,5 +1,5 @@
 # TEditorField.cs
-Hash: `db4f55d5e209747d`
+Hash: `b1a9c35b8375e712`
 
 ## `public sealed class TEditorField`
 
@@ -18,26 +18,27 @@ An editor closed and then reopened hears a fold toggled in another editor again,
 The editor reads its draft's language, and an opened workspace opens a fresh draft in it.
 The observers the editor attaches show the draft through the marshal the driver hands.
 
-## `internal static CEditor TEditorFieldPrepare(LEngine engine)`
+## `internal static TEditorFixture TEditorFieldPrepare(LEngine engine)`
 
 Builds an input editor whose marshal runs each action at once.
 
-## `internal static CEditor TEditorFieldPrepare(LEngine engine, Action<Action> marshal)`
+## `internal static TEditorFixture TEditorFieldPrepare(LEngine engine, Action<Action> marshal)`
 
 Builds an input editor with no delay and the given marshal, and opens a fresh draft in it.
+It answers the fixture, so a test reads only the facets it needs.
 
-## `internal static long TEditorSheetAdd(CEditor editor)`
+## `internal static long TEditorSheetAdd(TEditorFixture editor)`
 
 Appends a Meaning card to the held draft and answers its id.
 
-## `internal static CCardDraft TEditorCardRead(CEditor editor, long sheet)`
+## `internal static CCardDraft TEditorCardRead(TEditorFixture editor, long sheet)`
 
 The card as the editor's draft read shows it.
 
-## `private static long TEditorSentenceAdd(CEditor editor, long sheet)`
+## `private static long TEditorSentenceAdd(TEditorFixture editor, long sheet)`
 
 Gives the card one written sentence and answers its id, since a gloss needs the sentence's example.
 
-## `private static IReadOnlyList<CGlossDraft> TEditorGlossRead(CEditor editor, long sheet)`
+## `private static IReadOnlyList<CGlossDraft> TEditorGlossRead(TEditorFixture editor, long sheet)`
 
 The glosses of the card's first sentence, as the editor's draft read shows them.

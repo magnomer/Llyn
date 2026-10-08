@@ -63,6 +63,12 @@ internal static class TInterfaceEditor
 
     internal static void TEditorVistaRestore(this CEditor editor, LVista vista) => editor.LEditorVistaRestore(vista);
 
+    internal static void TEditorVistaRestore(this TEditorFixture fixture, LVista vista) =>
+        fixture.TEditorFixtureEditor.LEditorVistaRestore(vista);
+
+    internal static CEntryDraft? TEditorDraftRead(this TEditorFixture fixture) =>
+        fixture.TEditorFixtureEditor.TEditorDraftRead();
+
     internal static CEntryDraft? TEditorDraftRead(this CEditor editor) =>
         editor.CEditorDesk.CDeskDraft.CDeskDraftTenure is LTenure held
         && editor.CEditorDesk.CDeskDraft.CDeskDraftChip is LQuillChip chip
@@ -74,4 +80,7 @@ internal static class TInterfaceEditor
             : null;
 
     internal static bool TEditorFinish(this CEditor editor, bool store) => editor.LEditorFinish(store);
+
+    internal static bool TEditorFinish(this TEditorFixture fixture, bool store) =>
+        fixture.TEditorFixtureEditor.LEditorFinish(store);
 }

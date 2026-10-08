@@ -18,11 +18,11 @@ internal sealed class QWing
 
     private readonly QIndex _qIndex;
 
-    private QWindow _qWingHost = null!;
+    private CAtelier _cAtelier = null!;
+
+    private CEnvoy _cEnvoy = null!;
 
     private CWing _cWing = null!;
-
-    private QLectern _qWingLectern = null!;
 
     internal QWing(UserControl surface)
     {
@@ -81,26 +81,26 @@ internal sealed class QWing
 
     private TextBlock QWingEmpty => QContract.QContractFind<TextBlock>(_qWingSurface, "PWingEmpty");
 
-    internal void QWingIntroduce(QWindow host, bool left)
+    internal void QWingIntroduce(CAtelier atelier, CEnvoy envoy, QVolume volume, QMentionMenu mentionMenu, bool left)
     {
-        _qWingHost = host;
-        _cWing = CWing.CWingCreate(host.QWindowAtelier, host.QWindowEnvoy, left);
-        _qWingLectern = new QLectern(_cWing.CWingDisplay);
+        ArgumentNullException.ThrowIfNull(atelier);
 
+        _cAtelier = atelier;
+        _cEnvoy = envoy;
+        _cWing = CWing.CWingCreate(atelier, envoy, left);
         _cWing.CWingLoaded += QWingIndexRefine;
         _cWing.CWingRowsChanged += QWingIndexRefine;
         _cWing.CWingChanged += QObserver.QObserverCreate<CBulletin>(_qWingSurface, QWingIndexRefine);
-        host.QWindowAtelier.CAtelierWorkspace.CWorkspaceOpened += QWingRefine;
+        atelier.CAtelierWorkspace.CWorkspaceOpened += QWingRefine;
 
-        _qWingDisplay.QDisplayIntroduce(host, _qWingLectern);
+        _qWingDisplay.QDisplayIntroduce(atelier, envoy, volume, mentionMenu, _cWing.CWingDisplay);
     }
 
     private async void QWingRefine()
     {
         _qIndex.QIndexClearRefine();
         IReadOnlyList<string> languages =
-            await _qWingHost.QWindowAtelier.CAtelierCatalog.CCatalogEnsignLoad(
-                _qWingHost.QWindowEnvoy, QEnsignImage.QEnsignDraw);
+            await _cAtelier.CAtelierCatalog.CCatalogEnsignLoad(_cEnvoy, QEnsignImage.QEnsignDraw);
 
         QChoice.QChoiceOrderBuild(QWingOrderList, "Order", QWingOrderObserve, CLibrary.CLibraryOrderRead());
         QChoice.QChoiceOrderApply(QWingOrderDropdown, _cWing.CWingOrder);

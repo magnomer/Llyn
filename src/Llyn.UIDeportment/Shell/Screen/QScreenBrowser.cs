@@ -92,7 +92,7 @@ internal sealed class QScreenBrowser
         string paper = _qScreenPaper;
         WebView2CompositionControl browser = _qScreenBrowser ??= QScreenBrowserCreate();
 
-        if (Window.GetWindow(_qScreenBrowserSurface)?.Tag is not QWindow host)
+        if (Window.GetWindow(_qScreenBrowserSurface)?.Tag is not QWindowScreen screen)
         {
             _qScreenBrowserDriver.QScreenNoticeRefine();
             return;
@@ -100,12 +100,12 @@ internal sealed class QScreenBrowser
 
         try
         {
-            await browser.EnsureCoreWebView2Async(await host.QWindowScreen.QScreenSettingRead().ConfigureAwait(true))
+            await browser.EnsureCoreWebView2Async(await screen.QScreenSettingRead().ConfigureAwait(true))
                 .ConfigureAwait(true);
         }
         catch (Exception)
         {
-            host.QWindowScreen.QScreenSettingReset();
+            screen.QScreenSettingReset();
             _qScreenBrowserDriver.QScreenNoticeRefine();
             return;
         }

@@ -1,5 +1,6 @@
 using System;
 using System.Windows;
+using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -14,9 +15,11 @@ internal sealed class QInput
         _qInputEditor = new QEditor(QContract.QContractFind<FrameworkElement>(surface, "PEditor"));
     }
 
-    internal void QInputIntroduce(QWindow host)
+    internal void QInputIntroduce(CAtelier atelier, CEnvoy envoy, QVolume volume, QMentionMenu mentionMenu)
     {
-        _qInputEditor.QEditorIntroduce(host, host.QWindowAtelier.CAtelierInputCreate(host.QWindowEnvoy));
+        ArgumentNullException.ThrowIfNull(atelier);
+
+        _qInputEditor.QEditorIntroduce(atelier, envoy, volume, mentionMenu, atelier.CAtelierInputCreate(envoy));
     }
 
     internal void QInputExitRefine()

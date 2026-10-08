@@ -1,5 +1,5 @@
 # CSoundingAnchor.cs
-Hash: `ee255fb41a80aa1d`
+Hash: `e74df300b44bd469`
 
 ## `public sealed class CSoundingAnchor`
 
@@ -17,9 +17,16 @@ The quill needs the reflex port the block holds, so the menu borrows it rather t
 
 The reflex row the open menu edits, or null while the menu is closed.
 
-## `public static CSoundingAnchor CSoundingAnchorCreate(CEditor editor)`
+## `internal CSoundingAnchor(CKindred kindred)`
 
-The anchor menu over the reflex block of `editor`, built by the driver that shows that editor.
+Keeps the reflex block and starts with no row selected.
+The factory below is the public way to build it.
+
+## `public static CSoundingAnchor CSoundingAnchorCreate(CKindred kindred)`
+
+The anchor menu over the reflex block of `kindred`, built by the driver that shows its editor.
+It takes only the kindred facet, the one part of the editor it reads.
+The constructor checks `kindred` for null.
 It stands outside `CSounding`, whose reads hold no selection, and outside `CEditor`, whose gates are the entry's.
 
 ## `public CAnchor CSoundingAnchorOpen(long reflex)`

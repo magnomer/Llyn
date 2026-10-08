@@ -1,5 +1,5 @@
 # TInterfaceConductDesk.cs
-Hash: `f574fb28339c25ff`
+Hash: `af2e9418497d162b`
 
 ## `internal static class TInterfaceConductDesk`
 
@@ -103,9 +103,9 @@ Builds a session over `desk` alone, with no editor, as the guild does.
 The overload over an editor, below, records each editor finish in `seen`.
 Both hand a fake envoy that answers false, since no session test asks the leave question.
 
-## `internal static CSession TSessionCreate(CDesk desk, CEditor editor, Func<bool> shownSeam, List<string> seen)`
+## `internal static CSession TSessionCreate(CDesk desk, TEditorFixture editor, Func<bool> shownSeam, List<string> seen)`
 
-Builds a session over `desk` and `editor` with the given shown seam.
+Builds a session over `desk` and the desk of the editor `editor` wraps, with the given shown seam.
 Each editor finish adds `Finish` or `Drop` to `seen` and answers yes.
 
 ## `internal static bool TSessionChangeCheck(this CSession session)`

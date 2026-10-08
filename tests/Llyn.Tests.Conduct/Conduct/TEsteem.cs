@@ -13,14 +13,15 @@ public sealed class TEsteem
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LEntry entry = TEsteemEntryPrepare(engine);
-        CEditor editor = TEsteemEditorPrepare(engine, "library");
-        editor.CEditorEntryOpen(entry.LEntryId);
+        TEditorFixture editor = TEsteemEditorPrepare(engine, "library");
+        editor.TEditorFixtureOpen(entry.LEntryId);
+        CEsteem esteem = editor.TEditorFixtureEsteem;
 
-        editor.CEditorEsteem.CEsteemGraspSet(4);
+        esteem.CEsteemGraspSet(4);
 
-        Assert.Equal(4, editor.CEditorEsteem.CEsteemGrasp);
+        Assert.Equal(4, esteem.CEsteemGrasp);
         Assert.Equal(4, engine.TEngineGraspRead(entry.LEntryId));
-        Assert.NotEqual(string.Empty, editor.CEditorEsteem.CEsteemGraspRead(4));
+        Assert.NotEqual(string.Empty, esteem.CEsteemGraspRead(4));
     }
 
     [Fact]
@@ -29,14 +30,15 @@ public sealed class TEsteem
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LEntry entry = TEsteemEntryPrepare(engine);
-        CEditor editor = TEsteemEditorPrepare(engine, "library");
-        editor.CEditorEntryOpen(entry.LEntryId);
-        editor.CEditorEsteem.CEsteemGraspSet(5);
-        Assert.Equal(5, editor.CEditorEsteem.CEsteemGrasp);
+        TEditorFixture editor = TEsteemEditorPrepare(engine, "library");
+        editor.TEditorFixtureOpen(entry.LEntryId);
+        CEsteem esteem = editor.TEditorFixtureEsteem;
+        esteem.CEsteemGraspSet(5);
+        Assert.Equal(5, esteem.CEsteemGrasp);
 
-        editor.CEditorEsteem.CEsteemGraspSet(5);
+        esteem.CEsteemGraspSet(5);
 
-        Assert.Equal(0, editor.CEditorEsteem.CEsteemGrasp);
+        Assert.Equal(0, esteem.CEsteemGrasp);
         Assert.Equal(0, engine.TEngineGraspRead(entry.LEntryId));
     }
 
@@ -45,16 +47,17 @@ public sealed class TEsteem
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEsteemEditorPrepare(engine, "input");
-        editor.CEditorEntryOpen(null);
+        TEditorFixture editor = TEsteemEditorPrepare(engine, "input");
+        editor.TEditorFixtureOpen(null);
+        CEsteem esteem = editor.TEditorFixtureEsteem;
         int announced = 0;
-        editor.CEditorEsteem.CEsteemGraspChanged += () => announced++;
+        esteem.CEsteemGraspChanged += () => announced++;
 
-        editor.CEditorEsteem.CEsteemGraspSet(4);
+        esteem.CEsteemGraspSet(4);
 
-        Assert.Equal(0, editor.CEditorEsteem.CEsteemGrasp);
+        Assert.Equal(0, esteem.CEsteemGrasp);
         Assert.Equal(1, announced);
-        Assert.Equal(string.Empty, editor.CEditorEsteem.CEsteemGraspRead(4));
+        Assert.Equal(string.Empty, esteem.CEsteemGraspRead(4));
     }
 
     [Fact]
@@ -63,17 +66,18 @@ public sealed class TEsteem
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LEntry entry = TEsteemEntryPrepare(engine);
-        CEditor editor = TEsteemEditorPrepare(engine, "library");
-        editor.CEditorEntryOpen(entry.LEntryId);
+        TEditorFixture editor = TEsteemEditorPrepare(engine, "library");
+        editor.TEditorFixtureOpen(entry.LEntryId);
+        CEsteem esteem = editor.TEditorFixtureEsteem;
         int announced = 0;
-        editor.CEditorEsteem.CEsteemFavoriteChanged += () => announced++;
+        esteem.CEsteemFavoriteChanged += () => announced++;
 
-        editor.CEditorEsteem.CEsteemFavoriteSet(true);
-        Assert.True(editor.CEditorEsteem.CEsteemFavorite);
+        esteem.CEsteemFavoriteSet(true);
+        Assert.True(esteem.CEsteemFavorite);
         Assert.True(engine.TEngineFavoriteCheck(entry.LEntryId));
 
-        editor.CEditorEsteem.CEsteemFavoriteSet(false);
-        Assert.False(editor.CEditorEsteem.CEsteemFavorite);
+        esteem.CEsteemFavoriteSet(false);
+        Assert.False(esteem.CEsteemFavorite);
         Assert.Equal(2, announced);
     }
 
@@ -82,13 +86,13 @@ public sealed class TEsteem
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor draftEditor = TEsteemEditorPrepare(engine, "input");
-        draftEditor.CEditorEntryOpen(null);
-        CEditor storedEditor = TEsteemEditorPrepare(engine, "library");
-        storedEditor.CEditorEntryOpen(TEsteemEntryPrepare(engine).LEntryId);
+        TEditorFixture draftEditor = TEsteemEditorPrepare(engine, "input");
+        draftEditor.TEditorFixtureOpen(null);
+        TEditorFixture storedEditor = TEsteemEditorPrepare(engine, "library");
+        storedEditor.TEditorFixtureOpen(TEsteemEntryPrepare(engine).LEntryId);
 
-        Assert.Equal(LGrasp.LGraspStep, draftEditor.CEditorEsteem.CEsteemGraspStep);
-        Assert.Equal(LGrasp.LGraspStep, storedEditor.CEditorEsteem.CEsteemGraspStep);
+        Assert.Equal(LGrasp.LGraspStep, draftEditor.TEditorFixtureEsteem.CEsteemGraspStep);
+        Assert.Equal(LGrasp.LGraspStep, storedEditor.TEditorFixtureEsteem.CEsteemGraspStep);
     }
 
     [Fact]
@@ -96,10 +100,10 @@ public sealed class TEsteem
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEsteemEditorPrepare(engine, "input");
-        editor.CEditorEntryOpen(null);
+        TEditorFixture editor = TEsteemEditorPrepare(engine, "input");
+        editor.TEditorFixtureOpen(null);
 
-        Assert.Null(editor.CEditorEsteem.CEsteemFrequencyRead("once"));
+        Assert.Null(editor.TEditorFixtureEsteem.CEsteemFrequencyRead("once"));
     }
 
     [Theory]
@@ -154,9 +158,9 @@ public sealed class TEsteem
             "water", "English", "ˈwɔːtə", string.Empty, [TInterface.TCardCreate("a liquid", 1)], []));
     }
 
-    private static CEditor TEsteemEditorPrepare(LEngine engine, string tab)
+    private static TEditorFixture TEsteemEditorPrepare(LEngine engine, string tab)
     {
-        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
+        TEditorFixture editor = new(TInterfaceEditor.TEditorCreate(engine));
         editor.TEditorVistaRestore(engine.TEngineVistaStart(tab, LCatalogOrder.LCatalogOrderHeadword));
         return editor;
     }

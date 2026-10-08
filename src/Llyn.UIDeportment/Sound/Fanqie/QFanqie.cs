@@ -5,7 +5,6 @@ using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -132,12 +131,6 @@ public sealed class QFanqie : Decorator
     internal event Action<string?>? QFanqieStemNotice;
 
     internal event Action<long, int, bool>? QFanqieRepresentativeNotice;
-
-    internal void QFanqieRefine(IReadOnlyList<CFanqieGroup> groups, bool pending)
-    {
-        SetCurrentValue(QFanqieItemsProperty, QFanqieItem.QFanqieItemScan(groups));
-        SetCurrentValue(QFanqiePendingProperty, pending);
-    }
 
     private void QFanqieDiweiObserve(object sender, ExecutedRoutedEventArgs e)
     {

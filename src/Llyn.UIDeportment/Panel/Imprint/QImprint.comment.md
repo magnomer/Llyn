@@ -1,5 +1,5 @@
 # QImprint.cs
-Hash: `5ec4348fb74cf1cd`
+Hash: `6fcb0592b6d47f30`
 
 ## `internal sealed class QImprint : QChronicleHost`
 
@@ -7,23 +7,20 @@ The driver of the Source edit area, built by the Source panel over its veneer pa
 It holds no state, since Conduct's `CImprint` holds the desk, the blank row and the byline.
 `CImprint` also wires its desk's notices at build, so this driver attaches no observer.
 Every handler hands what the page carries to one gate, and every update writes what Conduct answers.
-The fields, the credit rows and the byline all live in this one file, since none of them holds anything.
+It drives the four fields and the kind chip, and hands the credit rows and the byline to `QAuthor`.
 It answers the window's undo and redo keys as `QChronicleHost`, attached to its surface since the surface is no driver.
 
 ## `internal QImprint(UserControl surface)`
 
 Takes the page and pulls each part through `QContract.QContractFind`.
-Seats the credit list.
-Subscribes the four fields, typing, keys and focus of the credit list, and its hover and focus.
-Ties the kind chip to its menu and attaches the credit and byline item fills.
-The credit fill subscribes the row's four handles and is followed by the handle update.
-The byline fill subscribes this driver's press handler on each row.
-The byline popup places itself under its field through the shared field helper.
+Builds `QAuthor` over the `PAuthor` grid, which wires the credit rows and the byline itself.
+Subscribes the four fields and ties the kind chip to its menu.
 
 ## `internal void QImprintIntroduce(CImprint imprint)`
 
-Takes the source editor the shelf composed and listens to its notices and its byline.
+Takes the source editor the shelf composed and listens to its Source notice.
 It builds the kind menu once from the editor's `CImprintKindRead`, since the menu is read through the editor's port.
+It hands the editor on to `QAuthorIntroduce`, so the author part listens to its own notices.
 It calls no gate, so the panel's introduce hands the engine one request only.
 
 ## `internal void QImprintCloseRefine()`
@@ -55,29 +52,21 @@ Writes the four fields, their placeholders, the kind chip and the tally from the
 A field whose text is unchanged keeps its caret.
 The framework ignores a write of the same text.
 
-## `private void QAuthorRefine()`
+## `private void QImprintTitleObserve(object sender, TextChangedEventArgs e)`
 
-Splices the credit rows, so a row that kept its Author and place keeps its field.
-The unsaved notice shows while no draft is held.
+Hands the typed title to `CImprintTitleSet`.
 
-## `private void QAuthorFocusRefine()`
+## `private void QImprintYearObserve(object sender, TextChangedEventArgs e)`
 
-Gives the keyboard to the blank credit row once the rows are spliced, when Conduct announces the focus.
+Hands the typed year to `CImprintYearSet`.
 
-## `private void QAuthorShelfIntroduce(FrameworkElement container)`
+## `private void QImprintUrlObserve(object sender, TextChangedEventArgs e)`
 
-Subscribes a realized credit row's four buttons, each to the handler of its own gate.
-A row realized again is unsubscribed first, so no button fires twice.
+Hands the typed address to `CImprintUrlSet`.
 
-## `private void QAuthorRestoreRefine()`
+## `private void QImprintNoteObserve(object sender, TextChangedEventArgs e)`
 
-Writes the held name back into whichever credit field has the keyboard.
-
-## `private void QBylineRefine()`
-
-Reads the offered rows, targets the popup at the focused field, and opens or closes it.
-The lit row follows the byline's index and is scrolled into view.
-The frame takes the field's width as its least width, as the markup once bound it.
+Hands the typed note to `CImprintNoteSet`.
 
 ## `private void QImprintKindObserve(object sender, RoutedEventArgs e)`
 
@@ -87,37 +76,3 @@ It then hands off to `QImprintKindRefine`, which shuts the chip.
 ## `private void QImprintKindRefine()`
 
 Shuts the kind chip so its menu closes after a pick.
-
-## `private void QAuthorAddObserve(object sender, RoutedEventArgs e)`
-
-The add button of a credit row, handed to `CImprintAuthorAdd` with the row's place and Author.
-None of these buttons hands the row's blank mark, so Conduct decides blankness from its own marker.
-The remove button hands its row to `CImprintAuthorRemove`.
-The earlier and later buttons hand theirs to `CImprintAuthorMove`, one place back or on.
-
-## `private void QAuthorTextObserve(object sender, TextChangedEventArgs e)`
-
-Typing in a credit field, passed on with whether the field has the keyboard.
-A field the edit area wrote has no keyboard, and the byline opens nothing for it.
-
-## `private void QAuthorKeyObserve(object sender, KeyEventArgs e)`
-
-A key in a credit field, handed to the gate of its key with the row it came from.
-Enter finishes the credit with the text and the lit byline row, and Escape cancels it.
-Down and Up move the lit byline row.
-The gate answers whether it took the key, and any other key is left to the field.
-Setting `Handled` from that verdict is routing, not a look.
-
-## `private void QAuthorLeaveObserve(object sender, KeyboardFocusChangedEventArgs e)`
-
-Leaving a credit field closes the byline through `CBylineClose`.
-It then hands the field to the row's revert, which drops what was typed there.
-
-## `private void QBylineObserve(object sender, MouseButtonEventArgs e)`
-
-A press on an offered byline row, subscribed on each realized row.
-
-## `private void QAuthorShelfRefine()`
-
-Shows every credit row's handles while the pointer or the caret is in the list, and hides them otherwise.
-It runs on the list's hover and focus changes and after every credit row fill.

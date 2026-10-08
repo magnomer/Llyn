@@ -24,7 +24,7 @@ public sealed class CCatalog
         return order.LSentenceOrderParticle is 0 or 1
             && order.LSentenceOrderDependence == 1 - order.LSentenceOrderParticle
                 ? new CSentenceOrder(order.LSentenceOrderParticle, order.LSentenceOrderDependence)
-                : new CSentenceOrder(0, 1);
+                : CSentenceOrder.CSentenceOrderPlain;
     }
 
     internal static long? LCatalogGlyphOpen(CEnvoy envoy, LSettingsPort settings, Func<long> resolve)

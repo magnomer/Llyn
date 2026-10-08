@@ -1,22 +1,33 @@
 # QCaption.cs
-Hash: `9401469e81e85eb8`
+Hash: `a94cfc236ad84fe3`
 
-## `public static class QCaption`
+## `public sealed class QCaption`
 
-The decisions behind the caption the program draws for itself.
-The veneer's caption and roof handlers hand every press here.
+The window frame the program draws for itself, since the system one is off.
+That is the caption buttons and dragging the window by its roof.
+Minimize and close go to the system commands.
+The loaded window is what each press acts on.
 
-## `public static void QCaptionMaximizeRefine(Window window)`
+## `public QCaption(Window window)`
+
+Keeps the loaded window whose caption and roof it drives.
+
+## `public void QCaptionIntroduce()`
+
+Each caption glyph strokes with its button's foreground through a binding set here.
+The roof and the caption buttons are subscribed here after the load.
+
+## `private void QCaptionMaximizeRefine(object sender, RoutedEventArgs e)`
 
 Toggles between maximized and restored rather than only maximizing.
 The caption's maximize button and a double press on the roof share this one switch.
 
-## `public static void QCaptionDragRefine(Window window, FrameworkElement roof, MouseButtonEventArgs e)`
+## `private void QRoofRefine(object sender, MouseButtonEventArgs e)`
 
 A double press on the roof toggles maximize instead of dragging.
 A maximized window is restored under the pointer before the drag starts.
 
-## `private static void QCaptionPointerRefine(Window window, FrameworkElement roof, MouseButtonEventArgs e)`
+## `private void QCaptionPointerRefine(MouseButtonEventArgs e)`
 
 The pointer keeps its share of the restored width.
 It stays at most half the roof's height below the top edge.

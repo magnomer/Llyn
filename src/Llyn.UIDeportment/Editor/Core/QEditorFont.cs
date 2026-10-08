@@ -9,7 +9,7 @@ internal sealed class QEditorFont
 {
     private readonly FrameworkElement _qEditorFontSurface;
 
-    private CEditor _cEditor = null!;
+    private CTimbre _cTimbre = null!;
 
     internal QEditorFont(FrameworkElement surface)
     {
@@ -24,19 +24,19 @@ internal sealed class QEditorFont
 
     private ItemsControl QEditorFontGlyph => QContract.QContractFind<ItemsControl>(_qEditorFontSurface, "PGlyph");
 
-    internal void QEditorFontIntroduce(CEditor editor)
+    internal void QEditorFontIntroduce(CEntry entry, CTimbre timbre)
     {
-        _cEditor = editor;
-        editor.CEditorEntry.CEntryDraftChanged += QEditorHeadwordRefine;
-        editor.CEditorEntry.CEntryDraftChanged += QEditorExampleRefine;
-        editor.CEditorEntry.CEntryDraftChanged += QEditorGlossRefine;
-        editor.CEditorEntry.CEntryDraftChanged += QEditorGlyphRefine;
+        _cTimbre = timbre;
+        entry.CEntryDraftChanged += QEditorHeadwordRefine;
+        entry.CEntryDraftChanged += QEditorExampleRefine;
+        entry.CEntryDraftChanged += QEditorGlossRefine;
+        entry.CEntryDraftChanged += QEditorGlyphRefine;
     }
 
     private void QEditorHeadwordRefine(CEntryDraft _)
     {
         QFontFace.QFontRefine(
-            _cEditor.CEditorTimbre.CTimbreFontRead(CFontRole.CFontRoleHeadword),
+            _cTimbre.CTimbreFontRead(CFontRole.CFontRoleHeadword),
             QEditorFontHeadword,
             QEditorFontGhost);
         QFontFace.QFontBaselineRefine(QEditorFontHeadword, QEditorFontGhost);
@@ -45,18 +45,18 @@ internal sealed class QEditorFont
     private void QEditorExampleRefine(CEntryDraft _)
     {
         QFontFace.QFontExampleRefine(
-            _qEditorFontSurface.Resources, _cEditor.CEditorTimbre.CTimbreFontRead(CFontRole.CFontRoleExample));
+            _qEditorFontSurface.Resources, _cTimbre.CTimbreFontRead(CFontRole.CFontRoleExample));
     }
 
     private void QEditorGlossRefine(CEntryDraft _)
     {
         QFontFace.QFontGlossRefine(
-            _qEditorFontSurface.Resources, _cEditor.CEditorTimbre.CTimbreFontRead(CFontRole.CFontRoleGloss));
+            _qEditorFontSurface.Resources, _cTimbre.CTimbreFontRead(CFontRole.CFontRoleGloss));
     }
 
     private void QEditorGlyphRefine(CEntryDraft _)
     {
         QFontFace.QFontGlyphRefine(
-            QEditorFontGlyph.Resources, _cEditor.CEditorTimbre.CTimbreFontRead(CFontRole.CFontRoleGlyph));
+            QEditorFontGlyph.Resources, _cTimbre.CTimbreFontRead(CFontRole.CFontRoleGlyph));
     }
 }

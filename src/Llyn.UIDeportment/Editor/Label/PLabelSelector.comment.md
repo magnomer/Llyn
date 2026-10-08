@@ -1,7 +1,7 @@
 # PLabelSelector.cs
-Hash: `5d02f6ec75586886`
+Hash: `60d91ff153e11579`
 
-## `internal sealed class PLabelSelector`
+## `internal sealed class PLabelSelector : DataTemplateSelector`
 
 Chooses which of the two shapes a Tag field item is drawn in.
 The field holds committed Tags and one open entry in a single collection.

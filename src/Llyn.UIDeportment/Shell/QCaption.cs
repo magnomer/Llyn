@@ -1,41 +1,87 @@
 using System;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Shapes;
 
 namespace Llyn.UIDeportment;
 
-public static class QCaption
+public sealed class QCaption
 {
-    public static void QCaptionMaximizeRefine(Window window)
+    private readonly Window _qCaptionWindow;
+
+    public QCaption(Window window)
     {
-        if (window.WindowState == WindowState.Maximized)
+        ArgumentNullException.ThrowIfNull(window);
+
+        _qCaptionWindow = window;
+    }
+
+    private Grid QRoof => (Grid)_qCaptionWindow.FindName("PRoof");
+
+    private Button QCaptionMinimize => (Button)_qCaptionWindow.FindName("PCaptionMinimize");
+
+    private Button QCaptionMaximize => (Button)_qCaptionWindow.FindName("PCaptionMaximize");
+
+    private Button QCaptionExit => (Button)_qCaptionWindow.FindName("PCaptionExit");
+
+    public void QCaptionIntroduce()
+    {
+        ((Shape)QCaptionMinimize.Content).SetBinding(
+            Shape.StrokeProperty, new Binding(nameof(Control.Foreground)) { Source = QCaptionMinimize });
+        ((Shape)QCaptionMaximize.Content).SetBinding(
+            Shape.StrokeProperty, new Binding(nameof(Control.Foreground)) { Source = QCaptionMaximize });
+        ((Shape)QCaptionExit.Content).SetBinding(
+            Shape.StrokeProperty, new Binding(nameof(Control.Foreground)) { Source = QCaptionExit });
+
+        QRoof.MouseLeftButtonDown += QRoofRefine;
+        QCaptionMinimize.Click += QCaptionMinimizeRefine;
+        QCaptionMaximize.Click += QCaptionMaximizeRefine;
+        QCaptionExit.Click += QCaptionExitRefine;
+    }
+
+    private void QCaptionMinimizeRefine(object sender, RoutedEventArgs e)
+    {
+        SystemCommands.MinimizeWindow(_qCaptionWindow);
+    }
+
+    private void QCaptionMaximizeRefine(object sender, RoutedEventArgs e)
+    {
+        if (_qCaptionWindow.WindowState == WindowState.Maximized)
         {
-            SystemCommands.RestoreWindow(window);
+            SystemCommands.RestoreWindow(_qCaptionWindow);
         }
         else
         {
-            SystemCommands.MaximizeWindow(window);
+            SystemCommands.MaximizeWindow(_qCaptionWindow);
         }
     }
 
-    public static void QCaptionDragRefine(Window window, FrameworkElement roof, MouseButtonEventArgs e)
+    private void QCaptionExitRefine(object sender, RoutedEventArgs e)
+    {
+        SystemCommands.CloseWindow(_qCaptionWindow);
+    }
+
+    private void QRoofRefine(object sender, MouseButtonEventArgs e)
     {
         if (e.ClickCount == 2)
         {
-            QCaptionMaximizeRefine(window);
+            QCaptionMaximizeRefine(sender, e);
             return;
         }
 
-        if (window.WindowState == WindowState.Maximized)
+        if (_qCaptionWindow.WindowState == WindowState.Maximized)
         {
-            QCaptionPointerRefine(window, roof, e);
+            QCaptionPointerRefine(e);
         }
 
-        window.DragMove();
+        _qCaptionWindow.DragMove();
     }
 
-    private static void QCaptionPointerRefine(Window window, FrameworkElement roof, MouseButtonEventArgs e)
+    private void QCaptionPointerRefine(MouseButtonEventArgs e)
     {
+        Window window = _qCaptionWindow;
         Point pointerInWindow = e.GetPosition(window);
         Point pointerOnScreen = window.PointToScreen(pointerInWindow);
         PresentationSource? source = PresentationSource.FromVisual(window);
@@ -52,6 +98,6 @@ public static class QCaption
 
         SystemCommands.RestoreWindow(window);
         window.Left = pointerOnScreen.X - (restoredWidth * horizontalRatio);
-        window.Top = pointerOnScreen.Y - Math.Min(pointerInWindow.Y, roof.ActualHeight / 2);
+        window.Top = pointerOnScreen.Y - Math.Min(pointerInWindow.Y, QRoof.ActualHeight / 2);
     }
 }

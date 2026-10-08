@@ -14,7 +14,9 @@ internal sealed class QTranscription
 
     private readonly ObservableCollection<QTranscriptionItem> _qTranscriptionItem = [];
 
-    private CEditor _cEditor = null!;
+    private CErrand _cErrand = null!;
+
+    private CTranscription _cTranscription = null!;
 
     private bool _qTranscriptionFree;
 
@@ -38,10 +40,11 @@ internal sealed class QTranscription
     private ItemsControl QTranscriptionList =>
         QContract.QContractFind<ItemsControl>(_qTranscriptionSurface, "PTranscription");
 
-    internal void QTranscriptionIntroduce(CEditor editor)
+    internal void QTranscriptionIntroduce(CErrand errand, CEntry entry, CTranscription transcription)
     {
-        _cEditor = editor;
-        editor.CEditorEntry.CEntryDraftChanged += QTranscriptionSheetRefine;
+        _cErrand = errand;
+        _cTranscription = transcription;
+        entry.CEntryDraftChanged += QTranscriptionSheetRefine;
     }
 
     private void QTranscriptionRefine(FrameworkElement container, object item, string? name)
@@ -82,7 +85,7 @@ internal sealed class QTranscription
     {
         if (sender is TextBox { DataContext: QTranscriptionItem row } field)
         {
-            _cEditor.CEditorTranscription.CTranscriptionSet(row.QTranscriptionItemId, field.Text);
+            _cTranscription.CTranscriptionSet(row.QTranscriptionItemId, field.Text);
         }
     }
 
@@ -90,13 +93,13 @@ internal sealed class QTranscription
     {
         if (sender is ComboBox { DataContext: QTranscriptionItem row, SelectedValue: string scheme })
         {
-            _cEditor.CEditorTranscription.CTranscriptionSchemeSet(row.QTranscriptionItemId, scheme);
+            _cTranscription.CTranscriptionSchemeSet(row.QTranscriptionItemId, scheme);
         }
     }
 
     private void QTranscriptionAddObserve(object sender, ExecutedRoutedEventArgs e)
     {
-        _cEditor.CEditorTranscription.CTranscriptionAdd(
+        _cTranscription.CTranscriptionAdd(
             (e.Parameter as QTranscriptionItem)?.QTranscriptionItemId);
     }
 
@@ -109,7 +112,7 @@ internal sealed class QTranscription
     {
         if (e.Parameter is QTranscriptionItem row)
         {
-            _cEditor.CEditorTranscription.CTranscriptionRemove(row.QTranscriptionItemId);
+            _cTranscription.CTranscriptionRemove(row.QTranscriptionItemId);
         }
     }
 
@@ -126,19 +129,19 @@ internal sealed class QTranscription
         if (e.Parameter is QTranscriptionItem row)
         {
             _qNotation.QNotationStartRefine(
-                _cEditor.CEditorDesk.CDeskErrand.CErrandTranscriptionStart(
+                _cErrand.CErrandTranscriptionStart(
                     row.QTranscriptionItemId, row.QTranscriptionItemScheme));
         }
     }
 
     private void QTranscriptionSheetRefine(CEntryDraft _)
     {
-        CTranscriptionSheet sheet = _cEditor.CEditorTranscription.CTranscriptionRead();
+        CTranscriptionSheet sheet = _cTranscription.CTranscriptionRead();
         QTranscriptionList.Visibility = sheet.CTranscriptionSheetShown ? Visibility.Visible : Visibility.Collapsed;
         _qTranscriptionFree = sheet.CTranscriptionSheetFree;
         CommandManager.InvalidateRequerySuggested();
 
-        PCard.PCardRowShow(
+        QLookItem.QLookItemShow(
             _qTranscriptionItem,
             sheet.CTranscriptionSheetRows,
             static row => row.QTranscriptionItemId,

@@ -38,10 +38,10 @@ public sealed class TFold
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        TFoldEditorPrepare(engine, null).CEditorFold.CFoldFanqieToggle(true);
-        TFoldEditorPrepare(engine, null).CEditorFold.CFoldScriptToggle(true);
+        TFoldEditorPrepare(engine, null).TEditorFixtureFold.CFoldFanqieToggle(true);
+        TFoldEditorPrepare(engine, null).TEditorFixtureFold.CFoldScriptToggle(true);
 
-        CFold fresh = TFoldEditorPrepare(engine, TFoldEntrySave(engine)).CEditorFold;
+        CFold fresh = TFoldEditorPrepare(engine, TFoldEntrySave(engine)).TEditorFixtureFold;
 
         Assert.True(fresh.CFoldFanqieOpened);
         Assert.True(fresh.CFoldScriptOpened);
@@ -54,18 +54,18 @@ public sealed class TFold
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CFold toggled = TFoldEditorPrepare(engine, null).CEditorFold;
-        CEditor second = TFoldEditorPrepare(engine, null);
+        CFold toggled = TFoldEditorPrepare(engine, null).TEditorFixtureFold;
+        CFold second = TFoldEditorPrepare(engine, null).TEditorFixtureFold;
         int changed = 0;
-        second.CEditorFold.CFoldChanged += () => changed++;
+        second.CFoldChanged += () => changed++;
 
         toggled.CFoldFanqieToggle(true);
         toggled.CFoldScriptToggle(true);
         toggled.CFoldScriptToggle(true);
 
         Assert.Equal(2, changed);
-        Assert.True(second.CEditorFold.CFoldFanqieOpened);
-        Assert.True(second.CEditorFold.CFoldScriptOpened);
+        Assert.True(second.CFoldFanqieOpened);
+        Assert.True(second.CFoldScriptOpened);
     }
 
     [Fact]
@@ -73,12 +73,12 @@ public sealed class TFold
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CFold toggled = TFoldEditorPrepare(engine, null).CEditorFold;
-        CEditor second = TFoldEditorPrepare(engine, null);
+        CFold toggled = TFoldEditorPrepare(engine, null).TEditorFixtureFold;
+        TEditorFixture second = TFoldEditorPrepare(engine, null);
         int changed = 0;
-        second.CEditorFold.CFoldChanged += () => changed++;
+        second.TEditorFixtureFold.CFoldChanged += () => changed++;
 
-        second.CEditorClose();
+        second.TEditorFixtureClose();
         toggled.CFoldFanqieToggle(true);
 
         Assert.Equal(0, changed);
@@ -133,7 +133,8 @@ public sealed class TFold
         using LEngine engine = TRigFake.TRigFakeStart(
             TRigFake.TRigFakeBuild() with { LRigSettings = faulting, LRigAudit = audit });
         LSettings before = engine.TEngineSettingsRead();
-        CFold fold = TInterfaceEditor.TEditorCreate(engine, TEnvoyFake.TEnvoyCreate(false, notices)).CEditorFold;
+        CFold fold = new TEditorFixture(
+            TInterfaceEditor.TEditorCreate(engine, TEnvoyFake.TEnvoyCreate(false, notices))).TEditorFixtureFold;
 
         fold.CFoldFanqieToggle(!before.LSettingsFanqieOpened);
 
@@ -149,11 +150,11 @@ public sealed class TFold
             "water", "English", "ˈwɔːtə", string.Empty, [TInterface.TCardCreate("a liquid", 1)], [])).LEntryId;
     }
 
-    private static CEditor TFoldEditorPrepare(LEngine engine, long? entry)
+    private static TEditorFixture TFoldEditorPrepare(LEngine engine, long? entry)
     {
-        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
+        TEditorFixture editor = new(TInterfaceEditor.TEditorCreate(engine));
         editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
-        editor.CEditorEntryOpen(entry);
+        editor.TEditorFixtureOpen(entry);
         return editor;
     }
 }

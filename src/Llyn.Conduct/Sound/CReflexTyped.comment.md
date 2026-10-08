@@ -1,19 +1,14 @@
 # CReflexTyped.cs
-Hash: `2cb16d864cfce53d`
+Hash: `5ebe59ff82f5b3d2`
 
-## `public sealed record CReflexTyped(CReflexField CReflexTypedField, string CReflexTypedText, IReadOnlyList<CReflexHead> CReflexTypedHeads)`
+## `public sealed record CReflexTyped(CReflex? CReflexTypedRow, IReadOnlyList<CReflexHead> CReflexTypedHeads)`
 
 The answer to one typed reflex cell, as `CKindred.CKindredSet` gives it.
-A driver writes its cell from this answer alone, never from what the user typed.
+A driver writes its row from this answer alone, never from what the user typed.
 
 **Parameters**
 
-- `CReflexTypedField`: the cell the answer is for.
-- `CReflexTypedText`: the text the cell now holds.
-  It is the typed text when the gate took it, else the text the draft holds.
+- `CReflexTypedRow`: the row as it now reads, built by `CReflex.CReflexTypedApply`.
+  It holds the typed text when the gate took it, else the text the draft holds.
+  It is null for a row the held draft lacks.
 - `CReflexTypedHeads`: every row's lead while a language is typed, else empty.
-
-## `public string CReflexTypedKey`
-
-The localization key the answered text is labelled under, by the rule of `CReflex.CReflexLanguageKey`.
-A driver relabels a typed language or kind from it, so the label never names the previous text.

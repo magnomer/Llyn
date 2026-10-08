@@ -1,5 +1,5 @@
 # CEntryList.cs
-Hash: `df6aa00c05ef4589`
+Hash: `be24945b45154530`
 
 ## `public sealed class CEntryList`
 
@@ -13,6 +13,7 @@ It restores its own vista, so no driver holds a port or a vista.
 Takes the atelier's ports and builds the list's own entry editor.
 The panel asks the editor's desk before it leaves an entry, and finishes through the editor.
 A cleared panel empties the editor, and an edited row opens in it.
+The editor's display follows the panel, so each draft it loads opens the reading view.
 `scope` names the tab and prefixes the load key, and `list` names the vista and the empty keys.
 `allowed` answers whether the tab is shown, which only the owner's pack check knows.
 `seam` finds the rows under the owner's chosen cell, so the list never reads a column.

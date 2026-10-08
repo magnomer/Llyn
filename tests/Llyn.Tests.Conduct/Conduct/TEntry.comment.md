@@ -1,5 +1,5 @@
 # TEntry.cs
-Hash: `a285e062d44f3fc2`
+Hash: `7ba0fd27b577acb9`
 
 ## `public sealed class TEntry`
 

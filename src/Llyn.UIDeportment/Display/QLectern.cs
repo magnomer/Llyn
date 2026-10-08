@@ -1,356 +1,102 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
 public sealed class QLectern
 {
-    private CAtelier _qLecternAtelier = null!;
+    private readonly TextBlock _qLecternEmpty;
 
-    private CEnvoy _qLecternEnvoy = null!;
+    private readonly ScrollViewer _qLecternContents;
 
-    private UIElement _qLecternEmpty = null!;
-
-    private UIElement _qLecternContents = null!;
-
-    private TextBlock _qLecternHeadword = null!;
-
-    private TextBlock _qLecternLanguage = null!;
-
-    private Image _qLecternFlag = null!;
-
-    private UIElement _qLecternGlobe = null!;
-
-    private ToggleButton _qLecternFavorite = null!;
-
-    private DependencyObject _qLecternGrasp = null!;
-
-    private DependencyProperty _qLecternStep = null!;
-
-    private TextBlock _qLecternGraspLabel = null!;
-
-    private UIElement _qLecternStamp = null!;
-
-    private TextBlock _qLecternAdded = null!;
-
-    private TextBlock _qLecternUpdated = null!;
-
-    private UIElement _qLecternFrequencySection = null!;
-
-    private FrameworkElement _qLecternChip = null!;
-
-    private TextBlock _qLecternName = null!;
-
-    private TextBlock _qLecternBand = null!;
-
-    private UIElement _qLecternSpeechSection = null!;
-
-    private ItemsControl _qLecternSpeech = null!;
-
-    private TextBlock _qLecternUnit = null!;
-
-    private UIElement _qLecternNoteSection = null!;
-
-    private Panel _qLecternNote = null!;
-
-    public QLectern(CDisplay display)
+    public QLectern(FrameworkElement surface, CDisplay display, CAtelier atelier, CEnvoy envoy)
     {
+        ArgumentNullException.ThrowIfNull(surface);
         ArgumentNullException.ThrowIfNull(display);
+        ArgumentNullException.ThrowIfNull(atelier);
+        ArgumentNullException.ThrowIfNull(envoy);
 
-        QLecternArea = display;
-        QLecternSoundArea = display.CDisplaySound;
-        QLecternAccent = new QLecternAccent(display.CDisplayAccent);
-        QLecternSound = new QLecternSound(display.CDisplaySound);
-        QLecternPlayback = new QLecternPlayback(display.CDisplayPlayback);
-        QLecternCard = new QLecternCard(display);
+        _qLecternEmpty = QContract.QContractFind<TextBlock>(surface, "PDisplayEmpty");
+        _qLecternContents = QContract.QContractFind<ScrollViewer>(surface, "PDisplayContents");
+
+        display.CDisplayOpened += QLecternContentsRefine;
+        display.CDisplayClosed += QLecternEmptyRefine;
+        _ = new QLecternHeader(surface, display, atelier, envoy);
+        QLecternGrasp grasp = new(surface, display.CDisplayGrasp);
+        display.CDisplayOpened += grasp.QLecternGraspRefine;
+        display.CDisplayClosed += grasp.QLecternGraspRefine;
+        _ = new QLecternFrequency(surface, display);
+        _ = new QLecternEntry(surface, display, atelier);
+        QLecternPlayback playback = new(surface, display.CDisplayPlayback);
+        display.CDisplayOpened += playback.QLecternPlaybackRefine;
+        display.CDisplayClosed += playback.QLecternPlaybackRefine;
+        QLecternAccent accent = new(surface, display.CDisplayAccent);
+        display.CDisplayOpened += accent.QLecternAccentRefine;
+        display.CDisplayClosed += accent.QLecternAccentRefine;
+        display.CDisplayOpened += accent.QLecternEnsignRefine;
+        QLecternGlyph glyph = new(surface, display.CDisplaySound);
+        display.CDisplayOpened += glyph.QLecternGlyphRefine;
+        display.CDisplayClosed += glyph.QLecternGlyphRefine;
+        QLecternTranscription transcription = new(surface, display.CDisplaySound);
+        display.CDisplayOpened += transcription.QLecternTranscriptionRefine;
+        display.CDisplayClosed += transcription.QLecternTranscriptionRefine;
+        QLecternReflex reflex = new(surface, display.CDisplaySound);
+        display.CDisplayOpened += reflex.QLecternReflexRefine;
+        display.CDisplayOpened += reflex.QLecternFoldRefine;
+        display.CDisplayClosed += reflex.QLecternReflexRefine;
+        display.CDisplayClosed += reflex.QLecternFoldRefine;
+        display.CDisplayReflexChanged += QObserver.QObserverCreate<CBulletin>(surface, reflex.QLecternRenewalRefine);
+        display.CDisplayReflexChanged += QObserver.QObserverCreate<CBulletin>(surface, reflex.QLecternFoldRefine);
+        display.CDisplayFanqieChanged += QObserver.QObserverCreate<CBulletin>(surface, reflex.QLecternAnchorRefine);
+        QLecternSound sound = new(surface, display.CDisplaySound, atelier.CAtelierLedger, envoy);
+        display.CDisplayOpened += sound.QLecternParadigmRefine;
+        display.CDisplayOpened += sound.QLecternScriptRefine;
+        display.CDisplayOpened += sound.QLecternFanqieRefine;
+        display.CDisplayClosed += sound.QLecternParadigmRefine;
+        display.CDisplayClosed += sound.QLecternScriptRefine;
+        display.CDisplayClosed += sound.QLecternFanqieRefine;
+        display.CDisplayParadigmChanged += QObserver.QObserverCreate<CBulletin>(surface, sound.QLecternParadigmRefine);
+        display.CDisplayScriptChanged += QObserver.QObserverCreate<CBulletin>(surface, sound.QLecternScriptRefine);
+        display.CDisplayFanqieChanged += QObserver.QObserverCreate<CBulletin>(surface, sound.QLecternFanqieRefine);
+        QLecternCard = new QLecternCard(surface, display.CDisplayCard, display.CDisplayRoute, display.CDisplaySound);
+        display.CDisplayOpened += QLecternCard.QLecternExampleRefine;
+        display.CDisplayOpened += QLecternCard.QLecternGlossRefine;
+        display.CDisplayOpened += QLecternCard.QLecternCardRefine;
+        display.CDisplayClosed += QLecternCard.QLecternCardRefine;
+        QLecternIncoming incoming = new(surface, display.CDisplayCard, atelier.CAtelierNavigation);
+        display.CDisplayOpened += incoming.QLecternIncomingRefine;
+        display.CDisplayClosed += incoming.QLecternIncomingRefine;
+        QLecternEtymology = new QLecternEtymology(surface, display.CDisplayCard, display.CDisplayRoute);
+        display.CDisplayOpened += QLecternEtymology.QLecternEtymologyRefine;
+        display.CDisplayClosed += QLecternEtymology.QLecternEtymologyRefine;
+
+        QLecternCompass = new QCompass(display.CDisplayCompass, surface);
+        display.CDisplayOpened += QLecternCompass.QCompassRefine;
+        display.CDisplayClosed += QLecternCompass.QCompassEmptyRefine;
+        _ = new QRoster(surface, QLecternCompass);
+
+        display.CDisplayEntryChanged +=
+            QObserver.QObserverCreate<CBulletin>(surface, display.CDisplayEntryResonate);
+        display.CDisplayWorkspaceChanged +=
+            QObserver.QObserverCreate<CBulletin>(surface, display.CDisplayWorkspaceResonate);
     }
-
-    public QLectern(CDisplay display, CPanel panel)
-        : this(display)
-    {
-        QLecternArea.CDisplayPanelAttach(panel);
-    }
-
-    public CDisplay QLecternArea { get; }
-
-    public CDisplaySound QLecternSoundArea { get; }
-
-    public QLecternAccent QLecternAccent { get; }
-
-    public QLecternSound QLecternSound { get; }
-
-    public QLecternPlayback QLecternPlayback { get; }
 
     public QLecternCard QLecternCard { get; }
 
-    public QCompass QLecternCompass { get; private set; } = null!;
+    public QLecternEtymology QLecternEtymology { get; }
 
-    public void QLecternCompassIntroduce(
-        FrameworkElement view,
-        ScrollViewer contents,
-        FrameworkElement header,
-        FrameworkElement compass,
-        UIElement surface,
-        ToggleButton toggle,
-        ItemsControl list)
+    public QCompass QLecternCompass { get; }
+
+    private void QLecternContentsRefine()
     {
-        QLecternCompass = new QCompass(
-            QLecternArea.CDisplayCompass, view, contents, header, compass, surface, toggle, list);
-        QLecternArea.CDisplayOpened += QLecternCompass.QCompassRefine;
-        QLecternArea.CDisplayClosed += QLecternCompass.QCompassEmptyRefine;
-    }
-
-    public void QLecternIntroduce(
-        CAtelier atelier, CEnvoy envoy, UIElement empty, UIElement contents, Action swathSeam)
-    {
-        ArgumentNullException.ThrowIfNull(atelier);
-        ArgumentNullException.ThrowIfNull(envoy);
-        ArgumentNullException.ThrowIfNull(empty);
-        ArgumentNullException.ThrowIfNull(contents);
-        ArgumentNullException.ThrowIfNull(swathSeam);
-
-        _qLecternAtelier = atelier;
-        _qLecternEnvoy = envoy;
-        _qLecternEmpty = empty;
-        _qLecternContents = contents;
-
-        QLecternArea.CDisplayOpened += swathSeam;
-        QLecternArea.CDisplayOpened += QLecternEntryRefine;
-        QLecternArea.CDisplayOpened += QLecternFontRefine;
-        QLecternArea.CDisplayOpened += QLecternFlagRefine;
-        QLecternArea.CDisplayOpened += QLecternNoteRefine;
-        QLecternArea.CDisplayOpened += QLecternFavoriteRefine;
-        QLecternArea.CDisplayOpened += QLecternGraspRefine;
-        QLecternArea.CDisplayOpened += QLecternFrequencyRefine;
-        QLecternArea.CDisplayOpened += QLecternPlayback.QLecternPlaybackRefine;
-        QLecternArea.CDisplayOpened += QLecternAccent.QLecternAccentRefine;
-        QLecternArea.CDisplayOpened += QLecternAccent.QLecternEnsignRefine;
-        QLecternArea.CDisplayOpened += QLecternSound.QLecternGlyphRefine;
-        QLecternArea.CDisplayOpened += QLecternSound.QLecternTranscriptionRefine;
-        QLecternArea.CDisplayOpened += QLecternSound.QLecternReflexRefine;
-        QLecternArea.CDisplayOpened += QLecternSound.QLecternFoldRefine;
-        QLecternArea.CDisplayOpened += QLecternSound.QLecternParadigmRefine;
-        QLecternArea.CDisplayOpened += QLecternSound.QLecternScriptRefine;
-        QLecternArea.CDisplayOpened += QLecternSound.QLecternFanqieRefine;
-        QLecternArea.CDisplayOpened += QLecternCard.QLecternExampleRefine;
-        QLecternArea.CDisplayOpened += QLecternCard.QLecternGlossRefine;
-        QLecternArea.CDisplayOpened += QLecternCard.QLecternCardRefine;
-        QLecternArea.CDisplayOpened += QLecternCard.QLecternIncomingRefine;
-        QLecternArea.CDisplayOpened += QLecternCard.QLecternEtymologyRefine;
-
-        QLecternArea.CDisplayClosed += swathSeam;
-        QLecternArea.CDisplayClosed += QLecternEmptyRefine;
-        QLecternArea.CDisplayClosed += QLecternPlayback.QLecternTrayRefine;
-        QLecternArea.CDisplayClosed += QLecternAccent.QLecternMuteRefine;
-        QLecternArea.CDisplayClosed += QLecternSound.QLecternSilenceRefine;
-        QLecternArea.CDisplayClosed += QLecternCard.QLecternBlankRefine;
-
-        QLecternArea.CDisplayFavoriteChanged += QObserver.QObserverCreate<CBulletin>(contents, QLecternFavoriteRefine);
-        QLecternArea.CDisplayGrasp.CDisplayGraspChanged +=
-            QObserver.QObserverCreate<CBulletin>(contents, QLecternGraspRefine);
-        QLecternArea.CDisplayFrequencyChanged +=
-            QObserver.QObserverCreate<CBulletin>(contents, QLecternFrequencyRefine);
-        QLecternArea.CDisplayParadigmChanged +=
-            QObserver.QObserverCreate<CBulletin>(contents, QLecternSound.QLecternParadigmRefine);
-        QLecternArea.CDisplayReflexChanged +=
-            QObserver.QObserverCreate<CBulletin>(contents, QLecternSound.QLecternRenewalRefine);
-        QLecternArea.CDisplayReflexChanged +=
-            QObserver.QObserverCreate<CBulletin>(contents, QLecternSound.QLecternFoldRefine);
-        QLecternArea.CDisplayScriptChanged +=
-            QObserver.QObserverCreate<CBulletin>(contents, QLecternSound.QLecternScriptRefine);
-        QLecternArea.CDisplayFanqieChanged +=
-            QObserver.QObserverCreate<CBulletin>(contents, QLecternSound.QLecternFanqieRefine);
-        QLecternArea.CDisplayEntryChanged +=
-            QObserver.QObserverCreate<CBulletin>(contents, QLecternArea.CDisplayEntryResonate);
-        QLecternArea.CDisplayWorkspaceChanged +=
-            QObserver.QObserverCreate<CBulletin>(contents, QLecternArea.CDisplayWorkspaceResonate);
-    }
-
-    public void QLecternHeaderIntroduce(
-        TextBlock headword,
-        TextBlock language,
-        Image flag,
-        UIElement globe,
-        ToggleButton favorite,
-        DependencyObject grasp,
-        DependencyProperty step,
-        DependencyProperty limit,
-        TextBlock graspLabel)
-    {
-        ArgumentNullException.ThrowIfNull(headword);
-        ArgumentNullException.ThrowIfNull(language);
-        ArgumentNullException.ThrowIfNull(flag);
-        ArgumentNullException.ThrowIfNull(globe);
-        ArgumentNullException.ThrowIfNull(favorite);
-        ArgumentNullException.ThrowIfNull(grasp);
-        ArgumentNullException.ThrowIfNull(step);
-        ArgumentNullException.ThrowIfNull(limit);
-        ArgumentNullException.ThrowIfNull(graspLabel);
-
-        _qLecternHeadword = headword;
-        _qLecternLanguage = language;
-        _qLecternFlag = flag;
-        _qLecternGlobe = globe;
-        _qLecternFavorite = favorite;
-        _qLecternGrasp = grasp;
-        _qLecternStep = step;
-        _qLecternGraspLabel = graspLabel;
-        grasp.SetValue(limit, QLecternArea.CDisplayGrasp.CDisplayGraspStep);
-    }
-
-    public void QLecternStampIntroduce(UIElement section, TextBlock added, TextBlock updated)
-    {
-        ArgumentNullException.ThrowIfNull(section);
-        ArgumentNullException.ThrowIfNull(added);
-        ArgumentNullException.ThrowIfNull(updated);
-
-        _qLecternStamp = section;
-        _qLecternAdded = added;
-        _qLecternUpdated = updated;
-    }
-
-    public void QLecternFrequencyIntroduce(UIElement section, FrameworkElement chip, TextBlock name, TextBlock band)
-    {
-        ArgumentNullException.ThrowIfNull(section);
-        ArgumentNullException.ThrowIfNull(chip);
-        ArgumentNullException.ThrowIfNull(name);
-        ArgumentNullException.ThrowIfNull(band);
-
-        _qLecternFrequencySection = section;
-        _qLecternChip = chip;
-        _qLecternName = name;
-        _qLecternBand = band;
-    }
-
-    public void QLecternSpeechIntroduce(UIElement section, ItemsControl speech, TextBlock unit)
-    {
-        ArgumentNullException.ThrowIfNull(section);
-        ArgumentNullException.ThrowIfNull(speech);
-        ArgumentNullException.ThrowIfNull(unit);
-
-        _qLecternSpeechSection = section;
-        _qLecternSpeech = speech;
-        _qLecternUnit = unit;
-    }
-
-    public void QLecternNoteIntroduce(UIElement section, Panel note)
-    {
-        ArgumentNullException.ThrowIfNull(section);
-        ArgumentNullException.ThrowIfNull(note);
-
-        _qLecternNoteSection = section;
-        _qLecternNote = note;
-    }
-
-    public void QLecternFavoriteObserve()
-    {
-        QLecternFavoriteRefine(
-            QLecternArea.CDisplayFavoriteToggle(QLook.QLookCheckedRead(_qLecternFavorite.IsChecked)));
-    }
-
-    public void QLecternGraspObserve(int step)
-    {
-        QLecternGraspRefine(QLecternArea.CDisplayGrasp.CDisplayGraspSet(step));
-    }
-
-    public void QLecternHoverRefine(int pointed)
-    {
-        _qLecternGraspLabel.Text = QLecternArea.CDisplayGrasp.CDisplayGraspRead(pointed);
-    }
-
-    private void QLecternEntryRefine()
-    {
-        CLectern shown = QLecternArea.CDisplayShown;
-        _qLecternHeadword.Text = shown.CLecternHeadword;
-        _qLecternLanguage.Text = shown.CLecternLanguage;
-        _qLecternSpeech.ItemsSource = shown.CLecternSpeeches;
-        QLecternUnitRefine(shown.CLecternUnit);
-        _qLecternSpeechSection.Visibility = QLook.QLookVisibleRead(shown.CLecternMarked);
-        _qLecternNoteSection.Visibility = QLook.QLookVisibleRead(shown.CLecternNoted);
-        _qLecternAdded.Text = shown.CLecternAdded;
-        _qLecternUpdated.Text = shown.CLecternUpdated;
-        _qLecternStamp.Visibility = QLook.QLookVisibleRead(shown.CLecternStamped);
         _qLecternEmpty.Visibility = Visibility.Collapsed;
         _qLecternContents.Visibility = Visibility.Visible;
     }
 
-    private void QLecternUnitRefine(string key)
-    {
-        _qLecternUnit.Visibility = QLook.QLookVisibleRead(key.Length > 0);
-        if (key.Length > 0)
-        {
-            _qLecternUnit.SetResourceReference(TextBlock.TextProperty, key);
-        }
-    }
-
-    private void QLecternFontRefine()
-    {
-        QFontFace.QFontRefine(QLecternSoundArea.CDisplayFontRead(CFontRole.CFontRoleHeadword), _qLecternHeadword);
-        QFontFace.QFontBaselineRefine(_qLecternHeadword);
-    }
-
-    private async void QLecternFlagRefine()
-    {
-        QEnsignImage.QEnsignFlagRefine(_qLecternFlag, _qLecternGlobe, string.Empty);
-
-        await _qLecternAtelier.CAtelierCatalog.CCatalogEnsignLoad(_qLecternEnvoy, QEnsignImage.QEnsignDraw);
-
-        QEnsignImage.QEnsignFlagRefine(_qLecternFlag, _qLecternGlobe, _qLecternLanguage.Text);
-    }
-
-    private void QLecternNoteRefine()
-    {
-        QMarkdownFace.QMarkdownRefine(_qLecternNote, QLecternArea.CDisplayShown.CLecternNote, _qLecternAtelier);
-    }
-
-    private void QLecternFavoriteRefine()
-    {
-        QLecternFavoriteRefine(QLecternArea.CDisplayFavoriteRead());
-    }
-
-    private void QLecternFavoriteRefine(bool marked)
-    {
-        _qLecternFavorite.IsChecked = marked;
-    }
-
-    private void QLecternGraspRefine()
-    {
-        QLecternGraspRefine(QLecternArea.CDisplayGrasp.CDisplayGraspRead());
-    }
-
-    private void QLecternGraspRefine(CGrasp grasp)
-    {
-        _qLecternGrasp.SetValue(_qLecternStep, grasp.CGraspStep);
-        _qLecternGraspLabel.Text = grasp.CGraspLabel;
-    }
-
-    private void QLecternFrequencyRefine()
-    {
-        QFrequencyLabel.QFrequencyChipRefine(
-            _qLecternFrequencySection,
-            _qLecternChip,
-            _qLecternName,
-            _qLecternBand,
-            QLecternArea.CDisplayFrequencyRead(QLocalizationCatalog.QLocalizationTextRead));
-    }
-
     private void QLecternEmptyRefine()
     {
-        _qLecternFavorite.IsChecked = false;
-        _qLecternGrasp.SetValue(_qLecternStep, 0);
-        _qLecternGraspLabel.Text = string.Empty;
-        _qLecternLanguage.Text = string.Empty;
-        QEnsignImage.QEnsignFlagRefine(_qLecternFlag, _qLecternGlobe, string.Empty);
-        _qLecternSpeech.ItemsSource = null;
-        QLecternUnitRefine(string.Empty);
-        _qLecternSpeechSection.Visibility = Visibility.Collapsed;
-        QFrequencyLabel.QFrequencyChipRefine(
-            _qLecternFrequencySection, _qLecternChip, _qLecternName, _qLecternBand, null);
-        _qLecternNoteSection.Visibility = Visibility.Collapsed;
-        _qLecternStamp.Visibility = Visibility.Collapsed;
         _qLecternContents.Visibility = Visibility.Collapsed;
         _qLecternEmpty.Visibility = Visibility.Visible;
     }

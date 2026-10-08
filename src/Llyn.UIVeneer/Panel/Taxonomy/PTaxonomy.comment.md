@@ -1,5 +1,5 @@
 # PTaxonomy.xaml
-Hash: `b708a8f765f7359d`
+Hash: `ce182c1f7a422bae`
 
 ## `<Rectangle ... Style="{StaticResource Theme.Panel.SeamRow}" />`
 
@@ -24,6 +24,7 @@ So the catalog here is a tag, and the entry list beside it is what that tag hold
 The sorting button and the search field are one control over the tag column.
 Their shared edge is the same as the catalog below.
 Both act on the tag catalog and nothing else.
+The ordering picker is the shared `PChoiceOrder`, placed here as `PTaxonomyOrder`.
 
 ## `<Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource Theme.Catalog.Middle}">`
 
@@ -42,24 +43,26 @@ Either way there is nothing to read, which is what the line says.
 
 The search field and the language filter over the entry column.
 `PScout` narrows the entries under the chosen tag by typed text.
-`PLatticeDropper` opens the menu of loaded languages, and `PLatticeMark` shows while any is hidden.
+The language filter is the shared `PChoiceFilter`, placed here as `PTaxonomyFilter`.
+It opens the menu of loaded languages, and its mark shows while any is hidden.
 
-## `<local:QRail Grid.Row="0" Grid.Column="2" Margin="0,0,0,18">`
+## `<veneer:PPanelRail x:Name="PTaxonomyRail" Grid.Row="0" Grid.Column="2" Margin="0,0,0,18" />`
 
 The same entry actions the library panel offers, over the same reader.
-New, save, the trail and chronicle pairs, export, print and the mode toggle are all wired by the panel.
+The command row is the shared `PPanelRail`, placed here as `PTaxonomyRail`.
 Export and print act on the entry being read.
 
 ## Catalog spacing
 
 The catalog uses the shared Theme.Catalog.Frame and Theme.Catalog.Scroll styles.
-Rows keep 6 device-independent pixels on both sides, with a reserved scrollbar lane so their width stays stable.
+The scroll bar takes its lane only when the list overflows, and the rows then narrow to make room.
 The shared Theme.Catalog.Row preserves the same rounded shape, internal padding and row spacing across browse panels.
 The matching-entry column uses Theme.Catalog.Middle to measure its left gutter from the intervening seam.
 
 ## Hooks
 
 The markup carries no hook.
-The Deportment driver `QTaxonomy` sets icons, commands, clicks, popups and row fills.
-It also folds the two button pairs by mode.
-`PTaxonomyChronicle` starts collapsed because the reader is the side shown first.
+The Deportment driver `QTaxonomy` sets commands, the search hint and the tag row fills.
+`QMembership` drives the entry column and its search field.
+The picker, the filter and the rail have their own drivers, which set their icons and popups.
+The rail's driver folds the two button pairs by mode.

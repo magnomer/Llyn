@@ -26,7 +26,9 @@ internal sealed class QProffer
 
     private readonly ObservableCollection<PProfferItem> _qProfferItem = [];
 
-    private CEditor _cEditor = null!;
+    private CCard _cCard = null!;
+
+    private CSentence _cSentence = null!;
 
     internal QProffer(FrameworkElement surface, QContext context, QRegister register, QSentence sentence)
     {
@@ -48,9 +50,10 @@ internal sealed class QProffer
 
     private Border QProfferContents => QContract.QContractFind<Border>(_qProfferSurface, "PContents");
 
-    internal void QProfferIntroduce(CEditor editor)
+    internal void QProfferIntroduce(CCard card, CSentence sentence)
     {
-        _cEditor = editor;
+        _cCard = card;
+        _cSentence = sentence;
     }
 
     private void QProfferApply(FrameworkElement container, object item, string? _)
@@ -106,25 +109,25 @@ internal sealed class QProffer
 
         switch (Keyboard.FocusedElement)
         {
-            case FrameworkElement { DataContext: PRegisterCaret caret }
+            case FrameworkElement { DataContext: PCaret<PRegister> caret }
                 when _qProfferRegister.QRegisterCardFind(caret) is PCard card:
-                _cEditor.CEditorCard.CCardRegisterInsert(
-                    card.PCardId, item.PProfferItemId, card.PCardRegisterPosition);
+                _cCard.CCardRegisterInsert(
+                    card.PCardId, item.PProfferItemId, card.PCardRegister.PCaretPosition);
                 e.Handled = true;
                 QProfferShutRefine();
-                card.PCardRegisterClear();
+                card.PCardRegister.PCaretClear();
                 break;
-            case FrameworkElement { DataContext: PContextCaret caret }
+            case FrameworkElement { DataContext: PCaret<PContext> caret }
                 when _qProfferContext.QContextCardFind(caret) is PCard card:
-                _cEditor.CEditorCard.CCardSituationInsert(
-                    card.PCardId, item.PProfferItemId, card.PCardContextPosition);
+                _cCard.CCardSituationInsert(
+                    card.PCardId, item.PProfferItemId, card.PCardContext.PCaretPosition);
                 e.Handled = true;
                 QProfferShutRefine();
-                card.PCardContextClear();
+                card.PCardContext.PCaretClear();
                 break;
             case FrameworkElement { DataContext: PSentence row }
                 when _qProfferSentence.QSentenceCardFind(row) is PCard card:
-                _cEditor.CEditorSentence.CSentenceCitationSet(
+                _cSentence.CSentenceCitationSet(
                     card.PCardId, row.PSentenceRow, item.PProfferItemId);
                 e.Handled = true;
                 QProfferShutRefine();
@@ -175,25 +178,25 @@ internal sealed class QProffer
 
         switch (sender)
         {
-            case FrameworkElement { DataContext: PRegisterCaret caret }
+            case FrameworkElement { DataContext: PCaret<PRegister> caret }
                 when _qProfferRegister.QRegisterCardFind(caret) is PCard card:
-                _cEditor.CEditorCard.CCardRegisterInsert(
-                    card.PCardId, item.PProfferItemId, card.PCardRegisterPosition);
+                _cCard.CCardRegisterInsert(
+                    card.PCardId, item.PProfferItemId, card.PCardRegister.PCaretPosition);
                 e.Handled = true;
                 QProfferShutRefine();
-                card.PCardRegisterClear();
+                card.PCardRegister.PCaretClear();
                 break;
-            case FrameworkElement { DataContext: PContextCaret caret }
+            case FrameworkElement { DataContext: PCaret<PContext> caret }
                 when _qProfferContext.QContextCardFind(caret) is PCard card:
-                _cEditor.CEditorCard.CCardSituationInsert(
-                    card.PCardId, item.PProfferItemId, card.PCardContextPosition);
+                _cCard.CCardSituationInsert(
+                    card.PCardId, item.PProfferItemId, card.PCardContext.PCaretPosition);
                 e.Handled = true;
                 QProfferShutRefine();
-                card.PCardContextClear();
+                card.PCardContext.PCaretClear();
                 break;
             case FrameworkElement { DataContext: PSentence row }
                 when _qProfferSentence.QSentenceCardFind(row) is PCard card:
-                _cEditor.CEditorSentence.CSentenceCitationSet(
+                _cSentence.CSentenceCitationSet(
                     card.PCardId, row.PSentenceRow, item.PProfferItemId);
                 e.Handled = true;
                 QProfferShutRefine();
@@ -203,7 +206,7 @@ internal sealed class QProffer
 
     internal void QProfferRegisterRefine(PCard card, CProffer offer)
     {
-        card.PCardRegisterRefine(offer.CProfferText);
+        card.PCardRegister.PCaretRefine(offer.CProfferText);
         if (!offer.CProfferShown)
         {
             QProfferShutRefine();
@@ -236,7 +239,7 @@ internal sealed class QProffer
 
     internal void QProfferSituationRefine(PCard card, CProffer offer)
     {
-        card.PCardContextRefine(offer.CProfferText);
+        card.PCardContext.PCaretRefine(offer.CProfferText);
         if (!offer.CProfferShown)
         {
             QProfferShutRefine();
@@ -266,7 +269,7 @@ internal sealed class QProffer
 
     private TextBox? QProfferRegisterFind(PCard card)
     {
-        return Keyboard.FocusedElement is TextBox { DataContext: PRegisterCaret row } box &&
+        return Keyboard.FocusedElement is TextBox { DataContext: PCaret<PRegister> row } box &&
             _qProfferRegister.QRegisterCardFind(row) == card
             ? box
             : null;
@@ -274,7 +277,7 @@ internal sealed class QProffer
 
     private TextBox? QProfferBoxFind(PCard card)
     {
-        return Keyboard.FocusedElement is TextBox { DataContext: PContextCaret row } box &&
+        return Keyboard.FocusedElement is TextBox { DataContext: PCaret<PContext> row } box &&
             _qProfferContext.QContextCardFind(row) == card
             ? box
             : null;

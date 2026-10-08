@@ -47,27 +47,19 @@ internal static class TAuditObjectSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditObjectCeiling = new Dictionary<string, int>
     {
-        ["Hydra"] = 1,
-        ["Kraken"] = 3,
-        ["Spider"] = 3,
-        ["Chameleon"] = 7,
-        ["Octopus"] = 6,
-        ["Centipede"] = 18,
-        ["Serpent"] = 5,
-        ["Hub"] = 2,
+        ["Hydra"] = 0,
+        ["Kraken"] = 0,
+        ["Spider"] = 1,
+        ["Chameleon"] = 0,
+        ["Octopus"] = 3,
+        ["Centipede"] = 1,
+        ["Serpent"] = 1,
+        ["Hub"] = 0,
     };
 
     public static readonly IReadOnlyDictionary<string, int> TAuditPartsCeiling = new Dictionary<string, int>
     {
         ["Llyn.Infrastructure.LEntryArchive"] = 2,
-        ["Llyn.UIDeportment.PCard"] = 9,
-        ["Llyn.UIDeportment.PSentence"] = 3,
-        ["Llyn.UIDeportment.QWindow"] = 7,
-        ["Llyn.UIDeportment.QCorpus"] = 9,
-        ["Llyn.UIDeportment.QFavorite"] = 2,
-        ["Llyn.UIDeportment.QRepertoire"] = 7,
-        ["Llyn.UIDeportment.QTaxonomy"] = 3,
-        ["Llyn.UIDeportment.QTenor"] = 3,
     };
 
     public static readonly string[] TAuditObjectInclude =

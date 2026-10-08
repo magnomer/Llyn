@@ -101,7 +101,6 @@ public sealed class TDisplayArea
         CLibrary library = CLibrary.CLibraryCreate(
             atelier, static () => true, TEnvoyFake.TEnvoyCreate(false, []), static run => run());
         CDisplay area = library.CLibraryEditor.CEditorDisplay;
-        area.CDisplayPanelAttach(library.CLibraryPanel);
         library.TLibraryVistaRestore();
         int opened = 0;
         int closed = 0;

@@ -33,7 +33,7 @@ public static class CRespelling
             reflex.CReflexDraftMeaning,
             reflex.CReflexDraftNote,
             reflex.CReflexDraftMain,
-            reflex.CReflexDraftRegion,
+            reflex.CReflexDraftRegion.Length > 0 ? reflex.CReflexDraftRegion : null,
             reflex.CReflexDraftAnchors,
             mark,
             guise.LReflexGuiseFolded,

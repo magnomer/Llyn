@@ -1,120 +1,73 @@
 # QLecternCard.cs
-Hash: `05935fed2db36a71`
+Hash: `be101fd4c673b303`
 
 ## `public sealed class QLecternCard`
 
-The reading view's card driver, standing between the veneer and the areas [CDisplay](../../Llyn.Conduct/Display/CDisplay.comment.md) hands out.
-It draws the Meaning and Collocation cards, their links and bylines, the incoming rows and the etymology.
-It hears every chip, row, source link and word clicked on them and hands each to one gate.
+The reading view's card section, standing between the veneer and the areas [CDisplay](../../Llyn.Conduct/Display/CDisplay.comment.md) hands out.
+It reads the card, route and sound areas only.
+It draws the Meaning and Collocation cards, their links and bylines.
+It hears every chip, link and word clicked on them and hands each to one gate.
+[QLectern](QLectern.comment.md) builds it once in its constructor over the view's page.
+It pulls its own parts by contract ID and subscribes its clicks.
+The lectern subscribes its redraws to the display's open and close.
+It knows no window, so a word's offer leaves through `QLecternMentionNotice`.
 
-## `public QLecternCard(CDisplay display)`
+## `public QLecternCard(FrameworkElement surface, CDisplayCard area, CDisplayRoute route, CDisplaySound sound)`
 
-Builds the half over the areas the display hands out, so the half names no `L` type.
-The card area answers the card, incoming and etymology reads.
+Pulls the two card lists with their sections from `surface`, and holds its resources the example templates read.
+The section names no `L` type, since it takes only the three areas it reads.
+The card area answers the card read.
 The route area answers every chip, link and word gate.
-The compass answers where a card stands, and the sound area the pack's typography.
+The sound area answers the pack's typography, reading the shown language itself.
 The card lists take the ready cards the card area answers, so no engine record reaches the veneer.
 
-## `public void QLecternCardIntroduce(ResourceDictionary resources, ItemsControl meaning, UIElement meaningSection, ItemsControl collocation, UIElement collocationSection, ScrollViewer contents, QCompass compass)`
+## `internal event Action<PMention, CMentionOffer?>? QLecternMentionNotice;`
 
-Holds the view's resources the example templates read.
-The pack's typography comes from the display's sound area, which reads the shown language itself.
-Holds the two card lists with their sections, the scroll viewer and the compass a scroll measures by.
-
-## `public void QLecternIncomingIntroduce(ItemsControl incoming, UIElement section)`
-
-Binds the incoming list to its rows and holds the section that collapses when no entry links here.
-
-## `internal void QLecternEtymologyIntroduce(QEtymology etymology, UIElement section)`
-
-Holds the etymology field and its section, which this driver paints itself.
-
-## `internal void QLecternRouteIntroduce(QWindow host)`
-
-Holds the window, whose navigation a clicked incoming row opens its record through.
-The window also paints the menu a clicked word's gate answers.
-
-## `public void QLecternCardRefine()`
-
-Answers an entry opening by painting the ready cards `CDisplayCardRead` answers.
+Carries a clicked word's offer and the example control it sits under.
+The view that owns the lectern wires it to the mention menu's `QMentionOfferRefine`, which paints the menu.
 
 ## `public void QLecternExampleRefine()`
 
 Answers an entry opening by putting the shown language's example typography into the view's resources.
 Example lines are drawn inside templates, so the typography reaches them through resources.
-It is subscribed before the cards, so the example lines draw in the pack's faces.
+The lectern subscribes the typography before the cards, so the example lines draw in the pack's faces.
 
 ## `public void QLecternGlossRefine()`
 
 Answers an entry opening the same way for the gloss typography under the example lines.
 
-## `public void QLecternIncomingRefine()`
+## `public void QLecternCardRefine()`
 
-Answers an entry opening by listing the usages `CDisplayIncomingRead` answers.
-
-## `public void QLecternEtymologyRefine()`
-
-Answers an entry opening by drawing the etymology `CDisplayEtymologyRead` answers.
-
-## `public void QLecternBlankRefine()`
-
-Answers an entry closing by emptying the card lists and the incoming rows and collapsing their sections.
-
-## `private void QLecternCardRefine(CLecternCard card)`
-
-Sets the two card lists and the two sections' visibility from `card`.
+Sets the two card lists and the two sections' visibility from the cards `CDisplayCardRead` answers.
+The lectern subscribes it to both open and close, since a closed display answers no cards.
 
 ## `private void QLecternLeafRefine(CLecternCard card)`
 
 Hands the card lists the ready cards of `card`.
 The lists are emptied first, so every template redraws even when a list keeps its length.
 
-## `private void QLecternIncomingRefine(IReadOnlyList<CUsage> usages)`
-
-Lists one incoming row per usage in its Conduct shape, its owner named under the key Conduct chose.
-The section collapses when no entry links here, because an empty relationship does not occupy the page.
-
-## `private void QLecternEtymologyRefine(CLecternEtymology etymology)`
-
-Sets the field's narrative and source links from the ready `etymology`.
-It hands the field the ready verdicts for its read narrative and its row of links.
-Then it sets the field's and the section's visibility.
-
-## `public void QLecternChipObserve(RoutedEventArgs e)`
+## `private void QLecternChipObserve(object sender, RoutedEventArgs e)`
 
 Hears a click on a card chip and hands `CDisplayChipOpen` the ready chip it carries.
 The chip is read off what was clicked, since a click leaving a template is re-sourced to its presenter.
-A link chip also hands the id of the ready target it paints.
+A link chip also hands the linked Entry's id it carries.
 The click is marked handled only when a tab was asked to open.
 
-## `public void QLecternIncomingObserve(RoutedEventArgs e)`
-
-Hears a click on an incoming row and hands its usage to the navigation's gate `CNavigationUsageOpen`.
-
-## `public void QLecternEtymonObserve(object parameter)`
-
-Hears a click on a source link and hands `CDisplayChipOpen` the entry id it carries.
-
-## `public void QLecternMentionObserve(PMentionArgument e)`
+## `private void QLecternMentionObserve(object? sender, PMentionArgument e)`
 
 Hears a word clicked in an example line and reads the sentence row and the raw click values.
 It hands them unchanged to its one gate, `CDisplayMentionFind`.
 The gate converts the click, reads the sentence itself, finds, opens and reports.
-Its offer goes to the window's `QWindowMentionRefine` under the clicked control.
+Its offer leaves through `QLecternMentionNotice` under the clicked control.
 
-## `public void QLecternEtymologyObserve(PMentionArgument e)`
+## Inline notes
 
-Hears a word clicked in the etymology prose and reads the raw click values.
-It hands them unchanged to its one gate, `CDisplayEtymologyFind`.
-The offer goes to the window's `QWindowMentionRefine` under the prose.
+### `_qLecternCardMeaning.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QLecternChipObserve));`
 
-## `public void QLecternSpotlightRefine(long id)`
+The chips are drawn from a shared dictionary that knows no window.
+They reach the cards only through the two lists this sits on, as bubbling clicks.
 
-Scrolls the card with `id` into view and plays the spotlight on it.
-The card containers exist one dispatcher turn after the entry is shown, so the scroll waits for the layout pass.
+### `_qLecternCardMeaning.AddHandler(PMention.PMentionClickEvent, new EventHandler<PMentionArgument>(QLecternMentionObserve));`
 
-## `private void QLecternSpotlightRefine((CCompassPart, int)? place)`
-
-Finds the container at the place `CCompassCardFind` answered and lets the compass scroll it.
-The compass scrolls it, so the card is led by the same distance as a row.
-A card the entry no longer has is left unfound, and nothing moves.
+Every sentence on every card raises the same bubbling event.
+One handler on each card list answers it, so a card template stays free of handlers.

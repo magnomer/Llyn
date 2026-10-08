@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
@@ -120,21 +119,11 @@ public sealed class QScript : Decorator
 
     internal event Action<bool>? QScriptFoldNotice;
 
-    internal void QScriptRefine(IReadOnlyList<CScriptGroup> groups, bool pending)
-    {
-        SetCurrentValue(QScriptItemsProperty, QScriptItem.QScriptItemScan(groups, QScriptFailureRefine));
-        SetCurrentValue(QScriptPendingProperty, pending);
-    }
+    internal event Action<Exception>? QScriptFailureNotice;
 
     internal void QScriptFailureRefine(Exception exception)
     {
-        Dispatcher.BeginInvoke(() =>
-        {
-            if (Window.GetWindow(this)?.Tag is QWindow host)
-            {
-                host.QWindowFailureRefine("Display.ScriptFailed", exception);
-            }
-        });
+        Dispatcher.BeginInvoke(() => QScriptFailureNotice?.Invoke(exception));
     }
 
     private void QScriptLanguageRefine(object? sender, PropertyChangedEventArgs e)

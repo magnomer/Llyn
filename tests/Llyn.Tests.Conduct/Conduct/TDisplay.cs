@@ -57,9 +57,9 @@ public sealed class TDisplay
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
+        CDisplay display = new TEditorFixture(TInterfaceEditor.TEditorCreate(engine)).TEditorFixtureDisplay;
 
-        Assert.Null(editor.CEditorDisplay.TDisplayFrequencyRead(null, "once in {0} words"));
+        Assert.Null(display.TDisplayFrequencyRead(null, "once in {0} words"));
     }
 
     [Fact]
@@ -68,9 +68,9 @@ public sealed class TDisplay
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         long id = TExemplar.TExemplarSave(engine, TDisplayDraftCreate([]))[0];
-        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
+        CDisplay display = new TEditorFixture(TInterfaceEditor.TEditorCreate(engine)).TEditorFixtureDisplay;
 
-        Assert.Null(editor.CEditorDisplay.TDisplayFrequencyRead(id, "once in {0} words"));
+        Assert.Null(display.TDisplayFrequencyRead(id, "once in {0} words"));
     }
 
     [Fact]
@@ -78,7 +78,7 @@ public sealed class TDisplay
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
+        CDisplay display = new TEditorFixture(TInterfaceEditor.TEditorCreate(engine)).TEditorFixtureDisplay;
         LEntryDraft draft = TInterface.TEntryDraftCreate(
             "kindle",
             "English",
@@ -91,9 +91,9 @@ public sealed class TDisplay
                     LStateValue.LStateValueUnknown, string.Empty, "a spark", [], [], [], [], [], 3),
             ],
             [TInterface.TCardDraftCreate(string.Empty, string.Empty, "a fire", [], [], [], [], [], 1)]);
-        editor.CEditorDisplay.LDisplayRule.LDisplaySound.TDisplaySoundShow(7, draft);
+        display.LDisplayRule.LDisplaySound.TDisplaySoundShow(7, draft);
 
-        IReadOnlyList<CCompassRow> rows = editor.CEditorDisplay.CDisplayCompass.CCompassRead(
+        IReadOnlyList<CCompassRow> rows = display.CDisplayCompass.CCompassRead(
             [CCompassPart.CCompassPartSpeech, CCompassPart.CCompassPartMeaning, CCompassPart.CCompassPartCollocation],
             key => key == "Display.CollocationSingle" ? "Display.MeaningSingle" : key);
 
@@ -119,9 +119,9 @@ public sealed class TDisplay
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
+        CDisplay display = new TEditorFixture(TInterfaceEditor.TEditorCreate(engine)).TEditorFixtureDisplay;
 
-        IReadOnlyList<CCompassRow> rows = editor.CEditorDisplay.CDisplayCompass.CCompassRead(
+        IReadOnlyList<CCompassRow> rows = display.CDisplayCompass.CCompassRead(
             [CCompassPart.CCompassPartMeaning, CCompassPart.CCompassPartIncoming, CCompassPart.CCompassPartNote],
             static key => "<" + key + ">");
 

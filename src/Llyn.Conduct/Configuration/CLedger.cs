@@ -134,9 +134,9 @@ public sealed class CLedger
         }
     }
 
-    public CLedgerNotice CLedgerNoticeRead(Exception exception)
+    public void CLedgerFailureShow(CEnvoy envoy, string key, Exception exception)
     {
-        return LLedgerNoticeRead(_cLedgerAtelier.CAtelierSettingsPort, exception);
+        LLedgerFailureShow(envoy, _cLedgerAtelier.CAtelierSettingsPort, key, exception);
     }
 
     internal static CLedgerNotice LLedgerNoticeRead(LSettingsPort settings, Exception exception)

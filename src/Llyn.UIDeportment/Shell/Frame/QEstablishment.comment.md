@@ -1,5 +1,5 @@
 # QEstablishment.cs
-Hash: `1df74acc85733638`
+Hash: `9ccaa34c07e40d56`
 
 ## `internal sealed class QEstablishment`
 
@@ -28,7 +28,7 @@ The observer stays inside this delegate, so no field holds an engine announcemen
 
 Each named part is pulled from the bar by its contract ID on every read.
 
-## `internal void QEstablishmentAttach(QWindow host)`
+## `internal void QEstablishmentAttach(Window window, CAtelier atelier, CEnvoy envoy)`
 
 Subscribes the bar to `CWorkspaceEstablishmentChanged`, which the workspace raises on every open and every bulletin.
 So a change made anywhere reaches the bar without any panel telling it.
@@ -43,7 +43,8 @@ A second close detaches an observer already gone, which the engine ignores.
 
 ## `private void QEstablishmentRefine(CEstablishment establishment)`
 
-Prints the three lines the atelier read, each through the wording key it chose.
+Prints the three lines the atelier read.
+The entry and size lines go through the wording keys it chose.
 The unsaved line is hidden when nothing is unsaved, so a calm window shows nothing on the left.
 A refused read never arrives here, so the last printed numbers stand.
 The singular entry wording and the size unit arrive as ready keys, and the amount as ready text.

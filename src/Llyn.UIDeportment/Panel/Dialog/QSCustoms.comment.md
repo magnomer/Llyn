@@ -1,12 +1,12 @@
 # QSCustoms.cs
-Hash: `f46c3aec793142f3`
+Hash: `625c39ff992690e9`
 
 ## `internal sealed class QSCustoms`
 
 The customs window's showing holds the rows it declares and the omission face.
 Its two static entry points answer `CEnvoy` questions, so it only shows what Conduct handed it.
 Each row's mode and target live in the `CSCustoms` gate Conduct hands over.
-The window calls no other gate and reads nothing else from Conduct.
+The window calls no other gate.
 The window is the veneer's `PSCustoms` page, pulled fresh by contract ID and held in `_qsCustomsSurface`.
 
 ## `private static readonly IReadOnlyDictionary<string, CSCustomsMode> QSCustomsChoice =`
@@ -14,9 +14,9 @@ The window is the veneer's `PSCustoms` page, pulled fresh by contract ID and hel
 Maps each named mode row of the dropdown to the gate's mode.
 The surface is handed no mode value, so the pick is read back by the row's contract ID.
 
-## `private QSCustoms(QWindow host, CSCustoms customs)`
+## `private QSCustoms(Window owner, CSCustoms customs)`
 
-Pulls the window over the host, lists the gate's entries and subscribes Accept and Cancel.
+Pulls the window over `owner`, lists the gate's entries and subscribes Accept and Cancel.
 Each row carries its entry's ready target ids, so the window finds nothing itself.
 Accept starts lit only when the gate finds every row ready.
 A dialog is its own window, outside the main window's look reach.
@@ -26,12 +26,12 @@ So it attaches the look to itself, or its buttons show no label and no fill.
 
 Each named part is pulled from the window by its contract ID.
 
-## `internal static bool QSCustomsConsult(QWindow host, CSCustoms customs)`
+## `internal static bool QSCustomsConsult(Window owner, CSCustoms customs)`
 
 Shows the declaration and answers whether the user accepted it.
 The declared rows stay in the gate, so Conduct reads them back itself.
 
-## `internal static void QSCustomsOmissionConsult(QWindow host, IReadOnlyList<CMarkupOmission> omissions)`
+## `internal static void QSCustomsOmissionConsult(Window owner, IReadOnlyList<CMarkupOmission> omissions)`
 
 Shows the omissions the import reported on the window's second face.
 Each omission arrives as ready line and text, and Conduct asks only when one exists.

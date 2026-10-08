@@ -52,7 +52,7 @@ public sealed class CRepertoire
         CRepertoireSession = new CSession(
             CRepertoirePlaywright.LPlaywrightDesk,
             [CRepertoireOccurrence.COccurrencePanel.LPanelChangeCheck, CRepertoireAtlas.CAtlasPanel.LPanelChangeCheck],
-            editor,
+            editor.CEditorDesk,
             () => CRepertoireOccurrence.COccurrencePanel.CPanelEditing,
             editor.LEditorFinish,
             static () => true,
@@ -76,6 +76,7 @@ public sealed class CRepertoire
                     draft, atelier.CAtelierMediaPort, atelier.CAtelierEntryBundle.CEntryBundleMarkdown));
         CRepertoireOccurrence.COccurrencePanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
         CRepertoireOccurrence.COccurrencePanel.CPanelCleared += editor.CEditorDesk.CDeskCancel;
+        editor.CEditorDisplay.CDisplayPanelAttach(CRepertoireOccurrence.COccurrencePanel);
         atelier.CAtelierNavigation.LNavigationTabAdd(
             "Repertoire",
             () => CRepertoireSession.LSessionLeaveConfirm(true),
@@ -85,7 +86,11 @@ public sealed class CRepertoire
         atelier.CAtelierWorkspace.LWorkspaceDraftAdd(
             CRepertoireSession.LSessionChangeCheck, CRepertoireSession.LSessionFinish);
         atelier.CAtelierWorkspace.LWorkspaceVistaAdd(LRepertoireVistaRestore);
-        atelier.CAtelierWorkspace.LWorkspaceClosureAdd(CRepertoireSession.LSessionEditorClose);
+        atelier.CAtelierWorkspace.LWorkspaceClosureAdd(() =>
+        {
+            editor.CEditorClose();
+            editor.CEditorDisplay.CDisplayPlayback.CDisplayPlaybackCancel();
+        });
         LRepertoireVistaRestore();
     }
 

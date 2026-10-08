@@ -1,14 +1,15 @@
 # QRepertoire.cs
-Hash: `b87db4838ae158e3`
+Hash: `e3253b9e05bcee03`
 
-## `internal sealed partial class QRepertoire : QChronicleHost`
+## `internal sealed class QRepertoire : QChronicleHost`
 
 The Repertoire panel's driver, the view of the shared stock of usage contexts itself.
 A Situation is independent data owned by nothing, so this panel is not a view of one Entry's contexts.
-This part holds the surface, the host, the entry editor and display drivers, the repertoire Conduct and its playwright.
-The browsing behavior lives in `QRepertoireBrowse.cs` and the editing in `QRepertoireEditor.cs`, one file per responsibility.
-The held draft the editor writes into lives in `QRepertoireHold.cs`, apart from the controls it reads.
-`QRepertoireDialog.cs` answers the picture and video row clicks.
+It holds the surface, the atelier and envoy, the entry editor and display drivers, and the rail.
+It also holds the two pickers and the repertoire Conduct.
+The catalog, the entry column, the Situation reading and its editing are the sub-drivers `QAtlas`, `QOccurrence`, `QVignette` and `QScenario`.
+The panel answers two questions rather than one.
+It shows what this Situation is, and where it is used.
 It answers the window's undo and redo keys as `QChronicleHost`, attached to its surface since the surface is no driver.
 
 ## `internal QRepertoire(UserControl surface)`
@@ -16,8 +17,11 @@ It answers the window's undo and redo keys as `QChronicleHost`, attached to its 
 Takes the veneer's page as its surface, which the window pulls by contract ID.
 The page's local styles are handed to the look sheet, which otherwise knows only the application's.
 The driver attaches itself to the page as the host of the undo and redo keys.
-It adds the print and export command bindings and points the two buttons at them.
-It ties both droppers to their popups, sets every icon, and subscribes every click and text field.
+It builds the rail with Fresh and Portrait shown, and the two pickers over their placed controls.
+The order picker hangs its menu under the whole `PTier` bar.
+It builds the four sub-drivers over the same page, each finding its own parts.
+It adds the print and export command bindings, which the rail's buttons reach.
+It subscribes the rail's four notices.
 
 ## `private Border QTier`
 
@@ -31,30 +35,50 @@ The panel keeps no copy of any of them and asks the Conduct for each where it ne
 It is null until `QRepertoireIntroduce` builds it, so only the print and portrait gates guard against that.
 A switched workspace hands over a fresh vista, read from that workspace's own layout.
 
-## `private CPlaywright _cPlaywright = null!;`
+## `internal void QRepertoireIntroduce(CAtelier atelier, CEnvoy envoy, QVolume volume, QMentionMenu mentionMenu)`
 
-The playwright handle, read once off the repertoire at introduce.
-Every part reaches the scenario's gates and notices through it, never through the repertoire.
-
-## `internal void QRepertoireIntroduce(QWindow host)`
-
-Builds the repertoire Conduct, which builds its editor, and wires the playwright's notices.
+Builds the repertoire Conduct, which builds its editor.
 Only the medium knows its dispatcher, so the marshal the area runs its notices through is built here.
-The lectern follows the occurrence panel, whose loads and clears reach the display's area, never the veneer.
-Binds the panel to the window it asks for confirmations and panel switches through.
-It binds its lists, the editor's media rows among them, and subscribes to the engine, and reads nothing yet.
-The atlas and occurrence lists get their row fills through `QLookItemAttach`.
-The picture and video drivers are handed the playwright's image and video gates.
-It attaches the entry display and editor to the same host and engine, so an Entry is read and written.
-The engine's change notices drive the mode, and its row notices drive the two lists.
-Its scenario and situation notices paint the sheet.
+The display view builds the lectern over the editor's display, which Conduct attached to the occurrence panel.
+Keeps the atelier and envoy, which the catalog load runs through.
+It introduces `QScenario`, `QVignette`, `QAtlas` and `QOccurrence`, which subscribe the notices they paint themselves.
+The occurrence and vignette drivers take the window's atelier, never the window.
+It attaches the entry display and editor to the same atelier and facets, so an Entry is read and written.
+The engine's change notices drive the mode.
 Its failures reach the window through the envoy, which the Conduct asks directly.
-A dropped inquest empties the inquest box and the language menu.
+A dropped inquest rebuilds the language menu through `QRepertoireClearRefine`, while `QAtlas` empties the box.
 A workspace change reloads the flags.
-The ordering menu is built once from the Conduct's fixed list of orderings.
-The window fills the situation catalog and the entry column when the workspace opens.
+It hands the rail the window's navigation and itself as the chronicle host.
+It hands both pickers the atlas's aperture, and the order picker the Conduct's fixed list of orderings.
+The window fills the situation catalog when the workspace opens, and `QOccurrence` fills the entry column on the same notice.
 Every change after that arrives as an announcement.
 The panel is current whether or not its tab is in front.
+
+## `internal async void QRepertoireVistaRefine()`
+
+Answers the workspace opening, after the Conduct has started the fresh vistas and attached their observers.
+The two pickers tick the ordering from the atlas and draw the filter mark.
+The flags are loaded before any row is built.
+The filter picker then builds its language menu from the languages that load answers.
+The catalog is then listed once through `QAtlas`.
+The Conduct carried any search text held into the fresh vistas, so the boxes need no re-send.
+Its one request is `CRepertoireRowsLoad`, which runs the flag fill and then answers the rows it paints.
+
+## `internal void QRepertoireExitRefine()`
+
+The Veneer half of the window's exit, since the editor's stop and the playback cancel run in Conduct.
+Releases the editor's recording player and closes both pickers' menus, so neither outlives the window.
+
+## `public void QChronicleUndoObserve()`
+
+Steps whichever draft is in front one snapshot back, through the Conduct.
+The step runs inside `QChronicle.QChronicleCaretRefine`, so the caret stays at the end of the focused box.
+The draft bulletin the engine raises brings the older fields back through the ordinary restore.
+
+## `public void QChronicleRedoObserve()`
+
+Steps whichever draft is in front one snapshot forward again.
+The inverse of the undo above, through the same bulletin.
 
 ## `private bool QRepertoireShownCheck()`
 
@@ -63,15 +87,46 @@ Whether the panel is on screen, so the engine knows when a notice needs painting
 ## `private void QRepertoireModeRefine()`
 
 Paints the mode the engine decides.
-It shows the page, checks the toggle and lights the buttons the mode names.
-The scenario is live only while `CRepertoireScenarioEnabled` holds.
-It folds the trail pair and the chronicle pair by the same mode as the toggle.
+`QScenarioVisibleRefine` lights the writing side, and `QVignetteVisibleRefine` the reading side.
+The rail takes the scribe verdict, the mode and bin enablement, and the store verdict.
 It ends by refreshing the rail's undo and redo.
 
-## `internal void QRepertoireExitRefine()`
+## `private void QRepertoireChronicleRefine()`
 
-The Veneer half of the window's exit, since the editor's stop and the playback cancel run in Conduct.
-Releases the editor's recording player and closes the popups the panel owns, so neither outlives the window.
+Lights the rail's two chronicle buttons only when the draft in front has a step to walk.
+The Conduct reads the entry editor's chronicle while `PEditor` is in front, and the held Situation's otherwise.
+
+## `private void QRepertoireClearRefine()`
+
+Has the filter picker rebuild its language menu after an arrival dropped the query on the vista.
+The menu is read back from the vista's cleared filter, and the filter mark follows.
+
+## `private async void QRepertoireWorkspaceRefine()`
+
+Answers the Conduct's workspace change by reloading the flags, since they do not belong to the old folder's rows.
+The Conduct has already closed the shown Situation and dropped the old selection.
+The window's envoy goes with the load, so the catalog reports a failed load and answers no languages.
+
+## `private void QRepertoireFreshObserve()`
+
+The rail's Fresh is answered by the Conduct, which decides what is made.
+With no Situation chosen and no Entry shown, it opens the editor on a Situation nothing has stored yet.
+With a Situation chosen, or an Entry shown, it starts a new Entry carrying that Situation instead.
+
+## `private void QRepertoireBinObserve()`
+
+Hands the rail's delete to the Conduct, which acts only while a Situation and not an Entry is shown.
+The envoy asks the user first, and a Situation something references is asked about with its usage count.
+
+## `private void QRepertoireStoreObserve()`
+
+The rail's save, standing for whichever editor is in front.
+The Conduct saves an open Entry through the entry editor, and otherwise commits the held Situation.
+
+## `private void QRepertoireScribeObserve(bool scribe)`
+
+Asks for the side the rail's toggle names, on whichever side the Conduct stands.
+The Conduct asks before leaving an editor, so unsaved wording is never lost silently.
 
 ## `private void QRepertoirePressRefine(object sender, CanExecuteRoutedEventArgs e)`
 

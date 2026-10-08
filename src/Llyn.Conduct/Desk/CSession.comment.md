@@ -1,17 +1,18 @@
 # CSession.cs
-Hash: `9ad66eecc6709ab4`
+Hash: `b50233150aac7538`
 
 ## `public sealed class CSession`
 
 One side panel's draft session over its desk, shared by the repertoire, the corpus, the guild and the shelf.
 It starts, finishes, saves, undoes and redoes the desk, and defers to the entry editor while it shows.
-It also asks before leaving unsaved changes and closes the editor when the workspace closes.
+It also asks before leaving unsaved changes.
+It holds only the editor's desk, so the panel that owns the editor closes it.
 Each variant of a panel enters as a constructor parameter or a seam, never as a second copy.
 
-## `internal CSession(CDesk desk, IReadOnlyList<Func<bool>> pending, CEditor? editor, Func<bool> shownSeam, Func<bool, bool> finishSeam, Func<bool> readySeam, Action<long> storedSeam, CEnvoy envoy)`
+## `internal CSession(CDesk desk, IReadOnlyList<Func<bool>> pending, CDesk? editorDesk, Func<bool> shownSeam, Func<bool, bool> finishSeam, Func<bool> readySeam, Action<long> storedSeam, CEnvoy envoy)`
 
 The pending checks are asked in order whether a panel holds unsaved changes.
-The editor's desk takes over while the shown seam answers true, and the guild hands no editor.
+The editor's desk takes over while the shown seam answers true, and the guild hands no editor desk.
 The finish seam runs the editor's own finish while it shows.
 A start opens the desk, which knows its own origin and subject or its vista.
 The ready seam may refuse a store, and the stored seam shows what a store kept.
@@ -76,13 +77,8 @@ Steps the editor forward while it shows, else the desk.
 ## `internal bool LSessionLeaveConfirm(bool shown)`
 
 Asks the user only when a panel holds unsaved changes, and answers whether leaving may go on.
-A cancelled question answers false, and so does a store the ready seam or the tenure refuses.
+A cancelled question answers false, and so does a store the ready seam or the desk refuses.
 A shown record is finished and shown again, while a record left unshown is closed for a row click.
-
-## `internal void LSessionEditorClose()`
-
-Closes the entry editor and cancels its playback when the workspace closes.
-It leaves the session's own desk alone, and a session without an editor does nothing.
 
 ## `internal bool LSessionChangeCheck()`
 

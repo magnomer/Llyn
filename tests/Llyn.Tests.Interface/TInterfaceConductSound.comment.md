@@ -1,5 +1,5 @@
 # TInterfaceConductSound.cs
-Hash: `3112c83315efdd82`
+Hash: `e3c71db89fa573d9`
 
 ## `internal static class TInterfaceConductSound`
 
@@ -85,9 +85,9 @@ Relays the shared reflex scan, so a fact can hand it a fake reflex port and read
 
 Relays the respelling rule, so a fact can read which form a mark shows.
 
-## `internal static CKindred TKindredCreate(CEditor editor, CPhonologyBundle phonology, LDraftPort drafts)`
+## `internal static CKindred TKindredCreate(TEditorFixture editor, CPhonologyBundle phonology, LDraftPort drafts)`
 
-Builds the editor's reflex block over the desk and display of `editor`, with ports a test may fake.
+Builds the editor's reflex block over the desk and display facets of `editor`, with ports a test may fake.
 The fake draft port lets a test answer the anchor rule, and the fake bundle's reflex port the reflex guises.
 Its settings port is `TInterfaceConduct.TSettingsCreate`, so a refused anchor read reaches the envoy with a notice.
 Its envoy answers no and records nothing a fact reads.

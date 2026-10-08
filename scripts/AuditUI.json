@@ -319,9 +319,7 @@
     ],
     "reflection": "\\bSystem\\.Reflection\\b",
     "timer": "\\bCancellationTokenSource\\b",
-    "hold": [
-      "Hold\\.cs$"
-    ],
+    "hold": [],
     "panel": "\\b(class|struct|record)\\s+PS?[A-Z]",
     "tracked": [
       "src/*",

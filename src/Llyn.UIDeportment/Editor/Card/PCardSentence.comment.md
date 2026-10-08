@@ -1,18 +1,27 @@
 # PCardSentence.cs
-Hash: `5a3ad9d1b4db84ca`
+Hash: `ae3ddd5aef584c1f`
 
-## `internal sealed partial class PCard`
+## `internal sealed class PCardSentence`
 
-The Example rows a card shows.
-The engine holds the rows, and the card renders them by id and reports what the user does to them.
+The Example rows one card shows.
+The engine holds the rows, and this list renders them by id and reports what the user does to them.
 A row belongs to the card it was written under and moves with it.
-This file holds that one responsibility and nothing else the card does.
+It knows no card, so its owner is named by whoever subscribes to its notice.
 
-## `internal event Action<PCard, PSentence, PGloss, string>? PCardSentenceNotice;`
+## `internal PCardSentence(ObservableCollection<QCitationItem> catalog, ObservableCollection<string> particles, ObservableCollection<string> dependences, ObservableCollection<PLanguageItem> languages)`
 
-Where a language picked for a Gloss goes, with the card, its sentence row and the raw language.
-The editor subscribes when it builds the card and hands the pick to one gate.
-The card cannot send, because it holds no engine.
+The catalog, particle, dependence and language lists are the editor's own, shared by every card.
+Each row reads them, so one write reaches every card at once.
+
+## `public ObservableCollection<PSentence> PCardSentenceRow { get; }`
+
+The rows in the engine's order, which the card's sentence list draws.
+
+## `internal event Action<PSentence, PGloss, string>? PCardSentenceNotice;`
+
+Where a language picked for a Gloss goes, with its sentence row and the raw language.
+The editor subscribes when it builds the card, closing over that card, and hands the pick to one gate.
+The list cannot send, because it holds no engine.
 Typed text never comes this way, since a row holds no copy of what is typed.
 
 ## `internal void PCardSentenceApply(CSentenceOrder order)`
@@ -36,7 +45,6 @@ Where the row stands, which is what an addition beneath it is asked at.
 
 ### `private PSentence PCardSentenceCreate(CSentenceDraft draft, CSentenceOrder? order)`
 
-Builds one row from the engine's row and subscribes its Gloss notice to raise the card's.
+Builds one row from the engine's row and subscribes its Gloss notice to raise the list's.
 The frame's order is applied at birth, so a row never draws in the default order first.
-No order yet means no frame was read, and the row keeps its default columns.
-
+No order yet means no frame was read, and the row's frame keeps its default order.

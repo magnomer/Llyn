@@ -16,10 +16,8 @@ public sealed partial class TFault
             "Favorite.MarkFailed",
             static stage =>
             {
-                CEditor editor = TFaultDeskOpen(stage);
-                return (
-                    () => editor.CEditorEsteem.CEsteemFavoriteSet(true),
-                    () => editor.CEditorEsteem.CEsteemFavorite);
+                CEsteem esteem = TFaultDeskOpen(stage).TEditorFixtureEsteem;
+                return (() => esteem.CEsteemFavoriteSet(true), () => esteem.CEsteemFavorite);
             }),
         new(
             "CEsteem.CEsteemGraspSet",
@@ -27,8 +25,8 @@ public sealed partial class TFault
             "Grasp.MarkFailed",
             static stage =>
             {
-                CEditor editor = TFaultDeskOpen(stage);
-                return (() => editor.CEditorEsteem.CEsteemGraspSet(4), () => editor.CEditorEsteem.CEsteemGrasp);
+                CEsteem esteem = TFaultDeskOpen(stage).TEditorFixtureEsteem;
+                return (() => esteem.CEsteemGraspSet(4), () => esteem.CEsteemGrasp);
             }),
         new(
             "CDisplay.CDisplayFavoriteToggle",
@@ -86,7 +84,6 @@ public sealed partial class TFault
                     static () => true,
                     TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard),
                     static run => run());
-                library.CLibraryEditor.CEditorDisplay.CDisplayPanelAttach(library.CLibraryPanel);
                 library.TLibraryVistaRestore();
                 long water = TFaultEntrySave(engine);
                 return (() => library.CLibraryPanel.CPanelRowOpen(water), null);
@@ -103,7 +100,6 @@ public sealed partial class TFault
                     static () => true,
                     TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard),
                     static run => run());
-                library.CLibraryEditor.CEditorDisplay.CDisplayPanelAttach(library.CLibraryPanel);
                 library.TLibraryVistaRestore();
                 library.CLibraryPanel.CPanelRowOpen(TFaultEntrySave(engine));
                 return (library.CLibraryPanel.CPanelDraftResonate, null);
@@ -112,26 +108,26 @@ public sealed partial class TFault
             "CKindred.CKindredRebuild",
             "LReflexPort.LEngineReflexRebuild",
             "Display.ReflexRebuildFailed",
-            static stage => (TFaultDeskOpen(stage).CEditorKindred.CKindredRebuild, null)),
+            static stage => (TFaultDeskOpen(stage).TEditorFixtureKindred.CKindredRebuild, null)),
         new(
             "CSounding.CSoundingFanqieSet",
             "LFanqiePort.LEngineFanqieSet",
             "Display.FanqieRepresentativeFailed",
             static stage =>
             {
-                CSounding sounding = TFaultDeskOpen(stage).CEditorSounding;
+                CSounding sounding = TFaultDeskOpen(stage).TEditorFixtureSounding;
                 return (() => sounding.CSoundingFanqieSet(1, 0, true), null);
             }),
         new(
             "CSounding.CSoundingFanqieResolve",
             "LFanqiePort.LEngineFanqieRebuild",
             "Display.FanqieRebuildFailed",
-            static stage => (TFaultDeskOpen(stage).CEditorSounding.CSoundingFanqieResolve, null)),
+            static stage => (TFaultDeskOpen(stage).TEditorFixtureSounding.CSoundingFanqieResolve, null)),
         new(
             "CSounding.CSoundingScriptResolve",
             "LScriptPort.LEngineScriptRebuild",
             "Display.ScriptRebuildFailed",
-            static stage => (TFaultDeskOpen(stage).CEditorSounding.CSoundingScriptResolve, null)),
+            static stage => (TFaultDeskOpen(stage).TEditorFixtureSounding.CSoundingScriptResolve, null)),
         new(
             "CFold.CFoldFanqieToggle",
             "LSettingsVault.LSettingsSave",
@@ -139,9 +135,9 @@ public sealed partial class TFault
             static stage =>
             {
                 LEngine engine = TFaultVaultStart(stage);
-                CFold fold = CEditor.CEditorCreate(
+                CFold fold = TEditorFixture.TEditorFixtureCreate(
                     TFaultAtelierCreate(stage, engine),
-                    TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard)).CEditorFold;
+                    TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard)).TEditorFixtureFold;
                 bool chosen = !engine.TEngineSettingsRead().LSettingsFanqieOpened;
                 return (
                     () => fold.CFoldFanqieToggle(chosen),
@@ -154,9 +150,9 @@ public sealed partial class TFault
             static stage =>
             {
                 LEngine engine = TFaultVaultStart(stage);
-                CFold fold = CEditor.CEditorCreate(
+                CFold fold = TEditorFixture.TEditorFixtureCreate(
                     TFaultAtelierCreate(stage, engine),
-                    TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard)).CEditorFold;
+                    TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard)).TEditorFixtureFold;
                 bool chosen = !engine.TEngineSettingsRead().LSettingsScriptOpened;
                 return (
                     () => fold.CFoldScriptToggle(chosen),
@@ -204,13 +200,13 @@ public sealed partial class TFault
         engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
             "water", "English", "ˈwɔːtə", string.Empty, [TInterface.TCardCreate("a liquid", 1)], [])).LEntryId;
 
-    private static CEditor TFaultDeskOpen(TFaultStage stage)
+    private static TEditorFixture TFaultDeskOpen(TFaultStage stage)
     {
         LEngine engine = TFaultEngineStart(stage);
-        CEditor editor = CEditor.CEditorCreate(
+        TEditorFixture editor = TEditorFixture.TEditorFixtureCreate(
             TFaultAtelierCreate(stage, engine), TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard));
         editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
-        editor.CEditorEntryOpen(TFaultEntrySave(engine));
+        editor.TEditorFixtureOpen(TFaultEntrySave(engine));
         return editor;
     }
 

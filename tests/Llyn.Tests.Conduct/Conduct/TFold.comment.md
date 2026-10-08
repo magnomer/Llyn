@@ -1,5 +1,5 @@
 # TFold.cs
-Hash: `a87ab88fb1984399`
+Hash: `2e4f657e5c98adb1`
 
 ## `public sealed class TFold`
 
@@ -42,6 +42,7 @@ The audit receives the fault once, from the shown notice, since the clerk only t
 
 Stores one English entry and answers its id.
 
-## `private static CEditor TFoldEditorPrepare(LEngine engine, long? entry)`
+## `private static TEditorFixture TFoldEditorPrepare(LEngine engine, long? entry)`
 
 An editor on the library tab, holding `entry` or a fresh draft.
+It answers the fixture, so a test reads only the fold facet or closes the editor.

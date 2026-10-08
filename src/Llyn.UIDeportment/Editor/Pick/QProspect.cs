@@ -17,7 +17,9 @@ internal sealed class QProspect
 
     private readonly QSentence _qProspectSentence;
 
-    private CEditor _cEditor = null!;
+    private CCard _cCard = null!;
+
+    private CSentence _cSentence = null!;
 
     private QLink _qProspectLink = null!;
 
@@ -36,9 +38,10 @@ internal sealed class QProspect
 
     private Border QProspectContents => QContract.QContractFind<Border>(_qProspectSurface, "PContents");
 
-    internal void QProspectIntroduce(CEditor editor, QLink link)
+    internal void QProspectIntroduce(CCard card, CSentence sentence, QLink link)
     {
-        _cEditor = editor;
+        _cCard = card;
+        _cSentence = sentence;
         _qProspectLink = link;
     }
 
@@ -101,28 +104,28 @@ internal sealed class QProspect
         e.Handled = true;
         switch (QProspectPopup.PlacementTarget)
         {
-            case TextBox { DataContext: PLinkCaret caret }:
+            case TextBox { DataContext: PCaret<QLinkChip> caret }:
                 if (_qProspectLink.QLinkCardFind(caret) is PCard owner)
                 {
-                    _cEditor.CEditorCard.CCardTranslationInsert(
+                    _cCard.CCardTranslationInsert(
                         owner.PCardId,
                         item.PProspectItemId,
                         item.PProspectItemHeadword,
                         item.PProspectItemLanguage,
-                        owner.PCardLinkPosition);
+                        caret.PCaretPosition);
                     QProspectShutRefine();
-                    owner.PCardLinkClear();
+                    caret.PCaretClear();
                 }
 
                 return;
             case TextBox { DataContext: PEtymon caret }:
-                _cEditor.CEditorCard.CCardEtymonAdd(item.PProspectItemId);
+                _cCard.CCardEtymonAdd(item.PProspectItemId);
                 QEtymologyEditor.QEtymologyCaretRefine(caret);
                 break;
             case TextBox { DataContext: PSentence row } box:
                 if (_qProspectSentence.QSentenceCardFind(row) is PCard card)
                 {
-                    _cEditor.CEditorSentence.CSentenceMentionAdd(
+                    _cSentence.CSentenceMentionAdd(
                         card.PCardId,
                         row.PSentenceRow,
                         box.Text,
@@ -172,7 +175,7 @@ internal sealed class QProspect
     internal void QProspectKeyObserve(object sender, KeyEventArgs e)
     {
         if (e.Key != Key.Enter
-            || sender is not FrameworkElement { DataContext: PLinkCaret row }
+            || sender is not FrameworkElement { DataContext: PCaret<QLinkChip> row }
             || _qProspectLink.QLinkCardFind(row) is not PCard card)
         {
             return;
@@ -183,15 +186,15 @@ internal sealed class QProspect
             return;
         }
 
-        _cEditor.CEditorCard.CCardTranslationInsert(
+        _cCard.CCardTranslationInsert(
             card.PCardId,
             item.PProspectItemId,
             item.PProspectItemHeadword,
             item.PProspectItemLanguage,
-            card.PCardLinkPosition);
+            row.PCaretPosition);
         e.Handled = true;
         QProspectShutRefine();
-        card.PCardLinkClear();
+        row.PCaretClear();
     }
 
     internal void QProspectPlaceRefine(FrameworkElement anchor, Rect place)

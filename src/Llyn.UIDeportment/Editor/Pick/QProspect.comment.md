@@ -1,5 +1,5 @@
 # QProspect.cs
-Hash: `ef93fdf922bd353d`
+Hash: `6aea75238707bd16`
 
 ## `internal sealed class QProspect`
 
@@ -106,8 +106,8 @@ Only one caret is typed into at a time, so only one list of candidates is ever o
 It hangs off the caret it was opened from, which is why the markup names no placement target.
 Its shutting drops the selection, so enter never takes a row the dropdown no longer shows.
 
-## `internal void QProspectIntroduce(CEditor editor, QLink link)`
+## `internal void QProspectIntroduce(CCard card, CSentence sentence, QLink link)`
 
-Holds the editor area whose gates a pick calls.
+Holds the card and sentence facets whose gates a pick calls.
 It also holds the Translation driver, which finds the card a Translation caret belongs to.
 The link driver takes this dropdown in its constructor, so the pair is joined here without a forwarder.

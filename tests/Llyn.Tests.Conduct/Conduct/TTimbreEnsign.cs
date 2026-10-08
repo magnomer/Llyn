@@ -16,10 +16,10 @@ public sealed class TTimbreEnsign
         using TLanguageFixture pack = TDisplayAccent.TDisplayPackCreate();
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TTimbre.TTimbreFlaggedPrepare(engine, pack.TLanguageFixtureName);
+        CTimbre timbre = TTimbre.TTimbreFlaggedPrepare(engine, pack.TLanguageFixtureName).TEditorFixtureTimbre;
         List<string> stored = [];
 
-        CTimbreAccent? accent = await editor.CEditorTimbre.CTimbreFlagRead((rows, _) =>
+        CTimbreAccent? accent = await timbre.CTimbreFlagRead((rows, _) =>
         {
             stored.AddRange(rows.Select(static row => row.CEnsignRowKey));
             return static () => { };
@@ -38,11 +38,11 @@ public sealed class TTimbreEnsign
         using TLanguageFixture pack = TDisplayAccent.TDisplayPackCreate();
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TTimbre.TTimbreFlaggedPrepare(engine, pack.TLanguageFixtureName);
+        TEditorFixture editor = TTimbre.TTimbreFlaggedPrepare(engine, pack.TLanguageFixtureName);
 
-        CTimbreAccent? accent = await editor.CEditorTimbre.CTimbreFlagRead((_, _) =>
+        CTimbreAccent? accent = await editor.TEditorFixtureTimbre.CTimbreFlagRead((_, _) =>
         {
-            editor.CEditorEntry.CEntryLanguageSet("English");
+            editor.TEditorFixtureEntry.CEntryLanguageSet("English");
             return static () => { };
         });
 
@@ -55,9 +55,9 @@ public sealed class TTimbreEnsign
         using TLanguageFixture pack = TDisplayAccent.TDisplayPackCreate();
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TTimbre.TTimbreFlaggedPrepare(engine, pack.TLanguageFixtureName);
+        CTimbre timbre = TTimbre.TTimbreFlaggedPrepare(engine, pack.TLanguageFixtureName).TEditorFixtureTimbre;
 
-        CTimbreAccent? accent = await editor.CEditorTimbre.CTimbreFlagRead(
+        CTimbreAccent? accent = await timbre.CTimbreFlagRead(
             (_, _) => throw new InvalidOperationException("The flag store failed."));
 
         Assert.Null(accent);
@@ -69,13 +69,13 @@ public sealed class TTimbreEnsign
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("{}");
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TEditorField.TEditorFieldPrepare(engine);
-        editor.CEditorDesk.TDeskDefer(
-            TInterface.TRequestLanguageCreate(editor.CEditorDesk.CDeskId, pack.TLanguageFixtureName));
+        TEditorFixture editor = TEditorField.TEditorFieldPrepare(engine);
+        editor.TEditorFixtureDesk.TDeskDefer(
+            TInterface.TRequestLanguageCreate(editor.TEditorFixtureDesk.CDeskId, pack.TLanguageFixtureName));
         Assert.False(engine.TEngineFlaggedCheck(pack.TLanguageFixtureName));
         List<string> stored = [];
 
-        CTimbreAccent? accent = await editor.CEditorTimbre.CTimbreFlagRead((rows, _) =>
+        CTimbreAccent? accent = await editor.TEditorFixtureTimbre.CTimbreFlagRead((rows, _) =>
         {
             stored.AddRange(rows.Select(static row => row.CEnsignRowKey));
             return static () => { };

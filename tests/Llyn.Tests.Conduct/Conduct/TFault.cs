@@ -66,7 +66,7 @@ public sealed partial class TFault
             "Input.TranscriptionFailed",
             static stage =>
             {
-                CErrand errand = TFaultEditorStart(stage, TFaultFlagged).CEditorDesk.CDeskErrand;
+                CErrand errand = TFaultEditorStart(stage, TFaultFlagged).TEditorFixtureDesk.CDeskErrand;
                 errand.CErrandTranscriptionStart(0, string.Empty);
                 return Task.FromResult<Func<Task>>(() => errand.CErrandFlagLoad(static (_, _) => static () => { }));
             }),
@@ -98,11 +98,12 @@ public sealed partial class TFault
             "Sound.LoadFailed",
             static stage =>
             {
-                CEditor editor = TFaultEditorStart(stage, TFaultFlagged);
-                editor.CEditorDesk.TDeskDefer(TInterface.TRequestIpaCreate(editor.CEditorDesk.CDeskId, "a˥"));
-                editor.CEditorDesk.TDeskVarietySet(true, 0, "British");
+                TEditorFixture editor = TFaultEditorStart(stage, TFaultFlagged);
+                editor.TEditorFixtureDesk.TDeskDefer(
+                    TInterface.TRequestIpaCreate(editor.TEditorFixtureDesk.CDeskId, "a˥"));
+                editor.TEditorFixtureDesk.TDeskVarietySet(true, 0, "British");
                 return Task.FromResult<Func<Task>>(
-                    () => editor.CEditorTimbre.CTimbreFlagRead(static (_, _) => static () => { }));
+                    () => editor.TEditorFixtureTimbre.CTimbreFlagRead(static (_, _) => static () => { }));
             }),
         new(
             "CLibrary.CLibraryMarkupImport",
@@ -395,7 +396,7 @@ public sealed partial class TFault
         stage.TFaultStageAdd(TInterfaceConduct.TAtelierFaultCreate(
             TFaultEngineStart(stage), stage.TFaultStageMember, stage.TFaultStageThrown));
 
-    private static CEditor TFaultEditorStart(TFaultStage stage, string json)
+    private static TEditorFixture TFaultEditorStart(TFaultStage stage, string json)
     {
         TLanguageFixture pack = stage.TFaultStageAdd(TLanguageFixture.TLanguageFixtureCreate(json));
         TWorkspace workspace = stage.TFaultStageAdd(TWorkspace.TWorkspaceCreate());
@@ -409,18 +410,18 @@ public sealed partial class TFault
         };
         LEngine engine = stage.TFaultStageAdd(TInterface.TEngineCreate(faulted));
         engine.TEngineDelaySet(0);
-        CEditor editor = TInterfaceEditor.TEditorCreate(
-            engine, TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard));
+        TEditorFixture editor = new(TInterfaceEditor.TEditorCreate(
+            engine, TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard)));
         editor.TEditorVistaRestore(engine.TEngineVistaStart("input", LCatalogOrder.LCatalogOrderHeadword));
-        editor.CEditorEntryOpen(null);
-        editor.CEditorEntry.CEntryLanguageSet(pack.TLanguageFixtureName);
-        editor.CEditorEntry.CEntryHeadwordSet("hill");
+        editor.TEditorFixtureOpen(null);
+        editor.TEditorFixtureEntry.CEntryLanguageSet(pack.TLanguageFixtureName);
+        editor.TEditorFixtureEntry.CEntryHeadwordSet("hill");
         return editor;
     }
 
     private static async Task<CErrand> TFaultRecordingStart(TFaultStage stage, string json)
     {
-        CErrand errand = TFaultEditorStart(stage, json).CEditorDesk.CDeskErrand;
+        CErrand errand = TFaultEditorStart(stage, json).TEditorFixtureDesk.CDeskErrand;
         TaskCompletionSource finished = new(TaskCreationOptions.RunContinuationsAsynchronously);
         errand.CErrandClipChanged += roll =>
         {

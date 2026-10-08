@@ -1,5 +1,5 @@
 # QEditorSound.cs
-Hash: `a5d068fe9eda8edc`
+Hash: `06dec3147a4ae555`
 
 ## `internal sealed class QEditorSound`
 
@@ -17,19 +17,31 @@ Builds the sound drivers over the editor scope in the order the editor once buil
 The contour redraws as the pronunciation is typed, beside the gate that hears the same text.
 The measuring twin follows the field's text and hint, where a style binding and trigger stood.
 
-## `internal void QEditorSoundIntroduce(CEditor editor, QVolume volume)`
+## `internal void QEditorSoundIntroduce(CEditor editor, QVolume volume, CLedger ledger, CEnvoy envoy)`
 
-Hands the Conduct editor to each sound driver, and the anchor menu its anchor over the same desk.
+Hands each sound driver only the editor facets it uses.
+The anchor menu gets its anchor over the editor's kindred facet.
+The transcription facet is read once, so the glyph and transcription rows share one.
 The volume slider and the player are attached to the window's one volume owner.
+The ledger and the envoy go on to the sound panels, which show a picture's decode failure through them.
+The ledger and the envoy are also kept for `QEditorFailureObserve`.
 The player's failure is subscribed here once, since the clip, the accents and the playback share it.
+The clip's own failure handler still runs beside it and only resets a marked preview.
 
-## `private void QEditorFailureRefine(object? sender, ExceptionEventArgs e)`
+## `private void QEditorFailureObserve(object? sender, ExceptionEventArgs e)`
 
-Shows the player's refusal through the window's failure notice under `Sound.PlayFailed`.
+Shows the player's failure through `CLedger.CLedgerFailureShow` under `Sound.PlayFailed`.
 The player is this driver's own medium, and only it raises this event.
 Another driver would play the address with its own player and meet its own failure.
 So no Conduct gate carries it, as with a picture the script decoder refuses.
-The clip's own failure handler still runs beside it and only resets a marked preview.
+
+## `private CLedger _qEditorSoundLedger`
+
+The window's ledger, which shows the player's failure.
+
+## `private CEnvoy _qEditorSoundEnvoy`
+
+The window's envoy, which the failure is shown through.
 
 ## `internal void QEditorPlayerRefine()`
 

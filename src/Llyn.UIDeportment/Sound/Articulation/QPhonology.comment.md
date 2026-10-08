@@ -1,11 +1,12 @@
 # QPhonology.cs
-Hash: `a55efb5d13cc0883`
+Hash: `a36e6314213cc2e1`
 
 ## `internal sealed class QPhonology`
 
 Drives the phonology panel and forwards what the user asks of it.
 Every branch it once carried lives in Conduct's `CPhonology` and the `CPanel` it holds.
-The search, the ordering, the inventory, the read-only display and the editor are all wired here.
+The search, the inventory, the read-only display and the editor are wired here.
+The ordering, the filter and the command row each have their own shared driver.
 The panel itself is the veneer's `PPhonology` page, which the window places.
 It names no Core type, since its rows arrive as `CCatalogPronunciation`.
 
@@ -13,24 +14,31 @@ It names no Core type, since its rows arrive as `CCatalogPronunciation`.
 
 Takes the page the window pulled under the contract ID `PPhonology`.
 It builds the articulation driver over the nested `PArticulation` page, as a parent driver builds a nested one.
-It adds the print and export command bindings to the page and points the two buttons at those commands.
-It ties the droppers to their popups, sets every icon, and attaches the row fills.
-Row clicks are taken on the inventory, and every button and search field is subscribed here.
+That driver is handed the fold toggle and the aid's seam, since folding the aid is its own concern.
+It adds the print and export command bindings to the page.
+The rail's print and export buttons sit inside the page, so their commands reach these bindings.
+It hands the rail `PPhonologyRail` to a `QPanelRail`, with the bin, the new-record button and the export button.
+It hands `PPhonologyOrder` to a `QChoiceOrder`, whose menu hangs under the whole `PSequence` bar.
+It hands `PPhonologyFilter` to a `QChoiceFilter`.
+Row clicks are taken on the inventory, and the search field and the rail's notices are subscribed here.
 
-## `private Rectangle QArticulationSeam`
+## `private Border QSequence`
 
 Each named part is pulled from the page by its contract ID on every read.
 
-## `internal void QPhonologyIntroduce(QWindow host)`
+## `internal void QPhonologyIntroduce(CAtelier atelier, CEnvoy envoy, QVolume volume, QMentionMenu mentionMenu)`
 
 Puts the panel to work through the Conduct phonology panel it builds, which builds its own editor.
 Only the medium knows its dispatcher, so the marshal the area runs its notices through is built here.
 The view wraps that editor for its editor page.
-The lectern follows the panel, whose loads and clears reach the display's area, never the veneer.
+The display view builds the lectern over the editor's display, which Conduct attached to the panel.
+It hands the picker and the filter the panel's aperture, titled `Sequence` and `Lens`.
 The sequence menu is built once from the orders Conduct offers.
-The inventory and the filter mark both repaint whenever the panel raises its rows.
+The inventory repaints whenever the panel raises its rows.
+The filter mark repaints in its own driver, when the reader ticks a language and when the vista opens.
 The window fills it when it restores the stored ordering, and every change after that arrives as an announcement.
 So the panel is current whether or not its tab is the one in front.
+The rail is introduced with the atelier's navigation for its trail and the editor for its chronicle.
 
 ## `internal async void QPhonologyVistaRefine()`
 
@@ -40,13 +48,9 @@ The flags are loaded before the first rows are built, because a row reads its fl
 The filter menu lists the languages the flag load answers.
 Its one request is `CPhonologyRowsLoad`, which runs the flag fill and then answers the rows it paints.
 
-## `private void QLensListRefine(IReadOnlyList<string> languages)`
-
-Fills the filter menu with the languages the flag load answered, each ticked by the panel's filter.
-
 ## `private void QPhonologyStoreRefine()`
 
-Enables the store button only while the editor's desk can store.
+Enables the rail's store button only while the editor's desk can store.
 
 ## `private async void QPhonologyWorkspaceRefine()`
 
@@ -74,14 +78,10 @@ Refills the inventory from the rows the deportment reads, spliced so the list ke
 Paints `rows` the area answered ready, so the paint itself asks Conduct nothing.
 The parameterless form reads them, and a flag-fill Refine hands in what its load answered.
 
-## `private void QLensRefine()`
-
-Shows the filter mark while the panel is filtered.
-
 ## `private void QPhonologyModeRefine()`
 
-Writes the mode and the enablement the deportment holds into the eight controls that show them.
-The trail pair shows while reading and the chronicle pair while writing.
+Writes the mode and the enablement the deportment holds into the editor, the display and the rail.
+The rail folds its own button pairs from the scribe flag it is handed.
 
 ## `private void QPhonologyPressRefine(object sender, CanExecuteRoutedEventArgs e)`
 
@@ -102,6 +102,36 @@ Exports the entry being read, as the engine portrays it.
 The gate asks for the file and the format through the envoy.
 The engine writes the document from stored rows.
 
+## `private void QPhonologyChronicleRefine()`
+
+Lights the rail's two chronicle buttons only while the editor has a step to walk.
+It runs whenever the editor reports its state again.
+
+## `private void QPhonologyScribeObserve(bool scribe)`
+
+Hears the rail's mode toggle and hands the mode to the scribe gate.
+`scribe` is true for the editor and false for the read view.
+
+## `private void QProbeObserve(object sender, TextChangedEventArgs e)`
+
+Hands the typed search to the query gate.
+
+## `private void QInventoryObserve(object sender, RoutedEventArgs e)`
+
+Hands the clicked row's id to the panel's row select.
+
+## `private void QPhonologyFreshObserve()`
+
+Hears the rail's new-record notice and asks the panel for a new entry.
+
+## `private void QPhonologyStoreObserve()`
+
+Hands the rail's store notice to the editor's save gate.
+
+## `private void QPhonologyBinObserve()`
+
+Hands the rail's delete notice to the panel's delete gate.
+
 ## Inline notes
 
 ### `_qArticulation.QArticulationIntroduce(`
@@ -112,75 +142,3 @@ The search comes first, because a reader who opens the charts with nothing focus
 The editor's field takes over as soon as the reader focuses it.
 The editor's field is pulled from the editor's Veneer by its contract ID `PPronunciationField`.
 It is named once here rather than looked up whenever a character is chosen.
-
-## `internal void QPhonologyVoyageRefine(bool past, bool future)`
-
-Lights the two trail buttons from the voyage state the navigation raises.
-The navigation owns the trail, so the panel only shows what it is told.
-
-## `private void QPhonologyRetreatObserve(object sender, RoutedEventArgs e)`
-
-Steps the navigation's trail back one station.
-
-## `private void QPhonologyAdvanceObserve(object sender, RoutedEventArgs e)`
-
-Steps the navigation's trail forward one station.
-
-## `private void QPhonologyUndoObserve(object sender, RoutedEventArgs e)`
-
-Walks the chronicle of the editor back one step.
-
-## `private void QPhonologyRedoObserve(object sender, RoutedEventArgs e)`
-
-Walks the chronicle of the editor forward one step.
-
-## `private void QPhonologyChronicleRefine()`
-
-Lights the two chronicle buttons only while the editor has a step to walk.
-It runs whenever the editor reports its state again.
-
-## `private void QPhonologyViewerObserve(object sender, RoutedEventArgs e)`
-
-Hands the reading mode to the scribe gate, so the viewer button needs no comparison with its sender.
-
-## `private void QPhonologyScribeObserve(object sender, RoutedEventArgs e)`
-
-Hands the writing mode to the scribe gate.
-
-## `private void QProbeObserve(object sender, TextChangedEventArgs e)`
-
-Hands the typed search to the query gate.
-
-## `private void QInventoryObserve(object sender, RoutedEventArgs e)`
-
-Hands the clicked row's id to the panel's row select.
-
-## `private void QPhonologyFreshObserve(object sender, RoutedEventArgs e)`
-
-Asks the panel for a new entry.
-
-## `private void QPhonologyStoreObserve(object sender, RoutedEventArgs e)`
-
-Asks the editor to save the entry.
-
-## `private void QPhonologyBinObserve(object sender, RoutedEventArgs e)`
-
-Asks the panel to delete the chosen entry.
-
-## `private void QSequenceObserve(object sender, RoutedEventArgs e)`
-
-Hands the order row the reader picked to the order gate, then folds the menu away.
-
-## `private void QSequenceRefine()`
-
-Folds the sequence menu away.
-
-## `private void QLensObserve(object sender, RoutedEventArgs e)`
-
-Hands the filter the reader ticked to the filter gate.
-The mark repaints when the panel raises its rows after the change.
-
-## `private void QArticulationFoldRefine(object sender, RoutedEventArgs e)`
-
-Shows the aid and its seam while the fold toggle is checked, and hides both otherwise.
-The toggle is the only state, so the handler reads it and keeps nothing.

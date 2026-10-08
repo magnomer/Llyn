@@ -16,7 +16,7 @@ public sealed class TKindred
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TKindredPrepare(
+        TEditorFixture editor = TKindredPrepare(
             engine,
             TKindredSave(
                 engine,
@@ -44,7 +44,7 @@ public sealed class TKindred
                     return "Guangyun";
                 },
             }));
-        editor.CEditorDisplay.CDisplaySound.CDisplayReflexToggle(true);
+        editor.TEditorFixtureDisplay.CDisplaySound.CDisplayReflexToggle(true);
 
         CTimbreReflex reflex = kindred.CKindredRead();
 
@@ -57,7 +57,7 @@ public sealed class TKindred
             reflex.CTimbreReflexAnchor.CLecternAnchorTexts.Keys.Order());
         Assert.All(
             reflex.CTimbreReflexAnchor.CLecternAnchorTexts.Values, static text => Assert.Equal("Guangyun", text));
-        long? stored = editor.CEditorDesk.CDeskStoredRead();
+        long? stored = editor.TEditorFixtureDesk.CDeskStoredRead();
         Assert.Equal(new object?[] { stored, "kindle" }, Assert.Single(checks));
         Assert.Equal(2, formats.Count);
         Assert.All(
@@ -72,7 +72,7 @@ public sealed class TKindred
     [Fact]
     public void KindredRead_EmptyDesk_AnswersNoRowsAndNoAnchor()
     {
-        CTimbreReflex reflex = TTimbre.TTimbreEditorPrepare([]).CEditorKindred.CKindredRead();
+        CTimbreReflex reflex = TTimbre.TTimbreEditorPrepare([]).TEditorFixtureKindred.CKindredRead();
 
         Assert.False(reflex.CTimbreReflexShown);
         Assert.Empty(reflex.CTimbreReflexRows);
@@ -87,9 +87,8 @@ public sealed class TKindred
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TKindredPrepare(engine, null);
         CKindred kindred = TInterfaceConductSound.TKindredCreate(
-            editor, TKindredGuisePrepare(), TEngineFake.TEngineStubCreate<LDraftPort>());
+            TKindredPrepare(engine, null), TKindredGuisePrepare(), TEngineFake.TEngineStubCreate<LDraftPort>());
 
         CTimbreReflex reflex = kindred.CKindredRead();
 
@@ -103,7 +102,7 @@ public sealed class TKindred
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TKindredPrepare(
+        TEditorFixture editor = TKindredPrepare(
             engine,
             TKindredSave(
                 engine, "water", "English", [TInterface.TReflexDraftCreate("Korean", string.Empty, "a")]));
@@ -127,10 +126,10 @@ public sealed class TKindred
             TPronunciationHelper.TSourceClientCreate(string.Empty, gate.Task));
         long entry = TKindredSave(engine, "弄", pack.TLanguageFixtureName, []);
 
-        CEditor editor = TKindredPrepare(engine, entry);
+        CKindred kindred = TKindredPrepare(engine, entry).TEditorFixtureKindred;
 
-        Assert.True(editor.CEditorKindred.CKindredPending);
-        Assert.True(editor.CEditorKindred.CKindredRead().CTimbreReflexPending);
+        Assert.True(kindred.CKindredPending);
+        Assert.True(kindred.CKindredRead().CTimbreReflexPending);
         gate.SetResult();
         await TReflexFixture.TReflexSettle(engine, entry);
     }
@@ -146,14 +145,14 @@ public sealed class TKindred
         long entry = TKindredSave(
             engine, "弄", pack.TLanguageFixtureName, [TInterface.TReflexDraftCreate("Korean", string.Empty, "롱")]);
 
-        CEditor reflected = TKindredPrepare(engine, entry);
-        CEditor fresh = TKindredPrepare(engine, null);
-        fresh.CEditorEntry.CEntryLanguageSet(pack.TLanguageFixtureName);
-        fresh.CEditorEntry.CEntryHeadwordSet("弄");
+        CKindred reflected = TKindredPrepare(engine, entry).TEditorFixtureKindred;
+        TEditorFixture fresh = TKindredPrepare(engine, null);
+        fresh.TEditorFixtureEntry.CEntryLanguageSet(pack.TLanguageFixtureName);
+        fresh.TEditorFixtureEntry.CEntryHeadwordSet("弄");
 
-        Assert.False(reflected.CEditorKindred.CKindredPending);
+        Assert.False(reflected.CKindredPending);
         Assert.False(engine.TEngineReflexCheck(entry));
-        Assert.False(fresh.CEditorKindred.CKindredRead().CTimbreReflexPending);
+        Assert.False(fresh.TEditorFixtureKindred.CKindredRead().CTimbreReflexPending);
         gate.SetResult();
     }
 
@@ -162,9 +161,9 @@ public sealed class TKindred
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TKindredPrepare(engine, TKindredSave(engine));
+        TEditorFixture editor = TKindredPrepare(engine, TKindredSave(engine));
 
-        editor.CEditorKindred.CKindredAdd(
+        editor.TEditorFixtureKindred.CKindredAdd(
             TKindredRowsRead(editor).First(static row => row.CReflexText == "sy").CReflexId);
 
         IReadOnlyList<CReflex> rows = TKindredRowsRead(editor);
@@ -178,10 +177,10 @@ public sealed class TKindred
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TKindredPrepare(engine, TKindredSave(engine));
+        TEditorFixture editor = TKindredPrepare(engine, TKindredSave(engine));
 
-        editor.CEditorKindred.CKindredAdd(0);
-        editor.CEditorKindred.CKindredAdd(long.MaxValue);
+        editor.TEditorFixtureKindred.CKindredAdd(0);
+        editor.TEditorFixtureKindred.CKindredAdd(long.MaxValue);
 
         IReadOnlyList<CReflex> rows = TKindredRowsRead(editor);
         Assert.Equal(
@@ -194,9 +193,9 @@ public sealed class TKindred
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TKindredPrepare(engine, TKindredSave(engine));
+        TEditorFixture editor = TKindredPrepare(engine, TKindredSave(engine));
 
-        editor.CEditorKindred.CKindredRemove(TKindredRowsRead(editor)[1].CReflexId);
+        editor.TEditorFixtureKindred.CKindredRemove(TKindredRowsRead(editor)[1].CReflexId);
 
         Assert.Equal(["sui", "sy"], TKindredRowsRead(editor).Select(static row => row.CReflexText));
     }
@@ -206,14 +205,14 @@ public sealed class TKindred
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TKindredPrepare(engine, TKindredSave(engine));
+        TEditorFixture editor = TKindredPrepare(engine, TKindredSave(engine));
         long second = TKindredRowsRead(editor)[1].CReflexId;
 
-        editor.CEditorKindred.CKindredToggle(second);
+        editor.TEditorFixtureKindred.CKindredToggle(second);
         Assert.Equal([false, true, false], TKindredRowsRead(editor).Select(static row => row.CReflexMain));
 
-        editor.CEditorKindred.CKindredToggle(second);
-        editor.CEditorKindred.CKindredToggle(long.MaxValue);
+        editor.TEditorFixtureKindred.CKindredToggle(second);
+        editor.TEditorFixtureKindred.CKindredToggle(long.MaxValue);
         Assert.Equal([false, false, false], TKindredRowsRead(editor).Select(static row => row.CReflexMain));
     }
 
@@ -223,26 +222,29 @@ public sealed class TKindred
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         long entry = TKindredSave(engine);
-        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
-        CReflexTyped refused = editor.CEditorKindred.CKindredSet(1, CReflexField.CReflexFieldLanguage, "Wu");
-        Assert.Equal(CReflexField.CReflexFieldLanguage, refused.CReflexTypedField);
-        Assert.Equal(string.Empty, refused.CReflexTypedText);
+        TEditorFixture editor = new(TInterfaceEditor.TEditorCreate(engine));
+        CKindred kindred = editor.TEditorFixtureKindred;
+        CReflexTyped refused = kindred.CKindredSet(1, CReflexField.CReflexFieldLanguage, "Wu");
+        Assert.Null(refused.CReflexTypedRow);
         Assert.Empty(refused.CReflexTypedHeads);
 
         editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
-        editor.CEditorEntryOpen(entry);
+        editor.TEditorFixtureOpen(entry);
         IReadOnlyList<long> ids = TKindredRowsRead(editor).Select(static row => row.CReflexId).ToList();
 
         Assert.Equal(
             [new CReflexHead(ids[0], true), new CReflexHead(ids[1], true), new CReflexHead(ids[2], false)],
-            editor.CEditorKindred.CKindredSet(ids[1], CReflexField.CReflexFieldLanguage, "Wu").CReflexTypedHeads);
-        CReflexTyped typed = editor.CEditorKindred.CKindredSet(ids[1], CReflexField.CReflexFieldLanguage, "Jin");
+            kindred.CKindredSet(ids[1], CReflexField.CReflexFieldLanguage, "Wu").CReflexTypedHeads);
+        CReflexTyped typed = kindred.CKindredSet(ids[1], CReflexField.CReflexFieldLanguage, "Jin");
         Assert.Equal(
             [new CReflexHead(ids[0], true), new CReflexHead(ids[1], false), new CReflexHead(ids[2], true)],
             typed.CReflexTypedHeads);
-        Assert.Equal("Jin", typed.CReflexTypedText);
-        Assert.Equal("Reflex.Jin", typed.CReflexTypedKey);
-        Assert.Equal(["Jin", "Jin", "Wu"], TKindredRowsRead(editor).Select(static row => row.CReflexLanguage));
+        CReflex answered = Assert.IsType<CReflex>(typed.CReflexTypedRow);
+        Assert.Equal(ids[1], answered.CReflexId);
+        Assert.Equal("Jin", answered.CReflexLanguage);
+        Assert.Equal("Reflex.Jin", answered.CReflexLanguageKey);
+        IReadOnlyList<CReflex> rows = TKindredRowsRead(editor);
+        Assert.Equal(["Jin", "Jin", "Wu"], rows.Select(static row => row.CReflexLanguage));
     }
 
     [Fact]
@@ -250,14 +252,16 @@ public sealed class TKindred
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TKindredPrepare(engine, TKindredSave(engine));
+        TEditorFixture editor = TKindredPrepare(engine, TKindredSave(engine));
         long first = TKindredRowsRead(editor)[0].CReflexId;
         CKindred respelled = TInterfaceConductSound.TKindredCreate(
             editor, TKindredGuisePrepare(true), TEngineFake.TEngineStubCreate<LDraftPort>());
 
-        Assert.Empty(respelled.CKindredSet(first, CReflexField.CReflexFieldText, "sü").CReflexTypedHeads);
+        CReflexTyped typed = respelled.CKindredSet(first, CReflexField.CReflexFieldText, "sü");
+        Assert.Empty(typed.CReflexTypedHeads);
+        Assert.Equal("sü", typed.CReflexTypedRow?.CReflexText);
 
-        editor.CEditorDesk.CDeskDraft.CDeskDraftPersist();
+        editor.TEditorFixtureDesk.CDeskDraft.CDeskDraftPersist();
         Assert.Equal("sü", respelled.CKindredRead().CTimbreReflexRows[0].CReflexText);
         Assert.Equal("sui", TKindredRowsRead(editor)[0].CReflexText);
     }
@@ -267,12 +271,14 @@ public sealed class TKindred
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TKindredPrepare(engine, TKindredSave(engine));
+        TEditorFixture editor = TKindredPrepare(engine, TKindredSave(engine));
         long first = TKindredRowsRead(editor)[0].CReflexId;
         CKindred plain = TInterfaceConductSound.TKindredCreate(
             editor, TKindredGuisePrepare(), TEngineFake.TEngineStubCreate<LDraftPort>());
 
-        Assert.Empty(plain.CKindredSet(first, CReflexField.CReflexFieldText, "sɿ").CReflexTypedHeads);
+        CReflexTyped typed = plain.CKindredSet(first, CReflexField.CReflexFieldText, "sɿ");
+        Assert.Empty(typed.CReflexTypedHeads);
+        Assert.Equal("sɿ", typed.CReflexTypedRow?.CReflexText);
 
         Assert.Equal("sɿ", TKindredRowsRead(editor)[0].CReflexText);
     }
@@ -282,9 +288,9 @@ public sealed class TKindred
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TKindredPrepare(engine, TKindredSave(engine));
+        TEditorFixture editor = TKindredPrepare(engine, TKindredSave(engine));
         long first = TKindredRowsRead(editor)[0].CReflexId;
-        CKindred kindred = editor.CEditorKindred;
+        CKindred kindred = editor.TEditorFixtureKindred;
 
         IReadOnlyList<CReflexTyped> typed =
         [
@@ -295,16 +301,11 @@ public sealed class TKindred
         ];
 
         Assert.All(typed, static answer => Assert.Empty(answer.CReflexTypedHeads));
-        Assert.Equal(
-            ["Kan-on", "si", "water", "literary"], typed.Select(static answer => answer.CReflexTypedText));
-        Assert.Equal(
-            [
-                CReflexField.CReflexFieldKind,
-                CReflexField.CReflexFieldRomanization,
-                CReflexField.CReflexFieldMeaning,
-                CReflexField.CReflexFieldNote,
-            ],
-            typed.Select(static answer => answer.CReflexTypedField));
+        Assert.Equal("Kan-on", typed[0].CReflexTypedRow?.CReflexKind);
+        Assert.Equal("si", typed[1].CReflexTypedRow?.CReflexRomanization);
+        Assert.Equal("water", typed[2].CReflexTypedRow?.CReflexMeaning);
+        Assert.Equal("literary", typed[3].CReflexTypedRow?.CReflexNote);
+        Assert.All(typed, answer => Assert.Equal(first, answer.CReflexTypedRow?.CReflexId));
 
         CReflex row = TKindredRowsRead(editor)[0];
         Assert.Equal(
@@ -317,19 +318,19 @@ public sealed class TKindred
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CEditor editor = TKindredPrepare(engine, TKindredSave(engine));
+        TEditorFixture editor = TKindredPrepare(engine, TKindredSave(engine));
         long first = TKindredRowsRead(editor)[0].CReflexId;
         CKindred kindred = TInterfaceConductSound.TKindredCreate(
             editor, TKindredGuisePrepare(), TEngineFake.TEngineStubCreate<LDraftPort>());
         List<CReflexTyped> typed = [];
-        editor.CEditorDesk.CDeskDraft.CDeskDraftChanged += _ =>
+        editor.TEditorFixtureDesk.CDeskDraft.CDeskDraftChanged += _ =>
             typed.Add(kindred.CKindredSet(first, CReflexField.CReflexFieldText, "zz"));
 
-        editor.CEditorDesk.CDeskDraft.CDeskDraftResonate();
+        editor.TEditorFixtureDesk.CDeskDraft.CDeskDraftResonate();
 
         CReflexTyped answer = Assert.Single(typed);
-        Assert.Equal(CReflexField.CReflexFieldText, answer.CReflexTypedField);
-        Assert.Equal("sui", answer.CReflexTypedText);
+        Assert.Equal(first, answer.CReflexTypedRow?.CReflexId);
+        Assert.Equal("sui", answer.CReflexTypedRow?.CReflexText);
         Assert.Empty(answer.CReflexTypedHeads);
         Assert.Equal("sui", TKindredRowsRead(editor)[0].CReflexText);
     }
@@ -347,20 +348,20 @@ public sealed class TKindred
             ]);
     }
 
-    private static IReadOnlyList<CReflex> TKindredRowsRead(CEditor editor)
+    private static IReadOnlyList<CReflex> TKindredRowsRead(TEditorFixture editor)
     {
-        editor.CEditorDesk.CDeskDraft.CDeskDraftPersist();
+        editor.TEditorFixtureDesk.CDeskDraft.CDeskDraftPersist();
         return TInterfaceConductSound
             .TKindredCreate(editor, TKindredGuisePrepare(), TEngineFake.TEngineStubCreate<LDraftPort>())
             .CKindredRead()
             .CTimbreReflexRows;
     }
 
-    private static CEditor TKindredPrepare(LEngine engine, long? entry)
+    private static TEditorFixture TKindredPrepare(LEngine engine, long? entry)
     {
-        CEditor editor = TInterfaceEditor.TEditorCreate(engine);
+        TEditorFixture editor = new(TInterfaceEditor.TEditorCreate(engine));
         editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
-        editor.CEditorEntryOpen(entry);
+        editor.TEditorFixtureOpen(entry);
         return editor;
     }
 

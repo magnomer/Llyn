@@ -29,10 +29,10 @@ internal sealed class QCourier
 
     private TextBlock QCourierReceipt => QContract.QContractFind<TextBlock>(_qCourierSurface, "PCourierReceipt");
 
-    internal void QCourierIntroduce(QWindow host)
+    internal void QCourierIntroduce(CAtelier atelier, CEnvoy envoy)
     {
-        _qCourierCourier = CCourier.CCourierCreate(host.QWindowAtelier);
-        _qCourierEnvoy = host.QWindowEnvoy;
+        _qCourierCourier = CCourier.CCourierCreate(atelier);
+        _qCourierEnvoy = envoy;
         _qCourierCourier.CCourierChanged +=
             QObserver.QObserverCreate<CCourierState>(_qCourierSurface, QCourierRefine);
         QCourierRefine(_qCourierCourier.CCourierRead());

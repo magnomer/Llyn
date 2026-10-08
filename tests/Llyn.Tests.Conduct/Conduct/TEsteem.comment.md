@@ -1,5 +1,5 @@
 # TEsteem.cs
-Hash: `a97ef6ee7aad92d6`
+Hash: `3e773bdff9585a3b`
 
 ## `public sealed class TEsteem`
 
@@ -21,6 +21,7 @@ Stores one English entry, and answers its id, so the marks open it over a fake g
 
 Stores one English entry the editor can open.
 
-## `private static CEditor TEsteemEditorPrepare(LEngine engine, string tab)`
+## `private static TEditorFixture TEsteemEditorPrepare(LEngine engine, string tab)`
 
 Builds an editor over real outlets, bound to a fresh vista of `tab`.
+It answers the fixture, so each test reads only the esteem facet.

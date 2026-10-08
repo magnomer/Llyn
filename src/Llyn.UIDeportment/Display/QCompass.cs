@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using Llyn.Conduct;
 
@@ -24,7 +25,6 @@ public sealed class QCompass
 
     private readonly List<(CCompassPart, FrameworkElement)> _qCompassSections = [];
 
-
     private readonly CCompass _qCompassArea;
 
     private readonly FrameworkElement _qCompassView;
@@ -37,65 +37,47 @@ public sealed class QCompass
 
     private readonly UIElement _qCompassSurface;
 
+    private readonly ItemsControl _qCompassMeanings;
+
+    private readonly ItemsControl _qCompassCollocations;
+
     private bool _qCompassOpened = true;
 
-    private ItemsControl _qCompassMeanings = null!;
-
-    private ItemsControl _qCompassCollocations = null!;
-
-    public QCompass(
-        CCompass area,
-        FrameworkElement view,
-        ScrollViewer contents,
-        FrameworkElement header,
-        FrameworkElement compass,
-        UIElement surface,
-        ToggleButton toggle,
-        ItemsControl list)
+    public QCompass(CCompass area, FrameworkElement view)
     {
         ArgumentNullException.ThrowIfNull(area);
         ArgumentNullException.ThrowIfNull(view);
-        ArgumentNullException.ThrowIfNull(contents);
-        ArgumentNullException.ThrowIfNull(header);
-        ArgumentNullException.ThrowIfNull(compass);
-        ArgumentNullException.ThrowIfNull(surface);
-        ArgumentNullException.ThrowIfNull(toggle);
-        ArgumentNullException.ThrowIfNull(list);
 
         _qCompassArea = area;
         _qCompassView = view;
-        _qCompassContents = contents;
-        _qCompassHeader = header;
-        _qCompassColumn = compass;
-        _qCompassSurface = surface;
+        _qCompassContents = QContract.QContractFind<ScrollViewer>(view, "PDisplayContents");
+        _qCompassHeader = QContract.QContractFind<Grid>(view, "PDisplayHeader");
+        _qCompassColumn = QContract.QContractFind<StackPanel>(view, "PCompass");
+        _qCompassSurface = QContract.QContractFind<Border>(view, "PCompassSurface");
+        _qCompassMeanings = QContract.QContractFind<ItemsControl>(view, "PDisplayMeaning");
+        _qCompassCollocations = QContract.QContractFind<ItemsControl>(view, "PDisplayCollocation");
+        ToggleButton toggle = QContract.QContractFind<ToggleButton>(view, "PCompassSwitch");
+        ItemsControl list = QContract.QContractFind<ItemsControl>(view, "PCompassList");
+        _qCompassSections.Add((CCompassPart.CCompassPartSpeech,
+            QContract.QContractFind<StackPanel>(view, "PDisplaySpeechSection")));
+        _qCompassSections.Add((CCompassPart.CCompassPartFrequency,
+            QContract.QContractFind<StackPanel>(view, "PDisplayFrequencySection")));
+        _qCompassSections.Add((CCompassPart.CCompassPartMeaning,
+            QContract.QContractFind<StackPanel>(view, "PDisplayMeaningSection")));
+        _qCompassSections.Add((CCompassPart.CCompassPartCollocation,
+            QContract.QContractFind<StackPanel>(view, "PDisplayCollocationSection")));
+        _qCompassSections.Add((CCompassPart.CCompassPartIncoming,
+            QContract.QContractFind<StackPanel>(view, "PDisplayIncomingSection")));
+        _qCompassSections.Add((CCompassPart.CCompassPartNote,
+            QContract.QContractFind<StackPanel>(view, "PDisplayNoteSection")));
 
         list.ItemsSource = _qCompassRows;
-        contents.ScrollChanged += QCompassScrollRefine;
+        _qCompassContents.ScrollChanged += QCompassScrollRefine;
         view.SizeChanged += QCompassSizeRefine;
-        header.SizeChanged += QCompassSizeRefine;
+        _qCompassHeader.SizeChanged += QCompassSizeRefine;
+        QContract.QContractFind<QIconImage>(view, "PCompassIcon").QIconSource = QIcon.QIconResolve("compass", 24);
         toggle.IsChecked = _qCompassOpened;
         toggle.Click += QCompassSwitchRefine;
-    }
-
-    public void QCompassSectionIntroduce(
-        FrameworkElement speech,
-        FrameworkElement frequency,
-        FrameworkElement meaning,
-        ItemsControl meanings,
-        FrameworkElement collocation,
-        ItemsControl collocations,
-        FrameworkElement incoming,
-        FrameworkElement note)
-    {
-        _qCompassSections.Clear();
-        _qCompassSections.Add((CCompassPart.CCompassPartSpeech, speech));
-        _qCompassSections.Add((CCompassPart.CCompassPartFrequency, frequency));
-        _qCompassSections.Add((CCompassPart.CCompassPartMeaning, meaning));
-        _qCompassSections.Add((CCompassPart.CCompassPartCollocation, collocation));
-        _qCompassSections.Add((CCompassPart.CCompassPartIncoming, incoming));
-        _qCompassSections.Add((CCompassPart.CCompassPartNote, note));
-        _qCompassMeanings = meanings;
-        _qCompassCollocations = collocations;
     }
 
     public void QCompassRefine()
@@ -229,10 +211,8 @@ public sealed class QCompass
         }
     }
 
-    public void QCompassTargetRefine(FrameworkElement target)
+    private void QCompassTargetRefine(FrameworkElement target)
     {
-        ArgumentNullException.ThrowIfNull(target);
-
         if (QCompassOffsetDraw(target) is not double top)
         {
             return;
@@ -246,6 +226,29 @@ public sealed class QCompass
         if (sender is FrameworkElement row && row.DataContext is QCompassItem item)
         {
             QCompassTargetRefine(item.QCompassItemTarget);
+        }
+    }
+
+    public void QCompassSpotlightRefine(long id)
+    {
+        _qCompassContents.Dispatcher.BeginInvoke(
+            DispatcherPriority.Loaded, () => QCompassSpotlightRefine(_qCompassArea.CCompassCardFind(id)));
+    }
+
+    private void QCompassSpotlightRefine((CCompassPart, int)? place)
+    {
+        if (place is not (CCompassPart part, int index))
+        {
+            return;
+        }
+
+        ItemsControl cards = part == CCompassPart.CCompassPartCollocation
+            ? _qCompassCollocations
+            : _qCompassMeanings;
+        if (cards.ItemContainerGenerator.ContainerFromIndex(index) is FrameworkElement card)
+        {
+            QCompassTargetRefine(card);
+            ((Storyboard)_qCompassContents.FindResource("Theme.Card.Spotlight")).Begin(card);
         }
     }
 

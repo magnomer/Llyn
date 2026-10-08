@@ -1,5 +1,5 @@
 # QEditorFont.cs
-Hash: `8bf9161ebdd9d2b7`
+Hash: `4da791778932c52b`
 
 ## `internal sealed class QEditorFont`
 
@@ -12,9 +12,9 @@ Sound keeps only sound, so `QEditorSound` and `QGlyph` read no font.
 
 Only holds the editor scope, since every write waits for a draft.
 
-## `internal void QEditorFontIntroduce(CEditor editor)`
+## `internal void QEditorFontIntroduce(CEntry entry, CTimbre timbre)`
 
-Holds the Conduct editor and repaints each typeface after every draft change.
+Holds the timbre facet whose fonts it reads, and repaints each typeface after every entry draft change.
 
 ## `private void QEditorHeadwordRefine(CEntryDraft _)`
 

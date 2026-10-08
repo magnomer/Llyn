@@ -18,6 +18,7 @@ That is how the repertoire panel arranges a Situation.
 Leaving the area asks about the draft as it does there.
 The mode toggle is not in here, because it sits in the panel's action row.
 Its class is a bare shell, and the driver `QImprint` wires its named parts.
+The credit rows and the byline are wired by `QAuthor`, which `QImprint` builds over `PAuthor`.
 
 ## `<ToggleButton x:Name="PImprintKind" ...>`
 

@@ -1,3 +1,4 @@
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -6,23 +7,25 @@ namespace Llyn.UIDeportment;
 
 internal sealed class QRoster
 {
-    private QLectern _qRosterLectern = null!;
+    private readonly QCompass _qRosterCompass;
 
-    internal void QRosterIntroduce(
-        QLectern lectern,
-        ItemsControl speech,
-        ItemsControl meaning,
-        ItemsControl collocation,
-        ItemsControl incoming,
-        ItemsControl compass)
+    internal QRoster(FrameworkElement surface, QCompass compass)
     {
-        _qRosterLectern = lectern;
+        ArgumentNullException.ThrowIfNull(surface);
+        ArgumentNullException.ThrowIfNull(compass);
 
-        QLookItem.QLookItemAttach(speech, QRosterSpeechRefine);
-        QLookItem.QLookItemAttach(meaning, PLeaf.PLeafCardRefine);
-        QLookItem.QLookItemAttach(collocation, PLeaf.PLeafCardRefine);
-        QLookItem.QLookItemAttach(incoming, QRosterUsageRefine);
-        QLookItem.QLookItemAttach(compass, QRosterCompassRefine);
+        _qRosterCompass = compass;
+
+        QLookItem.QLookItemAttach(
+            QContract.QContractFind<ItemsControl>(surface, "PDisplaySpeech"), QRosterSpeechRefine);
+        QLookItem.QLookItemAttach(
+            QContract.QContractFind<ItemsControl>(surface, "PDisplayMeaning"), PLeaf.PLeafCardRefine);
+        QLookItem.QLookItemAttach(
+            QContract.QContractFind<ItemsControl>(surface, "PDisplayCollocation"), PLeaf.PLeafCardRefine);
+        QLookItem.QLookItemAttach(
+            QContract.QContractFind<ItemsControl>(surface, "PDisplayIncoming"), QRosterUsageRefine);
+        QLookItem.QLookItemAttach(
+            QContract.QContractFind<ItemsControl>(surface, "PCompassList"), QRosterCompassRefine);
     }
 
     private static void QRosterSpeechRefine(FrameworkElement container, object item, string? _)
@@ -116,6 +119,6 @@ internal sealed class QRoster
 
     private void QRosterCompassObserve(object sender, RoutedEventArgs e)
     {
-        _qRosterLectern.QLecternCompass.QCompassRowRefine(sender);
+        _qRosterCompass.QCompassRowRefine(sender);
     }
 }

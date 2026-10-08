@@ -160,7 +160,8 @@ Script, fanqie and workspace bulletins count for any entry, since their sections
 
 Follows a panel.
 Each draft it loads opens here, and its clearing closes the view.
-The view's deportment names the panel, since a view may follow a panel or none.
+Each browse-style panel attaches its editor's display to the panel it follows when it is created.
+The wing's display follows no panel, so it never attaches.
 
 ## `private void LDisplayDraftOpen(LDraft draft)`
 

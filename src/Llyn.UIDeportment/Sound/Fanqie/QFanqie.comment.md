@@ -1,5 +1,5 @@
 # QFanqie.cs
-Hash: `61627b4f768b8277`
+Hash: `38b824ec14c71449`
 
 ## `public sealed class QFanqie : Decorator`
 
@@ -131,7 +131,7 @@ An unfolded box always shows its body.
 ## `internal event Action<bool>? QFanqieFoldNotice;`
 
 What a click on the open switch runs, handed whether the switch is now on.
-The editor driver subscribes its sounding's toggle gate once.
+The editor driver subscribes its fold's toggle gate once.
 
 ## `private void QFanqieFoldObserve(object sender, RoutedEventArgs e)`
 
@@ -140,7 +140,7 @@ The switch is heard on click only.
 
 ## `internal void QFanqieFoldRefine(bool opened)`
 
-Paints the remembered open state the editor driver read from its sounding.
+Paints the remembered open state the editor driver read from its fold.
 It sets the switch and shows the body when open or when the box is not folded.
 A paint never reaches the gate.
 
@@ -152,8 +152,3 @@ The regenerate button stands wherever one was handed over, and it carries the `P
 The head shows only when folded.
 The body is left to `QFanqieFoldRefine`, which paints it from the remembered state.
 The box itself is visible when it has blocks, a fetch runs, or a rebuild was handed over.
-
-## `internal void QFanqieRefine(IReadOnlyList<CFanqieGroup> groups, bool pending)`
-
-The seam the lectern's sound draws through, mapping the groups to blocks and setting whether a fetch runs.
-It only sets values, so the box redraws itself as for any other change.

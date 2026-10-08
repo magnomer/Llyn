@@ -1,14 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Windows.Shapes;
 using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
-internal sealed partial class QRepertoire : QChronicleHost
+internal sealed class QRepertoire : QChronicleHost
 {
     private readonly UserControl _qRepertoireSurface;
 
@@ -16,11 +15,25 @@ internal sealed partial class QRepertoire : QChronicleHost
 
     private readonly QDisplay _qRepertoireDisplay;
 
-    private QWindow _qRepertoireHost = null!;
+    private readonly QPanelRail _qRepertoireRail;
+
+    private readonly QChoiceOrder _qRepertoireOrder;
+
+    private readonly QChoiceFilter _qRepertoireFilter;
+
+    private readonly QAtlas _qRepertoireAtlas;
+
+    private readonly QOccurrence _qRepertoireOccurrence;
+
+    private readonly QVignette _qRepertoireVignette;
+
+    private readonly QScenario _qRepertoireScenario;
+
+    private CAtelier _cAtelier = null!;
+
+    private CEnvoy _cEnvoy = null!;
 
     private CRepertoire _cRepertoire = null!;
-
-    private CPlaywright _cPlaywright = null!;
 
     internal QRepertoire(UserControl surface)
     {
@@ -31,218 +44,95 @@ internal sealed partial class QRepertoire : QChronicleHost
         _qRepertoireDisplay = new QDisplay(QContract.QContractFind<FrameworkElement>(surface, "PDisplay"));
         QLook.QLookStyleAttach(surface);
         QChronicle.QChronicleIntroduce(surface, this);
+        _qRepertoireRail = new QPanelRail(
+            QContract.QContractFind<UserControl>(surface, "PRepertoireRail"),
+            QRepertoireBin,
+            QRepertoireBinIcon,
+            true,
+            true);
+        _qRepertoireOrder = new QChoiceOrder(QContract.QContractFind<UserControl>(surface, "PRepertoireOrder"), QTier);
+        _qRepertoireFilter = new QChoiceFilter(QContract.QContractFind<UserControl>(surface, "PRepertoireFilter"));
+        _qRepertoireAtlas = new QAtlas(surface);
+        _qRepertoireOccurrence = new QOccurrence(surface);
+        _qRepertoireVignette = new QVignette(surface);
+        _qRepertoireScenario = new QScenario(surface);
 
         surface.CommandBindings.Add(new CommandBinding(
             ApplicationCommands.Print, QRepertoirePressObserve, QRepertoirePressRefine));
         surface.CommandBindings.Add(new CommandBinding(
             PDisplayCommand.PDisplayCommandPortrait, QRepertoirePortraitObserve, QRepertoirePortraitRefine));
-        QRepertoirePortrait.Command = PDisplayCommand.PDisplayCommandPortrait;
-        QRepertoirePress.Command = ApplicationCommands.Print;
 
-        QChoice.QChoiceDropperAttach(QTierDropper, QTierDropdown, QTier);
-        QChoice.QChoiceDropperAttach(QMeshDropper, QMeshDropdown, QMeshDropper);
-
-        QTierIcon.QIconSource = QIcon.QIconResolve("sort", 24);
-        QMeshIcon.QIconSource = QIcon.QIconResolve("filter", 24);
-        QScenarioPictureIcon.QIconSource = QIcon.QIconResolve("image", 24);
-        QScenarioFilmIcon.QIconSource = QIcon.QIconResolve("video", 24);
-        QRepertoireBinIcon.QIconSource = QIcon.QIconResolve("delete", 24);
-        QInquest.SetResourceReference(QField.QFieldHintProperty, "Situation.Search");
-        QSortie.SetResourceReference(QField.QFieldHintProperty, "Sortie.Search");
-        QRepertoireFresh.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("new", 24));
-        QRepertoireStore.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("save", 24));
-        QRepertoireEarlier.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("retreat", 24));
-        QRepertoireLater.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("advance", 24));
-        QRepertoireBackward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("undo", 24));
-        QRepertoireForward.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("redo", 24));
-        QRepertoirePortrait.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("export", 24));
-        QRepertoirePress.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("print", 24));
-        QRepertoireViewer.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("view", 24));
-        QRepertoireScribe.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("edit", 24));
-
-        QInquest.TextChanged += QInquestObserve;
-        QSortie.TextChanged += QSortieObserve;
-        QRepertoireFresh.Click += QRepertoireFreshObserve;
-        QRepertoireStore.Click += QRepertoireStoreObserve;
-        QRepertoireEarlier.Click += QRepertoireRetreatObserve;
-        QRepertoireLater.Click += QRepertoireAdvanceObserve;
-        QRepertoireBackward.Click += QRepertoireUndoObserve;
-        QRepertoireForward.Click += QRepertoireRedoObserve;
-        QRepertoireViewer.Click += QRepertoireViewerObserve;
-        QRepertoireScribe.Click += QRepertoireScribeObserve;
-        QRepertoireBin.Click += QRepertoireBinObserve;
-        QScenarioIntroduce();
-        QScenarioPicture.Click += QImageAddObserve;
-        QScenarioFilm.Click += QVideoAddObserve;
+        _qRepertoireRail.QPanelRailCreated += QRepertoireFreshObserve;
+        _qRepertoireRail.QPanelRailStored += QRepertoireStoreObserve;
+        _qRepertoireRail.QPanelRailToggled += QRepertoireScribeObserve;
+        _qRepertoireRail.QPanelRailDeleted += QRepertoireBinObserve;
     }
 
     private Border QTier => QContract.QContractFind<Border>(_qRepertoireSurface, "PTier");
-
-    private ToggleButton QTierDropper => QContract.QContractFind<ToggleButton>(_qRepertoireSurface, "PTierDropper");
-
-    private QIconImage QTierIcon => QContract.QContractFind<QIconImage>(_qRepertoireSurface, "PTierIcon");
-
-    private Popup QTierDropdown => QContract.QContractFind<Popup>(_qRepertoireSurface, "PTierDropdown");
-
-    private StackPanel QTierList => QContract.QContractFind<StackPanel>(_qRepertoireSurface, "PTierList");
-
-    private TextBox QInquest => QContract.QContractFind<TextBox>(_qRepertoireSurface, "PInquest");
-
-    private TextBox QSortie => QContract.QContractFind<TextBox>(_qRepertoireSurface, "PSortie");
-
-    private ToggleButton QMeshDropper => QContract.QContractFind<ToggleButton>(_qRepertoireSurface, "PMeshDropper");
-
-    private QIconImage QMeshIcon => QContract.QContractFind<QIconImage>(_qRepertoireSurface, "PMeshIcon");
-
-    private Ellipse QMeshMark => QContract.QContractFind<Ellipse>(_qRepertoireSurface, "PMeshMark");
-
-    private Popup QMeshDropdown => QContract.QContractFind<Popup>(_qRepertoireSurface, "PMeshDropdown");
-
-    private StackPanel QMeshList => QContract.QContractFind<StackPanel>(_qRepertoireSurface, "PMeshList");
-
-    private Button QRepertoireFresh => QContract.QContractFind<Button>(_qRepertoireSurface, "PRepertoireFresh");
-
-    private Button QRepertoireStore => QContract.QContractFind<Button>(_qRepertoireSurface, "PRepertoireStore");
-
-    private StackPanel QRepertoireVoyage =>
-        QContract.QContractFind<StackPanel>(_qRepertoireSurface, "PRepertoireVoyage");
-
-    private Button QRepertoireEarlier => QContract.QContractFind<Button>(_qRepertoireSurface, "PRepertoireEarlier");
-
-    private Button QRepertoireLater => QContract.QContractFind<Button>(_qRepertoireSurface, "PRepertoireLater");
-
-    private StackPanel QRepertoireChronicle =>
-        QContract.QContractFind<StackPanel>(_qRepertoireSurface, "PRepertoireChronicle");
-
-    private Button QRepertoireBackward => QContract.QContractFind<Button>(_qRepertoireSurface, "PRepertoireBackward");
-
-    private Button QRepertoireForward => QContract.QContractFind<Button>(_qRepertoireSurface, "PRepertoireForward");
-
-    private Button QRepertoirePortrait => QContract.QContractFind<Button>(_qRepertoireSurface, "PRepertoirePortrait");
-
-    private Button QRepertoirePress => QContract.QContractFind<Button>(_qRepertoireSurface, "PRepertoirePress");
-
-    private Border QRepertoireMode => QContract.QContractFind<Border>(_qRepertoireSurface, "PRepertoireMode");
-
-    private RadioButton QRepertoireViewer =>
-        QContract.QContractFind<RadioButton>(_qRepertoireSurface, "PRepertoireViewer");
-
-    private RadioButton QRepertoireScribe =>
-        QContract.QContractFind<RadioButton>(_qRepertoireSurface, "PRepertoireScribe");
-
-    private ItemsControl QAtlas => QContract.QContractFind<ItemsControl>(_qRepertoireSurface, "PAtlas");
-
-    private TextBlock QAtlasEmpty => QContract.QContractFind<TextBlock>(_qRepertoireSurface, "PAtlasEmpty");
-
-    private ItemsControl QOccurrence => QContract.QContractFind<ItemsControl>(_qRepertoireSurface, "POccurrence");
-
-    private TextBlock QOccurrenceEmpty => QContract.QContractFind<TextBlock>(_qRepertoireSurface, "POccurrenceEmpty");
-
-    private Grid QVignette => QContract.QContractFind<Grid>(_qRepertoireSurface, "PVignette");
-
-    private StackPanel QVignetteBody => QContract.QContractFind<StackPanel>(_qRepertoireSurface, "PVignetteBody");
-
-    private TextBlock QVignetteTitle => QContract.QContractFind<TextBlock>(_qRepertoireSurface, "PVignetteTitle");
-
-    private Border QVignetteChip => QContract.QContractFind<Border>(_qRepertoireSurface, "PVignetteChip");
-
-    private TextBlock QVignetteKind => QContract.QContractFind<TextBlock>(_qRepertoireSurface, "PVignetteKind");
-
-    private TextBlock QVignetteTally => QContract.QContractFind<TextBlock>(_qRepertoireSurface, "PVignetteTally");
-
-    private StackPanel QVignetteDescriptionSection =>
-        QContract.QContractFind<StackPanel>(_qRepertoireSurface, "PVignetteDescriptionSection");
-
-    private StackPanel QVignetteDescription =>
-        QContract.QContractFind<StackPanel>(_qRepertoireSurface, "PVignetteDescription");
-
-    private ItemsControl QVignettePicture =>
-        QContract.QContractFind<ItemsControl>(_qRepertoireSurface, "PVignettePicture");
-
-    private ItemsControl QVignetteVideo => QContract.QContractFind<ItemsControl>(_qRepertoireSurface, "PVignetteVideo");
-
-    private TextBlock QVignetteUnselected =>
-        QContract.QContractFind<TextBlock>(_qRepertoireSurface, "PVignetteUnselected");
-
-    private Grid QScenario => QContract.QContractFind<Grid>(_qRepertoireSurface, "PScenario");
-
-    private TextBlock QScenarioHint => QContract.QContractFind<TextBlock>(_qRepertoireSurface, "PScenarioHint");
-
-    private TextBlock QScenarioGhost => QContract.QContractFind<TextBlock>(_qRepertoireSurface, "PScenarioGhost");
-
-    private TextBox QScenarioTitle => QContract.QContractFind<TextBox>(_qRepertoireSurface, "PScenarioTitle");
-
-    private TextBlock QScenarioMeasure => QContract.QContractFind<TextBlock>(_qRepertoireSurface, "PScenarioMeasure");
-
-    private TextBox QScenarioKind => QContract.QContractFind<TextBox>(_qRepertoireSurface, "PScenarioKind");
-
-    private TextBlock QScenarioTally => QContract.QContractFind<TextBlock>(_qRepertoireSurface, "PScenarioTally");
-
-    private TextBox QScenarioDescription =>
-        QContract.QContractFind<TextBox>(_qRepertoireSurface, "PScenarioDescription");
-
-    private ItemsControl QScenarioImage => QContract.QContractFind<ItemsControl>(_qRepertoireSurface, "PScenarioImage");
-
-    private ItemsControl QScenarioVideo => QContract.QContractFind<ItemsControl>(_qRepertoireSurface, "PScenarioVideo");
-
-    private Button QScenarioPicture => QContract.QContractFind<Button>(_qRepertoireSurface, "PScenarioPicture");
-
-    private QIconImage QScenarioPictureIcon =>
-        QContract.QContractFind<QIconImage>(_qRepertoireSurface, "PScenarioPictureIcon");
-
-    private Button QScenarioFilm => QContract.QContractFind<Button>(_qRepertoireSurface, "PScenarioFilm");
-
-    private QIconImage QScenarioFilmIcon =>
-        QContract.QContractFind<QIconImage>(_qRepertoireSurface, "PScenarioFilmIcon");
 
     private Button QRepertoireBin => QContract.QContractFind<Button>(_qRepertoireSurface, "PRepertoireBin");
 
     private QIconImage QRepertoireBinIcon =>
         QContract.QContractFind<QIconImage>(_qRepertoireSurface, "PRepertoireBinIcon");
 
-    internal void QRepertoireIntroduce(QWindow host)
+    internal void QRepertoireIntroduce(CAtelier atelier, CEnvoy envoy, QVolume volume, QMentionMenu mentionMenu)
     {
-        _qRepertoireHost = host;
+        ArgumentNullException.ThrowIfNull(atelier);
+
+        _cAtelier = atelier;
+        _cEnvoy = envoy;
         _cRepertoire = CRepertoire.CRepertoireCreate(
-            host.QWindowAtelier,
+            atelier,
             QRepertoireShownCheck,
-            host.QWindowEnvoy,
+            envoy,
             QObserver.QObserverCreate<Action>(static run => run()));
-        _cPlaywright = _cRepertoire.CRepertoirePlaywright;
-        QLectern lectern = new(
-            _cRepertoire.CRepertoireEditor.CEditorDisplay, _cRepertoire.CRepertoireOccurrence.COccurrencePanel);
-        QScenarioDeskIntroduce();
-        _qImage.QImageIntroduce(_cPlaywright.CPlaywrightImage);
-        _qVideo.QVideoIntroduce(_cPlaywright.CPlaywrightVideo);
+        _qRepertoireScenario.QScenarioDeskIntroduce(_cRepertoire);
+        _qRepertoireVignette.QVignetteIntroduce(_cRepertoire, atelier);
+        _qRepertoireAtlas.QAtlasIntroduce(_cRepertoire);
+        _qRepertoireOccurrence.QOccurrenceIntroduce(_cRepertoire, atelier);
 
-        QChoice.QChoiceOrderBuild(QTierList, "Tier", QTierObserve, CAtlas.CAtlasOrderRead());
-        QAtlas.ItemsSource = _qAtlasList;
-        QOccurrence.ItemsSource = _qOccurrenceList;
-        QScenarioImage.ItemsSource = _qScenarioImage;
-        QScenarioVideo.ItemsSource = _qScenarioVideo;
-        QLookItem.QLookItemAttach(QAtlas, QAtlasItemRefine);
-        QLookItem.QLookItemAttach(QOccurrence, QOccurrenceItemRefine);
-        QLookItem.QLookItemAttach(QScenarioImage, QImageItemRefine);
-        QLookItem.QLookItemAttach(QScenarioVideo, QVideoItemRefine);
-        QLookItem.QLookItemAttach(QVignettePicture, QImageItem.QImageItemApply);
-        QLookItem.QLookItemAttach(QVignetteVideo, QVideoItem.QVideoItemApply);
+        _qRepertoireRail.QPanelRailIntroduce(atelier.CAtelierNavigation, this);
+        _qRepertoireOrder.QChoiceOrderIntroduce(
+            _cRepertoire.CRepertoireAtlas.CAtlasPanel.CPanelAperture, "Tier", CAtlas.CAtlasOrderRead());
+        _qRepertoireFilter.QChoiceFilterIntroduce(_cRepertoire.CRepertoireAtlas.CAtlasPanel.CPanelAperture, "Mesh");
 
-        _qRepertoireDisplay.QDisplayIntroduce(host, lectern);
-        _qRepertoireEditor.QEditorIntroduce(host, _cRepertoire.CRepertoireEditor);
+        _qRepertoireDisplay.QDisplayIntroduce(
+            atelier, envoy, volume, mentionMenu, _cRepertoire.CRepertoireEditor.CEditorDisplay);
+        _qRepertoireEditor.QEditorIntroduce(atelier, envoy, volume, mentionMenu, _cRepertoire.CRepertoireEditor);
 
         CPanel atlas = _cRepertoire.CRepertoireAtlas.CAtlasPanel;
-        CPanel occurrence = _cRepertoire.CRepertoireOccurrence.COccurrencePanel;
         _cRepertoire.CRepertoireChanged += QRepertoireModeRefine;
-        _cPlaywright.CPlaywrightScenarioChanged += QScenarioRefine;
-        _cRepertoire.CRepertoireSituationChanged += QVignetteRefine;
-        _cRepertoire.CRepertoireQueryCleared += QInquestRefine;
+        _cRepertoire.CRepertoireQueryCleared += QRepertoireClearRefine;
         _cRepertoire.CRepertoireWorkspaceChanged += QRepertoireWorkspaceRefine;
         atlas.CPanelChanged += QRepertoireModeRefine;
-        atlas.CPanelAperture.CApertureRowsChanged += QAtlasRefine;
-        atlas.CPanelAperture.CApertureRowsChanged += QRepertoireTallyRefine;
-        atlas.CPanelCleared += QVignetteClearRefine;
-        occurrence.CPanelChanged += QRepertoireModeRefine;
-        occurrence.CPanelAperture.CApertureRowsChanged += QOccurrenceRefine;
+        _cRepertoire.CRepertoireOccurrence.COccurrencePanel.CPanelChanged += QRepertoireModeRefine;
+    }
+
+    internal async void QRepertoireVistaRefine()
+    {
+        _qRepertoireOrder.QChoiceOrderRefine();
+        _qRepertoireFilter.QChoiceFilterRefine();
+        CEnsignSheet<IReadOnlyList<CCatalogSituation>> sheet =
+            await _cRepertoire.CRepertoireRowsLoad(QEnsignImage.QEnsignDraw);
+        _qRepertoireFilter.QChoiceFilterBuild(sheet.CEnsignSheetLanguages);
+        _qRepertoireAtlas.QAtlasRefine(sheet.CEnsignSheetRows);
+    }
+
+    internal void QRepertoireExitRefine()
+    {
+        _qRepertoireEditor.QEditorPlayerRefine();
+        _qRepertoireOrder.QChoiceOrderClose();
+        _qRepertoireFilter.QChoiceFilterClose();
+    }
+
+    public void QChronicleUndoObserve()
+    {
+        QChronicle.QChronicleCaretRefine(_cRepertoire.CRepertoireSession.CSessionUndo);
+    }
+
+    public void QChronicleRedoObserve()
+    {
+        QChronicle.QChronicleCaretRefine(_cRepertoire.CRepertoireSession.CSessionRedo);
     }
 
     private bool QRepertoireShownCheck()
@@ -252,31 +142,55 @@ internal sealed partial class QRepertoire : QChronicleHost
 
     private void QRepertoireModeRefine()
     {
-        QScenario.Visibility = QLook.QLookVisibleRead(_cRepertoire.CRepertoireDiptych.CDiptychParentEditing);
-        QVignette.Visibility = QLook.QLookVisibleRead(_cRepertoire.CRepertoireDiptych.CDiptychParentShown);
+        _qRepertoireScenario.QScenarioVisibleRefine();
+        _qRepertoireVignette.QVignetteVisibleRefine();
         _qRepertoireDisplay.QDisplayVisibleRefine(
             QLook.QLookVisibleRead(_cRepertoire.CRepertoireDiptych.CDiptychChildShown));
         _qRepertoireEditor.QEditorVisibleRefine(
             QLook.QLookVisibleRead(_cRepertoire.CRepertoireDiptych.CDiptychChildEditing));
-        QVignetteBody.Visibility = QLook.QLookVisibleRead(_cRepertoire.CRepertoireVignetteHeld);
-        QVignetteUnselected.Visibility = QLook.QLookVisibleRead(_cRepertoire.CRepertoireVignetteBlank);
-        QRepertoireViewer.IsChecked = _cRepertoire.CRepertoireDiptych.CDiptychViewerChecked;
-        QRepertoireScribe.IsChecked = _cRepertoire.CRepertoireDiptych.CDiptychScribeChecked;
-        QRepertoireVoyage.Visibility = QLook.QLookVisibleRead(_cRepertoire.CRepertoireDiptych.CDiptychViewerChecked);
-        QRepertoireChronicle.Visibility =
-            QLook.QLookVisibleRead(_cRepertoire.CRepertoireDiptych.CDiptychScribeChecked);
-        QRepertoireMode.IsEnabled = _cRepertoire.CRepertoireDiptych.CDiptychModeEnabled;
-        QRepertoireBin.IsEnabled = _cRepertoire.CRepertoireDiptych.CDiptychBinEnabled;
-        QRepertoireStore.IsEnabled = _cRepertoire.CRepertoireStoreEnabled;
-        QScenario.IsEnabled = _cRepertoire.CRepertoireScenarioEnabled;
+        _qRepertoireRail.QPanelRailRefine(
+            _cRepertoire.CRepertoireDiptych.CDiptychScribeChecked,
+            _cRepertoire.CRepertoireDiptych.CDiptychModeEnabled,
+            _cRepertoire.CRepertoireDiptych.CDiptychBinEnabled);
+        _qRepertoireRail.QEntryStorableRefine(_cRepertoire.CRepertoireStoreEnabled);
         QRepertoireChronicleRefine();
     }
 
-    internal void QRepertoireExitRefine()
+    private void QRepertoireChronicleRefine()
     {
-        _qRepertoireEditor.QEditorPlayerRefine();
-        QTierDropdown.IsOpen = false;
-        QMeshDropdown.IsOpen = false;
+        (bool undo, bool redo) = _cRepertoire.CRepertoireSession.CSessionChronicleRead();
+        _qRepertoireRail.QChronicleRefine(undo, redo);
+    }
+
+    private void QRepertoireClearRefine()
+    {
+        _qRepertoireFilter.QChoiceFilterBuild(_cRepertoire.CRepertoireAtlas.CAtlasLanguageRead());
+        _qRepertoireFilter.QChoiceFilterRefine();
+    }
+
+    private async void QRepertoireWorkspaceRefine()
+    {
+        await _cAtelier.CAtelierCatalog.CCatalogEnsignLoad(_cEnvoy, QEnsignImage.QEnsignDraw);
+    }
+
+    private void QRepertoireFreshObserve()
+    {
+        _cRepertoire.CRepertoireDiptych.CDiptychEntryCreate();
+    }
+
+    private void QRepertoireBinObserve()
+    {
+        _cRepertoire.CRepertoireDiptych.CDiptychEntryDelete();
+    }
+
+    private void QRepertoireStoreObserve()
+    {
+        _cRepertoire.CRepertoireSession.CSessionSave();
+    }
+
+    private void QRepertoireScribeObserve(bool scribe)
+    {
+        _cRepertoire.CRepertoireDiptych.CDiptychScribeToggle(scribe);
     }
 
     private void QRepertoirePressRefine(object sender, CanExecuteRoutedEventArgs e)

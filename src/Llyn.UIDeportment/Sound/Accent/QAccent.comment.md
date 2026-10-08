@@ -1,5 +1,5 @@
 # QAccent.cs
-Hash: `b0a2a3e881766ea3`
+Hash: `171a48d1f55c07b3`
 
 ## `internal sealed class QAccent`
 
@@ -14,9 +14,10 @@ Lookup and download open the editor's one menu under the row's own button.
 The rows are rendered as a diff on each draft bulletin.
 The primary field also wears a variety chip here, because the chip is drawn from the same draft row.
 
-## `internal void QAccentIntroduce(CEditor editor)`
+## `internal void QAccentIntroduce(CErrand errand, CEntry entry, CPlayback playback, CTimbre timbre)`
 
-Holds the Conduct editor and repaints the rows and the flags after each draft change.
+Holds the errand, playback and timbre facets the rows reach.
+It repaints the rows and the flags after each entry draft change.
 
 ## `private void QAccentAddObserve(object sender, ExecutedRoutedEventArgs e)`
 
