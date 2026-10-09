@@ -6,7 +6,7 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed partial class LEntryArchive : LEntryVault
+public sealed class LEntryArchive : LEntryVault
 {
     private readonly LDatabase _lEntryArchiveDatabase;
 
@@ -252,7 +252,7 @@ public sealed partial class LEntryArchive : LEntryVault
         session.LDatabaseSessionCommit();
     }
 
-    private static LEntry LEntryRowRead(SqliteDataReader reader)
+    internal static LEntry LEntryRowRead(SqliteDataReader reader)
     {
         return new LEntry(
             reader.GetInt64(0),

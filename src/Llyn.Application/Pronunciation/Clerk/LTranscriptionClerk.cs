@@ -21,8 +21,8 @@ public sealed class LTranscriptionClerk
     {
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(languages);
-        _lTranscriptionClerkTranscriptions = rig.LRigTranscriptions;
-        _lTranscriptionClerkFactory = rig.LRigSources;
+        _lTranscriptionClerkTranscriptions = rig.LRigSound.LRigSoundTranscriptions;
+        _lTranscriptionClerkFactory = rig.LRigSource.LRigSourceFactory;
         _lTranscriptionClerkLanguages = languages;
     }
 

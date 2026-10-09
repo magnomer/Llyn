@@ -33,10 +33,10 @@ internal static partial class TInterface
         engine.LEnginePronunciation.LEnginePronunciationFind(vista);
 
     internal static IReadOnlyList<LVistaRow> TEngineFavoriteFind(this LEngine engine, LVista vista) =>
-        engine.LEngineVista.LEngineFavoriteFind(vista);
+        engine.LEngineCatalog.LEngineFavoriteFind(vista);
 
     internal static IReadOnlyList<LCatalogTag> TEngineTagFind(this LEngine engine, LVista vista) =>
-        engine.LEngineCard.LEngineTagFind(vista);
+        engine.LEngineCatalog.LEngineTagFind(vista);
 
     internal static IReadOnlyList<LDiwei> TEngineDiweiFind(
         this LEngine engine, LVista vista, long? chosen, bool final) =>
@@ -108,7 +108,7 @@ internal static partial class TInterface
         engine.LEngineAuthor.LEngineAuthorFind(vista);
 
     internal static IReadOnlyList<LCatalogRegister> TEngineRegisterFind(this LEngine engine, LVista vista) =>
-        engine.LEngineCard.LEngineRegisterFind(vista);
+        engine.LEngineCatalog.LEngineRegisterFind(vista);
 
     internal static bool TTenureFlaggedCheck(this LTenure tenure) =>
         new LQuillPronunciation(tenure).LQuillFlaggedCheck();

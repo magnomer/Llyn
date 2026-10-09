@@ -69,7 +69,7 @@ internal static partial class TInterface
         engine.LEngineDraft.LEngineDraftRead(id);
 
     internal static IReadOnlyList<LDraft> TEngineDraftScan(this LEngine engine) =>
-        engine.LEngineStaffHeld.LEngineStaffClaim.LClaimStaffClaim.LDraftScan();
+        engine.LEngineHearth.LEngineStaffHeld.LEngineStaffClaim.LClaimStaffClaim.LDraftScan();
 
     internal static LDraft TEngineDraftStart(this LEngine engine, string origin, long? entryId) =>
         engine.LEngineDraft.LEngineDraftStart(origin, entryId);
@@ -81,16 +81,16 @@ internal static partial class TInterface
         engine.LEngineEntry.LEngineEntryDelete(id);
 
     internal static IReadOnlyList<LEntry> TEngineEntryFind(this LEngine engine, LTag tag) =>
-        engine.LEngineEntry.LEngineEntryFind(tag);
+        engine.LEngineEntry.LEngineEntryFind(LSubject.LSubjectTag, tag.LTagId);
 
     internal static IReadOnlyList<LEntry> TEngineEntryFind(this LEngine engine, LRegister register) =>
-        engine.LEngineEntry.LEngineEntryFind(register);
+        engine.LEngineEntry.LEngineEntryFind(LSubject.LSubjectRegister, register.LRegisterId);
 
     internal static LRegister TEngineRegisterCreate(this LEngine engine, string name) =>
-        engine.LEngineCard.LEngineRegisterCreate(name);
+        engine.LEngineCatalog.LEngineRegisterCreate(name);
 
     internal static IReadOnlyList<LEntry> TEngineEntryFind(this LEngine engine, string query) =>
-        engine.LEngineStaffHeld.LEngineStaffEntry.LEntryStaffQuery.LEntryFind(query);
+        engine.LEngineHearth.LEngineStaffHeld.LEngineStaffEntry.LEntryStaffQuery.LEntryFind(query);
 
     internal static LEntryDraft? TEngineEntryLoad(this LEngine engine, long id) =>
         engine.LEngineEntry.LEngineEntryLoad(id);
@@ -116,23 +116,23 @@ internal static partial class TInterface
     private static LEntry TEngineEntryCommit(this LEngine engine, long? id, LEntryDraft draft)
     {
         LDraft started = engine.LEngineDraft.LEngineDraftStart("test", id);
-        LEngineStaff staff = engine.LEngineStaffHeld;
+        LEngineStaff staff = engine.LEngineHearth.LEngineStaffHeld;
         staff.LEngineStaffClaim.LClaimStaffClaim.LDraftSave(
             started with { LDraftContent = staff.LEngineStaffClaim.LClaimStaffDraft.LDraftClerkNormalize(draft) });
         return engine.LEngineDraft.LEngineDraftCommit(started.LDraftId).LOutcomeEntry;
     }
 
     internal static bool TEngineFavoriteCheck(this LEngine engine, long entryId) =>
-        engine.LEngineVista.LEngineFavoriteCheck(entryId);
+        engine.LEngineCatalog.LEngineFavoriteCheck(entryId);
 
     internal static void TEngineFavoriteDelete(this LEngine engine, long entryId)
     {
-        engine.LEngineVista.LEngineFavoriteDelete(entryId);
+        engine.LEngineCatalog.LEngineFavoriteDelete(entryId);
     }
 
     internal static void TEngineFavoriteSave(this LEngine engine, long entryId)
     {
-        engine.LEngineVista.LEngineFavoriteSave(entryId);
+        engine.LEngineCatalog.LEngineFavoriteSave(entryId);
     }
 
     internal static int TEngineGraspRead(this LEngine engine, long entryId) =>
@@ -152,12 +152,12 @@ internal static partial class TInterface
         string language,
         int offset,
         IReadOnlyList<LMention> mentions) =>
-        engine.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffMention
+        engine.LEngineHearth.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffMention
             .LMentionClerkFind(text, language, offset, mentions);
 
     internal static IReadOnlyList<LDraft> TEngineLeftoverRead(this LEngine engine)
     {
-        LClaimClerk claims = engine.LEngineStaffHeld.LEngineStaffClaim.LClaimStaffClaim;
+        LClaimClerk claims = engine.LEngineHearth.LEngineStaffHeld.LEngineStaffClaim.LClaimStaffClaim;
         return
         [
             .. claims.LDraftScan().Where(draft =>

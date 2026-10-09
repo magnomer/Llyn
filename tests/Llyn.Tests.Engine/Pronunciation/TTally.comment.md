@@ -1,5 +1,5 @@
 # TTally.cs
-Hash: `dad747cb0fd06290`
+Hash: `a2a1ba18f1db07b4`
 
 ## `public sealed class TTally`
 

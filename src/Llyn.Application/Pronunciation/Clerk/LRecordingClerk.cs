@@ -24,9 +24,9 @@ public sealed class LRecordingClerk
         ArgumentNullException.ThrowIfNull(languages);
         ArgumentNullException.ThrowIfNull(trail);
         ArgumentNullException.ThrowIfNull(claims);
-        _lRecordingClerkRecordings = rig.LRigRecordings;
-        _lRecordingClerkPronunciations = rig.LRigPronunciations;
-        _lRecordingClerkFactory = rig.LRigSources;
+        _lRecordingClerkRecordings = rig.LRigSource.LRigSourceRecordings;
+        _lRecordingClerkPronunciations = rig.LRigSound.LRigSoundPronunciations;
+        _lRecordingClerkFactory = rig.LRigSource.LRigSourceFactory;
         _lRecordingClerkPhonograph = rig.LRigPhonograph;
         _lRecordingClerkLanguages = languages;
         _lRecordingClerkTrail = trail;

@@ -1,5 +1,5 @@
 # LTenure.cs
-Hash: `db77afb7863c374b`
+Hash: `016dd4d269f2faef`
 
 ## `public sealed class LTenure`
 
@@ -17,9 +17,9 @@ Two locks.
 The gate guards the queue and the flags, and the turn serialises the applies.
 No engine call is made under the gate, because the engine raises bulletins that read the state back.
 The clerk's deferral calls under the gate raise nothing and take only the clerk's own lock.
-A tenure subscribes to the engine for its lifetime and owns the shell's subject-specific observers.
+A tenure subscribes to the engine for its lifetime through its `LTenureHerald`, which owns the shell's observers.
 An observer is a delegate over a bulletin, so the shell hands a method and implements no contract.
-The tenure's own handler is a private method attached as a method group and detached by the same group.
+The herald's handler is a private method attached as a method group and detached by the same group.
 General observers receive every notice of their subject, while draft observers require the held draft identity.
 Entry observers require a stored entry identity, because frequency and related notices do not name the draft.
 Preparation drops the held draft's own notices, because the caller reads the newest draft from the return value.
@@ -50,30 +50,12 @@ Which kind of record the draft holds, deciding which commit ends it.
 
 The pipeline that queues, flushes and applies this draft's requests, and knows whether the tenure still lives.
 
-## `private readonly LBulletinRoster _lTenureRoster = new(null);`
-
-The observers the shell attached to this tenure, each with the subject and draft identity it asked for.
-The roster is read and emptied under the gate, and its callbacks run outside it.
-
-## `private int _lTenurePreparing;`
-
-How many preparations are running now.
-While it is above zero, the handler drops the held draft's own draft notices.
-
-## `private LDraft? _lTenureKept;`
-
-The draft the last Mention find read, reused until a draft bulletin or a preparation clears it.
-
-## `private int _lTenureRound;`
-
-Counts the clears of the kept draft, so a read that raced a clear is answered but not kept.
-
 ## `internal LTenure(LEngine engine, LSubject subject, long id)`
 
 Made by the engine alone, once the draft is started and on disk.
-It subscribes its own bulletin handler to the engine here, so the engine names no tenure member to reach it.
 The queue is built before the gauge, since the gauge's first reading asks the queue whether the tenure lives.
 The queue's observer skips the gauge while it is still being built, so a failing first reading only halts.
+The herald is built last and subscribes its bulletin handler to the engine itself.
 
 ## `public long LTenureId { get; }`
 
@@ -87,6 +69,11 @@ The draft's state reading and its announcement, one per tenure for its whole lif
 
 The recording and lookup searches for this draft, and the reading writes they end in.
 One per tenure, so its cancel and finish stop the searches it started.
+
+## `internal LTenureHerald LTenureHerald { get; }`
+
+The observer roster and the kept draft, which share the tenure's bulletin handler.
+It shares the tenure's gate, so the lock order stays the turn, then the gate.
 
 ## `internal LEngine LTenureEngine`
 
@@ -182,19 +169,6 @@ Attaches an observer that receives only the subject's notices that name this ten
 The entry id is read at attach time, through the draft's own `LDraftStored` rule.
 A draft never stored attaches nothing, and storing it later does not attach it.
 
-## `private void LTenureObserverInsert(LSubject subject, Action<LBulletin> observer, long? id)`
-
-The one place an observer joins the roster, under the gate and only while the tenure lives.
-A null id receives every notice of the subject.
-
-## `private void LTenureBulletinHandle(LBulletin bulletin)`
-
-The tenure's own engine subscription, which forwards a notice to the roster.
-A draft notice first clears the kept draft, since the draft it holds may be stale.
-An ended tenure forwards nothing.
-During a preparation, the held draft's own draft notices are dropped.
-The roster is read under the gate and dispatched outside it.
-
 ## `private const int LTenurePrepareRounds = 3;`
 
 The most rounds of completion a preparation runs.
@@ -217,7 +191,8 @@ One round: applies what the engine still finds missing and says whether anything
 
 Runs `prepare` holding the turn, so no other turn interleaves with it.
 An ended tenure runs nothing and answers null.
-The kept draft is dropped afterwards, so a Mention find never trusts a read taken mid-preparation.
+The herald counts the preparation and drops its kept draft afterwards.
+So a Mention find never trusts a read taken mid-preparation.
 
 ## `public long? LTenureStoredRead()`
 
@@ -225,20 +200,3 @@ The stored id the held draft stands on, or null for a fresh draft or an ended te
 It persists nothing, so a paint asking for it never forces a save of pending edits.
 A refused read, such as a stale draft after a workspace switch, answers null.
 Every other failure propagates to the caller.
-
-## `internal LDraft? LTenureKeptRead()`
-
-The held draft as the engine stored it, for the Mention find of `LQuillMention`.
-The draft is kept until the next draft bulletin or prepare, so command checks read the file once per change.
-A read that raced a bulletin is answered but not kept.
-A stale draft after a workspace switch is refused, and the read then answers none.
-
-## `private void LTenureKeptClear()`
-
-Drops the kept draft and advances the round, so a read already under way is not kept.
-It runs under the gate, since bulletins can arrive off the veneer's thread.
-
-## `private void LTenureObserverClear()`
-
-Detaches the tenure's engine handler and empties the observer roster.
-Cancel and a successful finish call it, so nothing is delivered after the tenure ends.

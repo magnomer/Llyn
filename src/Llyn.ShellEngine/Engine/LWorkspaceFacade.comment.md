@@ -1,14 +1,16 @@
 # LWorkspaceFacade.cs
-Hash: `e4146a931a4ec154`
+Hash: `f0eb53a0cb7a7ee9`
 
 ## `public sealed class LWorkspaceFacade`
 
 The engine's facade for workspace state, trail operations, the workspace folder and failure records.
 It is public, because Host reads the rescue and hands the audit record to the deportment.
 
-## `public LWorkspaceFacade(LEngine engine, LRig rig, Func<string, LRig> factory, Action<string> pointer)`
+## `internal LWorkspaceFacade(LEngineHearth hearth, LDraftFacade draft, LPronunciationFacade pronunciation, LRig rig, Func<string, LRig> factory, Action<string> pointer)`
 
-Stores the engine and its gate, the rig factory and the pointer writer Host hands the engine.
+Stores the hearth, its gate, the sibling facades it calls, and the rig factory and pointer writer Host hands in.
+The gate, the staff and the shared state are read through the hearth.
+It takes its siblings rather than the engine, so it names only the facades it uses.
 The folder and the rescue are read from the first rig, so a reader sees them before any switch.
 
 ## `public LWorkspaceState LEngineWorkspaceStart()`

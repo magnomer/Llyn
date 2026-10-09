@@ -1,19 +1,23 @@
 using System;
 using System.Collections.Generic;
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
 
 public sealed class LSituationFacade : LSituationPort
 {
-    private readonly LEngine _lSituationFacadeEngine;
+    private readonly LEngineHearth _lSituationFacadeHearth;
+    private readonly LDraftFacade _lSituationFacadeDraft;
     private readonly object _lSituationFacadeGate;
 
-    public LSituationFacade(LEngine engine)
+    internal LSituationFacade(LEngineHearth hearth, LDraftFacade draft)
     {
-        ArgumentNullException.ThrowIfNull(engine);
-        _lSituationFacadeEngine = engine;
-        _lSituationFacadeGate = engine.LEngineGate;
+        ArgumentNullException.ThrowIfNull(hearth);
+        ArgumentNullException.ThrowIfNull(draft);
+        _lSituationFacadeHearth = hearth;
+        _lSituationFacadeDraft = draft;
+        _lSituationFacadeGate = _lSituationFacadeHearth.LEngineGate;
     }
 
     public IReadOnlyList<LCatalogSituation> LEngineSituationFind(string query, LCatalogOrder order)
@@ -42,9 +46,10 @@ public sealed class LSituationFacade : LSituationPort
         ArgumentNullException.ThrowIfNull(vista);
         IReadOnlyList<LCatalogSituation> found = LEngineSituationFind(vista.LVistaQuery, vista.LVistaOrder);
         List<LCatalogSituation> rows = new(found.Count);
-        string[] names = LVistaFacade.LEngineTwinRead(
+        string[] names = LEntryClerkTwin.LTwinRead(
             found,
-            row => LVistaFacade.LEngineNameRead(row.LCatalogSituationStored.LSituationTitle, unknown, untitled),
+            row => LEntryClerkTwin.LTwinNameRead(row.LCatalogSituationStored.LSituationTitle, unknown, untitled),
+            static _ => string.Empty,
             row => row.LCatalogSituationStored.LSituationId);
         for (int index = 0; index < found.Count; index++)
         {
@@ -52,7 +57,7 @@ public sealed class LSituationFacade : LSituationPort
             rows.Add(row with
             {
                 LCatalogSituationName = names[index],
-                LCatalogSituationKind = LVistaFacade.LEngineNameRead(
+                LCatalogSituationKind = LEntryClerkTwin.LTwinNameRead(
                     row.LCatalogSituationStored.LSituationKind, unknown, string.Empty),
                 LCatalogSituationChosen = row.LCatalogSituationStored.LSituationId == vista.LVistaChosen,
             });
@@ -76,7 +81,7 @@ public sealed class LSituationFacade : LSituationPort
             LSituationFacadeStaff.LEngineStaffCatalog.LCatalogStaffSituation.LSituationClerkDelete(id, detach);
         }
 
-        _lSituationFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectSituation, id);
+        _lSituationFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectSituation, id);
     }
 
     internal LDraft LEngineSituationStart(string origin, long? situationId)
@@ -95,13 +100,13 @@ public sealed class LSituationFacade : LSituationPort
         lock (_lSituationFacadeGate)
         {
             ArgumentOutOfRangeException.ThrowIfZero(id);
-            _lSituationFacadeEngine.LEngineDraft.LEngineDraftValidate(id);
+            _lSituationFacadeDraft.LEngineDraftValidate(id);
             settled = LSituationFacadeStaff.LEngineStaffEntry.LEntryStaffCitation
                 .LCitationClerkSituation.LSituationCitationCommit(id);
         }
 
-        _lSituationFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectSituation, settled.LSituationId);
+        _lSituationFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectSituation, settled.LSituationId);
         return settled;
     }
-    private LEngineStaff LSituationFacadeStaff => _lSituationFacadeEngine.LEngineStaffHeld;
+    private LEngineStaff LSituationFacadeStaff => _lSituationFacadeHearth.LEngineStaffHeld;
 }

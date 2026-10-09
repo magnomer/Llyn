@@ -6,17 +6,27 @@ using Llyn.Core;
 
 namespace Llyn.ShellEngine;
 
-public sealed class LCardFacade : LCardPort, LTagPort, LRegisterPort
+public sealed class LCardFacade : LCardPort
 {
-    private readonly LEngine _lCardFacadeEngine;
+    private readonly LEngineHearth _lCardFacadeHearth;
+    private readonly LPronunciationFacade _lCardFacadePronunciation;
+    private readonly LSettingsFacade _lCardFacadeSettings;
+    private readonly LVistaRowFacade _lCardFacadeRow;
     private readonly object _lCardFacadeGate;
-    private LEngineStaff LCardFacadeStaff => _lCardFacadeEngine.LEngineStaffHeld;
+    private LEngineStaff LCardFacadeStaff => _lCardFacadeHearth.LEngineStaffHeld;
 
-    public LCardFacade(LEngine engine)
+    internal LCardFacade(
+        LEngineHearth hearth, LPronunciationFacade pronunciation, LSettingsFacade settings, LVistaRowFacade row)
     {
-        ArgumentNullException.ThrowIfNull(engine);
-        _lCardFacadeEngine = engine;
-        _lCardFacadeGate = engine.LEngineGate;
+        ArgumentNullException.ThrowIfNull(hearth);
+        ArgumentNullException.ThrowIfNull(pronunciation);
+        ArgumentNullException.ThrowIfNull(settings);
+        ArgumentNullException.ThrowIfNull(row);
+        _lCardFacadeHearth = hearth;
+        _lCardFacadePronunciation = pronunciation;
+        _lCardFacadeSettings = settings;
+        _lCardFacadeRow = row;
+        _lCardFacadeGate = _lCardFacadeHearth.LEngineGate;
     }
 
     public IReadOnlyList<LMeaning> LEngineMeaningRead(long ownerId, LOwner owner)
@@ -38,7 +48,7 @@ public sealed class LCardFacade : LCardPort, LTagPort, LRegisterPort
         ArgumentNullException.ThrowIfNull(key);
 
         return LMeaningClerk.LMeaningClerkSort(
-            LEngineMeaningRead(entryId, LOwner.LOwnerEntry), _lCardFacadeEngine.LEngineSettings.LEngineTextRead(key));
+            LEngineMeaningRead(entryId, LOwner.LOwnerEntry), _lCardFacadeSettings.LEngineTextRead(key));
     }
 
     public IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)>? LEngineSenseRead(
@@ -51,131 +61,24 @@ public sealed class LCardFacade : LCardPort, LTagPort, LRegisterPort
             : null;
     }
 
-    internal IReadOnlyList<LTag> LEngineTagRead()
-    {
-        lock (_lCardFacadeGate)
-        {
-            return LCardFacadeStaff.LEngineStaffCatalog.LCatalogStaffTag.LTagClerkRead();
-        }
-    }
-
-    public IReadOnlyList<LTag> LEngineTagFind(string query, LCatalogOrder order)
-    {
-        lock (_lCardFacadeGate)
-        {
-            return LCardFacadeStaff.LEngineStaffCatalog.LCatalogStaffTag.LTagClerkFind(query, order);
-        }
-    }
-
-    public LTagOffer LEngineTagFind(LTenure held, long card, string text)
-    {
-        ArgumentNullException.ThrowIfNull(held);
-
-        LDraft? draft = held.LTenureRead();
-        lock (_lCardFacadeGate)
-        {
-            return LCardFacadeStaff.LEngineStaffCatalog.LCatalogStaffTag.LTagClerkFind(text, draft, card);
-        }
-    }
-
-    public IReadOnlyList<LCatalogTag> LEngineTagFind(LVista vista)
-    {
-        ArgumentNullException.ThrowIfNull(vista);
-        List<LCatalogTag> rows = [];
-        bool kept = false;
-        foreach (LTag tag in LEngineTagFind(vista.LVistaQuery, vista.LVistaOrder))
-        {
-            bool chosen = vista.LVistaMatch(tag.LTagId);
-            kept |= chosen;
-            rows.Add(new LCatalogTag(tag, chosen));
-        }
-
-        if (!kept)
-        {
-            vista.LVistaSelect(null);
-        }
-
-        return rows;
-    }
-
-    public LTag LEngineTagCreate(string text)
-    {
-        LTag created;
-        lock (_lCardFacadeGate)
-        {
-            created = LCardFacadeStaff.LEngineStaffCatalog.LCatalogStaffTag.LTagClerkCreate(text);
-        }
-
-        _lCardFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectTag, created.LTagId);
-        return created;
-    }
-
-    public LRegisterOffer LEngineRegisterFind(LTenure held, long card, string text)
-    {
-        ArgumentNullException.ThrowIfNull(held);
-
-        LDraft? draft = held.LTenureRead();
-        string language = held.LTenureLanguageRead();
-        lock (_lCardFacadeGate)
-        {
-            return LCardFacadeStaff.LEngineStaffCatalog.LCatalogStaffRegister
-                .LRegisterClerkFind(text, language, draft, card);
-        }
-    }
-
-    public IReadOnlyList<LCatalogRegister> LEngineRegisterFind(string query, LCatalogOrder order)
-    {
-        lock (_lCardFacadeGate)
-        {
-            return LCardFacadeStaff.LEngineStaffCatalog.LCatalogStaffRegister.LRegisterClerkFind(query, order);
-        }
-    }
-
-    public IReadOnlyList<LCatalogRegister> LEngineRegisterFind(LVista vista)
-    {
-        ArgumentNullException.ThrowIfNull(vista);
-        List<LCatalogRegister> rows = [];
-        bool kept = false;
-        foreach (LCatalogRegister row in LEngineRegisterFind(vista.LVistaQuery, vista.LVistaOrder))
-        {
-            bool chosen = vista.LVistaMatch(row.LCatalogRegisterStored.LRegisterId);
-            kept |= chosen;
-            rows.Add(row with { LCatalogRegisterChosen = chosen });
-        }
-
-        if (!kept)
-        {
-            vista.LVistaSelect(null);
-        }
-
-        return rows;
-    }
-
-    public LRegister LEngineRegisterCreate(string name)
-    {
-        LRegister created;
-        lock (_lCardFacadeGate)
-        {
-            created = LCardFacadeStaff.LEngineStaffCatalog.LCatalogStaffRegister.LRegisterClerkCreate(name);
-        }
-
-        _lCardFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectRegister, created.LRegisterId);
-        return created;
-    }
-
     public LTranslationOffer LEngineTranslationFind(LTenure held, string text, string word, bool chosen)
     {
         ArgumentNullException.ThrowIfNull(held);
 
         long? self = held.LTenureRead()?.LDraftStored;
-        IReadOnlyList<string> languages = LTranslationClerk.LTranslationLanguageRead(
-            _lCardFacadeEngine.LEngineLanguage.LEngineLanguageRead(), held.LTenureLanguageRead());
+        IReadOnlyList<string> known;
+        lock (_lCardFacadeGate)
+        {
+            known = LCardFacadeStaff.LEngineStaffLanguage.LLanguageStaffLanguage.LLanguageClerkRead();
+        }
+
+        IReadOnlyList<string> languages = LTranslationClerk.LTranslationLanguageRead(known, held.LTenureLanguageRead());
         IReadOnlyList<LVistaRow> rows;
         lock (_lCardFacadeGate)
         {
             IReadOnlyList<LEntry> entries =
                 LCardFacadeStaff.LEngineStaffCatalog.LCatalogStaffTranslation.LTranslationClerkFind(word, null);
-            rows = _lCardFacadeEngine.LEngineVista.LEngineVistaBuild(entries, null);
+            rows = _lCardFacadeRow.LEngineVistaBuild(entries, null);
         }
 
         return new LTranslationOffer(
@@ -191,7 +94,7 @@ public sealed class LCardFacade : LCardPort, LTagPort, LRegisterPort
         {
             IReadOnlyList<LEntry> entries =
                 LCardFacadeStaff.LEngineStaffCatalog.LCatalogStaffTranslation.LTranslationMentionFind(word, draft);
-            return _lCardFacadeEngine.LEngineVista.LEngineVistaBuild(entries, null);
+            return _lCardFacadeRow.LEngineVistaBuild(entries, null);
         }
     }
 
@@ -211,10 +114,10 @@ public sealed class LCardFacade : LCardPort, LTagPort, LRegisterPort
         {
             entry = LCardFacadeStaff.LEngineStaffCatalog.LCatalogStaffTranslation
                 .LTranslationClerkCreate(headword, language);
-            _lCardFacadeEngine.LEnginePronunciation.LEngineFrequencyStart(entry.LEntryId);
+            _lCardFacadePronunciation.LEngineFrequencyStart(entry.LEntryId);
         }
 
-        _lCardFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectEntry, entry.LEntryId);
+        _lCardFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectEntry, entry.LEntryId);
         return entry;
     }
 
@@ -291,7 +194,7 @@ public sealed class LCardFacade : LCardPort, LTagPort, LRegisterPort
         lock (_lCardFacadeGate)
         {
             return LCardFacadeStaff.LEngineStaffCatalog.LCatalogStaffTranslation.LTranslationIncomingRead(
-                entryId, _lCardFacadeEngine.LEngineSettingsHeld.LSettingsEpithet);
+                entryId, _lCardFacadeHearth.LEngineSettingsHeld.LSettingsEpithet);
         }
     }
 

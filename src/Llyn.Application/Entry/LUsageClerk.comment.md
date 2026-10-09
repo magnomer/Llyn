@@ -1,5 +1,5 @@
 # LUsageClerk.cs
-Hash: `5ad99f6fda50ce89`
+Hash: `824bbb12aa126b62`
 
 ## `public sealed class LUsageClerk`
 

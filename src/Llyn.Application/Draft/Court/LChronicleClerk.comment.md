@@ -1,5 +1,5 @@
 # LChronicleClerk.cs
-Hash: `419797efcd999e0f`
+Hash: `e36ae342c56f6f67`
 
 ## `public sealed class LChronicleClerk`
 
@@ -51,7 +51,7 @@ The engine has already judged that the two drafts differ and that one of them is
 A new edit after an undo starts a new branch.
 A request of the same type on the same draft within the window continues the last step.
 Then nothing is pushed and only the moment is refreshed.
-A null request is a card edit, which always pushes and leaves no step to continue.
+A null request always pushes and leaves no step to continue.
 
 ## `public void LChronicleClerkClear(long id)`
 
@@ -86,7 +86,7 @@ The filing runs before the first await, so the request is queued when the call r
 A positive delay cancels the wait in progress and starts a new one on the rig's clock.
 A delay of zero files the request only and answers null, leaving the flush to the caller.
 The replaced wait is cancelled outside the lock, so its ending runs with no clerk lock held.
-The pause always resumes on a pool thread, so an instant clock never flushes under the caller's locks.
+The pause always yields before resuming, so an instant clock never flushes under the caller's locks.
 It answers the wait that ran out, which the caller hands back to `LChronicleClerkDispatch`.
 A cancelled wait answers null, since a newer deferral or a flush has replaced it.
 

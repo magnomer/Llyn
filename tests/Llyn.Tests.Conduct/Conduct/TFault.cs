@@ -144,188 +144,7 @@ public sealed partial class TFault
                 CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard);
                 return Task.FromResult<Func<Task>>(() => courier.CCourierAttach(envoy));
             }),
-        new(
-            "CCorpus.CCorpusRowsLoad",
-            "LSettingsPort.LEngineEnsignLoad",
-            "Example.LoadFailed",
-            static stage =>
-            {
-                CCorpus corpus = CCorpus.CCorpusCreate(
-                    TFaultAtelierStart(stage),
-                    static () => true,
-                    TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard),
-                    static run => run());
-                return Task.FromResult<Func<Task>>(
-                    () => corpus.CCorpusRowsLoad(static (_, _) => static () => { }));
-            }),
-        new(
-            "CFavorite.CFavoriteRowsLoad",
-            "LSettingsPort.LEngineEnsignLoad",
-            "Favorite.LoadFailed",
-            static stage =>
-            {
-                CFavorite favorite = CFavorite.CFavoriteCreate(
-                    TFaultAtelierStart(stage),
-                    static () => true,
-                    TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard),
-                    static run => run());
-                return Task.FromResult<Func<Task>>(
-                    () => favorite.CFavoriteRowsLoad(static (_, _) => static () => { }));
-            }),
-        new(
-            "CFootnote.CFootnoteRowsLoad",
-            "LSettingsPort.LEngineEnsignLoad",
-            "List.LoadFailed",
-            static stage =>
-            {
-                CShelf shelf = CShelf.CShelfCreate(
-                    TFaultAtelierStart(stage),
-                    static () => true,
-                    TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard),
-                    static run => run());
-                return Task.FromResult<Func<Task>>(
-                    () => shelf.CShelfFootnote.CFootnoteRowsLoad(static (_, _) => static () => { }));
-            }),
-        new(
-            "CLibrary.CLibraryRowsLoad",
-            "LSettingsPort.LEngineEnsignLoad",
-            "List.LoadFailed",
-            static stage =>
-            {
-                CLibrary library = CLibrary.CLibraryCreate(
-                    TFaultAtelierStart(stage),
-                    static () => true,
-                    TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard),
-                    static run => run());
-                return Task.FromResult<Func<Task>>(
-                    () => library.CLibraryRowsLoad(static (_, _) => static () => { }));
-            }),
-        new(
-            "COccurrence.COccurrenceRowsLoad",
-            "LSettingsPort.LEngineEnsignLoad",
-            "Situation.LoadFailed",
-            static stage =>
-            {
-                CRepertoire repertoire = CRepertoire.CRepertoireCreate(
-                    TFaultAtelierStart(stage),
-                    static () => true,
-                    TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard),
-                    static run => run());
-                return Task.FromResult<Func<Task>>(
-                    () => repertoire.CRepertoireOccurrence.COccurrenceRowsLoad(static (_, _) => static () => { }));
-            }),
-        new(
-            "CPhonology.CPhonologyRowsLoad",
-            "LSettingsPort.LEngineEnsignLoad",
-            "Sound.LoadFailed",
-            static stage =>
-            {
-                CPhonology phonology = CPhonology.CPhonologyCreate(
-                    TFaultAtelierStart(stage),
-                    static () => true,
-                    TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard),
-                    static run => run());
-                return Task.FromResult<Func<Task>>(
-                    () => phonology.CPhonologyRowsLoad(static (_, _) => static () => { }));
-            }),
-        new(
-            "CQuotation.CQuotationRowsLoad",
-            "LSettingsPort.LEngineEnsignLoad",
-            "Example.LoadFailed",
-            static stage =>
-            {
-                CCorpus corpus = CCorpus.CCorpusCreate(
-                    TFaultAtelierStart(stage),
-                    static () => true,
-                    TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard),
-                    static run => run());
-                return Task.FromResult<Func<Task>>(
-                    () => corpus.CCorpusQuotation.CQuotationRowsLoad(static (_, _) => static () => { }));
-            }),
-        new(
-            "CRepertoire.CRepertoireRowsLoad",
-            "LSettingsPort.LEngineEnsignLoad",
-            "Situation.LoadFailed",
-            static stage =>
-            {
-                CRepertoire repertoire = CRepertoire.CRepertoireCreate(
-                    TFaultAtelierStart(stage),
-                    static () => true,
-                    TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard),
-                    static run => run());
-                return Task.FromResult<Func<Task>>(
-                    () => repertoire.CRepertoireRowsLoad(static (_, _) => static () => { }));
-            }),
-        new(
-            "CShelf.CShelfRollLoad",
-            "LSettingsPort.LEngineEnsignLoad",
-            "Source.LoadFailed",
-            static stage =>
-            {
-                CShelf shelf = CShelf.CShelfCreate(
-                    TFaultAtelierStart(stage),
-                    static () => true,
-                    TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard),
-                    static run => run());
-                return Task.FromResult<Func<Task>>(
-                    () => shelf.CShelfRollLoad(static (_, _) => static () => { }));
-            }),
-        new(
-            "CTaxonomy.CTaxonomyRowsLoad",
-            "LSettingsPort.LEngineEnsignLoad",
-            "Tag.LoadFailed",
-            static stage =>
-            {
-                CTaxonomy taxonomy = CTaxonomy.CTaxonomyCreate(
-                    TFaultAtelierStart(stage),
-                    static () => true,
-                    TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard),
-                    static run => run());
-                return Task.FromResult<Func<Task>>(
-                    () => taxonomy.CTaxonomyRowsLoad(static (_, _) => static () => { }));
-            }),
-        new(
-            "CTenor.CTenorRowsLoad",
-            "LSettingsPort.LEngineEnsignLoad",
-            "Register.LoadFailed",
-            static stage =>
-            {
-                CTenor tenor = CTenor.CTenorCreate(
-                    TFaultAtelierStart(stage),
-                    static () => true,
-                    TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard),
-                    static run => run());
-                return Task.FromResult<Func<Task>>(
-                    () => tenor.CTenorRowsLoad(static (_, _) => static () => { }));
-            }),
-        new(
-            "CEntryList.CEntryListLoad",
-            "LSettingsPort.LEngineEnsignLoad",
-            "Xiesheng.LoadFailed",
-            static stage =>
-            {
-                CXiesheng xiesheng = CXiesheng.CXieshengCreate(
-                    TFaultAtelierStart(stage),
-                    static () => true,
-                    TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard),
-                    static run => run());
-                return Task.FromResult<Func<Task>>(
-                    () => xiesheng.CXieshengKindred.CEntryListLoad(static (_, _) => static () => { }));
-            }),
-        new(
-            "CYunjing.CYunjingXiaoyun.CEntryListLoad",
-            "LSettingsPort.LEngineEnsignLoad",
-            "Yunjing.LoadFailed",
-            static stage =>
-            {
-                CYunjing yunjing = CYunjing.CYunjingCreate(
-                    TFaultAtelierStart(stage),
-                    static () => true,
-                    TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard),
-                    static run => run());
-                return Task.FromResult<Func<Task>>(
-                    () => yunjing.CYunjingXiaoyun.CEntryListLoad(static (_, _) => static () => { }));
-            }),
+        .. TFaultList.TFaultListRows,
         .. TFaultPortraitRows,
     ];
 
@@ -392,7 +211,7 @@ public sealed partial class TFault
         return stage.TFaultStageAdd(workspace.TWorkspaceEngineStart());
     }
 
-    private static CAtelier TFaultAtelierStart(TFaultStage stage) =>
+    internal static CAtelier TFaultAtelierStart(TFaultStage stage) =>
         stage.TFaultStageAdd(TInterfaceConduct.TAtelierFaultCreate(
             TFaultEngineStart(stage), stage.TFaultStageMember, stage.TFaultStageThrown));
 
@@ -405,8 +224,11 @@ public sealed partial class TFault
         {
             LRigLanguages = TEngineFault.TEngineFaultCreate(
                 rig.LRigLanguages, stage.TFaultStageMember, stage.TFaultStageThrown),
-            LRigRecordings = TEngineFault.TEngineFaultCreate(
-                rig.LRigRecordings, stage.TFaultStageMember, stage.TFaultStageThrown),
+            LRigSource = rig.LRigSource with
+            {
+                LRigSourceRecordings = TEngineFault.TEngineFaultCreate(
+                    rig.LRigSource.LRigSourceRecordings, stage.TFaultStageMember, stage.TFaultStageThrown),
+            },
         };
         LEngine engine = stage.TFaultStageAdd(TInterface.TEngineCreate(faulted));
         engine.TEngineDelaySet(0);
@@ -433,42 +255,5 @@ public sealed partial class TFault
         errand.CErrandRecordingStart(0);
         await finished.Task.WaitAsync(TimeSpan.FromSeconds(5));
         return errand;
-    }
-
-    private sealed record TFaultRow(
-        string TFaultRowGate,
-        string TFaultRowMember,
-        string TFaultRowKey,
-        Func<TFaultStage, Task<Func<Task>>> TFaultRowArrange);
-
-    private sealed class TFaultStage : IDisposable
-    {
-        private readonly Stack<IDisposable> _tFaultStageHeld = new();
-
-        internal TFaultStage(string member, bool thrown)
-        {
-            TFaultStageMember = member;
-            TFaultStageThrown = thrown;
-        }
-
-        internal string TFaultStageMember { get; }
-
-        internal bool TFaultStageThrown { get; }
-
-        internal List<string> TFaultStageHeard { get; } = [];
-
-        internal TFaultKind TFaultStageAdd<TFaultKind>(TFaultKind held) where TFaultKind : IDisposable
-        {
-            _tFaultStageHeld.Push(held);
-            return held;
-        }
-
-        public void Dispose()
-        {
-            while (_tFaultStageHeld.TryPop(out IDisposable? held))
-            {
-                held.Dispose();
-            }
-        }
     }
 }

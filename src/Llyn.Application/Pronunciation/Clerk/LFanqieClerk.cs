@@ -33,10 +33,10 @@ public sealed class LFanqieClerk
         ArgumentNullException.ThrowIfNull(gate);
         ArgumentNullException.ThrowIfNull(raise);
         _lFanqieClerkEntries = rig.LRigEntries;
-        _lFanqieClerkFanqie = rig.LRigFanqie;
-        _lFanqieClerkShengfu = rig.LRigShengfu;
-        _lFanqieClerkDiwei = rig.LRigDiwei;
-        _lFanqieClerkSource = rig.LRigFanqieSource;
+        _lFanqieClerkFanqie = rig.LRigSound.LRigSoundFanqie;
+        _lFanqieClerkShengfu = rig.LRigSound.LRigSoundShengfu;
+        _lFanqieClerkDiwei = rig.LRigSound.LRigSoundDiwei;
+        _lFanqieClerkSource = rig.LRigSource.LRigSourceFanqie;
         _lFanqieClerkPacks = rig.LRigLanguages;
         _lFanqieClerkClock = rig.LRigClock;
         _lFanqieClerkAudit = rig.LRigAudit;

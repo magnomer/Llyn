@@ -20,9 +20,9 @@ public sealed class LVocabularyClerk
         _lVocabularyClerkVault = rig.LRigVault;
         _lVocabularyClerkEntries = rig.LRigEntries;
         _lVocabularyClerkLanguages = rig.LRigLanguages;
-        _lVocabularyClerkMorphologies = rig.LRigMorphologies;
-        _lVocabularyClerkSentences = rig.LRigSentences;
-        _lVocabularyClerkSpeeches = rig.LRigSpeeches;
+        _lVocabularyClerkMorphologies = rig.LRigLexicon.LRigLexiconMorphologies;
+        _lVocabularyClerkSentences = rig.LRigSentence.LRigSentenceSentences;
+        _lVocabularyClerkSpeeches = rig.LRigLexicon.LRigLexiconSpeeches;
     }
 
     public IReadOnlyList<LSpeechValue> LSpeechRead(string language)

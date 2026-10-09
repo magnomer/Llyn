@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Llyn.Application;
 using Llyn.Core;
 
@@ -7,7 +6,6 @@ namespace Llyn.ShellEngine;
 
 public sealed class LEngine : IDisposable
 {
-    internal object LEngineGate { get; } = new();
     public LVistaFacade LEngineVista { get; }
     internal LTenureFacade LEngineTenure { get; }
     public LMentionFacade LEngineMention { get; }
@@ -20,6 +18,7 @@ public sealed class LEngine : IDisposable
     public LStemFacade LEngineStem { get; }
     public LFanqieFacade LEngineFanqie { get; }
     public LLanguageFacade LEngineLanguage { get; }
+    public LScriptFacade LEngineScript { get; }
     public LVocabularyFacade LEngineVocabulary { get; }
     public LPronunciationFacade LEnginePronunciation { get; }
     public LDraftFacade LEngineDraft { get; }
@@ -30,13 +29,10 @@ public sealed class LEngine : IDisposable
     public LReferenceFacade LEngineReference { get; }
     public LSituationFacade LEngineSituation { get; }
     public LCardFacade LEngineCard { get; }
+    public LCatalogFacade LEngineCatalog { get; }
     public LEntryFacade LEngineEntry { get; }
-    internal LTrove LEngineTrove { get; } = new();
-    internal LSettings LEngineSettingsHeld { get; set; }
-    internal HashSet<long> LEngineDraftStale { get; } = [];
-    internal long LEngineRevision { get; set; }
-    private readonly LBulletinRoster _lEngineRoster = new(null);
-    private LEngineStaff _lEngineStaff;
+    internal LEngineHearth LEngineHearth { get; }
+    internal LVistaRowFacade LEngineVistaRow { get; }
 
     public LEngine(LRig rig, Func<string, LRig> factory, Action<string> pointer)
     {
@@ -44,140 +40,72 @@ public sealed class LEngine : IDisposable
         ArgumentNullException.ThrowIfNull(factory);
         ArgumentNullException.ThrowIfNull(pointer);
 
-        _lEngineStaff = LEngineStaff.LEngineStaffBuild(
-            rig, LEngineGate, LEngineBulletinRaise, LEngineSettingsRead, LEngineDraftStale);
-        LEngineSettingsHeld = _lEngineStaff.LEngineStaffWorkspace.LWorkspaceStaffWorkspace.LWorkspaceSettingsRead();
-
-        LEngineVista = new LVistaFacade(this);
-        LEngineDraft = new LDraftFacade(this);
-        LEngineEntry = new LEntryFacade(this);
-        LEngineCard = new LCardFacade(this);
-        LEngineReference = new LReferenceFacade(this);
-        LEngineSituation = new LSituationFacade(this);
-        LEngineAuthor = new LAuthorFacade(this);
-        LEngineExample = new LExampleFacade(this);
-        LEngineSettings = new LSettingsFacade(this);
-        LEngineRequest = new LRequestFacade(this);
+        LEngineHearth = new LEngineHearth(rig);
+        LEngineVistaRow = new LVistaRowFacade(LEngineHearth);
+        LEngineCatalog = new LCatalogFacade(LEngineHearth, LEngineVistaRow);
+        LEngineSettings = new LSettingsFacade(LEngineHearth);
+        LEngineVocabulary = new LVocabularyFacade(LEngineHearth);
+        LEngineMention = new LMentionFacade(LEngineHearth);
+        LEngineMarkup = new LMarkupFacade(LEngineHearth);
+        LEnginePortrait = new LPortraitFacade(LEngineHearth);
+        LEngineDraft = new LDraftFacade(LEngineHearth, LEngineVocabulary);
+        LEnginePronunciation = new LPronunciationFacade(LEngineHearth, LEngineDraft, LEngineVistaRow);
+        LEngineCard = new LCardFacade(LEngineHearth, LEnginePronunciation, LEngineSettings, LEngineVistaRow);
+        LEngineEntry = new LEntryFacade(LEngineHearth, LEngineCard, LEngineDraft);
+        LEngineExample = new LExampleFacade(LEngineHearth, LEngineDraft);
+        LEngineReference = new LReferenceFacade(LEngineHearth, LEngineDraft);
+        LEngineSituation = new LSituationFacade(LEngineHearth, LEngineDraft);
+        LEngineAuthor = new LAuthorFacade(
+            LEngineHearth, LEngineDraft, LEngineEntry, LEngineReference, LEngineSettings);
+        LEngineWorkspace = new LWorkspaceFacade(
+            LEngineHearth, LEngineDraft, LEnginePronunciation, rig, factory, pointer);
+        LEngineVista = new LVistaFacade(
+            LEngineHearth,
+            LEngineAuthor,
+            LEngineCatalog,
+            LEngineEntry,
+            LEngineExample,
+            LEngineReference,
+            LEngineSettings,
+            LEngineSituation,
+            LEngineWorkspace,
+            LEngineVistaRow);
+        LEngineFanqie = new LFanqieFacade(LEngineHearth, LEngineEntry, LEngineSettings, LEngineVistaRow);
+        LEngineReflex = new LReflexFacade(LEngineHearth, LEngineFanqie, LEngineSettings);
+        LEngineScript = new LScriptFacade(LEngineHearth);
+        LEngineLanguage = new LLanguageFacade(
+            LEngineHearth, LEngineFanqie, LEngineReflex, LEngineScript, LEngineSettings, LEngineVocabulary);
+        LEngineStem = new LStemFacade(LEngineHearth, LEngineEntry, LEngineLanguage, LEngineVistaRow);
+        LEngineRequest = new LRequestFacade(LEngineHearth, LEngineDraft, LEngineEntry);
+        LEngineLivery = new LLiveryFacade(
+            LEngineHearth,
+            LEngineCard,
+            LEngineCatalog,
+            LEngineEntry,
+            LEngineFanqie,
+            LEngineLanguage,
+            LEngineReference,
+            LEngineReflex,
+            LEngineScript,
+            LEngineSettings,
+            LEngineVocabulary);
+        LEngineCourier = new LCourierFacade(LEngineHearth, LEngineLivery, LEngineSettings);
         LEngineTenure = new LTenureFacade(this);
-        LEngineMention = new LMentionFacade(this);
-        LEngineMarkup = new LMarkupFacade(this);
-        LEngineCourier = new LCourierFacade(this);
-        LEngineLivery = new LLiveryFacade(this);
-        LEngineWorkspace = new LWorkspaceFacade(this, rig, factory, pointer);
-        LEngineReflex = new LReflexFacade(this);
-        LEnginePortrait = new LPortraitFacade(this);
-        LEngineStem = new LStemFacade(this);
-        LEngineFanqie = new LFanqieFacade(this);
-        LEngineLanguage = new LLanguageFacade(this);
-        LEngineVocabulary = new LVocabularyFacade(this);
-        LEnginePronunciation = new LPronunciationFacade(this);
-        LEngineWorkspaceOpen();
-    }
-
-    internal LEngineStaff LEngineStaffHeld
-    {
-        get
-        {
-            lock (LEngineGate)
-            {
-                return _lEngineStaff;
-            }
-        }
-    }
-
-    internal LSettings LEngineSettingsRead()
-    {
-        lock (LEngineGate)
-        {
-            return LEngineSettingsHeld;
-        }
-    }
-
-    private void LEngineWorkspaceOpen()
-    {
-        LEngineVocabulary.LEngineLanguageImport();
-        _lEngineStaff.LEngineStaffLanguage.LLanguageStaffApply();
-        if (_lEngineStaff.LEngineStaffWorkspace.LWorkspaceStaffWorkspace.LWorkspaceClerkMigrated)
-        {
-            _lEngineStaff.LEngineStaffWorkspace.LWorkspaceStaffWorkspace.LWorkspaceClerkUpdate();
-        }
-    }
-
-    internal void LEngineRigApply(LRig rig)
-    {
-        ArgumentNullException.ThrowIfNull(rig);
-
-        lock (LEngineGate)
-        {
-            LSettings settings = LWorkspaceClerk.LWorkspaceSettingsRead(rig, LEngineSettingsHeld, out bool settled);
-
-            foreach (long held in _lEngineStaff.LEngineStaffClaim.LClaimStaffClaim.LClaimClerkHeld)
-            {
-                LEngineDraftStale.Add(held);
-            }
-
-            _lEngineStaff.LEngineStaffLanguage.LLanguageStaffRecording.LRecordingClerkClear();
-            _lEngineStaff.LEngineStaffLanguage.LLanguageStaffClear();
-            _lEngineStaff.LEngineStaffLanguage.LLanguageStaffEnsign.LEnsignClear();
-            LEngineTrove.LTroveClear();
-
-            LEngineSettingsHeld = settings;
-            _lEngineStaff = LEngineStaff.LEngineStaffBuild(
-                rig, LEngineGate, LEngineBulletinRaise, LEngineSettingsRead, LEngineDraftStale);
-            if (!settled)
-            {
-                _lEngineStaff.LEngineStaffWorkspace.LWorkspaceStaffWorkspace.LWorkspaceFallbackSave(
-                    LEngineSettingsHeld);
-            }
-
-            LEngineWorkspaceOpen();
-        }
+        LEngineHearth.LEngineWorkspaceOpen();
     }
 
     public void Dispose()
     {
-        lock (LEngineGate)
-        {
-            _lEngineStaff.LEngineStaffLanguage.LLanguageStaffClear();
-        }
+        LEngineHearth.LEngineStaffClear();
     }
 
     public void LEngineObserverAttach(Action<LBulletin> observer)
     {
-        ArgumentNullException.ThrowIfNull(observer);
-
-        lock (LEngineGate)
-        {
-            if (!_lEngineRoster.LBulletinRosterCheck(observer))
-            {
-                _lEngineRoster.LBulletinRosterAttach(null, observer, null);
-            }
-        }
+        LEngineHearth.LEngineObserverAttach(observer);
     }
 
     public void LEngineObserverDetach(Action<LBulletin> observer)
     {
-        ArgumentNullException.ThrowIfNull(observer);
-
-        lock (LEngineGate)
-        {
-            _lEngineRoster.LBulletinRosterDetach(observer);
-        }
-    }
-
-    internal void LEngineBulletinRaise(LSubject subject, long id)
-    {
-        (LSubject?, Action<LBulletin>, long?)[] snapshot;
-        lock (LEngineGate)
-        {
-            LEngineRevision++;
-            snapshot = _lEngineRoster.LBulletinRosterRead();
-            if (snapshot.Length == 0)
-            {
-                return;
-            }
-        }
-
-        _lEngineRoster.LBulletinRosterDispatch(new LBulletin(subject, id), snapshot);
+        LEngineHearth.LEngineObserverDetach(observer);
     }
 }

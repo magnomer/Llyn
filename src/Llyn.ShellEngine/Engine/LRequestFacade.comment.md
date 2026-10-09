@@ -1,5 +1,5 @@
 # LRequestFacade.cs
-Hash: `db1b0a95e3b01c3f`
+Hash: `9a08f1ac9c85e708`
 
 ## `internal sealed class LRequestFacade`
 
@@ -8,16 +8,18 @@ A form sends one edit at a time as an `LRequest`, and the engine applies it, sav
 The form never assembles an `LEntryDraft` from its controls, so the engine's file is the only truth.
 The applying itself is `LDraftClerk`'s, over the ports of the rig.
 The undo and redo calls and the court calls of a held draft live here too.
-The facade shares the engine gate and uses the engine for draft operations and bulletins.
+The facade shares the engine gate and uses the draft and entry facades and the hearth bulletin.
 
-## `public LRequestFacade(LEngine engine)`
+## `public LRequestFacade(LEngineHearth hearth, LDraftFacade draft, LEntryFacade entry)`
 
-Creates the facade for its owning engine and shares the engine gate for request operations.
+Stores the hearth, its gate and the sibling facades it calls, all built by `LEngine` before this one.
+The gate, the staff and the shared state are read through the hearth.
+It takes its siblings rather than the engine, so it names only the facades it uses.
 
 ## `internal LDraft LEngineRequestApply(LRequest request)`
 
 Applies one request to the held draft it names and returns the draft as saved.
-The draft must be held by this engine, so a request for a leftover or another copy's draft is refused.
+A draft the engine marked stale is refused.
 The clerk applies the request, and a headword or language change then drops the recordings that no longer fit.
 The content is normalized after the change, so anything the change left unnamed is named before the write.
 The draft being replaced is recorded in the chronicle first, so the edit can be undone.

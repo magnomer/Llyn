@@ -1,14 +1,16 @@
 # LMarkupFacade.cs
-Hash: `f9310bce436363ee`
+Hash: `68847305501ca292`
 
 ## `internal sealed class LMarkupFacade`
 
 The engine's facade for markup cargo reads, imports and entry matching.
 `LEngineMarkupStart` runs a whole import in its order, reading and storing on a pool thread.
 
-## `public LMarkupFacade(LEngine engine)`
+## `public LMarkupFacade(LEngineHearth hearth)`
 
-Stores the engine and its gate.
+Stores the hearth and its gate.
+It calls no sibling facade, so `LEngine` builds it among the first.
+The gate, the staff and the shared state are read through the hearth.
 
 ## `public LMarkupCargo LEngineMarkupRead(string path)`
 

@@ -38,8 +38,8 @@ public sealed class LFrequencyClerk
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(raise);
         _lFrequencyClerkEntries = rig.LRigEntries;
-        _lFrequencyClerkFrequencies = rig.LRigFrequencies;
-        _lFrequencyClerkFactory = rig.LRigSources;
+        _lFrequencyClerkFrequencies = rig.LRigSound.LRigSoundFrequencies;
+        _lFrequencyClerkFactory = rig.LRigSource.LRigSourceFactory;
         _lFrequencyClerkAudit = rig.LRigAudit;
         _lFrequencyClerkLanguages = languages;
         _lFrequencyClerkGate = gate;

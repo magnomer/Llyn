@@ -19,8 +19,8 @@ public sealed class LCourtClerk
         ArgumentNullException.ThrowIfNull(identity);
         ArgumentNullException.ThrowIfNull(chronicle);
         ArgumentNullException.ThrowIfNull(translations);
-        _lCourtClerkCourts = rig.LRigCourts;
-        _lCourtClerkDrafts = rig.LRigDrafts;
+        _lCourtClerkCourts = rig.LRigDraft.LRigDraftCourts;
+        _lCourtClerkDrafts = rig.LRigDraft.LRigDraftDrafts;
         _lCourtClerkEntries = rig.LRigEntries;
         _lCourtClerkIdentity = identity;
         _lCourtClerkChronicle = chronicle;

@@ -1,5 +1,5 @@
 # TInterfacePortrait.cs
-Hash: `857a882955dffc9e`
+Hash: `11a523f8150fe7ed`
 
 ## `internal static partial class TInterface`
 
@@ -60,7 +60,7 @@ It passes the same style id and the same default `note` as the entry overload.
 
 ## `internal static Func<long, string> TCourierNoteBuild(string stamp, IReadOnlyList<LEntry> entries)`
 
-Builds the courier's `note` map through `LCourierClerk.LCourierNoteBuild`.
+Builds the courier's `note` map through `LCourierNote.LCourierNoteBuild`.
 It hands over a `LLiverySheet` over the loaded theme, so the ids match a real push.
 
 ## `internal static Task<LReceipt> TCourierSend(LEngine engine, Func<long, LLiveryPage?> page, Func<string, LLiveryLanguage> language)`

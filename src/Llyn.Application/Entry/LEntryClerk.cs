@@ -51,10 +51,10 @@ public sealed class LEntryClerk
         ArgumentNullException.ThrowIfNull(revisions);
         _lEntryClerkVault = rig.LRigVault;
         _lEntryClerkEntries = rig.LRigEntries;
-        _lEntryClerkEtymologies = rig.LRigEtymologies;
+        _lEntryClerkEtymologies = rig.LRigLexicon.LRigLexiconEtymologies;
         _lEntryClerkFrequencies = frequencies;
-        _lEntryClerkNotes = rig.LRigNotes;
-        _lEntryClerkTombstones = rig.LRigTombstones;
+        _lEntryClerkNotes = rig.LRigKeeping.LRigKeepingNotes;
+        _lEntryClerkTombstones = rig.LRigKeeping.LRigKeepingTombstones;
         _lEntryClerkCards = cards;
         _lEntryClerkMeanings = meanings;
         _lEntryClerkVocabulary = vocabulary;

@@ -1,5 +1,5 @@
 # LVocabularyFacade.cs
-Hash: `8a15f6105aee9c44`
+Hash: `f588b01d9090caa8`
 
 ## `public sealed class LVocabularyFacade : LParadigmPort, LSentencePort`
 
@@ -9,9 +9,11 @@ The vocabulary and paradigm calls take the gate first, and the lacuna clerk hold
 The facade stays because the shell calls the engine, and the engine alone holds the gate and the pending fetch.
 It implements the paradigm and sentence ports itself, so Host hands it to Conduct with no outlet between.
 
-## `public LVocabularyFacade(LEngine engine)`
+## `internal LVocabularyFacade(LEngineHearth hearth)`
 
-Stores the engine and its gate, which the facade uses for its vocabulary operations.
+Stores the hearth and its gate.
+It calls no sibling facade, so `LEngine` builds it among the first.
+The gate, the staff and the shared state are read through the hearth.
 
 ## `public IReadOnlyList<LSpeechValue> LEngineSpeechRead(string language)`
 
@@ -32,11 +34,6 @@ The markers already saved under entries written in the language.
 ## `public IReadOnlyList<string> LEngineDependenceRead(string language)`
 
 The roles already saved under entries written in the language.
-
-## `internal void LEngineLanguageImport()`
-
-Every language pack's vocabulary written into the workspace, through the clerk.
-It runs whenever the engine binds to a workspace, under the constructor or the rig apply.
 
 ## `public IReadOnlyList<LParadigmRow> LEngineParadigmScan(long entryId)`
 

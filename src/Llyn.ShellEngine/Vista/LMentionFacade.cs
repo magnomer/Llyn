@@ -7,17 +7,18 @@ namespace Llyn.ShellEngine;
 
 public sealed class LMentionFacade : LMentionPort
 {
-    private readonly LEngine _lMentionFacadeEngine;
+    private readonly LEngineHearth _lMentionFacadeHearth;
     private readonly object _lMentionFacadeGate;
 
-    public LMentionFacade(LEngine engine)
+    internal LMentionFacade(LEngineHearth hearth)
     {
-        ArgumentNullException.ThrowIfNull(engine);
-        _lMentionFacadeEngine = engine;
-        _lMentionFacadeGate = engine.LEngineGate;
+        ArgumentNullException.ThrowIfNull(hearth);
+        _lMentionFacadeHearth = hearth;
+
+        _lMentionFacadeGate = _lMentionFacadeHearth.LEngineGate;
     }
 
-    private LEngineStaff LMentionFacadeStaff => _lMentionFacadeEngine.LEngineStaffHeld;
+    private LEngineStaff LMentionFacadeStaff => _lMentionFacadeHearth.LEngineStaffHeld;
 
     public LMentionResult LEngineMentionFind(long exampleId, int offset)
     {

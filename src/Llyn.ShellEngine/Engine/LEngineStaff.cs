@@ -19,7 +19,7 @@ internal sealed record LEngineStaff(
         Func<LSettings> settings,
         IReadOnlySet<long> retired)
     {
-        LIdentity identity = new(rig.LRigWorkspaces, retired);
+        LIdentity identity = new(rig.LRigKeeping.LRigKeepingWorkspaces, retired);
         LLanguageCache cache = new(rig.LRigLanguages);
         LRevisionClerk revision = new(rig);
         LCatalogStaff catalog = LCatalogStaff.LCatalogStaffBuild(rig, cache, revision);

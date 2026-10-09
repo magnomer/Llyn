@@ -8,7 +8,7 @@ namespace Llyn.Application;
 public sealed class LDiweiClerk
 {
     private readonly LDiweiVault _lDiweiClerkDiwei;
-    private readonly LEntryVault _lDiweiClerkEntries;
+    private readonly LEntryQueryVault _lDiweiClerkEntries;
     private readonly LReflexVault _lDiweiClerkReflexes;
     private readonly LLanguageCache _lDiweiClerkLanguages;
 
@@ -16,9 +16,9 @@ public sealed class LDiweiClerk
     {
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(languages);
-        _lDiweiClerkDiwei = rig.LRigDiwei;
-        _lDiweiClerkEntries = rig.LRigEntries;
-        _lDiweiClerkReflexes = rig.LRigReflexes;
+        _lDiweiClerkDiwei = rig.LRigSound.LRigSoundDiwei;
+        _lDiweiClerkEntries = rig.LRigEntryQuery;
+        _lDiweiClerkReflexes = rig.LRigSound.LRigSoundReflexes;
         _lDiweiClerkLanguages = languages;
     }
 

@@ -1,18 +1,21 @@
 # LCardFacade.cs
-Hash: `ea7d34124c77ecdd`
+Hash: `f5c6221f3767c9f1`
 
-## `public sealed class LCardFacade : LCardPort, LTagPort, LRegisterPort`
+## `public sealed class LCardFacade : LCardPort`
 
-The engine's facade for cards, over Meanings, Collocations, Tags, Registers and Translations.
+The engine's facade for cards, over Meanings, Collocations and Translations.
 A call that reaches a clerk takes the gate and hands the work to the clerk owning the rows.
 The facade stays because the shell calls the engine, and the engine alone holds the gate and the observers.
 Which side an id names arrives as an `LOwner` rather than in the method's name.
 Only an Entry holds Meanings, so any other side is refused here.
-It implements the card, tag and register ports itself, so Host hands it to Conduct with no outlet between.
+Tags and Registers live in `LCatalogFacade`, beside favorites.
+It implements the card port itself, so Host hands it to Conduct with no outlet between.
 
-## `public LCardFacade(LEngine engine)`
+## `internal LCardFacade(LEngineHearth hearth, LPronunciationFacade pronunciation, LSettingsFacade settings, LVistaRowFacade row)`
 
-Stores the engine and its shared gate for this facade.
+Stores the hearth, its gate and the sibling facades it calls, all built by `LEngine` before this one.
+The gate, the staff and the shared state are read through the hearth.
+It takes its siblings rather than the engine, so it names only the facades it uses.
 
 ## `public IReadOnlyList<LMeaning> LEngineMeaningRead(long ownerId, LOwner owner)`
 
@@ -31,49 +34,6 @@ The Meanings a sense menu offers for the linked Mention under a sentence field's
 The held draft finds the Mention first, then its Entry's Meanings are read in reading order.
 No linked Mention under the selection answers null, so no menu opens.
 
-## `internal IReadOnlyList<LTag> LEngineTagRead()`
-
-Reads every Tag the workspace holds, once each, in alphabetical order.
-
-## `public IReadOnlyList<LTag> LEngineTagFind(string query, LCatalogOrder order)`
-
-The stored Tags answering `query`, in `order`, as the taxonomy vista lists them.
-
-## `public LTagOffer LEngineTagFind(LTenure held, long card, string text)`
-
-The stored Tags a card's tag field offers for the text it keeps.
-Those the held draft's card already shows are left out.
-The draft is read before the gate is taken, as the tenure guards itself.
-
-## `public IReadOnlyList<LCatalogTag> LEngineTagFind(LVista vista)`
-
-The tags the taxonomy panel's vista lists, with the query and order read off the vista.
-The vista's filter hides languages from the entries of the chosen tag, not tags, so it is not applied here.
-A vista whose chosen tag no longer answers is deselected.
-
-## `public LTag LEngineTagCreate(string text)`
-
-The tag clerk's create, then the tag bulletin raised outside the gate.
-The catalog is announced so every panel listing Tags shows the new row.
-
-## `public LRegisterOffer LEngineRegisterFind(LTenure held, long card, string text)`
-
-The stored Registers a card's register field offers for the text it keeps.
-Those the held draft's card already links are left out.
-The language whose pack seeds the shelf is the held draft's own, so no caller passes one.
-The draft is read before the gate is taken, as the tenure guards itself.
-
-## `public IReadOnlyList<LCatalogRegister> LEngineRegisterFind(LVista vista)`
-
-The shelf the tenor panel's vista lists, with the query and order read off the vista.
-The vista's filter hides languages from the entries of the chosen Register, not Registers, so it is not applied here.
-A vista whose chosen Register no longer answers is deselected.
-
-## `public LRegister LEngineRegisterCreate(string name)`
-
-The register clerk's create, then the register bulletin raised outside the gate.
-The announcement is raised after the lock is released, so the panel lists and selects the row.
-
 ## `public LTranslationOffer LEngineTranslationFind(LTenure held, string text, string word, bool chosen)`
 
 The offer a typed translation opens, ready for the dropdown under a card.
@@ -81,6 +41,7 @@ The search is built into vista rows, and the held draft's own stored Entry is dr
 So it joins the numbering first, and its twin keeps the number the catalog shows.
 A card may not translate its own Entry, so that row is never offered.
 The fresh Entry languages come from the languages the workspace holds, with the draft's own last.
+Those are read from the language clerk under the gate, so the card facade needs no language facade.
 
 ## `public IReadOnlyList<LVistaRow> LEngineProspectFind(LTenure held, string word)`
 

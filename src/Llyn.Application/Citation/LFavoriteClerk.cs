@@ -11,7 +11,7 @@ public sealed class LFavoriteClerk
     public LFavoriteClerk(LRig rig)
     {
         ArgumentNullException.ThrowIfNull(rig);
-        _lFavoriteClerkFavorites = rig.LRigFavorites;
+        _lFavoriteClerkFavorites = rig.LRigKeeping.LRigKeepingFavorites;
     }
 
     public IReadOnlyList<LCatalogFavorite> LFavoriteClerkFind(string query, LCatalogOrder order)

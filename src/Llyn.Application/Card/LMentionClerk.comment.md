@@ -1,12 +1,12 @@
 # LMentionClerk.cs
-Hash: `c1c5b3bade528a93`
+Hash: `0d1e655b9b9f5135`
 
 ## `public sealed class LMentionClerk`
 
 Answers "what may this word mean" for a clicked position of a sentence.
 Also reads what a chip line shows for the Mentions a sentence already holds.
 Nothing here writes, and linking goes through `LRequestMentionAddition` on an open draft.
-It runs over the entry, example, meaning and translation ports of one rig and the language cache beside it.
+It runs over the entry query, example, meaning and translation ports of one rig and the language cache beside it.
 The engine calls it under its own gate.
 
 ## `private const int LMentionClerkReach = 8;`
@@ -34,7 +34,7 @@ A row that is gone or quotes no Example answers the bare offset with no word.
 
 The find over a word clicked in the etymology prose of the reading view.
 The prose is the `shown` entry's etymology text, read in that entry's language.
-The prose draws no Mentions, so the find reads it as holding none.
+The find passes no Mentions, so a click always resolves the word under it.
 
 ## `public LMentionResult LMentionClerkFind(string text, string language, int offset, IReadOnlyList<LMention> mentions)`
 
@@ -108,7 +108,7 @@ Adds the lines of every row on the given cards and their child cards.
 
 The title of one Meaning, its definition when the title is empty, empty when the Meaning is gone.
 
-## `private static (int LMentionClerkOffset, int LMentionClerkLength) LMentionClerkScan(LEntryVault entries, List<Rune> runes, string language, int offset)`
+## `private static (int LMentionClerkOffset, int LMentionClerkLength) LMentionClerkScan(LEntryQueryVault entries, List<Rune> runes, string language, int offset)`
 
 The longest headword of the language that begins at or before the offset and covers it.
 A window around the offset is read, and every headword the window contains is fetched in one query.

@@ -1,7 +1,7 @@
 # LEntryArchive.cs
-Hash: `7dcd83c47aabc1be`
+Hash: `16339facb62d76a7`
 
-## `public sealed partial class LEntryArchive : LEntryVault`
+## `public sealed class LEntryArchive : LEntryVault`
 
 It is the adapter of `LEntryVault`, the port the engine holds.
 
@@ -95,12 +95,13 @@ It carries away every association row hanging from the entry, its meanings, or i
 The independent Examples, Tags, Situations, References, and Authors those associations pointed at are left standing.
 Only the rows linking them to this entry disappear.
 
-## Inline notes
+## `internal static LEntry LEntryRowRead(SqliteDataReader reader)`
 
-### `private static LEntry LEntryRowRead(SqliteDataReader reader)`
-
-The entry row shape every read here selects, in one place.
+The entry row shape every read selects, in one place.
+`LEntryQueryArchive` reads its rows through it too.
 A single read and a find would otherwise drift apart column by column.
+
+## Inline notes
 
 ### `bool declared = speech.LSpeechValueId is > 0;`
 

@@ -7,13 +7,13 @@ namespace Llyn.Application;
 public sealed class LStemClerk
 {
     private readonly LStemVault _lStemClerkStems;
-    private readonly LEntryVault _lStemClerkEntries;
+    private readonly LEntryQueryVault _lStemClerkEntries;
 
     public LStemClerk(LRig rig)
     {
         ArgumentNullException.ThrowIfNull(rig);
-        _lStemClerkStems = rig.LRigStems;
-        _lStemClerkEntries = rig.LRigEntries;
+        _lStemClerkStems = rig.LRigSound.LRigSoundStems;
+        _lStemClerkEntries = rig.LRigEntryQuery;
     }
 
     public IReadOnlyList<LStem> LStemClerkRead(string language)

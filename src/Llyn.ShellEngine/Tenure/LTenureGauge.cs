@@ -35,9 +35,9 @@ public sealed class LTenureGauge
     public LTenureState LTenureGaugeRead()
     {
         long revision;
-        lock (_lEngine.LEngineGate)
+        lock (_lEngine.LEngineHearth.LEngineGate)
         {
-            revision = _lEngine.LEngineRevision;
+            revision = _lEngine.LEngineHearth.LEngineRevision;
         }
 
         bool halted;
@@ -100,6 +100,6 @@ public sealed class LTenureGauge
             _lTenureGaugeLast = state;
         }
 
-        _lEngine.LEngineBulletinRaise(LSubject.LSubjectTenure, _lTenureGaugeId);
+        _lEngine.LEngineHearth.LEngineBulletinRaise(LSubject.LSubjectTenure, _lTenureGaugeId);
     }
 }

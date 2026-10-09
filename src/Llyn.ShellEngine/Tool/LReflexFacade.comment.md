@@ -1,14 +1,16 @@
 # LReflexFacade.cs
-Hash: `3658c47c750cc452`
+Hash: `c266d34f49d40dcd`
 
 ## `public sealed class LReflexFacade : LReflexPort`
 
 The engine's facade for reflex, wrapping the clerk's anchors and rules, the fetch the clerk holds, row guises and tones.
 It implements the reflex port itself, so Host hands it to Conduct with no outlet between.
 
-## `public LReflexFacade(LEngine engine)`
+## `internal LReflexFacade(LEngineHearth hearth, LFanqieFacade fanqie, LSettingsFacade settings)`
 
-The facade bound to its engine and the engine's gate.
+Stores the hearth, its gate and the sibling facades it calls, all built by `LEngine` before this one.
+The gate, the staff and the shared state are read through the hearth.
+It takes its siblings rather than the engine, so it names only the facades it uses.
 
 ## `public IReadOnlyList<LAnchorRow> LEngineAnchorScan(long entryId, IReadOnlyList<long> anchors, string language, string reflex, string tone)`
 
@@ -64,6 +66,7 @@ Whether a reflex fetch is pending for the entry.
 ## `public IReadOnlyList<LDescent> LEngineDescentRead(string language)`
 
 The tone classes the pack of a language declares, or none for a blank language.
+The pack is loaded through the language clerk, taken under the gate and called outside it.
 
 ## `private IReadOnlyList<LFanqieRow> LEngineAnchorRead(long entryId)`
 

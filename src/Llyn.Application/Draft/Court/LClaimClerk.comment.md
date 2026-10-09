@@ -1,5 +1,5 @@
 # LClaimClerk.cs
-Hash: `ec49d3daed796438`
+Hash: `4c508f427f5f59e8`
 
 ## `public sealed class LClaimClerk`
 
@@ -121,7 +121,7 @@ A chip left carrying it would be stored as a translation of a record that never 
 Clears what both archives keep forever, before anything counts what is left.
 The half-written pending files go, and a draft file of another version goes with its claim and its court rows.
 A claim whose draft file is gone goes too, since nothing will ever ask about that draft again.
-The engine then walks the drafts left and cancels the ones already saved.
+The engine then walks the drafts left and cancels the ones holding nothing unsaved.
 
 ## `private LDraft? LDraftAuthorUpdate(LDraft? draft)`
 

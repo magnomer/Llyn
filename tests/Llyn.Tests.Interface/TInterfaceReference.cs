@@ -7,8 +7,9 @@ internal static partial class TInterface
 {
     internal static LAuthor TEngineAuthorCreate(this LEngine engine, LAuthor author)
     {
-        LAuthor created = engine.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffAuthor.LAuthorClerkCreate(author);
-        engine.LEngineBulletinRaise(LSubject.LSubjectAuthor, created.LAuthorId);
+        LAuthor created = engine.LEngineHearth.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffAuthor
+            .LAuthorClerkCreate(author);
+        engine.LEngineHearth.LEngineBulletinRaise(LSubject.LSubjectAuthor, created.LAuthorId);
         return created;
     }
 
@@ -16,7 +17,7 @@ internal static partial class TInterface
         engine.LEngineAuthor.LEngineAuthorRead(id);
 
     internal static IReadOnlyList<LAuthor> TEngineAuthorFind(this LEngine engine, string query) =>
-        engine.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffAuthor.LAuthorClerkFind(query);
+        engine.LEngineHearth.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffAuthor.LAuthorClerkFind(query);
 
     internal static IReadOnlyList<LCatalogAuthor> TEngineAuthorFind(
         this LEngine engine,
@@ -25,7 +26,7 @@ internal static partial class TInterface
         engine.LEngineAuthor.LEngineAuthorFind(query, order);
 
     internal static IReadOnlyList<LFellow> TEngineFellowFind(this LEngine engine, long authorId) =>
-        engine.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffAuthor.LFellowFind(authorId);
+        engine.LEngineHearth.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffAuthor.LFellowFind(authorId);
 
     internal static (string LUnionDropped, string LUnionKept) TEngineUnionRead(
         this LEngine engine,
@@ -54,8 +55,8 @@ internal static partial class TInterface
 
     internal static void TEngineAuthorUpdate(this LEngine engine, LAuthor author)
     {
-        engine.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffAuthor.LAuthorClerkUpdate(author);
-        engine.LEngineBulletinRaise(LSubject.LSubjectAuthor, author.LAuthorId);
+        engine.LEngineHearth.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffAuthor.LAuthorClerkUpdate(author);
+        engine.LEngineHearth.LEngineBulletinRaise(LSubject.LSubjectAuthor, author.LAuthorId);
     }
 
     internal static void TEngineAuthorDelete(this LEngine engine, long id, bool detach)
@@ -67,13 +68,14 @@ internal static partial class TInterface
         engine.LEngineReference.LEngineReferenceCommit(id);
 
     internal static LReference TEngineReferenceCreate(this LEngine engine, LReference reference) =>
-        engine.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffReference.LReferenceClerkCreate(reference);
+        engine.LEngineHearth.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffReference
+            .LReferenceClerkCreate(reference);
 
     internal static LDraft TEngineReferenceStart(this LEngine engine, string origin, long? referenceId) =>
         engine.LEngineReference.LEngineReferenceStart(origin, referenceId);
 
     internal static IReadOnlyList<LReference> TEngineReferenceRead(this LEngine engine) =>
-        engine.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffReference.LReferenceClerkRead();
+        engine.LEngineHearth.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffReference.LReferenceClerkRead();
 
     internal static LReference? TEngineReferenceRead(this LEngine engine, long id) =>
         engine.LEngineReference.LEngineReferenceRead(id);

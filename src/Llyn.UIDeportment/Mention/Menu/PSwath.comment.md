@@ -1,12 +1,12 @@
 # PSwath.cs
-Hash: `935bde3a52663e04`
+Hash: `584dc17c6a493ecd`
 
 ## `public sealed class PSwath : FrameworkElement`
 
 The band of text a reader drags across in the reading view, highlighted so it can be copied.
 It runs from wherever the press landed to wherever the pointer is, across everything between.
 A text block selects nothing on its own, and one block's selection could never reach the next.
-So the band is kept here as two positions in a list of page items, and drawn over the page.
+So the band is kept here as two positions in `QSwathText`'s list of page items, and drawn over the page.
 A picture, video, glyph shape or tone contour is an item too, taken whole or not at all.
 Copying today takes only the text, and a richer export will read the same band later.
 It lies over the page inside the scroll viewer, so its highlight scrolls and clips with the text.
@@ -14,6 +14,11 @@ It never takes a hit, so every click still lands on the text and buttons under i
 The drag that draws the band covers the press, the move that opens it, the release and the cursor.
 A press on a button, link, text box, star row, slider or scroll bar is left to that control.
 A drag past the viewer's top or bottom scrolls it a step at a time, so the band grows off-screen.
+
+### `internal const double PSwathRowSlack = 4;`
+
+How far two edges may sit apart vertically and still count as one row.
+It is internal so `QSwathText` joins copied rows by the same measure the band is drawn by.
 
 ### `public PSwath()`
 
@@ -27,28 +32,7 @@ The viewer's tunnelling mouse events are listened to, so a press anywhere on the
 ### `internal void PSwathClear()`
 
 A press, a new entry and an emptied view each drop the band.
-The block list is dropped with it, since the page it described is about to change.
-
-### `private void PSwathScan(DependencyObject node)`
-
-Every visible text block, picture, video, glyph shape and tone contour under the viewer is an item.
-Buttons are entered, since chip text is part of the page even though a press on it stays a click.
-A video is one item, so the controls inside it are not walked.
-A video is known as a surface that `QScreen` drives, since Deportment never names the Veneer's screen type.
-A collapsed section is skipped whole.
-
-### `private PSwathSeam? PSwathFind(Point point)`
-
-The item nearest the point wins, vertical distance counting far more than horizontal.
-An item that is not text carries no position and is simply in the band or out of it.
-A point above or left of a block maps to its start, below or right of it to its end.
-A point inside it asks the block for the position under the pointer.
-A block asked while its layout is stale refuses, and its start stands in.
-
-### `private static string PSwathSeparatorRead(Rect previous, Rect bound)`
-
-Blocks on one row read as one line, touching blocks with nothing between, spaced ones with a space.
-A block on a lower row starts a new line.
+The item list in `QSwathText` is dropped with it, since the page it described is about to change.
 
 ### `protected override void OnRender(DrawingContext context)`
 

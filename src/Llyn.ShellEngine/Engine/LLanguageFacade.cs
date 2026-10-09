@@ -8,17 +8,38 @@ using Llyn.Core;
 
 namespace Llyn.ShellEngine;
 
-public sealed class LLanguageFacade : LGlyphPort, LScriptPort, LLanguagePort
+public sealed class LLanguageFacade : LGlyphPort, LLanguagePort
 {
-    private readonly LEngine _lLanguageFacadeEngine;
+    private readonly LEngineHearth _lLanguageFacadeHearth;
+    private readonly LFanqieFacade _lLanguageFacadeFanqie;
+    private readonly LReflexFacade _lLanguageFacadeReflex;
+    private readonly LScriptFacade _lLanguageFacadeScript;
+    private readonly LSettingsFacade _lLanguageFacadeSettings;
+    private readonly LVocabularyFacade _lLanguageFacadeVocabulary;
     private readonly object _lLanguageFacadeGate;
     private readonly SemaphoreSlim _lLanguageFacadeEnsign = new(1, 1);
 
-    public LLanguageFacade(LEngine engine)
+    internal LLanguageFacade(
+        LEngineHearth hearth,
+        LFanqieFacade fanqie,
+        LReflexFacade reflex,
+        LScriptFacade script,
+        LSettingsFacade settings,
+        LVocabularyFacade vocabulary)
     {
-        ArgumentNullException.ThrowIfNull(engine);
-        _lLanguageFacadeEngine = engine;
-        _lLanguageFacadeGate = engine.LEngineGate;
+        ArgumentNullException.ThrowIfNull(hearth);
+        ArgumentNullException.ThrowIfNull(fanqie);
+        ArgumentNullException.ThrowIfNull(reflex);
+        ArgumentNullException.ThrowIfNull(script);
+        ArgumentNullException.ThrowIfNull(settings);
+        ArgumentNullException.ThrowIfNull(vocabulary);
+        _lLanguageFacadeHearth = hearth;
+        _lLanguageFacadeFanqie = fanqie;
+        _lLanguageFacadeReflex = reflex;
+        _lLanguageFacadeScript = script;
+        _lLanguageFacadeSettings = settings;
+        _lLanguageFacadeVocabulary = vocabulary;
+        _lLanguageFacadeGate = _lLanguageFacadeHearth.LEngineGate;
     }
 
     public IReadOnlyList<string> LEngineLanguageRead()
@@ -31,7 +52,7 @@ public sealed class LLanguageFacade : LGlyphPort, LScriptPort, LLanguagePort
 
     public string LEngineGlossRead()
     {
-        string gloss = _lLanguageFacadeEngine.LEngineSettingsRead().LSettingsGloss;
+        string gloss = _lLanguageFacadeHearth.LEngineSettingsRead().LSettingsGloss;
         IReadOnlyList<string> languages = LEngineLanguageRead();
         if (languages.Contains(gloss, StringComparer.Ordinal))
         {
@@ -162,7 +183,7 @@ public sealed class LLanguageFacade : LGlyphPort, LScriptPort, LLanguagePort
 
         string language = draft.LEntryDraftLanguage;
         (bool respelled, string opener, string closer) =
-            _lLanguageFacadeEngine.LEngineSettings.LEngineMarkRead(language);
+            _lLanguageFacadeSettings.LEngineMarkRead(language);
         LLanguageClerk languages;
         lock (_lLanguageFacadeGate)
         {
@@ -239,19 +260,6 @@ public sealed class LLanguageFacade : LGlyphPort, LScriptPort, LLanguagePort
         return languages.LLanguageClerkLoad(language);
     }
 
-    public IReadOnlyList<LScriptStyle> LEngineStyleRead(string language)
-    {
-        lock (_lLanguageFacadeGate)
-        {
-            return LLanguageFacadeStaff.LEngineStaffLanguage.LLanguageStaffScript.LScriptStyleRead(language);
-        }
-    }
-
-    public void LEngineScriptStart(long entryId)
-    {
-        LLanguageFacadeStaff.LEngineStaffLanguage.LLanguageStaffScript.LScriptClerkStart(entryId);
-    }
-
     public IReadOnlyList<LTranscriptionDraft> LEngineTranscriptionRead(LEntryDraft draft)
     {
         LLanguageClerk languages;
@@ -307,37 +315,11 @@ public sealed class LLanguageFacade : LGlyphPort, LScriptPort, LLanguagePort
 
     public void LEngineSoundStart(long entryId)
     {
-        _lLanguageFacadeEngine.LEngineReflex.LEngineReflexStart(entryId);
-        _lLanguageFacadeEngine.LEngineVocabulary.LEngineInflectionStart(entryId);
-        LEngineScriptStart(entryId);
-        _lLanguageFacadeEngine.LEngineFanqie.LEngineFanqieStart(entryId);
+        _lLanguageFacadeReflex.LEngineReflexStart(entryId);
+        _lLanguageFacadeVocabulary.LEngineInflectionStart(entryId);
+        _lLanguageFacadeScript.LEngineScriptStart(entryId);
+        _lLanguageFacadeFanqie.LEngineFanqieStart(entryId);
     }
 
-    public bool LEngineStyleCheck(string language)
-    {
-        return LEngineStyleRead(language).Count > 0;
-    }
-
-    public void LEngineScriptRebuild(long entryId)
-    {
-        LLanguageFacadeStaff.LEngineStaffLanguage.LLanguageStaffScript.LScriptClerkRebuild(entryId);
-    }
-
-    public IReadOnlyList<LScriptGroup> LEngineScriptDivide(long entryId)
-    {
-        return LLanguageFacadeStaff.LEngineStaffLanguage.LLanguageStaffScript.LScriptClerkDivide(entryId);
-    }
-
-    public IReadOnlyList<LScriptGroup> LEngineScriptRead(long entryId)
-    {
-        LEngineScriptStart(entryId);
-        return LEngineScriptDivide(entryId);
-    }
-
-    public bool LEngineScriptCheck(long entryId)
-    {
-        return LLanguageFacadeStaff.LEngineStaffLanguage.LLanguageStaffScript.LScriptClerkCheck(entryId);
-    }
-
-    private LEngineStaff LLanguageFacadeStaff => _lLanguageFacadeEngine.LEngineStaffHeld;
+    private LEngineStaff LLanguageFacadeStaff => _lLanguageFacadeHearth.LEngineStaffHeld;
 }

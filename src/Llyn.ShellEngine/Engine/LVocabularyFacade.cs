@@ -7,14 +7,15 @@ namespace Llyn.ShellEngine;
 
 public sealed class LVocabularyFacade : LParadigmPort, LSentencePort
 {
-    private readonly LEngine _lVocabularyFacadeEngine;
+    private readonly LEngineHearth _lVocabularyFacadeHearth;
     private readonly object _lVocabularyFacadeGate;
 
-    public LVocabularyFacade(LEngine engine)
+    internal LVocabularyFacade(LEngineHearth hearth)
     {
-        ArgumentNullException.ThrowIfNull(engine);
-        _lVocabularyFacadeEngine = engine;
-        _lVocabularyFacadeGate = engine.LEngineGate;
+        ArgumentNullException.ThrowIfNull(hearth);
+        _lVocabularyFacadeHearth = hearth;
+
+        _lVocabularyFacadeGate = _lVocabularyFacadeHearth.LEngineGate;
     }
 
     public IReadOnlyList<LSpeechValue> LEngineSpeechRead(string language)
@@ -58,11 +59,6 @@ public sealed class LVocabularyFacade : LParadigmPort, LSentencePort
         }
     }
 
-    internal void LEngineLanguageImport()
-    {
-        LVocabularyFacadeStaff.LEngineStaffLanguage.LLanguageStaffVocabulary.LLanguageImport();
-    }
-
     public IReadOnlyList<LParadigmRow> LEngineParadigmScan(long entryId)
     {
         lock (_lVocabularyFacadeGate)
@@ -93,5 +89,5 @@ public sealed class LVocabularyFacade : LParadigmPort, LSentencePort
     {
         LVocabularyFacadeStaff.LEngineStaffLanguage.LLanguageStaffLacuna.LLacunaClerkStart(entryId);
     }
-    private LEngineStaff LVocabularyFacadeStaff => _lVocabularyFacadeEngine.LEngineStaffHeld;
+    private LEngineStaff LVocabularyFacadeStaff => _lVocabularyFacadeHearth.LEngineStaffHeld;
 }

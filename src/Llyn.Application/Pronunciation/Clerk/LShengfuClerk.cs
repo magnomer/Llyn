@@ -30,10 +30,10 @@ public sealed class LShengfuClerk
         ArgumentNullException.ThrowIfNull(gate);
         ArgumentNullException.ThrowIfNull(raise);
         _lShengfuClerkEntries = rig.LRigEntries;
-        _lShengfuClerkShengfu = rig.LRigShengfu;
-        _lShengfuClerkStems = rig.LRigStems;
+        _lShengfuClerkShengfu = rig.LRigSound.LRigSoundShengfu;
+        _lShengfuClerkStems = rig.LRigSound.LRigSoundStems;
         _lShengfuClerkPacks = rig.LRigLanguages;
-        _lShengfuClerkSource = rig.LRigShengfuSource;
+        _lShengfuClerkSource = rig.LRigSource.LRigSourceShengfu;
         _lShengfuClerkClock = rig.LRigClock;
         _lShengfuClerkAudit = rig.LRigAudit;
         _lShengfuClerkLanguages = languages;

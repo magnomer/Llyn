@@ -1,5 +1,5 @@
 # LTenureGauge.cs
-Hash: `117e626f32623ef9`
+Hash: `05df6162da764173`
 
 ## `public sealed class LTenureGauge`
 

@@ -7,23 +7,24 @@ namespace Llyn.ShellEngine;
 
 internal sealed class LSettingsFacade
 {
-    private readonly LEngine _lSettingsFacadeEngine;
+    private readonly LEngineHearth _lSettingsFacadeHearth;
     private readonly object _lSettingsFacadeGate;
 
-    private LEngineStaff LSettingsFacadeStaff => _lSettingsFacadeEngine.LEngineStaffHeld;
+    private LEngineStaff LSettingsFacadeStaff => _lSettingsFacadeHearth.LEngineStaffHeld;
 
-    public LSettingsFacade(LEngine engine)
+    public LSettingsFacade(LEngineHearth hearth)
     {
-        ArgumentNullException.ThrowIfNull(engine);
-        _lSettingsFacadeEngine = engine;
-        _lSettingsFacadeGate = engine.LEngineGate;
+        ArgumentNullException.ThrowIfNull(hearth);
+        _lSettingsFacadeHearth = hearth;
+
+        _lSettingsFacadeGate = _lSettingsFacadeHearth.LEngineGate;
     }
 
     internal event Action? LEngineFoldChanged;
 
     internal LSettings LEngineSettingsRead()
     {
-        return _lSettingsFacadeEngine.LEngineSettingsRead();
+        return _lSettingsFacadeHearth.LEngineSettingsRead();
     }
 
     internal bool LEnginePostureLoad(string name, out LPostureState? state)
@@ -89,7 +90,7 @@ internal sealed class LSettingsFacade
         ArgumentException.ThrowIfNullOrWhiteSpace(language);
         if (LEngineSettingsChange(settings => settings with { LSettingsLocalization = language }))
         {
-            _lSettingsFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectSettings, 0);
+            _lSettingsFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectSettings, 0);
         }
     }
 
@@ -97,7 +98,7 @@ internal sealed class LSettingsFacade
     {
         if (LEngineSettingsChange(settings => settings with { LSettingsRespelled = respelled }))
         {
-            _lSettingsFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectSettings, 0);
+            _lSettingsFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectSettings, 0);
         }
     }
 
@@ -106,7 +107,7 @@ internal sealed class LSettingsFacade
         lock (_lSettingsFacadeGate)
         {
             return LSettingsFacadeStaff.LEngineStaffLanguage.LLanguageStaffLanguage.LLanguageRespellingCheck(
-                language, _lSettingsFacadeEngine.LEngineSettingsHeld.LSettingsRespelled);
+                language, _lSettingsFacadeHearth.LEngineSettingsHeld.LSettingsRespelled);
         }
     }
 
@@ -115,7 +116,7 @@ internal sealed class LSettingsFacade
         lock (_lSettingsFacadeGate)
         {
             return LSettingsFacadeStaff.LEngineStaffLanguage.LLanguageStaffLanguage.LLanguagePronunciationRead(
-                draft, _lSettingsFacadeEngine.LEngineSettingsHeld.LSettingsRespelled);
+                draft, _lSettingsFacadeHearth.LEngineSettingsHeld.LSettingsRespelled);
         }
     }
     internal bool LEnginePhonemicCheck(string language)
@@ -137,7 +138,7 @@ internal sealed class LSettingsFacade
     {
         if (LEngineSettingsChange(settings => settings with { LSettingsEpithet = epithet }))
         {
-            _lSettingsFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectSettings, 0);
+            _lSettingsFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectSettings, 0);
         }
     }
 
@@ -164,7 +165,7 @@ internal sealed class LSettingsFacade
     {
         if (LEngineSettingsChange(settings => settings with { LSettingsFrequency = frequency }))
         {
-            _lSettingsFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectSettings, 0);
+            _lSettingsFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectSettings, 0);
         }
     }
 
@@ -187,7 +188,7 @@ internal sealed class LSettingsFacade
 
         if (changed)
         {
-            _lSettingsFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectSettings, 0);
+            _lSettingsFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectSettings, 0);
         }
     }
 
@@ -195,21 +196,21 @@ internal sealed class LSettingsFacade
     {
         lock (_lSettingsFacadeGate)
         {
-            LSettings held = _lSettingsFacadeEngine.LEngineSettingsHeld;
+            LSettings held = _lSettingsFacadeHearth.LEngineSettingsHeld;
             LSettings changed = change(held);
             if (changed == held)
             {
                 return false;
             }
 
-            _lSettingsFacadeEngine.LEngineSettingsHeld = changed;
+            _lSettingsFacadeHearth.LEngineSettingsHeld = changed;
             try
             {
                 LSettingsFacadeStaff.LEngineStaffWorkspace.LWorkspaceStaffWorkspace.LWorkspaceSettingsSave(changed);
             }
             catch
             {
-                _lSettingsFacadeEngine.LEngineSettingsHeld = held;
+                _lSettingsFacadeHearth.LEngineSettingsHeld = held;
                 throw;
             }
 

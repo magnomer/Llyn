@@ -110,6 +110,7 @@ internal static class TAuditNameSetting
         "TAuditRegistry.cs",
         "TAuditScope.cs",
         "TAuditSource.cs",
+        "TAuditVerbRegistry.cs",
         "TSpecimen.cs",
         "TViolation.cs",
     ];

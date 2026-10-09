@@ -50,12 +50,13 @@ public sealed class TVaultEntry
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LEntryVault entries = TInterface.TEntryVaultCreate(workspace.TWorkspaceDatabase);
+        LEntryQueryVault queries = TInterface.TEntryQueryCreate(workspace.TWorkspaceDatabase);
 
         entries.TEntryCreate(TInterface.TEntryCreate(0, "kindle", "en", 0, null, null), [], []);
         entries.TEntryCreate(TInterface.TEntryCreate(0, "ember", "en", 0, null, null), [], []);
 
-        Assert.Equal("kindle", Assert.Single(entries.TEntryFind("kind")).LEntryHeadword);
-        Assert.Equal(2, entries.TEntryFind(string.Empty).Count);
+        Assert.Equal("kindle", Assert.Single(queries.TEntryFind("kind")).LEntryHeadword);
+        Assert.Equal(2, queries.TEntryFind(string.Empty).Count);
         Assert.Null(entries.TEntryRead(9999));
     }
 }

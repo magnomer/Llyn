@@ -8,7 +8,8 @@ public sealed class TWorkspaceClerk
     [Fact]
     public void WorkspaceRescueCreate_DoctorRefuses_ThrowsBeforeAnythingIsRead()
     {
-        LRig rig = TRigFake.TRigFakeBuild() with { LRigDoctor = new TDoctorFake() };
+        LRig fake = TRigFake.TRigFakeBuild();
+        LRig rig = fake with { LRigKeeping = fake.LRigKeeping with { LRigKeepingDoctor = new TDoctorFake() } };
 
         Assert.Throws<InvalidOperationException>(() => TInterface.TWorkspaceRescueCreate(rig));
     }

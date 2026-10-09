@@ -14,8 +14,8 @@ public sealed class LRevisionClerk
     {
         ArgumentNullException.ThrowIfNull(rig);
         _lRevisionClerkVault = rig.LRigVault;
-        _lRevisionClerkRevisions = rig.LRigRevisions;
-        _lRevisionClerkWorkspaces = rig.LRigWorkspaces;
+        _lRevisionClerkRevisions = rig.LRigKeeping.LRigKeepingRevisions;
+        _lRevisionClerkWorkspaces = rig.LRigKeeping.LRigKeepingWorkspaces;
     }
 
     public LRevision LRevisionClerkRecord(IReadOnlyList<LRevisionDelta> changes)

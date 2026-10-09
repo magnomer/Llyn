@@ -26,7 +26,7 @@ internal sealed class LTenureQueue
     internal LTenureQueue(LEngine engine, long id, object gate, object turn, Action observer)
     {
         _lTenureQueueEngine = engine;
-        _lTenureQueueChronicle = engine.LEngineStaffHeld.LEngineStaffClaim.LClaimStaffChronicle;
+        _lTenureQueueChronicle = engine.LEngineHearth.LEngineStaffHeld.LEngineStaffClaim.LClaimStaffChronicle;
         _lTenureQueueId = id;
         _lTenureQueueGate = gate;
         _lTenureQueueTurn = turn;
@@ -121,7 +121,7 @@ internal sealed class LTenureQueue
 
         if (refused)
         {
-            _lTenureQueueEngine.LEngineBulletinRaise(LSubject.LSubjectDraft, _lTenureQueueId);
+            _lTenureQueueEngine.LEngineHearth.LEngineBulletinRaise(LSubject.LSubjectDraft, _lTenureQueueId);
         }
 
         _lTenureQueueObserver();

@@ -1,8 +1,8 @@
 # TInterfaceReference.cs
-Hash: `c18b2399adbf7287`
+Hash: `33defb3a50ab83aa`
 
 ## `internal static partial class TInterface`
 
 The relays for the engine operations over references and their authors.
 That is the reference rows an owner cites, the authors behind them, and the oeuvre search.
-Each relay is transparent and carries no test logic of its own.
+Each relay is transparent, except that the author create and update also raise the author bulletin.

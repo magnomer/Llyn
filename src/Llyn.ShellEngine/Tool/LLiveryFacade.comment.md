@@ -1,18 +1,21 @@
 # LLiveryFacade.cs
-Hash: `634375f6a5a022a5`
+Hash: `cdf3779ad6ae7205`
 
 ## `internal sealed class LLiveryFacade`
 
 `LEngine` builds it once and holds it as `LEngineLivery`.
 `LCourierFacade.LEngineCourierSend` hands both its reads to the Joplin push.
 
-## `public LLiveryFacade(LEngine engine)`
+## `public LLiveryFacade(LEngineHearth hearth, LCardFacade card, LCatalogFacade catalog, LEntryFacade entry, LFanqieFacade fanqie, LLanguageFacade language, LReferenceFacade reference, LReflexFacade reflex, LScriptFacade script, LSettingsFacade settings, LVocabularyFacade vocabulary)`
 
-Stores the engine, whose facades and staff it reads on each call.
+Stores the hearth and the sibling facades it calls, all built by `LEngine` before this one.
+The gate, the staff and the shared state are read through the hearth.
+It takes its siblings rather than the engine, so it names only the facades it uses.
+Reads `LEngineHearth.LEngineStaffHeld` on each call, so a call after a workspace switch reads the new workspace.
 
 ## `private LEngineStaff LLiveryFacadeStaff`
 
-Reads `LEngine.LEngineStaffHeld`, so a call after a workspace switch reads the new workspace.
+Reads `LEngineHearth.LEngineStaffHeld`, so a call after a workspace switch reads the new workspace.
 
 ## `public LLiveryPage? LEngineLiveryRead(long entryId)`
 

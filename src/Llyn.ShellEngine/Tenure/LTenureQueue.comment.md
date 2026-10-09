@@ -1,9 +1,9 @@
 # LTenureQueue.cs
-Hash: `b6e8abb53a3b9e86`
+Hash: `d38a1a407da7b071`
 
 ## `internal sealed class LTenureQueue`
 
-The request pipeline of one tenure, holding the locks, the halt, the end and the apply.
+The request pipeline of one tenure, sharing its locks and owning the halt, the end and the apply.
 It also answers whether the tenure still takes requests, so every check reads one owner.
 It shares the tenure's gate and turn, so a check and the change it allows share one hold.
 The deferred requests and the quiet before their flush belong to `LChronicleClerk`.

@@ -1,5 +1,5 @@
 # TInterfaceTenureObserver.cs
-Hash: `1ddacbf9772b8fea`
+Hash: `67d3fb0c717acc3b`
 
 ## `internal static void TTenureObserverAttach(this LTenure tenure, LSubject subject, Action<LBulletin> observer)`
 

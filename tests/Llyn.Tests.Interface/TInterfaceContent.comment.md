@@ -1,11 +1,11 @@
 # TInterfaceContent.cs
-Hash: `3ad0f31bd1e10148`
+Hash: `b0de03c143c4e362`
 
 ## `internal static partial class TInterface`
 
 The relays for the engine operations over what an entry owns.
 That is meanings, examples, situations, tags, translations, and the rest.
-Each relay is transparent and carries no test logic of its own.
+A relay without its own section is transparent and carries no test logic.
 
 ## `internal static IReadOnlyList<LPronunciationDraft> TEntryPronunciationRead(this LEngine engine, long entryId)`
 
@@ -19,7 +19,7 @@ The inflections of a stored entry as the entry form loads them, in their stored 
 ## `internal static LEntry TEntryInflectionSave(this LEngine engine, long entryId, IReadOnlyList<LInflection> inflections)`
 
 Rewrites the inflections of a stored entry through the entry update.
-The update also regrades each form against its paradigm.
+The update also drops the entry's stored lacunae.
 
 ## `internal static LSpeechValue? TSpeechValueFind(this LEngine engine, string language, string name)`
 

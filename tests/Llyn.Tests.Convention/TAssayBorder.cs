@@ -113,7 +113,7 @@ public sealed class TAssayBorder
             [TAssayPortPath] = TAssayPortText,
             [TAssayHolderPath] = holder,
         };
-        return TAuditBinder.TAuditAssayRun(sources, TAuditBorderWalker.TAuditLingerScan);
+        return TAuditBinder.TAuditAssayRun(sources, TAuditBorderLinger.TAuditLingerScan);
     }
 
     private static string TAssayHolderFormat(string handler, string detach)

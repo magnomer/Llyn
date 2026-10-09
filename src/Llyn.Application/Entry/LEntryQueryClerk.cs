@@ -7,12 +7,12 @@ namespace Llyn.Application;
 
 public sealed class LEntryQueryClerk
 {
-    private readonly LEntryVault _lEntryQueryEntries;
+    private readonly LEntryQueryVault _lEntryQueryEntries;
 
     public LEntryQueryClerk(LRig rig)
     {
         ArgumentNullException.ThrowIfNull(rig);
-        _lEntryQueryEntries = rig.LRigEntries;
+        _lEntryQueryEntries = rig.LRigEntryQuery;
     }
 
     public IReadOnlyList<LEntry> LEntryFind(string query)

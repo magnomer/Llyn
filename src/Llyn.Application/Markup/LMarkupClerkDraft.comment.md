@@ -1,10 +1,10 @@
 # LMarkupClerkDraft.cs
-Hash: `d0c4cfc9f3dad5b3`
+Hash: `083c15ee1c956f17`
 
 ## `public sealed class LMarkupClerkDraft`
 
 One markup entry turned into the entry draft the entry clerk saves.
-Speeches and morphologies are looked up by name in the workspace, and what is not found is omitted.
+Speeches and morphologies are looked up by name in the workspace.
 
 ## `public LMarkupClerkDraft(LRig rig, LMarkupClerkLink link)`
 

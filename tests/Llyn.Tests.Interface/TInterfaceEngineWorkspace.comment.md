@@ -1,5 +1,5 @@
 # TInterfaceEngineWorkspace.cs
-Hash: `90a34438477ade23`
+Hash: `dada680c6ab22495`
 
 ## `internal static class TInterfaceEngineWorkspace`
 
@@ -16,6 +16,6 @@ Builds a rig for `path` through the real factory, then applies it as the bootstr
 Its sources, press, warrant and phonograph are all fakes.
 The clock is set to a `TClockFake`, which reads the real time until a test sets it.
 
-## `internal static LBulletin TBulletinCreate(LSubject subject, long id) => new(subject, id);`
+## `internal static LBulletin TBulletinCreate(LSubject subject, long id)`
 
 Builds a bulletin for `subject` and `id`, so a conduct test can send one to the observers it holds.

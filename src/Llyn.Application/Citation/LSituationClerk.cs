@@ -15,9 +15,9 @@ public sealed class LSituationClerk
     {
         ArgumentNullException.ThrowIfNull(rig);
         _lSituationClerkVault = rig.LRigVault;
-        _lSituationClerkSituations = rig.LRigSituations;
-        _lSituationClerkImages = rig.LRigImages;
-        _lSituationClerkVideos = rig.LRigVideos;
+        _lSituationClerkSituations = rig.LRigContext.LRigContextSituations;
+        _lSituationClerkImages = rig.LRigCitation.LRigCitationImages;
+        _lSituationClerkVideos = rig.LRigCitation.LRigCitationVideos;
     }
 
     public static LSituation LSituationClerkBlank =>

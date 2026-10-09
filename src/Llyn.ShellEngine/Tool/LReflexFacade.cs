@@ -10,14 +10,20 @@ namespace Llyn.ShellEngine;
 
 public sealed class LReflexFacade : LReflexPort
 {
-    private readonly LEngine _lReflexFacadeEngine;
+    private readonly LEngineHearth _lReflexFacadeHearth;
+    private readonly LFanqieFacade _lReflexFacadeFanqie;
+    private readonly LSettingsFacade _lReflexFacadeSettings;
     private readonly object _lReflexFacadeGate;
 
-    public LReflexFacade(LEngine engine)
+    internal LReflexFacade(LEngineHearth hearth, LFanqieFacade fanqie, LSettingsFacade settings)
     {
-        ArgumentNullException.ThrowIfNull(engine);
-        _lReflexFacadeEngine = engine;
-        _lReflexFacadeGate = engine.LEngineGate;
+        ArgumentNullException.ThrowIfNull(hearth);
+        ArgumentNullException.ThrowIfNull(fanqie);
+        ArgumentNullException.ThrowIfNull(settings);
+        _lReflexFacadeHearth = hearth;
+        _lReflexFacadeFanqie = fanqie;
+        _lReflexFacadeSettings = settings;
+        _lReflexFacadeGate = _lReflexFacadeHearth.LEngineGate;
     }
 
     public IReadOnlyList<LAnchorRow> LEngineAnchorScan(
@@ -92,24 +98,33 @@ public sealed class LReflexFacade : LReflexPort
 
     public IReadOnlyList<LDescent> LEngineDescentRead(string language)
     {
-        return string.IsNullOrWhiteSpace(language)
-            ? []
-            : _lReflexFacadeEngine.LEngineLanguage.LEngineLanguageLoad(language).LLanguageDescents;
+        if (string.IsNullOrWhiteSpace(language))
+        {
+            return [];
+        }
+
+        LLanguageClerk languages;
+        lock (_lReflexFacadeGate)
+        {
+            languages = LReflexFacadeStaff.LEngineStaffLanguage.LLanguageStaffLanguage;
+        }
+
+        return languages.LLanguageClerkLoad(language).LLanguageDescents;
     }
 
     private LReflexGuise LEngineGuiseBuild(string reflex, IReadOnlyList<string> folded)
     {
         return new LReflexGuise(
-            _lReflexFacadeEngine.LEngineSettings.LEngineRespellingCheck(reflex),
-            _lReflexFacadeEngine.LEngineSettings.LEnginePhonemicCheck(reflex),
+            _lReflexFacadeSettings.LEngineRespellingCheck(reflex),
+            _lReflexFacadeSettings.LEnginePhonemicCheck(reflex),
             folded.Contains(reflex, StringComparer.Ordinal));
     }
 
     private IReadOnlyList<LFanqieRow> LEngineAnchorRead(long entryId)
     {
-        _lReflexFacadeEngine.LEngineFanqie.LEngineFanqieStart(entryId);
+        _lReflexFacadeFanqie.LEngineFanqieStart(entryId);
         return LReflexFacadeStaff.LEngineStaffLanguage.LLanguageStaffFanqie.LFanqieClerkRead(entryId);
     }
 
-    private LEngineStaff LReflexFacadeStaff => _lReflexFacadeEngine.LEngineStaffHeld;
+    private LEngineStaff LReflexFacadeStaff => _lReflexFacadeHearth.LEngineStaffHeld;
 }

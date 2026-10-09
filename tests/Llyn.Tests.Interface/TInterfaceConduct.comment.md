@@ -1,5 +1,5 @@
 # TInterfaceConduct.cs
-Hash: `255f4b7e20f64257`
+Hash: `cd6f4c8840a234dc`
 
 ## `internal static class TInterfaceConduct`
 
@@ -22,7 +22,7 @@ The draft port is a fake that sweeps nothing, since the fake rig holds no drafts
 
 ## `internal static CAtelier TAtelierFaultCreate(LEngine engine, string member, bool thrown)`
 
-Builds the atelier over every real outlet and facade on `engine`, each wrapped by `TEngineFault` on `member`.
+Builds the atelier over every real port on `engine`, each wrapped by `TEngineFault` on `member`.
 Only the port declaring `member` faults it, so the fault sweep reaches the real engine everywhere else.
 `thrown` picks a throw over a faulted task, as the sweep runs both.
 
@@ -71,7 +71,7 @@ Builds Conduct's atelier over every outlet on a real workspace engine, with `med
 
 Builds an atelier over a fake `settings` port, for the ledger's reads and saves.
 Its draft port answers the sweep and the observer attach and detach.
-The ledger can thus attach without a real engine.
+The ledger can thus attach through a fake draft port.
 
 ## `internal static CAtelier TAtelierCreate(LEngine engine, LSettingsPort settings, LDraftPort drafts)`
 
@@ -152,6 +152,16 @@ Relays a repaint read's failure through the atelier's repaint memory, so a test 
 ## `internal static CLedgerNotice TLedgerNoticeRead(this CAtelier atelier, Exception exception)`
 
 Relays the ledger's notice read over the atelier's own settings port, so a test can read a failure's notice.
+
+## `internal static List<CLedgerState> TLedgerShowRead(CAtelier atelier)`
+
+Attaches a view that keeps every state it is shown, opens the atelier through `TAtelierStubOpen`, and answers that list.
+
+## `internal static LSettingsPort TLedgerPortCreate(Dictionary<string, Func<object?[]?, object?>> answers)`
+
+A fake settings port that answers the ledger's reads for a Korean localization, over any answers the test sets.
+It also answers an empty workspace status and an empty establishment read, so an open shows no failure.
+The ledger facts and the ledger notice facts both build their atelier on it.
 
 ## `internal static CWorkspaceState? TAtelierStateOpen(this CAtelier atelier)`
 

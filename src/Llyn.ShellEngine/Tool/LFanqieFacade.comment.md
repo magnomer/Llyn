@@ -1,5 +1,5 @@
 # LFanqieFacade.cs
-Hash: `f17eaaf838c83e11`
+Hash: `19ca044c7f98d17f`
 
 ## `public sealed class LFanqieFacade : LFanqiePort, LDiweiPort`
 
@@ -7,9 +7,11 @@ The engine's facade for fanqie, wrapping the fanqie, diwei and tally reads of th
 It implements the fanqie and diwei ports itself, so Host hands it to Conduct with no outlet between.
 The vista-shaped finds stay here, since a vista is an engine handle.
 
-## `public LFanqieFacade(LEngine engine)`
+## `internal LFanqieFacade(LEngineHearth hearth, LEntryFacade entry, LSettingsFacade settings, LVistaRowFacade row)`
 
-The facade bound to its engine and the engine's gate.
+Stores the hearth, its gate and the sibling facades it calls, all built by `LEngine` before this one.
+The gate, the staff and the shared state are read through the hearth.
+It takes its siblings rather than the engine, so it names only the facades it uses.
 
 ## `public IReadOnlyList<LFanqieBook> LEngineBookRead(string language)`
 
@@ -22,6 +24,7 @@ Whether the language declares any book.
 ## `public string? LEngineBookFind()`
 
 The first listed language that declares a book, or null.
+The languages are read from the language clerk under the gate, so no language facade is needed.
 
 ## `public bool LEngineBookCheck()`
 
@@ -48,7 +51,7 @@ It starts the phonetic-series fetch too, since one box prints both.
 
 ## `public void LEngineFanqieRebuild(long entryId)`
 
-Fetches every character of the entry again, its series along with its rows.
+Forgets the misses of the entry's characters and fetches them again, its series along with its rows.
 
 ## `public bool LEngineFanqieCheck(long entryId)`
 

@@ -1,5 +1,5 @@
 # LDraftFacade.cs
-Hash: `2aa7ffa52ec5b261`
+Hash: `ca0ef8326da7c3ad`
 
 ## `public sealed class LDraftFacade : LMarkdownPort`
 
@@ -14,9 +14,11 @@ The example, situation, reference and author starts and commits live in those ki
 Every edit in between is a request, applied in `LRequestFacade.cs` for all kinds alike.
 It implements the markdown port itself, so Host hands it to Conduct with no outlet between.
 
-## `public LDraftFacade(LEngine engine)`
+## `internal LDraftFacade(LEngineHearth hearth, LVocabularyFacade vocabulary)`
 
-Creates the facade for one engine and shares its gate.
+Stores the hearth, its gate and the sibling facades it calls, all built by `LEngine` before this one.
+The gate, the staff and the shared state are read through the hearth.
+It takes its siblings rather than the engine, so it names only the facades it uses.
 
 ## `public IReadOnlyList<LMarkdownBlock> LEngineMarkdownParse(string? text)`
 
@@ -25,14 +27,16 @@ The note text parsed into blocks, through the entry field helpers.
 ## `internal LDraft LEngineDraftStart(string origin, long? entryId)`
 
 Starts an entry draft through the citation clerk.
-A new draft takes the first listed language, an existing entry is loaded with its recordings resolved.
+A new draft takes the first listed language, an existing entry is loaded as it stands.
 An entry that no longer stands is refused.
+The languages are read from the language clerk directly, so the draft facade needs no language facade.
 
 ## `internal IReadOnlyList<LRequest> LEngineDraftPrepare(long id)`
 
 The requests that give a held entry draft the rows the editor always shows.
 One meaning card and one collocation card, one sentence under each card, and the first transcription row.
 The glyph section's own row is added too when the language has one.
+The glyph and scheme reads go to the language staff directly, so no sibling facade is needed.
 The tenure applies them in its prepare turn and asks again, since a new card needs its sentence.
 
 ## `private static void LEngineSentencePrepare(long id, LCardDraft card, List<LRequest> requests)`

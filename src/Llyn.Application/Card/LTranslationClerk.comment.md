@@ -1,5 +1,5 @@
 # LTranslationClerk.cs
-Hash: `2c320cd1c37a167b`
+Hash: `b6bfa9297962f513`
 
 ## `public sealed class LTranslationClerk`
 
@@ -16,7 +16,7 @@ It runs over the ports of one rig and raises no bulletin and starts no fetch, wh
 
 ## `public LTranslationClerk(LRig rig, LRevisionClerk revisions)`
 
-Reads the root, entry and translation ports out of `rig`.
+Reads the root, entry, entry query and translation ports out of `rig`.
 `revisions` records the revision a new stub leaves and moves the workspace row onto it.
 
 ## `public IReadOnlyList<LTranslation> LTranslationClerkRead(long ownerId, bool collocation)`

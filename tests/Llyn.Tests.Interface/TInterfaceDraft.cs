@@ -95,4 +95,16 @@ internal static partial class TInterface
 
     internal static bool TDraftMatch(LEntryDraft one, LEntryDraft other) =>
         LDraftClerkEquality.LDraftMatch(one, other);
+
+    internal static LEntryDraft TReflexDraftCreate(IReadOnlyList<LReflexDraft> reflexes)
+    {
+        return TInterface.TEntryDraftCreate(
+            "弄",
+            "English",
+            string.Empty,
+            string.Empty,
+            [TInterface.TCardDraftCreate(string.Empty, string.Empty, "a state", [], [], [], [], [], 1)],
+            [],
+            reflexes: reflexes);
+    }
 }

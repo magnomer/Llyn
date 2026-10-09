@@ -15,11 +15,11 @@ public sealed class LUsageClerk
     public LUsageClerk(LRig rig)
     {
         ArgumentNullException.ThrowIfNull(rig);
-        _lUsageClerkAuthors = rig.LRigAuthors;
+        _lUsageClerkAuthors = rig.LRigCitation.LRigCitationAuthors;
         _lUsageClerkEntries = rig.LRigEntries;
-        _lUsageClerkExamples = rig.LRigExamples;
-        _lUsageClerkReferences = rig.LRigReferences;
-        _lUsageClerkSituations = rig.LRigSituations;
+        _lUsageClerkExamples = rig.LRigSentence.LRigSentenceExamples;
+        _lUsageClerkReferences = rig.LRigCitation.LRigCitationReferences;
+        _lUsageClerkSituations = rig.LRigContext.LRigContextSituations;
     }
 
     public IReadOnlyDictionary<long, int> LUsageClerkRead(LOwner owner)

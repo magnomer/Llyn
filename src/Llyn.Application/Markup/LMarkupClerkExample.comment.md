@@ -1,5 +1,5 @@
 # LMarkupClerkExample.cs
-Hash: `2ee2c4e6735563fd`
+Hash: `2d5f8f0e1a7e4106`
 
 ## `public sealed class LMarkupClerkExample`
 

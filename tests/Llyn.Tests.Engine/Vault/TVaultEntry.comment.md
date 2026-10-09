@@ -1,5 +1,5 @@
 # TVaultEntry.cs
-Hash: `b6b643f937bff07b`
+Hash: `7274dce5508be06f`
 
 ## `public sealed class TVaultEntry`
 

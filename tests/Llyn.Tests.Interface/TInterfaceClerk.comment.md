@@ -1,12 +1,12 @@
 # TInterfaceClerk.cs
-Hash: `44610c22fd15081d`
+Hash: `cc703108e09c2bf4`
 
 ## `internal static partial class TInterface`
 
 The relays for the clerks of the application ring, built over a rig of fakes.
 Each relay is transparent and carries no test logic of its own.
 
-## `internal static IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)`
+## `internal static IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)> TMeaningClerkSort(IReadOnlyList<LMeaning> meanings, string unknown)`
 
 Relays the meaning clerk's reading order, so the rule is tested over handed-in Meanings.
 
@@ -26,7 +26,7 @@ Relays the speech clerk's add of one named chip, declaring unknown names through
 
 Relays the speech clerk's removal of one named chip.
 
-## `internal static (IReadOnlyList<LSpeechDraft> LSpeechHeld, string LSpeechTyped)`
+## `internal static (IReadOnlyList<LSpeechDraft> LSpeechHeld, string LSpeechTyped) TSpeechSettle(IReadOnlyList<LSpeechDraft> shown, IReadOnlyList<LSpeechDraft> held, string typed)`
 
 Relays the speech clerk's settling of the shown chips and the typed text into held chips and leftover text.
 
@@ -66,9 +66,9 @@ Builds a chip for a declared value when `value` is positive, else a chip for a n
 
 Builds an English speech value with `value` as its id and `name` as its name.
 
-## `internal static LRig TRigClerkCreate(LEntryVault entries)`
+## `internal static LRig TRigClerkCreate(TVaultFake entries)`
 
-A fake rig over `entries` with in-memory workspace, revision, tombstone, pronunciation, transcription, reflex and etymology stores.
+A fake rig over `entries` as both entry ports, with in-memory workspace, revision, tombstone, pronunciation, transcription, reflex and etymology stores.
 That is enough for an entry clerk save to run without SQLite.
 
 ## `internal static LRig TRigClaimCreate()`

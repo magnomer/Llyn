@@ -16,9 +16,9 @@ public sealed class LExampleClerk
     {
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(references);
-        _lExampleClerkExamples = rig.LRigExamples;
-        _lExampleClerkGlosses = rig.LRigGlosses;
-        _lExampleClerkMentions = rig.LRigMentions;
+        _lExampleClerkExamples = rig.LRigSentence.LRigSentenceExamples;
+        _lExampleClerkGlosses = rig.LRigLexicon.LRigLexiconGlosses;
+        _lExampleClerkMentions = rig.LRigSentence.LRigSentenceMentions;
         _lExampleClerkReferences = references;
     }
 

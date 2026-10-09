@@ -1,5 +1,5 @@
 # TRigFake.cs
-Hash: `2c936a12183ccb92`
+Hash: `3d77baed87d81d94`
 
 ## `internal static class TRigFake`
 
@@ -17,13 +17,13 @@ The engine's pointer callback does nothing, so no pointer is recorded.
 
 The fake rig over a `TVaultFake` entry port, on the bare `fake` root.
 
-## `internal static LRig TRigFakeBuild(LEntryVault entries)`
+## `internal static LRig TRigFakeBuild(TVaultFake entries)`
 
-The fake rig over `entries` as its entry port, on the bare `fake` root.
+The fake rig over `entries` as its entry and entry query ports, on the bare `fake` root.
 
-## `internal static LRig TRigFakeBuild(LEntryVault entries, string workspace)`
+## `internal static LRig TRigFakeBuild(TVaultFake entries, string workspace)`
 
-The rig over `entries` as its entry port, standing on the root named `workspace`.
+The rig over `entries` as its entry and entry query ports, standing on the root named `workspace`.
 The root is a bare label, since no fake here touches disk.
 Two rigs built with two labels let a test prove a rig apply moved the engine.
 The language port is a `TRigFakeLanguages` and the usher is a throwing stub.
@@ -33,9 +33,10 @@ The language port is a `TRigFakeLanguages` and the usher is a throwing stub.
 The fake rig over the language packs and the usher a test hands in, on the bare `fake` root.
 A flag fill then runs through the real engine, while the case decides every fetch and file.
 
-## `private static LRig TRigFakeBuild(LEntryVault entries, string workspace, LLanguageVault languages, LUsher usher)`
+## `private static LRig TRigFakeBuild(TVaultFake entries, string workspace, LLanguageVault languages, LUsher usher)`
 
 The one rig build the public forms reach, so each fake stays in one place.
+`entries` fills both entry slots, so a stored row is found by the same fake that stored it.
 The trail is the real system adapter, since path rules touch no disk, and the clock is a `TClockFake`.
 The press is a `TPress`, which records what it is handed and touches no printer.
 The warrant is a `TWarrantFake`, so no test touches the operating system store.

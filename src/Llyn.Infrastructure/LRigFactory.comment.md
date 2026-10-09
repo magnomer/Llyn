@@ -1,9 +1,9 @@
 # LRigFactory.cs
-Hash: `191561713f5d3f6f`
+Hash: `b4666bd8d6c40b5e`
 
 ## `public static class LRigFactory`
 
-The one place `new L*Archive`, `new L*Loader`, `new L*File` and `new L*Http` are written.
+The one place `new L*Archive`, `new L*Loader`, `new L*File` and `new L*Http` are written, beside its group sub-roots.
 The composition root calls it once at start and once per workspace change, and hands the rig to the engine.
 The engine itself contains the use cases and builds none of the adapters they run on.
 
@@ -15,6 +15,13 @@ All live in Core.Windows, which this project never references.
 The path must be fully qualified, so a bare name never lands beside whatever folder the process runs from.
 The folder is created when missing, so a fresh workspace opens as an empty one.
 One database stands behind every archive.
+The lexicon group is built by `LRigFactoryLexicon` over that database.
+The sentence group is built by `LRigFactorySentence` and the context group by `LRigFactoryContext` the same way.
+The sound group is built by `LRigFactorySound` over that database.
+The citation group is built by `LRigFactoryCitation` and the keeping group by `LRigFactoryKeeping` over that database.
+The draft group is built by `LRigFactoryDraft` over the root.
+The asset group is built by `LRigFactoryAsset` over the root and the theme.
+The source group is built by `LRigFactorySource` over the client and the root.
 The client handed in stands behind every fetcher and every download.
 The Joplin outpost owns its own client, so the token never meets a redirect or a proxy.
 The caller owns the client and disposes it, so the factory holds nothing across builds.
@@ -25,8 +32,6 @@ The theme is loaded once and handed to both the portrait and livery adapters.
 The export and the Joplin notes therefore wear the same theme by construction.
 The posture adapter is built over a keep file of its own.
 So the posture lands beside the settings as before.
-The manifest adapter is built over a keep file of its own the same way.
-So the Joplin manifest lands under the workspace root too.
 The trail, the clock and the process id are read here.
 The root is the one place outside the rings that may touch them.
 A folder that cannot be opened therefore fails in the engine, before the old rig is let go.

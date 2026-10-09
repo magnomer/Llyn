@@ -1,7 +1,7 @@
 # LLanguageFacade.cs
-Hash: `8d941e9301c4d313`
+Hash: `000e9cdaca456dc7`
 
-## `public sealed class LLanguageFacade : LGlyphPort, LScriptPort, LLanguagePort`
+## `public sealed class LLanguageFacade : LGlyphPort, LLanguagePort`
 
 The engine facade for language packs.
 Everything the shell asks about a language as such is answered here.
@@ -9,8 +9,8 @@ That is the packs on disk, a pack's typography, its flag, and its regional varie
 Each pack is read once through the language clerk's cache, so no lookup parses the file again.
 The clerk is rebuilt with the workspace, since a pack's source lists belong to the folder it was read from.
 The shell never reaches into the `languages/` folder itself.
-The script reads sit here too, since a script style is a fact of the pack.
-It implements the glyph, script and language ports itself, so Host hands it to Conduct with no outlet between.
+The script images live in `LScriptFacade`, since only the script clerk serves them.
+It implements the glyph and language ports itself, so Host hands it to Conduct with no outlet between.
 The port reads the glyph section from a draft, so that member is implemented explicitly beside the language read.
 
 ## `private readonly SemaphoreSlim _lLanguageFacadeEnsign`
@@ -21,9 +21,11 @@ Without the gate each would read the same flags as missing and fetch them again.
 Both fills share it, so a variety fill and a language fill never overlap either.
 It is awaited, never held by a plain wait, so a fill awaiting the shell can always finish.
 
-## `public LLanguageFacade(LEngine engine)`
+## `internal LLanguageFacade(LEngineHearth hearth, LFanqieFacade fanqie, LReflexFacade reflex, LScriptFacade script, LSettingsFacade settings, LVocabularyFacade vocabulary)`
 
-Stores the engine and its gate, which the facade uses for its language-pack operations.
+Stores the hearth, its gate and the sibling facades it calls, all built by `LEngine` before this one.
+The gate, the staff and the shared state are read through the hearth.
+It takes its siblings rather than the engine, so it names only the facades it uses.
 
 ## `public IReadOnlyList<string> LEngineLanguageRead()`
 
@@ -134,14 +136,6 @@ The pack named, read through the language clerk.
 Every reader of a pack's declarations in the engine goes through here, so the cache alone parses the file.
 The gate is taken only to read the clerk field, which a rig apply replaces.
 
-## `public IReadOnlyList<LScriptStyle> LEngineStyleRead(string language)`
-
-The script styles of a language.
-
-## `public void LEngineScriptStart(long entryId)`
-
-Starts the fetch of every character that has no images.
-
 ## `public IReadOnlyList<LTranscriptionDraft> LEngineTranscriptionRead(LEntryDraft draft)`
 
 The filled transcription rows a reading view lists, without the glyph row, through the language clerk.
@@ -170,28 +164,9 @@ The pitch levels a tone contour draws, highest first, passed up from the rule th
 
 Starts every background fetch a reading view of the entry shows, in one fixed order.
 The reflexes go first, then the inflections, the script images and the rime-book rows.
+The script facade owns the image start, and this facade only calls it in that order.
 Each start skips what is stored or pending, so opening an entry again starts nothing twice.
 The inflection start itself holds back while the morphology setting is off.
-
-## `public bool LEngineStyleCheck(string language)`
-
-Whether the language pack names any script style at all.
-
-## `public void LEngineScriptRebuild(long entryId)`
-
-Drops the stored images of the entry's characters and fetches them again.
-
-## `public IReadOnlyList<LScriptGroup> LEngineScriptDivide(long entryId)`
-
-The images grouped by style.
-
-## `public IReadOnlyList<LScriptGroup> LEngineScriptRead(long entryId)`
-
-The images grouped by style, after starting the fetch of every character still missing.
-
-## `public bool LEngineScriptCheck(long entryId)`
-
-Whether a fetch is pending for any character of the entry.
 
 ## `private LEngineStaff LLanguageFacadeStaff`
 

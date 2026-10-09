@@ -36,8 +36,8 @@ public sealed class LReflexFetch
         ArgumentNullException.ThrowIfNull(raise);
         _lReflexFetchClerk = clerk;
         _lReflexFetchEntries = rig.LRigEntries;
-        _lReflexFetchReflexes = rig.LRigReflexes;
-        _lReflexFetchSource = rig.LRigReflexSource;
+        _lReflexFetchReflexes = rig.LRigSound.LRigSoundReflexes;
+        _lReflexFetchSource = rig.LRigSource.LRigSourceReflex;
         _lReflexFetchClock = rig.LRigClock;
         _lReflexFetchAudit = rig.LRigAudit;
         _lReflexFetchLanguages = languages;

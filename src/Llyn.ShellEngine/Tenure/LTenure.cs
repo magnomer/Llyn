@@ -18,14 +18,6 @@ public sealed class LTenure
 
     private readonly LTenureQueue _lTenureQueue;
 
-    private readonly LBulletinRoster _lTenureRoster = new(null);
-
-    private int _lTenurePreparing;
-
-    private LDraft? _lTenureKept;
-
-    private int _lTenureRound;
-
     internal LTenure(LEngine engine, LSubject subject, long id)
     {
         _lEngine = engine;
@@ -34,7 +26,7 @@ public sealed class LTenure
         _lTenureQueue = new(engine, id, _lTenureGate, _lTenureTurn, () => LTenureGauge?.LTenureGaugeRaise());
         LTenureGauge = new(engine, id, _lTenureGate, _lTenureQueue);
         LTenureErrand = new(engine, this, _lTenureGate);
-        _lEngine.LEngineObserverAttach(LTenureBulletinHandle);
+        LTenureHerald = new(engine.LEngineHearth, engine.LEngineDraft, LTenureId, _lTenureGate, _lTenureQueue);
     }
 
     public long LTenureId { get; }
@@ -42,6 +34,8 @@ public sealed class LTenure
     public LTenureGauge LTenureGauge { get; }
 
     public LErrand LTenureErrand { get; }
+
+    internal LTenureHerald LTenureHerald { get; }
 
     internal LEngine LTenureEngine => _lEngine;
 
@@ -153,7 +147,7 @@ public sealed class LTenure
 
         try
         {
-            LTenureObserverClear();
+            LTenureHerald.LTenureObserverClear();
             _lEngine.LEngineDraft.LEngineDraftCancel(LTenureId);
         }
         catch (Exception exception) when (LWorkspaceClerk.LWorkspaceRefusedCheck(exception))
@@ -215,7 +209,7 @@ public sealed class LTenure
                 _lTenureQueue.LTenureQueueClose();
             }
 
-            LTenureObserverClear();
+            LTenureHerald.LTenureObserverClear();
             LTenureGauge.LTenureGaugeRaise();
             return stored;
         }
@@ -223,12 +217,12 @@ public sealed class LTenure
 
     public void LTenureObserverAttach(LSubject subject, Action<LBulletin> observer)
     {
-        LTenureObserverInsert(subject, observer, null);
+        LTenureHerald.LTenureObserverInsert(subject, observer, null);
     }
 
     public void LTenureDraftAttach(LSubject subject, Action<LBulletin> observer)
     {
-        LTenureObserverInsert(subject, observer, LTenureId);
+        LTenureHerald.LTenureObserverInsert(subject, observer, LTenureId);
     }
 
     public void LTenureEntryAttach(LSubject subject, Action<LBulletin> observer)
@@ -236,47 +230,8 @@ public sealed class LTenure
         ArgumentNullException.ThrowIfNull(observer);
         if (LTenureRead()?.LDraftStored is long id)
         {
-            LTenureObserverInsert(subject, observer, id);
+            LTenureHerald.LTenureObserverInsert(subject, observer, id);
         }
-    }
-
-    private void LTenureObserverInsert(LSubject subject, Action<LBulletin> observer, long? id)
-    {
-        ArgumentNullException.ThrowIfNull(observer);
-        lock (_lTenureGate)
-        {
-            if (!_lTenureQueue.LTenureQueueEnded)
-            {
-                _lTenureRoster.LBulletinRosterAttach(subject, observer, id);
-            }
-        }
-    }
-
-    private void LTenureBulletinHandle(LBulletin bulletin)
-    {
-        (LSubject?, Action<LBulletin>, long?)[] snapshot;
-        lock (_lTenureGate)
-        {
-            if (bulletin.LBulletinSubject == LSubject.LSubjectDraft)
-            {
-                LTenureKeptClear();
-            }
-
-            if (_lTenureQueue.LTenureQueueEnded)
-            {
-                return;
-            }
-
-            if (_lTenurePreparing > 0 && bulletin.LBulletinSubject == LSubject.LSubjectDraft
-                && bulletin.LBulletinId == LTenureId)
-            {
-                return;
-            }
-
-            snapshot = _lTenureRoster.LBulletinRosterRead();
-        }
-
-        _lTenureRoster.LBulletinRosterDispatch(bulletin, snapshot);
     }
 
     private const int LTenurePrepareRounds = 3;
@@ -322,7 +277,7 @@ public sealed class LTenure
                     return null;
                 }
 
-                _lTenurePreparing++;
+                LTenureHerald.LTenurePrepareStart();
             }
 
             try
@@ -332,11 +287,7 @@ public sealed class LTenure
             }
             finally
             {
-                lock (_lTenureGate)
-                {
-                    _lTenurePreparing--;
-                    LTenureKeptClear();
-                }
+                LTenureHerald.LTenurePrepareFinish();
             }
         }
     }
@@ -353,57 +304,4 @@ public sealed class LTenure
         }
     }
 
-    internal LDraft? LTenureKeptRead()
-    {
-        int round;
-        lock (_lTenureGate)
-        {
-            if (_lTenureQueue.LTenureQueueEnded)
-            {
-                return null;
-            }
-
-            if (_lTenureKept is LDraft kept)
-            {
-                return kept;
-            }
-
-            round = _lTenureRound;
-        }
-
-        LDraft? read;
-        try
-        {
-            read = _lEngine.LEngineDraft.LEngineDraftRead(LTenureId);
-        }
-        catch (Exception exception) when (LWorkspaceClerk.LWorkspaceRefusedCheck(exception))
-        {
-            return null;
-        }
-
-        lock (_lTenureGate)
-        {
-            if (round == _lTenureRound)
-            {
-                _lTenureKept = read;
-            }
-        }
-
-        return read;
-    }
-
-    private void LTenureKeptClear()
-    {
-        _lTenureKept = null;
-        _lTenureRound++;
-    }
-
-    private void LTenureObserverClear()
-    {
-        _lEngine.LEngineObserverDetach(LTenureBulletinHandle);
-        lock (_lTenureGate)
-        {
-            _lTenureRoster.LBulletinRosterClear();
-        }
-    }
 }

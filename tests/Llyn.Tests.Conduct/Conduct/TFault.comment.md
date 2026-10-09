@@ -1,5 +1,5 @@
 # TFault.cs
-Hash: `ab663076f0775967`
+Hash: `44bb1bcb46c6bec1`
 
 ## `public sealed partial class TFault`
 
@@ -19,9 +19,7 @@ One row per gate, named `Type.Method` so the completeness fact can match it by r
 Port gates fault their port member over `TInterfaceConduct.TAtelierFaultCreate`.
 Errand and timbre gates reach the engine through a tenure, not a port.
 Their rows therefore fault the vault member the tenure reaches, over the real rig.
-Panel row loads all await the settings port's flag load before they read their rows.
-Their rows therefore fault `LSettingsPort.LEngineEnsignLoad` and expect the panel's own load-failed key.
-Footnote, occurrence and quotation lists are reached through the shelf, repertoire and corpus that own them.
+Panel list-load rows live in `TFaultList.TFaultListRows` and join the list before the portrait rows.
 Courier rows fault the portrait port's courier members over a courier built by `CCourier.CCourierCreate`.
 Portrait print and export rows live in `TFaultPortrait.cs` and join the list last.
 
@@ -52,10 +50,10 @@ The envoy must then have heard exactly the row's key, once.
 
 Starts a real engine on a prepared workspace, both disposed with the stage.
 
-## `private static CAtelier TFaultAtelierStart(TFaultStage stage) =>`
+## `internal static CAtelier TFaultAtelierStart(TFaultStage stage) =>`
 
 Starts a real engine and the atelier over its faulted outlets, both disposed with the stage.
-Panel rows build their panel on it, so only the stage's member faults.
+Panel rows in `TFaultList` and the other sweep files build their panel on it, so only the stage's member faults.
 
 ## `private static TEditorFixture TFaultEditorStart(TFaultStage stage, string json)`
 
@@ -67,19 +65,3 @@ The engine is built straight from that rig, and its tenure delay is cleared so t
 ## `private static async Task<CErrand> TFaultRecordingStart(TFaultStage stage, string json)`
 
 Starts the recording search and waits until it ends, so the errand holds its foray.
-
-## `private sealed record TFaultRow(string TFaultRowGate, string TFaultRowMember, string TFaultRowKey, Func<TFaultStage, Task<Func<Task>>> TFaultRowArrange)`
-
-One gate of the task sweep, with the fault it meets and the notice it must show.
-
-**Parameters**
-
-- `TFaultRowGate`: the gate's name as `Type.Method`.
-- `TFaultRowMember`: the faulted member as `Interface.Member`.
-- `TFaultRowKey`: the notice key the envoy must hear once.
-- `TFaultRowArrange`: builds the gate's owner, meets its preconditions, and answers the gate call.
-
-## `private sealed class TFaultStage : IDisposable`
-
-Carries the faulted member, the fault mode and the heard notices into a row's arrangement.
-It disposes what the arrangement held in reverse order, the engine before its workspace.

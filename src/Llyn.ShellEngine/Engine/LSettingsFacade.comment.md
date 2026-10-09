@@ -1,5 +1,5 @@
 # LSettingsFacade.cs
-Hash: `96664971ae9c079b`
+Hash: `8f215f109beaf6ed`
 
 ## `internal sealed class LSettingsFacade`
 
@@ -9,9 +9,11 @@ Every change is written to the open workspace at once, and a failed write restor
 The record itself is loaded when the workspace opens.
 A workspace moved onto keeps its own settings, and only one without any inherits the current record.
 
-## `public LSettingsFacade(LEngine engine)`
+## `public LSettingsFacade(LEngineHearth hearth)`
 
-Creates the facade for its owning engine and shares the engine gate for settings operations.
+Stores the hearth and its gate.
+It calls no sibling facade, so `LEngine` builds it among the first.
+The gate, the staff and the shared state are read through the hearth.
 
 ## `internal event Action? LEngineFoldChanged;`
 

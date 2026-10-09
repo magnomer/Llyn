@@ -12,72 +12,82 @@ internal static class TRigFake
 
     internal static LRig TRigFakeBuild() => TRigFakeBuild(new TVaultFake(), "fake");
 
-    internal static LRig TRigFakeBuild(LEntryVault entries) => TRigFakeBuild(entries, "fake");
+    internal static LRig TRigFakeBuild(TVaultFake entries) => TRigFakeBuild(entries, "fake");
 
-    internal static LRig TRigFakeBuild(LEntryVault entries, string workspace) =>
+    internal static LRig TRigFakeBuild(TVaultFake entries, string workspace) =>
         TRigFakeBuild(entries, workspace, new TRigFakeLanguages(), TRigStubCreate<LUsher>());
 
     internal static LRig TRigFakeBuild(LLanguageVault languages, LUsher usher) =>
         TRigFakeBuild(new TVaultFake(), "fake", languages, usher);
 
-    private static LRig TRigFakeBuild(LEntryVault entries, string workspace, LLanguageVault languages, LUsher usher)
+    private static LRig TRigFakeBuild(TVaultFake entries, string workspace, LLanguageVault languages, LUsher usher)
     {
         return new LRig(
             new TRigFakeVault(),
-            new TRigFakeDoctor(),
+            new LRigKeeping(
+                new TRigFakeDoctor(),
+                TRigStubCreate<LRevisionVault>(),
+                TRigStubCreate<LWorkspaceVault>(),
+                TRigStubCreate<LTombstoneVault>(),
+                TRigStubCreate<LFavoriteVault>(),
+                TRigStubCreate<LNoteVault>()),
             new TRigFakeSettings(),
             new TRigFakeAudit(),
             new TPostureFake(),
-            TRigStubCreate<LManifestVault>(),
+            new LRigAsset(
+                TRigStubCreate<LManifestVault>(),
+                TRigStubCreate<LLocalizationVault>(),
+                TRigStubCreate<LMarkupVault>(),
+                TRigStubCreate<LPortraitVault>(),
+                TRigStubCreate<LLivery>()),
             entries,
-            TRigStubCreate<LEtymologyVault>(),
-            TRigStubCreate<LDraftVault>(),
-            TRigStubCreate<LClaimVault>(),
-            TRigStubCreate<LCourtVault>(),
-            TRigStubCreate<LRevisionVault>(),
-            TRigStubCreate<LWorkspaceVault>(),
-            TRigStubCreate<LTombstoneVault>(),
-            TRigStubCreate<LAuthorVault>(),
-            TRigStubCreate<LCollocationVault>(),
-            TRigStubCreate<LDiweiVault>(),
-            TRigStubCreate<LExampleVault>(),
-            TRigStubCreate<LFanqieVault>(),
-            TRigStubCreate<LShengfuVault>(),
-            TRigStubCreate<LStemVault>(),
-            TRigStubCreate<LFavoriteVault>(),
-            TRigStubCreate<LFrequencyVault>(),
-            TRigStubCreate<LGlossVault>(),
-            TRigStubCreate<LImageVault>(),
-            TRigStubCreate<LInflectionVault>(),
-            TRigStubCreate<LLacunaVault>(),
-            TRigStubCreate<LMeaningVault>(),
-            TRigStubCreate<LMentionVault>(),
-            TRigStubCreate<LMorphologyVault>(),
-            TRigStubCreate<LNoteVault>(),
-            TRigStubCreate<LPronunciationVault>(),
-            TRigStubCreate<LReferenceVault>(),
-            TRigStubCreate<LReflexVault>(),
-            TRigStubCreate<LRegisterVault>(),
-            TRigStubCreate<LScriptVault>(),
-            TRigStubCreate<LSentenceVault>(),
-            TRigStubCreate<LSituationVault>(),
-            TRigStubCreate<LSpeechVault>(),
-            TRigStubCreate<LTagVault>(),
-            TRigStubCreate<LTranscriptionVault>(),
-            TRigStubCreate<LTranslationVault>(),
-            TRigStubCreate<LVideoVault>(),
-            TRigStubCreate<LSourceFactory>(),
-            TRigStubCreate<LFanqieSource>(),
-            TRigStubCreate<LShengfuSource>(),
-            TRigStubCreate<LReflexSource>(),
-            TRigStubCreate<LScriptSource>(),
+            entries,
+            new LRigLexicon(
+                TRigStubCreate<LEtymologyVault>(),
+                TRigStubCreate<LCollocationVault>(),
+                TRigStubCreate<LGlossVault>(),
+                TRigStubCreate<LInflectionVault>(),
+                TRigStubCreate<LLacunaVault>(),
+                TRigStubCreate<LMeaningVault>(),
+                TRigStubCreate<LMorphologyVault>(),
+                TRigStubCreate<LSpeechVault>()),
+            new LRigDraft(
+                TRigStubCreate<LDraftVault>(),
+                TRigStubCreate<LClaimVault>(),
+                TRigStubCreate<LCourtVault>()),
+            new LRigCitation(
+                TRigStubCreate<LAuthorVault>(),
+                TRigStubCreate<LImageVault>(),
+                TRigStubCreate<LReferenceVault>(),
+                TRigStubCreate<LVideoVault>()),
+            new LRigSound(
+                TRigStubCreate<LDiweiVault>(),
+                TRigStubCreate<LFanqieVault>(),
+                TRigStubCreate<LShengfuVault>(),
+                TRigStubCreate<LStemVault>(),
+                TRigStubCreate<LFrequencyVault>(),
+                TRigStubCreate<LPronunciationVault>(),
+                TRigStubCreate<LReflexVault>(),
+                TRigStubCreate<LScriptVault>(),
+                TRigStubCreate<LTranscriptionVault>()),
+            new LRigSentence(
+                TRigStubCreate<LExampleVault>(),
+                TRigStubCreate<LMentionVault>(),
+                TRigStubCreate<LSentenceVault>(),
+                TRigStubCreate<LTranslationVault>()),
+            new LRigContext(
+                TRigStubCreate<LRegisterVault>(),
+                TRigStubCreate<LSituationVault>(),
+                TRigStubCreate<LTagVault>()),
+            new LRigSource(
+                TRigStubCreate<LSourceFactory>(),
+                TRigStubCreate<LFanqieSource>(),
+                TRigStubCreate<LShengfuSource>(),
+                TRigStubCreate<LReflexSource>(),
+                TRigStubCreate<LScriptSource>(),
+                TRigStubCreate<LRecordingVault>()),
             TRigStubCreate<LOutpost>(),
-            TRigStubCreate<LRecordingVault>(),
             languages,
-            TRigStubCreate<LLocalizationVault>(),
-            TRigStubCreate<LMarkupVault>(),
-            TRigStubCreate<LPortraitVault>(),
-            TRigStubCreate<LLivery>(),
             new TPress(),
             new TWarrantFake(),
             usher,

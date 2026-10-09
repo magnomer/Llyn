@@ -54,59 +54,66 @@ internal static partial class TInterface
 
     internal static LSpeechValue TSpeechValueCreate(long value, string name) => new(value, "English", 1, name, 1);
 
-    internal static LRig TRigClerkCreate(LEntryVault entries) =>
-        TRigFake.TRigFakeBuild(entries) with
+    internal static LRig TRigClerkCreate(TVaultFake entries)
+    {
+        LRig rig = TRigFake.TRigFakeBuild(entries);
+        return rig with
         {
-            LRigWorkspaces = new TVaultFakeWorkspace(),
-            LRigRevisions = new TVaultFakeRevision(),
-            LRigTombstones = new TVaultFakeTombstone(),
-            LRigPronunciations = new TVaultFakePronunciation(),
-            LRigTranscriptions = new TVaultFakeTranscription(),
-            LRigReflexes = new TVaultFakeReflex(),
-            LRigEtymologies = new TVaultFakeEtymology(),
+            LRigKeeping = rig.LRigKeeping with
+            {
+                LRigKeepingWorkspaces = new TVaultFakeWorkspace(),
+                LRigKeepingRevisions = new TVaultFakeRevision(),
+                LRigKeepingTombstones = new TVaultFakeTombstone(),
+            },
+            LRigSound = rig.LRigSound with
+            {
+                LRigSoundPronunciations = new TVaultFakePronunciation(),
+                LRigSoundTranscriptions = new TVaultFakeTranscription(),
+                LRigSoundReflexes = new TVaultFakeReflex(),
+            },
+            LRigLexicon = rig.LRigLexicon with { LRigLexiconEtymologies = new TVaultFakeEtymology() },
         };
+    }
 
     internal static LRig TRigClaimCreate() =>
         TRigClerkCreate(new TVaultFake()) with
         {
-            LRigDrafts = new TVaultFakeDraft(),
-            LRigClaims = new TVaultFakeClaim(1),
-            LRigCourts = new TVaultFakeCourt(),
+            LRigDraft = new LRigDraft(new TVaultFakeDraft(), new TVaultFakeClaim(1), new TVaultFakeCourt()),
         };
 
     internal static LRig TRigProcessSet(this LRig rig, int process)
     {
-        ((TVaultFakeClaim)rig.LRigClaims).TClaimProcessSet(process);
+        ((TVaultFakeClaim)rig.LRigDraft.LRigDraftClaims).TClaimProcessSet(process);
         return rig with { LRigProcess = process };
     }
 
     internal static void TDraftStaleSet(this LRig rig, long id) =>
-        ((TVaultFakeDraft)rig.LRigDrafts).TDraftStaleSet(id);
+        ((TVaultFakeDraft)rig.LRigDraft.LRigDraftDrafts).TDraftStaleSet(id);
 
     internal static LTombstone? TTombstoneRead(this LRig rig, long entryId) =>
-        ((TVaultFakeTombstone)rig.LRigTombstones).TTombstoneRead(entryId);
+        ((TVaultFakeTombstone)rig.LRigKeeping.LRigKeepingTombstones).TTombstoneRead(entryId);
 
     internal static IReadOnlyList<LRevisionDelta> TRevisionChangeRead(this LRig rig, long revisionId) =>
-        ((TVaultFakeRevision)rig.LRigRevisions).TRevisionChangeRead(revisionId);
+        ((TVaultFakeRevision)rig.LRigKeeping.LRigKeepingRevisions).TRevisionChangeRead(revisionId);
 
     internal static IReadOnlyList<LPronunciation> TPronunciationRead(this LRig rig, long entryId) =>
-        rig.LRigPronunciations.LPronunciationRead(entryId);
+        rig.LRigSound.LRigSoundPronunciations.LPronunciationRead(entryId);
 
     internal static IReadOnlyList<LReflex> TReflexRead(this LRig rig, long entryId) =>
-        rig.LRigReflexes.LReflexRead(entryId);
+        rig.LRigSound.LRigSoundReflexes.LReflexRead(entryId);
 
     internal static long? TRevisionRead(this LRig rig) =>
-        rig.LRigWorkspaces.LWorkspaceStateRead().LWorkspaceStateRevision;
+        rig.LRigKeeping.LRigKeepingWorkspaces.LWorkspaceStateRead().LWorkspaceStateRevision;
 
     internal static LClaimClerk TClaimClerkCreate(LRig rig)
     {
-        LIdentity identity = new(rig.LRigWorkspaces);
+        LIdentity identity = new(rig.LRigKeeping.LRigKeepingWorkspaces);
         LChronicleClerk chronicle = new(rig);
         return new LClaimClerk(rig, identity, chronicle, TCourtClerkCreate(rig, identity, chronicle));
     }
 
     internal static LCourtClerk TCourtClerkCreate(LRig rig) =>
-        TCourtClerkCreate(rig, new LIdentity(rig.LRigWorkspaces), new LChronicleClerk(rig));
+        TCourtClerkCreate(rig, new LIdentity(rig.LRigKeeping.LRigKeepingWorkspaces), new LChronicleClerk(rig));
 
     private static LCourtClerk TCourtClerkCreate(LRig rig, LIdentity identity, LChronicleClerk chronicle) =>
         new(rig, identity, chronicle, new LTranslationClerk(rig, new LRevisionClerk(rig)));
@@ -159,7 +166,7 @@ internal static partial class TInterface
         LDraftClerkReading.LTranscriptionPositionRead(spelled, transcription);
 
     internal static LDraftClerk TDraftClerkCreate(LRig rig) =>
-        new(rig, new LIdentity(rig.LRigWorkspaces), new LLanguageCache(rig.LRigLanguages));
+        new(rig, new LIdentity(rig.LRigKeeping.LRigKeepingWorkspaces), new LLanguageCache(rig.LRigLanguages));
 
     internal static LDraft TDraftClerkApply(this LDraftClerk clerk, LDraft draft, LRequest request) =>
         clerk.LDraftClerkApply(draft, request);
@@ -271,11 +278,11 @@ internal static partial class TInterface
         rig.LRigTrail.LTrailRelativeResolve(rig.LRigWorkspace, path) ?? path;
 
     internal static LPronunciation TPronunciationSave(LRig rig, LPronunciation pronunciation) =>
-        rig.LRigPronunciations.LPronunciationCreate(pronunciation);
+        rig.LRigSound.LRigSoundPronunciations.LPronunciationCreate(pronunciation);
 
     internal static void TAudioSave(LRig rig, long pronunciationId, string file, string? source)
     {
-        rig.LRigPronunciations.LPronunciationAudioSave(pronunciationId, file, source);
+        rig.LRigSound.LRigSoundPronunciations.LPronunciationAudioSave(pronunciationId, file, source);
     }
 
     internal static LDoctorRescue TWorkspaceRescueCreate(LRig rig) => LWorkspaceClerk.LWorkspaceRescueCreate(rig);

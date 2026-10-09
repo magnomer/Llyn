@@ -26,8 +26,8 @@ public sealed class LScriptClerk
         ArgumentNullException.ThrowIfNull(gate);
         ArgumentNullException.ThrowIfNull(raise);
         _lScriptClerkEntries = rig.LRigEntries;
-        _lScriptClerkScripts = rig.LRigScripts;
-        _lScriptClerkSource = rig.LRigScriptSource;
+        _lScriptClerkScripts = rig.LRigSound.LRigSoundScripts;
+        _lScriptClerkSource = rig.LRigSource.LRigSourceScript;
         _lScriptClerkAudit = rig.LRigAudit;
         _lScriptClerkLanguages = languages;
         _lScriptClerkGate = gate;

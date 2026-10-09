@@ -29,7 +29,7 @@ internal static class TInterfaceEngineLanguage
         engine.LEngineLanguage.LEngineEnsignLoad(store);
 
     internal static IReadOnlyList<LFrequency> TEngineFrequencyRead(this LEngine engine, long entryId) =>
-        engine.LEngineStaffHeld.LEngineStaffLanguage.LLanguageStaffFrequency.LFrequencyClerkRead(entryId);
+        engine.LEngineHearth.LEngineStaffHeld.LEngineStaffLanguage.LLanguageStaffFrequency.LFrequencyClerkRead(entryId);
 
     internal static LFrequencyGauge? TEngineFrequencyResolve(this LEngine engine, long entryId, string once) =>
         engine.LEnginePronunciation.LEngineFrequencyResolve(entryId, once);
@@ -48,16 +48,16 @@ internal static class TInterfaceEngineLanguage
         engine.LEngineVocabulary.LEngineInflectionCheck(entryId);
 
     internal static IReadOnlyList<LScriptImage> TEngineScriptRead(this LEngine engine, long entryId) =>
-        engine.LEngineStaffHeld.LEngineStaffLanguage.LLanguageStaffScript.LScriptClerkRead(entryId);
+        engine.LEngineHearth.LEngineStaffHeld.LEngineStaffLanguage.LLanguageStaffScript.LScriptClerkRead(entryId);
 
     internal static bool TEngineScriptCheck(this LEngine engine, long entryId) =>
-        engine.LEngineLanguage.LEngineScriptCheck(entryId);
+        engine.LEngineScript.LEngineScriptCheck(entryId);
 
     internal static void TEngineScriptStart(this LEngine engine, long entryId) =>
-        engine.LEngineLanguage.LEngineScriptStart(entryId);
+        engine.LEngineScript.LEngineScriptStart(entryId);
 
     internal static void TEngineScriptRebuild(this LEngine engine, long entryId) =>
-        engine.LEngineLanguage.LEngineScriptRebuild(entryId);
+        engine.LEngineScript.LEngineScriptRebuild(entryId);
 
     internal static IReadOnlyList<LReflexRule> TEngineReflexRead(this LEngine engine, string language) =>
         engine.LEngineReflex.LEngineReflexRead(language);

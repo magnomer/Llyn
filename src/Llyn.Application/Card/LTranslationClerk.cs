@@ -8,6 +8,7 @@ public sealed class LTranslationClerk
 {
     private readonly LVault _lTranslationClerkVault;
     private readonly LEntryVault _lTranslationClerkEntries;
+    private readonly LEntryQueryVault _lTranslationClerkQuery;
     private readonly LRevisionClerk _lTranslationClerkRevisions;
     private readonly LTranslationVault _lTranslationClerkTranslations;
 
@@ -17,8 +18,9 @@ public sealed class LTranslationClerk
         ArgumentNullException.ThrowIfNull(revisions);
         _lTranslationClerkVault = rig.LRigVault;
         _lTranslationClerkEntries = rig.LRigEntries;
+        _lTranslationClerkQuery = rig.LRigEntryQuery;
         _lTranslationClerkRevisions = revisions;
-        _lTranslationClerkTranslations = rig.LRigTranslations;
+        _lTranslationClerkTranslations = rig.LRigSentence.LRigSentenceTranslations;
     }
 
     public IReadOnlyList<LTranslation> LTranslationClerkRead(long ownerId, bool collocation)
@@ -57,7 +59,7 @@ public sealed class LTranslationClerk
         string written = LCatalog.LCatalogTextNormalize(query);
         List<LEntry> exact = [];
         List<LEntry> partial = [];
-        foreach (LEntry entry in _lTranslationClerkEntries.LEntryFind(query))
+        foreach (LEntry entry in _lTranslationClerkQuery.LEntryFind(query))
         {
             if (entryId > 0 && entry.LEntryId == entryId)
             {

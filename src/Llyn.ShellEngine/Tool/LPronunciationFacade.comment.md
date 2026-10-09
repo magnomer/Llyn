@@ -1,5 +1,5 @@
 # LPronunciationFacade.cs
-Hash: `aea2d21921d6e47e`
+Hash: `821a2499b3f85930`
 
 ## `public sealed class LPronunciationFacade : LPronunciationPort`
 
@@ -8,17 +8,20 @@ Most calls take the gate and call the pronunciation, recording, transcription or
 The session trove that remembers a lookup or harvest stays here, since a session is an engine fact.
 It implements the pronunciation port itself, so Host hands it to Conduct with no outlet between.
 
-## `private readonly LEngine _lPronunciationFacadeEngine;`
+## `private readonly LEngineHearth _lPronunciationFacadeHearth;`
 
-The engine whose staff, trove, draft and vista this facade reaches.
+The hearth whose staff and trove this facade reaches.
+The draft facade and the row facade are held beside it.
 
 ## `private readonly object _lPronunciationFacadeGate;`
 
 The engine's own gate, which the locked calls take.
 
-## `public LPronunciationFacade(LEngine engine)`
+## `internal LPronunciationFacade(LEngineHearth hearth, LDraftFacade draft, LVistaRowFacade row)`
 
-Stores the engine and its gate.
+Stores the hearth, its gate and the sibling facades it calls, all built by `LEngine` before this one.
+The gate, the staff and the shared state are read through the hearth.
+It takes its siblings rather than the engine, so it names only the facades it uses.
 
 ## `private LEngineStaff LPronunciationFacadeStaff`
 

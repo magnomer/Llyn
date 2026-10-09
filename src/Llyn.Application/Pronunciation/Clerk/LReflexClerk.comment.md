@@ -1,5 +1,5 @@
 # LReflexClerk.cs
-Hash: `34d7e061a5916c6d`
+Hash: `5dcb3a28eea87aa2`
 
 ## `public sealed class LReflexClerk`
 
@@ -37,7 +37,7 @@ The reflex rules the pack of `language` declares, or none for a blank language.
 
 The rows in the order the pack of `language` declares, the one door every view's reflex rows pass.
 The rule itself is `LReflexOrderSort`, and this only finds the pack's order for it.
-A blank language or a pack without an order sorts by language name, then kind name.
+A blank language or a pack without an order sorts by language name, kind name, main flag, text and id.
 Stored positions are left alone, since the order is applied on every read.
 
 ## `public static IReadOnlyList<LReflexDraft> LReflexClerkScan(IReadOnlyList<LReflex> rows)`

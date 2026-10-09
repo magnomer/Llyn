@@ -11,7 +11,7 @@ public sealed class LTagClerk
     public LTagClerk(LRig rig)
     {
         ArgumentNullException.ThrowIfNull(rig);
-        _lTagClerkTags = rig.LRigTags;
+        _lTagClerkTags = rig.LRigContext.LRigContextTags;
     }
 
     public IReadOnlyList<LTag> LTagClerkRead()

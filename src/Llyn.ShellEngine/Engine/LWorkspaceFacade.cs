@@ -6,33 +6,46 @@ namespace Llyn.ShellEngine;
 
 public sealed class LWorkspaceFacade
 {
-    private readonly LEngine _lWorkspaceFacadeEngine;
+    private readonly LEngineHearth _lWorkspaceFacadeHearth;
+    private readonly LDraftFacade _lWorkspaceFacadeDraft;
+    private readonly LPronunciationFacade _lWorkspaceFacadePronunciation;
     private readonly object _lWorkspaceFacadeGate;
     private readonly Func<string, LRig> _lWorkspaceFacadeFactory;
     private readonly Action<string> _lWorkspaceFacadePointer;
     private string _lWorkspaceFacadeFolder;
     private LDoctorRescue _lWorkspaceFacadeRescue;
 
-    public LWorkspaceFacade(LEngine engine, LRig rig, Func<string, LRig> factory, Action<string> pointer)
+    internal LWorkspaceFacade(
+        LEngineHearth hearth,
+        LDraftFacade draft,
+        LPronunciationFacade pronunciation,
+        LRig rig,
+        Func<string,
+        LRig> factory,
+        Action<string> pointer)
     {
-        ArgumentNullException.ThrowIfNull(engine);
+        ArgumentNullException.ThrowIfNull(hearth);
+        ArgumentNullException.ThrowIfNull(draft);
+        ArgumentNullException.ThrowIfNull(pronunciation);
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(factory);
         ArgumentNullException.ThrowIfNull(pointer);
-        _lWorkspaceFacadeEngine = engine;
-        _lWorkspaceFacadeGate = engine.LEngineGate;
+        _lWorkspaceFacadeHearth = hearth;
+        _lWorkspaceFacadeDraft = draft;
+        _lWorkspaceFacadePronunciation = pronunciation;
+        _lWorkspaceFacadeGate = _lWorkspaceFacadeHearth.LEngineGate;
         _lWorkspaceFacadeFactory = factory;
         _lWorkspaceFacadePointer = pointer;
         _lWorkspaceFacadeFolder = rig.LRigWorkspace;
         _lWorkspaceFacadeRescue = LWorkspaceClerk.LWorkspaceRescueCreate(rig);
     }
 
-    private LEngineStaff LWorkspaceFacadeStaff => _lWorkspaceFacadeEngine.LEngineStaffHeld;
+    private LEngineStaff LWorkspaceFacadeStaff => _lWorkspaceFacadeHearth.LEngineStaffHeld;
 
     public LWorkspaceState LEngineWorkspaceStart()
     {
-        _lWorkspaceFacadeEngine.LEngineDraft.LEngineLeftoverSweep();
-        _lWorkspaceFacadeEngine.LEnginePronunciation.LEngineRecordingSweep();
+        _lWorkspaceFacadeDraft.LEngineLeftoverSweep();
+        _lWorkspaceFacadePronunciation.LEngineRecordingSweep();
         return LEngineStateRead();
     }
 
@@ -53,12 +66,12 @@ public sealed class LWorkspaceFacade
         lock (_lWorkspaceFacadeGate)
         {
             LDoctorRescue rescue = LWorkspaceClerk.LWorkspaceRescueCreate(rig);
-            _lWorkspaceFacadeEngine.LEngineRigApply(rig);
+            _lWorkspaceFacadeHearth.LEngineRigApply(rig);
             _lWorkspaceFacadeFolder = rig.LRigWorkspace;
             _lWorkspaceFacadeRescue = rescue;
         }
 
-        _lWorkspaceFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectWorkspace, 0);
+        _lWorkspaceFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectWorkspace, 0);
     }
 
     public LDoctorRescue LEngineRescueRead()

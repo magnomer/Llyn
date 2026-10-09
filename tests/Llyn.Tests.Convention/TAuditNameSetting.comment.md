@@ -1,11 +1,11 @@
 # TAuditNameSetting.cs
-Hash: `4a7d8ffae3b30663`
+Hash: `62640ae9d0b08cf6`
 
 ## `internal static class TAuditNameSetting`
 
 Every naming-audit setting lives here and nowhere else, hand-written and tracked.
 No script writes this file, and no registered name may appear in it.
-Bases, verbs, and exemptions reach the tests only through the generated TAuditNameRegistry.cs.
+Bases, verbs, and exemptions reach the tests only through the generated TAuditNameRegistry.cs and TAuditVerbRegistry.cs.
 The tests read no script configuration, so no json or ps1 can change what they check.
 They do read the untracked sources Git lists, since an unstaged file is still source.
 

@@ -25,7 +25,8 @@ public sealed class LQuillMention
     {
         ArgumentNullException.ThrowIfNull(span);
 
-        return LMentionClerk.LMentionSpanFind(_lQuillMentionTenure.LTenureKeptRead(), cardId, sentenceId, span);
+        return LMentionClerk.LMentionSpanFind(
+            _lQuillMentionTenure.LTenureHerald.LTenureKeptRead(), cardId, sentenceId, span);
     }
 
     public bool LQuillMentionCheck(long cardId, long sentenceId, string text, int start, int length)

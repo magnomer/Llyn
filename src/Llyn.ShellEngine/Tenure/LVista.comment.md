@@ -1,5 +1,5 @@
 # LVista.cs
-Hash: `e25b5a4e56ad7afb`
+Hash: `6e86b081ea0753e2`
 
 ## `public sealed class LVista`
 
@@ -24,9 +24,10 @@ So the observer lists and the chosen row are read under a gate of their own.
 The mode the panel asked for, told on every ask whether or not it changed the vista.
 The posture stores it as the split every tab opens on next time.
 
-## `private readonly LEngine _lEngine;`
+## `private readonly LEngineHearth _lVistaHearth;`
 
-The engine that raises the vista bulletin.
+The hearth that raises the vista bulletin.
+The vista holds no engine, since the bulletin is all it raises.
 
 ## `private readonly object _lVistaGate = new();`
 
@@ -41,7 +42,7 @@ The observers reached for every bulletin of their subject, in the order they wer
 The observers reached only when the bulletin names the chosen row or no row at all.
 The constructor builds it over `LVistaChosenCheck`, which needs the vista itself.
 
-## `internal LVista(LEngine engine, long id, string tab, LSubject? subject, LCatalogOrder order, LCatalogFilter filter, bool blank, bool editing)`
+## `internal LVista(LEngineHearth hearth, long id, string tab, LSubject? subject, LCatalogOrder order, LCatalogFilter filter, bool blank, bool editing)`
 
 Made by the engine alone, with the order and filter already read from the tab's layout.
 

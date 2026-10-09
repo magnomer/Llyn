@@ -68,7 +68,7 @@ internal static class TInterfaceEngineWorkspace
     }
 
     internal static Uri? TEngineLocationResolve(this LEngine engine, string location) =>
-        engine.LEngineStaffHeld.LEngineStaffLanguage.LLanguageStaffTrail.LTrailClerkResolve(location);
+        engine.LEngineHearth.LEngineStaffHeld.LEngineStaffLanguage.LLanguageStaffTrail.LTrailClerkResolve(location);
 
     internal static Uri? TEngineLocationRead(this LEngine engine, string location) =>
         engine.LEngineWorkspace.LEngineLocationRead(location);

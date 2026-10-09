@@ -16,7 +16,7 @@ public sealed class LMarkupClerk
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(entry);
         _lMarkupClerkVault = rig.LRigVault;
-        _lMarkupClerkMarkup = rig.LRigMarkup;
+        _lMarkupClerkMarkup = rig.LRigAsset.LRigAssetMarkup;
         _lMarkupClerkLanguages = rig.LRigLanguages;
         _lMarkupClerkEntry = entry;
     }

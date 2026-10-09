@@ -1,5 +1,5 @@
 # TInterfaceDatabase.cs
-Hash: `540701a1d06613ff`
+Hash: `03ccf24149a1bbab`
 
 ## `internal static partial class TInterface`
 

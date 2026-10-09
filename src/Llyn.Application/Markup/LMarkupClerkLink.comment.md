@@ -1,5 +1,5 @@
 # LMarkupClerkLink.cs
-Hash: `a3002ed47745277d`
+Hash: `d6046ead5294b1fb`
 
 ## `public sealed class LMarkupClerkLink`
 
@@ -47,4 +47,5 @@ Whether the mention lies inside the text and beside every mention already kept.
 
 ## `private long LMarkupReferenceResolve(LMarkupReference reference)`
 
-The stored reference with the same title and year, or the same address, else a fresh one with its authors.
+The stored reference with the same title and year, or with no title the same address.
+Else a fresh one is created with its authors.

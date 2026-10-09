@@ -75,7 +75,9 @@ internal sealed class TWorkspace : IDisposable
 
     private LEngine TWorkspaceEngineStart(HttpClient client, LSourceFactory? sources)
     {
-        LRig TWorkspaceSourcesApply(LRig rig) => sources is null ? rig : rig with { LRigSources = sources };
+        LRig TWorkspaceSourcesApply(LRig rig) => sources is null
+            ? rig
+            : rig with { LRigSource = rig.LRigSource with { LRigSourceFactory = sources } };
 
         return new LEngine(
             TWorkspaceSourcesApply(TWorkspaceRigCreate(client)),

@@ -66,7 +66,7 @@ internal static partial class TInterface
         engine.LEngineExample.LEngineExampleStart(origin, exampleId);
 
     internal static LExample TEngineExampleCreate(this LEngine engine, LExample example) =>
-        engine.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffExample.LExampleClerkCreate(example);
+        engine.LEngineHearth.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffExample.LExampleClerkCreate(example);
 
     internal static void TEngineExampleDelete(this LEngine engine, long id, bool detach)
     {
@@ -78,7 +78,7 @@ internal static partial class TInterface
 
     internal static void TEngineExampleUpdate(this LEngine engine, LExample example)
     {
-        engine.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffExample.LExampleClerkUpdate(example);
+        engine.LEngineHearth.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffExample.LExampleClerkUpdate(example);
     }
 
     internal static IReadOnlyList<LUsage> TEngineIncomingRead(this LEngine engine, long entryId) =>
@@ -86,9 +86,10 @@ internal static partial class TInterface
 
     internal static IReadOnlyList<LParadigmSlot> TEngineParadigmShow(this LEngine engine, long entryId)
     {
-        lock (engine.LEngineGate)
+        lock (engine.LEngineHearth.LEngineGate)
         {
-            return engine.LEngineStaffHeld.LEngineStaffLanguage.LLanguageStaffParadigm.LParadigmClerkShow(entryId);
+            return engine.LEngineHearth.LEngineStaffHeld.LEngineStaffLanguage.LLanguageStaffParadigm
+                .LParadigmClerkShow(entryId);
         }
     }
 
@@ -118,7 +119,8 @@ internal static partial class TInterface
         engine.LEngineSituation.LEngineSituationCommit(id);
 
     internal static LSituation TEngineSituationCreate(this LEngine engine, LSituation situation) =>
-        engine.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffSituation.LSituationClerkCreate(situation);
+        engine.LEngineHearth.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffSituation
+            .LSituationClerkCreate(situation);
 
     internal static LDraft TEngineSituationStart(this LEngine engine, string origin, long? situationId) =>
         engine.LEngineSituation.LEngineSituationStart(origin, situationId);
@@ -133,7 +135,8 @@ internal static partial class TInterface
 
     internal static void TEngineSituationUpdate(this LEngine engine, LSituation situation)
     {
-        engine.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffSituation.LSituationClerkUpdate(situation);
+        engine.LEngineHearth.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffSituation
+            .LSituationClerkUpdate(situation);
     }
 
     internal static LSpeechValue? TEngineSpeechAdd(this LEngine engine, string language, string name) =>
@@ -146,10 +149,10 @@ internal static partial class TInterface
         engine.LEngineVocabulary.LEngineSpeechRead(language).SingleOrDefault(row => row.LSpeechValueId == id);
 
     internal static LTag TEngineTagCreate(this LEngine engine, string text) =>
-        engine.LEngineCard.LEngineTagCreate(text);
+        engine.LEngineCatalog.LEngineTagCreate(text);
 
     internal static IReadOnlyList<LTag> TEngineTagRead(this LEngine engine) =>
-        engine.LEngineCard.LEngineTagRead();
+        engine.LEngineCatalog.LEngineTagRead();
 
     internal static LEntry TEngineTranslationCreate(this LEngine engine, string headword, string language) =>
         engine.LEngineCard.LEngineTranslationCreate(headword, language);
@@ -158,7 +161,8 @@ internal static partial class TInterface
         this LEngine engine,
         string query,
         long? entryId) =>
-        engine.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffTranslation.LTranslationClerkFind(query, entryId);
+        engine.LEngineHearth.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffTranslation
+            .LTranslationClerkFind(query, entryId);
 
     internal static LEntry? TEngineTranslationResolve(this LEngine engine, string word, long? entryId) =>
         engine.LEngineCard.LEngineTranslationResolve(word, entryId);

@@ -46,15 +46,14 @@
   "ceiling": {
     "hydra": 0,
     "kraken": 0,
-    "spider": 1,
+    "spider": 0,
     "chameleon": 0,
-    "octopus": 3,
-    "centipede": 1,
-    "serpent": 1,
+    "octopus": 0,
+    "centipede": 0,
+    "serpent": 0,
     "hub": 0
   },
   "parts": {
-    "Llyn.Infrastructure.LEntryArchive": 2
   },
   "console": {
     "top": 25

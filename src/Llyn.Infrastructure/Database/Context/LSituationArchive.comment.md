@@ -1,5 +1,5 @@
 # LSituationArchive.cs
-Hash: `45350088e1333a39`
+Hash: `df36872f476d2a41`
 
 ## `public sealed class LSituationArchive : LSituationVault`
 
@@ -96,8 +96,8 @@ Both are store-owned literals, so composing them into the statement opens no inj
 
 Fills the media lists of a whole list in two queries, one per link table, grouped by parent in memory.
 The Image and Video stores each scan their own link table.
-A list read serves the catalog, the chip resolver and every card's chips, and those run on each keystroke.
-Two queries per situation there would cost hundreds of round trips per key, so the list never asks per row.
+A list read serves the catalog and the chip resolver.
+Two queries per situation there would cost hundreds of round trips, so the list never asks per row.
 
 ### `private LSituation LSituationMediaRead(LSituation situation)`
 
@@ -120,12 +120,7 @@ A Situation nothing references is absent rather than present as zero.
 
 ## `public IReadOnlyList<LUsage> LSituationUsageRead(long id)`
 
-The referring sides of one Situation, named rather than counted.
-A Meaning is named by its title and, standing without one, by its definition.
-A Collocation is named by its title and, standing without one, by its expression.
-The Entry each side belongs to is read with it, so a row is legible without a second query.
-Card rows sharing a headword go by language, then entry id, then place on the Entry.
-Those are the keys `LCatalogEntry` breaks entry ties by, so storage order never decides a place.
+The referring sides of one Situation, answered through `LSituationUsage` so the port has one adapter.
 
 ## `public void LSituationDelete(long id, bool detach)`
 

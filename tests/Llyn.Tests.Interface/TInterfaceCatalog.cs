@@ -9,13 +9,14 @@ internal static partial class TInterface
         this LEngine engine,
         string query,
         LCatalogOrder order) =>
-        engine.LEngineStaffHeld.LEngineStaffEntry.LEntryStaffQuery.LEntryFind(query, order);
+        engine.LEngineHearth.LEngineStaffHeld.LEngineStaffEntry.LEntryStaffQuery.LEntryFind(query, order);
 
     internal static IReadOnlyList<LCatalogFavorite> TEngineFavoriteFind(
         this LEngine engine,
         string query,
         LCatalogOrder order) =>
-        engine.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffFavorite.LFavoriteClerkFind(query, order);
+        engine.LEngineHearth.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffFavorite
+            .LFavoriteClerkFind(query, order);
 
     internal static IReadOnlyList<LCatalogPronunciation> TEnginePronunciationFind(
         this LEngine engine,
@@ -45,30 +46,31 @@ internal static partial class TInterface
         this LEngine engine,
         string query,
         LCatalogOrder order) =>
-        engine.LEngineCard.LEngineRegisterFind(query, order);
+        engine.LEngineCatalog.LEngineRegisterFind(query, order);
 
     internal static IReadOnlyList<LRegister> TEngineRegisterFind(
         this LEngine engine,
         string query,
         string language) =>
-        engine.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffRegister.LRegisterClerkFind(query, language);
+        engine.LEngineHearth.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffRegister
+            .LRegisterClerkFind(query, language);
 
     internal static LRegisterOffer TEngineRegisterFind(
         this LEngine engine,
         string text,
         string language,
         long card) =>
-        engine.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffRegister
+        engine.LEngineHearth.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffRegister
             .LRegisterClerkFind(text, language, null, card);
 
     internal static IReadOnlyList<LTag> TEngineTagFind(
         this LEngine engine,
         string query,
         LCatalogOrder order) =>
-        engine.LEngineCard.LEngineTagFind(query, order);
+        engine.LEngineCatalog.LEngineTagFind(query, order);
 
     internal static IReadOnlyDictionary<long, string> TEngineCitationRead(this LEngine engine) =>
-        engine.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffReference.LCitationRead();
+        engine.LEngineHearth.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffReference.LCitationRead();
 
     internal static IReadOnlyDictionary<long, string> TEngineCitationRead(this LEngine engine, LEntryDraft shown) =>
         engine.LEngineReference.LEngineCitationRead(shown);
@@ -86,9 +88,9 @@ internal static partial class TInterface
 
     internal static LReference TEngineCitationCreate(this LEngine engine, string title)
     {
-        LReference stored = engine.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffReference
+        LReference stored = engine.LEngineHearth.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffReference
             .LReferenceClerkCreate(title);
-        engine.LEngineBulletinRaise(LSubject.LSubjectReference, stored.LReferenceId);
+        engine.LEngineHearth.LEngineBulletinRaise(LSubject.LSubjectReference, stored.LReferenceId);
         return stored;
     }
 

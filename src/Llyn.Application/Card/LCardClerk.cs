@@ -28,11 +28,11 @@ public sealed class LCardClerk
         ArgumentNullException.ThrowIfNull(registers);
         ArgumentNullException.ThrowIfNull(translations);
         ArgumentNullException.ThrowIfNull(examples);
-        _lCardClerkCollocations = rig.LRigCollocations;
-        _lCardClerkImages = rig.LRigImages;
-        _lCardClerkVideos = rig.LRigVideos;
-        _lCardClerkSentences = rig.LRigSentences;
-        _lCardClerkContexts = rig.LRigSituations;
+        _lCardClerkCollocations = rig.LRigLexicon.LRigLexiconCollocations;
+        _lCardClerkImages = rig.LRigCitation.LRigCitationImages;
+        _lCardClerkVideos = rig.LRigCitation.LRigCitationVideos;
+        _lCardClerkSentences = rig.LRigSentence.LRigSentenceSentences;
+        _lCardClerkContexts = rig.LRigContext.LRigContextSituations;
         _lCardClerkTags = tags;
         _lCardClerkRegisters = registers;
         _lCardClerkTranslations = translations;

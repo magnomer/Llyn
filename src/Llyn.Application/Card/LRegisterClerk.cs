@@ -11,7 +11,7 @@ public sealed class LRegisterClerk
     public LRegisterClerk(LRig rig)
     {
         ArgumentNullException.ThrowIfNull(rig);
-        _lRegisterClerkRegisters = rig.LRigRegisters;
+        _lRegisterClerkRegisters = rig.LRigContext.LRigContextRegisters;
     }
 
     public IReadOnlyList<LRegister> LRegisterClerkFind(string query, string language)

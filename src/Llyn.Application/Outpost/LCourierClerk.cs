@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,15 +15,9 @@ public sealed class LCourierClerk
 
     private const string LCourierStyle = "Llyn style";
 
-    private const string LCourierTagPrefix = "llyn/";
-
     internal const string LCourierPhonology = "phonology";
 
     internal const int LCourierStall = 3;
-
-    private const int LCourierPatience = 120;
-
-    private static readonly TimeSpan LCourierInterval = TimeSpan.FromSeconds(1);
 
     private readonly LOutpost _lCourierClerkOutpost;
     private readonly LLivery _lCourierClerkLivery;
@@ -33,6 +26,8 @@ public sealed class LCourierClerk
     private readonly LWorkspaceVault _lCourierClerkWorkspaces;
     private readonly LLanguageVault _lCourierClerkLanguages;
     private readonly LEntryQueryClerk _lCourierClerkEntry;
+    private readonly LCourierWarrant _lCourierClerkPairing;
+    private readonly LCourierNote _lCourierClerkNote;
     private readonly object _lCourierClerkGate;
     private readonly Func<LSettings> _lCourierClerkSettings;
     private readonly Action<Exception> _lCourierClerkFault;
@@ -51,12 +46,14 @@ public sealed class LCourierClerk
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(fault);
         _lCourierClerkOutpost = rig.LRigOutpost;
-        _lCourierClerkLivery = rig.LRigLivery;
-        _lCourierClerkManifest = rig.LRigManifest;
+        _lCourierClerkLivery = rig.LRigAsset.LRigAssetLivery;
+        _lCourierClerkManifest = rig.LRigAsset.LRigAssetManifest;
         _lCourierClerkWarrant = rig.LRigWarrant;
-        _lCourierClerkWorkspaces = rig.LRigWorkspaces;
+        _lCourierClerkWorkspaces = rig.LRigKeeping.LRigKeepingWorkspaces;
         _lCourierClerkLanguages = rig.LRigLanguages;
         _lCourierClerkEntry = entry;
+        _lCourierClerkPairing = new LCourierWarrant(_lCourierClerkOutpost, _lCourierClerkWarrant, fault);
+        _lCourierClerkNote = new LCourierNote(_lCourierClerkOutpost, _lCourierClerkLivery);
         _lCourierClerkGate = gate;
         _lCourierClerkSettings = settings;
         _lCourierClerkFault = fault;
@@ -95,57 +92,9 @@ public sealed class LCourierClerk
 
         try
         {
-            LSettings settings = _lCourierClerkSettings();
-            int port = await _lCourierClerkOutpost.LOutpostFind(settings.LSettingsOutpost, cancellation)
-                .ConfigureAwait(false) ?? throw new LRefusal(LRefusal.LRefusalOutpost);
-            string ticket;
-            try
-            {
-                ticket = await _lCourierClerkOutpost.LOutpostWarrantStart(port, cancellation)
-                    .ConfigureAwait(false);
-            }
-            catch (Exception exception) when (exception is not LRefusal and not OperationCanceledException)
-            {
-                _lCourierClerkFault(exception);
-                throw new LRefusal(LRefusal.LRefusalOutpost);
-            }
-
-            int stalled = 0;
-            for (int poll = 0; poll < LCourierPatience; poll++)
-            {
-                await Task.Delay(LCourierInterval, cancellation).ConfigureAwait(false);
-                LWarrantAnswer answer;
-                try
-                {
-                    answer = await _lCourierClerkOutpost
-                        .LOutpostWarrantCheck(port, ticket, cancellation).ConfigureAwait(false);
-                }
-                catch (TimeoutException exception)
-                {
-                    _lCourierClerkFault(exception);
-                    stalled++;
-                    if (stalled >= LCourierStall)
-                    {
-                        throw new LRefusal(LRefusal.LRefusalOutpost);
-                    }
-
-                    continue;
-                }
-
-                stalled = 0;
-                if (answer.LWarrantAnswerState == LWarrantState.LWarrantStateAccepted)
-                {
-                    string token = answer.LWarrantAnswerToken ?? throw new LRefusal(LRefusal.LRefusalWarrant);
-                    return _lCourierClerkWarrant.LWarrantHide(token);
-                }
-
-                if (answer.LWarrantAnswerState == LWarrantState.LWarrantStateRejected)
-                {
-                    throw new LRefusal(LRefusal.LRefusalWarrant);
-                }
-            }
-
-            throw new LRefusal(LRefusal.LRefusalPending);
+            return await _lCourierClerkPairing
+                .LCourierWarrantAttach(_lCourierClerkSettings().LSettingsOutpost, cancellation)
+                .ConfigureAwait(false);
         }
         finally
         {
@@ -156,23 +105,6 @@ public sealed class LCourierClerk
     public bool LCourierClerkCheck()
     {
         return !string.IsNullOrWhiteSpace(_lCourierClerkSettings().LSettingsWarrant);
-    }
-
-    public static bool LCourierWarrantCheck(Exception exception)
-    {
-        return exception is LRefusal { LRefusalReason: LRefusal.LRefusalWarrant };
-    }
-
-    public static Func<long, string> LCourierNoteBuild(LLivery livery, string stamp, IReadOnlyList<LEntry> entries)
-    {
-        ArgumentNullException.ThrowIfNull(livery);
-        ArgumentNullException.ThrowIfNull(stamp);
-        ArgumentNullException.ThrowIfNull(entries);
-
-        HashSet<long> sending = [.. entries.Select(static entry => entry.LEntryId)];
-        return entryId => sending.Contains(entryId)
-            ? livery.LLiveryIdFormat("llyn:entry:" + stamp + ":" + entryId.ToString(CultureInfo.InvariantCulture))
-            : string.Empty;
     }
 
     public static Func<string, string, string, string> LCourierLinkBuild(
@@ -277,7 +209,7 @@ public sealed class LCourierClerk
         }
 
         string stamp = realm.ToString("N");
-        Func<long, string> note = LCourierNoteBuild(_lCourierClerkLivery, stamp, entries);
+        Func<long, string> note = LCourierNote.LCourierNoteBuild(_lCourierClerkLivery, stamp, entries);
         Func<string, string, string, string> address = LCourierLinkBuild(_lCourierClerkLivery, stamp, languages);
         HashSet<string> answered = new(StringComparer.Ordinal);
         LCourierLanguage reconstruction = new(_lCourierClerkOutpost, _lCourierClerkLivery, _lCourierClerkFault);
@@ -311,7 +243,7 @@ public sealed class LCourierClerk
 
                 string sheet = _lCourierClerkLivery.LLiveryRead();
                 LOutpostNote styleNote = new(style, system, LCourierStyle, sheet);
-                await LCourierNoteSend(port, token, styleNote, [], [], digests, cancellation)
+                await _lCourierClerkNote.LCourierNoteSend(port, token, styleNote, [], [], digests, cancellation)
                     .ConfigureAwait(false);
             }
             catch (TimeoutException exception)
@@ -326,7 +258,8 @@ public sealed class LCourierClerk
                     port, token, shelves[sound.LLiveryLanguageName], style, sound, note, address, lookup,
                     async (outpost, parcels) =>
                     {
-                        bool sent = await LCourierNoteSend(port, token, outpost, [], parcels, digests, cancellation)
+                        bool sent = await _lCourierClerkNote
+                            .LCourierNoteSend(port, token, outpost, [], parcels, digests, cancellation)
                             .ConfigureAwait(false);
                         answered.Add(outpost.LOutpostNoteId);
                         saved += sent ? 1 : 0;
@@ -349,7 +282,7 @@ public sealed class LCourierClerk
                 string folder = shelves.GetValueOrDefault(entry.LEntryLanguage.Trim(), notebook);
                 try
                 {
-                    bool sent = await LCourierEntrySend(
+                    bool sent = await _lCourierClerkNote.LCourierEntrySend(
                         port, token, id, folder, style, entry, page, note, link, lookup, digests, cancellation)
                         .ConfigureAwait(false);
                     stalled = 0;
@@ -404,96 +337,5 @@ public sealed class LCourierClerk
         }
 
         return new LReceipt(saved, kept, removed, failed);
-    }
-
-    private async Task<bool> LCourierEntrySend(
-        int port,
-        string token,
-        string id,
-        string folder,
-        string style,
-        LEntry entry,
-        Func<long, LLiveryPage?> page,
-        Func<long, string> note,
-        Func<string, string, string, string> link,
-        Func<string, string> lookup,
-        Dictionary<string, string> digests,
-        CancellationToken cancellation)
-    {
-        LLiveryPage read = page(entry.LEntryId)
-            ?? throw new InvalidOperationException("The entry no longer stands in the workspace.");
-
-        LLiveryNote rendered = _lCourierClerkLivery.LLiveryFormat(read, style, note, link, lookup);
-        LOutpostNote outpost = new(id, folder, entry.LEntryHeadword, rendered.LLiveryNoteBody);
-        return await LCourierNoteSend(
-            port, token, outpost, LCourierTagRead(read.LLiveryPageDraft), rendered.LLiveryNoteParcel, digests,
-            cancellation)
-            .ConfigureAwait(false);
-    }
-
-    private async Task<bool> LCourierNoteSend(
-        int port,
-        string token,
-        LOutpostNote note,
-        IReadOnlyList<string> tags,
-        IReadOnlyList<LParcel> parcels,
-        Dictionary<string, string> digests,
-        CancellationToken cancellation)
-    {
-        string digest = _lCourierClerkLivery.LLiveryDigestFormat(note, tags, parcels);
-        if (digests.TryGetValue(note.LOutpostNoteId, out string? held)
-            && string.Equals(held, digest, StringComparison.Ordinal))
-        {
-            string? body = await _lCourierClerkOutpost.LOutpostNoteRead(
-                port, token, note.LOutpostNoteId, note.LOutpostNoteFolder, note.LOutpostNoteTitle, cancellation)
-                .ConfigureAwait(false);
-            if (string.Equals(body, note.LOutpostNoteBody, StringComparison.Ordinal))
-            {
-                await _lCourierClerkOutpost.LOutpostTagSave(port, token, note.LOutpostNoteId, tags, cancellation)
-                    .ConfigureAwait(false);
-                return false;
-            }
-        }
-
-        foreach (LParcel parcel in parcels)
-        {
-            await _lCourierClerkOutpost.LOutpostParcelSave(port, token, parcel, cancellation)
-                .ConfigureAwait(false);
-        }
-
-        await _lCourierClerkOutpost.LOutpostNoteSave(port, token, note, cancellation).ConfigureAwait(false);
-        await _lCourierClerkOutpost.LOutpostTagSave(port, token, note.LOutpostNoteId, tags, cancellation)
-            .ConfigureAwait(false);
-        digests[note.LOutpostNoteId] = digest;
-        return true;
-    }
-
-    private static IReadOnlyList<string> LCourierTagRead(LEntryDraft draft)
-    {
-        SortedSet<string> tags = new(StringComparer.Ordinal);
-        if (!string.IsNullOrWhiteSpace(draft.LEntryDraftLanguage))
-        {
-            tags.Add(LCourierTagPrefix + draft.LEntryDraftLanguage.Trim());
-        }
-
-        Stack<LCardDraft> cards = new(draft.LEntryDraftMeanings.Concat(draft.LEntryDraftCollocations));
-        while (cards.Count > 0)
-        {
-            LCardDraft card = cards.Pop();
-            foreach (LTagDraft tag in card.LCardDraftTag)
-            {
-                if (!string.IsNullOrWhiteSpace(tag.LTagDraftText))
-                {
-                    tags.Add(LCourierTagPrefix + tag.LTagDraftText.Trim());
-                }
-            }
-
-            foreach (LCardDraft child in card.LCardDraftChild)
-            {
-                cards.Push(child);
-            }
-        }
-
-        return [.. tags];
     }
 }

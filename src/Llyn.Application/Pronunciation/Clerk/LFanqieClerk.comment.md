@@ -1,5 +1,5 @@
 # LFanqieClerk.cs
-Hash: `a0f3ab96ca9fc5fc`
+Hash: `df9b2206b90d24cf`
 
 ## `public sealed class LFanqieClerk`
 

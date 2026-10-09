@@ -28,7 +28,7 @@ Both files are committed, so this project builds on its own.
 Generation 8 checks missing prefix, component count, base registration, and verb ending.
 It exempts descriptive test methods under an all-or-nothing test-prefix consistency gate.
 It audits a generated name at the declaration it is built from.
-It clears a name only through a scoped row of the exempt block.
+It clears a name only through a scoped row of the exempt table.
 
 Generation 9 changes nothing the name audit reports.
 The number rises with the custody and strict audits, which share it.
@@ -58,7 +58,7 @@ The code trees are parsed first, so the partial index sees every part before any
 
 ### `if (registry.TAuditExemptValidate(candidate.TSpecimenName, candidate.TSpecimenPath))`
 
-A row of the `AUDIT:EXEMPT` block grants its name only inside the files that row lists.
+A row of the registry's exempt table grants its name only inside the files that row lists.
 The same word stays a violation in every other file.
 A control template part such as `PART_Track` is registered there with the `*` scope.
 Only the user adds a row, and working a report never grants one.

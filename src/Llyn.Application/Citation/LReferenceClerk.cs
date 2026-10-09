@@ -13,8 +13,8 @@ public sealed class LReferenceClerk
     public LReferenceClerk(LRig rig)
     {
         ArgumentNullException.ThrowIfNull(rig);
-        _lReferenceClerkReferences = rig.LRigReferences;
-        _lReferenceClerkAuthors = rig.LRigAuthors;
+        _lReferenceClerkReferences = rig.LRigCitation.LRigCitationReferences;
+        _lReferenceClerkAuthors = rig.LRigCitation.LRigCitationAuthors;
     }
 
     public static LReference LReferenceClerkBlank =>

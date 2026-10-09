@@ -1,5 +1,5 @@
 # LExampleClerk.cs
-Hash: `73ace4a8abc1824a`
+Hash: `2bdb72e5f03e7834`
 
 ## `public sealed class LExampleClerk`
 
@@ -43,7 +43,7 @@ The cited name follows `LReferenceClerk.LCitationFormat`, the rule every citatio
 
 ## `public void LExampleClerkUpdate(LExample example)`
 
-Rewrites the language, the sentence and the translation of the Example `example` identifies.
+Rewrites the language, sentence, Source, translations and Mentions of the Example `example` identifies.
 
 ## `public void LExampleClerkDelete(long id, bool detach)`
 
@@ -54,7 +54,7 @@ Deletes the Example, dropping every reference to it first when the user asked fo
 Field by field, whether two sentences say the same thing.
 Identity is left out, because a held sentence is named before the Example it becomes exists.
 The language counts, because the tongue a sentence is written in is part of the sentence.
-The cited Source counts too, and so do the Mentions.
+The cited Source counts too, and so do the translations and the Mentions.
 
 ## `public static bool LExampleTextMatch(string field, string shown)`
 
@@ -66,7 +66,7 @@ A blank field reads as nothing recorded, as the engine would store it, so it mat
 The frame, the sentence and the Source line a reading card shows for one sentence row.
 The frame and the sentence follow the same rules the portrait prints by, with `mark` for an unknown part.
 The sentence arrives divided around its Mentions, resolved from the draft row here and only here.
-No writer lets a draft hold overlapping Mentions, so the division never refuses a row.
+The division refuses overlapping Mentions, which no writer lets a draft hold.
 The Source line is the cited Source's ready line, empty when the row cites none or the line is missing.
 
 ## `public static LPortraitPage LExamplePageRead(LExample example, LReference? cited, int count, LPortraitLegend legend)`
@@ -78,8 +78,8 @@ The cited source is named as the catalog names it, and an example citing nothing
 ## `public LExample? LExampleClerkResolve(LSentenceDraft draft, string language, long ownerId, bool collocation, Dictionary<long, long> identity)`
 
 The Example a row names, or `null` when the row names none.
-A row whose Example carries neither an id nor a sentence names none.
-An Example carrying an id names a stored row, however little its sentence says.
+A row whose Example carries neither a stored id nor a sentence names none.
+An Example carrying a stored id names a stored row, however little its sentence says.
 
 ## `public LExample LExampleClerkResolve(LExampleDraft written, string language, long ownerId, bool collocation, Dictionary<long, long> identity)`
 
@@ -87,13 +87,13 @@ The stored Example a row's positive id names, updated to what the row now says.
 A positive id nothing is stored under is refused.
 The card would otherwise be bound to a row the user never chose.
 An Example other cards also quote is pool data.
-An edit made through this card gives this card a fresh row instead.
+A change of its text or Source made through this card gives this card a fresh row instead.
 The other cards keep the row they quoted, unchanged, because nobody edited it there.
 A row carrying a negative id gets a fresh Example, recorded in the map under the negative id it replaces.
 No row is ever matched by its wording, so two new rows with one sentence stay two rows.
 The language falls back to the entry's when the Example states none of its own.
 The Mentions count as part of what the row says.
-A row whose text and Source are unchanged but whose Mentions differ rewrites the Mention rows in place.
+A row whose text and Source are unchanged but whose translations or Mentions differ rewrites those rows in place.
 That holds whoever else quotes the Example.
 A fork made for a text or Source edit is created with the row's Mentions, already shifted by the edit.
 Every Mention written under a negative id is recorded in the map, matched by its offset.

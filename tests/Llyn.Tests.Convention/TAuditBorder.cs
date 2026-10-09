@@ -15,8 +15,8 @@ public sealed class TAuditBorder
             .. TAuditBorderWalker.TAuditRun(),
             .. TAuditBorderWalker.TAuditOfferScan(),
             .. TAuditBorderWalker.TAuditSealScan(),
-            .. TAuditBorderWalker.TAuditDriftScan(),
-            .. TAuditBorderWalker.TAuditLingerScan(),
+            .. TAuditBorderDrift.TAuditDriftScan(),
+            .. TAuditBorderLinger.TAuditLingerScan(),
         ]);
 
     [Fact]
@@ -175,7 +175,7 @@ public sealed class TAuditBorder
     [Fact]
     public void AuditBorder_DriftedOffer_ReportsEachBreak()
     {
-        IReadOnlyList<TAuditHit> hits = TAuditBorderWalker.TAuditDriftRead(
+        IReadOnlyList<TAuditHit> hits = TAuditBorderDrift.TAuditDriftRead(
             new Dictionary<string, string[]>
             {
                 ["Llyn.UIDeportment>Llyn.Conduct"] = ["CSentence", "CStale", "CHidden", "LDisplay"],
@@ -204,7 +204,7 @@ public sealed class TAuditBorder
     [Fact]
     public void AuditBorder_EqualOffer_ReportsNoDrifting()
     {
-        IReadOnlyList<TAuditHit> hits = TAuditBorderWalker.TAuditDriftRead(
+        IReadOnlyList<TAuditHit> hits = TAuditBorderDrift.TAuditDriftRead(
             new Dictionary<string, string[]>
             {
                 ["Llyn.UIDeportment>Llyn.Conduct"] = ["CSentence", "CMissing"],

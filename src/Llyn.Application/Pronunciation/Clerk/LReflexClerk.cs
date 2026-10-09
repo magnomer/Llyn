@@ -17,7 +17,7 @@ public sealed class LReflexClerk
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(languages);
         _lReflexClerkEntries = rig.LRigEntries;
-        _lReflexClerkReflexes = rig.LRigReflexes;
+        _lReflexClerkReflexes = rig.LRigSound.LRigSoundReflexes;
         _lReflexClerkLanguages = languages;
         LReflexClerkFetch = new LReflexFetch(rig, this, languages, claims, gate, raise);
     }

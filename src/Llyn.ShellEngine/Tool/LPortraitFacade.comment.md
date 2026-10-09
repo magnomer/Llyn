@@ -1,14 +1,16 @@
 # LPortraitFacade.cs
-Hash: `6ce7cbe19da243dc`
+Hash: `10517ec7bb8992ab`
 
 ## `internal sealed class LPortraitFacade`
 
 The engine's facade for portrait, covering the entry page and the kind pages, their print and the entry's export.
 The entry page is composed by the portrait clerk, the kind pages by the example, reference and situation clerks.
 
-## `public LPortraitFacade(LEngine engine)`
+## `public LPortraitFacade(LEngineHearth hearth)`
 
-The facade bound to its engine and the engine's gate.
+Stores the hearth and its gate.
+It calls no sibling facade, so `LEngine` builds it among the first.
+The gate, the staff and the shared state are read through the hearth.
 
 ## `internal LPortraitPage LEnginePortraitRead(long entryId, LPortraitLabel label)`
 

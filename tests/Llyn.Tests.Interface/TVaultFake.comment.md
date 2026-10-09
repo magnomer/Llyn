@@ -1,7 +1,7 @@
 # TVaultFake.cs
-Hash: `084f01b13dc7bed8`
+Hash: `7d9c55a8e3e857fb`
 
-## `internal sealed class TVaultFake : LEntryVault`
+## `internal sealed class TVaultFake : LEntryVault, LEntryQueryVault`
 
 An in-memory entry vault backed by a dictionary.
 It counts every entry read so a test can prove the engine went through it.
@@ -9,7 +9,7 @@ The operations the test never drives throw, so a stray call is a failure rather 
 A delete drops the row, so the entry clerk can be proved to leave a tombstone behind one.
 The finders answer empty, since the engine sweeps them at start and must find nothing.
 The query find is the exception and answers every stored row.
-`TRigFake` seats it as the entry port of a rig built from fakes.
+`TRigFake` seats it as both the entry port and the entry query port of a rig built from fakes.
 
 ## `internal LEntry TVaultFakeAdd(LEntry entry)`
 

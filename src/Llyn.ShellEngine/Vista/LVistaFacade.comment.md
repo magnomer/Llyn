@@ -1,18 +1,20 @@
 # LVistaFacade.cs
-Hash: `084e072a233f0993`
+Hash: `c3d5c4901896ca7f`
 
-## `public sealed class LVistaFacade : LFavoritePort, LVistaPort`
+## `public sealed class LVistaFacade : LVistaPort`
 
 Where a panel asks for a vista, the engine's view state for one catalog tab.
 It is also where the panel asks for the rows that vista lists.
 No browse panel keeps its own order and filter fields or applies them itself.
 The engine holds the choices and returns rows already filtered, sorted, numbered and marked.
 The facade keeps the vista registry and delegates stored data to the engine's other facades and staff.
-It implements the favourite and vista ports itself, so Host hands it to Conduct with no outlet between.
+It implements the vista port itself, so Host hands it to Conduct with no outlet between.
+Favorites live in `LCatalogFacade`, beside Tags and Registers.
 
-## `private readonly LEngine _lVistaFacadeEngine`
+## `private readonly LEngineHearth _lVistaFacadeHearth`
 
-The engine this facade belongs to, for shared state, other facades and observer calls.
+The hearth this facade shares, for the gate and the observer calls.
+The sibling facades and the row builder are held beside it.
 
 ## `private readonly object _lVistaFacadeGate`
 
@@ -26,9 +28,11 @@ The ids handed out so far, so each vista's bulletin names one vista.
 
 The vista now standing for each tab, so a restart can detach the one it replaces.
 
-## `public LVistaFacade(LEngine engine)`
+## `internal LVistaFacade(LEngineHearth hearth, LAuthorFacade author, LCatalogFacade catalog, LEntryFacade entry, LExampleFacade example, LReferenceFacade reference, LSettingsFacade settings, LSituationFacade situation, LWorkspaceFacade workspace, LVistaRowFacade row)`
 
-Binds this facade to its engine and the shared gate.
+Stores the hearth, its gate and the sibling facades it calls, all built by `LEngine` before this one.
+The gate, the staff and the shared state are read through the hearth.
+It takes its siblings rather than the engine, so it names only the facades it uses.
 
 ## `public LVista LEngineVistaStart(string tab, LSubject? subject, LCatalogOrder order, LCatalogFilter filter, bool editing, bool blank = false)`
 
@@ -58,65 +62,12 @@ The parent's language filter applies, since a catalog's filter hides languages f
 The child's query narrows the rows, and the child's chosen row is marked.
 The query clerk's match filters, narrows and orders the rows by the child's ordering, as the catalog list does.
 So equal headwords go by the entry tie rule, never by the order the store returned them.
+The entry facade probes the parent's chosen record by subject and id.
 A missing vista, or a parent subject that reaches no entries, answers no rows.
-
-## `internal IReadOnlyList<LVistaRow> LEngineVistaBuild(IReadOnlyList<LEntry> entries, long? chosen)`
-
-Turns entries in their listed order into rows ready to show: twin name, epithet and chosen mark.
-An entry with no epithet carries an empty one, so no reader of a row falls back on its own.
-Twins are numbered by entry id, so the older entry is `(1)` in every view.
-Only entries of one language are twins.
-The epithets come from one scan, so a long list costs one statement rather than one session per row.
-The chosen row is the one whose id equals `chosen`.
-Every catalog of entries builds its rows here, so no panel numbers twins or reads epithets itself.
-It takes the lock for the epithet scan.
 
 ## `public IReadOnlyList<string> LEngineNameResolve(IReadOnlyList<string> labels)`
 
 The labels made distinct in their given order, numbered where two share a name, for the compass rows.
-
-## `private static string[] LEngineTwinRead(IReadOnlyList<LEntry> entries)`
-
-The twin name of each entry, by position, numbered by entry id, through `LEntryClerkTwin`.
-
-## `internal static string[] LEngineTwinRead<LEngineRow>(IReadOnlyList<LEngineRow> rows, Func<LEngineRow, string> name, Func<LEngineRow, long> id)`
-
-The twin name of each row, by position, numbered by row id, through `LEntryClerkTwin`.
-Those rows carry no language, so one empty group serves all of them.
-
-## `internal static string LEngineNameRead(LStateValue value, string unknown, string fallback)`
-
-The name a state value shows, through `LEntryClerkTwin`.
-An unknown state reads as `unknown`, and a value that shows nothing reads as `fallback`.
-
-## `private IReadOnlyDictionary<long, string> LEngineEpithetScan(IReadOnlyList<LEntry> entries)`
-
-The epithet of every listed entry that has one, keyed by id, or nothing while the workspace hides epithets.
-Called under the lock.
-
-## `public IReadOnlyList<LCatalogFavorite> LEngineFavoriteFind(string query, LCatalogOrder order, LCatalogFilter filter)`
-
-The marked entries matching the query in the given order, with those in a hidden language left out.
-
-## `public IReadOnlyList<LVistaRow> LEngineFavoriteFind(LVista vista)`
-
-The rows the favorites panel's vista lists, with the query, order and filter read off the vista.
-They come back as vista rows, twins numbered and epithets read in one scan, so the panel only copies them.
-The row of the entry the vista stands on comes back marked chosen, so the panel keeps no choice.
-
-## `public bool LEngineFavoriteCheck(long entryId)`
-
-Whether the entry is marked.
-
-## `public void LEngineFavoriteSave(long entryId)`
-
-Marks the entry a favorite and announces the mark.
-Marking changes no lexical data and keeps the entry's identity.
-
-## `public void LEngineFavoriteDelete(long entryId)`
-
-Unmarks the entry and announces it.
-The entry stands, still reachable through the entry catalog.
 
 ## `public LDraft? LEngineVistaLoad(LVista vista)`
 

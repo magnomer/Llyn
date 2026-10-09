@@ -19,5 +19,5 @@ internal static partial class TInterface
     internal static long? TTenureStoredRead(this LTenure tenure) => tenure.LTenureStoredRead();
 
     internal static void TEngineBulletinRaise(this LEngine engine, LSubject subject, long id) =>
-        engine.LEngineBulletinRaise(subject, id);
+        engine.LEngineHearth.LEngineBulletinRaise(subject, id);
 }

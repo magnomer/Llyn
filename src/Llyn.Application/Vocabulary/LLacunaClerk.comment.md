@@ -1,5 +1,5 @@
 # LLacunaClerk.cs
-Hash: `5db94b23e1d0fb4b`
+Hash: `6384e98e5452c0ea`
 
 ## `public sealed class LLacunaClerk`
 

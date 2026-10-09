@@ -92,11 +92,11 @@ internal static partial class TInterface
             lookup);
 
     internal static Func<long, string> TCourierNoteBuild(string stamp, IReadOnlyList<LEntry> entries) =>
-        LCourierClerk.LCourierNoteBuild(new LLiverySheet(TThemeLoad()), stamp, entries);
+        LCourierNote.LCourierNoteBuild(new LLiverySheet(TThemeLoad()), stamp, entries);
 
     internal static Task<LReceipt> TCourierSend(
         LEngine engine, Func<long, LLiveryPage?> page, Func<string, LLiveryLanguage> language) =>
-        engine.LEngineStaffHeld.LEngineStaffWorkspace.LWorkspaceStaffCourier.LCourierClerkSend(
+        engine.LEngineHearth.LEngineStaffHeld.LEngineStaffWorkspace.LWorkspaceStaffCourier.LCourierClerkSend(
             page, language, static key => key, CancellationToken.None);
 
     internal static LLiveryLanguage TLiveryLanguageBuild(

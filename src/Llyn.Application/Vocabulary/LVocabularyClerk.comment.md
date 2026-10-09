@@ -1,5 +1,5 @@
 # LVocabularyClerk.cs
-Hash: `7fa17adc50c1bf16`
+Hash: `3886e24328b42f7c`
 
 ## `public sealed class LVocabularyClerk`
 
@@ -71,7 +71,6 @@ A linked value shows its current name, and custom text shows itself.
 Two sets of assignments compared as they are stored.
 A row is the same row when it links the same value row at the same position.
 It is also the same when it carries the same typed text at the same position.
-The generated record equality would compare the entry id too, which is empty on the way in.
 
 ## `public LSentenceOrder LSentenceOrderRead(string language)`
 

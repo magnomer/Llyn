@@ -49,17 +49,16 @@ internal static class TAuditObjectSetting
     {
         ["Hydra"] = 0,
         ["Kraken"] = 0,
-        ["Spider"] = 1,
+        ["Spider"] = 0,
         ["Chameleon"] = 0,
-        ["Octopus"] = 3,
-        ["Centipede"] = 1,
-        ["Serpent"] = 1,
+        ["Octopus"] = 0,
+        ["Centipede"] = 0,
+        ["Serpent"] = 0,
         ["Hub"] = 0,
     };
 
     public static readonly IReadOnlyDictionary<string, int> TAuditPartsCeiling = new Dictionary<string, int>
     {
-        ["Llyn.Infrastructure.LEntryArchive"] = 2,
     };
 
     public static readonly string[] TAuditObjectInclude =

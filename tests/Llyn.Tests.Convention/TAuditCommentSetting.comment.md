@@ -1,5 +1,5 @@
 # TAuditCommentSetting.cs
-Hash: `40adcb268d1a080d`
+Hash: `3580b2b6c96b4b4a`
 
 ## `internal static class TAuditCommentSetting`
 
@@ -15,7 +15,7 @@ Each needs its comment file at the root, and a listed `.props` file must carry n
 
 ## `public static readonly string[] TAuditCommentExempt`
 
-TAuditNameRegistry.cs is generated and carries a generated-file header, so it alone is exempt.
+TAuditNameRegistry.cs and TAuditVerbRegistry.cs are generated and carry a generated-file header, so they alone are exempt.
 
 ## `public static readonly string[] TAuditCommentReserved`
 

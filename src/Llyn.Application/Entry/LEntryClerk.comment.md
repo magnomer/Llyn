@@ -1,5 +1,5 @@
 # LEntryClerk.cs
-Hash: `06bf58d2d2997e19`
+Hash: `eda97c4e86297a83`
 
 ## `public sealed class LEntryClerk`
 
@@ -30,7 +30,8 @@ Reads the entry for `id`, or `null` when no entry has that id.
 The entry as a draft, or `null` when no entry has that id.
 Every recording path is made absolute, so a form can play it and a draft match compares like with like.
 Its reflex rows come in the order the pack declares, through `LReflexClerkSort`.
-The entry view, the editor, Livery and the portrait all load through here, so none sees storage order.
+The entry facade, citation clerk, outcome clerk, markup intake and portrait load through here.
+So none of them sees storage order.
 
 ## `public LRevision LEntryClerkDelete(long id)`
 

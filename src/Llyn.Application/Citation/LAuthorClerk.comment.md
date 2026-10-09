@@ -1,5 +1,5 @@
 # LAuthorClerk.cs
-Hash: `ba4020ddf959abc1`
+Hash: `1e45c458df96b5fa`
 
 ## `public sealed class LAuthorClerk`
 
@@ -43,7 +43,7 @@ Deleting an Author never deletes a Reference.
 ## `public void LAuthorClerkAbsorb(long kept, long dropped)`
 
 Folds the Author `dropped` into the Author `kept` and deletes the dropped row.
-Every Source crediting the dropped Author credits the kept one afterwards, in the place the dropped one stood.
+Every Source crediting the dropped Author credits the kept one afterwards, once, at the earlier of the two places.
 
 ## `public IReadOnlyList<LAuthor> LAuthorClerkFind(string query)`
 

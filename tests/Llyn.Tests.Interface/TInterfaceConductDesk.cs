@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Llyn.Application;
 using Llyn.Conduct;
 using Llyn.Core;
@@ -57,14 +58,14 @@ internal static class TInterfaceConductDesk
             new LDisplay(
                 new LDraftOutlet(engine),
                 engine.LEngineEntry,
-                engine.LEngineVista,
+                engine.LEngineCatalog,
                 engine.LEngineVista,
                 grasps,
                 engine.LEnginePronunciation,
                 engine.LEngineLanguage,
                 engine.LEngineReflex,
                 engine.LEngineFanqie,
-                engine.LEngineLanguage,
+                engine.LEngineScript,
                 engine.LEngineVocabulary,
                 new LSettingsOutlet(engine),
                 TEngineFake.TEngineStubCreate<LMediaPort>(),
@@ -98,6 +99,34 @@ internal static class TInterfaceConductDesk
 
     internal static void TErrandLookupResonate(this CErrand errand, CLookupStep step, LForay foray) =>
         errand.LErrandLookupResonate(step, foray);
+
+    internal static async Task<CErrand> TErrandClipStart(TEditorFixture editor, string language)
+    {
+        editor.TEditorFixtureOpen(null);
+        editor.TEditorFixtureEntry.CEntryLanguageSet(language);
+        editor.TEditorFixtureEntry.CEntryHeadwordSet("hill");
+        CErrand errand = editor.TEditorFixtureDesk.CDeskErrand;
+        TaskCompletionSource finished = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        errand.CErrandClipChanged += roll =>
+        {
+            if (!roll.CClipRollSearching)
+            {
+                finished.TrySetResult();
+            }
+        };
+        errand.CErrandRecordingStart(0);
+        await finished.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        return errand;
+    }
+
+    internal static TEditorFixture TErrandClipPrepare(LEngine engine) => TErrandClipPrepare(engine, []);
+
+    internal static TEditorFixture TErrandClipPrepare(LEngine engine, List<string> asked)
+    {
+        TEditorFixture editor = new(TInterfaceEditor.TEditorCreate(engine, TEnvoyFake.TEnvoyCreate(false, asked)));
+        editor.TEditorVistaRestore(engine.TEngineVistaStart("input", LCatalogOrder.LCatalogOrderHeadword));
+        return editor;
+    }
 
     internal static CSession TSessionCreate(
         CDesk desk, IReadOnlyList<Func<bool>> pending, Func<bool> readySeam, Action<long> storedSeam) =>

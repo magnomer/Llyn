@@ -8,22 +8,62 @@ namespace Llyn.ShellEngine;
 
 internal sealed class LLiveryFacade
 {
-    private readonly LEngine _lLiveryFacadeEngine;
+    private readonly LEngineHearth _lLiveryFacadeHearth;
+    private readonly LCardFacade _lLiveryFacadeCard;
+    private readonly LCatalogFacade _lLiveryFacadeCatalog;
+    private readonly LEntryFacade _lLiveryFacadeEntry;
+    private readonly LFanqieFacade _lLiveryFacadeFanqie;
+    private readonly LLanguageFacade _lLiveryFacadeLanguage;
+    private readonly LReferenceFacade _lLiveryFacadeReference;
+    private readonly LReflexFacade _lLiveryFacadeReflex;
+    private readonly LScriptFacade _lLiveryFacadeScript;
+    private readonly LSettingsFacade _lLiveryFacadeSettings;
+    private readonly LVocabularyFacade _lLiveryFacadeVocabulary;
 
-    public LLiveryFacade(LEngine engine)
+    public LLiveryFacade(
+        LEngineHearth hearth,
+        LCardFacade card,
+        LCatalogFacade catalog,
+        LEntryFacade entry,
+        LFanqieFacade fanqie,
+        LLanguageFacade language,
+        LReferenceFacade reference,
+        LReflexFacade reflex,
+        LScriptFacade script,
+        LSettingsFacade settings,
+        LVocabularyFacade vocabulary)
     {
-        ArgumentNullException.ThrowIfNull(engine);
-        _lLiveryFacadeEngine = engine;
+        ArgumentNullException.ThrowIfNull(hearth);
+        ArgumentNullException.ThrowIfNull(card);
+        ArgumentNullException.ThrowIfNull(catalog);
+        ArgumentNullException.ThrowIfNull(entry);
+        ArgumentNullException.ThrowIfNull(fanqie);
+        ArgumentNullException.ThrowIfNull(language);
+        ArgumentNullException.ThrowIfNull(reference);
+        ArgumentNullException.ThrowIfNull(reflex);
+        ArgumentNullException.ThrowIfNull(script);
+        ArgumentNullException.ThrowIfNull(settings);
+        ArgumentNullException.ThrowIfNull(vocabulary);
+        _lLiveryFacadeHearth = hearth;
+        _lLiveryFacadeCard = card;
+        _lLiveryFacadeCatalog = catalog;
+        _lLiveryFacadeEntry = entry;
+        _lLiveryFacadeFanqie = fanqie;
+        _lLiveryFacadeLanguage = language;
+        _lLiveryFacadeReference = reference;
+        _lLiveryFacadeReflex = reflex;
+        _lLiveryFacadeScript = script;
+        _lLiveryFacadeSettings = settings;
+        _lLiveryFacadeVocabulary = vocabulary;
     }
 
-    private LEngineStaff LLiveryFacadeStaff => _lLiveryFacadeEngine.LEngineStaffHeld;
+    private LEngineStaff LLiveryFacadeStaff => _lLiveryFacadeHearth.LEngineStaffHeld;
 
     public LLiveryPage? LEngineLiveryRead(long entryId)
     {
-        LEngine engine = _lLiveryFacadeEngine;
-        lock (engine.LEngineGate)
+        lock (_lLiveryFacadeHearth.LEngineGate)
         {
-            if (engine.LEngineEntry.LEngineEntryLoad(entryId) is not LEntryDraft draft)
+            if (_lLiveryFacadeEntry.LEngineEntryLoad(entryId) is not LEntryDraft draft)
             {
                 return null;
             }
@@ -32,28 +72,28 @@ internal sealed class LLiveryFacade
             string language = draft.LEntryDraftLanguage;
             IReadOnlyList<string> reflexes =
                 [.. draft.LEntryDraftReflexes.Select(static row => row.LReflexDraftLanguage)];
-            (_, string created, string updated) = engine.LEngineEntry.LEngineStampRead(entryId);
-            LAccentSheet accent = engine.LEngineLanguage.LEngineAccentRead(draft);
+            (_, string created, string updated) = _lLiveryFacadeEntry.LEngineStampRead(entryId);
+            LAccentSheet accent = _lLiveryFacadeLanguage.LEngineAccentRead(draft);
             return LLiveryClerk.LLiveryClerkBuild(
                 draft,
-                engine.LEngineVista.LEngineFavoriteCheck(entryId),
-                engine.LEngineEntry.LEngineGraspRead(entryId),
+                _lLiveryFacadeCatalog.LEngineFavoriteCheck(entryId),
+                _lLiveryFacadeEntry.LEngineGraspRead(entryId),
                 created,
                 updated,
                 accent,
-                engine.LEngineReflex.LEngineGuiseRead(language, reflexes),
+                _lLiveryFacadeReflex.LEngineGuiseRead(language, reflexes),
                 staff.LEngineStaffLanguage.LLanguageStaffReflex.LReflexFoldedRead(language),
-                engine.LEngineLanguage.LEngineTranscriptionRead(draft),
-                engine.LEngineLanguage.LEngineGlyphRead(language),
-                engine.LEngineLanguage.LEngineGlyphDivide(draft),
+                _lLiveryFacadeLanguage.LEngineTranscriptionRead(draft),
+                _lLiveryFacadeLanguage.LEngineGlyphRead(language),
+                _lLiveryFacadeLanguage.LEngineGlyphDivide(draft),
                 staff.LEngineStaffLanguage.LLanguageStaffFrequency.LFrequencyClerkRead(entryId, fetch: false),
-                engine.LEngineVocabulary.LEngineParadigmScan(entryId),
-                engine.LEngineFanqie.LEngineFanqieDivide(entryId),
-                engine.LEngineLanguage.LEngineScriptDivide(entryId),
-                engine.LEngineCard.LEngineTranslationRead(draft),
-                engine.LEngineReference.LEngineCitationRead(draft),
-                engine.LEngineCard.LEngineIncomingRead(entryId),
-                engine.LEngineCard.LEngineEtymonRead(draft),
+                _lLiveryFacadeVocabulary.LEngineParadigmScan(entryId),
+                _lLiveryFacadeFanqie.LEngineFanqieDivide(entryId),
+                _lLiveryFacadeScript.LEngineScriptDivide(entryId),
+                _lLiveryFacadeCard.LEngineTranslationRead(draft),
+                _lLiveryFacadeReference.LEngineCitationRead(draft),
+                _lLiveryFacadeCard.LEngineIncomingRead(entryId),
+                _lLiveryFacadeCard.LEngineEtymonRead(draft),
                 staff.LEngineStaffLanguage.LLanguageStaffLanguage.LLanguageFlagFind,
                 staff.LEngineStaffLanguage.LLanguageStaffLanguage.LVarietyFlagScan(accent));
         }
@@ -64,8 +104,7 @@ internal sealed class LLiveryFacade
         ArgumentNullException.ThrowIfNull(language);
         ArgumentNullException.ThrowIfNull(localize);
 
-        LEngine engine = _lLiveryFacadeEngine;
-        lock (engine.LEngineGate)
+        lock (_lLiveryFacadeHearth.LEngineGate)
         {
             LEngineStaff staff = LLiveryFacadeStaff;
             return LLiveryClerk.LLiveryClerkBuild(
@@ -75,9 +114,9 @@ internal sealed class LLiveryFacade
                 staff.LEngineStaffLanguage.LLanguageStaffShengfu.LShengfuRuleRead(language) is null
                     ? null
                     : staff.LEngineStaffLanguage.LLanguageStaffStem,
-                engine.LEngineFanqie.LEngineBookCheck(language) ? staff.LEngineStaffLanguage.LLanguageStaffDiwei : null,
-                engine.LEngineSettings.LEngineRespellingCheck(language),
-                engine.LEngineSettingsHeld.LSettingsTally,
+                _lLiveryFacadeFanqie.LEngineBookCheck(language) ? staff.LEngineStaffLanguage.LLanguageStaffDiwei : null,
+                _lLiveryFacadeSettings.LEngineRespellingCheck(language),
+                _lLiveryFacadeHearth.LEngineSettingsHeld.LSettingsTally,
                 localize);
         }
     }

@@ -1,11 +1,12 @@
 # TInterfaceConductDesk.cs
-Hash: `af2e9418497d162b`
+Hash: `0086e8d80029c5d2`
 
 ## `internal static class TInterfaceConductDesk`
 
 The relays for Conduct's desk area, its session and its errand.
 They build a desk or a session and reach the desk's starts, its tenure and the errand's maps.
 They read the held draft's sentence ids and build the editor's marks over a grasp port a fact fakes.
+They build the editor and run the recording search that the errand facts share.
 Each relay is transparent and carries no test logic of its own.
 
 ## `internal static CDesk TDeskCreate(LEngine engine, string scope, CEnvoy envoy)`
@@ -96,6 +97,22 @@ Relays the errand's answer to a harvest step.
 ## `internal static void TErrandLookupResonate(this CErrand errand, CLookupStep step, LForay foray)`
 
 Relays the errand's answer to a lookup step of `foray`.
+
+## `internal static async Task<CErrand> TErrandClipStart(TEditorFixture editor, string language)`
+
+Opens a new entry with a headword in the language, and waits until its recording search ended.
+A pack without sources ends the search at once, so later steps are the test's own.
+The clip facts and the errand fault facts both start their errand here.
+
+## `internal static TEditorFixture TErrandClipPrepare(LEngine engine)`
+
+Builds an editor over the engine whose notices nobody reads.
+
+## `internal static TEditorFixture TErrandClipPrepare(LEngine engine, List<string> asked)`
+
+Builds an editor over the engine and restores the input tab's vista, ordered by headword.
+Each notice the editor shows is added to `asked`.
+It answers the fixture, so a test reads only the entry and desk facets.
 
 ## `internal static CSession TSessionCreate(CDesk desk, IReadOnlyList<Func<bool>> pending, Func<bool> readySeam, Action<long> storedSeam)`
 

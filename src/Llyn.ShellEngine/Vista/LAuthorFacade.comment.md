@@ -1,5 +1,5 @@
 # LAuthorFacade.cs
-Hash: `ec9c030cd952ec95`
+Hash: `bb117bf8bbd2f55c`
 
 ## `public sealed class LAuthorFacade : LAuthorPort`
 
@@ -11,9 +11,11 @@ The vista overloads stay here, because a vista is the shell's and the twin names
 The author draft starts and commits here too, through the `LAuthorCitation` the citation clerk holds.
 It implements the author port itself, so Host hands it to Conduct with no outlet between.
 
-## `public LAuthorFacade(LEngine engine)`
+## `internal LAuthorFacade(LEngineHearth hearth, LDraftFacade draft, LEntryFacade entry, LReferenceFacade reference, LSettingsFacade settings)`
 
-Stores the engine and its gate for author operations.
+Stores the hearth, its gate and the sibling facades it calls, all built by `LEngine` before this one.
+The gate, the staff and the shared state are read through the hearth.
+It takes its siblings rather than the engine, so it names only the facades it uses.
 
 ## `public IReadOnlyList<LCatalogAuthor> LEngineAuthorFind(string query, LCatalogOrder order)`
 

@@ -1,5 +1,5 @@
 # TInterfaceDraft.cs
-Hash: `9e0f2092fe8249e1`
+Hash: `eb4c15bc2bf700ab`
 
 ## `internal static partial class TInterface`
 
@@ -24,3 +24,8 @@ A court link with a fresh id, for tests that seed the register directly.
 ## `internal static bool TDraftMatch(LEntryDraft one, LEntryDraft other)`
 
 Relays the draft equality the save and the dirty check share.
+
+## `internal static LEntryDraft TReflexDraftCreate(IReadOnlyList<LReflexDraft> reflexes)`
+
+An English entry with one plain meaning that carries the given reflex rows.
+Both reflex test classes build their entries through it, so the rows are the only variable.

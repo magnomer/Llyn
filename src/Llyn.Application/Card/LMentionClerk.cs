@@ -10,7 +10,7 @@ public sealed class LMentionClerk
 {
     private const int LMentionClerkReach = 8;
 
-    private readonly LEntryVault _lMentionClerkEntries;
+    private readonly LEntryQueryVault _lMentionClerkEntries;
     private readonly LExampleVault _lMentionClerkExamples;
     private readonly LMeaningVault _lMentionClerkMeanings;
     private readonly LTranslationVault _lMentionClerkTranslations;
@@ -20,10 +20,10 @@ public sealed class LMentionClerk
     {
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(languages);
-        _lMentionClerkEntries = rig.LRigEntries;
-        _lMentionClerkExamples = rig.LRigExamples;
-        _lMentionClerkMeanings = rig.LRigMeanings;
-        _lMentionClerkTranslations = rig.LRigTranslations;
+        _lMentionClerkEntries = rig.LRigEntryQuery;
+        _lMentionClerkExamples = rig.LRigSentence.LRigSentenceExamples;
+        _lMentionClerkMeanings = rig.LRigLexicon.LRigLexiconMeanings;
+        _lMentionClerkTranslations = rig.LRigSentence.LRigSentenceTranslations;
         _lMentionClerkLanguages = languages;
     }
 
@@ -250,7 +250,7 @@ public sealed class LMentionClerk
     }
 
     private static (int LMentionClerkOffset, int LMentionClerkLength) LMentionClerkScan(
-        LEntryVault entries, List<Rune> runes, string language, int offset)
+        LEntryQueryVault entries, List<Rune> runes, string language, int offset)
     {
         if (offset >= runes.Count)
         {

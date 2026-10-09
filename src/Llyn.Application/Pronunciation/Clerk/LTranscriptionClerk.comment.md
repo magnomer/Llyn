@@ -1,5 +1,5 @@
 # LTranscriptionClerk.cs
-Hash: `72c8cdb6f6df1a52`
+Hash: `54eefcb680d49b9a`
 
 ## `public sealed class LTranscriptionClerk`
 

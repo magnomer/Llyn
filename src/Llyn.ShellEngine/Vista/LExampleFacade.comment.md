@@ -1,5 +1,5 @@
 # LExampleFacade.cs
-Hash: `9c7f277209975a65`
+Hash: `f20eb09a45abf04e`
 
 ## `public sealed class LExampleFacade : LExamplePort`
 
@@ -10,9 +10,11 @@ The vista overload stays here, because a vista is the shell's and the twin names
 The sentence draft starts and commits here too, through the `LExampleCitation` the citation clerk holds.
 It implements the example port itself, so Host hands it to Conduct with no outlet between.
 
-## `public LExampleFacade(LEngine engine)`
+## `internal LExampleFacade(LEngineHearth hearth, LDraftFacade draft)`
 
-Stores the engine and its gate for example operations.
+Stores the hearth, its gate and the sibling facades it calls, all built by `LEngine` before this one.
+The gate, the staff and the shared state are read through the hearth.
+It takes its siblings rather than the engine, so it names only the facades it uses.
 
 ## `internal LExample? LEngineExampleRead(long id)`
 
@@ -52,4 +54,4 @@ The example clerk owns the rule.
 ## `public (string, IReadOnlyList<LMentionPiece>, string) LEngineLineRead(LSentenceDraft sentence, LSentenceOrder order, string mark, IReadOnlyDictionary<long, string> citations)`
 
 The frame, the sentence divided around its Mentions and the Source line a reading card shows for one sentence row.
-The example clerk composes them, so the display and the portrait share one rule.
+The example clerk composes them, so the display holds no composing rule.

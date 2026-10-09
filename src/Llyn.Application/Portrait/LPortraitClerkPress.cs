@@ -13,7 +13,7 @@ public sealed class LPortraitClerkPress
     public LPortraitClerkPress(LRig rig)
     {
         ArgumentNullException.ThrowIfNull(rig);
-        _lPortraitPressPortraits = rig.LRigPortrait;
+        _lPortraitPressPortraits = rig.LRigAsset.LRigAssetPortrait;
         _lPortraitPressPrinter = rig.LRigPress;
     }
 

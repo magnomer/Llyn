@@ -1,5 +1,5 @@
 # LMeaningClerk.cs
-Hash: `b945a912fe7276b0`
+Hash: `4bd5d050c00a081b`
 
 ## `public sealed class LMeaningClerk`
 
@@ -19,7 +19,7 @@ Reads the meaning port out of `rig` and keeps the card clerk that writes a card'
 
 Reads the Meanings of the Entry identified by `entryId`, in stored order, roots and children together.
 
-## `public static IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)`
+## `public static IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)> LMeaningClerkSort(IReadOnlyList<LMeaning> meanings, string unknown)`
 
 The Meanings of one Entry in reading order, each with its depth and a ready name.
 The store returns them grouped by parent, and a reader wants them in reading order.

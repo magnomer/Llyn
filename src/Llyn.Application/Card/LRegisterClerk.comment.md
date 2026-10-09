@@ -1,5 +1,5 @@
 # LRegisterClerk.cs
-Hash: `2e309e32b0860f5d`
+Hash: `20f6bf680134666d`
 
 ## `public sealed class LRegisterClerk`
 
@@ -70,7 +70,8 @@ The rows of the field that hold something, in the order the card gives them.
 ## `private long LRegisterClerkResolve(LRegisterDraft draft, Dictionary<long, long> identity)`
 
 Turns one row of the field into the id of a stored Register.
-A row that names a stored Register keeps it, and a renamed written row rewrites that row's name.
+A row that names a stored Register keeps it.
+A renamed written row rewrites that row's name unless the Register is built in.
 A positive id nothing is stored under is refused.
 The card would otherwise be bound to a row the user never chose.
 A row carrying a negative id is looked up by its wording first.

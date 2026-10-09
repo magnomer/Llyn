@@ -9,17 +9,23 @@ namespace Llyn.ShellEngine;
 
 public sealed class LEntryFacade : LEntryPort, LGraspPort
 {
-    private readonly LEngine _lEntryFacadeEngine;
+    private readonly LEngineHearth _lEntryFacadeHearth;
+    private readonly LCardFacade _lEntryFacadeCard;
+    private readonly LDraftFacade _lEntryFacadeDraft;
     private readonly object _lEntryFacadeGate;
 
-    public LEntryFacade(LEngine engine)
+    internal LEntryFacade(LEngineHearth hearth, LCardFacade card, LDraftFacade draft)
     {
-        ArgumentNullException.ThrowIfNull(engine);
-        _lEntryFacadeEngine = engine;
-        _lEntryFacadeGate = engine.LEngineGate;
+        ArgumentNullException.ThrowIfNull(hearth);
+        ArgumentNullException.ThrowIfNull(card);
+        ArgumentNullException.ThrowIfNull(draft);
+        _lEntryFacadeHearth = hearth;
+        _lEntryFacadeCard = card;
+        _lEntryFacadeDraft = draft;
+        _lEntryFacadeGate = _lEntryFacadeHearth.LEngineGate;
     }
 
-    private LEngineStaff LEntryFacadeStaff => _lEntryFacadeEngine.LEngineStaffHeld;
+    private LEngineStaff LEntryFacadeStaff => _lEntryFacadeHearth.LEngineStaffHeld;
 
     public LEntry? LEngineEntryRead(long id)
     {
@@ -56,43 +62,28 @@ public sealed class LEntryFacade : LEntryPort, LGraspPort
         }
     }
 
-    public IReadOnlyList<LEntry> LEngineEntryFind(LTag tag)
+    public IReadOnlyList<LEntry> LEngineEntryFind(LSubject subject, long id)
     {
         lock (_lEntryFacadeGate)
         {
-            return LEntryFacadeStaff.LEngineStaffEntry.LEntryStaffQuery.LEntryFind(tag);
-        }
-    }
-
-    public IReadOnlyList<LEntry> LEngineEntryFind(LRegister register)
-    {
-        lock (_lEntryFacadeGate)
-        {
-            return LEntryFacadeStaff.LEngineStaffEntry.LEntryStaffQuery.LEntryFind(register);
-        }
-    }
-
-    public IReadOnlyList<LEntry> LEngineEntryFind(LSituation situation)
-    {
-        lock (_lEntryFacadeGate)
-        {
-            return LEntryFacadeStaff.LEngineStaffEntry.LEntryStaffQuery.LEntryFind(situation);
-        }
-    }
-
-    public IReadOnlyList<LEntry> LEngineEntryFind(LExample example)
-    {
-        lock (_lEntryFacadeGate)
-        {
-            return LEntryFacadeStaff.LEngineStaffEntry.LEntryStaffQuery.LEntryFind(example);
-        }
-    }
-
-    public IReadOnlyList<LEntry> LEngineEntryFind(LReference reference)
-    {
-        lock (_lEntryFacadeGate)
-        {
-            return LEntryFacadeStaff.LEngineStaffEntry.LEntryStaffQuery.LEntryFind(reference);
+            return subject switch
+            {
+                LSubject.LSubjectTag => LEntryFacadeStaff.LEngineStaffEntry.LEntryStaffQuery.LEntryFind(
+                    new LTag(id, string.Empty)),
+                LSubject.LSubjectRegister => LEntryFacadeStaff.LEngineStaffEntry.LEntryStaffQuery.LEntryFind(
+                    new LRegister(id, LStateValue.LStateValueUnspecified)),
+                LSubject.LSubjectExample => LEntryFacadeStaff.LEngineStaffEntry.LEntryStaffQuery.LEntryFind(
+                    new LExample(id, string.Empty, LStateValue.LStateValueUnspecified,
+                        LStateAnchor.LStateAnchorUnspecified)),
+                LSubject.LSubjectSituation => LEntryFacadeStaff.LEngineStaffEntry.LEntryStaffQuery.LEntryFind(
+                    new LSituation(id,
+                        LStateValue.LStateValueUnspecified,
+                        LStateValue.LStateValueUnspecified,
+                        LStateValue.LStateValueUnspecified)),
+                LSubject.LSubjectReference => LEntryFacadeStaff.LEngineStaffEntry.LEntryStaffQuery.LEntryFind(
+                    LReferenceClerk.LReferenceClerkBlank with { LReferenceId = id }),
+                _ => [],
+            };
         }
     }
 
@@ -112,7 +103,7 @@ public sealed class LEntryFacade : LEntryPort, LGraspPort
             recorded = LEntryFacadeStaff.LEngineStaffEntry.LEntryStaffEntry.LEntryClerkDelete(id);
         }
 
-        _lEntryFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectEntry, id);
+        _lEntryFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectEntry, id);
         return recorded;
     }
 
@@ -140,7 +131,7 @@ public sealed class LEntryFacade : LEntryPort, LGraspPort
                 }
             }
 
-            return _lEntryFacadeEngine.LEngineCard.LEngineTranslationCreate(headword, language);
+            return _lEntryFacadeCard.LEngineTranslationCreate(headword, language);
         }
     }
 
@@ -182,7 +173,7 @@ public sealed class LEntryFacade : LEntryPort, LGraspPort
             LEntryFacadeStaff.LEngineStaffEntry.LEntryStaffGrasp.LGraspClerkSet(entryId, grasp);
         }
 
-        _lEntryFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectGrasp, entryId);
+        _lEntryFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectGrasp, entryId);
     }
 
     public LEstablishment LEngineEstablishmentRead()
@@ -192,7 +183,7 @@ public sealed class LEntryFacade : LEntryPort, LGraspPort
             int unsaved = 0;
             foreach (long id in LEntryFacadeStaff.LEngineStaffClaim.LClaimStaffClaim.LClaimClerkHeld)
             {
-                if (_lEntryFacadeEngine.LEngineDraft.LEngineDraftCheck(id))
+                if (_lEntryFacadeDraft.LEngineDraftCheck(id))
                 {
                     unsaved++;
                 }
@@ -230,7 +221,7 @@ public sealed class LEntryFacade : LEntryPort, LGraspPort
     {
         lock (_lEntryFacadeGate)
         {
-            bool epithet = _lEntryFacadeEngine.LEngineSettingsHeld.LSettingsEpithet;
+            bool epithet = _lEntryFacadeHearth.LEngineSettingsHeld.LSettingsEpithet;
             return LEntryFacadeStaff.LEngineStaffCatalog.LCatalogStaffUsage.LUsageClerkRead(id, owner, epithet);
         }
     }

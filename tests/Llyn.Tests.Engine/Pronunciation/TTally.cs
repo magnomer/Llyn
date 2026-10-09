@@ -250,7 +250,7 @@ public sealed class TTally
     private static void TTallyAnchorApply(TWorkspace workspace, LEngine engine, params string[] characters)
     {
         LFanqieArchive fanqie = TInterface.TFanqieArchiveCreate(workspace.TWorkspaceDatabase);
-        LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
+        LEntryQueryArchive entries = TInterface.TEntryQueryCreate(workspace.TWorkspaceDatabase);
         foreach (string character in characters)
         {
             IReadOnlyList<long> anchors = fanqie.TFanqieRead(TTallyLanguage, character)

@@ -11,7 +11,7 @@ public sealed class LWorkspaceClerk
     private readonly LAuditVault _lWorkspaceClerkAudit;
     private readonly LPostureVault _lWorkspaceClerkPosture;
     private readonly LWorkspaceVault _lWorkspaceClerkWorkspaces;
-    private readonly LEntryVault _lWorkspaceClerkEntries;
+    private readonly LEntryQueryVault _lWorkspaceClerkEntries;
     private readonly LPronunciationVault _lWorkspaceClerkPronunciations;
     private readonly LReflexVault _lWorkspaceClerkReflexes;
     private readonly LLocalizationVault _lWorkspaceClerkLocalization;
@@ -30,11 +30,11 @@ public sealed class LWorkspaceClerk
         _lWorkspaceClerkSettings = rig.LRigSettings;
         _lWorkspaceClerkAudit = rig.LRigAudit;
         _lWorkspaceClerkPosture = rig.LRigPosture;
-        _lWorkspaceClerkWorkspaces = rig.LRigWorkspaces;
-        _lWorkspaceClerkEntries = rig.LRigEntries;
-        _lWorkspaceClerkPronunciations = rig.LRigPronunciations;
-        _lWorkspaceClerkReflexes = rig.LRigReflexes;
-        _lWorkspaceClerkLocalization = rig.LRigLocalization;
+        _lWorkspaceClerkWorkspaces = rig.LRigKeeping.LRigKeepingWorkspaces;
+        _lWorkspaceClerkEntries = rig.LRigEntryQuery;
+        _lWorkspaceClerkPronunciations = rig.LRigSound.LRigSoundPronunciations;
+        _lWorkspaceClerkReflexes = rig.LRigSound.LRigSoundReflexes;
+        _lWorkspaceClerkLocalization = rig.LRigAsset.LRigAssetLocalization;
         _lWorkspaceClerkClock = rig.LRigClock;
         _lWorkspaceClerkLanguages = languages;
         _lWorkspaceClerkEpithets = reflexes;
@@ -44,7 +44,7 @@ public sealed class LWorkspaceClerk
     public static LDoctorRescue LWorkspaceRescueCreate(LRig rig)
     {
         ArgumentNullException.ThrowIfNull(rig);
-        return rig.LRigDoctor.LDoctorDatabaseCreate();
+        return rig.LRigKeeping.LRigKeepingDoctor.LDoctorDatabaseCreate();
     }
 
     public static LSettings LWorkspaceSettingsRead(LRig rig, LSettings fallback, out bool settled)

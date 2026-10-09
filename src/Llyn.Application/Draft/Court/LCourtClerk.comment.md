@@ -1,5 +1,5 @@
 # LCourtClerk.cs
-Hash: `2f01c91a2fa61d24`
+Hash: `40b042225e3ef37d`
 
 ## `public sealed class LCourtClerk`
 
@@ -62,6 +62,7 @@ A link whose owner or target did not settle is passed over, because there is not
 ## `public LEntryDraft LTranslationSettle(LEntryDraft content, IReadOnlyDictionary<long, long> identity)`
 
 The same content with every translation that names no stored entry removed.
+Each id is first mapped through `identity` to the entry it became.
 Both card lists are settled, because a chip can sit on a meaning or on a collocation.
 
 ## `private IReadOnlyList<LCardDraft> LTranslationSettle(IReadOnlyList<LCardDraft> cards, IReadOnlyDictionary<long, long> identity)`

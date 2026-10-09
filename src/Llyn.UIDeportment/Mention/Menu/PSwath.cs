@@ -1,25 +1,21 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Shapes;
 
 namespace Llyn.UIDeportment;
 
 public sealed class PSwath : FrameworkElement
 {
-    private const double PSwathRowSlack = 4;
+    internal const double PSwathRowSlack = 4;
 
     private const double PSwathScrollStep = 24;
 
-    private readonly record struct PSwathSeam(int PSwathSeamIndex, TextPointer? PSwathSeamCaret);
-
-    private readonly List<FrameworkElement> _pSwathList = [];
+    private readonly QSwathText _pSwathText;
 
     private ScrollViewer _pSwathViewer = null!;
 
@@ -33,6 +29,7 @@ public sealed class PSwath : FrameworkElement
 
     public PSwath()
     {
+        _pSwathText = new QSwathText(this);
         IsHitTestVisible = false;
         Focusable = true;
         FocusVisualStyle = null;
@@ -56,7 +53,7 @@ public sealed class PSwath : FrameworkElement
         _pSwathAnchor = null;
         _pSwathHead = null;
         _pSwathTail = null;
-        _pSwathList.Clear();
+        _pSwathText.QSwathTextClear();
         InvalidateVisual();
     }
 
@@ -67,7 +64,7 @@ public sealed class PSwath : FrameworkElement
 
     private void PSwathCopyRefine(object sender, ExecutedRoutedEventArgs e)
     {
-        string text = PSwathTextRead();
+        string text = _pSwathText.QSwathTextRead(_pSwathHead, _pSwathTail);
         if (text.Length > 0)
         {
             Clipboard.SetText(text);
@@ -76,107 +73,22 @@ public sealed class PSwath : FrameworkElement
 
     private void PSwathAllRefine(object sender, ExecutedRoutedEventArgs e)
     {
-        _pSwathList.Clear();
-        PSwathScan(_pSwathViewer);
-        if (_pSwathList.Count == 0)
+        _pSwathText.QSwathTextClear();
+        _pSwathText.QSwathTextScan(_pSwathViewer);
+        IReadOnlyList<FrameworkElement> list = _pSwathText.QSwathTextItem;
+        if (list.Count == 0)
         {
             return;
         }
 
-        _pSwathHead = new PSwathSeam(0, (_pSwathList[0] as TextBlock)?.ContentStart);
-        _pSwathTail = new PSwathSeam(_pSwathList.Count - 1, (_pSwathList[^1] as TextBlock)?.ContentEnd);
+        _pSwathHead = new PSwathSeam(0, (list[0] as TextBlock)?.ContentStart);
+        _pSwathTail = new PSwathSeam(list.Count - 1, (list[^1] as TextBlock)?.ContentEnd);
         InvalidateVisual();
-    }
-
-    private void PSwathScan(DependencyObject node)
-    {
-        if (node is UIElement { IsVisible: false })
-        {
-            return;
-        }
-
-        if (node is TextBlock or Image or Rectangle or PContour || QScreen.QScreenFind(node) is not null)
-        {
-            FrameworkElement item = (FrameworkElement)node;
-            if (item.ActualWidth > 0 && item.ActualHeight > 0)
-            {
-                _pSwathList.Add(item);
-            }
-
-            return;
-        }
-
-        int count = VisualTreeHelper.GetChildrenCount(node);
-        for (int index = 0; index < count; index++)
-        {
-            PSwathScan(VisualTreeHelper.GetChild(node, index));
-        }
-    }
-
-    private Rect PSwathBoundRead(FrameworkElement item)
-    {
-        return item.TransformToVisual(this).TransformBounds(new Rect(0, 0, item.ActualWidth, item.ActualHeight));
-    }
-
-    private PSwathSeam? PSwathFind(Point point)
-    {
-        int best = -1;
-        double nearest = double.MaxValue;
-        Rect bound = Rect.Empty;
-
-        for (int index = 0; index < _pSwathList.Count; index++)
-        {
-            Rect rect = PSwathBoundRead(_pSwathList[index]);
-            double vertical = point.Y < rect.Top
-                ? rect.Top - point.Y
-                : point.Y > rect.Bottom ? point.Y - rect.Bottom : 0;
-            double horizontal = point.X < rect.Left
-                ? rect.Left - point.X
-                : point.X > rect.Right ? point.X - rect.Right : 0;
-            double distance = vertical * 1000 + horizontal;
-            if (distance < nearest)
-            {
-                nearest = distance;
-                best = index;
-                bound = rect;
-            }
-        }
-
-        if (best < 0)
-        {
-            return null;
-        }
-
-        if (_pSwathList[best] is not TextBlock block)
-        {
-            return new PSwathSeam(best, null);
-        }
-
-        if (point.Y < bound.Top || (point.X < bound.Left && point.Y <= bound.Bottom))
-        {
-            return new PSwathSeam(best, block.ContentStart);
-        }
-
-        if (point.Y > bound.Bottom || point.X > bound.Right)
-        {
-            return new PSwathSeam(best, block.ContentEnd);
-        }
-
-        try
-        {
-            Point local = TransformToVisual(block).Transform(point);
-            TextPointer? caret = block.GetPositionFromPoint(local, true);
-            return new PSwathSeam(best, caret ?? block.ContentStart);
-        }
-        catch (InvalidOperationException)
-        {
-            return new PSwathSeam(best, block.ContentStart);
-        }
     }
 
     private void PSwathAdjust(Point point)
     {
-        if (_pSwathAnchor is not PSwathSeam anchor || PSwathFind(point) is not PSwathSeam moving)
+        if (_pSwathAnchor is not PSwathSeam anchor || _pSwathText.QSwathTextFind(point) is not PSwathSeam moving)
         {
             return;
         }
@@ -194,51 +106,6 @@ public sealed class PSwath : FrameworkElement
         return anchor is null || moving is null ? 0 : anchor.CompareTo(moving);
     }
 
-    private string PSwathTextRead()
-    {
-        if (_pSwathHead is not PSwathSeam head || _pSwathTail is not PSwathSeam tail)
-        {
-            return string.Empty;
-        }
-
-        StringBuilder text = new();
-        Rect previous = Rect.Empty;
-        for (int index = head.PSwathSeamIndex; index <= tail.PSwathSeamIndex && index < _pSwathList.Count; index++)
-        {
-            if (_pSwathList[index] is not TextBlock block)
-            {
-                continue;
-            }
-
-            string piece = new TextRange(PSwathFromRead(head, index, block), PSwathToRead(tail, index, block)).Text;
-            if (piece.Length == 0)
-            {
-                continue;
-            }
-
-            Rect bound = PSwathBoundRead(block);
-            if (text.Length > 0)
-            {
-                text.Append(PSwathSeparatorRead(previous, bound));
-            }
-
-            text.Append(piece);
-            previous = bound;
-        }
-
-        return text.ToString();
-    }
-
-    private static string PSwathSeparatorRead(Rect previous, Rect bound)
-    {
-        if (previous.IsEmpty || bound.Top >= previous.Bottom - PSwathRowSlack)
-        {
-            return Environment.NewLine;
-        }
-
-        return bound.Left - previous.Right <= PSwathRowSlack ? string.Empty : " ";
-    }
-
     protected override void OnRender(DrawingContext context)
     {
         base.OnRender(context);
@@ -250,31 +117,23 @@ public sealed class PSwath : FrameworkElement
         Brush brush = new SolidColorBrush(SystemColors.HighlightColor) { Opacity = 0.35 };
         brush.Freeze();
 
-        for (int index = head.PSwathSeamIndex; index <= tail.PSwathSeamIndex && index < _pSwathList.Count; index++)
+        IReadOnlyList<FrameworkElement> list = _pSwathText.QSwathTextItem;
+        for (int index = head.PSwathSeamIndex; index <= tail.PSwathSeamIndex && index < list.Count; index++)
         {
-            FrameworkElement item = _pSwathList[index];
+            FrameworkElement item = list[index];
             if (item is not TextBlock block)
             {
-                context.DrawRectangle(brush, null, PSwathBoundRead(item));
+                context.DrawRectangle(brush, null, _pSwathText.QSwathTextPlace(item));
                 continue;
             }
 
             GeneralTransform transform = block.TransformToVisual(this);
-            foreach (Rect band in PSwathBandScan(PSwathFromRead(head, index, block), PSwathToRead(tail, index, block)))
+            TextPointer from = head.PSwathSeamStart(index, block);
+            foreach (Rect band in PSwathBandScan(from, tail.PSwathSeamFinish(index, block)))
             {
                 context.DrawRectangle(brush, null, transform.TransformBounds(band));
             }
         }
-    }
-
-    private static TextPointer PSwathFromRead(PSwathSeam head, int index, TextBlock block)
-    {
-        return index == head.PSwathSeamIndex ? head.PSwathSeamCaret ?? block.ContentStart : block.ContentStart;
-    }
-
-    private static TextPointer PSwathToRead(PSwathSeam tail, int index, TextBlock block)
-    {
-        return index == tail.PSwathSeamIndex ? tail.PSwathSeamCaret ?? block.ContentEnd : block.ContentEnd;
     }
 
     private static IEnumerable<Rect> PSwathBandScan(TextPointer from, TextPointer to)
@@ -347,9 +206,9 @@ public sealed class PSwath : FrameworkElement
                 return;
             }
 
-            _pSwathList.Clear();
-            PSwathScan(_pSwathViewer);
-            _pSwathAnchor = PSwathFind(press);
+            _pSwathText.QSwathTextClear();
+            _pSwathText.QSwathTextScan(_pSwathViewer);
+            _pSwathAnchor = _pSwathText.QSwathTextFind(press);
             if (_pSwathAnchor is null)
             {
                 _pSwathPress = null;

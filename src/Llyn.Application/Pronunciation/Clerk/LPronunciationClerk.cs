@@ -6,7 +6,7 @@ namespace Llyn.Application;
 
 public sealed class LPronunciationClerk
 {
-    private readonly LEntryVault _lPronunciationClerkEntries;
+    private readonly LEntryQueryVault _lPronunciationClerkEntries;
     private readonly LPronunciationVault _lPronunciationClerkPronunciations;
     private readonly LTrail _lPronunciationClerkTrail;
     private readonly string _lPronunciationClerkWorkspace;
@@ -14,8 +14,8 @@ public sealed class LPronunciationClerk
     public LPronunciationClerk(LRig rig)
     {
         ArgumentNullException.ThrowIfNull(rig);
-        _lPronunciationClerkEntries = rig.LRigEntries;
-        _lPronunciationClerkPronunciations = rig.LRigPronunciations;
+        _lPronunciationClerkEntries = rig.LRigEntryQuery;
+        _lPronunciationClerkPronunciations = rig.LRigSound.LRigSoundPronunciations;
         _lPronunciationClerkTrail = rig.LRigTrail;
         _lPronunciationClerkWorkspace = rig.LRigWorkspace;
     }

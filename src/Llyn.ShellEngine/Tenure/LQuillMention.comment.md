@@ -1,5 +1,5 @@
 # LQuillMention.cs
-Hash: `42ebc332dbf7fff4`
+Hash: `6deb5fd9b4c21639`
 
 ## `public sealed class LQuillMention`
 
@@ -22,7 +22,7 @@ Drops one Mention, sent at once.
 ## `public LMentionDraft? LQuillMentionFind(long cardId, long sentenceId, LMentionDraft span)`
 
 The Mention the span lies inside, in the Example one sentence field holds, or none.
-It reads the draft through `LTenureKeptRead`, so a menu asking many times sends nothing.
+It reads the draft through the tenure herald's `LTenureKeptRead`, so a menu asking many times sends nothing.
 
 ## `public bool LQuillMentionCheck(long cardId, long sentenceId, string text, int start, int length)`
 

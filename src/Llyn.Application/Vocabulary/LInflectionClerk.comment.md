@@ -1,5 +1,5 @@
 # LInflectionClerk.cs
-Hash: `7a4a319c6709fd78`
+Hash: `12e79993ef68b91e`
 
 ## `public sealed class LInflectionClerk`
 

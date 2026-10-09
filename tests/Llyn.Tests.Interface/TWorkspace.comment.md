@@ -1,5 +1,5 @@
 # TWorkspace.cs
-Hash: `ad98d0c20cfbd578`
+Hash: `778b29b114301b75`
 
 ## `[assembly: CollectionBehavior(DisableTestParallelization = true)]`
 
@@ -20,7 +20,7 @@ The folder under the temporary path that this workspace owns.
 ## `private TWorkspace(string root)`
 
 Stores the folder and binds a database to it.
-Only the two create forms call it.
+Only `TWorkspaceCreate` calls it, and `TWorkspacePrepare` reaches it through that.
 
 ## `public LDatabase TWorkspaceDatabase { get; }`
 
@@ -44,7 +44,7 @@ The fake phonograph every rig of this workspace carries.
 
 ## `public void TWorkspaceClockSet(Func<DateTimeOffset> clock)`
 
-Freezes the clock on `clock`, for every engine and clerk built over this workspace.
+Makes the clock read time from `clock`, for every engine and clerk built over this workspace.
 
 ## `public static TWorkspace TWorkspaceCreate()`
 

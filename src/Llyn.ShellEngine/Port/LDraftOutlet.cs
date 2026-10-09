@@ -63,10 +63,10 @@ public sealed class LDraftOutlet : LDraftPort
         _lDraftOutletEngine.LEngineAuthor.LEngineBylineFind(draft, query);
 
     public LTagOffer LEngineTagFind(LTenure held, long card, string text) =>
-        _lDraftOutletEngine.LEngineCard.LEngineTagFind(held, card, text);
+        _lDraftOutletEngine.LEngineCatalog.LEngineTagFind(held, card, text);
 
     public LRegisterOffer LEngineRegisterFind(LTenure held, long card, string text) =>
-        _lDraftOutletEngine.LEngineCard.LEngineRegisterFind(held, card, text);
+        _lDraftOutletEngine.LEngineCatalog.LEngineRegisterFind(held, card, text);
 
     public LSituationOffer LEngineSituationFind(LTenure held, long card, string text) =>
         _lDraftOutletEngine.LEngineSituation.LEngineSituationFind(held, card, text);

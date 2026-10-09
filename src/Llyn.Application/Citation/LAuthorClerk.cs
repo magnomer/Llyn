@@ -12,8 +12,8 @@ public sealed class LAuthorClerk
     public LAuthorClerk(LRig rig)
     {
         ArgumentNullException.ThrowIfNull(rig);
-        _lAuthorClerkAuthors = rig.LRigAuthors;
-        _lAuthorClerkReferences = rig.LRigReferences;
+        _lAuthorClerkAuthors = rig.LRigCitation.LRigCitationAuthors;
+        _lAuthorClerkReferences = rig.LRigCitation.LRigCitationReferences;
     }
 
     public LAuthor LAuthorClerkCreate(LAuthor author)

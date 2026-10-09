@@ -1,5 +1,5 @@
 # LDiweiClerk.cs
-Hash: `c6258da8e528ae77`
+Hash: `ac530a588201a30b`
 
 ## `public sealed class LDiweiClerk`
 
@@ -55,7 +55,7 @@ The page of one diwei, its sections scanned from the rows, the hypothesis and th
 
 The reflexes anchored to the diwei's rows, grouped by heading and character.
 The heading is the division, or the place of articulation for a rime.
-Languages and kinds are ranked in the order the pack declares under `order`, never by its fetch rules.
+Languages and kinds are ranked in the language's reflex order the pack declares, never by its fetch rules.
 The anchor query's own order only gathers rows, so it never shows.
 
 ## `private LHypothesis? LHypothesisRead(string language)`

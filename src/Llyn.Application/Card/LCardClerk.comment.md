@@ -1,5 +1,5 @@
 # LCardClerk.cs
-Hash: `f2a194dc4dd2aef9`
+Hash: `c53f71af1ce92114`
 
 ## `public sealed class LCardClerk`
 
@@ -48,6 +48,7 @@ The entry clerk's create and the reconcile above both append through it.
 Re-attaches the rows and Situations one card references and rewrites the Tags it carries so they match the draft.
 A row the card names by a positive id is kept and moved to its new place.
 A row the card names by a negative id gets a row of its own.
+A Situation or Register whose wording is already stored is shared instead.
 The map records which one.
 A row the card dropped is detached only.
 Those rows are independent data the card references.

@@ -40,6 +40,97 @@ internal static partial class TAuditTruthWalker
         }
     }
 
+    internal static bool TAuditHandleCheck(ITypeSymbol type)
+    {
+        string shown = type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
+        return TAuditBinderSide.TAuditConductCheck(type)
+               || TAuditTruthSetting.TAuditTruthHandles.Contains(shown, StringComparer.Ordinal)
+               || TAuditTruthSetting.TAuditTruthHandles.Contains(shown.TrimEnd('?'), StringComparer.Ordinal);
+    }
+
+    internal static HashSet<ISymbol> TAuditAliasRead(IFieldSymbol field, IReadOnlyList<TypeDeclarationSyntax> type)
+    {
+        HashSet<ISymbol> symbols = new([field], SymbolEqualityComparer.Default);
+        List<PropertyDeclarationSyntax> getters = type
+            .SelectMany(part => part.DescendantNodesAndSelf().OfType<TypeDeclarationSyntax>())
+            .SelectMany(part => part.Members.OfType<PropertyDeclarationSyntax>())
+            .Where(property => property.AccessorList?.Accessors.All(accessor =>
+                accessor.IsKind(SyntaxKind.GetAccessorDeclaration)) != false)
+            .ToList();
+        bool grown = true;
+        while (grown)
+        {
+            grown = false;
+            foreach (PropertyDeclarationSyntax property in getters)
+            {
+                if (TAuditBinderSymbol.TAuditSymbolRead(property) is IPropertySymbol alias
+                    && !symbols.Contains(alias)
+                    && !TAuditRequestCheck(property)
+                    && TAuditTruthReference.TAuditNameCheck(property, symbols))
+                {
+                    symbols.Add(alias);
+                    grown = true;
+                }
+            }
+
+            foreach (ArgumentSyntax argument in TAuditTruthReference.TAuditUseRead(symbols.ToList())
+                         .Select(identifier => identifier.Parent)
+                         .OfType<ArgumentSyntax>()
+                         .Where(argument => !argument.RefKindKeyword.IsKind(SyntaxKind.None)))
+            {
+                if (TAuditParameterRead(argument) is { } parameter && symbols.Add(parameter))
+                {
+                    grown = true;
+                }
+            }
+        }
+
+        return symbols;
+    }
+
+    private static void TAuditPuppeteeringScan(List<TViolation> violations)
+    {
+        HashSet<string> walked = TAuditRoots
+            .Select(root => root.SyntaxTree.FilePath)
+            .ToHashSet(StringComparer.Ordinal);
+        List<TViolation> hits = [];
+        foreach (ISymbol member in TAuditPuppetNames ?? [])
+        {
+            if (member is not (IMethodSymbol { MethodKind: not MethodKind.LocalFunction }
+                    or IPropertySymbol or IFieldSymbol or IEventSymbol)
+                || member.ContainingType is not { } type
+                || member.Locations
+                    .Where(location => location.SourceTree is { } tree && walked.Contains(tree.FilePath))
+                    .OrderBy(location => location.SourceTree!.FilePath, StringComparer.Ordinal)
+                    .ThenBy(location => location.SourceSpan.Start)
+                    .FirstOrDefault() is not { SourceTree: { } source } location
+                || !TAuditControlCheck(type.Name, source.FilePath))
+            {
+                continue;
+            }
+
+            hits.Add(new TViolation(
+                source.FilePath,
+                location.GetLineSpan().StartLinePosition.Line + 1,
+                $"{type.Name}.{member.Name}",
+                "Puppeteering",
+                "a control member requests logic"));
+        }
+
+        violations.AddRange(hits
+            .OrderBy(hit => hit.TViolationPath, StringComparer.Ordinal)
+            .ThenBy(hit => hit.TViolationLine)
+            .ThenBy(hit => hit.TViolationName, StringComparer.Ordinal));
+    }
+
+    internal static bool TAuditControlCheck(string name, string path)
+    {
+        string relative = TAuditBinder.TAuditRelativeRead(path);
+        return TAuditTruthSetting.TAuditControlPrefix.Any(ring =>
+            relative.StartsWith(ring.Key + "/", StringComparison.OrdinalIgnoreCase)
+            && name.StartsWith(ring.Value, StringComparison.Ordinal));
+    }
+
     public static IReadOnlySet<ISymbol> TAuditReaderRead(IReadOnlyList<string> sourcePaths)
     {
         lock (TAuditGate)

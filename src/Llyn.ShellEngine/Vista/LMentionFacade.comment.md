@@ -1,5 +1,5 @@
 # LMentionFacade.cs
-Hash: `7260a6dd7fc3edd3`
+Hash: `dfc607b754a42320`
 
 ## `public sealed class LMentionFacade : LMentionPort`
 
@@ -8,9 +8,11 @@ Every find and resolve takes the gate and hands the work to `LMentionClerk`, whi
 The span and offset reads are pure and take no gate.
 It implements the mention port itself, so Host hands it to Conduct with no outlet between.
 
-## `public LMentionFacade(LEngine engine)`
+## `internal LMentionFacade(LEngineHearth hearth)`
 
-Stores the engine and its gate.
+Stores the hearth and its gate.
+It calls no sibling facade, so `LEngine` builds it among the first.
+The gate, the staff and the shared state are read through the hearth.
 
 ## `public LMentionResult LEngineMentionFind(long exampleId, int offset)`
 

@@ -1,5 +1,5 @@
 # LCourierClerk.cs
-Hash: `0bc6c226f4e1a932`
+Hash: `15ec5107026d758c`
 
 ## `public sealed class LCourierClerk`
 
@@ -27,11 +27,6 @@ So the CSS never sits among the entries of any language.
 
 The title of the note whose CSS every entry note imports.
 
-## `private const string LCourierTagPrefix = "llyn/";`
-
-The prefix on every tag Llyn attaches, the language tag included.
-Llyn's tags can then never coincide with the user's own tags.
-
 ## `internal const string LCourierPhonology = "phonology";`
 
 The kind in the id of a language's sound note, whose key is always empty.
@@ -41,20 +36,19 @@ The kind in the id of a language's sound note, whose key is always empty.
 
 How many notes in a row may fail on an unreachable Joplin before the push stops.
 Three rules out one unlucky timeout, yet spares the user waiting through every remaining note.
-It is internal so `LCourierLanguage` stops its reconstruction notes on the same count.
-
-## `private const int LCourierPatience = 120;`
-
-How many times a connect polls for the user's decision, one interval apart.
-Two minutes leaves time to find Joplin's prompt without leaving a forgotten request polling forever.
-
-## `private static readonly TimeSpan LCourierInterval = TimeSpan.FromSeconds(1);`
-
-The wait before each poll, so a connect asks Joplin about once a second.
+It is internal so `LCourierLanguage` and `LCourierWarrant` stop on the same count.
 
 ## `private static int _lCourierClerkBusy;`
 
 One while a push or attach runs anywhere in the process, set by compare-and-swap so two callers never both start.
+
+## `private readonly LCourierWarrant _lCourierClerkPairing;`
+
+The pairing that asks Joplin for a token, built once over the clerk's outpost, warrant and fault sink.
+
+## `private readonly LCourierNote _lCourierClerkNote;`
+
+The note sender every push goes through, built once over the clerk's outpost and livery.
 
 ## `public LCourierClerk(LRig rig, LEntryQueryClerk entry, object gate, Func<LSettings> settings, Action<Exception> fault)`
 
@@ -74,35 +68,16 @@ The busy flag clears in a `finally`, so a failed push never blocks the next one.
 
 ## `public async Task<string> LCourierClerkAttach(CancellationToken cancellation)`
 
-Asks Joplin for a token and answers it hidden, the form the engine stores in settings.
+Asks Joplin for a token through `LCourierWarrant.LCourierWarrantAttach` and answers it hidden.
+The hidden form is the one the engine stores in settings.
 It shares the push's busy flag, so a token never changes under a running push.
-A Joplin that answers on no port refuses with `LRefusalOutpost`, since no request can reach it.
-Any other failure to start the request goes to `fault`, then refuses with `LRefusalOutpost`.
-Each poll waits first, because the user needs time to see Joplin's prompt.
-A poll that throws `TimeoutException` goes to `fault` and counts as still waiting.
-Three such polls in a row refuse with `LRefusalOutpost`, since Joplin stopped answering.
-Any poll that answers breaks the row.
-A rejection refuses with `LRefusalWarrant`, and the user may simply try again.
-Running out of polls refuses with `LRefusalPending`, so the request does not hang the shell.
+The stored port is read from the settings at each attach, so a new port applies without a restart.
 
 ## `public bool LCourierClerkCheck()`
 
 Whether a token is stored, so the shell shows Llyn as connected.
 It only reads the settings and never asks Joplin, so a status bar may ask on every bulletin.
 A stored token Joplin no longer honours still reads true until a push meets the refusal.
-
-## `public static bool LCourierWarrantCheck(Exception exception)`
-
-Whether `exception` is the refusal of a token Joplin rejected or that cannot be restored.
-The engine drops the stored token on it, so the shell offers Connect again.
-Only the exception itself is read, since every courier refusal is thrown bare.
-
-## `public static Func<long, string> LCourierNoteBuild(LLivery livery, string stamp, IReadOnlyList<LEntry> entries)`
-
-The `note` map `LCourierBatchSend` hands to every entry send and to the livery.
-An entry id in `entries` maps to `LLivery.LLiveryIdFormat` over the realm `stamp` and the id.
-Any other id maps to empty, so the livery keeps that reference as plain text.
-So a link never points at a note this push does not write.
 
 ## `public static Func<string, string, string, string> LCourierLinkBuild(LLivery livery, string stamp, IReadOnlyList<LLiveryLanguage> languages)`
 
@@ -143,10 +118,11 @@ The manifest keeps their digests, so the next whole push sweeps what is truly go
 Their ids come from the `LCourierLinkBuild` map, and each note Joplin answers, sent or kept, joins a set.
 The `link` map handed to the entries holds only ids in that set.
 So a failed reconstruction note leaves its chips plain rather than linking to nothing.
-Its notes join the current set, so a series or category gone from the read is trashed.
+Only the notes still read join the current set, so a series or category gone from the read is trashed.
 A failed reconstruction note joins the failed list by title, and its timeouts share the entries' row.
 A reconstruction note counts as saved or kept exactly as an entry does.
-Each entry's note id comes from one `note` map that `LCourierNoteBuild` builds over the realm stamp and the entries.
+Each entry's note id comes from one `note` map that `LCourierNote.LCourierNoteBuild` builds.
+That map runs over the realm stamp and the entries.
 The same map goes to the livery, so a body can name another entry's note.
 Only a failure inside one entry costs just that entry.
 That entry's fault goes to `fault`, and its headword joins the receipt's failed list.
@@ -171,34 +147,3 @@ Three trashes in a row failing with `TimeoutException` refuse with `LRefusalOutp
 Any other outcome breaks that row, as in the entry loop.
 The manifest is saved even on a stop, so the next push skips what already arrived.
 The style note counts in no tally, since it is Llyn's own plumbing rather than content the user wrote.
-
-## `private async Task<bool> LCourierEntrySend(int port, string token, string id, string folder, string style, LEntry entry, Func<long, LLiveryPage?> page, Func<long, string> note, Func<string, string, string, string> link, Func<string, string> lookup, Dictionary<string, string> digests, CancellationToken cancellation)`
-
-Reads the entry's page through `page`, then renders and sends its note.
-The page reader takes the engine's gate itself, so this clerk takes no lock here.
-The page is read without fetching, so a push over every entry starts no network fetch.
-An entry gone since the listing throws, so it counts as failed rather than silently kept.
-The tags come from the page's draft.
-`link` goes to the livery unchanged, so the rime card's chips point at this push's reconstruction notes.
-
-## `private async Task<bool> LCourierNoteSend(int port, string token, LOutpostNote note, IReadOnlyList<string> tags, IReadOnlyList<LParcel> parcels, Dictionary<string, string> digests, CancellationToken cancellation)`
-
-Sends one note unless it is kept, answering whether it was sent.
-A note is kept only when the manifest holds its digest and Joplin returns exactly its body.
-Joplin returns that body only while the note keeps its title.
-That check repairs a note edited, renamed, moved or trashed in Joplin, or missing from a fresh profile.
-A kept note still gets its tags saved, so tags edited inside Joplin are repaired.
-It stays counted as kept.
-The digest and every note id come from the livery, which owns the hashing.
-Parcels go first, so the note never links to a resource Joplin lacks.
-The digest is recorded only after the tags land, so a failed note is retried next time.
-
-## `private static IReadOnlyList<string> LCourierTagRead(LEntryDraft draft)`
-
-Every card tag of the entry, through meanings, collocations and their children, plus its language.
-Each one carries `LCourierTagPrefix`, so it is plainly Llyn's.
-The set is sorted and blank-free, so the same entry always yields the same tags.
-The tag save makes a Llyn note's tag set exact.
-So old unprefixed tags on Llyn notes are detached on the next push.
-The user's tags themselves stay untouched.
-

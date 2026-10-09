@@ -1,5 +1,5 @@
 # LEntryQueryClerk.cs
-Hash: `5142645d964ea27a`
+Hash: `0887fc2f28fecdb4`
 
 ## `public sealed class LEntryQueryClerk`
 

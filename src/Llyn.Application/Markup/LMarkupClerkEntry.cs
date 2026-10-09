@@ -20,8 +20,8 @@ public sealed class LMarkupClerkEntry
         ArgumentNullException.ThrowIfNull(card);
         ArgumentNullException.ThrowIfNull(example);
         _lMarkupEntryRows = rig.LRigEntries;
-        _lMarkupEntrySpeeches = rig.LRigSpeeches;
-        _lMarkupEntryMorphologies = rig.LRigMorphologies;
+        _lMarkupEntrySpeeches = rig.LRigLexicon.LRigLexiconSpeeches;
+        _lMarkupEntryMorphologies = rig.LRigLexicon.LRigLexiconMorphologies;
         _lMarkupEntryReflexes = reflexes;
         _lMarkupEntryCard = card;
         _lMarkupEntryExample = example;

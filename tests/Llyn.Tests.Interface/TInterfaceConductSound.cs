@@ -18,7 +18,7 @@ internal static class TInterfaceConductSound
         engine.LEngineLanguage,
         engine.LEngineReflex,
         engine.LEngineFanqie,
-        engine.LEngineLanguage,
+        engine.LEngineScript,
         engine.LEngineVocabulary,
         new LMediaOutlet(engine),
         new LSettingsOutlet(engine));

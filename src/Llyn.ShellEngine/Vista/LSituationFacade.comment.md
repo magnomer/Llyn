@@ -1,5 +1,5 @@
 # LSituationFacade.cs
-Hash: `3f50eb9dd6b2dd0c`
+Hash: `534a19d43f1ba0ba`
 
 ## `public sealed class LSituationFacade : LSituationPort`
 
@@ -10,9 +10,11 @@ The vista overload stays here, because a vista is the shell's and the twin names
 The situation draft starts and commits here too, through the `LSituationCitation` the citation clerk holds.
 It implements the situation port itself, so Host hands it to Conduct with no outlet between.
 
-## `public LSituationFacade(LEngine engine)`
+## `internal LSituationFacade(LEngineHearth hearth, LDraftFacade draft)`
 
-Stores the engine and its gate for situation operations.
+Stores the hearth, its gate and the sibling facades it calls, all built by `LEngine` before this one.
+The gate, the staff and the shared state are read through the hearth.
+It takes its siblings rather than the engine, so it names only the facades it uses.
 
 ## `public IReadOnlyList<LCatalogSituation> LEngineSituationFind(string query, LCatalogOrder order)`
 

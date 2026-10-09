@@ -22,9 +22,9 @@ public sealed class LClaimClerk
         ArgumentNullException.ThrowIfNull(identity);
         ArgumentNullException.ThrowIfNull(chronicle);
         ArgumentNullException.ThrowIfNull(courts);
-        _lClaimClerkDrafts = rig.LRigDrafts;
-        _lClaimClerkClaims = rig.LRigClaims;
-        _lClaimClerkAuthors = rig.LRigAuthors;
+        _lClaimClerkDrafts = rig.LRigDraft.LRigDraftDrafts;
+        _lClaimClerkClaims = rig.LRigDraft.LRigDraftClaims;
+        _lClaimClerkAuthors = rig.LRigCitation.LRigCitationAuthors;
         _lClaimClerkClock = rig.LRigClock;
         _lClaimClerkProcess = rig.LRigProcess;
         _lClaimClerkIdentity = identity;

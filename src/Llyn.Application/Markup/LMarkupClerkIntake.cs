@@ -41,8 +41,8 @@ public sealed class LMarkupClerkIntake
         ArgumentNullException.ThrowIfNull(draft);
         _lMarkupIntakeVault = rig.LRigVault;
         _lMarkupIntakeRows = rig.LRigEntries;
-        _lMarkupIntakeMeanings = rig.LRigMeanings;
-        _lMarkupIntakeMentions = rig.LRigMentions;
+        _lMarkupIntakeMeanings = rig.LRigLexicon.LRigLexiconMeanings;
+        _lMarkupIntakeMentions = rig.LRigSentence.LRigSentenceMentions;
         _lMarkupIntakeClaims = claims;
         _lMarkupIntakeEntries = entries;
         _lMarkupIntakeRevisions = revisions;

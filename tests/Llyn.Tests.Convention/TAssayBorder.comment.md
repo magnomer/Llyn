@@ -1,5 +1,5 @@
 # TAssayBorder.cs
-Hash: `da0e60ce29c17580`
+Hash: `7a21fc1ac676ed8f`
 
 ## `public sealed class TAssayBorder`
 
@@ -42,7 +42,7 @@ An event declared on another Conduct type is not guarded, so its unpaired subscr
 
 ## `private static IReadOnlyList<TAuditHit> TAssayBorderRun(string holder)`
 
-Binds the port and the given holder and returns every hit of `TAuditBorderWalker.TAuditLingerScan`.
+Binds the port and the given holder and returns every hit of `TAuditBorderLinger.TAuditLingerScan`.
 
 ## `private static string TAssayHolderFormat(string handler, string detach)`
 

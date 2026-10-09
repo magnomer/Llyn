@@ -52,11 +52,11 @@ internal static class TInterfaceConduct
     internal static CEntryBundle TEntryBundleCreate(LEngine engine, object swap) => new(
         swap as LEntryPort ?? engine.LEngineEntry,
         swap as LGraspPort ?? engine.LEngineEntry,
-        swap as LFavoritePort ?? engine.LEngineVista,
+        swap as LFavoritePort ?? engine.LEngineCatalog,
         swap as LVistaPort ?? engine.LEngineVista,
         swap as LCardPort ?? engine.LEngineCard,
-        swap as LTagPort ?? engine.LEngineCard,
-        swap as LRegisterPort ?? engine.LEngineCard,
+        swap as LTagPort ?? engine.LEngineCatalog,
+        swap as LRegisterPort ?? engine.LEngineCatalog,
         swap as LMentionPort ?? engine.LEngineMention,
         swap as LGlyphPort ?? engine.LEngineLanguage,
         swap as LSituationPort ?? engine.LEngineSituation,
@@ -69,11 +69,11 @@ internal static class TInterfaceConduct
     internal static CEntryBundle TEntryBundleCreate(LEngine engine, string member, bool thrown) => new(
         TEngineFault.TEngineFaultCreate<LEntryPort>(engine.LEngineEntry, member, thrown),
         TEngineFault.TEngineFaultCreate<LGraspPort>(engine.LEngineEntry, member, thrown),
-        TEngineFault.TEngineFaultCreate<LFavoritePort>(engine.LEngineVista, member, thrown),
+        TEngineFault.TEngineFaultCreate<LFavoritePort>(engine.LEngineCatalog, member, thrown),
         TEngineFault.TEngineFaultCreate<LVistaPort>(engine.LEngineVista, member, thrown),
         TEngineFault.TEngineFaultCreate<LCardPort>(engine.LEngineCard, member, thrown),
-        TEngineFault.TEngineFaultCreate<LTagPort>(engine.LEngineCard, member, thrown),
-        TEngineFault.TEngineFaultCreate<LRegisterPort>(engine.LEngineCard, member, thrown),
+        TEngineFault.TEngineFaultCreate<LTagPort>(engine.LEngineCatalog, member, thrown),
+        TEngineFault.TEngineFaultCreate<LRegisterPort>(engine.LEngineCatalog, member, thrown),
         TEngineFault.TEngineFaultCreate<LMentionPort>(engine.LEngineMention, member, thrown),
         TEngineFault.TEngineFaultCreate<LGlyphPort>(engine.LEngineLanguage, member, thrown),
         TEngineFault.TEngineFaultCreate<LSituationPort>(engine.LEngineSituation, member, thrown),
@@ -103,7 +103,7 @@ internal static class TInterfaceConduct
     internal static CPhonologyBundle TPhonologyBundleCreate(LEngine engine) => new(
         engine.LEngineFanqie,
         engine.LEngineFanqie,
-        engine.LEngineLanguage,
+        engine.LEngineScript,
         engine.LEngineLanguage,
         engine.LEngineReflex,
         engine.LEngineVocabulary,
@@ -113,7 +113,7 @@ internal static class TInterfaceConduct
     internal static CPhonologyBundle TPhonologyBundleCreate(LEngine engine, string member, bool thrown) => new(
         TEngineFault.TEngineFaultCreate<LFanqiePort>(engine.LEngineFanqie, member, thrown),
         TEngineFault.TEngineFaultCreate<LDiweiPort>(engine.LEngineFanqie, member, thrown),
-        TEngineFault.TEngineFaultCreate<LScriptPort>(engine.LEngineLanguage, member, thrown),
+        TEngineFault.TEngineFaultCreate<LScriptPort>(engine.LEngineScript, member, thrown),
         TEngineFault.TEngineFaultCreate<LLanguagePort>(engine.LEngineLanguage, member, thrown),
         TEngineFault.TEngineFaultCreate<LReflexPort>(engine.LEngineReflex, member, thrown),
         TEngineFault.TEngineFaultCreate<LParadigmPort>(engine.LEngineVocabulary, member, thrown),
@@ -247,6 +247,34 @@ internal static class TInterfaceConduct
 
     internal static CLedgerNotice TLedgerNoticeRead(this CAtelier atelier, Exception exception) =>
         CLedger.LLedgerNoticeRead(atelier.CAtelierSettingsPort, exception);
+
+    internal static List<CLedgerState> TLedgerShowRead(CAtelier atelier)
+    {
+        List<CLedgerState> shown = [];
+        atelier.CAtelierLedger.CLedgerChanged += shown.Add;
+        atelier.TAtelierStubOpen();
+        return shown;
+    }
+
+    internal static LSettingsPort TLedgerPortCreate(Dictionary<string, Func<object?[]?, object?>> answers)
+    {
+        answers.TryAdd("LEngineLocalizationRead", _ => "ko");
+        answers.TryAdd("LEngineLocalizationLoad", _ => new Dictionary<string, string>());
+        answers.TryAdd("LEngineLocalizationScan", _ => new List<string> { "de" });
+        answers.TryAdd("LEngineWorkspaceRead", _ => "fake");
+        answers.TryAdd("LEngineWorkspaceStart", _ => TInterfaceEngineWorkspace.TWorkspaceStateCreate());
+        answers.TryAdd("LEngineWorkspaceFormat", _ => "fake");
+        answers.TryAdd("LEngineEstablishmentRead", _ => TInterfaceEngineWorkspace.TEstablishmentCreate(0, 0, 0));
+        answers.TryAdd("LEngineTextRead", args => (string)args![0]!);
+        answers.TryAdd("LEngineGroupFind", args => ((IReadOnlyList<(string, IReadOnlyList<string>)>)args![0]!)
+            .Select(static group => group.Item1)
+            .ToList());
+        answers.TryAdd("LEngineFailureRead", args => ((string)args![1]!, (string?)null, (string?)null));
+        answers.TryAdd(
+            "LEngineSettingsRead",
+            _ => TInterface.TSettingsCreate("ko", respelled: true, frequency: true, morphology: true, epithet: false));
+        return TEngineFake.TEngineCreate<LSettingsPort>(answers);
+    }
 
     internal static CWorkspaceState? TAtelierStateOpen(this CAtelier atelier)
     {

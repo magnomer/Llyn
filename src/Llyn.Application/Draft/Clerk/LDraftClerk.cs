@@ -27,17 +27,20 @@ public sealed class LDraftClerk
         ArgumentNullException.ThrowIfNull(languages);
         _lDraftClerkIdentity = identity;
         _lDraftClerkEntry = new LDraftClerkEntry(languages);
-        _lDraftClerkChip = new LDraftClerkChip(rig.LRigTags, identity);
-        _lDraftClerkSituation = new LSituationChip(rig.LRigSituations, identity);
-        _lDraftClerkRegister = new LRegisterChip(rig.LRigRegisters, identity);
+        _lDraftClerkChip = new LDraftClerkChip(rig.LRigContext.LRigContextTags, identity);
+        _lDraftClerkSituation = new LSituationChip(rig.LRigContext.LRigContextSituations, identity);
+        _lDraftClerkRegister = new LRegisterChip(rig.LRigContext.LRigContextRegisters, identity);
         _lDraftClerkEtymology = new LDraftClerkEtymology(rig.LRigEntries, identity);
         _lDraftClerkGloss = new LDraftClerkGloss(identity);
-        _lDraftClerkMedia = new LDraftClerkMedia(rig.LRigImages, rig.LRigVideos, identity);
-        _lDraftClerkMention = new LDraftClerkMention(rig.LRigEntries, rig.LRigMeanings, identity);
-        _lDraftClerkPanel = new LDraftClerkPanel(rig.LRigAuthors, identity);
+        _lDraftClerkMedia = new LDraftClerkMedia(
+            rig.LRigCitation.LRigCitationImages,
+            rig.LRigCitation.LRigCitationVideos,
+            identity);
+        _lDraftClerkMention = new LDraftClerkMention(rig.LRigEntries, rig.LRigLexicon.LRigLexiconMeanings, identity);
+        _lDraftClerkPanel = new LDraftClerkPanel(rig.LRigCitation.LRigCitationAuthors, identity);
         _lDraftClerkReading = new LDraftClerkReading(languages, identity);
         _lDraftClerkReflex = new LDraftClerkReflex(languages, identity);
-        _lDraftClerkSentence = new LDraftClerkSentence(rig.LRigExamples, identity);
+        _lDraftClerkSentence = new LDraftClerkSentence(rig.LRigSentence.LRigSentenceExamples, identity);
         _lDraftClerkMint = new LDraftClerkMint(identity);
     }
 

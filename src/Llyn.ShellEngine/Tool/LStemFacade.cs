@@ -7,14 +7,23 @@ namespace Llyn.ShellEngine;
 
 public sealed class LStemFacade : LStemPort
 {
-    private readonly LEngine _lStemFacadeEngine;
+    private readonly LEngineHearth _lStemFacadeHearth;
+    private readonly LEntryFacade _lStemFacadeEntry;
+    private readonly LLanguageFacade _lStemFacadeLanguage;
+    private readonly LVistaRowFacade _lStemFacadeRow;
     private readonly object _lStemFacadeGate;
 
-    public LStemFacade(LEngine engine)
+    internal LStemFacade(LEngineHearth hearth, LEntryFacade entry, LLanguageFacade language, LVistaRowFacade row)
     {
-        ArgumentNullException.ThrowIfNull(engine);
-        _lStemFacadeEngine = engine;
-        _lStemFacadeGate = engine.LEngineGate;
+        ArgumentNullException.ThrowIfNull(hearth);
+        ArgumentNullException.ThrowIfNull(entry);
+        ArgumentNullException.ThrowIfNull(language);
+        ArgumentNullException.ThrowIfNull(row);
+        _lStemFacadeHearth = hearth;
+        _lStemFacadeEntry = entry;
+        _lStemFacadeLanguage = language;
+        _lStemFacadeRow = row;
+        _lStemFacadeGate = _lStemFacadeHearth.LEngineGate;
     }
 
     public LStem? LEngineStemRead(long? id)
@@ -40,7 +49,7 @@ public sealed class LStemFacade : LStemPort
 
     public string? LEngineStemFind()
     {
-        foreach (string language in _lStemFacadeEngine.LEngineLanguage.LEngineLanguageRead())
+        foreach (string language in _lStemFacadeLanguage.LEngineLanguageRead())
         {
             if (LEngineStemCheck(language))
             {
@@ -108,7 +117,7 @@ public sealed class LStemFacade : LStemPort
             stem = LStemFacadeStaff.LEngineStaffLanguage.LLanguageStaffStem.LStemClerkRead(id);
         }
 
-        return _lStemFacadeEngine.LEngineEntry.LEngineGlyphResolve(
+        return _lStemFacadeEntry.LEngineGlyphResolve(
             character, stem?.LStemLanguage ?? LStemPage.LStemPageBlank.LStemPageLanguage).LEntryId;
     }
 
@@ -134,7 +143,7 @@ public sealed class LStemFacade : LStemPort
                 language, stemIds, query, vista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderHeadword);
             return entries.Count == 0
                 ? []
-                : _lStemFacadeEngine.LEngineVista.LEngineVistaBuild(entries, vista?.LVistaChosen);
+                : _lStemFacadeRow.LEngineVistaBuild(entries, vista?.LVistaChosen);
         }
     }
 
@@ -151,5 +160,5 @@ public sealed class LStemFacade : LStemPort
         }
     }
 
-    private LEngineStaff LStemFacadeStaff => _lStemFacadeEngine.LEngineStaffHeld;
+    private LEngineStaff LStemFacadeStaff => _lStemFacadeHearth.LEngineStaffHeld;
 }

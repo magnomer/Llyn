@@ -1,5 +1,5 @@
 # TAuditBorder.cs
-Hash: `1e3751f40cd58ae4`
+Hash: `0027b680a1d1279d`
 
 ## `public sealed class TAuditBorder`
 

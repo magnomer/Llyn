@@ -1,5 +1,5 @@
 # LShengfuClerk.cs
-Hash: `c3236ed8904fb14b`
+Hash: `45dfb081edd36382`
 
 ## `public sealed class LShengfuClerk`
 

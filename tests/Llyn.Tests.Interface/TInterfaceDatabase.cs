@@ -32,6 +32,9 @@ internal static partial class TInterface
     internal static LEntryArchive TEntryArchiveCreate(LDatabase database) =>
         new(database);
 
+    internal static LEntryQueryArchive TEntryQueryCreate(LDatabase database) =>
+        new(database);
+
     internal static LEtymologyArchive TEtymologyArchiveCreate(LDatabase database) =>
         new(database);
 
@@ -90,11 +93,11 @@ internal static partial class TInterface
         entryVault.LEntryDelete(id);
     }
 
-    internal static IReadOnlyList<LEntry> TEntryFind(this LEntryVault entryVault, string query) =>
+    internal static IReadOnlyList<LEntry> TEntryFind(this LEntryQueryVault entryVault, string query) =>
         entryVault.LEntryFind(query);
 
     internal static IReadOnlyList<LEntry> TEntryHeadwordFind(
-        this LEntryVault entryVault, string language, string headword) =>
+        this LEntryQueryVault entryVault, string language, string headword) =>
         entryVault.LEntryHeadwordFind(language, headword);
 
     internal static IReadOnlyList<LForm> TEntryFormRead(this LEntryVault entryVault, long id) =>

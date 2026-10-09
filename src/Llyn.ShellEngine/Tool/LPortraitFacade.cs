@@ -6,14 +6,15 @@ namespace Llyn.ShellEngine;
 
 internal sealed class LPortraitFacade
 {
-    private readonly LEngine _lPortraitFacadeEngine;
+    private readonly LEngineHearth _lPortraitFacadeHearth;
     private readonly object _lPortraitFacadeGate;
 
-    public LPortraitFacade(LEngine engine)
+    public LPortraitFacade(LEngineHearth hearth)
     {
-        ArgumentNullException.ThrowIfNull(engine);
-        _lPortraitFacadeEngine = engine;
-        _lPortraitFacadeGate = engine.LEngineGate;
+        ArgumentNullException.ThrowIfNull(hearth);
+        _lPortraitFacadeHearth = hearth;
+
+        _lPortraitFacadeGate = _lPortraitFacadeHearth.LEngineGate;
     }
 
     internal LPortraitPage LEnginePortraitRead(long entryId, LPortraitLabel label)
@@ -118,5 +119,5 @@ internal sealed class LPortraitFacade
             .LPortraitClerkPrint(LEnginePortraitRead(id, owner, legend), ticket);
     }
 
-    private LEngineStaff LPortraitFacadeStaff => _lPortraitFacadeEngine.LEngineStaffHeld;
+    private LEngineStaff LPortraitFacadeStaff => _lPortraitFacadeHearth.LEngineStaffHeld;
 }

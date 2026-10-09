@@ -6,7 +6,7 @@ namespace Llyn.Application;
 
 public sealed class LMarkupClerkLink
 {
-    private readonly LEntryVault _lMarkupLinkEntries;
+    private readonly LEntryQueryVault _lMarkupLinkEntries;
     private readonly LMeaningVault _lMarkupLinkMeanings;
     private readonly LReferenceClerk _lMarkupLinkReferences;
     private readonly LAuthorClerk _lMarkupLinkAuthors;
@@ -18,8 +18,8 @@ public sealed class LMarkupClerkLink
         ArgumentNullException.ThrowIfNull(references);
         ArgumentNullException.ThrowIfNull(authors);
         ArgumentNullException.ThrowIfNull(trail);
-        _lMarkupLinkEntries = rig.LRigEntries;
-        _lMarkupLinkMeanings = rig.LRigMeanings;
+        _lMarkupLinkEntries = rig.LRigEntryQuery;
+        _lMarkupLinkMeanings = rig.LRigLexicon.LRigLexiconMeanings;
         _lMarkupLinkReferences = references;
         _lMarkupLinkAuthors = authors;
         _lMarkupLinkTrail = trail;

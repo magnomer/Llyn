@@ -1,5 +1,5 @@
 # LWorkspaceClerk.cs
-Hash: `85eae6a7bb58e0e2`
+Hash: `c7be97a92bcdd963`
 
 ## `public sealed class LWorkspaceClerk`
 

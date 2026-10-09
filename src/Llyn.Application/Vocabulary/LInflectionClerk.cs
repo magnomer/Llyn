@@ -14,10 +14,10 @@ public sealed class LInflectionClerk
     public LInflectionClerk(LRig rig)
     {
         ArgumentNullException.ThrowIfNull(rig);
-        _lInflectionClerkInflections = rig.LRigInflections;
-        _lInflectionClerkLacunae = rig.LRigLacunae;
-        _lInflectionClerkMorphologies = rig.LRigMorphologies;
-        _lInflectionClerkSpeeches = rig.LRigSpeeches;
+        _lInflectionClerkInflections = rig.LRigLexicon.LRigLexiconInflections;
+        _lInflectionClerkLacunae = rig.LRigLexicon.LRigLexiconLacunae;
+        _lInflectionClerkMorphologies = rig.LRigLexicon.LRigLexiconMorphologies;
+        _lInflectionClerkSpeeches = rig.LRigLexicon.LRigLexiconSpeeches;
     }
 
     public void LInflectionClerkValidate(IReadOnlyList<LInflection> inflections)

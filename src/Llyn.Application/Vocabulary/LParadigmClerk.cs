@@ -18,10 +18,10 @@ public sealed class LParadigmClerk
     {
         ArgumentNullException.ThrowIfNull(rig);
         _lParadigmClerkEntries = rig.LRigEntries;
-        _lParadigmClerkInflections = rig.LRigInflections;
-        _lParadigmClerkLacunae = rig.LRigLacunae;
-        _lParadigmClerkMorphologies = rig.LRigMorphologies;
-        _lParadigmClerkSpeeches = rig.LRigSpeeches;
+        _lParadigmClerkInflections = rig.LRigLexicon.LRigLexiconInflections;
+        _lParadigmClerkLacunae = rig.LRigLexicon.LRigLexiconLacunae;
+        _lParadigmClerkMorphologies = rig.LRigLexicon.LRigLexiconMorphologies;
+        _lParadigmClerkSpeeches = rig.LRigLexicon.LRigLexiconSpeeches;
     }
 
     public IReadOnlyList<LParadigmSlot> LParadigmClerkRead(LEntry entry)

@@ -7,7 +7,7 @@ namespace Llyn.ShellEngine;
 
 public sealed class LVista
 {
-    private readonly LEngine _lEngine;
+    private readonly LEngineHearth _lVistaHearth;
 
     private readonly object _lVistaGate = new();
 
@@ -16,10 +16,10 @@ public sealed class LVista
     private readonly LBulletinRoster _lVistaChosenRoster;
 
     internal LVista(
-        LEngine engine, long id, string tab, LSubject? subject, LCatalogOrder order, LCatalogFilter filter,
+        LEngineHearth hearth, long id, string tab, LSubject? subject, LCatalogOrder order, LCatalogFilter filter,
         bool blank, bool editing)
     {
-        _lEngine = engine;
+        _lVistaHearth = hearth;
         _lVistaChosenRoster = new LBulletinRoster(LVistaChosenCheck);
         LVistaId = id;
         LVistaTab = tab;
@@ -91,7 +91,7 @@ public sealed class LVista
         }
 
         LVistaEditing = editing;
-        _lEngine.LEngineBulletinRaise(LSubject.LSubjectVista, LVistaId);
+        _lVistaHearth.LEngineBulletinRaise(LSubject.LSubjectVista, LVistaId);
     }
 
     public void LVistaOrderSet(LCatalogOrder? order)
@@ -102,7 +102,7 @@ public sealed class LVista
         }
 
         LVistaOrder = chosen;
-        _lEngine.LEngineBulletinRaise(LSubject.LSubjectVista, LVistaId);
+        _lVistaHearth.LEngineBulletinRaise(LSubject.LSubjectVista, LVistaId);
     }
 
     public void LVistaFilterSet(LCatalogFilter filter)
@@ -115,7 +115,7 @@ public sealed class LVista
         }
 
         LVistaFilter = filter;
-        _lEngine.LEngineBulletinRaise(LSubject.LSubjectVista, LVistaId);
+        _lVistaHearth.LEngineBulletinRaise(LSubject.LSubjectVista, LVistaId);
     }
 
     public void LVistaFilterSet(IReadOnlyList<string> hidden)
@@ -135,7 +135,7 @@ public sealed class LVista
         }
 
         LVistaQuery = query;
-        _lEngine.LEngineBulletinRaise(LSubject.LSubjectVista, LVistaId);
+        _lVistaHearth.LEngineBulletinRaise(LSubject.LSubjectVista, LVistaId);
     }
 
     public void LVistaSelect(long? id)

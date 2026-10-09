@@ -9,14 +9,23 @@ namespace Llyn.ShellEngine;
 
 public sealed class LFanqieFacade : LFanqiePort, LDiweiPort
 {
-    private readonly LEngine _lFanqieFacadeEngine;
+    private readonly LEngineHearth _lFanqieFacadeHearth;
+    private readonly LEntryFacade _lFanqieFacadeEntry;
+    private readonly LSettingsFacade _lFanqieFacadeSettings;
+    private readonly LVistaRowFacade _lFanqieFacadeRow;
     private readonly object _lFanqieFacadeGate;
 
-    public LFanqieFacade(LEngine engine)
+    internal LFanqieFacade(LEngineHearth hearth, LEntryFacade entry, LSettingsFacade settings, LVistaRowFacade row)
     {
-        ArgumentNullException.ThrowIfNull(engine);
-        _lFanqieFacadeEngine = engine;
-        _lFanqieFacadeGate = engine.LEngineGate;
+        ArgumentNullException.ThrowIfNull(hearth);
+        ArgumentNullException.ThrowIfNull(entry);
+        ArgumentNullException.ThrowIfNull(settings);
+        ArgumentNullException.ThrowIfNull(row);
+        _lFanqieFacadeHearth = hearth;
+        _lFanqieFacadeEntry = entry;
+        _lFanqieFacadeSettings = settings;
+        _lFanqieFacadeRow = row;
+        _lFanqieFacadeGate = _lFanqieFacadeHearth.LEngineGate;
     }
 
     public IReadOnlyList<LFanqieBook> LEngineBookRead(string language)
@@ -34,7 +43,13 @@ public sealed class LFanqieFacade : LFanqiePort, LDiweiPort
 
     public string? LEngineBookFind()
     {
-        foreach (string language in _lFanqieFacadeEngine.LEngineLanguage.LEngineLanguageRead())
+        IReadOnlyList<string> languages;
+        lock (_lFanqieFacadeGate)
+        {
+            languages = LFanqieFacadeStaff.LEngineStaffLanguage.LLanguageStaffLanguage.LLanguageClerkRead();
+        }
+
+        foreach (string language in languages)
         {
             if (LEngineBookCheck(language))
             {
@@ -117,8 +132,8 @@ public sealed class LFanqieFacade : LFanqiePort, LDiweiPort
 
             return LFanqieFacadeStaff.LEngineStaffLanguage.LLanguageStaffDiwei.LDiweiPageRead(
                 diwei,
-                _lFanqieFacadeEngine.LEngineSettings.LEngineRespellingCheck(diwei.LDiweiLanguage),
-                _lFanqieFacadeEngine.LEngineSettingsHeld.LSettingsTally,
+                _lFanqieFacadeSettings.LEngineRespellingCheck(diwei.LDiweiLanguage),
+                _lFanqieFacadeHearth.LEngineSettingsHeld.LSettingsTally,
                 localize);
         }
     }
@@ -131,7 +146,7 @@ public sealed class LFanqieFacade : LFanqiePort, LDiweiPort
             diwei = LFanqieFacadeStaff.LEngineStaffLanguage.LLanguageStaffDiwei.LDiweiClerkRead(id);
         }
 
-        return _lFanqieFacadeEngine.LEngineEntry.LEngineGlyphResolve(
+        return _lFanqieFacadeEntry.LEngineGlyphResolve(
             character, diwei?.LDiweiLanguage ?? LDiweiPage.LDiweiPageBlank.LDiweiPageLanguage).LEntryId;
     }
 
@@ -190,7 +205,7 @@ public sealed class LFanqieFacade : LFanqiePort, LDiweiPort
                     language, diweiIds, query, vista?.LVistaOrder ?? LCatalogOrder.LCatalogOrderHeadword);
             return entries.Count == 0
                 ? []
-                : _lFanqieFacadeEngine.LEngineVista.LEngineVistaBuild(entries, vista?.LVistaChosen);
+                : _lFanqieFacadeRow.LEngineVistaBuild(entries, vista?.LVistaChosen);
         }
     }
 
@@ -224,5 +239,5 @@ public sealed class LFanqieFacade : LFanqiePort, LDiweiPort
         return LEngineDiweiRead(chosen)?.LDiweiLanguage ?? LEngineBookFind() ?? string.Empty;
     }
 
-    private LEngineStaff LFanqieFacadeStaff => _lFanqieFacadeEngine.LEngineStaffHeld;
+    private LEngineStaff LFanqieFacadeStaff => _lFanqieFacadeHearth.LEngineStaffHeld;
 }

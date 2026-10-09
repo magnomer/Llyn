@@ -10,17 +10,23 @@ namespace Llyn.ShellEngine;
 
 public sealed class LPronunciationFacade : LPronunciationPort
 {
-    private readonly LEngine _lPronunciationFacadeEngine;
+    private readonly LEngineHearth _lPronunciationFacadeHearth;
+    private readonly LDraftFacade _lPronunciationFacadeDraft;
+    private readonly LVistaRowFacade _lPronunciationFacadeRow;
     private readonly object _lPronunciationFacadeGate;
 
-    public LPronunciationFacade(LEngine engine)
+    internal LPronunciationFacade(LEngineHearth hearth, LDraftFacade draft, LVistaRowFacade row)
     {
-        ArgumentNullException.ThrowIfNull(engine);
-        _lPronunciationFacadeEngine = engine;
-        _lPronunciationFacadeGate = engine.LEngineGate;
+        ArgumentNullException.ThrowIfNull(hearth);
+        ArgumentNullException.ThrowIfNull(draft);
+        ArgumentNullException.ThrowIfNull(row);
+        _lPronunciationFacadeHearth = hearth;
+        _lPronunciationFacadeDraft = draft;
+        _lPronunciationFacadeRow = row;
+        _lPronunciationFacadeGate = _lPronunciationFacadeHearth.LEngineGate;
     }
 
-    private LEngineStaff LPronunciationFacadeStaff => _lPronunciationFacadeEngine.LEngineStaffHeld;
+    private LEngineStaff LPronunciationFacadeStaff => _lPronunciationFacadeHearth.LEngineStaffHeld;
 
     public IReadOnlyList<LCatalogPronunciation> LEnginePronunciationFind(string query, LCatalogOrder order)
     {
@@ -54,7 +60,7 @@ public sealed class LPronunciationFacade : LPronunciationPort
                 entries.Add(row.LCatalogPronunciationEntry);
             }
 
-            IReadOnlyList<LVistaRow> built = _lPronunciationFacadeEngine.LEngineVista.LEngineVistaBuild(
+            IReadOnlyList<LVistaRow> built = _lPronunciationFacadeRow.LEngineVistaBuild(
                 entries, vista.LVistaChosen);
             List<LCatalogPronunciation> rows = new(found.Count);
             for (int index = 0; index < found.Count; index++)
@@ -84,7 +90,7 @@ public sealed class LPronunciationFacade : LPronunciationPort
         Task<IReadOnlyList<LCandidate>>? scan = null;
         lock (_lPronunciationFacadeGate)
         {
-            held = _lPronunciationFacadeEngine.LEngineTrove.LTroveCandidateRead(session, word, language);
+            held = _lPronunciationFacadeHearth.LEngineTrove.LTroveCandidateRead(session, word, language);
             if (held is null)
             {
                 scan = LPronunciationFacadeStaff.LEngineStaffLanguage.LLanguageStaffTranscription
@@ -107,11 +113,11 @@ public sealed class LPronunciationFacade : LPronunciationPort
         {
             if (scheme is null)
             {
-                _lPronunciationFacadeEngine.LEngineTrove.LTroveCandidateSave(session, word, language, found);
+                _lPronunciationFacadeHearth.LEngineTrove.LTroveCandidateSave(session, word, language, found);
             }
             else
             {
-                _lPronunciationFacadeEngine.LEngineTrove.LTroveTranscriptionSave(
+                _lPronunciationFacadeHearth.LEngineTrove.LTroveTranscriptionSave(
                     session, word, language, scheme, found);
             }
         }
@@ -133,7 +139,7 @@ public sealed class LPronunciationFacade : LPronunciationPort
         lock (_lPronunciationFacadeGate)
         {
             variety = LEngineVarietyResolve(session, target);
-            held = _lPronunciationFacadeEngine.LEngineTrove.LTroveRecordingRead(session, word, language);
+            held = _lPronunciationFacadeHearth.LEngineTrove.LTroveRecordingRead(session, word, language);
             if (held is null)
             {
                 scan = LPronunciationFacadeStaff.LEngineStaffLanguage.LLanguageStaffRecording.LRecordingClerkFind(
@@ -153,7 +159,7 @@ public sealed class LPronunciationFacade : LPronunciationPort
 
         lock (_lPronunciationFacadeGate)
         {
-            _lPronunciationFacadeEngine.LEngineTrove.LTroveRecordingSave(session, word, language, found);
+            _lPronunciationFacadeHearth.LEngineTrove.LTroveRecordingSave(session, word, language, found);
         }
     }
 
@@ -165,7 +171,7 @@ public sealed class LPronunciationFacade : LPronunciationPort
         }
 
         IReadOnlyList<LPronunciationDraft>? rows =
-            _lPronunciationFacadeEngine.LEngineDraft.LEngineDraftRead(session)?.LDraftContent.LEntryDraftPronunciations;
+            _lPronunciationFacadeDraft.LEngineDraftRead(session)?.LDraftContent.LEntryDraftPronunciations;
         if (rows is null)
         {
             return string.Empty;
@@ -298,7 +304,7 @@ public sealed class LPronunciationFacade : LPronunciationPort
         Task<IReadOnlyList<LCandidate>>? scan = null;
         lock (_lPronunciationFacadeGate)
         {
-            held = _lPronunciationFacadeEngine.LEngineTrove.LTroveTranscriptionRead(session, word, language, scheme);
+            held = _lPronunciationFacadeHearth.LEngineTrove.LTroveTranscriptionRead(session, word, language, scheme);
             if (held is null)
             {
                 scan = LPronunciationFacadeStaff.LEngineStaffLanguage.LLanguageStaffTranscription

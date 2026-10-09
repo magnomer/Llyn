@@ -48,11 +48,11 @@ Thread thread = new(() =>
                 new CEntryBundle(
                     engine.LEngineEntry,
                     engine.LEngineEntry,
+                    engine.LEngineCatalog,
                     engine.LEngineVista,
-                    engine.LEngineVista,
                     engine.LEngineCard,
-                    engine.LEngineCard,
-                    engine.LEngineCard,
+                    engine.LEngineCatalog,
+                    engine.LEngineCatalog,
                     engine.LEngineMention,
                     engine.LEngineLanguage,
                     engine.LEngineSituation,
@@ -65,7 +65,7 @@ Thread thread = new(() =>
                 new CPhonologyBundle(
                     engine.LEngineFanqie,
                     engine.LEngineFanqie,
-                    engine.LEngineLanguage,
+                    engine.LEngineScript,
                     engine.LEngineLanguage,
                     engine.LEngineReflex,
                     engine.LEngineVocabulary,

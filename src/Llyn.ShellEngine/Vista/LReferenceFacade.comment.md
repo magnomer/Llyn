@@ -1,5 +1,5 @@
 # LReferenceFacade.cs
-Hash: `31f1de87abe6d765`
+Hash: `b73762c75a1cefad`
 
 ## `public sealed class LReferenceFacade : LReferencePort`
 
@@ -11,9 +11,11 @@ The vista overload stays here, because a vista is the shell's and the twin names
 The source draft starts and commits here too, through the `LReferenceCitation` the citation clerk holds.
 It implements the reference port itself, so Host hands it to Conduct with no outlet between.
 
-## `public LReferenceFacade(LEngine engine)`
+## `internal LReferenceFacade(LEngineHearth hearth, LDraftFacade draft)`
 
-Stores the engine and its gate for reference operations.
+Stores the hearth, its gate and the sibling facades it calls, all built by `LEngine` before this one.
+The gate, the staff and the shared state are read through the hearth.
+It takes its siblings rather than the engine, so it names only the facades it uses.
 
 ## `public long LEngineCitationResolve(long draftId, long cardId, long sentenceId, string title)`
 

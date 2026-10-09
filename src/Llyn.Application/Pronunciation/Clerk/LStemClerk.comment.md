@@ -1,5 +1,5 @@
 # LStemClerk.cs
-Hash: `aa016e21d90baf89`
+Hash: `8ecbbb642cd1943d`
 
 ## `public sealed class LStemClerk`
 

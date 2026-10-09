@@ -1,5 +1,5 @@
 # LStemFacade.cs
-Hash: `eef857729e096d69`
+Hash: `2ec5be9bd3ab2845`
 
 ## `public sealed class LStemFacade : LStemPort`
 
@@ -8,9 +8,11 @@ It implements the stem port itself, so Host hands it to Conduct with no outlet b
 It reads the series and the entries they reach, and composes one series page.
 The links themselves are written where a series is stored, so nothing here writes.
 
-## `public LStemFacade(LEngine engine)`
+## `internal LStemFacade(LEngineHearth hearth, LEntryFacade entry, LLanguageFacade language, LVistaRowFacade row)`
 
-The facade bound to its engine and the engine's gate.
+Stores the hearth, its gate and the sibling facades it calls, all built by `LEngine` before this one.
+The gate, the staff and the shared state are read through the hearth.
+It takes its siblings rather than the engine, so it names only the facades it uses.
 
 ## `public LStem? LEngineStemRead(long? id)`
 

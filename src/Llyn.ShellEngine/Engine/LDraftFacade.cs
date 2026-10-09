@@ -7,17 +7,20 @@ namespace Llyn.ShellEngine;
 
 public sealed class LDraftFacade : LMarkdownPort
 {
-    private readonly LEngine _lDraftFacadeEngine;
+    private readonly LEngineHearth _lDraftFacadeHearth;
+    private readonly LVocabularyFacade _lDraftFacadeVocabulary;
     private readonly object _lDraftFacadeGate;
 
-    public LDraftFacade(LEngine engine)
+    internal LDraftFacade(LEngineHearth hearth, LVocabularyFacade vocabulary)
     {
-        ArgumentNullException.ThrowIfNull(engine);
-        _lDraftFacadeEngine = engine;
-        _lDraftFacadeGate = engine.LEngineGate;
+        ArgumentNullException.ThrowIfNull(hearth);
+        ArgumentNullException.ThrowIfNull(vocabulary);
+        _lDraftFacadeHearth = hearth;
+        _lDraftFacadeVocabulary = vocabulary;
+        _lDraftFacadeGate = _lDraftFacadeHearth.LEngineGate;
     }
 
-    private LEngineStaff LDraftFacadeStaff => _lDraftFacadeEngine.LEngineStaffHeld;
+    private LEngineStaff LDraftFacadeStaff => _lDraftFacadeHearth.LEngineStaffHeld;
 
     public IReadOnlyList<LMarkdownBlock> LEngineMarkdownParse(string? text)
     {
@@ -28,7 +31,8 @@ public sealed class LDraftFacade : LMarkdownPort
     {
         lock (_lDraftFacadeGate)
         {
-            IReadOnlyList<string> languages = _lDraftFacadeEngine.LEngineLanguage.LEngineLanguageRead();
+            IReadOnlyList<string> languages =
+                LDraftFacadeStaff.LEngineStaffLanguage.LLanguageStaffLanguage.LLanguageClerkRead();
             string language = languages.Count > 0 ? languages[0] : string.Empty;
             return LDraftFacadeStaff.LEngineStaffEntry.LEntryStaffCitation.LEntryStart(origin, entryId, language);
         }
@@ -60,10 +64,10 @@ public sealed class LDraftFacade : LMarkdownPort
                 LEngineSentencePrepare(id, card, requests);
             }
 
-            LGlyph? glyph = _lDraftFacadeEngine.LEngineLanguage.LEngineGlyphRead(draft.LEntryDraftLanguage);
-            LGlyphBlock block = _lDraftFacadeEngine.LEngineLanguage.LEngineGlyphRead(draft);
-            if (_lDraftFacadeEngine.LEnginePronunciation
-                    .LEngineSchemeRead(draft.LEntryDraftLanguage) is [string scheme, ..]
+            LLanguageStaff staff = LDraftFacadeStaff.LEngineStaffLanguage;
+            LGlyph? glyph = staff.LLanguageStaffLanguage.LLanguageGlyphLoad(draft.LEntryDraftLanguage);
+            LGlyphBlock block = staff.LLanguageStaffLanguage.LLanguageGlyphRead(draft);
+            if (staff.LLanguageStaffTranscription.LSchemeRead(draft.LEntryDraftLanguage) is [string scheme, ..]
                 && block.LGlyphBlockOther.Count == 0)
             {
                 requests.Add(new LRequestTranscriptionAddition(id, scheme, 0, true));
@@ -104,10 +108,10 @@ public sealed class LDraftFacade : LMarkdownPort
             ArgumentOutOfRangeException.ThrowIfZero(id);
             LEngineDraftValidate(id);
             LDraftFacadeStaff.LEngineStaffClaim.LClaimStaffClaim.LClaimClerkDelete(id);
-            _lDraftFacadeEngine.LEngineTrove.LTroveClear(id);
+            _lDraftFacadeHearth.LEngineTrove.LTroveClear(id);
         }
 
-        _lDraftFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectDraft, 0);
+        _lDraftFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectDraft, 0);
     }
 
     internal bool LEngineDraftCheck(long id)
@@ -157,7 +161,7 @@ public sealed class LDraftFacade : LMarkdownPort
             saved = LDraftFacadeStaff.LEngineStaffClaim.LClaimStaffClaim.LDraftSweep(id);
         }
 
-        _lDraftFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectDraft, saved.LDraftId);
+        _lDraftFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectDraft, saved.LDraftId);
     }
 
     internal LOutcome LEngineDraftCommit(long id)
@@ -170,13 +174,13 @@ public sealed class LDraftFacade : LMarkdownPort
             LEngineDraftValidate(id);
 
             outcome = LDraftFacadeStaff.LEngineStaffEntry.LEntryStaffOutcome.LOutcomeClerkCommit(id, raised);
-            _lDraftFacadeEngine.LEngineTrove.LTroveClear(id);
+            _lDraftFacadeHearth.LEngineTrove.LTroveClear(id);
         }
 
         foreach (long entryId in raised)
         {
-            _lDraftFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectEntry, entryId);
-            _lDraftFacadeEngine.LEngineVocabulary.LEngineInflectionStart(entryId);
+            _lDraftFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectEntry, entryId);
+            _lDraftFacadeVocabulary.LEngineInflectionStart(entryId);
         }
 
         return outcome;
@@ -187,23 +191,23 @@ public sealed class LDraftFacade : LMarkdownPort
         lock (_lDraftFacadeGate)
         {
             ArgumentOutOfRangeException.ThrowIfZero(id);
-            if (_lDraftFacadeEngine.LEngineDraftStale.Remove(id))
+            if (_lDraftFacadeHearth.LEngineDraftStale.Remove(id))
             {
                 return;
             }
 
             LDraftFacadeStaff.LEngineStaffClaim.LClaimStaffClaim.LClaimClerkCancel(id);
-            _lDraftFacadeEngine.LEngineTrove.LTroveClear(id);
+            _lDraftFacadeHearth.LEngineTrove.LTroveClear(id);
         }
 
-        _lDraftFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectDraft, 0);
+        _lDraftFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectDraft, 0);
     }
 
     public void LEngineLeftoverSweep()
     {
         lock (_lDraftFacadeGate)
         {
-            _lDraftFacadeEngine.LEngineRevision++;
+            _lDraftFacadeHearth.LEngineRevision++;
             LDraftFacadeStaff.LEngineStaffClaim.LClaimStaffClaim.LClaimClerkSweep();
 
             foreach (LDraft draft in LDraftFacadeStaff.LEngineStaffClaim.LClaimStaffClaim.LDraftScan())
@@ -236,7 +240,7 @@ public sealed class LDraftFacade : LMarkdownPort
     {
         lock (_lDraftFacadeGate)
         {
-            LClaimClerk.LClaimStaleValidate(_lDraftFacadeEngine.LEngineDraftStale, id);
+            LClaimClerk.LClaimStaleValidate(_lDraftFacadeHearth.LEngineDraftStale, id);
         }
     }
 

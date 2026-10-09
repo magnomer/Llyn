@@ -9,17 +9,34 @@ public sealed class LAuthorFacade : LAuthorPort
 {
     private const int LAuthorFacadeLimit = 8;
 
-    private readonly LEngine _lAuthorFacadeEngine;
+    private readonly LEngineHearth _lAuthorFacadeHearth;
+    private readonly LDraftFacade _lAuthorFacadeDraft;
+    private readonly LEntryFacade _lAuthorFacadeEntry;
+    private readonly LReferenceFacade _lAuthorFacadeReference;
+    private readonly LSettingsFacade _lAuthorFacadeSettings;
     private readonly object _lAuthorFacadeGate;
 
-    public LAuthorFacade(LEngine engine)
+    internal LAuthorFacade(
+        LEngineHearth hearth,
+        LDraftFacade draft,
+        LEntryFacade entry,
+        LReferenceFacade reference,
+        LSettingsFacade settings)
     {
-        ArgumentNullException.ThrowIfNull(engine);
-        _lAuthorFacadeEngine = engine;
-        _lAuthorFacadeGate = engine.LEngineGate;
+        ArgumentNullException.ThrowIfNull(hearth);
+        ArgumentNullException.ThrowIfNull(draft);
+        ArgumentNullException.ThrowIfNull(entry);
+        ArgumentNullException.ThrowIfNull(reference);
+        ArgumentNullException.ThrowIfNull(settings);
+        _lAuthorFacadeHearth = hearth;
+        _lAuthorFacadeDraft = draft;
+        _lAuthorFacadeEntry = entry;
+        _lAuthorFacadeReference = reference;
+        _lAuthorFacadeSettings = settings;
+        _lAuthorFacadeGate = _lAuthorFacadeHearth.LEngineGate;
     }
 
-    private LEngineStaff LAuthorFacadeStaff => _lAuthorFacadeEngine.LEngineStaffHeld;
+    private LEngineStaff LAuthorFacadeStaff => _lAuthorFacadeHearth.LEngineStaffHeld;
 
     public IReadOnlyList<LCatalogAuthor> LEngineAuthorFind(string query, LCatalogOrder order)
     {
@@ -71,7 +88,7 @@ public sealed class LAuthorFacade : LAuthorPort
             cited += row.LCatalogReferenceUsage;
         }
 
-        string uncredited = _lAuthorFacadeEngine.LEngineSettings.LEngineTextRead("Guild.Uncredited");
+        string uncredited = _lAuthorFacadeSettings.LEngineTextRead("Guild.Uncredited");
         return [new LCatalogAuthor(new LAuthor(0, uncredited), orphan.Count, cited, vista.LVistaMatch(0)), .. rows];
     }
 
@@ -101,12 +118,12 @@ public sealed class LAuthorFacade : LAuthorPort
     {
         long? author = roll?.LVistaStored;
         IReadOnlyList<LUsage> usages = author is long id
-            ? _lAuthorFacadeEngine.LEngineEntry.LEngineUsageRead(id, LOwner.LOwnerAuthor)
+            ? _lAuthorFacadeEntry.LEngineUsageRead(id, LOwner.LOwnerAuthor)
             : [];
         lock (_lAuthorFacadeGate)
         {
             return LAuthorFacadeStaff.LEngineStaffCatalog.LCatalogStaffAuthor.LAuthorVitaRead(
-                author, usages, _lAuthorFacadeEngine.LEngineSettings.LEngineTextRead);
+                author, usages, _lAuthorFacadeSettings.LEngineTextRead);
         }
     }
 
@@ -115,8 +132,8 @@ public sealed class LAuthorFacade : LAuthorPort
         ArgumentNullException.ThrowIfNull(vista);
         IReadOnlyList<LCatalogAuthor> found = LEngineAuthorFind(vista.LVistaQuery, vista.LVistaOrder);
         List<LCatalogAuthor> rows = new(found.Count);
-        string[] names = LVistaFacade.LEngineTwinRead(
-            found, row => row.LCatalogAuthorName, row => row.LCatalogAuthorStored.LAuthorId);
+        string[] names = LEntryClerkTwin.LTwinRead(
+            found, row => row.LCatalogAuthorName, static _ => string.Empty, row => row.LCatalogAuthorStored.LAuthorId);
         for (int index = 0; index < found.Count; index++)
         {
             LCatalogAuthor row = found[index];
@@ -139,7 +156,7 @@ public sealed class LAuthorFacade : LAuthorPort
 
         IReadOnlyList<LCatalogReference> found = LEngineOeuvreFind(
             roll.LVistaChosen, oeuvre.LVistaQuery, roll.LVistaFilter, oeuvre.LVistaOrder);
-        return _lAuthorFacadeEngine.LEngineReference.LEngineReferenceRead(found, oeuvre.LVistaChosen);
+        return _lAuthorFacadeReference.LEngineReferenceRead(found, oeuvre.LVistaChosen);
     }
 
     public IReadOnlyList<LCatalogReference> LEngineOeuvreFind(
@@ -167,8 +184,8 @@ public sealed class LAuthorFacade : LAuthorPort
             LAuthorFacadeStaff.LEngineStaffCatalog.LCatalogStaffAuthor.LAuthorClerkAbsorb(kept, dropped);
         }
 
-        _lAuthorFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectAuthor, dropped);
-        _lAuthorFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectAuthor, kept);
+        _lAuthorFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectAuthor, dropped);
+        _lAuthorFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectAuthor, kept);
     }
 
     public LAuthor? LEngineAuthorRead(long id)
@@ -191,7 +208,7 @@ public sealed class LAuthorFacade : LAuthorPort
         IReadOnlyList<LAuthor> credited;
         try
         {
-            credited = _lAuthorFacadeEngine.LEngineDraft.LEngineDraftRead(draft)?.LDraftAuthor ?? [];
+            credited = _lAuthorFacadeDraft.LEngineDraftRead(draft)?.LDraftAuthor ?? [];
         }
         catch (Exception exception) when (LWorkspaceClerk.LWorkspaceStaleCheck(exception))
         {
@@ -231,7 +248,7 @@ public sealed class LAuthorFacade : LAuthorPort
             LAuthorFacadeStaff.LEngineStaffCatalog.LCatalogStaffAuthor.LAuthorClerkDelete(id, detach);
         }
 
-        _lAuthorFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectAuthor, id);
+        _lAuthorFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectAuthor, id);
     }
 
     internal LDraft LEngineAuthorStart(string origin, long? authorId)
@@ -250,12 +267,12 @@ public sealed class LAuthorFacade : LAuthorPort
         lock (_lAuthorFacadeGate)
         {
             ArgumentOutOfRangeException.ThrowIfZero(id);
-            _lAuthorFacadeEngine.LEngineDraft.LEngineDraftValidate(id);
+            _lAuthorFacadeDraft.LEngineDraftValidate(id);
             settled = LAuthorFacadeStaff.LEngineStaffEntry.LEntryStaffCitation
                 .LCitationClerkAuthor.LAuthorCitationCommit(id);
         }
 
-        _lAuthorFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectAuthor, settled.LAuthorId);
+        _lAuthorFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectAuthor, settled.LAuthorId);
         return settled;
     }
 }

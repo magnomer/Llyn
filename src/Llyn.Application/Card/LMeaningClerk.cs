@@ -14,7 +14,7 @@ public sealed class LMeaningClerk
     {
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(cards);
-        _lMeaningClerkMeanings = rig.LRigMeanings;
+        _lMeaningClerkMeanings = rig.LRigLexicon.LRigLexiconMeanings;
         _lMeaningClerkCards = cards;
     }
 

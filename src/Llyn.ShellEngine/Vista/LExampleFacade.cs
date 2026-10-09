@@ -7,17 +7,20 @@ namespace Llyn.ShellEngine;
 
 public sealed class LExampleFacade : LExamplePort
 {
-    private readonly LEngine _lExampleFacadeEngine;
+    private readonly LEngineHearth _lExampleFacadeHearth;
+    private readonly LDraftFacade _lExampleFacadeDraft;
     private readonly object _lExampleFacadeGate;
 
-    public LExampleFacade(LEngine engine)
+    internal LExampleFacade(LEngineHearth hearth, LDraftFacade draft)
     {
-        ArgumentNullException.ThrowIfNull(engine);
-        _lExampleFacadeEngine = engine;
-        _lExampleFacadeGate = engine.LEngineGate;
+        ArgumentNullException.ThrowIfNull(hearth);
+        ArgumentNullException.ThrowIfNull(draft);
+        _lExampleFacadeHearth = hearth;
+        _lExampleFacadeDraft = draft;
+        _lExampleFacadeGate = _lExampleFacadeHearth.LEngineGate;
     }
 
-    private LEngineStaff LExampleFacadeStaff => _lExampleFacadeEngine.LEngineStaffHeld;
+    private LEngineStaff LExampleFacadeStaff => _lExampleFacadeHearth.LEngineStaffHeld;
 
     internal LExample? LEngineExampleRead(long id)
     {
@@ -40,9 +43,10 @@ public sealed class LExampleFacade : LExamplePort
         ArgumentNullException.ThrowIfNull(vista);
         IReadOnlyList<LCatalogExample> found = LEngineExampleFind(vista.LVistaQuery, vista.LVistaOrder);
         List<LCatalogExample> rows = new(found.Count);
-        string[] names = LVistaFacade.LEngineTwinRead(
+        string[] names = LEntryClerkTwin.LTwinRead(
             found,
-            row => LVistaFacade.LEngineNameRead(row.LCatalogExampleStored.LExampleText, unknown, unwritten),
+            row => LEntryClerkTwin.LTwinNameRead(row.LCatalogExampleStored.LExampleText, unknown, unwritten),
+            static _ => string.Empty,
             row => row.LCatalogExampleStored.LExampleId);
         for (int index = 0; index < found.Count; index++)
         {
@@ -51,7 +55,7 @@ public sealed class LExampleFacade : LExamplePort
             {
                 LCatalogExampleName = names[index],
                 LCatalogExampleText =
-                    LVistaFacade.LEngineNameRead(row.LCatalogExampleStored.LExampleText, unknown, unwritten),
+                    LEntryClerkTwin.LTwinNameRead(row.LCatalogExampleStored.LExampleText, unknown, unwritten),
                 LCatalogExampleChosen = row.LCatalogExampleStored.LExampleId == vista.LVistaChosen,
             });
         }
@@ -77,7 +81,7 @@ public sealed class LExampleFacade : LExamplePort
             LExampleFacadeStaff.LEngineStaffCatalog.LCatalogStaffExample.LExampleClerkDelete(id, detach);
         }
 
-        _lExampleFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectExample, id);
+        _lExampleFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectExample, id);
     }
 
     internal LDraft LEngineExampleStart(string origin, long? exampleId)
@@ -96,12 +100,12 @@ public sealed class LExampleFacade : LExamplePort
         lock (_lExampleFacadeGate)
         {
             ArgumentOutOfRangeException.ThrowIfZero(id);
-            _lExampleFacadeEngine.LEngineDraft.LEngineDraftValidate(id);
+            _lExampleFacadeDraft.LEngineDraftValidate(id);
             settled = LExampleFacadeStaff.LEngineStaffEntry.LEntryStaffCitation
                 .LCitationClerkExample.LExampleCitationCommit(id);
         }
 
-        _lExampleFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectExample, settled.LExampleId);
+        _lExampleFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectExample, settled.LExampleId);
         return settled;
     }
 }

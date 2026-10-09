@@ -7,14 +7,17 @@ namespace Llyn.ShellEngine;
 
 public sealed class LReferenceFacade : LReferencePort
 {
-    private readonly LEngine _lReferenceFacadeEngine;
+    private readonly LEngineHearth _lReferenceFacadeHearth;
+    private readonly LDraftFacade _lReferenceFacadeDraft;
     private readonly object _lReferenceFacadeGate;
 
-    public LReferenceFacade(LEngine engine)
+    internal LReferenceFacade(LEngineHearth hearth, LDraftFacade draft)
     {
-        ArgumentNullException.ThrowIfNull(engine);
-        _lReferenceFacadeEngine = engine;
-        _lReferenceFacadeGate = engine.LEngineGate;
+        ArgumentNullException.ThrowIfNull(hearth);
+        ArgumentNullException.ThrowIfNull(draft);
+        _lReferenceFacadeHearth = hearth;
+        _lReferenceFacadeDraft = draft;
+        _lReferenceFacadeGate = _lReferenceFacadeHearth.LEngineGate;
     }
 
     public long LEngineCitationResolve(long draftId, long cardId, long sentenceId, string title)
@@ -23,10 +26,10 @@ public sealed class LReferenceFacade : LReferencePort
         lock (_lReferenceFacadeGate)
         {
             ArgumentOutOfRangeException.ThrowIfZero(draftId);
-            _lReferenceFacadeEngine.LEngineDraft.LEngineDraftValidate(draftId);
+            _lReferenceFacadeDraft.LEngineDraftValidate(draftId);
 
             long? found = LReferenceFacadeStaff.LEngineStaffCatalog.LCatalogStaffReference.LReferenceClerkResolve(
-                title, _lReferenceFacadeEngine.LEngineDraft.LEngineDraftLoad(draftId), cardId, sentenceId);
+                title, _lReferenceFacadeDraft.LEngineDraftLoad(draftId), cardId, sentenceId);
             if (found is long id)
             {
                 return id;
@@ -35,7 +38,7 @@ public sealed class LReferenceFacade : LReferencePort
             stored = LReferenceFacadeStaff.LEngineStaffCatalog.LCatalogStaffReference.LReferenceClerkCreate(title);
         }
 
-        _lReferenceFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectReference, stored.LReferenceId);
+        _lReferenceFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectReference, stored.LReferenceId);
         return stored.LReferenceId;
     }
 
@@ -82,8 +85,11 @@ public sealed class LReferenceFacade : LReferencePort
         IReadOnlyList<LCatalogReference> found, long? chosen)
     {
         List<LCatalogReference> rows = new(found.Count);
-        string[] names = LVistaFacade.LEngineTwinRead(
-            found, row => row.LCatalogReferenceName, row => row.LCatalogReferenceStored.LReferenceId);
+        string[] names = LEntryClerkTwin.LTwinRead(
+            found,
+            row => row.LCatalogReferenceName,
+            static _ => string.Empty,
+            row => row.LCatalogReferenceStored.LReferenceId);
         for (int index = 0; index < found.Count; index++)
         {
             LCatalogReference row = found[index];
@@ -104,7 +110,7 @@ public sealed class LReferenceFacade : LReferencePort
             LReferenceFacadeStaff.LEngineStaffCatalog.LCatalogStaffReference.LReferenceClerkDelete(id, detach);
         }
 
-        _lReferenceFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectReference, id);
+        _lReferenceFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectReference, id);
     }
 
     public LColophon LEngineColophonRead(LDraft draft)
@@ -163,13 +169,13 @@ public sealed class LReferenceFacade : LReferencePort
         lock (_lReferenceFacadeGate)
         {
             ArgumentOutOfRangeException.ThrowIfZero(id);
-            _lReferenceFacadeEngine.LEngineDraft.LEngineDraftValidate(id);
+            _lReferenceFacadeDraft.LEngineDraftValidate(id);
             settled = LReferenceFacadeStaff.LEngineStaffEntry.LEntryStaffCitation
                 .LCitationClerkReference.LReferenceCitationCommit(id);
         }
 
-        _lReferenceFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectReference, settled.LReferenceId);
+        _lReferenceFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectReference, settled.LReferenceId);
         return settled;
     }
-    private LEngineStaff LReferenceFacadeStaff => _lReferenceFacadeEngine.LEngineStaffHeld;
+    private LEngineStaff LReferenceFacadeStaff => _lReferenceFacadeHearth.LEngineStaffHeld;
 }

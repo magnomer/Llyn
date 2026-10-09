@@ -41,9 +41,9 @@ public sealed class LLacunaClerk
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(raise);
         _lLacunaClerkEntries = rig.LRigEntries;
-        _lLacunaClerkInflections = rig.LRigInflections;
-        _lLacunaClerkLacunae = rig.LRigLacunae;
-        _lLacunaClerkFactory = rig.LRigSources;
+        _lLacunaClerkInflections = rig.LRigLexicon.LRigLexiconInflections;
+        _lLacunaClerkLacunae = rig.LRigLexicon.LRigLexiconLacunae;
+        _lLacunaClerkFactory = rig.LRigSource.LRigSourceFactory;
         _lLacunaClerkAudit = rig.LRigAudit;
         _lLacunaClerkLanguages = languages;
         _lLacunaClerkParadigms = paradigms;

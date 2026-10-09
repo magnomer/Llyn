@@ -7,17 +7,18 @@ namespace Llyn.ShellEngine;
 
 internal sealed class LMarkupFacade
 {
-    private readonly LEngine _lMarkupFacadeEngine;
+    private readonly LEngineHearth _lMarkupFacadeHearth;
     private readonly object _lMarkupFacadeGate;
 
-    public LMarkupFacade(LEngine engine)
+    public LMarkupFacade(LEngineHearth hearth)
     {
-        ArgumentNullException.ThrowIfNull(engine);
-        _lMarkupFacadeEngine = engine;
-        _lMarkupFacadeGate = engine.LEngineGate;
+        ArgumentNullException.ThrowIfNull(hearth);
+        _lMarkupFacadeHearth = hearth;
+
+        _lMarkupFacadeGate = _lMarkupFacadeHearth.LEngineGate;
     }
 
-    private LEngineStaff LMarkupFacadeStaff => _lMarkupFacadeEngine.LEngineStaffHeld;
+    private LEngineStaff LMarkupFacadeStaff => _lMarkupFacadeHearth.LEngineStaffHeld;
 
     public LMarkupCargo LEngineMarkupRead(string path)
     {
@@ -57,7 +58,7 @@ internal sealed class LMarkupFacade
     {
         lock (_lMarkupFacadeGate)
         {
-            _lMarkupFacadeEngine.LEngineRevision++;
+            _lMarkupFacadeHearth.LEngineRevision++;
             return LMarkupFacadeStaff.LEngineStaffWorkspace.LWorkspaceStaffIntake.LMarkupClerkImport(cargo, intakes);
         }
     }

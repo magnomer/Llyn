@@ -1,5 +1,5 @@
 # LParadigmClerk.cs
-Hash: `bc1240ba90947043`
+Hash: `da500c5a9e87ccec`
 
 ## `public sealed class LParadigmClerk`
 

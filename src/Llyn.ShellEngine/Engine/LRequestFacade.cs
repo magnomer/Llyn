@@ -7,16 +7,22 @@ namespace Llyn.ShellEngine;
 
 internal sealed class LRequestFacade
 {
-    private readonly LEngine _lRequestFacadeEngine;
+    private readonly LEngineHearth _lRequestFacadeHearth;
+    private readonly LDraftFacade _lRequestFacadeDraft;
+    private readonly LEntryFacade _lRequestFacadeEntry;
     private readonly object _lRequestFacadeGate;
 
-    private LEngineStaff LRequestFacadeStaff => _lRequestFacadeEngine.LEngineStaffHeld;
+    private LEngineStaff LRequestFacadeStaff => _lRequestFacadeHearth.LEngineStaffHeld;
 
-    public LRequestFacade(LEngine engine)
+    public LRequestFacade(LEngineHearth hearth, LDraftFacade draft, LEntryFacade entry)
     {
-        ArgumentNullException.ThrowIfNull(engine);
-        _lRequestFacadeEngine = engine;
-        _lRequestFacadeGate = engine.LEngineGate;
+        ArgumentNullException.ThrowIfNull(hearth);
+        ArgumentNullException.ThrowIfNull(draft);
+        ArgumentNullException.ThrowIfNull(entry);
+        _lRequestFacadeHearth = hearth;
+        _lRequestFacadeDraft = draft;
+        _lRequestFacadeEntry = entry;
+        _lRequestFacadeGate = _lRequestFacadeHearth.LEngineGate;
     }
 
     internal LDraft LEngineRequestApply(LRequest request)
@@ -26,7 +32,7 @@ internal sealed class LRequestFacade
         {
             ArgumentNullException.ThrowIfNull(request);
             ArgumentOutOfRangeException.ThrowIfZero(request.LRequestDraftId);
-            _lRequestFacadeEngine.LEngineDraft.LEngineDraftValidate(request.LRequestDraftId);
+            _lRequestFacadeDraft.LEngineDraftValidate(request.LRequestDraftId);
 
             LDraft held = LRequestFacadeStaff.LEngineStaffClaim.LClaimStaffClaim
                 .LClaimClerkLoad(request.LRequestDraftId);
@@ -50,7 +56,7 @@ internal sealed class LRequestFacade
             LRequestFacadeStaff.LEngineStaffClaim.LClaimStaffClaim.LDraftSave(saved);
         }
 
-        _lRequestFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectDraft, saved.LDraftId);
+        _lRequestFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectDraft, saved.LDraftId);
         return saved;
     }
 
@@ -66,7 +72,7 @@ internal sealed class LRequestFacade
         {
             LEntryDraft? stored = draft.LDraftEntryId <= 0
                 ? null
-                : _lRequestFacadeEngine.LEngineEntry.LEngineEntryLoad(draft.LDraftEntryId);
+                : _lRequestFacadeEntry.LEngineEntryLoad(draft.LDraftEntryId);
             content = LDraftClerkReading.LAudioClear(content, stored);
         }
 
@@ -75,7 +81,7 @@ internal sealed class LRequestFacade
 
     private void LEngineChronicleRecord(LDraft held, LDraft saved, LRequest? request)
     {
-        LDraftFacade drafts = _lRequestFacadeEngine.LEngineDraft;
+        LDraftFacade drafts = _lRequestFacadeDraft;
         if (LDraftClerkEquality.LDraftMatch(held, saved)
             || (!drafts.LEngineDraftCheck(held) && !drafts.LEngineDraftCheck(saved)))
         {
@@ -91,13 +97,13 @@ internal sealed class LRequestFacade
         lock (_lRequestFacadeGate)
         {
             ArgumentOutOfRangeException.ThrowIfZero(id);
-            _lRequestFacadeEngine.LEngineDraft.LEngineDraftValidate(id);
+            _lRequestFacadeDraft.LEngineDraftValidate(id);
             restored = LRequestFacadeStaff.LEngineStaffClaim.LClaimStaffChronicle.LChronicleClerkUndo(id);
         }
 
         if (restored is not null)
         {
-            _lRequestFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectDraft, restored.LDraftId);
+            _lRequestFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectDraft, restored.LDraftId);
         }
 
         return restored;
@@ -109,13 +115,13 @@ internal sealed class LRequestFacade
         lock (_lRequestFacadeGate)
         {
             ArgumentOutOfRangeException.ThrowIfZero(id);
-            _lRequestFacadeEngine.LEngineDraft.LEngineDraftValidate(id);
+            _lRequestFacadeDraft.LEngineDraftValidate(id);
             restored = LRequestFacadeStaff.LEngineStaffClaim.LClaimStaffChronicle.LChronicleClerkRedo(id);
         }
 
         if (restored is not null)
         {
-            _lRequestFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectDraft, restored.LDraftId);
+            _lRequestFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectDraft, restored.LDraftId);
         }
 
         return restored;
@@ -154,10 +160,10 @@ internal sealed class LRequestFacade
         {
             ArgumentOutOfRangeException.ThrowIfZero(ownerId);
             ArgumentException.ThrowIfNullOrWhiteSpace(headword);
-            _lRequestFacadeEngine.LEngineDraft.LEngineDraftValidate(ownerId);
+            _lRequestFacadeDraft.LEngineDraftValidate(ownerId);
 
             string named = language ?? string.Empty;
-            LDraft target = _lRequestFacadeEngine.LEngineDraft.LEngineDraftStart(origin, null);
+            LDraft target = _lRequestFacadeDraft.LEngineDraftStart(origin, null);
 
             try
             {
@@ -174,7 +180,7 @@ internal sealed class LRequestFacade
             }
             catch (Exception)
             {
-                _lRequestFacadeEngine.LEngineDraft.LEngineDraftCancel(target.LDraftId);
+                _lRequestFacadeDraft.LEngineDraftCancel(target.LDraftId);
                 throw;
             }
         }

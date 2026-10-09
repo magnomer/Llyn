@@ -14,8 +14,8 @@ public sealed class LMarkupClerkDraft
     {
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(link);
-        _lMarkupDraftSpeeches = rig.LRigSpeeches;
-        _lMarkupDraftMorphologies = rig.LRigMorphologies;
+        _lMarkupDraftSpeeches = rig.LRigLexicon.LRigLexiconSpeeches;
+        _lMarkupDraftMorphologies = rig.LRigLexicon.LRigLexiconMorphologies;
         _lMarkupDraftLink = link;
     }
 

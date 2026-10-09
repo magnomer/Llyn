@@ -1,5 +1,5 @@
 # LEntryFacade.cs
-Hash: `94a8f704f109d84e`
+Hash: `d36db84c3a051927`
 
 ## `public sealed class LEntryFacade : LEntryPort, LGraspPort`
 
@@ -9,9 +9,11 @@ The lifecycle goes to `LEntryClerk`, searches to `LEntryQueryClerk` and the gras
 The glyph resolve and the grasp, establishment and usage reads sit here, each one call on an entry.
 It implements the entry and grasp ports itself, so Host hands it to Conduct with no outlet between.
 
-## `public LEntryFacade(LEngine engine)`
+## `internal LEntryFacade(LEngineHearth hearth, LCardFacade card, LDraftFacade draft)`
 
-Keeps the engine and its gate so entry calls share the engine's state and lock.
+Stores the hearth, its gate and the sibling facades it calls, all built by `LEngine` before this one.
+The gate, the staff and the shared state are read through the hearth.
+It takes its siblings rather than the engine, so it names only the facades it uses.
 
 ## `public LEntry? LEngineEntryRead(long id)`
 
@@ -30,7 +32,13 @@ A missing or unreadable stamp answers empty.
 ## `public IReadOnlyList<LEntry> LEngineEntryFind(string query, LCatalogOrder order, LCatalogFilter filter)`
 
 The query clerk's search under the gate.
-Every other `LEngineEntryFind` overload is the same relay for the query clerk's overload of the same shape.
+
+## `public IReadOnlyList<LEntry> LEngineEntryFind(LSubject subject, long id)`
+
+The entries the catalog record `id` of kind `subject` reaches, under the gate.
+The record is probed by id alone, so only the id of each blank probe matters to the query clerk.
+A subject that reaches no entries answers no rows.
+The catalog vista's child list asks here, so the probe shapes stay beside the entry rows.
 
 ## `public LEntryDraft? LEngineEntryLoad(long id)`
 

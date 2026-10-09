@@ -16,9 +16,9 @@ public sealed class LMarkupClerkExample
     {
         ArgumentNullException.ThrowIfNull(rig);
         _lMarkupExampleEntries = rig.LRigEntries;
-        _lMarkupExampleMeanings = rig.LRigMeanings;
-        _lMarkupExampleReferences = rig.LRigReferences;
-        _lMarkupExampleAuthors = rig.LRigAuthors;
+        _lMarkupExampleMeanings = rig.LRigLexicon.LRigLexiconMeanings;
+        _lMarkupExampleReferences = rig.LRigCitation.LRigCitationReferences;
+        _lMarkupExampleAuthors = rig.LRigCitation.LRigCitationAuthors;
     }
 
     public LMarkupExample LMarkupExampleCreate(LExampleDraft example)

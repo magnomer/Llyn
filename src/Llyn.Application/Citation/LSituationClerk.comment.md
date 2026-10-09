@@ -1,5 +1,5 @@
 # LSituationClerk.cs
-Hash: `ccf94ca4b3bfaa9b`
+Hash: `40f7ee6f8d7cafb8`
 
 ## `public sealed class LSituationClerk`
 
@@ -15,7 +15,7 @@ The page the repertoire panel reads is composed here too, so screen and print sh
 
 Reads the vault and the situation, image and video ports out of `rig`.
 
-## `public static LSituation LSituationClerkBlank =>`
+## `public static LSituation LSituationClerkBlank`
 
 What a draft naming no Situation is measured against.
 

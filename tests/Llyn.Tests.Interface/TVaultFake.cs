@@ -4,7 +4,7 @@ using Llyn.Core;
 
 namespace Llyn.Tests;
 
-internal sealed class TVaultFake : LEntryVault
+internal sealed class TVaultFake : LEntryVault, LEntryQueryVault
 {
     private readonly Dictionary<long, LEntry> _tVaultFakeRows = [];
 

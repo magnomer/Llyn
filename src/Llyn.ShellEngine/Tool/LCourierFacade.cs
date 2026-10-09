@@ -8,15 +8,21 @@ namespace Llyn.ShellEngine;
 
 internal sealed class LCourierFacade
 {
-    private readonly LEngine _lCourierFacadeEngine;
+    private readonly LEngineHearth _lCourierFacadeHearth;
+    private readonly LLiveryFacade _lCourierFacadeLivery;
+    private readonly LSettingsFacade _lCourierFacadeSettings;
 
-    public LCourierFacade(LEngine engine)
+    public LCourierFacade(LEngineHearth hearth, LLiveryFacade livery, LSettingsFacade settings)
     {
-        ArgumentNullException.ThrowIfNull(engine);
-        _lCourierFacadeEngine = engine;
+        ArgumentNullException.ThrowIfNull(hearth);
+        ArgumentNullException.ThrowIfNull(livery);
+        ArgumentNullException.ThrowIfNull(settings);
+        _lCourierFacadeHearth = hearth;
+        _lCourierFacadeLivery = livery;
+        _lCourierFacadeSettings = settings;
     }
 
-    private LEngineStaff LCourierFacadeStaff => _lCourierFacadeEngine.LEngineStaffHeld;
+    private LEngineStaff LCourierFacadeStaff => _lCourierFacadeHearth.LEngineStaffHeld;
 
     public bool LEngineCourierCheck()
     {
@@ -27,15 +33,14 @@ internal sealed class LCourierFacade
     {
         try
         {
-            LEngine engine = _lCourierFacadeEngine;
             return await LCourierFacadeStaff.LEngineStaffWorkspace.LWorkspaceStaffCourier.LCourierClerkSend(
-                engine.LEngineLivery.LEngineLiveryRead,
-                language => engine.LEngineLivery.LEngineLiveryRead(language, engine.LEngineSettings.LEngineTextFind),
+                _lCourierFacadeLivery.LEngineLiveryRead,
+                language => _lCourierFacadeLivery.LEngineLiveryRead(language, _lCourierFacadeSettings.LEngineTextFind),
                 lookup,
                 cancellation)
                 .ConfigureAwait(false);
         }
-        catch (Exception exception) when (LCourierClerk.LCourierWarrantCheck(exception))
+        catch (Exception exception) when (LCourierWarrant.LCourierWarrantCheck(exception))
         {
             LEngineWarrantClear();
             throw;
@@ -47,19 +52,19 @@ internal sealed class LCourierFacade
         string hidden = await LCourierFacadeStaff.LEngineStaffWorkspace.LWorkspaceStaffCourier
             .LCourierClerkAttach(cancellation)
             .ConfigureAwait(false);
-        if (_lCourierFacadeEngine.LEngineSettings.LEngineSettingsChange(
+        if (_lCourierFacadeSettings.LEngineSettingsChange(
                 settings => settings with { LSettingsWarrant = hidden }))
         {
-            _lCourierFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectSettings, 0);
+            _lCourierFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectSettings, 0);
         }
     }
 
     private void LEngineWarrantClear()
     {
-        if (_lCourierFacadeEngine.LEngineSettings.LEngineSettingsChange(
+        if (_lCourierFacadeSettings.LEngineSettingsChange(
                 settings => settings with { LSettingsWarrant = string.Empty }))
         {
-            _lCourierFacadeEngine.LEngineBulletinRaise(LSubject.LSubjectSettings, 0);
+            _lCourierFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectSettings, 0);
         }
     }
 }
