@@ -172,6 +172,29 @@
                         </Grid>
                     </StackPanel>
 
+                    <StackPanel x:Name="PDialInflection" Visibility="Collapsed">
+                        <TextBlock Style="{StaticResource Theme.Page.Title}" Text="{DynamicResource Settings.Inflection}" />
+                        <TextBlock MaxWidth="560" HorizontalAlignment="Left" Style="{StaticResource Theme.Page.Helper}" Text="{DynamicResource Settings.InflectionHelper}" />
+                        <Rectangle Style="{StaticResource Theme.Page.Rule}" />
+                        <Grid Margin="0,22,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" MaxWidth="560" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                <TextBlock Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Analysis.Switch}" />
+                                <TextBlock Style="{StaticResource Theme.Page.Note}" Text="{DynamicResource Analysis.Helper}" />
+                            </StackPanel>
+                            <ToggleButton
+                                x:Name="PSettingsAnalysis"
+                                Grid.Column="1"
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                Style="{StaticResource Theme.Choice.Switch}" />
+                        </Grid>
+                    </StackPanel>
+
                     <StackPanel x:Name="PDialWeb" Visibility="Collapsed">
                         <TextBlock Style="{StaticResource Theme.Page.Title}" Text="{DynamicResource Settings.Web}" />
                         <TextBlock MaxWidth="560" HorizontalAlignment="Left" Style="{StaticResource Theme.Page.Helper}" Text="{DynamicResource Settings.WebHelper}" />

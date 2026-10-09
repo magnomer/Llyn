@@ -1,11 +1,12 @@
 # LInflectionArchive.cs
+Hash: `4a9f05b271636c8b`
 Hash: `2751885466558c60`
 
-## `public sealed class LInflectionArchive`
+## `public sealed class LInflectionArchive : LInflectionVault`
 
 Persists an entry's inflected forms and the ordered grammatical features each carries.
 Inflections are written as ordered child rows under an entry.
-So reordering rewrites `position` only and never touches the entry id.
+Reordering preserves the entry id but replaces the inflection rows and their ids.
 Each inflection has its own row id, and a feature links it by that id.
 Deleting an inflection removes its features through the foreign-key cascade, and deleting the entry removes both.
 Only row links are stored here.
@@ -30,6 +31,7 @@ The rows come back with their ids and positions.
 ## `public IReadOnlyList<LInflection> LInflectionRead(long entryId)`
 
 Reads the entry's inflections, ordered by position, each carrying its ordered features.
+Each also carries its stored rule-book analysis, with the marks parsed by `LInflectionMarkParse`.
 
 ## `public void LInflectionRegularSave(long inflectionId, bool regular)`
 
@@ -38,6 +40,14 @@ The engine derives it whenever the form or its entry is stored, so a reader neve
 A row rewritten by a move or a delete carries the flag across.
 The insert writes what the record holds.
 
+## `public void LInflectionAnalysisSave(long inflectionId, string? prediction, IReadOnlyList<LInflectionMark>? marks, string? stamp, bool regular)`
+
+Writes the rule-book analysis and the regular flag onto one inflection row in one statement.
+The marks are stored as text through `LInflectionMarkFormat`, and an empty list stores an empty string.
+Null analysis values preserve SQL NULL, distinct from empty marks on a covered form.
+Uncovered forms can retain the stamp of the book that examined them.
+The insert writes the analysis the record holds, so a rewritten row carries it across.
+
 ## `public IReadOnlyList<LInflection> LInflectionSet(long entryId, IReadOnlyList<LInflection> inflections)`
 
 Replaces the entry's inflections with `inflections` in list order.
@@ -45,18 +55,21 @@ Existing inflection rows are cleared, their features cascade, and the new set is
 So reordering rewrites positions while the entry id stays fixed.
 The rows come back with their ids and positions.
 
-## Inline notes
-
-### `private static IReadOnlyList<LInflection> LInflectionSetRead(SqliteConnection connection, long entryId)`
+## `private static IReadOnlyList<LInflection> LInflectionSetRead(SqliteConnection connection, long entryId)`
 
 The entry's inflections in order on a connection the caller already holds.
 One query reads the inflections and one reads every feature of all of them.
 There is no round-trip per inflection.
 
-### `private static int LInflectionCountRead(SqliteConnection connection, long entryId)`
+## `private static IReadOnlyList<LInflection> LInflectionInsert(SqliteConnection connection, long entryId, IReadOnlyList<LInflection> inflections, int first)`
+
+Writes each form with its regular flag and its rule-book analysis from `first` on.
+So a move or a delete keeps the analysis without running the book again.
+
+## `private static int LInflectionCountRead(SqliteConnection connection, long entryId)`
 
 How many inflections the entry already has, so an append continues its numbering.
 
-### `private static IReadOnlyDictionary<long, IReadOnlyList<long>> LInflectionMorphologyRead(`
+## `private static IReadOnlyDictionary<long, IReadOnlyList<long>> LInflectionMorphologyRead(SqliteConnection connection, long entryId)`
 
 Every morphology link of every inflection the entry has, in one query, grouped by inflection id.

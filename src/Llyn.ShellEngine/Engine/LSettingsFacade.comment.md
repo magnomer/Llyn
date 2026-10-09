@@ -1,5 +1,5 @@
 # LSettingsFacade.cs
-Hash: `8f215f109beaf6ed`
+Hash: `cff33189bde243a7`
 
 ## `internal sealed class LSettingsFacade`
 
@@ -134,6 +134,18 @@ Whether the morphology fetch is on, so a reading view offers its paradigm.
 
 Turns the morphology fetch on or off.
 Turning it off cancels every pending inflection fetch through the lacuna clerk.
+A settings bulletin is raised when the switch changed, so the settings panel rewrites its summaries.
+
+## `internal bool LEngineAnalysisCheck()`
+
+Whether custom analysis is on, so the settings switch shows its state.
+
+## `internal void LEngineAnalysisSave(bool analysis)`
+
+Turns custom analysis on or off.
+It changes only what the inflection box shows, so nothing is analysed again.
+A settings bulletin is raised when the switch changed, so the settings panel rewrites its summaries.
+An inflection bulletin for every entry follows, so the reading view and the editor repaint their box.
 
 ## `internal bool LEngineSettingsChange(Func<LSettings, LSettings> change)`
 

@@ -7,13 +7,12 @@
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="Theme.Paradigm.Box" TargetType="Border">
-        <Setter Property="Padding" Value="14,10,18,8" />
-        <Setter Property="CornerRadius" Value="10" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="BorderBrush" Value="{StaticResource Theme.Line}" />
-        <Setter Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="BorderBrush" Value="{x:Null}" />
+        <Setter Property="Background" Value="{x:Null}" />
         <Setter Property="HorizontalAlignment" Value="Left" />
-        <Setter Property="SnapsToDevicePixels" Value="True" />
     </Style>
 
     <Style x:Key="Theme.Paradigm.Part" TargetType="TextBlock">
@@ -33,10 +32,77 @@
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
+    <Style x:Key="Theme.Paradigm.Group" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource Theme.Font}" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontStyle" Value="Italic" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
+        <Setter Property="Margin" Value="0,5,24,5" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style x:Key="Theme.Paradigm.Label" TargetType="TextBlock" BasedOn="{StaticResource Theme.Paradigm.Name}">
+        <Setter Property="Margin" Value="0,5,18,5" />
+    </Style>
+
     <Style x:Key="Theme.Paradigm.Text" TargetType="TextBlock">
         <Setter Property="FontSize" Value="14" />
         <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
         <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style x:Key="Theme.Paradigm.Form" TargetType="TextBlock" BasedOn="{StaticResource Theme.Paradigm.Text}">
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="Margin" Value="0,5,18,5" />
+    </Style>
+
+    <Style x:Key="Theme.Paradigm.Header" TargetType="TextBlock" BasedOn="{StaticResource Theme.Paradigm.Name}">
+        <Setter Property="Margin" Value="0,0,18,6" />
+    </Style>
+
+    <Style x:Key="Theme.Paradigm.Rule" TargetType="Rectangle">
+        <Setter Property="Height" Value="1" />
+        <Setter Property="Stroke" Value="{StaticResource Theme.LineStrong}" />
+        <Setter Property="StrokeThickness" Value="1" />
+        <Setter Property="StrokeDashArray" Value="1 2" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="IsHitTestVisible" Value="False" />
+    </Style>
+
+    <Style x:Key="Theme.Paradigm.Close" TargetType="Rectangle">
+        <Setter Property="Height" Value="1" />
+        <Setter Property="Fill" Value="{StaticResource Theme.Line}" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="IsHitTestVisible" Value="False" />
+    </Style>
+
+    <Style x:Key="Theme.Paradigm.Fold" TargetType="RadioButton">
+        <Setter Property="FontFamily" Value="{StaticResource Theme.Font}" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RadioButton">
+                    <Border Background="Transparent" Padding="6,2">
+                        <ContentPresenter VerticalAlignment="Center" RecognizesAccessKey="False" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Theme.Paradigm.Marked" TargetType="Run">
+        <Setter Property="Foreground" Value="{StaticResource Theme.Situation}" />
+    </Style>
+
+    <Style x:Key="Theme.Paradigm.Cut" TargetType="Run">
+        <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
     </Style>
 
     <DataTemplate x:Key="Theme.Paradigm.Row">

@@ -17,6 +17,7 @@ public sealed class CLedger
         ("Language", []),
         ("Transcription", ["Respelling.Switch", "Respelling.Helper"]),
         ("Listing", ["Epithet.Switch", "Epithet.Helper"]),
+        ("Inflection", ["Analysis.Switch", "Analysis.Helper"]),
         ("Web",
         [
             "Frequency.Switch", "Frequency.Helper", "Morphology.Switch", "Morphology.Helper"
@@ -116,6 +117,27 @@ public sealed class CLedger
             LLedgerFailureShow(envoy, port, "Settings.SaveFailed", exception);
             LLedgerRaise();
         }
+    }
+
+    public void CLedgerAnalysisSave(bool analysis, CEnvoy envoy)
+    {
+        ArgumentNullException.ThrowIfNull(envoy);
+
+        LSettingsPort port = _cLedgerAtelier.CAtelierSettingsPort;
+        try
+        {
+            port.LEngineAnalysisSave(analysis);
+        }
+        catch (Exception exception)
+        {
+            LLedgerFailureShow(envoy, port, "Settings.SaveFailed", exception);
+            LLedgerRaise();
+        }
+    }
+
+    public bool CLedgerAnalysisRead()
+    {
+        return _cLedgerAtelier.CAtelierSettingsPort.LEngineAnalysisCheck();
     }
 
     public void CLedgerRespellingSave(bool respelled, CEnvoy envoy)
@@ -250,6 +272,9 @@ public sealed class CLedger
 
             case "Listing":
                 return port.LEngineTextRead(settings.CSettingsEpithet ? "Settings.On" : "Settings.Off");
+
+            case "Inflection":
+                return port.LEngineTextRead(CLedgerAnalysisRead() ? "Settings.On" : "Settings.Off");
 
             case "Web":
                 return string.Format(

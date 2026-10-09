@@ -163,6 +163,7 @@ public sealed class TLedgerNotice
                 ["LEngineFrequencySave"] = refuse,
                 ["LEngineMorphologySave"] = refuse,
                 ["LEngineRespellingSave"] = refuse,
+                ["LEngineAnalysisSave"] = refuse,
             }));
         List<CLedgerState> shown = TInterfaceConduct.TLedgerShowRead(atelier);
         CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, asked);
@@ -173,9 +174,10 @@ public sealed class TLedgerNotice
         ledger.CLedgerFrequencySave(false, envoy);
         ledger.CLedgerMorphologySave(false, envoy);
         ledger.CLedgerRespellingSave(false, envoy);
+        ledger.CLedgerAnalysisSave(false, envoy);
 
-        Assert.Equal(Enumerable.Repeat("Settings.SaveFailed", 5), asked);
-        Assert.Equal(6, shown.Count);
+        Assert.Equal(Enumerable.Repeat("Settings.SaveFailed", 6), asked);
+        Assert.Equal(7, shown.Count);
         Assert.Equal(shown[0].CLedgerStateSettings, shown[^1].CLedgerStateSettings);
     }
 

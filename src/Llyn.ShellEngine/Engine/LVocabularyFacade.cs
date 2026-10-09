@@ -75,6 +75,16 @@ public sealed class LVocabularyFacade : LParadigmPort, LSentencePort
         }
     }
 
+    public LParadigmView? LEngineInflectionRead(long entryId, bool pending, bool enabled)
+    {
+        lock (_lVocabularyFacadeGate)
+        {
+            bool custom = _lVocabularyFacadeHearth.LEngineSettingsRead().LSettingsAnalysis;
+            return LVocabularyFacadeStaff.LEngineStaffLanguage.LLanguageStaffParadigm
+                .LParadigmClerkBuild(entryId, pending, enabled, custom);
+        }
+    }
+
     public LParadigmStatus LEngineParadigmCheck(LParadigmRow row, bool pending, bool enabled)
     {
         return LParadigmClerk.LParadigmClerkCheck(row, pending, enabled);

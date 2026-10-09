@@ -1,5 +1,5 @@
 # LVocabularyFacade.cs
-Hash: `f588b01d9090caa8`
+Hash: `b6841d1d8aeb44a6`
 
 ## `public sealed class LVocabularyFacade : LParadigmPort, LSentencePort`
 
@@ -38,10 +38,17 @@ The roles already saved under entries written in the language.
 ## `public IReadOnlyList<LParadigmRow> LEngineParadigmScan(long entryId)`
 
 The entry's paradigm slots joined into the rows a paradigm box shows.
+Slots on the part a layout draws are left out, since the inflection view shows them.
 
 ## `public string LEngineLanguageResolve(long entryId)`
 
 The language the entry's paradigm is written in, or empty when it has no slots.
+
+## `public LParadigmView? LEngineInflectionRead(long entryId, bool pending, bool enabled)`
+
+The entry's inflection view, built by the paradigm clerk under the gate.
+It passes the held custom analysis setting, which picks the sheets and whether marks and root splits show.
+It adds no rule of its own.
 
 ## `public LParadigmStatus LEngineParadigmCheck(LParadigmRow row, bool pending, bool enabled)`
 

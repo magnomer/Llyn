@@ -1,11 +1,12 @@
 # TInterfaceDatabase.cs
+Hash: `5906ceaf0f49c1d2`
 Hash: `03ccf24149a1bbab`
 
 ## `internal static partial class TInterface`
 
 The relays for the infrastructure layer.
 They open a store and run one store operation.
-The stores of the entry itself stand here: its rows, forms, speeches, examples, media, notes, inflections and readings.
+Entry-owned rows, forms, speeches, examples, media, notes, inflections, lacunae and readings are relayed here.
 The database session, the doctor, the realm, the revision log and the workspace root are relayed here too.
 A retirement of a part of speech is built and applied here, against the speech store.
 The stores of what hangs on a meaning or collocation are relayed in `TInterfaceMeaning.cs`.
@@ -20,3 +21,11 @@ The realm value of a test workspace, which the migration and realm tests compare
 The last temporary id a test built by hand.
 It starts far below the ids a fresh workspace issues, so a hand-built id never names a real draft row.
 A test counting on an unknown row would otherwise meet the row the engine just made, depending on test order.
+
+## `internal static void TInflectionAnalysisSave(this LInflectionArchive inflectionArchive, long inflectionId, string? prediction, IReadOnlyList<LInflectionMark>? marks, string? stamp, bool regular)`
+
+The archive owns serialization and null handling, so the relay preserves every supplied analysis value unchanged.
+
+## `internal static IReadOnlyList<LRevisionDelta> TRevisionChangeRead(this TWorkspace workspace, long revisionId)`
+
+Reads persisted revision changes directly in position order, independently of the archive adapter.

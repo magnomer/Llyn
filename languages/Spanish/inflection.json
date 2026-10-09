@@ -1,0 +1,143 @@
+{
+  "kinds": [
+    { "name": "a", "match": "^(?<root>.+)(?<vowel>a)r$" },
+    { "name": "other", "match": "^(?<root>.+)(?<vowel>[ei])r$" },
+    { "name": "ir", "match": "ir$" }
+  ],
+  "columns": [[17, 20], [18, 20], [19, 20], [17, 21], [18, 21], [19, 21]],
+  "stems": [
+    { "values": [9, 12], "templates": { "a": "${root}·a+", "other": "${root}·e+" }, "endings": ["O", "s", "∅", "mos", "'is", "n"] },
+    { "values": [9, 14], "templates": { "a": "${root}·aba+", "other": "${root}·ía+" }, "endings": ["(e)", "s", "∅", "mos", "'is", "n"] },
+    { "values": [9, 13], "templates": { "a": "${root}·a+", "other": "${root}·i+" }, "endings": ["(i)", "ste", "_o", "mos", "steis", "(e)ron"] },
+    { "values": [9, 15], "templates": { "a": "${root}·${vowel}re+", "other": "${root}·${vowel}re+" }, "endings": ["(e)", "_as", "_a", "mos", "'is", "_an"] },
+    { "values": [9, 16], "templates": { "a": "${root}·${vowel}ría+", "other": "${root}·${vowel}ría+" }, "endings": ["(e)", "_as", "_a", "mos", "'is", "_an"] },
+    { "values": [11, 22], "templates": { "a": "${root}·e+", "other": "${root}·a+" }, "endings": [null, "S*", "∅", "mos", "S*d", "n"] },
+    { "values": [11, 23], "templates": { "a": "${root}·e+", "other": "${root}·a+" }, "endings": [null, "s", "∅", "mos", "'is", "n"] },
+    { "values": [10, 12], "templates": { "a": "${root}·e+", "other": "${root}·a+" }, "endings": ["(e)", "s", "∅", "mos", "'is", "n"] },
+    { "values": [10, 14, 24], "templates": { "a": "${root}·ara+", "other": "${root}·iera+" }, "endings": ["(e)", "s", "∅", "mos", "'is", "n"] },
+    { "values": [10, 14, 25], "templates": { "a": "${root}·ase+", "other": "${root}·iese+" }, "endings": ["(e)", "s", "∅", "mos", "'is", "n"] },
+    { "values": [10, 15], "templates": { "a": "${root}·are+", "other": "${root}·iere+" }, "endings": ["(e)", "s", "∅", "mos", "'is", "n"] }
+  ],
+  "rules": [
+    ["·e\\+S\\*", "·a+"],
+    ["·a\\+S\\*", "·e+"],
+    ["·e\\+(?=mos$|'is$|d$)", "·i+", "ir"],
+    ["[aeiou]\\+O", "+o"],
+    ["i\\+\\(i\\)", "i+"],
+    ["a\\+\\(i\\)", "+e"],
+    ["([aeouáéóú])\\+\\(e\\)", "$1+"],
+    ["\\(e\\)", "e"],
+    ["[aeouáéóú]\\+_", "+"],
+    ["_", ""],
+    ["'", ""],
+    ["∅", ""],
+    ["i([·+]+)i", "i$1"],
+    ["[·+]", ""]
+  ],
+  "folds": [
+    ["[áà]", "a"],
+    ["[éè]", "e"],
+    ["[íì]", "i"],
+    ["[óò]", "o"],
+    ["[úùü]", "u"],
+    ["qu(?=[ei])", "c"],
+    ["z", "c"],
+    ["gu(?=[ei])", "g"],
+    ["j", "g"],
+    ["(?<=[aeiou])y(?=[aeiou])", "i"]
+  ],
+  "layout": {
+    "part": 6,
+    "collapsed": {
+      "headers": [],
+      "groups": [
+        { "label": "Inflection.Indicative", "lines": [
+          { "label": "Inflection.Present", "values": [9, 12], "cells": [[17, 20]] },
+          { "label": "Inflection.Imperfect", "values": [9, 14], "cells": [[17, 20]] },
+          { "label": "Inflection.Preterite", "values": [9, 13], "cells": [[17, 20]] },
+          { "label": "Inflection.Future", "values": [9, 15], "cells": [[17, 20]] },
+          { "label": "Inflection.Conditional", "values": [9, 16], "cells": [[17, 20]] } ] },
+        { "label": "Inflection.Subjunctive", "lines": [
+          { "label": "Inflection.Present", "values": [10, 12], "cells": [[17, 20]] },
+          { "label": "Inflection.Imperfect", "values": [10, 14, 17, 20], "cells": [[24], [25]] },
+          { "label": "Inflection.Future", "values": [10, 15], "cells": [[17, 20]] } ] },
+        { "label": "Inflection.Imperative", "lines": [
+          { "label": "Inflection.Affirmative", "values": [11, 22], "cells": [[18, 20]] } ] }
+      ]
+    },
+    "expanded": {
+      "headers": [
+        "Inflection.FirstSingular",
+        "Inflection.SecondSingular",
+        "Inflection.ThirdSingular",
+        "Inflection.FirstPlural",
+        "Inflection.SecondPlural",
+        "Inflection.ThirdPlural"
+      ],
+      "columns": [[17, 20], [18, 20], [19, 20], [17, 21], [18, 21], [19, 21]],
+      "groups": [
+        { "label": "Inflection.Indicative", "lines": [
+          { "label": "Inflection.Present", "values": [9, 12] },
+          { "label": "Inflection.Imperfect", "values": [9, 14] },
+          { "label": "Inflection.Preterite", "values": [9, 13] },
+          { "label": "Inflection.Future", "values": [9, 15] },
+          { "label": "Inflection.Conditional", "values": [9, 16] } ] },
+        { "label": "Inflection.Subjunctive", "lines": [
+          { "label": "Inflection.Present", "values": [10, 12] },
+          { "label": "Inflection.ImperfectRa", "values": [10, 14, 24] },
+          { "label": "Inflection.ImperfectSe", "values": [10, 14, 25] },
+          { "label": "Inflection.Future", "values": [10, 15] } ] },
+        { "label": "Inflection.Imperative", "lines": [
+          { "label": "Inflection.Affirmative", "values": [11, 22] },
+          { "label": "Inflection.Negative", "values": [11, 23] } ] }
+      ]
+    },
+    "custom": {
+      "collapsed": {
+        "headers": [],
+        "groups": [
+          { "label": "Inflection.FutureConditional", "lines": [
+            { "label": "", "values": [17, 20], "cells": [[9, 15], [9, 16]] } ] },
+          { "label": "Inflection.Imperative", "lines": [ { "label": "", "values": [11, 22], "cells": [[18, 20]] } ] },
+          { "label": "Inflection.Indicative", "lines": [
+            { "label": "Inflection.Present", "values": [9, 12], "cells": [[17, 20]] },
+            { "label": "Inflection.Imperfect", "values": [9, 14], "cells": [[17, 20]] },
+            { "label": "Inflection.Preterite", "values": [9, 13], "cells": [[17, 20]] } ] },
+          { "label": "Inflection.Subjunctive", "lines": [
+            { "label": "Inflection.Present", "values": [10, 12], "cells": [[17, 20]] },
+            { "label": "Inflection.Imperfect", "values": [10, 14, 17, 20], "cells": [[24], [25]] },
+            { "label": "Inflection.Future", "values": [10, 15], "cells": [[17, 20]] } ] }
+        ]
+      },
+      "expanded": {
+        "headers": [
+          "Inflection.FirstSingular",
+          "Inflection.SecondSingular",
+          "Inflection.ThirdSingular",
+          "Inflection.FirstPlural",
+          "Inflection.SecondPlural",
+          "Inflection.ThirdPlural"
+        ],
+        "columns": [[17, 20], [18, 20], [19, 20], [17, 21], [18, 21], [19, 21]],
+        "groups": [
+          { "label": "Inflection.Future", "lines": [
+            { "label": "Inflection.Indicative", "values": [9, 15] },
+            { "label": "Inflection.Subjunctive", "values": [10, 15] } ] },
+          { "label": "Inflection.Conditional", "lines": [
+            { "label": "", "values": [9, 16] } ] },
+          { "label": "Inflection.Imperative", "lines": [
+            { "label": "Inflection.Affirmative", "values": [11, 22] },
+            { "label": "Inflection.Negative", "values": [11, 23] } ] },
+          { "label": "Inflection.Indicative", "lines": [
+            { "label": "Inflection.Present", "values": [9, 12] },
+            { "label": "Inflection.Imperfect", "values": [9, 14] },
+            { "label": "Inflection.Preterite", "values": [9, 13] } ] },
+          { "label": "Inflection.Subjunctive", "lines": [
+            { "label": "Inflection.Present", "values": [10, 12] },
+            { "label": "Inflection.ImperfectRa", "values": [10, 14, 24] },
+            { "label": "Inflection.ImperfectSe", "values": [10, 14, 25] } ] }
+        ]
+      }
+    }
+  }
+}

@@ -1,4 +1,5 @@
 # TParadigm.cs
+Hash: `4b097f2afa171cf3`
 Hash: `c6bae55e50ed8a88`
 
 ## `public sealed class TParadigm`
@@ -28,13 +29,19 @@ A malformed regular or except entry is ignored and the row is kept.
 
 The shipped English pack states paradigms over bare roles.
 So the loader is read against disk and not a fixture alone.
-No part names a parent and no paradigm excepts one, since the subtypes are retired.
+No part names a parent, and the noun paradigm declares no exceptions.
 
 ## `public void SpeechPackLoad_ClassicalPack_DeclaresPrincipalParts(string language, int paradigms, long genitive, int principalParts)`
 
 The shipped Latin and Greek packs each declare three paradigms.
-The noun asks for the genitive alone and excepts the proper noun, the verb for its principal parts.
+The noun asks for the genitive alone with no exceptions, and the verb declares the expected principal-part count.
 Every value a paradigm names is a morphology value the same pack declares.
+
+## `public void SpeechPackLoad_SpanishPack_DeclaresSixtyFourCells()`
+
+The shipped Spanish verb paradigm declares 64 cells, each a distinct set of values.
+Every value a cell names is a morphology value the same pack declares.
+So each cell resolves to a slot and has a key no other cell shares.
 
 ## `public void ParadigmRowScan_TwoPartsOfSpeech_LeadsEachPartOnce()`
 
@@ -54,12 +61,10 @@ An unknown slot without a form answers unknown before the pending and morphology
 
 An unanswered slot answers pending while the fetch runs, then lost when morphology is on, else absent.
 
-## Inline notes
-
-### `private static LSpeechPack TParadigmPackLoad(string json)`
+## `private static LSpeechPack TParadigmPackLoad(string json)`
 
 Writes one vocabulary file under the application's language folder and removes it after the load.
 
-### `private static LParadigmStatus TParadigmStatusRead(LInflection? inflection, LState state, bool pending, bool enabled)`
+## `private static LParadigmStatus TParadigmStatusRead(LInflection? inflection, LState state, bool pending, bool enabled)`
 
 Builds a one-slot row and asks it for its status.

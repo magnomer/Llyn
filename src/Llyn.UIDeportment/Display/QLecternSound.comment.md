@@ -1,5 +1,5 @@
 # QLecternSound.cs
-Hash: `503903e110ee8e89`
+Hash: `67f1078cfe995b44`
 
 ## `public sealed class QLecternSound`
 
@@ -36,6 +36,8 @@ Draws the script box with its font and whether a fetch runs.
 ## `public void QLecternParadigmRefine()`
 
 Draws the paradigm box with the font of the paradigm's own language.
+It maps the slot rows and the inflection view into Deportment items, then hands the box those.
+The sheet is null for a pack without a layout.
 The lectern subscribes the paradigm, script and fanqie Refines to open and close, in that order.
 A closed display answers empty blocks, so the same Refines empty the boxes and the reading.
 Each also answers its own notice, marshalled onto the page through `QObserver`.

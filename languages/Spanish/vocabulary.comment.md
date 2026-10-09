@@ -1,7 +1,7 @@
 # vocabulary.json
-Hash: `455f08996e835c7b`
+Hash: `897619964cbdb41c`
 
-## file
+## `language`
 
 Display vocabulary for Spanish.
 It lists the parts of speech an entry may carry as presets, and the morphology each of them takes.
@@ -11,7 +11,6 @@ Every id is an integer that never changes once published.
 Renaming a preset keeps its id, so every entry linking it follows the rename.
 The names are what the shell shows.
 Order is the order of these lists.
-Add a language by creating `languages/<Name>/vocabulary.json`.
 
 ## `exampleOrder`
 
@@ -27,8 +26,7 @@ A user may still write a register no preset names.
 
 It lists the parts of speech, each a bare role.
 Valency and other subtypes belong to the dependence field and the morphology, not here.
-A part may carry `parent`, the id of the part it specialises.
-A paradigm declared on the parent applies to it.
+This pack declares ten parts without parent links.
 
 ## `retired`
 
@@ -43,7 +41,30 @@ A row with neither drops the links.
 It lists the grammatical features each part takes.
 `part` names the part id.
 
+Feature 9 `polarity` splits the imperative into affirmative and negative rows.
+Feature 10 `form` splits the imperfect subjunctive into its -ra and -se rows.
+Both belong to the verb, part 6.
+
 ## `values`
 
-It lists the values each feature takes.
-`feature` names the feature id.
+Value identifiers link each grammatical value to its feature.
+
+Values 22 `affirmative` and 23 `negative` belong to polarity.
+Values 24 `-ra` and 25 `-se` belong to form.
+The names are what a slot shows, so the hyphen in `-ra` and `-se` is kept.
+
+## `paradigms`
+
+It lists the forms a part is expected to inflect into.
+`part` names the part id.
+`cells` lists each expected form as a set of value ids.
+A cell's key is its ids sorted ascending and joined by `+`.
+That key is the `variety` of the source reading that fetches the form.
+Within a cell the ids follow mood, tense, polarity or form, person, number.
+That order becomes the slot's display name.
+The verb paradigm holds 64 cells.
+The indicative has five tenses of six persons each.
+The imperative has two polarities of five persons each.
+It has no first person singular, as the source table leaves that column empty.
+The subjunctive has present, imperfect -ra, imperfect -se and future, six persons each.
+There is no infinitive cell and no vos cell.

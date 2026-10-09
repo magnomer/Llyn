@@ -1,5 +1,5 @@
 # TFaultWrite.cs
-Hash: `b49b0ba30da35a30`
+Hash: `2689e72430601ed8`
 
 ## `public sealed partial class TFault`
 
@@ -15,6 +15,7 @@ The two workspace change overloads carry their parameter types, so each runs und
 Port rows fault their port member over `TInterfaceConduct.TAtelierFaultCreate`.
 Settings rows fault `LSettingsVault.LSettingsSave`, so the engine's own rollback is under test.
 Their read-back is the settings field the gate writes, read from the engine.
+A switch row saves the opposite of the held value, since an unchanged snapshot never reaches the vault.
 The tab select faults `LPostureVault.LPostureSave` and shows `Layout.SaveFailed`.
 The volume set faults `LMediaPort.LEngineVolumeSet` and shows `Sound.VolumeFailed` through the workspace's held envoy.
 Neither reads back, since each failure keeps the state the screen shows and tells the user once.

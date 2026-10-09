@@ -1,18 +1,21 @@
 # QSettings.cs
-Hash: `d5b1fe64b7ba2672`
+Hash: `4b7951f3eaac56cf`
 
 ## `internal sealed class QSettings`
 
 The settings panel's driver.
-It owns the group catalog, the chosen group's page, and the stored choices it opens on.
-Each choice is driven by its own driver in `Panel/Choice`, which hears and paints that choice's controls.
+It owns the group catalog and the stored choices it opens on.
+Showing the chosen group's page is the job of its `QDial`.
+Most choices are driven by their own driver in `Panel/Choice`, which hears and paints that choice's controls.
+The listing switch is driven here, and the linked-panels switch by the window's `QLayout`.
 What each choice costs, such as a catalog swap or a whole different workspace, lives in those drivers.
 
 ## `internal QSettings(FrameworkElement surface, QLayout layout, QPosture posture)`
 
 Takes the veneer's page as its surface, which the window pulls by contract ID.
 It builds one choice driver per concern over the surface, and each wires its own controls.
-The linked-panels switch is the exception, since it is a setting on the window's one `QLayout`.
+It builds the page dial over the same surface.
+The linked-panels switch is an exception, since it is a setting on the window's one `QLayout`.
 That keeper is handed in, and it wires the switch when the panel introduces it.
 The window's GUI-only posture is handed in too, read for the linked summary and cleared by the width reset.
 Nothing else is wired before the window introduces it.
@@ -38,6 +41,7 @@ It then shows the first card.
 Paints the whole panel from one ledger state.
 The interface texts are applied first, so everything painted after reads in the stored language.
 Each choice driver is handed its own value from the state, and the linked switch reads the posture.
+The custom analysis driver reads its value from the ledger, since the state does not carry it.
 The switches listen on `Click`, which setting `IsChecked` in code does not raise.
 So a painted switch writes nothing back at all.
 
@@ -46,13 +50,9 @@ So a painted switch writes nothing back at all.
 The listing switch was ticked, so the ledger saves the raw switch.
 The window's envoy goes with it, so a failed save is shown.
 
-## `private (string QSettingsChild, StackPanel QSettingsPage)[] QSettingsTableRead()`
-
-Pairs each group's name with the page the markup draws for it.
-
 ## `private void QSettingsDialRefine(string child)`
 
-Shows the card of one group and hides the others, and marks that group's row chosen.
+Marks one group's row chosen, and has the dial show that group's card and hide the others.
 
 ## `private void QSettingsFolderObserve(object sender, RoutedEventArgs e)`
 

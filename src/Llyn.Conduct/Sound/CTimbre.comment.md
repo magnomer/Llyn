@@ -1,5 +1,5 @@
 # CTimbre.cs
-Hash: `11a212b3b9fe6026`
+Hash: `b8355282ea3e753f`
 
 ## `public sealed class CTimbre`
 
@@ -88,7 +88,9 @@ An empty desk answers the hidden block with no rows.
 
 ## `internal void LTimbreObserverAttach(Action<Action> marshal)`
 
-Hears the paradigm subject of the held entry and the script subject.
+Hears the inflection subject of the held entry and the script subject.
+An inflection bulletin without an entry id names every entry, so the held entry hears it too.
+The custom analysis switch raises one, so the editor's inflection box repaints.
 
 ## `public bool CTimbreSpoken`
 

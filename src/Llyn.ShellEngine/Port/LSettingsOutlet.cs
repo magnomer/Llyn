@@ -62,6 +62,11 @@ public sealed class LSettingsOutlet : LSettingsPort
     public void LEngineMorphologySave(bool morphology) =>
         _lSettingsOutletEngine.LEngineSettings.LEngineMorphologySave(morphology);
 
+    public bool LEngineAnalysisCheck() => _lSettingsOutletEngine.LEngineSettings.LEngineAnalysisCheck();
+
+    public void LEngineAnalysisSave(bool analysis) =>
+        _lSettingsOutletEngine.LEngineSettings.LEngineAnalysisSave(analysis);
+
     public void LEngineRespellingSave(bool respelled) =>
         _lSettingsOutletEngine.LEngineSettings.LEngineRespellingSave(respelled);
 

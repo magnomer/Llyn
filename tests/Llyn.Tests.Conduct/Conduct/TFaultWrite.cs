@@ -122,6 +122,20 @@ public sealed partial class TFault
                     () => engine.TEngineSettingsRead().LSettingsMorphology);
             }),
         new(
+            "CLedger.CLedgerAnalysisSave",
+            "LSettingsVault.LSettingsSave",
+            "Settings.SaveFailed",
+            static stage =>
+            {
+                LEngine engine = TFaultVaultStart(stage);
+                CAtelier atelier = TFaultAtelierCreate(stage, engine);
+                CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard);
+                bool chosen = !engine.TEngineSettingsRead().LSettingsAnalysis;
+                return (
+                    () => atelier.CAtelierLedger.CLedgerAnalysisSave(chosen, envoy),
+                    () => engine.TEngineSettingsRead().LSettingsAnalysis);
+            }),
+        new(
             "CLedger.CLedgerRespellingSave",
             "LSettingsVault.LSettingsSave",
             "Settings.SaveFailed",

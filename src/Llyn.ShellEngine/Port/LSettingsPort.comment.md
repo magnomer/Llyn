@@ -1,5 +1,5 @@
 # LSettingsPort.cs
-Hash: `51a353156079b8b2`
+Hash: `3508013f184ea829`
 
 ## `public interface LSettingsPort`
 
@@ -89,6 +89,16 @@ Whether the morphology fetch is on, so a reading view offers its paradigm.
 
 Turns the morphology fetch on or off.
 Turning it off cancels every pending inflection fetch.
+
+## `bool LEngineAnalysisCheck();`
+
+Whether custom analysis is on, so the settings switch shows its state.
+
+## `void LEngineAnalysisSave(bool analysis);`
+
+Turns custom analysis on or off.
+On shows the pack's custom sheets with marked letters split at the root, and off shows the default sheets plain.
+The inflection box of the reading view and the editor repaints after a change.
 
 ## `void LEngineRespellingSave(bool respelled);`
 

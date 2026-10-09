@@ -272,10 +272,14 @@ public sealed class CDisplaySound
         IReadOnlyList<LParadigmRow> rows = _cDisplayVoice.LDisplayListRead(
             _cDisplayParadigm.LEngineParadigmScan, "Display.ParadigmReadFailed");
         bool pending = _cDisplayVoice.LDisplayParadigmCheck(id);
+        bool enabled = _cDisplayVoice.LDisplayMorphologyRead();
+        LParadigmView? view = _cDisplayNoticed.LLedgerRepaintRead<LParadigmView?>(_cDisplayEnvoy, _cDisplaySettings,
+            () => _cDisplayParadigm.LEngineInflectionRead(id, pending, enabled),
+            null, "Display.ParadigmReadFailed");
         return new CLecternParadigm(
-            CSounding.CSoundingParadigmRead(
-                _cDisplayParadigm, rows, pending, _cDisplayVoice.LDisplayMorphologyRead(), false),
-            CFont.CFontRead(_cDisplaySettings, language, CFontRole.CFontRoleHeadword));
+            CSounding.CSoundingParadigmRead(_cDisplayParadigm, rows, pending, enabled, false),
+            CFont.CFontRead(_cDisplaySettings, language, CFontRole.CFontRoleHeadword),
+            CParadigmView.CParadigmViewCreate(view, false));
     }
 
     private IReadOnlyList<CReflex> LDisplayReflexScan()

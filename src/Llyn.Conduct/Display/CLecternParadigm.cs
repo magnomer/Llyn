@@ -4,4 +4,5 @@ namespace Llyn.Conduct;
 
 public sealed record CLecternParadigm(
     IReadOnlyList<CParadigmSlot> CLecternParadigmSlots,
-    CFont CLecternParadigmFont);
+    CFont CLecternParadigmFont,
+    CParadigmView? CLecternParadigmView = null);

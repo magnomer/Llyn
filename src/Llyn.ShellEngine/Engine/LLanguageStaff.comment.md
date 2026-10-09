@@ -1,7 +1,8 @@
 # LLanguageStaff.cs
+Hash: `32a580fa99e89572`
 Hash: `524c68b3f2df2224`
 
-## `internal sealed record LLanguageStaff(...)`
+## `internal sealed record LLanguageStaff(LVocabularyClerk LLanguageStaffVocabulary, LParadigmClerk LLanguageStaffParadigm, LPronunciationClerk LLanguageStaffPronunciation, LTrailClerk LLanguageStaffTrail, LLanguageClerk LLanguageStaffLanguage, LRecordingClerk LLanguageStaffRecording, LTranscriptionClerk LLanguageStaffTranscription, LReflexClerk LLanguageStaffReflex, LLacunaClerk LLanguageStaffLacuna, LFrequencyClerk LLanguageStaffFrequency, LFanqieClerk LLanguageStaffFanqie, LShengfuClerk LLanguageStaffShengfu, LStemClerk LLanguageStaffStem, LDiweiClerk LLanguageStaffDiwei, LScriptClerk LLanguageStaffScript, LEnsign LLanguageStaffEnsign)`
 
 The group of clerks for language data, pronunciations and every background fetch.
 All six fetching clerks sit here, so one call cancels them together.
@@ -30,6 +31,7 @@ All six fetching clerks sit here, so one call cancels them together.
 Builds the language clerks over one rig after the claim group.
 Fetch clerks receive the gate and the bulletin raiser supplied by the engine.
 The frequency and lacuna fetches also receive the settings reader.
+The paradigm clerk receives the language cache, so it reads the same rule books as the lacuna fetch.
 The recording, reflex and lacuna clerks read the claim clerk, so they see which drafts this engine holds.
 
 ## `internal void LLanguageStaffApply()`

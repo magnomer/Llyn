@@ -140,10 +140,16 @@ public sealed class CSounding
         IReadOnlyList<LParadigmRow> rows =
             LSoundingListRead(_cSoundingParadigmPort.LEngineParadigmScan, "Display.ParadigmReadFailed");
         bool pending = _cSoundingVoice.LDisplayParadigmCheck(LSoundingEntry);
+        bool enabled = _cSoundingVoice.LDisplayMorphologyRead();
+        LParadigmView? view = LSoundingEntry is long entry
+            ? _cSoundingNoticed.LLedgerRepaintRead<LParadigmView?>(_cSoundingEnvoy, _cSoundingSettingsPort,
+                () => _cSoundingParadigmPort.LEngineInflectionRead(entry, pending, enabled),
+                null, "Display.ParadigmReadFailed")
+            : null;
         return new CLecternParadigm(
-            CSoundingParadigmRead(
-                _cSoundingParadigmPort, rows, pending, _cSoundingVoice.LDisplayMorphologyRead(), true),
-            CFont.CFontRead(_cSoundingSettingsPort, language, CFontRole.CFontRoleHeadword));
+            CSoundingParadigmRead(_cSoundingParadigmPort, rows, pending, enabled, true),
+            CFont.CFontRead(_cSoundingSettingsPort, language, CFontRole.CFontRoleHeadword),
+            CParadigmView.CParadigmViewCreate(view, true));
     }
 
     private IReadOnlyList<LSoundingItem> LSoundingListRead<LSoundingItem>(
@@ -248,19 +254,8 @@ public sealed class CSounding
     private static CParadigmSlot LSoundingSlotRead(LParadigmRow row, LParadigmStatus status, bool held)
     {
         string text = row.LParadigmRowFirst.LParadigmSlotInflection?.LInflectionText ?? string.Empty;
-        return status switch
-        {
-            LParadigmStatus.LParadigmStatusText => new CParadigmSlot(
-                row.LParadigmRowPart, row.LParadigmRowName, text, null),
-            LParadigmStatus.LParadigmStatusUnknown => new CParadigmSlot(
-                row.LParadigmRowPart, row.LParadigmRowName, "—", "Paradigm.Unknown"),
-            LParadigmStatus.LParadigmStatusPending => new CParadigmSlot(
-                row.LParadigmRowPart, row.LParadigmRowName, "…", "Paradigm.Pending"),
-            LParadigmStatus.LParadigmStatusLost => new CParadigmSlot(
-                row.LParadigmRowPart, row.LParadigmRowName, "…", held ? "Paradigm.Held" : "Paradigm.Lost"),
-            LParadigmStatus.LParadigmStatusAbsent => new CParadigmSlot(
-                row.LParadigmRowPart, row.LParadigmRowName, "…", "Paradigm.Absent"),
-            _ => throw new ArgumentOutOfRangeException(nameof(status)),
-        };
+        CParadigmForm shown = CParadigmForm.CParadigmFormResolve(status, text, held);
+        return new CParadigmSlot(
+            row.LParadigmRowPart, row.LParadigmRowName, shown.CParadigmFormText, shown.CParadigmFormTip);
     }
 }

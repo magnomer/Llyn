@@ -53,4 +53,11 @@ internal static class TInterfaceEngineSettings
     {
         engine.LEngineSettings.LEngineMorphologySave(morphology);
     }
+
+    internal static bool TEngineAnalysisCheck(this LEngine engine) => engine.LEngineSettings.LEngineAnalysisCheck();
+
+    internal static void TEngineAnalysisSave(this LEngine engine, bool analysis)
+    {
+        engine.LEngineSettings.LEngineAnalysisSave(analysis);
+    }
 }

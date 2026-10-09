@@ -63,6 +63,8 @@ public sealed class QLecternSound
         QFontFace.QFontRefine(paradigm.CLecternParadigmFont, _qLecternSoundParadigm);
         _qLecternSoundParadigm.SetCurrentValue(
             QParadigm.QParadigmItemsProperty, QParadigmItem.QParadigmItemScan(paradigm.CLecternParadigmSlots));
+        _qLecternSoundParadigm.SetCurrentValue(
+            QParadigm.QParadigmSheetProperty, QParadigmSheet.QParadigmSheetCreate(paradigm.CLecternParadigmView));
     }
 
     private void QLecternDiweiObserve(bool initial, string key)

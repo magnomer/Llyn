@@ -166,10 +166,32 @@ internal static partial class TInterface
         long entryId) =>
         inflectionArchive.LInflectionRead(entryId);
 
+    internal static void TInflectionAnalysisSave(
+        this LInflectionArchive inflectionArchive,
+        long inflectionId,
+        string? prediction,
+        IReadOnlyList<LInflectionMark>? marks,
+        string? stamp,
+        bool regular)
+    {
+        inflectionArchive.LInflectionAnalysisSave(inflectionId, prediction, marks, stamp, regular);
+    }
+
     internal static void TExampleTextUpdate(this LExampleArchive exampleArchive, long exampleId, LStateValue text)
     {
         exampleArchive.LExampleTextUpdate(exampleId, text);
     }
+
+    internal static LLacunaArchive TLacunaArchiveCreate(LDatabase database) =>
+        new(database);
+
+    internal static void TLacunaSave(this LLacunaVault lacunaVault, long entryId, IReadOnlyList<LLacuna> lacunae)
+    {
+        lacunaVault.LLacunaSave(entryId, lacunae);
+    }
+
+    internal static IReadOnlyList<LLacuna> TLacunaRead(this LLacunaVault lacunaVault, long entryId) =>
+        lacunaVault.LLacunaRead(entryId);
 
     internal static LMorphologyArchive TMorphologyArchiveCreate(LDatabase database) =>
         new(database);

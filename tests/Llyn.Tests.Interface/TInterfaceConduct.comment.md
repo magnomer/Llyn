@@ -1,5 +1,5 @@
 # TInterfaceConduct.cs
-Hash: `cd6f4c8840a234dc`
+Hash: `b874782b38994b42`
 
 ## `internal static class TInterfaceConduct`
 
@@ -58,6 +58,7 @@ Only the port declaring `member` faults it, so a fault key names the narrow port
 Every sound port a fake answering from `answers`, so one map answers each port a fact reaches.
 The scale, the cell kind and the paradigm status answer by the engine's own rule unless `answers` names them.
 Those were rules with no engine state, so a fake keeps them true without a test naming them.
+The inflection view answers null unless `answers` names it, so a fact sees the list alone as before.
 
 ## `internal static LSettingsPort TSettingsOutletCreate(LEngine engine)`
 
@@ -161,6 +162,7 @@ Attaches a view that keeps every state it is shown, opens the atelier through `T
 
 A fake settings port that answers the ledger's reads for a Korean localization, over any answers the test sets.
 It also answers an empty workspace status and an empty establishment read, so an open shows no failure.
+It answers custom analysis on, so the Inflection page summary reads without a test answer.
 The ledger facts and the ledger notice facts both build their atelier on it.
 
 ## `internal static CWorkspaceState? TAtelierStateOpen(this CAtelier atelier)`

@@ -146,4 +146,13 @@ internal static class TInterfaceDeportment
     internal static void TLocalizationRefine(
         object localization, IReadOnlyList<KeyValuePair<string, string>> languages, string chosen) =>
         ((QLocalization)localization).QLocalizationRefine(languages, chosen);
+
+    internal static object TInflectionCreate(FrameworkElement settings, CLedger ledger, CEnvoy envoy)
+    {
+        QInflection analysis = new(settings);
+        analysis.QInflectionIntroduce(ledger, envoy);
+        return analysis;
+    }
+
+    internal static void TInflectionRefine(object analysis) => ((QInflection)analysis).QInflectionRefine();
 }

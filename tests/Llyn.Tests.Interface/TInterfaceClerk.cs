@@ -185,8 +185,8 @@ internal static partial class TInterface
         LTranslationClerk translations = new(rig, new LRevisionClerk(rig));
         LExampleClerk examples = new(rig, new LReferenceClerk(rig));
         LCardClerk cards = new(rig, tags, registers, translations, examples);
-        LParadigmClerk paradigms = new(rig);
         LLanguageCache languages = new(rig.LRigLanguages);
+        LParadigmClerk paradigms = new(rig, languages);
         LClaimClerk claims = TClaimClerkCreate(rig);
         return new LEntryClerk(
             rig,
@@ -219,7 +219,13 @@ internal static partial class TInterface
             new LRevisionClerk(rig),
             new LEntryQueryClerk(rig),
             new LLacunaClerk(
-                rig, languages, new LParadigmClerk(rig), claims, new object(), TSettingsRead, static (_, _) => { }),
+                rig,
+                languages,
+                new LParadigmClerk(rig, languages),
+                claims,
+                new object(),
+                TSettingsRead,
+                static (_, _) => { }),
             new LFrequencyClerk(rig, languages, new object(), TSettingsRead, static (_, _) => { }),
             link,
             new LMarkupClerkDraft(rig, link));
@@ -238,7 +244,7 @@ internal static partial class TInterface
             new LFavoriteClerk(rig),
             new LFanqieClerk(rig, languages, gate, static (_, _) => { }),
             new LFrequencyClerk(rig, languages, gate, TSettingsRead, static (_, _) => { }),
-            new LParadigmClerk(rig),
+            new LParadigmClerk(rig, languages),
             new LScriptClerk(rig, languages, gate, static (_, _) => { }),
             TSettingsRead);
     }

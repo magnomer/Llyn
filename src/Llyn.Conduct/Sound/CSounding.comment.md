@@ -1,4 +1,5 @@
 # CSounding.cs
+Hash: `825d46a0afbfd771`
 Hash: `92f2278b2ae59a3f`
 
 ## `public sealed class CSounding`
@@ -7,8 +8,9 @@ The sound sheet of the entry the editor holds.
 It covers the entry's rime-book groups, its script rows and its paradigm slots.
 It also holds the maps from the fanqie, script and paradigm rows to the shapes the drivers show.
 Each smaller row's map stands on its own record, such as `CVariety` or `CReflexDraft`.
-Every read and gate works on the entry the desk has stored, so no driver passes an entry.
-A fresh draft has no stored entry, so every read answers empty and every gate does nothing.
+Stored-entry reads and mark gates take their entry from the desk, so drivers pass no entry id.
+A fresh draft has no stored rows and cannot mark them.
+Rime-cell navigation instead uses the draft language and does not require a stored entry.
 The open state of its boxes belongs to the user, not the entry, so `CFold` keeps it apart.
 Every read answers empty on a refusal, since a box that cannot fetch still has to draw.
 The refusal still shows through the envoy under the read's own notice key, so none passes unseen.
@@ -86,6 +88,9 @@ The rows are joined by the engine, and the waiting check and the morphology verd
 Both verdicts stand in each slot's ready status, so the driver never reads them.
 The headword font is that of the paradigm's own language, as the reading view picks it.
 Every block's font goes through the one font rule `CFont.CFontRead` holds.
+The inflection box is read through the ledger under `Display.ParadigmReadFailed` and mapped as held.
+A refused box read shows that notice and answers a null view.
+A fresh draft has no entry, so its box is null.
 
 ## `private IReadOnlyList<LSoundingItem> LSoundingListRead<LSoundingItem>(Func<long, IReadOnlyList<LSoundingItem>> read, string key)`
 
@@ -128,6 +133,6 @@ The held flag is true for the editor, whose missing forms are held by the draft.
 
 ## `private static CParadigmSlot LSoundingSlotRead(LParadigmRow row, LParadigmStatus status, bool held)`
 
-Maps the row's status plainly to the text shown and the key of its tip.
-The status rule is Core's, so this map holds only the wording and the held choice.
-A held draft answers the held key where the lectern answers the lost key.
+Maps the row's status to the text shown and the key of its tip.
+The status rule is Core's, and the wording is `CParadigmForm.CParadigmFormResolve`'s.
+This method only lays the answer into a slot.

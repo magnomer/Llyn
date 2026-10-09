@@ -22,7 +22,11 @@ internal sealed class QSettings
 
     private readonly QMorphology _qSettingsMorphology;
 
+    private readonly QInflection _qSettingsInflection;
+
     private readonly QLayout _qSettingsLayout;
+
+    private readonly QDial _qSettingsDial;
 
     private readonly List<QLedgerItem> _qSettingsList = [];
 
@@ -44,7 +48,9 @@ internal sealed class QSettings
         _qSettingsRespelling = new QRespelling(surface);
         _qSettingsFrequency = new QFrequency(surface);
         _qSettingsMorphology = new QMorphology(surface);
+        _qSettingsInflection = new QInflection(surface);
         _qSettingsLayout = layout;
+        _qSettingsDial = new QDial(surface);
         _qPosture = posture;
     }
 
@@ -54,26 +60,10 @@ internal sealed class QSettings
 
     private TextBlock QSettingsEmpty => QContract.QContractFind<TextBlock>(_qSettingsSurface, "PLedgerEmpty");
 
-    private StackPanel QSettingsWorkspacePage =>
-        QContract.QContractFind<StackPanel>(_qSettingsSurface, "PDialWorkspace");
-
     private Button QSettingsFolder => QContract.QContractFind<Button>(_qSettingsSurface, "PDialFolder");
-
-    private StackPanel QSettingsLanguagePage =>
-        QContract.QContractFind<StackPanel>(_qSettingsSurface, "PDialLanguage");
-
-    private StackPanel QSettingsTranscriptionPage =>
-        QContract.QContractFind<StackPanel>(_qSettingsSurface, "PDialTranscription");
-
-    private StackPanel QSettingsListingPage =>
-        QContract.QContractFind<StackPanel>(_qSettingsSurface, "PDialListing");
 
     private ToggleButton QSettingsEpithet =>
         QContract.QContractFind<ToggleButton>(_qSettingsSurface, "PSettingsEpithet");
-
-    private StackPanel QSettingsWebPage => QContract.QContractFind<StackPanel>(_qSettingsSurface, "PDialWeb");
-
-    private StackPanel QSettingsLayoutPage => QContract.QContractFind<StackPanel>(_qSettingsSurface, "PDialLayout");
 
     private Button QSettingsWidth => QContract.QContractFind<Button>(_qSettingsSurface, "PDialWidth");
 
@@ -97,6 +87,7 @@ internal sealed class QSettings
         _qSettingsRespelling.QRespellingIntroduce(ledger, envoy);
         _qSettingsFrequency.QFrequencyIntroduce(ledger, envoy);
         _qSettingsMorphology.QMorphologyIntroduce(ledger, envoy);
+        _qSettingsInflection.QInflectionIntroduce(ledger, envoy);
         _qSettingsLayout.QLayoutIntroduce(_qSettingsSurface);
         QLookItem.QLookItemAttach(QSettingsLedger, QSettingsItemRefine);
         _qPosture.QPostureLinkedChanged += QSettingsMetaRefine;
@@ -115,6 +106,7 @@ internal sealed class QSettings
         QSettingsEpithet.IsChecked = settings.CSettingsEpithet;
         _qSettingsFrequency.QFrequencyRefine(settings.CSettingsFrequency);
         _qSettingsMorphology.QMorphologyRefine(settings.CSettingsMorphology);
+        _qSettingsInflection.QInflectionRefine();
         _qSettingsLayout.QLayoutLinkedRefine();
         QSettingsLedgerRefine(state);
     }
@@ -124,19 +116,6 @@ internal sealed class QSettings
         _cAtelier.CAtelierLedger.CLedgerEpithetSave(QSettingsEpithet.IsChecked == true, _cEnvoy);
     }
 
-    private (string QSettingsChild, StackPanel QSettingsPage)[] QSettingsTableRead()
-    {
-        return
-        [
-            ("Workspace", QSettingsWorkspacePage),
-            ("Language", QSettingsLanguagePage),
-            ("Transcription", QSettingsTranscriptionPage),
-            ("Listing", QSettingsListingPage),
-            ("Web", QSettingsWebPage),
-            ("Layout", QSettingsLayoutPage)
-        ];
-    }
-
     private void QSettingsDialRefine(string child)
     {
         foreach (QLedgerItem item in _qSettingsList)
@@ -144,12 +123,7 @@ internal sealed class QSettings
             item.QLedgerItemChosen = string.Equals(item.QLedgerItemChild, child, StringComparison.Ordinal);
         }
 
-        foreach ((string name, StackPanel page) in QSettingsTableRead())
-        {
-            page.Visibility = string.Equals(name, child, StringComparison.Ordinal)
-                ? Visibility.Visible
-                : Visibility.Collapsed;
-        }
+        _qSettingsDial.QDialRefine(child);
     }
 
     private void QSettingsFolderObserve(object sender, RoutedEventArgs e)

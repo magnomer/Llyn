@@ -1,4 +1,5 @@
 # LSchemaMigration.cs
+Hash: `f232bb4ce9e242dc`
 Hash: `05ad3d84636fbb0a`
 
 ## `public static class LSchemaMigration`
@@ -12,7 +13,8 @@ Stamping a version without acting on the one already stored would record a shape
 No step climbs from one version to the next.
 A file at another version is rebuilt instead.
 A fresh database is created in the current shape and the old rows are carried into it.
-Every column both shapes know carries across, and a column only one of them knows is left behind.
+Shared columns carry across.
+Old-only columns are discarded, while new-only columns take the target defaults.
 A row the current shape refuses, or one whose parent did not come across, is dropped.
 Neither stops the launch.
 The rows then return into the old file, whose tables are replaced under one transaction.
@@ -21,7 +23,7 @@ So a crash at any point leaves it whole, at one version or the other.
 A copy of the old file is kept beside it under its version, so nothing is lost to a rebuild.
 The same rebuild serves a file written by a newer build, since what this build cannot read it cannot keep.
 
-## `public const long LSchemaMigrationVersion = 76;`
+## `public const long LSchemaMigrationVersion = 77;`
 
 The schema version this build produces.
 A change to any table raises it.
@@ -60,7 +62,8 @@ A file with no version table is new, and the schema stamps it rather than rebuil
 Rebuilds `file` in the current shape and returns the path its copy was kept at.
 The pools are cleared first, so no pooled connection holds a stale fresh file while it is deleted.
 The fresh file is a scratch space and is deleted again whether the rebuild succeeded or failed.
-A rebuild that fails leaves the old file untouched and no half-built file beside it.
+Failures before commit roll back the table replacement.
+Scratch cleanup also runs after commit, so a later failure does not undo a committed rebuild.
 
 ## `private static string LSchemaFileApply(string file, string fresh)`
 
@@ -77,7 +80,8 @@ Foreign keys are off during the copy, so the order tables are read in decides no
 ## `private static void LSchemaTableApply(SqliteConnection connection, string from, string into, string table)`
 
 Copies one table from the `from` schema into the `into` schema over the columns both shapes name.
-A row the target shape refuses, by a constraint or a check, is skipped rather than failing the copy.
+Ordinary tables use INSERT OR IGNORE, so conflicting rows can be skipped.
+Realm rows replace conflicts, while sequence rows use INSERT after clearing the target.
 The realm row replaces the one the schema minted, and the id counters replace the target's own.
 
 ## `private static void LSchemaTableClear(SqliteConnection connection)`

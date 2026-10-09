@@ -1,5 +1,5 @@
 # CLedger.cs
-Hash: `e18ee13b15938b3d`
+Hash: `d163eb014cfb35a9`
 
 ## `public sealed class CLedger`
 
@@ -69,6 +69,17 @@ Stores whether the morphology lookup is on.
 A failed save is shown through `envoy` as `Settings.SaveFailed`.
 The ledger is then raised again, so the driver repaints from the saved settings.
 
+## `public void CLedgerAnalysisSave(bool analysis, CEnvoy envoy)`
+
+Stores whether custom analysis is on, as one engine call.
+A saved change makes the reading view and the editor repaint their inflection box.
+A failed save is shown through `envoy` as `Settings.SaveFailed`.
+The ledger is then raised again, so the driver repaints from the saved settings.
+
+## `public bool CLedgerAnalysisRead()`
+
+Whether custom analysis is on, so the settings switch and the Inflection page summary show its current state.
+
 ## `public void CLedgerRespellingSave(bool respelled, CEnvoy envoy)`
 
 Stores whether transcriptions show respelled.
@@ -133,6 +144,7 @@ Copies the engine's settings, with its count of online lookups, into the Conduct
 ## `private string CLedgerMetaRead(string child, CSettings settings)`
 
 The summary of one settings-backed page, from `settings` already read.
+The Inflection page reads custom analysis from the engine, since `settings` does not carry it.
 An unknown page reads empty.
 
 ## `private string CLedgerLanguageRead(string localization)`

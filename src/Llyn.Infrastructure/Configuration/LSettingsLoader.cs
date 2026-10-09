@@ -22,6 +22,7 @@ public sealed class LSettingsLoader : LSettingsVault
     private const string LSettingsLoaderScript = "script";
     private const string LSettingsLoaderOutpost = "outpost";
     private const string LSettingsLoaderWarrant = "warrant";
+    private const string LSettingsLoaderAnalysis = "analysis";
     private const string LSettingsLoaderDefault = "en";
 
     private readonly string _lSettingsLoaderRoot;
@@ -73,6 +74,10 @@ public sealed class LSettingsLoader : LSettingsVault
                 !document.RootElement.TryGetProperty(LSettingsLoaderMorphology, out JsonElement inflect) ||
                 inflect.ValueKind != JsonValueKind.False;
 
+            bool analysis =
+                !document.RootElement.TryGetProperty(LSettingsLoaderAnalysis, out JsonElement custom) ||
+                custom.ValueKind != JsonValueKind.False;
+
             bool epithet =
                 !document.RootElement.TryGetProperty(LSettingsLoaderEpithet, out JsonElement byname) ||
                 byname.ValueKind != JsonValueKind.False;
@@ -109,6 +114,7 @@ public sealed class LSettingsLoader : LSettingsVault
                 LSettingsScriptOpened = script,
                 LSettingsOutpost = outpost,
                 LSettingsWarrant = warrant,
+                LSettingsAnalysis = analysis,
             };
             return document.RootElement.TryGetProperty(LSettingsLoaderGloss, out JsonElement speech)
                 && speech.ValueKind == JsonValueKind.String
@@ -166,7 +172,8 @@ public sealed class LSettingsLoader : LSettingsVault
             [LSettingsLoaderFanqie] = settings.LSettingsFanqieOpened,
             [LSettingsLoaderScript] = settings.LSettingsScriptOpened,
             [LSettingsLoaderOutpost] = settings.LSettingsOutpost,
-            [LSettingsLoaderWarrant] = settings.LSettingsWarrant
+            [LSettingsLoaderWarrant] = settings.LSettingsWarrant,
+            [LSettingsLoaderAnalysis] = settings.LSettingsAnalysis
         };
 
         string pending = Path.Combine(_lSettingsLoaderRoot, LSettingsLoaderPending);

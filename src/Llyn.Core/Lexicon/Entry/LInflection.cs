@@ -10,4 +10,7 @@ public sealed record LInflection(
     string? LInflectionLocal,
     long? LInflectionSpeechId,
     IReadOnlyList<long> LInflectionMorphology,
-    bool LInflectionRegular = false);
+    bool LInflectionRegular = false,
+    string? LInflectionPrediction = null,
+    IReadOnlyList<LInflectionMark>? LInflectionMarks = null,
+    string? LInflectionStamp = null);

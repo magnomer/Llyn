@@ -1,5 +1,5 @@
 # TSettings.cs
-Hash: `95636eecf95d5576`
+Hash: `0c89cc7ae0f89b20`
 
 ## `public sealed class TSettings`
 
@@ -14,7 +14,11 @@ The engine's save reaches both the held settings and the file under the `respell
 The frequency switch round-trips under the `frequency` key and is written even when off.
 A missing key or a non-false value loads as on, so only an explicit false turns the fill off.
 The morphology switch round-trips under the `morphology` key with the same rule.
+The custom analysis switch round-trips under the `analysis` key with the same rule, on by default.
+The engine's save of a changed analysis switch raises one settings and one inflection bulletin for every entry.
+Saving the same value again raises nothing more.
 A file that is not JSON loads as defaults and is copied aside as `settings.broken.json` first.
 A save leaves no pending file behind and the saved file reports as existing.
+A folder without a settings file reports none.
 A switch saved with the value already held raises no settings bulletin, so an echoing control is a no-op.
 A switch that changes raises the bulletin once, and saving the same value again raises nothing more.

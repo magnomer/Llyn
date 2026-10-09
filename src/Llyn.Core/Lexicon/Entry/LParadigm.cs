@@ -5,7 +5,7 @@ namespace Llyn.Core;
 
 public sealed record LParadigm(
     long LParadigmSpeechCode,
-    IReadOnlyList<long> LParadigmMorphology,
+    IReadOnlyList<IReadOnlyList<long>> LParadigmCells,
     IReadOnlyList<LParadigmRule>? LParadigmRegular = null,
     IReadOnlyList<long>? LParadigmExcept = null)
 {

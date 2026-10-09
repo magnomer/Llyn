@@ -37,12 +37,12 @@ public sealed class TParadigm
         Assert.Equal(2, pack.LSpeechPackParadigms.Count);
         LParadigm verb = pack.LSpeechPackParadigms[0];
         Assert.Equal(6, verb.LParadigmSpeechCode);
-        Assert.Equal([7L, 5L, 6L], verb.LParadigmMorphology);
+        Assert.Equal([7L, 5L, 6L], verb.LParadigmCells.Select(cell => Assert.Single(cell)));
         Assert.Empty(verb.LParadigmRegular);
         Assert.Empty(verb.LParadigmExcept);
         LParadigm noun = pack.LSpeechPackParadigms[1];
         Assert.Equal(1, noun.LParadigmSpeechCode);
-        Assert.Equal([2L], noun.LParadigmMorphology);
+        Assert.Equal([2L], noun.LParadigmCells.Select(cell => Assert.Single(cell)));
         Assert.Equal([3L, 4L], noun.LParadigmExcept);
         Assert.Equal(["$", "y$"], noun.LParadigmRegular.Select(rule => rule.LParadigmRulePattern));
         Assert.Equal("cats", TInterfaceInflection.TParadigmRuleResolve(noun.LParadigmRegular[0], "cat"));
@@ -67,7 +67,7 @@ public sealed class TParadigm
 
         LParadigm kept = Assert.Single(pack.LSpeechPackParadigms);
         Assert.Equal(12, kept.LParadigmSpeechCode);
-        Assert.Equal([11L, 12L], kept.LParadigmMorphology);
+        Assert.Equal([11L, 12L], kept.LParadigmCells.Select(cell => Assert.Single(cell)));
         Assert.Empty(kept.LParadigmRegular);
         Assert.Empty(kept.LParadigmExcept);
     }
@@ -79,7 +79,7 @@ public sealed class TParadigm
 
         Assert.DoesNotContain(pack.LSpeechPackValues, row => row.LSpeechValueParent != 0);
         LParadigm noun = Assert.Single(pack.LSpeechPackParadigms, row => row.LParadigmSpeechCode == 1);
-        Assert.Equal([2L], noun.LParadigmMorphology);
+        Assert.Equal([2L], noun.LParadigmCells.Select(cell => Assert.Single(cell)));
         Assert.Empty(noun.LParadigmExcept);
         Assert.NotEmpty(noun.LParadigmRegular);
     }
@@ -94,12 +94,25 @@ public sealed class TParadigm
 
         Assert.Equal(paradigms, pack.LSpeechPackParadigms.Count);
         LParadigm noun = Assert.Single(pack.LSpeechPackParadigms, row => row.LParadigmSpeechCode == 1);
-        Assert.Equal([genitive], noun.LParadigmMorphology);
+        Assert.Equal([genitive], noun.LParadigmCells.Select(cell => Assert.Single(cell)));
         Assert.Empty(noun.LParadigmExcept);
         LParadigm verb = Assert.Single(pack.LSpeechPackParadigms, row => row.LParadigmSpeechCode == 3);
-        Assert.Equal(principalParts, verb.LParadigmMorphology.Count);
+        Assert.Equal(principalParts, verb.LParadigmCells.Count);
         Assert.All(
-            pack.LSpeechPackParadigms.SelectMany(row => row.LParadigmMorphology),
+            pack.LSpeechPackParadigms.SelectMany(row => row.LParadigmCells.SelectMany(cell => cell)),
+            code => Assert.Contains(pack.LSpeechPackMorphology, row => row.LMorphologyCode == code));
+    }
+
+    [Fact]
+    public void SpeechPackLoad_SpanishPack_DeclaresSixtyFourCells()
+    {
+        LSpeechPack pack = TInterface.TSpeechPackLoad("Spanish");
+
+        LParadigm verb = Assert.Single(pack.LSpeechPackParadigms, row => row.LParadigmSpeechCode == 6);
+        Assert.Equal(64, verb.LParadigmCells.Count);
+        Assert.Equal(64, verb.LParadigmCells.Select(cell => string.Join("+", cell.Order())).Distinct().Count());
+        Assert.All(
+            verb.LParadigmCells.SelectMany(cell => cell),
             code => Assert.Contains(pack.LSpeechPackMorphology, row => row.LMorphologyCode == code));
     }
 

@@ -11,7 +11,7 @@ public sealed record LParadigmRow(
     public LParadigmSlot LParadigmRowFirst => LParadigmRowSlots[0];
 
     public string LParadigmRowName =>
-        string.Join(", ", LParadigmRowSlots.Select(static slot => slot.LParadigmSlotMorphology.LMorphologyName));
+        string.Join(", ", LParadigmRowSlots.Select(static slot => slot.LParadigmSlotName));
 
     public string LParadigmRowPart =>
         LParadigmRowLead ? LParadigmRowFirst.LParadigmSlotSpeech.LSpeechValueName : string.Empty;

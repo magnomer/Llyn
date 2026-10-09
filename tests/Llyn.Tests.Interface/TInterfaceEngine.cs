@@ -74,6 +74,11 @@ internal static partial class TInterface
     internal static LDraft TEngineDraftStart(this LEngine engine, string origin, long? entryId) =>
         engine.LEngineDraft.LEngineDraftStart(origin, entryId);
 
+    internal static void TEngineDraftSave(this LEngine engine, LDraft draft)
+    {
+        engine.LEngineHearth.LEngineStaffHeld.LEngineStaffClaim.LClaimStaffClaim.LDraftSave(draft);
+    }
+
     internal static LDraft TEngineAuthorStart(this LEngine engine, string origin, long? authorId) =>
         engine.LEngineAuthor.LEngineAuthorStart(origin, authorId);
 

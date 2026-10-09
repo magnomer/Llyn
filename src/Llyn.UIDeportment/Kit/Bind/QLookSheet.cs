@@ -181,6 +181,9 @@ internal static class QLookSheet
             UIElement.RenderTransformProperty, new RotateTransform(180).GetAsFrozen()),
         new("Theme.Marker.Switch", QLookCue.QLookCueChecked, null, UIElement.OpacityProperty, 1.0),
 
+        new("Theme.Paradigm.Fold", QLookCue.QLookCueHover, null, Control.ForegroundProperty, "Theme.Ink"),
+        new("Theme.Paradigm.Fold", QLookCue.QLookCueChecked, null, Control.ForegroundProperty, "Theme.Accent"),
+
         new("Theme.Glyph.Phonetician", QLookCue.QLookCueBase, null,
             ButtonBase.CommandProperty, QGlyphCommand.QGlyphCommandNotation),
 

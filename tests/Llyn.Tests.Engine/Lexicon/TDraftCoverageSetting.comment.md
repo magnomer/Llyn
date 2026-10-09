@@ -1,5 +1,5 @@
 # TDraftCoverageSetting.cs
-Hash: `8672a7a16dcee0bf`
+Hash: `daf81f33186a45ba`
 
 ## `internal static class TDraftCoverageSetting`
 
@@ -22,6 +22,7 @@ Names no side must carry, because none of them is a typed value.
 - Every `Position` is the order of a list, carried by the list itself.
 - Every `Seeded` marks a row made unasked, which counts only once filled.
 - `LInflectionRegular` is the engine's verdict on the inflection, never typed.
+- `LInflectionPrediction`, `LInflectionMarks` and `LInflectionStamp` are the engine's rule-book analysis, never typed.
 - `LReflexDraftAnatomy` is cut by the engine from the reading and recut on every change.
 - `LReflexDraftAnchors` are fanqie row keys tied by the anchor request.
 - `LSpeechDraftCustom` is the typed fallback of a value speech, and every side carries the name instead.

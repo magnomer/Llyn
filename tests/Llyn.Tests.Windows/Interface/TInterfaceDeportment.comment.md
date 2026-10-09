@@ -1,5 +1,5 @@
 # TInterfaceDeportment.cs
-Hash: `ad9481ca967bcfcc`
+Hash: `e196a195a9cf0f55`
 
 ## `[assembly: CollectionBehavior(DisableTestParallelization = true)]`
 
@@ -26,6 +26,9 @@ The scheme relay reaches a transcription row's internal choice refresh, which ma
 The localization relays build the settings language choice over a given surface and refine it.
 The choice is internal, so its create relay hands it back as an object, as the card relay does.
 Its surface holds a WPF combo box, so the caller runs the localization relays on an STA thread.
+The analysis relays build the custom analysis switch over a given surface and refine it.
+Its create relay hands the internal driver back as an object, as the localization relay does.
+Its surface holds a WPF toggle, so the caller runs the analysis relays on an STA thread.
 
 ## `internal static QLecternReflex TLecternCreate(CDisplay display, FrameworkElement surface)`
 
@@ -142,3 +145,14 @@ The surface holds a WPF combo box, so the caller runs it on an STA thread.
 
 Refines the choice with the given languages and the chosen one.
 The caller runs it on an STA thread, since the choice holds a WPF combo box.
+
+## `internal static object TInflectionCreate(FrameworkElement settings, CLedger ledger, CEnvoy envoy)`
+
+Builds the custom analysis switch over the given surface and introduces the ledger and the envoy to it.
+The switch driver is internal, so the relay hands it back as an object.
+The surface holds a WPF toggle, so the caller runs it on an STA thread.
+
+## `internal static void TInflectionRefine(object analysis)`
+
+Refines the switch from the ledger's read of the stored setting.
+The caller runs it on an STA thread, since the switch is a WPF toggle.

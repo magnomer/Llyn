@@ -10,15 +10,18 @@ public sealed class LParadigmClerk
     private readonly Dictionary<string, LSpeechPack> _lParadigmClerkPacks = new(StringComparer.Ordinal);
     private readonly LEntryVault _lParadigmClerkEntries;
     private readonly LInflectionVault _lParadigmClerkInflections;
+    private readonly LLanguageCache _lParadigmClerkLanguages;
     private readonly LLacunaVault _lParadigmClerkLacunae;
     private readonly LMorphologyVault _lParadigmClerkMorphologies;
     private readonly LSpeechVault _lParadigmClerkSpeeches;
 
-    public LParadigmClerk(LRig rig)
+    public LParadigmClerk(LRig rig, LLanguageCache languages)
     {
         ArgumentNullException.ThrowIfNull(rig);
+        ArgumentNullException.ThrowIfNull(languages);
         _lParadigmClerkEntries = rig.LRigEntries;
         _lParadigmClerkInflections = rig.LRigLexicon.LRigLexiconInflections;
+        _lParadigmClerkLanguages = languages;
         _lParadigmClerkLacunae = rig.LRigLexicon.LRigLexiconLacunae;
         _lParadigmClerkMorphologies = rig.LRigLexicon.LRigLexiconMorphologies;
         _lParadigmClerkSpeeches = rig.LRigLexicon.LRigLexiconSpeeches;
@@ -36,9 +39,14 @@ public sealed class LParadigmClerk
 
         IReadOnlyList<LInflection> stored = _lParadigmClerkInflections.LInflectionRead(entry.LEntryId);
         HashSet<long> missed = [];
+        HashSet<string> missedCells = new(StringComparer.Ordinal);
         foreach (LLacuna lacuna in _lParadigmClerkLacunae.LLacunaRead(entry.LEntryId))
         {
-            if (lacuna.LLacunaMorphologyId is long morphologyId)
+            if (lacuna.LLacunaCell.Length > 0)
+            {
+                missedCells.Add(lacuna.LLacunaCell);
+            }
+            else if (lacuna.LLacunaMorphologyId is long morphologyId)
             {
                 missed.Add(morphologyId);
             }
@@ -47,7 +55,7 @@ public sealed class LParadigmClerk
         List<LParadigmSlot> slots = [];
         foreach (LSpeech speech in _lParadigmClerkEntries.LEntrySpeechRead(entry.LEntryId))
         {
-            slots.AddRange(LParadigmClerkResolve(speech, pack, stored, missed));
+            slots.AddRange(LParadigmClerkResolve(speech, pack, stored, missed, missedCells));
         }
 
         return slots;
@@ -83,24 +91,60 @@ public sealed class LParadigmClerk
 
     public IReadOnlyList<LParadigmRow> LParadigmRowRead(long entryId)
     {
-        return LParadigmRow.LParadigmRowScan(LParadigmClerkShow(entryId));
+        IReadOnlyList<LParadigmSlot> shown = LParadigmClerkShow(entryId);
+        LEntry? entry = shown.Count == 0 ? null : _lParadigmClerkEntries.LEntryRead(entryId);
+        if (entry is null || LParadigmClerkFind(entry)?.LLanguageLayout is not LInflectionLayout layout)
+        {
+            return LParadigmRow.LParadigmRowScan(shown);
+        }
+
+        return LParadigmRow.LParadigmRowScan([.. shown.Where(
+            slot => slot.LParadigmSlotParadigm.LParadigmSpeechCode != layout.LInflectionLayoutPart)]);
     }
 
     public string LParadigmLanguageRead(long entryId)
     {
-        return LParadigm.LParadigmLanguageRead(LParadigmClerkShow(entryId));
+        LEntry? entry = entryId <= 0 ? null : _lParadigmClerkEntries.LEntryRead(entryId);
+        return entry is null ? string.Empty : LParadigm.LParadigmLanguageRead(LParadigmClerkRead(entry));
+    }
+
+    public LParadigmView? LParadigmClerkBuild(long entryId, bool pending, bool enabled, bool custom)
+    {
+        LEntry? entry = entryId <= 0 ? null : _lParadigmClerkEntries.LEntryRead(entryId);
+        LLanguage? language = entry is null ? null : LParadigmClerkFind(entry);
+        if (entry is null || language?.LLanguageLayout is not LInflectionLayout layout)
+        {
+            return null;
+        }
+
+        return LParadigmView.LParadigmViewScan(
+            layout,
+            LParadigmClerkRead(entry),
+            pending,
+            enabled,
+            custom,
+            language.LLanguageInflection,
+            entry.LEntryHeadword);
+    }
+
+    private LLanguage? LParadigmClerkFind(LEntry entry)
+    {
+        return string.IsNullOrWhiteSpace(entry.LEntryLanguage)
+            ? null
+            : _lParadigmClerkLanguages.LLanguageCacheRead(entry.LEntryLanguage);
     }
 
     public void LParadigmClerkUpdate(LEntry entry)
     {
         ArgumentNullException.ThrowIfNull(entry);
 
-        if (string.IsNullOrWhiteSpace(entry.LEntryLanguage))
+        if (LParadigmClerkFind(entry) is not LLanguage language)
         {
             return;
         }
 
         LInflectionVault inflections = _lParadigmClerkInflections;
+        LInflectionBook? book = language.LLanguageInflection;
         foreach (LParadigmSlot slot in LParadigmClerkRead(entry))
         {
             if (slot.LParadigmSlotInflection is not LInflection inflection)
@@ -108,11 +152,34 @@ public sealed class LParadigmClerk
                 continue;
             }
 
-            bool regular = LParadigmClerkMatch(
-                slot.LParadigmSlotParadigm, entry.LEntryHeadword, inflection.LInflectionText);
-            if (regular != inflection.LInflectionRegular)
+            if (book is null)
             {
-                inflections.LInflectionRegularSave(inflection.LInflectionId, regular);
+                bool matched = LParadigmClerkMatch(
+                    slot.LParadigmSlotParadigm, entry.LEntryHeadword, inflection.LInflectionText);
+                if (matched != inflection.LInflectionRegular)
+                {
+                    inflections.LInflectionRegularSave(inflection.LInflectionId, matched);
+                }
+
+                continue;
+            }
+
+            string? prediction = book.LInflectionBookResolve(entry.LEntryHeadword, slot.LParadigmSlotCodes);
+            IReadOnlyList<LInflectionMark>? marks = prediction is null
+                ? null
+                : LInflectionDifference.LInflectionDifferenceScan(
+                    book.LInflectionBookFolds, prediction, inflection.LInflectionText);
+            string stamp = book.LInflectionBookStamp;
+            bool regular = marks is null
+                ? LParadigmClerkMatch(slot.LParadigmSlotParadigm, entry.LEntryHeadword, inflection.LInflectionText)
+                : marks.Count == 0 && inflection.LInflectionText.Length > 0;
+            if (regular != inflection.LInflectionRegular
+                || !string.Equals(prediction, inflection.LInflectionPrediction, StringComparison.Ordinal)
+                || !string.Equals(stamp, inflection.LInflectionStamp, StringComparison.Ordinal)
+                || !(marks ?? []).SequenceEqual(inflection.LInflectionMarks ?? [])
+                || (marks is null) != (inflection.LInflectionMarks is null))
+            {
+                inflections.LInflectionAnalysisSave(inflection.LInflectionId, prediction, marks, stamp, regular);
             }
         }
     }
@@ -157,7 +224,8 @@ public sealed class LParadigmClerk
         LSpeech speech,
         LSpeechPack pack,
         IReadOnlyList<LInflection> stored,
-        HashSet<long> missed)
+        HashSet<long> missed,
+        HashSet<string> missedCells)
     {
         if (speech.LSpeechValueId is not long speechId)
         {
@@ -171,15 +239,28 @@ public sealed class LParadigmClerk
         }
 
         LMorphologyVault morphologies = _lParadigmClerkMorphologies;
-        HashSet<long> taken = [];
+        HashSet<string> taken = new(StringComparer.Ordinal);
         List<LParadigmSlot> slots = [];
         foreach (LParadigm paradigm in LParadigmClerkScan(pack, value.LSpeechValueCode))
         {
-            foreach (long code in paradigm.LParadigmMorphology)
+            foreach (IReadOnlyList<long> cell in paradigm.LParadigmCells)
             {
-                LMorphology? morphology = LMorphologyResolve(
-                    pack, morphologies, value.LSpeechValueLanguage, code);
-                if (morphology is null || !taken.Add(morphology.LMorphologyId))
+                List<LMorphology> resolved = [];
+                foreach (long code in cell)
+                {
+                    LMorphology? morphology = LMorphologyResolve(
+                        pack, morphologies, value.LSpeechValueLanguage, code);
+                    if (morphology is null)
+                    {
+                        break;
+                    }
+
+                    resolved.Add(morphology);
+                }
+
+                if (resolved.Count == 0
+                    || resolved.Count != cell.Count
+                    || !taken.Add(string.Join("+", resolved.Select(static row => row.LMorphologyId).Order())))
                 {
                     continue;
                 }
@@ -187,7 +268,7 @@ public sealed class LParadigmClerk
                 LInflection? inflection = null;
                 foreach (LInflection candidate in stored)
                 {
-                    if (candidate.LInflectionMorphology.Contains(morphology.LMorphologyId)
+                    if (resolved.All(row => candidate.LInflectionMorphology.Contains(row.LMorphologyId))
                         && (candidate.LInflectionSpeechId is null || candidate.LInflectionSpeechId == speechId))
                     {
                         inflection = candidate;
@@ -195,15 +276,18 @@ public sealed class LParadigmClerk
                     }
                 }
 
-                LState state = LState.LStateSpecified;
+                LParadigmSlot slot = new(value, resolved[0], inflection, LState.LStateSpecified, paradigm, resolved);
                 if (inflection is null)
                 {
-                    state = missed.Contains(morphology.LMorphologyId)
-                        ? LState.LStateUnknown
-                        : LState.LStateUnspecified;
+                    bool unknown = (resolved.Count == 1 && missed.Contains(resolved[0].LMorphologyId))
+                        || missedCells.Contains(slot.LParadigmSlotKey);
+                    slot = slot with
+                    {
+                        LParadigmSlotState = unknown ? LState.LStateUnknown : LState.LStateUnspecified,
+                    };
                 }
 
-                slots.Add(new LParadigmSlot(value, morphology, inflection, state, paradigm));
+                slots.Add(slot);
             }
         }
 
@@ -233,24 +317,7 @@ public sealed class LParadigmClerk
     {
         ArgumentNullException.ThrowIfNull(row);
 
-        if (row.LParadigmRowFirst.LParadigmSlotInflection is LInflection inflection)
-        {
-            return inflection.LInflectionText.Length == 0
-                ? LParadigmStatus.LParadigmStatusAbsent
-                : LParadigmStatus.LParadigmStatusText;
-        }
-
-        if (row.LParadigmRowFirst.LParadigmSlotUncertain)
-        {
-            return LParadigmStatus.LParadigmStatusUnknown;
-        }
-
-        if (pending)
-        {
-            return LParadigmStatus.LParadigmStatusPending;
-        }
-
-        return enabled ? LParadigmStatus.LParadigmStatusLost : LParadigmStatus.LParadigmStatusAbsent;
+        return row.LParadigmRowFirst.LParadigmSlotCheck(pending, enabled);
     }
 
     public static bool LParadigmClerkMatch(LParadigm paradigm, string headword, string form)

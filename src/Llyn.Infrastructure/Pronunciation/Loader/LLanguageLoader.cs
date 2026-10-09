@@ -194,7 +194,8 @@ public sealed class LLanguageLoader : LLanguageVault
             LDescentLoader.LDescentPackRead(language, root),
             LShengfuLoader.LShengfuPackRead(root),
             LLanguageSpacedRead(root),
-            LReflexLoader.LReflexOrderRead(root));
+            LReflexLoader.LReflexOrderRead(root),
+            LInflectionLoader.LInflectionPackRead(language, root));
     }
 
     private static bool LLanguageListedRead(JsonElement root)

@@ -1,5 +1,5 @@
 # TAuditDemeanorSetting.cs
-Hash: `9efac0d03f5f276d`
+Hash: `3eefb8a588774997`
 
 ## `internal static class TAuditDemeanorSetting`
 

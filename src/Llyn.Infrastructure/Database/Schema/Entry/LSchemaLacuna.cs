@@ -16,8 +16,9 @@ public static class LSchemaLacuna
             CREATE TABLE IF NOT EXISTS lacuna (
                 entry_parent INTEGER NOT NULL,
                 morphology_value_ref INTEGER,
+                cell TEXT NOT NULL DEFAULT '',
                 fetched_utc TEXT NOT NULL,
-                PRIMARY KEY (entry_parent, morphology_value_ref),
+                PRIMARY KEY (entry_parent, morphology_value_ref, cell),
                 FOREIGN KEY (entry_parent) REFERENCES entry (entry_id) ON DELETE CASCADE,
                 FOREIGN KEY (morphology_value_ref)
                     REFERENCES morphology_value (morphology_value_id) ON DELETE CASCADE

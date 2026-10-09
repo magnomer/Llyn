@@ -42,6 +42,9 @@ public static class LSchemaInflection
                 local TEXT,
                 speech_value_ref INTEGER,
                 regular INTEGER NOT NULL DEFAULT 0,
+                prediction TEXT,
+                marks TEXT,
+                stamp TEXT,
                 UNIQUE (entry_parent, position),
                 FOREIGN KEY (entry_parent) REFERENCES entry (entry_id) ON DELETE CASCADE,
                 FOREIGN KEY (speech_value_ref) REFERENCES speech_value (speech_value_id)

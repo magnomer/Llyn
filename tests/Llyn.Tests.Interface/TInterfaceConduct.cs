@@ -127,6 +127,7 @@ internal static class TInterfaceConduct
         answers.TryAdd(
             "LEngineParadigmCheck",
             args => LParadigmClerk.LParadigmClerkCheck((LParadigmRow)args![0]!, (bool)args[1]!, (bool)args[2]!));
+        answers.TryAdd("LEngineInflectionRead", _ => null);
         return new(
             TEngineFake.TEngineCreate<LFanqiePort>(answers),
             TEngineFake.TEngineCreate<LDiweiPort>(answers),
@@ -269,6 +270,7 @@ internal static class TInterfaceConduct
         answers.TryAdd("LEngineGroupFind", args => ((IReadOnlyList<(string, IReadOnlyList<string>)>)args![0]!)
             .Select(static group => group.Item1)
             .ToList());
+        answers.TryAdd("LEngineAnalysisCheck", _ => true);
         answers.TryAdd("LEngineFailureRead", args => ((string)args![1]!, (string?)null, (string?)null));
         answers.TryAdd(
             "LEngineSettingsRead",

@@ -1,5 +1,5 @@
 # LSettingsLoader.cs
-Hash: `c200964969e9711b`
+Hash: `891e0b43424675b8`
 
 ## `public sealed class LSettingsLoader : LSettingsVault`
 
@@ -51,6 +51,11 @@ A missing key means off, so a workspace written before the switch existed shows 
 
 The frequency switch defaults on, so only an explicit JSON `false` turns the fetch off.
 A missing key means on, so an older workspace starts fetching without being edited.
+
+### `custom.ValueKind != JsonValueKind.False;`
+
+The custom analysis switch is read under the `analysis` key and defaults on the same way.
+A missing key means on, so an older workspace keeps its custom sheets and marked letters.
 
 ### `byname.ValueKind != JsonValueKind.False;`
 

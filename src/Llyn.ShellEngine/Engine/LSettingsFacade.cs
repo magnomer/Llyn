@@ -192,6 +192,20 @@ internal sealed class LSettingsFacade
         }
     }
 
+    internal bool LEngineAnalysisCheck()
+    {
+        return LEngineSettingsRead().LSettingsAnalysis;
+    }
+
+    internal void LEngineAnalysisSave(bool analysis)
+    {
+        if (LEngineSettingsChange(settings => settings with { LSettingsAnalysis = analysis }))
+        {
+            _lSettingsFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectSettings, 0);
+            _lSettingsFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectInflection, 0);
+        }
+    }
+
     internal bool LEngineSettingsChange(Func<LSettings, LSettings> change)
     {
         lock (_lSettingsFacadeGate)

@@ -1,5 +1,5 @@
 # TInterfaceEngine.cs
-Hash: `3f692ee55959c87a`
+Hash: `d3fc48c57f69a2d3`
 
 ## `internal static partial class TInterface`
 
@@ -7,6 +7,7 @@ The relays for the engine operations over an entry as a whole.
 That is saving, loading, updating, and deleting one, and the drafts and revisions around it.
 The court relays and the chronicle undo and redo with their two checks are relayed here too.
 The author draft start is relayed here beside the entry draft start.
+The draft save writes a held draft's content through the claim clerk, as an editor's edit does.
 The grasp, the favorite and the mention find relays sit here as well.
 The leftover read and sweep and the request apply are relayed here too.
 The engine start over a hand-built rig sits here as well.

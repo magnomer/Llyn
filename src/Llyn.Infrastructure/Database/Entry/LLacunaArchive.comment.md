@@ -1,4 +1,5 @@
 # LLacunaArchive.cs
+Hash: `a55a2ef1f0c5bbbf`
 Hash: `cf9f9fe9156d40f5`
 
 ## `public sealed class LLacunaArchive : LLacunaVault`
@@ -9,11 +10,13 @@ Reads and writes the lacuna rows one entry carries, one row per paradigm slot th
 
 Reads the entry's rows in the order they were written.
 An older workspace may hold a row without a morphology value.
-The read returns it as `null` and leaves the ignoring to the reader.
+The returned lacuna preserves its nullable id and cell key for the reader to resolve.
+A row stored before cells existed carries an empty cell.
 
-## `public void LLacunaSave(long entryId, IReadOnlyList<long> morphologyIds)`
+## `public void LLacunaSave(long entryId, IReadOnlyList<LLacuna> lacunae)`
 
-Replaces the entry's rows with one per given morphology id in one transaction.
+Replaces the entry's rows with one per given lacuna in one transaction.
+Each row keeps its morphology id and its cell key.
 An empty list leaves the entry with no rows at all.
 Every row is stamped with the same fetch time.
 

@@ -1,9 +1,11 @@
 # TInterfaceSettings.cs
-Hash: `576ae2685fb344ba`
+Hash: `d20b5f0c50b3be0f`
 
 ## `internal static partial class TInterface`
 
 The relays for the settings file and the posture the shell keeps beside it.
+The settings record is built here with each switch named, custom analysis on unless a test turns it off.
+The layout and catalog filter records are built here too.
 The settings loader is relayed here, so the file contract can be checked without an engine.
 The posture file adapter is relayed the same way, so the posture text contract can be checked without a keep.
 The adapter itself is built here over a keep file, and its read and save are relayed.

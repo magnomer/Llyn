@@ -150,6 +150,8 @@ public sealed class TEngineInflectionFetch
         LEntry entry = engine.TEngineEntrySave(TInflectionDraftCreate("go"));
         engine.TEngineMorphologySave(true);
         LDraft draft = engine.TEngineDraftStart("test", entry.LEntryId);
+        engine.TEngineDraftSave(
+            draft with { LDraftContent = draft.LDraftContent with { LEntryDraftHeadword = "went" } });
 
         engine.TEngineInflectionStart(entry.LEntryId);
         await Task.Delay(200);

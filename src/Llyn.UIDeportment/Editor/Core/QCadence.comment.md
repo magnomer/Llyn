@@ -1,9 +1,11 @@
 # QCadence.cs
+Hash: `be08547155a85c98`
 Hash: `788974b77e69128d`
 
 ## `internal sealed class QCadence`
 
-The editor's sound panels read from the entry's timbre: the paradigm, the fanqie, the script, and the reading line.
+The editor's paradigm, fanqie, script and reading line use ready blocks from CSounding.
+Timbre events trigger redraws but do not supply those blocks.
 It finds its controls through `QContract.QContractFind` on the editor, keeping their `PEditor` markup names.
 Each panel paints one ready block its sounding read answers, font first, then its rows.
 
@@ -20,6 +22,12 @@ The fold paint answers a tenure start and the fold's change event.
 ## `private void QCadenceFoldRefine()`
 
 Paints both panels' open switches and bodies from the open states the fold remembers.
+
+## `private void QCadenceParadigmRefine()`
+
+Paints the paradigm panel from the editor's paradigm block, font first.
+It maps the slot rows and the inflection view into Deportment items, as the reading view does.
+The sheet is null for a pack without a layout or a draft without an entry.
 
 ## `private void QCadenceScriptRefine()`
 

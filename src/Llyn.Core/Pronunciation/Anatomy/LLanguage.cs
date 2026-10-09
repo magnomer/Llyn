@@ -29,7 +29,8 @@ public sealed record LLanguage(
     IReadOnlyList<LDescent>? LLanguageDescents = null,
     LShengfuRule? LLanguageShengfu = null,
     bool LLanguageSpaced = true,
-    LReflexOrder? LLanguageReflexOrder = null)
+    LReflexOrder? LLanguageReflexOrder = null,
+    LInflectionBook? LLanguageInflection = null)
 {
     public IReadOnlyList<LScheme> LLanguageSchemes { get; init; } = LLanguageSchemes ?? [];
 
@@ -56,4 +57,6 @@ public sealed record LLanguage(
     public IReadOnlyList<LAnatomyRule> LLanguageAnatomies { get; init; } = LLanguageAnatomies ?? [];
 
     public IReadOnlyList<LDescent> LLanguageDescents { get; init; } = LLanguageDescents ?? [];
+
+    public LInflectionLayout? LLanguageLayout => LLanguageInflection?.LInflectionBookLayout;
 }

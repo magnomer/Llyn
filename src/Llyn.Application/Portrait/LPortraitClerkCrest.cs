@@ -128,8 +128,8 @@ public static class LPortraitClerkCrest
             }
 
             string tag = parts.Count > 1
-                ? slot.LParadigmSlotSpeech.LSpeechValueName + " " + slot.LParadigmSlotMorphology.LMorphologyName
-                : slot.LParadigmSlotMorphology.LMorphologyName;
+                ? slot.LParadigmSlotSpeech.LSpeechValueName + " " + slot.LParadigmSlotName
+                : slot.LParadigmSlotName;
             lines.Add(new LPortraitLine(tag, text));
         }
 

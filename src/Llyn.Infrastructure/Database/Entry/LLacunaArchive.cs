@@ -23,39 +23,40 @@ public sealed class LLacunaArchive : LLacunaVault
         using LDatabaseSession session = _lLacunaArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
-            "SELECT morphology_value_ref FROM lacuna WHERE entry_parent = $id ORDER BY rowid;";
+            "SELECT morphology_value_ref, cell FROM lacuna WHERE entry_parent = $id ORDER BY rowid;";
         command.Parameters.AddWithValue("$id", entryId);
 
         List<LLacuna> rows = [];
         using SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
-            rows.Add(new LLacuna(reader.IsDBNull(0) ? null : reader.GetInt64(0)));
+            rows.Add(new LLacuna(reader.IsDBNull(0) ? null : reader.GetInt64(0), reader.GetString(1)));
         }
 
         return rows;
     }
 
-    public void LLacunaSave(long entryId, IReadOnlyList<long> morphologyIds)
+    public void LLacunaSave(long entryId, IReadOnlyList<LLacuna> lacunae)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
-        ArgumentNullException.ThrowIfNull(morphologyIds);
+        ArgumentNullException.ThrowIfNull(lacunae);
 
         string now = DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture);
 
         using LDatabaseSession session = _lLacunaArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
         LLacunaClear(connection, entryId);
-        foreach (long morphologyId in morphologyIds)
+        foreach (LLacuna lacuna in lacunae)
         {
             using SqliteCommand command = connection.CreateCommand();
             command.CommandText =
                 """
-                INSERT OR REPLACE INTO lacuna (entry_parent, morphology_value_ref, fetched_utc)
-                VALUES ($id, $morphology, $fetched);
+                INSERT OR REPLACE INTO lacuna (entry_parent, morphology_value_ref, cell, fetched_utc)
+                VALUES ($id, $morphology, $cell, $fetched);
                 """;
             command.Parameters.AddWithValue("$id", entryId);
-            command.Parameters.AddWithValue("$morphology", morphologyId);
+            command.Parameters.AddWithValue("$morphology", (object?)lacuna.LLacunaMorphologyId ?? DBNull.Value);
+            command.Parameters.AddWithValue("$cell", lacuna.LLacunaCell);
             command.Parameters.AddWithValue("$fetched", now);
             command.ExecuteNonQuery();
         }

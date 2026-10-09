@@ -1,5 +1,5 @@
 # TEngineInflectionFetch.cs
-Hash: `54903089271b96f9`
+Hash: `ee80a22179af7b7e`
 
 ## `public sealed class TEngineInflectionFetch`
 
@@ -8,9 +8,13 @@ The stub body is shaped as the Wiktionary REST HTML the pack's morphology source
 The entry is a bare `Verb`, since the pack lists no verb subtypes.
 A body naming both verb forms leaves both slots specified and raises the inflection bulletin once.
 A body naming only the past leaves the past participle unknown rather than unspecified.
+A body naming no form marks every slot unknown and still raises the bulletin, so the marks show.
 A source that cannot be reached leaves both slots unspecified, stores nothing and is asked only once per session.
+A hand set then forgets that miss, so the next start asks again.
+A second start while a fetch is pending sends no second request.
 An old workspace row with no morphology does not stop a fetch, and the next successful fetch removes it.
 With the setting off, a start asks nothing and writes nothing.
+A held draft with an unsaved headword asks nothing, and the start asks once that draft is gone.
 A headword change while a fetch is pending discards the forms instead of storing them under the new headword.
 A hand set of the inflections forgets the unknown mark, so the slot reads unspecified again.
 An unknown slot survives a reopen of the same workspace, so it does not ask the web again.
@@ -23,6 +27,10 @@ A hand set after the reopen deletes the lacuna rows, so the web may be asked aga
 
 The frequency fill is switched off first, so the stub client only ever sees the morphology request.
 The short wait after the bulletin lets a second bulletin land if the fetch wrongly raised twice.
+
+### `public async Task InflectionStart_EntryHeldInDraft_AsksNothing()`
+
+The draft gets an unsaved headword, since a draft still matching the stored entry no longer blocks a fetch.
 
 ### `public async Task InflectionStart_SettingOff_AsksNothing()`
 

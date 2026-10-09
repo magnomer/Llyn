@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using Llyn.Core;
 
@@ -93,15 +94,23 @@ public static class LSpeechLoader
         foreach (JsonElement row in LSpeechRowRead(root, "paradigms"))
         {
             long? part = LSpeechNumberRead(row, "part");
+            if (part is null)
+            {
+                continue;
+            }
+
             IReadOnlyList<long>? codes = LSpeechNumbersRead(row, "values");
-            if (part is null || codes is null)
+            IReadOnlyList<IReadOnlyList<long>>? cells = LSpeechCellsRead(row, "cells");
+            if ((codes is null && cells is null)
+                || (codes is null && row.TryGetProperty("values", out _))
+                || (cells is null && row.TryGetProperty("cells", out _)))
             {
                 continue;
             }
 
             paradigms.Add(new LParadigm(
                 part.Value,
-                codes,
+                (codes ?? []).Select(static code => (IReadOnlyList<long>)[code]).Concat(cells ?? []).ToList(),
                 LSpeechRuleScan(row, "regular"),
                 LSpeechNumbersRead(row, "except") ?? []));
         }
@@ -185,7 +194,7 @@ public static class LSpeechLoader
         return number;
     }
 
-    private static IReadOnlyList<long>? LSpeechNumbersRead(JsonElement element, string name)
+    internal static IReadOnlyList<long>? LSpeechNumbersRead(JsonElement element, string name)
     {
         if (element.ValueKind != JsonValueKind.Object ||
             !element.TryGetProperty(name, out JsonElement found) ||
@@ -208,6 +217,42 @@ public static class LSpeechLoader
         }
 
         return numbers;
+    }
+
+    internal static IReadOnlyList<IReadOnlyList<long>>? LSpeechCellsRead(JsonElement element, string name)
+    {
+        if (element.ValueKind != JsonValueKind.Object ||
+            !element.TryGetProperty(name, out JsonElement found) ||
+            found.ValueKind != JsonValueKind.Array)
+        {
+            return null;
+        }
+
+        List<IReadOnlyList<long>> cells = [];
+        foreach (JsonElement cell in found.EnumerateArray())
+        {
+            if (cell.ValueKind != JsonValueKind.Array || cell.GetArrayLength() == 0)
+            {
+                return null;
+            }
+
+            List<long> codes = [];
+            foreach (JsonElement item in cell.EnumerateArray())
+            {
+                if (item.ValueKind != JsonValueKind.Number ||
+                    !item.TryGetInt64(out long code) ||
+                    code <= 0)
+                {
+                    return null;
+                }
+
+                codes.Add(code);
+            }
+
+            cells.Add(codes);
+        }
+
+        return cells;
     }
 
     private static string? LSpeechTextRead(JsonElement element, string name)

@@ -115,7 +115,7 @@ public sealed class TEngineParadigm
         Assert.False(TInterface.TEngineParadigmMatch(noun, "mouse", "mice"));
         Assert.False(TInterface.TEngineParadigmMatch(noun, "child", "children"));
         Assert.False(TInterface.TEngineParadigmMatch(noun, "cat", ""));
-        Assert.False(TInterface.TEngineParadigmMatch(TInterfaceInflection.TParadigmCreate(1, [2]), "cat", "cats"));
+        Assert.False(TInterface.TEngineParadigmMatch(TInterfaceInflection.TParadigmCreate(1, [[2]]), "cat", "cats"));
     }
 
     [Fact]

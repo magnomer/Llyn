@@ -66,6 +66,53 @@ public sealed class TSettings
             File.ReadAllText(Path.Combine(workspace.TWorkspaceFolder, "settings.json")));
     }
 
+    [Fact]
+    public void SettingsSave_AnalysisOff_RoundTripsFalse()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+
+        TInterface.TSettingsSave(workspace.TWorkspaceFolder, TInterface.TSettingsCreate("en", analysis: false));
+
+        Assert.False(TInterface.TSettingsLoad(workspace.TWorkspaceFolder).LSettingsAnalysis);
+        Assert.Contains(
+            "\"analysis\": false",
+            File.ReadAllText(Path.Combine(workspace.TWorkspaceFolder, "settings.json")));
+        TInterface.TSettingsSave(workspace.TWorkspaceFolder, TInterface.TSettingsCreate("en"));
+        Assert.True(TInterface.TSettingsLoad(workspace.TWorkspaceFolder).LSettingsAnalysis);
+    }
+
+    [Theory]
+    [InlineData("{ \"localization\": \"en\" }")]
+    [InlineData("{ \"localization\": \"en\", \"analysis\": true }")]
+    [InlineData("{ \"localization\": \"en\", \"analysis\": \"no\" }")]
+    public void SettingsLoad_AnalysisAbsentOrNotFalse_LoadsTrue(string json)
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        File.WriteAllText(Path.Combine(workspace.TWorkspaceFolder, "settings.json"), json);
+
+        Assert.True(TInterface.TSettingsLoad(workspace.TWorkspaceFolder).LSettingsAnalysis);
+    }
+
+    [Fact]
+    public void AnalysisSave_Off_RaisesInflectionAndKeepsValue()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        Assert.True(engine.TEngineAnalysisCheck());
+        List<LBulletin> heard = [];
+        engine.TEngineObserverAttach(heard.Add);
+
+        engine.TEngineAnalysisSave(false);
+        engine.TEngineAnalysisSave(false);
+
+        Assert.False(engine.TEngineAnalysisCheck());
+        Assert.False(TInterface.TSettingsLoad(workspace.TWorkspaceFolder).LSettingsAnalysis);
+        LBulletin inflection = Assert.Single(
+            heard, bulletin => bulletin.LBulletinSubject == LSubject.LSubjectInflection);
+        Assert.Equal(0, inflection.LBulletinId);
+        Assert.Single(heard, bulletin => bulletin.LBulletinSubject == LSubject.LSubjectSettings);
+    }
+
     [Theory]
     [InlineData("{ \"localization\": \"en\" }")]
     [InlineData("{ \"localization\": \"en\", \"morphology\": true }")]

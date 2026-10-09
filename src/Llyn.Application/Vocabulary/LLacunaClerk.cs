@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Llyn.Core;
@@ -64,39 +64,53 @@ public sealed class LLacunaClerk
     public void LLacunaClerkStart(long entryId)
     {
         LEntry? entry;
-        CancellationTokenSource fetch;
+        CancellationTokenSource? fetch = null;
+        bool stale = false;
         lock (_lLacunaClerkGate)
         {
-            if (!_lLacunaClerkSettings().LSettingsMorphology
-                || _lLacunaClerkPending.ContainsKey(entryId)
-                || _lLacunaClerkMissed.Contains(entryId)
-                || LDraftFind(entryId) is not null)
+            if (_lLacunaClerkPending.ContainsKey(entryId) || LDraftFind(entryId) is not null)
             {
                 return;
             }
 
             entry = _lLacunaClerkEntries.LEntryRead(entryId);
-            if (entry is null || LMorphologySourceRead(entry.LEntryLanguage).Count == 0)
+            if (entry is null)
             {
                 return;
             }
 
-            bool wanted = false;
-            foreach (LParadigmSlot slot in _lLacunaClerkParadigms.LParadigmClerkRead(entry))
+            IReadOnlyList<LParadigmSlot> slots = _lLacunaClerkParadigms.LParadigmClerkRead(entry);
+            if (!string.IsNullOrWhiteSpace(entry.LEntryLanguage)
+                && _lLacunaClerkLanguages.LLanguageCacheRead(entry.LEntryLanguage).LLanguageInflection is { } book)
             {
-                wanted |= slot.LParadigmSlotState == LState.LStateUnspecified;
+                stale = slots.Any(slot =>
+                    slot.LParadigmSlotInflection is { } row
+                    && !string.Equals(row.LInflectionStamp, book.LInflectionBookStamp, StringComparison.Ordinal));
+                if (stale)
+                {
+                    _lLacunaClerkParadigms.LParadigmClerkUpdate(entry);
+                }
             }
 
-            if (!wanted)
+            if (_lLacunaClerkSettings().LSettingsMorphology
+                && !_lLacunaClerkMissed.Contains(entryId)
+                && LMorphologySourceRead(entry.LEntryLanguage).Count > 0
+                && slots.Any(static slot => slot.LParadigmSlotState == LState.LStateUnspecified))
             {
-                return;
+                fetch = new CancellationTokenSource();
+                _lLacunaClerkPending[entryId] = fetch;
             }
-
-            fetch = new CancellationTokenSource();
-            _lLacunaClerkPending[entryId] = fetch;
         }
 
-        _ = LLacunaClerkRun(entry, fetch);
+        if (stale)
+        {
+            _lLacunaClerkBulletin(LSubject.LSubjectInflection, entryId);
+        }
+
+        if (fetch is not null)
+        {
+            _ = LLacunaClerkRun(entry, fetch);
+        }
     }
 
     public void LLacunaClerkCancel(long entryId)
@@ -131,16 +145,50 @@ public sealed class LLacunaClerk
 
     private LDraft? LDraftFind(long entryId)
     {
+        LEntryDraft? stored = null;
         foreach (long held in _lLacunaClerkClaims.LClaimClerkHeld)
         {
             LDraft? draft = _lLacunaClerkClaims.LDraftRead(held);
-            if (draft is not null && draft.LDraftEntryId == entryId)
+            if (draft is null || draft.LDraftEntryId != entryId)
+            {
+                continue;
+            }
+
+            stored ??= _lLacunaClerkEntries.LEntryLoad(entryId);
+            LEntryDraft content = draft.LDraftContent;
+            if (stored is null
+                || !string.Equals(
+                    stored.LEntryDraftHeadword.Trim(), content.LEntryDraftHeadword.Trim(), StringComparison.Ordinal)
+                || !string.Equals(stored.LEntryDraftLanguage, content.LEntryDraftLanguage, StringComparison.Ordinal)
+                || !stored.LEntryDraftSpeeches.SequenceEqual(content.LEntryDraftSpeeches)
+                || !LInflectionClerk.LInflectionClerkMatch(
+                    stored.LEntryDraftInflections, content.LEntryDraftInflections))
             {
                 return draft;
             }
         }
 
         return null;
+    }
+
+    private List<long> LDraftPropagate(long entryId)
+    {
+        IReadOnlyList<LInflection> stored = _lLacunaClerkInflections.LInflectionRead(entryId);
+        List<long> filled = [];
+        foreach (long held in _lLacunaClerkClaims.LClaimClerkHeld.ToList())
+        {
+            LDraft? draft = _lLacunaClerkClaims.LDraftRead(held);
+            if (draft is null || draft.LDraftEntryId != entryId)
+            {
+                continue;
+            }
+
+            _lLacunaClerkClaims.LDraftSave(
+                draft with { LDraftContent = draft.LDraftContent with { LEntryDraftInflections = stored } });
+            filled.Add(held);
+        }
+
+        return filled;
     }
 
     private IReadOnlyList<LSource> LMorphologySourceRead(string language)
@@ -190,10 +238,10 @@ public sealed class LLacunaClerk
         return (found, reached);
     }
 
-    private void LLacunaClerkApply(LEntry entry, IReadOnlyDictionary<string, string> found)
+    private IReadOnlyList<long> LLacunaClerkApply(LEntry entry, IReadOnlyDictionary<string, string> found)
     {
         List<LInflection> appended = [];
-        List<long> missed = [];
+        List<LLacuna> lacunae = [];
         foreach (LParadigmSlot slot in _lLacunaClerkParadigms.LParadigmClerkRead(entry))
         {
             if (slot.LParadigmSlotState == LState.LStateSpecified)
@@ -201,8 +249,7 @@ public sealed class LLacunaClerk
                 continue;
             }
 
-            string code = slot.LParadigmSlotMorphology.LMorphologyCode.ToString(CultureInfo.InvariantCulture);
-            if (found.TryGetValue(code, out string? form))
+            if (found.TryGetValue(slot.LParadigmSlotKey, out string? form))
             {
                 appended.Add(new LInflection(
                     0,
@@ -211,11 +258,14 @@ public sealed class LLacunaClerk
                     form,
                     null,
                     slot.LParadigmSlotSpeech.LSpeechValueId,
-                    [slot.LParadigmSlotMorphology.LMorphologyId]));
+                    [.. slot.LParadigmSlotMorphologies.Select(static morphology => morphology.LMorphologyId)]));
             }
             else
             {
-                missed.Add(slot.LParadigmSlotMorphology.LMorphologyId);
+                long first = slot.LParadigmSlotMorphology.LMorphologyId;
+                lacunae.Add(slot.LParadigmSlotMorphologies.Count == 1
+                    ? new LLacuna(first)
+                    : new LLacuna(first, slot.LParadigmSlotKey));
             }
         }
 
@@ -225,12 +275,14 @@ public sealed class LLacunaClerk
             _lLacunaClerkParadigms.LParadigmClerkUpdate(entry);
         }
 
-        _lLacunaClerkLacunae.LLacunaSave(entry.LEntryId, missed);
+        _lLacunaClerkLacunae.LLacunaSave(entry.LEntryId, lacunae);
+        return appended.Count > 0 ? LDraftPropagate(entry.LEntryId) : [];
     }
 
     private async Task LLacunaClerkRun(LEntry entry, CancellationTokenSource fetch)
     {
         bool finished = false;
+        IReadOnlyList<long> filled = [];
         try
         {
             (IReadOnlyDictionary<string, string> found, bool reached) = await LLacunaClerkScan(
@@ -254,7 +306,7 @@ public sealed class LLacunaClerk
 
                 if (reached)
                 {
-                    LLacunaClerkApply(current, found);
+                    filled = LLacunaClerkApply(current, found);
                 }
                 else
                 {
@@ -287,6 +339,10 @@ public sealed class LLacunaClerk
         if (finished)
         {
             _lLacunaClerkBulletin(LSubject.LSubjectInflection, entry.LEntryId);
+            foreach (long draft in filled)
+            {
+                _lLacunaClerkBulletin(LSubject.LSubjectDraft, draft);
+            }
         }
     }
 }

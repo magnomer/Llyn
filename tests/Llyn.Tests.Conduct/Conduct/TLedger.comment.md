@@ -1,5 +1,5 @@
 # TLedger.cs
-Hash: `df1fd941a1b9cec2`
+Hash: `6cfb71dbdcbc09a1`
 
 ## `public sealed class TLedger`
 
@@ -12,5 +12,7 @@ The Web summary counts out of two, and the Layout summary is left to the driver.
 A saved epithet shows the view again with Listing on, and a detached view is shown nothing more.
 The fake port's normalised language and online count reach the state unchanged.
 A scanned language reads its native name, an unscanned one its code, and the epithet saves reach the port.
+The custom analysis gate saves through a workspace engine and its read answers the saved state.
+The saved change repaints the inflection box once in the editor and once in its reading view.
 The ledger's notices and failures are covered in `TLedgerNotice.cs`.
 The view reader and the fake settings port come from `TInterfaceConduct`, shared with `TLedgerNotice`.

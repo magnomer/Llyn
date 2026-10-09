@@ -44,8 +44,23 @@ internal static class TInterfaceEngineLanguage
         engine.LEngineVocabulary.LEngineInflectionStart(entryId);
     }
 
+    internal static void TEngineSoundStart(this LEngine engine, long entryId)
+    {
+        engine.LEngineLanguage.LEngineSoundStart(entryId);
+    }
+
     internal static bool TEngineInflectionCheck(this LEngine engine, long entryId) =>
         engine.LEngineVocabulary.LEngineInflectionCheck(entryId);
+
+    internal static LParadigmView? TEngineInflectionRead(
+        this LEngine engine, long entryId, bool pending, bool enabled) =>
+        engine.LEngineVocabulary.LEngineInflectionRead(entryId, pending, enabled);
+
+    internal static IReadOnlyList<LParadigmRow> TEngineParadigmScan(this LEngine engine, long entryId) =>
+        engine.LEngineVocabulary.LEngineParadigmScan(entryId);
+
+    internal static string TEngineLanguageResolve(this LEngine engine, long entryId) =>
+        engine.LEngineVocabulary.LEngineLanguageResolve(entryId);
 
     internal static IReadOnlyList<LScriptImage> TEngineScriptRead(this LEngine engine, long entryId) =>
         engine.LEngineHearth.LEngineStaffHeld.LEngineStaffLanguage.LLanguageStaffScript.LScriptClerkRead(entryId);

@@ -1,26 +1,29 @@
 # LParadigmRow.cs
+Hash: `4339b60486471504`
 Hash: `39922e9aee06441c`
 
 ## `public sealed record LParadigmRow(IReadOnlyList<LParadigmSlot> LParadigmRowSlots, bool LParadigmRowLead)`
 
-One row of the paradigm table.
+One nonempty row of the paradigm table.
+Callers must supply at least one slot because labels and status use the first slot.
 It gathers the slots that share a part of speech and an inflection text.
 The engine groups the slots, so the shell only draws the rows it is handed.
 
 **Parameters**
 
-- `LParadigmRowSlots` — The slots the row gathers, in the order the paradigm lists them.
-- `LParadigmRowLead` — True when the row opens a new part of speech and the table has more than one.
+- `LParadigmRowSlots`: The slots the row gathers, in the order the paradigm lists them.
+- `LParadigmRowLead`: True when the row opens a new part of speech and the table has more than one.
 
-## `public LParadigmSlot LParadigmRowFirst => LParadigmRowSlots[0];`
+## `public LParadigmSlot LParadigmRowFirst`
 
 The slot the row's inflection and state are read from.
 
-## `public string LParadigmRowName =>`
+## `public string LParadigmRowName`
 
-The morphology names of the row, joined for the label column.
+The slot names of the row, joined for the label column.
+A multi-value slot gives its whole phrase, and a one-value slot its morphology name as before.
 
-## `public string LParadigmRowPart =>`
+## `public string LParadigmRowPart`
 
 The part of speech printed at the head of the row, or empty when the row does not lead.
 

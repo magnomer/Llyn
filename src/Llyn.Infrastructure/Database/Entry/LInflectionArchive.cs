@@ -65,15 +65,42 @@ public sealed class LInflectionArchive : LInflectionVault
         session.LDatabaseSessionCommit();
     }
 
+    public void LInflectionAnalysisSave(
+        long inflectionId, string? prediction, IReadOnlyList<LInflectionMark>? marks, string? stamp, bool regular)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(inflectionId);
+
+        using LDatabaseSession session = _lInflectionArchiveDatabase.LDatabaseSessionStart();
+        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        {
+            command.CommandText =
+                """
+                UPDATE inflection
+                SET regular = $regular, prediction = $prediction, marks = $marks, stamp = $stamp
+                WHERE inflection_id = $id;
+                """;
+            command.Parameters.AddWithValue("$regular", regular ? 1 : 0);
+            command.Parameters.AddWithValue("$prediction", (object?)prediction ?? DBNull.Value);
+            command.Parameters.AddWithValue(
+                "$marks", marks is null ? DBNull.Value : LInflectionMark.LInflectionMarkFormat(marks));
+            command.Parameters.AddWithValue("$stamp", (object?)stamp ?? DBNull.Value);
+            command.Parameters.AddWithValue("$id", inflectionId);
+            command.ExecuteNonQuery();
+        }
+
+        session.LDatabaseSessionCommit();
+    }
+
     private static IReadOnlyList<LInflection> LInflectionSetRead(SqliteConnection connection, long entryId)
     {
         List<(long LInflectionId, int LInflectionPosition, string LInflectionText, string? LInflectionLocal,
-            long? LInflectionSpeechId, bool LInflectionRegular)> rows = [];
+            long? LInflectionSpeechId, bool LInflectionRegular, string? LInflectionPrediction,
+            IReadOnlyList<LInflectionMark>? LInflectionMarks, string? LInflectionStamp)> rows = [];
         using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText =
                 """
-                SELECT inflection_id, position, text, local, speech_value_ref, regular
+                SELECT inflection_id, position, text, local, speech_value_ref, regular, prediction, marks, stamp
                 FROM inflection WHERE entry_parent = $entry ORDER BY position;
                 """;
             command.Parameters.AddWithValue("$entry", entryId);
@@ -87,7 +114,10 @@ public sealed class LInflectionArchive : LInflectionVault
                     reader.GetString(2),
                     reader.IsDBNull(3) ? null : reader.GetString(3),
                     reader.IsDBNull(4) ? null : reader.GetInt64(4),
-                    reader.GetInt32(5) != 0));
+                    reader.GetInt32(5) != 0,
+                    reader.IsDBNull(6) ? null : reader.GetString(6),
+                    reader.IsDBNull(7) ? null : LInflectionMark.LInflectionMarkParse(reader.GetString(7)),
+                    reader.IsDBNull(8) ? null : reader.GetString(8)));
             }
         }
 
@@ -95,7 +125,8 @@ public sealed class LInflectionArchive : LInflectionVault
             LInflectionMorphologyRead(connection, entryId);
 
         List<LInflection> inflections = [];
-        foreach ((long id, int position, string text, string? local, long? speechValueId, bool regular) in rows)
+        foreach ((long id, int position, string text, string? local, long? speechValueId, bool regular,
+                     string? prediction, IReadOnlyList<LInflectionMark>? marks, string? stamp) in rows)
         {
             inflections.Add(new LInflection(
                 id,
@@ -105,7 +136,10 @@ public sealed class LInflectionArchive : LInflectionVault
                 local,
                 speechValueId,
                 morphology.TryGetValue(id, out IReadOnlyList<long>? found) ? found : [],
-                regular));
+                regular,
+                prediction,
+                marks,
+                stamp));
         }
 
         return inflections;
@@ -164,8 +198,9 @@ public sealed class LInflectionArchive : LInflectionVault
             {
                 command.CommandText =
                     """
-                    INSERT INTO inflection (entry_parent, position, text, local, speech_value_ref, regular)
-                    VALUES ($entry, $position, $text, $local, $speech, $regular)
+                    INSERT INTO inflection
+                        (entry_parent, position, text, local, speech_value_ref, regular, prediction, marks, stamp)
+                    VALUES ($entry, $position, $text, $local, $speech, $regular, $prediction, $marks, $stamp)
                     RETURNING inflection_id;
                     """;
                 command.Parameters.AddWithValue("$entry", entryId);
@@ -175,6 +210,14 @@ public sealed class LInflectionArchive : LInflectionVault
                 command.Parameters.AddWithValue(
                     "$speech", (object?)inflection.LInflectionSpeechId ?? DBNull.Value);
                 command.Parameters.AddWithValue("$regular", inflection.LInflectionRegular ? 1 : 0);
+                command.Parameters.AddWithValue(
+                    "$prediction", (object?)inflection.LInflectionPrediction ?? DBNull.Value);
+                command.Parameters.AddWithValue(
+                    "$marks",
+                    inflection.LInflectionMarks is { } marks
+                        ? LInflectionMark.LInflectionMarkFormat(marks)
+                        : DBNull.Value);
+                command.Parameters.AddWithValue("$stamp", (object?)inflection.LInflectionStamp ?? DBNull.Value);
                 id = Convert.ToInt64(command.ExecuteScalar());
             }
 

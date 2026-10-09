@@ -31,7 +31,7 @@ internal sealed record LLanguageStaff(
         LClaimStaff claim)
     {
         LVocabularyClerk vocabulary = new(rig);
-        LParadigmClerk paradigm = new(rig);
+        LParadigmClerk paradigm = new(rig, cache);
         LPronunciationClerk pronunciation = new(rig);
         LTrailClerk trail = new(rig);
         LLanguageClerk language = new(rig, cache, trail);

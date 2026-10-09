@@ -1,5 +1,5 @@
 # PSettings.xaml
-Hash: `7ff2b5b41c42cce6`
+Hash: `a3385087068e09a1`
 
 ## `<Rectangle ... Style="{StaticResource Theme.Panel.SeamRow}" />`
 
@@ -10,7 +10,7 @@ The column seam sits in the gutter and reaches the foot of the window.
 ## `<TextBox x:Name="PWinnow" ...>`
 
 The search field over the catalog, a bare field with no ordering or filter button.
-Six groups need no ordering, and the text alone decides which rows stay.
+Seven groups need no ordering, and the text alone decides which rows stay.
 
 ## `<ItemsControl x:Name="PLedger">`
 
@@ -55,10 +55,16 @@ The switch keeps the check box's handler and its checked reading, only the drawi
 The switch of the listing page decides whether every list prints an entry's epithet after its headword.
 The epithet is the reading the language pack names, so a Han character lists as `弄 [희롱할 롱]`.
 
+## `<ToggleButton x:Name="PSettingsAnalysis" ...>`
+
+The switch of the inflection page decides whether the inflection box uses the pack's custom sheets.
+With it on, letters that differ from the predicted form are marked.
+Every form is analysed when it is stored, so a flip only redraws the box.
+
 ## `<ToggleButton x:Name="PFrequency" ...>`
 
 Whether an entry's frequency is fetched from the pack's web source.
-It stands above the inflection switch in the same card, since both govern what a lookup fetches.
+It stands above the morphology switch in the same card, since both govern what a lookup fetches.
 A pack that declares no frequency source fetches nothing either way, so the switch costs nothing there.
 
 ## `<ToggleButton x:Name="PMorphology" ...>`
@@ -79,5 +85,5 @@ The action that drops the stored panel widths, set at the foot of the layout pag
 ## Hooks
 
 The markup carries no hook.
-The Deportment class `QSettings` sets icons, clicks, text and key handlers, the language items and the row fills.
+The Deportment class `QSettings` and its choice drivers set icons, clicks, handlers, the language items and the row fills.
 It also names the language box's value path, since that path is read by reflection.

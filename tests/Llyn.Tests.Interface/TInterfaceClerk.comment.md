@@ -1,4 +1,5 @@
 # TInterfaceClerk.cs
+Hash: `d9f96d43306c3359`
 Hash: `cc703108e09c2bf4`
 
 ## `internal static partial class TInterface`
@@ -195,11 +196,16 @@ A request of a kind no switch knows, so a test can prove the default arm throws.
 
 The one request kind the production code never declares.
 
+**Parameters**
+
+- `LRequestDraftId`: The draft targeted by the unsupported request.
+
 ## `internal static LEntryClerk TEntryClerkCreate(LRig rig)`
 
 An entry clerk over `rig` with every clerk it composes, the transcription, reflex and recording clerks included.
 Its translation and entry clerks each stamp through their own revision clerk over the same rig.
 The reflex clerk gets a throwaway gate and a bulletin that goes nowhere.
+The entry clerk's paradigm and pronunciation helpers share the language cache built for this composition.
 
 ## `internal static LRecordingClerk TRecordingClerkCreate(LRig rig)`
 

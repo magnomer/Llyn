@@ -151,6 +151,15 @@ public sealed class CTimbre
         _cTimbreDesk.CDeskVigil.LVigilEntryAttach(
             CSubject.CSubjectInflection, _ => marshal(() => CTimbreParadigmChanged?.Invoke()));
         _cTimbreDesk.CDeskVigil.LVigilObserverAttach(
+            CSubject.CSubjectInflection,
+            bulletin =>
+            {
+                if (bulletin.CBulletinId <= 0)
+                {
+                    marshal(() => CTimbreParadigmChanged?.Invoke());
+                }
+            });
+        _cTimbreDesk.CDeskVigil.LVigilObserverAttach(
             CSubject.CSubjectScript, _ => marshal(() => CTimbreScriptChanged?.Invoke()));
     }
 

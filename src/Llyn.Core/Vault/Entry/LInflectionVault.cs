@@ -11,4 +11,7 @@ public interface LInflectionVault
     IReadOnlyList<LInflection> LInflectionSet(long entryId, IReadOnlyList<LInflection> inflections);
 
     void LInflectionRegularSave(long inflectionId, bool regular);
+
+    void LInflectionAnalysisSave(
+        long inflectionId, string? prediction, IReadOnlyList<LInflectionMark>? marks, string? stamp, bool regular);
 }

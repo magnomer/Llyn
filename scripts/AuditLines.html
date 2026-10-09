@@ -19,7 +19,6 @@
   --series-1: #2a78d6;
   --series-2: #eb6834;
   --series-3: #1baf7a;
-  --tally: #b4b2aa;
   --pass: #138a5f;
   --warn: #c98500;
   --fail: #d63c3b;
@@ -42,7 +41,6 @@
     --series-1: #3987e5;
     --series-2: #d95926;
     --series-3: #199e70;
-    --tally: #5a5955;
     --pass: #3ccf95;
     --warn: #f2c440;
     --fail: #ff7a72;
@@ -65,7 +63,6 @@
   --series-1: #3987e5;
   --series-2: #d95926;
   --series-3: #199e70;
-  --tally: #5a5955;
   --pass: #3ccf95;
   --warn: #f2c440;
   --fail: #ff7a72;
@@ -126,13 +123,6 @@ svg text { font: 11px system-ui, -apple-system, "Segoe UI", sans-serif; font-var
 .tip .row { display: flex; align-items: center; gap: 6px; }
 .tip .row .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .tip .row .num { margin-left: auto; font-variant-numeric: tabular-nums; padding-left: 12px; }
-.bars { display: grid; grid-template-columns: minmax(120px, max-content) 1fr max-content max-content; gap: 4px 12px; align-items: center; font-size: 13px; }
-.bars .name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.bars .track { height: 14px; background: var(--wash); border-radius: 4px; overflow: hidden; }
-.bars .fill { height: 100%; border-radius: 4px; background: var(--series-1); }
-.bars .fill.tally { background: var(--tally); }
-.bars .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.bars .delta { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink-3); font-size: 12px; white-space: nowrap; min-width: 56px; }
 .up { color: var(--series-2); }
 .down { color: var(--series-3); }
 .tablewrap { overflow-x: auto; }
@@ -178,8 +168,6 @@ button.more { font: inherit; font-size: 13px; color: var(--ink-2); background: v
 .list li { overflow-wrap: anywhere; }
 footer { color: var(--ink-3); font-size: 12px; display: flex; flex-wrap: wrap; gap: 16px; }
 @media (max-width: 640px) {
-  .bars { grid-template-columns: minmax(80px, 40%) 1fr max-content; }
-  .bars .delta { display: none; }
   .treemap { height: 420px; }
 }
 </style>
@@ -204,8 +192,9 @@ footer { color: var(--ink-3); font-size: 12px; display: flex; flex-wrap: wrap; g
   <section class="tiles" id="tiles"></section>
 
   <section class="panel">
-    <h2>Scope</h2>
-    <dl class="scope" id="scope"></dl>
+    <h2>Source lines by folder</h2>
+    <div class="muted" id="foldernote"></div>
+    <div class="tablewrap"><table id="foldertable"></table></div>
   </section>
 
   <section class="panel">
@@ -221,20 +210,8 @@ footer { color: var(--ink-3); font-size: 12px; display: flex; flex-wrap: wrap; g
   </section>
 
   <section class="panel">
-    <div class="panelhead">
-      <div>
-        <h2>Source lines by folder</h2>
-        <div class="muted" id="foldernote"></div>
-      </div>
-      <div class="segmented" role="group" aria-label="Measure" id="metric"></div>
-    </div>
-    <div class="bars" id="folderbars"></div>
-    <div class="tablewrap" style="margin-top: 16px"><table id="foldertable"></table></div>
-  </section>
-
-  <section class="panel">
-    <h2>Lines by extension</h2>
-    <div class="tablewrap"><table id="exttable"></table></div>
+    <h2>Files near the line limit</h2>
+    <div id="lengthlists"></div>
   </section>
 
   <section class="panel">
@@ -247,11 +224,6 @@ footer { color: var(--ink-3); font-size: 12px; display: flex; flex-wrap: wrap; g
     <div class="legend" id="maplegend"></div>
     <div class="crumbs" id="crumbs"></div>
     <div class="treemap chart" id="treemap"></div>
-  </section>
-
-  <section class="panel">
-    <h2>Files near the line limit</h2>
-    <div id="lengthlists"></div>
   </section>
 
   <section class="panel">
@@ -282,6 +254,11 @@ footer { color: var(--ink-3); font-size: 12px; display: flex; flex-wrap: wrap; g
     <div class="toolbar"><input type="search" id="filter" placeholder="Filter by path" aria-label="Filter files by path"></div>
     <div class="tablewrap"><table id="alltable"></table></div>
     <button type="button" class="more" id="allmore"></button>
+  </section>
+
+  <section class="panel">
+    <h2>Scope</h2>
+    <dl class="scope" id="scope"></dl>
   </section>
 
   <footer id="footer"></footer>
@@ -539,26 +516,6 @@ footer { color: var(--ink-3); font-size: 12px; display: flex; flex-wrap: wrap; g
   }
 
   // Folder totals.
-  var metric = load('metric', 'lines', METRICS.map(function (m) { return m.key; }));
-  segmented(document.getElementById('metric'), METRICS, metric, function (k) { metric = k; save('metric', k); drawFolders(); });
-  document.getElementById('foldernote').textContent = (prev ? 'Change since ' + prev.version + '. ' : '') +
-    (d.scope.tallyRoots.length ? 'Grey rows are tally roots, counted into the totals only.' : '');
-  function drawFolders() {
-    var list = d.folders.slice().sort(function (a, b) { return b[metric] - a[metric] || (a.name < b.name ? -1 : 1); });
-    var peak = list.reduce(function (m, f) { return Math.max(m, f[metric]); }, 0) || 1;
-    var html = list.map(function (f) {
-      return '<div class="name" title="' + esc(f.name) + '">' + esc(f.name) + '</div><div class="track"><div class="fill' + (f.tally ? ' tally' : '') +
-        '" style="width:' + (f[metric] / peak * 100).toFixed(2) + '%"></div></div><div class="num">' + fmt(f[metric]) + '</div><div class="delta">' +
-        deltaHtml(folderDelta(f.name, metric)) + '</div>';
-    });
-    if (prev) {
-      Object.keys(prevFolders).forEach(function (name) {
-        if (d.folders.some(function (f) { return f.name === name; })) return;
-        html.push('<div class="name muted">' + esc(name) + ' (gone)</div><div class="track"></div><div class="num">0</div><div class="delta">' + deltaHtml(-prevFolders[name][metric]) + '</div>');
-      });
-    }
-    document.getElementById('folderbars').innerHTML = html.join('');
-  }
   (function () {
     var rows = d.folders.map(function (f) {
       return '<tr class="' + (f.tally ? 'tally' : '') + '"><td class="l">' + esc(f.name) + '</td><td>' + fmt(f.files) + '</td><td>' + fmt(f.lines) + '</td><td>' + fmt(f.nonBlank) +
@@ -572,18 +529,6 @@ footer { color: var(--ink-3); font-size: 12px; display: flex; flex-wrap: wrap; g
     document.getElementById('foldertable').innerHTML =
       '<thead><tr><th class="l" rowspan="2">Folder</th><th rowspan="2">Files</th><th class="group" colspan="5">Lines</th><th class="group" colspan="3">Sizes</th></tr>' +
       '<tr><th>Raw</th><th>Non-blank</th><th>Share</th><th>Average</th><th>Change</th><th>Total</th><th>Share</th><th>Average</th></tr></thead><tbody>' + rows + '</tbody>';
-  })();
-
-  // Extensions.
-  (function () {
-    var all = d.extensions.reduce(function (s, e) { return s + e.lines; }, 0);
-    document.getElementById('exttable').innerHTML =
-      '<thead><tr><th class="l">Extension</th><th>Files</th><th>Lines</th><th>Non-blank</th><th>Blank</th><th>Share</th><th class="l">Width limit</th></tr></thead><tbody>' +
-      d.extensions.map(function (e) {
-        var w = d.scope.widths.filter(function (x) { return x.extension === e.extension; })[0];
-        return '<tr><td class="l">' + esc(e.extension) + '</td><td>' + fmt(e.files) + '</td><td>' + fmt(e.lines) + '</td><td>' + fmt(e.nonBlank) + '</td><td>' +
-          fmt(e.lines - e.nonBlank) + '</td><td>' + pct(e.lines, all) + '</td><td class="l">' + (w ? fmt(w.limit) + ' columns' : '<span class="muted">not checked</span>') + '</td></tr>';
-      }).join('') + '</tbody>';
   })();
 
   // File map: squarified treemap of folders, then files inside each folder.
@@ -817,7 +762,6 @@ footer { color: var(--ink-3); font-size: 12px; display: flex; flex-wrap: wrap; g
     '<span>' + fmt(files.length) + ' files' + DOT + fmt(tooWide) + ' lines over the width limit</span>';
 
   function drawSized() { drawHist(); drawMap(); }
-  drawFolders();
   drawAll();
   drawSized();
   var resizeTimer = null;

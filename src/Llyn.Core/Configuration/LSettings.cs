@@ -11,7 +11,8 @@ public sealed record LSettings(
     bool LSettingsFanqieOpened = false,
     bool LSettingsScriptOpened = false,
     int LSettingsOutpost = 41184,
-    string LSettingsWarrant = "")
+    string LSettingsWarrant = "",
+    bool LSettingsAnalysis = true)
 {
     public int LSettingsOnline => (LSettingsFrequency ? 1 : 0) + (LSettingsMorphology ? 1 : 0);
 }

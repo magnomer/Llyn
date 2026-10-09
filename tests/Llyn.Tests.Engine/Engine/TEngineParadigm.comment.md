@@ -1,4 +1,5 @@
 # TEngineParadigm.cs
+Hash: `16fddf3b493beeab`
 Hash: `bd8be2a5bb881dbc`
 
 ## `public sealed class TEngineParadigm`
@@ -56,7 +57,7 @@ A stored plural the pattern rejects stays a display row, still specified.
 
 ## `public void ParadigmShow_VerbWithoutPattern_KeepsBothSlots()`
 
-A paradigm stating no pattern keeps every filled slot, so both verb rows show.
+The shipped English verb slots keep both stored forms while declaring no paradigm regularity rules.
 
 ## `public void ParadigmShow_UnfilledSlot_KeepsSlot()`
 
@@ -67,20 +68,18 @@ An unfilled slot is never regular, so it shows, and an entry the workspace lacks
 Turning the morphology switch off while a fetch waits on the web cancels it.
 The forms the source later returns are discarded and the slots stay unspecified.
 
-## Inline notes
-
-### `private const string TParadigmFetchBody =`
+## `private const string TParadigmFetchBody`
 
 A source page carrying both verb forms, held behind a gate so the switch can flip mid-flight.
 
-### `private static void TParadigmInflectionAppend(LEngine engine, long entryId, params string[] forms)`
+## `private static void TParadigmInflectionAppend(LEngine engine, long entryId, params string[] forms)`
 
 Stores one form per slot, in slot order, so a test fills a paradigm in one line.
 
-### `private static void TParadigmInflectionSave(LEngine engine, long entryId, IReadOnlyList<LInflection> added)`
+## `private static void TParadigmInflectionSave(LEngine engine, long entryId, IReadOnlyList<LInflection> added)`
 
 Adds forms after the stored ones through the entry update, which regrades every form it stores.
 
-### `private static LEntryDraft TParadigmDraftCreate(string headword, params string[] speeches)`
+## `private static LEntryDraft TParadigmDraftCreate(string headword, params string[] speeches)`
 
 Builds a minimal English draft for `headword` carrying the given parts of speech by name.

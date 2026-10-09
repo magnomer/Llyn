@@ -1,7 +1,7 @@
 # LSettings.cs
-Hash: `67c9ee0ed763cb5e`
+Hash: `42501c42353a7ccc`
 
-## `public sealed record LSettings(string LSettingsLocalization, bool LSettingsRespelled = false, bool LSettingsFrequency = true, bool LSettingsMorphology = true, bool LSettingsEpithet = true, bool LSettingsTally = false, string LSettingsGloss = "English", bool LSettingsFanqieOpened = false, bool LSettingsScriptOpened = false, int LSettingsOutpost = 41184, string LSettingsWarrant = "")`
+## `public sealed record LSettings(string LSettingsLocalization, bool LSettingsRespelled = false, bool LSettingsFrequency = true, bool LSettingsMorphology = true, bool LSettingsEpithet = true, bool LSettingsTally = false, string LSettingsGloss = "English", bool LSettingsFanqieOpened = false, bool LSettingsScriptOpened = false, int LSettingsOutpost = 41184, string LSettingsWarrant = "", bool LSettingsAnalysis = true)`
 
 The user's persisted engine settings.
 These live as `settings.json` inside the user's workspace folder and nowhere else.
@@ -31,3 +31,11 @@ It is kept in a small fixed pointer outside the workspace.
 - `LSettingsOutpost` — The port Joplin's Data API is tried on first, 41184 by default.
 - `LSettingsWarrant` — The Joplin token in its hidden form, empty until the user grants one.
   Only the platform twin of the warrant port can turn it back into the token.
+- `LSettingsAnalysis` — Whether the inflection box shows the pack's custom sheets and marked letters, on by default.
+  Off shows the default sheets with plain forms.
+  The analysis is stored on every write either way, so a flip needs no new analysis.
+
+## `public int LSettingsOnline`
+
+How many of the web lookups are on, counting frequency and morphology.
+The settings Web page shows it against the number of lookups there are.

@@ -59,6 +59,7 @@ internal sealed class QCadence
         CLecternParadigm paradigm = _cSounding.CSoundingParadigmRead();
         QFontFace.QFontRefine(paradigm.CLecternParadigmFont, QCadenceParadigm);
         QCadenceParadigm.QParadigmItems = QParadigmItem.QParadigmItemScan(paradigm.CLecternParadigmSlots);
+        QCadenceParadigm.QParadigmSheet = QParadigmSheet.QParadigmSheetCreate(paradigm.CLecternParadigmView);
     }
 
     private void QCadenceScriptRefine()

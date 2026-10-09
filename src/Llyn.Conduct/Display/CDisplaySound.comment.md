@@ -1,5 +1,5 @@
 # CDisplaySound.cs
-Hash: `bbe49df09e613d1d`
+Hash: `92c7ad3fda4d1c64`
 
 ## `public sealed class CDisplaySound`
 
@@ -25,7 +25,7 @@ The anchors while nothing is shown or the engine refused, with no row anchored.
 
 Only the header area builds its sound area, over the ports and the envoy the atelier handed down.
 It takes the sound half and the atelier's repaint memory from `display`, so the width did not grow.
-Every read below shows its failure through that memory, since it runs on every repaint.
+Ledger-backed repaint reads share failure memory, while user actions report failures separately.
 `glyphs` reads the glyph row and transcriptions, and `entries` opens the entry a glyph cell names.
 Each sound block reads through its own narrow port, so no block reaches a slice it never shows.
 The fanqie gate answers a user act, so it shows every failure.
@@ -45,7 +45,7 @@ Raised with the shown language and the kind and key of a clicked rime cell.
 ## `internal event Action<string, string?>? CDisplayStemChosen;`
 
 Raised with the shown language and the key of a clicked phonetic series.
-The display hands all three to the atelier's navigation, which switches the tab.
+The event carries two values, with a null key allowed for navigation without a selected series.
 
 ## `public bool CDisplayFoldOpened`
 
@@ -132,6 +132,8 @@ Its font follows the paradigm's own language, which the engine resolves.
 The slots carry their status and tip key, so the driver reads neither verdict.
 The inflection fetch is started when the entry opens, never by this read.
 A refused row read shows `Display.ParadigmReadFailed` through the voice's failure event.
+The inflection box is read through the same ledger read with the same failure key.
+A refused box read shows that notice and answers a null view.
 
 ## `private IReadOnlyList<CReflex> LDisplayReflexScan()`
 

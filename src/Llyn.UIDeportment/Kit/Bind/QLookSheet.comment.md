@@ -1,5 +1,5 @@
 # QLookSheet.cs
-Hash: `f7eb52e521c65f11`
+Hash: `8a1f1c0c899b3405`
 
 ## `internal static class QLookSheet`
 
@@ -19,6 +19,7 @@ The sound themes' rows come from `QLookSound` and the display's from `QLookDispl
 A style merged by one view rather than the application is registered by that view through `QLookStyleAttach`.
 The editor dictionaries are such styles, and the corpus and imprint panels merge the popup one too.
 A row's cues are `QLookCue` flags, and a row holds while every flag it names holds.
+The paradigm fold rows put checked after hover, so a hovered checked button keeps its accent.
 An icon row copies `QLook.QLookIconProperty`.
 Hover, press, inset and scale values are veneer resources, set by key so a theme switch reaches them.
 The progress sweep is the veneer resource `Theme.Popup.ProgressBar.Sweep`, pulled by contract ID.

@@ -1,4 +1,5 @@
 # LInflectionVault.cs
+Hash: `f71ebfe50c0bd8ec`
 Hash: `57f900b2f15ba64e`
 
 ## `public interface LInflectionVault`
@@ -32,3 +33,11 @@ Writes the derived regular flag alone onto one inflection row.
 The engine derives it whenever the form or its entry is stored, so a reader never runs the paradigm pattern.
 A row rewritten by a move or a delete carries the flag across.
 The insert writes what the record holds.
+
+## `void LInflectionAnalysisSave(long inflectionId, string? prediction, IReadOnlyList<LInflectionMark>? marks, string? stamp, bool regular);`
+
+Writes one row's rule-book analysis and its regular flag together.
+The four values come from one run of the book, so they are never stored apart.
+An uncovered cell has null prediction and marks but retains the book's stamp.
+The stamp distinguishes current uncovered analysis from analysis that needs refreshing.
+The insert carries the analysis across a move or a delete, as it does the flag.

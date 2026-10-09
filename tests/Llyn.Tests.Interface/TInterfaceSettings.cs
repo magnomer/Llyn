@@ -13,8 +13,9 @@ internal static partial class TInterface
         bool morphology = true,
         bool epithet = true,
         bool tally = false,
-        string gloss = "English") =>
-        new(localization, respelled, frequency, morphology, epithet, tally, gloss);
+        string gloss = "English",
+        bool analysis = true) =>
+        new(localization, respelled, frequency, morphology, epithet, tally, gloss) { LSettingsAnalysis = analysis };
 
     internal static LLayout TLayoutCreate(
         string tab,

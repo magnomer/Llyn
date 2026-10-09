@@ -44,6 +44,10 @@ public interface LSettingsPort
 
     void LEngineMorphologySave(bool morphology);
 
+    bool LEngineAnalysisCheck();
+
+    void LEngineAnalysisSave(bool analysis);
+
     void LEngineRespellingSave(bool respelled);
 
     void LEngineFanqieSave(bool opened);

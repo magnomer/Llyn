@@ -1,4 +1,5 @@
 # LLacunaVault.cs
+Hash: `bc31ece851bb9230`
 Hash: `b482473c7970af96`
 
 ## `public interface LLacunaVault`
@@ -10,12 +11,13 @@ It lists exactly what the engine asks of lacuna storage, and nothing about how r
 ## `IReadOnlyList<LLacuna> LLacunaRead(long entryId);`
 
 Reads the entry's rows in the order they were written.
-An older workspace may hold a row without a morphology value.
-A reader ignores it.
+A cell key identifies a missed slot even without a morphology id.
+A row with neither identifier names no slot.
 
-## `void LLacunaSave(long entryId, IReadOnlyList<long> morphologyIds);`
+## `void LLacunaSave(long entryId, IReadOnlyList<LLacuna> lacunae);`
 
-Replaces the entry's rows with one per given morphology id in one transaction.
+Replaces the entry's rows with one per given lacuna in one transaction.
+Each row keeps its morphology id and its cell key.
 An empty list leaves the entry with no rows at all.
 Every row is stamped with the same fetch time.
 
