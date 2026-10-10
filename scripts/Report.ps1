@@ -12,7 +12,12 @@ Reads the configuration from Report.json next to this script, then performs thes
   2. Runs each step in order, one at a time, with -NoOpen and -NoPause passed to every script
      that declares them. A step names one script, or a family whose every script runs in
      ordinal order. A missing or throwing script is recorded as failed and the run continues.
-  3. Prints one result row per script, with its exit code and the pages it left.
+     Each script's console is captured, not shown. A progress line names each step as it
+     runs, and the script's own progress lines, such as one per audit, show indented below it.
+     A failing script shows the tail of its console.
+  3. Prints one line per script as it finishes, with its status, the pages it left and its
+     duration, then the verdict.
+  4. Opens the newest page of the script named in "open", unless -NoOpen is given.
 
 The pages are the documents uploaded to GitHub with each version.
 
@@ -21,6 +26,9 @@ Path to the JSON configuration. Defaults to Report.json next to this script.
 
 .PARAMETER Keep
 Keep the older pages instead of deleting them before the run.
+
+.PARAMETER NoOpen
+Write every page without opening any.
 
 .PARAMETER Help
 Display this help and exit. The alias -? is supported.
@@ -43,6 +51,7 @@ Write every page afresh and keep the older ones.
 param(
     [string]$ConfigPath = '',
     [switch]$Keep,
+    [switch]$NoOpen,
     [Alias('?')]
     [switch]$Help
 )
@@ -56,7 +65,7 @@ SYNOPSIS
     Write every analysis document afresh: the audits, the method map and the statistics.
 
 SYNTAX
-    report [-ConfigPath <path>] [-Keep] [-Help]
+    report [-ConfigPath <path>] [-Keep] [-NoOpen] [-Help]
 
 CONFIGURATION
     All project-specific values live in Report.json next to the script:
@@ -64,6 +73,7 @@ CONFIGURATION
     with "script", or every script of a family with "family". A family
     script is one whose header reads "# <NAME> - <FAMILY> GENERATION <n>.".
     A step's optional "clear" list adds file-name prefixes it owns.
+    The optional "open" names the script whose newest page opens at the end.
 
 RUN
     First every older page of the steps directly inside the report folder
@@ -74,9 +84,13 @@ RUN
     declares them. A missing or throwing script is recorded as failed and
     the run continues.
 
-RESULT
-    One row per script. Count is its exit code, so 0 passes. Meaning names
-    the pages it left in the report folder and its duration.
+PROGRESS
+    Each script's console is captured, not shown. One line names each
+    script as it runs. Its own progress lines, such as one per audit, show
+    indented below it. When it finishes, its status, the pages it left in
+    the report folder and its duration follow. A failing script shows the
+    tail of its console. The verdict comes last, then the page named in
+    "open" opens unless -NoOpen is given.
     The run exits with 1 when any script failed or threw, else 0.
 
 OPTIONS
@@ -85,6 +99,9 @@ OPTIONS
 
     -Keep
         Keep the older pages instead of deleting them before the run.
+
+    -NoOpen
+        Write every page without opening any.
 
     -Help, -?
         Display this help and exit.
@@ -240,15 +257,17 @@ function Get-OwnedPages {
 }
 
 function Invoke-Step {
-    # Runs one script live, so its own console shows as it goes, and records how it ended.
+    # Runs one script with its console captured, relays its own progress lines, and records how it ended.
     param(
         [Parameter(Mandatory = $true)]$Entry,
         [Parameter(Mandatory = $true)][string]$Root,
-        [Parameter(Mandatory = $true)][string]$Folder
+        [Parameter(Mandatory = $true)][string]$Folder,
+        [Parameter(Mandatory = $true)][string]$Lead
     )
 
     $path = Join-Path (Join-Path $Root 'scripts') ($Entry.Name + '.ps1')
-    $result = [ordered]@{ Name = $Entry.Name; Exit = 1; Pages = 0; Seconds = [double]0; Problem = '' }
+    $result = [ordered]@{ Name = $Entry.Name; Exit = 1; Pages = 0; Seconds = [double]0; Problem = ''; Tail = @() }
+    Write-Host $Lead -NoNewline
     if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
         $result.Problem = 'missing script'
         return [pscustomobject]$result
@@ -259,15 +278,33 @@ function Invoke-Step {
     if ($parameters.ContainsKey('NoOpen')) { $quiet['NoOpen'] = $true }
     if ($parameters.ContainsKey('NoPause')) { $quiet['NoPause'] = $true }
 
-    Write-Host ''
-    Write-Host "Running $($Entry.Name)..." -ForegroundColor DarkGray
     Set-Location -LiteralPath $Root
     $watch = [System.Diagnostics.Stopwatch]::StartNew()
     $global:LASTEXITCODE = 0
+    $lines = [System.Collections.Generic.List[string]]::new()
+    $state = @{ Pending = ''; Relayed = $false }
     try {
         # A native stderr line must never end the run, so every script runs under Continue.
         $ErrorActionPreference = 'Continue'
-        & $path @quiet
+        & $path @quiet *>&1 | ForEach-Object {
+            $text = $state.Pending + ($_ | Out-String).TrimEnd("`r", "`n")
+            if ($_ -is [System.Management.Automation.InformationRecord] -and $_.MessageData -is [System.Management.Automation.HostInformationMessage] -and $_.MessageData.NoNewLine) {
+                $state.Pending = $text
+                return
+            }
+            $state.Pending = ''
+            foreach ($part in ($text -replace "`r`n", "`n" -replace "`r", "`n").Split("`n")) {
+                $plain = $part -replace '\x1b\[[0-9;?]*[A-Za-z]', ''
+                $lines.Add($plain)
+                # A progress line starts with [n/m], as Audit.ps1 prints one per audit.
+                if ($plain -match '^\[\s*\d+/\d+\] ') {
+                    if (-not $state.Relayed) { Write-Host '' }
+                    $state.Relayed = $true
+                    Write-Host ('    ' + $plain) -ForegroundColor DarkGray
+                }
+            }
+        }
+        if ($state.Pending -ne '') { $lines.Add($state.Pending) }
         $result.Exit = [int]$global:LASTEXITCODE
     }
     catch {
@@ -279,9 +316,25 @@ function Invoke-Step {
     $watch.Stop()
     Set-Location -LiteralPath $Root
 
+    # Relayed lines broke the progress line, so the end goes on a line of its own below them.
+    if ($state.Relayed) { Write-Host (' ' * $Lead.Length) -NoNewline }
     $result.Seconds = $watch.Elapsed.TotalSeconds
     $result.Pages = @(Get-OwnedPages -Folder $Folder -Prefixes $Entry.Prefixes).Count
+    $result.Tail = @($lines | Where-Object { $_.Trim() -ne '' } | Select-Object -Last 15)
     return [pscustomobject]$result
+}
+
+function Write-StepEnd {
+    # Ends the progress line with the status, pages and duration, and shows a failure's console tail.
+    param([Parameter(Mandatory = $true)]$Result)
+
+    $failed = $Result.Exit -ne 0 -or $Result.Problem.Length -gt 0
+    Write-Host $(if ($failed) { 'FAIL' } else { 'OK  ' }) -ForegroundColor $(if ($failed) { 'Red' } else { 'Green' }) -NoNewline
+    $detail = if ($Result.Problem.Length -gt 0) { $Result.Problem } else { [string]::Format([System.Globalization.CultureInfo]::InvariantCulture, '{0} pages  {1:0.0} s', $Result.Pages, $Result.Seconds) }
+    Write-Host ('  ' + $detail) -ForegroundColor DarkGray
+    if ($failed) {
+        foreach ($line in $Result.Tail) { Write-Host ('    ' + $line) -ForegroundColor DarkGray }
+    }
 }
 
 $repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
@@ -306,43 +359,40 @@ if (-not $Keep) {
 Write-Host ('Deleted: {0} older pages' -f $deleted) -ForegroundColor DarkGray
 
 $results = [System.Collections.Generic.List[object]]::new()
+$nameWidth = (@($entries | ForEach-Object { $_.Name.Length }) | Measure-Object -Maximum).Maximum
+$countWidth = ([string]$entries.Count).Length
 foreach ($entry in $entries) {
-    $results.Add((Invoke-Step -Entry $entry -Root $repoRoot -Folder $reportFolder))
+    $lead = '[{0}/{1}] {2}  ' -f ([string]($results.Count + 1)).PadLeft($countWidth), $entries.Count, $entry.Name.PadRight($nameWidth)
+    $result = Invoke-Step -Entry $entry -Root $repoRoot -Folder $reportFolder -Lead $lead
+    Write-StepEnd -Result $result
+    $results.Add($result)
 }
 Set-Location -LiteralPath $repoRoot
 
-# Result: one row per script, in the audit console grammar.
-$rows = @($results | ForEach-Object {
-        $failed = $_.Exit -ne 0 -or $_.Problem.Length -gt 0
-        $meaning = if ($_.Problem.Length -gt 0) { $_.Problem } else { '{0} pages in {1:N0} s' -f $_.Pages, $_.Seconds }
-        [pscustomobject]@{ Status = $(if ($failed) { 'FAIL' } else { 'OK' }); Count = $(if ($_.Problem.Length -gt 0) { 1 } else { $_.Exit }); Gate = $_.Name; Meaning = $meaning }
-    })
-$statusWidth = [Math]::Max(6, (@($rows | ForEach-Object { $_.Status.Length }) | Measure-Object -Maximum).Maximum)
-$countWidth = [Math]::Max(5, (@($rows | ForEach-Object { ([string]$_.Count).Length }) | Measure-Object -Maximum).Maximum)
-$gateWidth = [Math]::Max(4, (@($rows | ForEach-Object { $_.Gate.Length }) | Measure-Object -Maximum).Maximum)
-$meaningWidth = [Math]::Max(7, (@($rows | ForEach-Object { $_.Meaning.Length }) | Measure-Object -Maximum).Maximum)
-
-Write-Host ''
-Write-Host 'Result' -ForegroundColor Blue
-Write-Host '------' -ForegroundColor DarkGray
-Write-Host ('{0}  {1}  {2}  {3}' -f 'Status'.PadRight($statusWidth), 'Count'.PadLeft($countWidth), 'Gate'.PadRight($gateWidth), 'Meaning') -ForegroundColor Cyan
-Write-Host ('{0}  {1}  {2}  {3}' -f ('-' * $statusWidth), ('-' * $countWidth), ('-' * $gateWidth), ('-' * $meaningWidth)) -ForegroundColor Cyan
-foreach ($row in $rows) {
-    $colour = if ($row.Status -eq 'OK') { 'Green' } else { 'Red' }
-    Write-Host $row.Status.PadRight($statusWidth) -ForegroundColor $colour -NoNewline
-    Write-Host ('  {0}  {1}  {2}' -f ([string]$row.Count).PadLeft($countWidth), $row.Gate.PadRight($gateWidth), $row.Meaning)
-}
-
-$failing = @($rows | Where-Object { $_.Status -eq 'FAIL' })
+$failing = @($results | Where-Object { $_.Exit -ne 0 -or $_.Problem.Length -gt 0 })
 Write-Host ''
 if ($failing.Count -eq 0) {
-    Write-Host ('PASS: all {0} gates at 0.' -f $rows.Count) -ForegroundColor Green
-    Write-Host ''
-    Write-Host "Report: $reportFolder"
-    exit 0
+    Write-Host ('PASS: all {0} scripts at 0.' -f $results.Count) -ForegroundColor Green
+}
+else {
+    Write-Host ('FAIL: {0} of {1} scripts above 0. See {2}.' -f $failing.Count, $results.Count, (($failing | ForEach-Object { $_.Name }) -join ', ')) -ForegroundColor Red
+}
+Write-Host "Report: $reportFolder"
+
+# The page to open: the newest of the "open" script's own pages, each named <script>-<version>.html.
+$openName = [string](Get-ConfigNode -Document $config -Key 'open')
+if (-not $NoOpen -and $openName.Length -gt 0) {
+    $pages = @(Get-OwnedPages -Folder $reportFolder -Prefixes @($openName + '-') | Where-Object { $_.EndsWith('.html', [System.StringComparison]::OrdinalIgnoreCase) } |
+            Sort-Object -Property @{ Expression = { [System.IO.File]::GetLastWriteTimeUtc($_) } } -Descending)
+    if ($pages.Count -gt 0) {
+        Start-Process -FilePath $pages[0]
+    }
+    else {
+        Write-Host "No $openName page to open in $reportFolder." -ForegroundColor Yellow
+    }
 }
 
-Write-Host ('FAIL: {0} of {1} gates above 0. See {2}.' -f $failing.Count, $rows.Count, (($failing | ForEach-Object { $_.Gate }) -join ', ')) -ForegroundColor Red
-Write-Host ''
-Write-Host "Report: $reportFolder"
-exit 1
+if ($failing.Count -gt 0) {
+    exit 1
+}
+exit 0

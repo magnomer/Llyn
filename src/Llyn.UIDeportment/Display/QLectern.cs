@@ -49,14 +49,19 @@ public sealed class QLectern
         display.CDisplayClosed += reflex.QLecternFoldRefine;
         display.CDisplayReflexChanged += QObserver.QObserverCreate<CBulletin>(surface, reflex.QLecternRenewalRefine);
         display.CDisplayReflexChanged += QObserver.QObserverCreate<CBulletin>(surface, reflex.QLecternFoldRefine);
+        display.CDisplayFoldChanged += QObserver.QObserverCreate<CBulletin>(surface, reflex.QLecternFoldRefine);
         display.CDisplayFanqieChanged += QObserver.QObserverCreate<CBulletin>(surface, reflex.QLecternAnchorRefine);
-        QLecternSound sound = new(surface, display.CDisplaySound, atelier.CAtelierLedger, envoy);
+        QLecternSound sound = new(
+            surface, display.CDisplaySound, display.CDisplayFold, atelier.CAtelierLedger, envoy);
         display.CDisplayOpened += sound.QLecternParadigmRefine;
         display.CDisplayOpened += sound.QLecternScriptRefine;
         display.CDisplayOpened += sound.QLecternFanqieRefine;
         display.CDisplayClosed += sound.QLecternParadigmRefine;
         display.CDisplayClosed += sound.QLecternScriptRefine;
         display.CDisplayClosed += sound.QLecternFanqieRefine;
+        display.CDisplayOpened += sound.QLecternBoxRefine;
+        display.CDisplayClosed += sound.QLecternBoxRefine;
+        display.CDisplayFoldChanged += QObserver.QObserverCreate<CBulletin>(surface, sound.QLecternBoxRefine);
         display.CDisplayParadigmChanged += QObserver.QObserverCreate<CBulletin>(surface, sound.QLecternParadigmRefine);
         display.CDisplayScriptChanged += QObserver.QObserverCreate<CBulletin>(surface, sound.QLecternScriptRefine);
         display.CDisplayFanqieChanged += QObserver.QObserverCreate<CBulletin>(surface, sound.QLecternFanqieRefine);
@@ -65,6 +70,7 @@ public sealed class QLectern
         display.CDisplayOpened += QLecternCard.QLecternGlossRefine;
         display.CDisplayOpened += QLecternCard.QLecternCardRefine;
         display.CDisplayClosed += QLecternCard.QLecternCardRefine;
+        display.CDisplayFoldChanged += QObserver.QObserverCreate<CBulletin>(surface, QLecternCard.QLecternCardRefine);
         QLecternIncoming incoming = new(surface, display.CDisplayCard, atelier.CAtelierNavigation);
         display.CDisplayOpened += incoming.QLecternIncomingRefine;
         display.CDisplayClosed += incoming.QLecternIncomingRefine;

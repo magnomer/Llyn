@@ -1,20 +1,20 @@
 # QLecternReflex.cs
-Hash: `a59219110c99173e`
+Hash: `51a11764b210178b`
 
 ## `public sealed class QLecternReflex`
 
 The reading view's reflex section, drawing the reflex rows [CDisplaySound](../../Llyn.Conduct/Display/CDisplaySound.comment.md) answers.
 [QLectern](QLectern.comment.md) builds it once in its constructor over the view's page.
-It pulls its own parts by contract ID and hears its own toggle and the sound area's fold change.
+It pulls its own parts by contract ID and hears its own hinge `PDisplayReflexHinge`.
 The lectern subscribes its redraws to the display's open, close and notices.
 
 ## `public QLecternReflex(FrameworkElement surface, CDisplaySound area)`
 
-Builds a `QReflexList` over the reflex list and the fold toggle, all pulled from `surface` with the loading line.
+Builds a `QReflexList` over the reflex list and the hinge, all pulled from `surface` with the loading line.
 `area` is the display's sound area, the only part it reads.
 The view's rows are only read, so nothing hears the list's typed cells.
-The fold toggle's events come straight here, so the sound strip holds no adapter for them.
-The fold repaint is subscribed to the area's fold change, so every lectern follows one toggle.
+The hinge's click comes straight here, so the sound strip holds no adapter for it.
+Only the click is heard, so a repaint that sets the hinge writes nothing back.
 
 ## `public void QLecternReflexRefine()`
 
@@ -28,18 +28,23 @@ The lectern subscribes it to the reflex notice, marshalled onto the page through
 
 ## `public void QLecternFoldRefine()`
 
-Has the list hide or show the folded rows from the shared fold, and set the toggle to match.
-It runs after the rows are redrawn and whenever the fold gate changes the fold.
-Writing the toggle back to the same value lets its event settle at once.
+Has the list fold the rows by the shown entry's stored state, and set the hinge to match.
+It runs after the rows are redrawn and on the display's fold bulletin for the shown entry.
 
 ## `public void QLecternAnchorRefine()`
 
 Writes the anchors the area reads for the current rows onto the rows already drawn.
 The lectern subscribes it to the fanqie notice, since a representative change moves no row.
 
-## `private void QLecternFoldObserve(object sender, RoutedEventArgs e)`
+## `private void QLecternHingeObserve(object sender, RoutedEventArgs e)`
 
-Hears the fold toggle and hands its state to the fold gate.
+Hears the hinge's click and hands its raw state to the gate `CDisplaySound.CDisplayReflexToggle`.
+It hands the gate's verdict to `QLecternHingeRefine`.
+
+## `private void QLecternHingeRefine(bool stored)`
+
+Puts the hinge back to its previous state when the gate refused the write.
+A stored write repaints through the fold bulletin, so it paints nothing then.
 
 ## `private void QLecternReflexRefine(CLecternReflex reflex)`
 

@@ -7,12 +7,13 @@
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="Theme.Paradigm.Box" TargetType="Border">
-        <Setter Property="Padding" Value="0" />
-        <Setter Property="CornerRadius" Value="0" />
-        <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="BorderBrush" Value="{x:Null}" />
-        <Setter Property="Background" Value="{x:Null}" />
+        <Setter Property="Padding" Value="16,14" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="{StaticResource Theme.Line}" />
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
     </Style>
 
     <Style x:Key="Theme.Paradigm.Part" TargetType="TextBlock">
@@ -35,8 +36,8 @@
     <Style x:Key="Theme.Paradigm.Group" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="{StaticResource Theme.Font}" />
         <Setter Property="FontSize" Value="14" />
-        <Setter Property="FontStyle" Value="Italic" />
-        <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
         <Setter Property="Margin" Value="0,5,24,5" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
@@ -78,6 +79,15 @@
         <Setter Property="IsHitTestVisible" Value="False" />
     </Style>
 
+    <Style x:Key="Theme.Paradigm.Switch" TargetType="Border">
+        <Setter Property="Padding" Value="2" />
+        <Setter Property="CornerRadius" Value="9" />
+        <Setter Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="Margin" Value="0,0,0,10" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+    </Style>
+
     <Style x:Key="Theme.Paradigm.Fold" TargetType="RadioButton">
         <Setter Property="FontFamily" Value="{StaticResource Theme.Font}" />
         <Setter Property="FontSize" Value="12" />
@@ -89,7 +99,14 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="RadioButton">
-                    <Border Background="Transparent" Padding="6,2">
+                    <Border
+                        x:Name="PSurface"
+                        Padding="12,3"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        BorderThickness="1"
+                        CornerRadius="7"
+                        SnapsToDevicePixels="True">
                         <ContentPresenter VerticalAlignment="Center" RecognizesAccessKey="False" />
                     </Border>
                 </ControlTemplate>
@@ -98,7 +115,7 @@
     </Style>
 
     <Style x:Key="Theme.Paradigm.Marked" TargetType="Run">
-        <Setter Property="Foreground" Value="{StaticResource Theme.Situation}" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Warning}" />
     </Style>
 
     <Style x:Key="Theme.Paradigm.Cut" TargetType="Run">

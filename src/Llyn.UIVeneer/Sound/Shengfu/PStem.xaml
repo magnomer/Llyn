@@ -27,13 +27,11 @@
                 </Border>
             </Grid>
             <TextBlock x:Name="PStemEmpty" Style="{StaticResource Theme.Stem.Empty}" Text="{DynamicResource Xiesheng.StemEmpty}" />
-            <ItemsControl x:Name="PStemList" Margin="0,25,0,24" ItemTemplate="{StaticResource Theme.Stem.Glyph}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel Orientation="Horizontal" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
+            <ItemsControl
+                x:Name="PStemList"
+                Margin="0,25,0,24"
+                Grid.IsSharedSizeScope="True"
+                ItemTemplate="{StaticResource Theme.Stem.Member}" />
         </StackPanel>
     </ScrollViewer>
 </UserControl>

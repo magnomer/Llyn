@@ -1,5 +1,5 @@
 # TParadigmView.cs
-Hash: `41c5cdc7793e633c`
+Hash: `cb1f64126c88d8e1`
 
 ## `public sealed class TParadigmView`
 
@@ -13,8 +13,9 @@ Marks, group and label keys, and header keys arrive unchanged.
 
 ## `public void SoundingParadigmRead_LostCell_AnswersHeldTip()`
 
-The editor reads a lost cell as held, never as lost.
-The cell retains the ellipsis placeholder and uses the `Paradigm.Held` tooltip key.
+The editor asks for the view with `held` on, so a lost cell reads as held, never as lost.
+The fake engine answers the ready held cell only when asked with `held` on, so the fact pins that flag.
+The cell keeps the ellipsis and the `Paradigm.Held` tooltip key the engine answered.
 
 ## `public void DisplayParadigmRead_ViewFails_AnswersNullViewAndNotice()`
 

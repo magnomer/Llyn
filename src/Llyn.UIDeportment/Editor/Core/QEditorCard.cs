@@ -133,12 +133,17 @@ internal sealed class QEditorCard
 
     internal void QEditorMeaningRefine(CEntryDraft draft)
     {
-        _qCard.QCardRefine(_qEditorCardMeaning, "Meaning", draft.CEntryDraftMeanings);
+        _qCard.QCardRefine(
+            _qEditorCardMeaning, "Meaning", draft.CEntryDraftMeanings, static card => card.PCardDefinition);
     }
 
     internal void QEditorCollocationRefine(CEntryDraft draft)
     {
-        _qCard.QCardRefine(_qEditorCardCollocation, "Collocation", draft.CEntryDraftCollocations);
+        _qCard.QCardRefine(
+            _qEditorCardCollocation,
+            "Collocation",
+            draft.CEntryDraftCollocations,
+            static card => card.PCardExpression);
     }
 
     private void QEditorTextObserve(object sender, TextChangedEventArgs e)

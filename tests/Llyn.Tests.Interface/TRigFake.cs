@@ -30,6 +30,7 @@ internal static class TRigFake
                 TRigStubCreate<LWorkspaceVault>(),
                 TRigStubCreate<LTombstoneVault>(),
                 TRigStubCreate<LFavoriteVault>(),
+                TRigStubCreate<LFoldVault>(),
                 TRigStubCreate<LNoteVault>()),
             new TRigFakeSettings(),
             new TRigFakeAudit(),

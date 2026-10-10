@@ -115,6 +115,12 @@ internal sealed class QCard
             eraser.Click += QCardRemoveObserve;
         }
 
+        if (QLook.QLookPartFind<ToggleButton>(container, "PCardHinge") is ToggleButton hinge)
+        {
+            hinge.Click -= QCardHingeObserve;
+            hinge.Click += QCardHingeObserve;
+        }
+
         if (QLook.QLookPartFind<Button>(container, "PCardImageChooser") is Button image)
         {
             image.Click -= _qCardImage.QImageAddObserve;
@@ -172,6 +178,14 @@ internal sealed class QCard
 
             QStateConverter.QStateHintRefine(title, QField.QFieldHintProperty, card.PTitle);
         }
+
+        if (QLook.QLookPartFind<TextBlock>(container, "PCardPeek") is TextBlock peek)
+        {
+            peek.Text = card.PCardPeek;
+            peek.Visibility = QLook.QLookVisibleRead(card.PCardFolded && card.PTitle.CStateWordingMuted);
+        }
+
+        QCardFold.QCardFoldRefine(container, card.PCardFolded, card.PCardStored);
 
         if (QLook.QLookPartFind<TextBox>(container, "PCardExpression") is TextBox expression)
         {
@@ -270,7 +284,11 @@ internal sealed class QCard
         }
     }
 
-    internal void QCardRefine(ObservableCollection<PCard> cards, string prefix, IReadOnlyList<CCardDraft> drafts)
+    internal void QCardRefine(
+        ObservableCollection<PCard> cards,
+        string prefix,
+        IReadOnlyList<CCardDraft> drafts,
+        Func<PCard, CStateWording> peek)
     {
         List<PCard> free = [.. cards];
         List<PCard> shown = new(drafts.Count);
@@ -289,10 +307,8 @@ internal sealed class QCard
                     _qCardSentence.QSentenceParticle,
                     _qCardSentence.QSentenceDependence,
                     _qCardLanguage,
-                    draft)
-                {
-                    PCardId = draft.CCardDraftId,
-                };
+                    peek,
+                    draft);
                 card.PCardSentence.PCardSentenceNotice += _qCardSentence.QSentenceGlossObserve;
             }
 
@@ -338,6 +354,16 @@ internal sealed class QCard
         card.PCardImageShow(draft.CCardDraftImage);
         card.PCardVideoShow(draft.CCardDraftVideo);
         card.PCardPosition = draft.CCardDraftPosition;
+        card.PCardFoldShow(draft.CCardDraftFolded);
+    }
+
+    private void QCardHingeObserve(object sender, RoutedEventArgs e)
+    {
+        if (sender is ToggleButton { DataContext: PCard card } hinge)
+        {
+            QLook.QLookCheckedRefine(
+                hinge, _cCardList.CCardFoldToggle(card.PCardId, QLook.QLookCheckedRead(hinge.IsChecked)));
+        }
     }
 
     private void QCardTitleObserve(object sender, TextChangedEventArgs e)

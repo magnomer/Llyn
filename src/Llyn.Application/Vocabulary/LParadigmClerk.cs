@@ -108,7 +108,7 @@ public sealed class LParadigmClerk
         return entry is null ? string.Empty : LParadigm.LParadigmLanguageRead(LParadigmClerkRead(entry));
     }
 
-    public LParadigmView? LParadigmClerkBuild(long entryId, bool pending, bool enabled, bool custom)
+    public LParadigmView? LParadigmClerkBuild(long entryId, bool pending, bool enabled, bool held, bool custom)
     {
         LEntry? entry = entryId <= 0 ? null : _lParadigmClerkEntries.LEntryRead(entryId);
         LLanguage? language = entry is null ? null : LParadigmClerkFind(entry);
@@ -122,6 +122,7 @@ public sealed class LParadigmClerk
             LParadigmClerkRead(entry),
             pending,
             enabled,
+            held,
             custom,
             language.LLanguageInflection,
             entry.LEntryHeadword);
@@ -313,11 +314,11 @@ public sealed class LParadigmClerk
         return morphologies.LMorphologyCodeFind(language, feature.LFeatureSpeechId, feature.LFeatureCode, code);
     }
 
-    public static LParadigmStatus LParadigmClerkCheck(LParadigmRow row, bool pending, bool enabled)
+    public static LParadigmShown LParadigmClerkCheck(LParadigmRow row, bool pending, bool enabled, bool held)
     {
         ArgumentNullException.ThrowIfNull(row);
 
-        return row.LParadigmRowFirst.LParadigmSlotCheck(pending, enabled);
+        return row.LParadigmRowFirst.LParadigmSlotShow(pending, enabled, held);
     }
 
     public static bool LParadigmClerkMatch(LParadigm paradigm, string headword, string form)

@@ -16,7 +16,17 @@ public static class CRespelling
 
         IReadOnlyList<string> languages = reflexes.Select(static reflex => reflex.CReflexDraftLanguage).ToList();
         IReadOnlyList<LReflexGuise> guises = port.LEngineGuiseRead(language, languages);
-        IReadOnlyList<bool> leads = CReflex.LReflexLeadRead(languages);
+        return LRespellingReflexScan(reflexes, guises);
+    }
+
+    internal static IReadOnlyList<CReflex> LRespellingReflexScan(
+        IReadOnlyList<CReflexDraft> reflexes, IReadOnlyList<LReflexGuise> guises)
+    {
+        ArgumentNullException.ThrowIfNull(reflexes);
+        ArgumentNullException.ThrowIfNull(guises);
+
+        IReadOnlyList<bool> leads =
+            CReflex.LReflexLeadRead(reflexes.Select(static reflex => reflex.CReflexDraftLanguage).ToList());
         return reflexes.Select((reflex, index) => LRespellingReflexRead(reflex, guises[index], leads[index])).ToList();
     }
 

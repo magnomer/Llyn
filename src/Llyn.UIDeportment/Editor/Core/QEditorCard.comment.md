@@ -1,62 +1,50 @@
 # QEditorCard.cs
-Hash: `e327065159a87ec0`
+Hash: `cd2dfa32d33dc7f6`
 
 ## `internal sealed class QEditorCard`
 
-The editor's card half: the meaning and collocation cards, their fields, and the etymology field.
-The Situation, Register and Tag fields answer to `QContext`, `QRegister` and `QLabel`, the Tag dropdown to `QSlate`.
-The Situation, Register and citation dropdown lives in `QProffer`, the Translation and mention dropdown in `QProspect`.
-The Translation field answers to `QLink`, the language toggle to `QSpeaker` and a sentence's Gloss rows to `QGloss`.
-`QSentence` holds a sentence row's gestures, mentions and frame.
-`QCitation` holds its Source field and the shared Source list.
-The card's header, badge, eraser and rendering live in `QCard`, and its header drag in `QCardDrag`.
-The two lists answer to `QMeaning` and `QCollocation`, and the picture and film rows to `QImage` and `QVideo`.
-It keeps the two card lists, which the card drivers render and the field drivers walk.
-It keeps the one list of loaded languages, which the language menu fills and every card's Gloss picker shows.
+The card half composes field, sentence, media, list and etymology drivers over shared presentation collections.
+Both card lists share one renderer, while each field keeps its own Conduct gate.
+Gloss language choices use one shared collection.
 
 ## `internal QEditorCard(FrameworkElement surface)`
 
-Builds the card drivers over the editor scope in the order the editor once built them.
-The routed text handler for Gloss and picture fields is added after the language toggle.
-The sentence row's template filler `QExample` is built here and handed to the card driver, its only reader.
+Drivers share one editor surface and retained collections, keeping dynamic card fields within the same scope.
+The card driver receives one example filler assembled from sentence, Gloss and citation drivers.
 
 ## `internal QSentence QEditorCardSentence { get; }`
 
-The sentence driver, handed out so the editor subscribes its frame and mention redraws itself.
-The frame must draw before the cards and the mention chips after them, so the editor orders them.
+The sentence driver is exposed so the editor can order frame and mention redraws around card rendering.
 
 ## `internal QProspect QEditorCardProspect { get; }`
 
-The Translation and mention dropdown, handed out so the corpus can open it over its transcript.
+The prospect driver is exposed for translation and mention offers beyond the card fields.
 
 ## `internal void QEditorCardIntroduce(CAtelier atelier, CEnvoy envoy, QMentionMenu mentionMenu, CEntry entry, CCard card, CSentence sentence, CCardList list, CCardField field, CImage image, CVideo video)`
 
-Takes only the editor facets its drivers use, never the whole editor.
-Hands each card driver its facets, in the order the editor once introduced them.
-The editor reads the list facet once, so the card, drag and list drivers share one.
-They are handed it last.
-The language toggle also takes the envoy, which its catalog load reports a failure through.
-The sentence driver takes the atelier's mention area and the window's mention menu.
+Drivers receive their required facets rather than the whole editor.
+Drag, badge and list drivers share the supplied list facet.
+Sentence navigation shares the atelier's mention area and supplied mention menu.
 
 ## `internal void QEditorStartRefine()`
 
-A tenure started, so the card lists start empty.
+A new tenure clears both card lists, preventing presentation items from the former draft from being retained.
 
 ## `internal void QEditorMeaningRefine(CEntryDraft draft)`
 
-The meaning cards, each reading its own links as it is shown.
-`QEditorCollocationRefine` does the same for the collocation cards.
-Both hand their list to `QCard`, which pairs each control with its card by id.
+Ready meaning cards need no per-card link lookup.
+Their folded peek derives from definition wording.
 
 ## `private void QEditorTextObserve(object sender, TextChangedEventArgs e)`
 
-The routed handler for the Gloss and picture fields inside cards that come and go with them.
-The spine's own boxes report through their own handlers.
-Card, sentence and film fields are hooked by their own drivers, so no box name is read here.
-Each chip field's driver adds its own routed handler on the surface, so its caret types stay with it.
+The routed text handler accepts only Gloss and image row contexts.
+Other fields remain with their own drivers.
 
 ## `private void QEditorFieldObserve(TextBox box)`
 
-A Gloss or picture field changed, so its raw text goes to its driver.
-The row's type alone picks the driver, which pairs the row to its record.
-Only a field with the keyboard in it reports, since a write from the draft echoes through the same event.
+Keyboard focus is required before raw field text reaches a driver.
+The row's type selects Gloss or image handling without reading a field name.
+
+## `internal void QEditorCollocationRefine(CEntryDraft draft)`
+
+Collocations share the renderer but derive their folded peek from expression wording.

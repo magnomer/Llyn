@@ -16,5 +16,7 @@ public interface LStemPort
 
     long LEngineStemResolve(long? id, string character);
 
+    void LEngineStemSpread(long? id, string character, bool opened);
+
     IReadOnlyList<LVistaRow> LEngineKindredFind(LVista grove, LVista vista);
 }

@@ -1,5 +1,5 @@
 # LLiveryFacade.cs
-Hash: `cdf3779ad6ae7205`
+Hash: `2cc9970e50130e42`
 
 ## `internal sealed class LLiveryFacade`
 
@@ -11,7 +11,6 @@ Hash: `cdf3779ad6ae7205`
 Stores the hearth and the sibling facades it calls, all built by `LEngine` before this one.
 The gate, the staff and the shared state are read through the hearth.
 It takes its siblings rather than the engine, so it names only the facades it uses.
-Reads `LEngineHearth.LEngineStaffHeld` on each call, so a call after a workspace switch reads the new workspace.
 
 ## `private LEngineStaff LLiveryFacadeStaff`
 
@@ -26,6 +25,13 @@ It hands every answer to `LLiveryClerk.LLiveryClerkBuild` and returns the page t
 It calls no read that starts a fetch.
 The frequency rows come from `LFrequencyClerkRead` with fetch off.
 The guise list follows the draft's reflexes in draft order.
+The inflection table comes from `LVocabularyFacade.LEngineInflectionRead`, the path the display reads.
+It asks with `held` off, since a note never holds a fill.
+Its `enabled` is `LEngineMorphologyCheck`, the setting the display reads.
+Its `pending` is false, since the lacuna mark lives only in memory and a note keeps stored data.
+An in-flight fill would freeze as pending in Joplin, since nothing reads the note back.
+The folded card ids come from `LFoldClerkRead`, the path `LEngineFoldRead` reads.
+They are read inside the same lock as the rest.
 The accent sheet is read once and passed both to the page and to `LVarietyFlagScan`.
 It hands `LLanguageFlagFind` itself to the builder, which asks it once per named language.
 The flags come from `LLanguageFlagFind` and `LVarietyFlagScan`, which read stored files only.
@@ -33,7 +39,6 @@ The flags come from `LLanguageFlagFind` and `LVarietyFlagScan`, which read store
 ## `public LLiveryLanguage LEngineLiveryRead(string language, Func<string, string?> localize)`
 
 Holds `LEngineGate` for the whole read, so every list comes from one moment.
-The pronunciation rows come from `LPronunciationClerkFind` with an empty query in name order.
 It hands the stem clerk only while `LShengfuRuleRead` answers a rule for the language.
 It hands the diwei clerk only while `LEngineBookCheck` finds a fanqie book for the language.
 The respelling check and `LSettingsTally` are read as `LFanqieFacade.LEngineDiweiResolve` reads them.

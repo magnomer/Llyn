@@ -154,23 +154,6 @@ public sealed class TDisplaySound
         Assert.Equal("a", Assert.Single(reloaded.CLecternReflexRows).CReflexText);
     }
 
-    [Fact]
-    public void DisplayReflexToggle_Opened_SetsTheSharedFoldAndRaisesTheChange()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        CDisplay display = new TEditorFixture(TInterfaceEditor.TEditorCreate(engine)).TEditorFixtureDisplay;
-        CDisplaySound area = display.CDisplaySound;
-        int changed = 0;
-        area.CDisplayFoldChanged += () => changed++;
-
-        area.CDisplayReflexToggle(true);
-
-        Assert.True(area.CDisplayFoldOpened);
-        Assert.True(display.LDisplayRule.LDisplaySound.LDisplayFoldOpened);
-        Assert.Equal(1, changed);
-    }
-
     internal static CWing TDisplayWingPrepare(CAtelier atelier, List<string> asked)
     {
         CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, asked), true);

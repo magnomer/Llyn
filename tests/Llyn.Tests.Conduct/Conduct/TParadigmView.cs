@@ -51,7 +51,7 @@ public sealed class TParadigmView
             [TInterfaceInflection.TParadigmLineCreate(
                 string.Empty,
                 string.Empty,
-                [TInterfaceInflection.TParadigmFormCreate(string.Empty, [], LParadigmStatus.LParadigmStatusLost)])]);
+                [TInterfaceInflection.TParadigmFormCreate("…", [], "Paradigm.Held")])]);
         LParadigmView view = new(table, table);
         TEditorFixture editor = new(TInterfaceEditor.TEditorCreate(engine));
         editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
@@ -64,7 +64,7 @@ public sealed class TParadigmView
                 ["LEngineParadigmScan"] = _ => (IReadOnlyList<LParadigmRow>)[],
                 ["LEngineLanguageResolve"] = _ => "Latin",
                 ["LEngineInflectionCheck"] = _ => false,
-                ["LEngineInflectionRead"] = _ => view,
+                ["LEngineInflectionRead"] = args => (bool)args![3]! ? view : null,
             }),
             TEnvoyFake.TEnvoyCreate(false, []));
 
@@ -97,7 +97,7 @@ public sealed class TParadigmView
         new(
             text,
             length == 0 ? [] : [TInterfaceInflection.TInflectionMarkCreate(offset, length)],
-            LParadigmStatus.LParadigmStatusText);
+            null);
 
     private static Dictionary<string, Func<object?[]?, object?>> TParadigmAnswersCreate(
         LEngine engine, Func<object?[]?, object?> read) =>

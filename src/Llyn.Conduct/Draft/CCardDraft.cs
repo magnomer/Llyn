@@ -14,4 +14,6 @@ public sealed record CCardDraft(
     IReadOnlyList<CTranslationTarget> CCardDraftTranslation,
     IReadOnlyList<CTagDraft> CCardDraftTag,
     IReadOnlyList<CImageDraft> CCardDraftImage,
-    IReadOnlyList<CVideoDraft> CCardDraftVideo);
+    IReadOnlyList<CVideoDraft> CCardDraftVideo,
+    bool CCardDraftFolded,
+    bool CCardDraftStored);

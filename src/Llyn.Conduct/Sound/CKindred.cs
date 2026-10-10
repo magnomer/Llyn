@@ -50,11 +50,11 @@ public sealed class CKindred
 
     public CTimbreReflex CKindredRead()
     {
-        bool opened = _cKindredDisplay.LDisplaySound.LDisplayFoldOpened;
+        bool opened = _cKindredDisplay.LDisplaySound.LDisplaySpreadCheck(LKindredEntry);
         if (_cKindredDesk.CDeskDraft.CDeskDraftTenure is not LTenure held || held.LTenureRead() is not { } draft)
         {
             return new CTimbreReflex(
-                false, [], new CLecternAnchor(false, new Dictionary<long, string>()), opened, false);
+                false, [], new CLecternAnchor(false, new Dictionary<long, string>()), opened, false, false);
         }
 
         LEntryDraft content = draft.LDraftContent;
@@ -71,7 +71,8 @@ public sealed class CKindred
                 content.LEntryDraftHeadword,
                 rows),
             opened,
-            CKindredPending);
+            CKindredPending,
+            CReflex.LReflexFoldCheck(rows));
     }
 
     private void LKindredStart(LDraft _)
@@ -100,6 +101,25 @@ public sealed class CKindred
     public void CKindredToggle(long reflex)
     {
         LKindredQuill?.LQuillReflexToggle(reflex);
+    }
+
+    public bool CKindredSpread(bool opened)
+    {
+        if (LKindredEntry is not long id)
+        {
+            return false;
+        }
+
+        try
+        {
+            _cKindredReflexPort.LEngineReflexSpread(id, opened);
+            return true;
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(_cKindredEnvoy, _cKindredSettingsPort, "Reflex.SpreadFailed", exception);
+            return false;
+        }
     }
 
     public CReflexTyped CKindredSet(long reflex, CReflexField field, string text)

@@ -42,7 +42,7 @@ internal sealed record LLanguageStaff(
         LLacunaClerk lacuna = new(rig, cache, paradigm, claim.LClaimStaffClaim, gate, settings, raise);
         LFanqieClerk fanqie = new(rig, cache, gate, raise);
         LShengfuClerk shengfu = new(rig, cache, gate, raise);
-        LStemClerk stem = new(rig);
+        LStemClerk stem = new(rig, reflex);
         LDiweiClerk diwei = new(rig, cache);
         LScriptClerk script = new(rig, cache, gate, raise);
         LEnsign ensign = new(rig.LRigUsher);

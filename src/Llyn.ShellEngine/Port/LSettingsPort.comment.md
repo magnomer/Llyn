@@ -1,5 +1,5 @@
 # LSettingsPort.cs
-Hash: `3508013f184ea829`
+Hash: `ad3cdf4009495acb`
 
 ## `public interface LSettingsPort`
 
@@ -8,7 +8,7 @@ It reads and saves the settings, the workspace path, the workspace state and the
 It also words a failure into a notice, and loads fonts and flags.
 The interface texts are read through it, so a deportment names no localization.
 Nothing here changes an entry or a draft.
-`LSettingsOutlet` implements it today, and a settings clerk takes it over when the parts are dismantled.
+`LSettingsOutlet` implements it by forwarding to the owning engine facades.
 
 ## `LSettings LEngineSettingsRead();`
 
@@ -104,22 +104,6 @@ The inflection box of the reading view and the editor repaints after a change.
 
 Persists whether readings show and edit in their respelled form.
 Every reading is stored in both forms, so a flip only changes which one each surface shows.
-
-## `void LEngineFanqieSave(bool opened);`
-
-Persists whether the editor's rime-book box stands open, so it survives a restart.
-The current state is read back from `LEngineSettingsRead`.
-A real change raises `LEngineFoldChanged`.
-
-## `void LEngineScriptSave(bool opened);`
-
-Persists whether the editor's script box stands open, read back the same way.
-A real change raises `LEngineFoldChanged`.
-
-## `event Action? LEngineFoldChanged;`
-
-A saved fold state changed, heard by every editor over the same engine.
-It reaches only the fold switches, so no panel refills for a box opened elsewhere.
 
 ## `(string LEngineFailureNotice, string? LEngineFailureLabel, string? LEngineFailurePath) LEngineFailureRead(Exception exception, string unexpected, string recorded);`
 

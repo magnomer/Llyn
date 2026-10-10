@@ -1,10 +1,14 @@
 # TInterfaceFact.cs
-Hash: `3c75feaf9de90795`
+Hash: `e81f3ff63107b914`
 
 ## `internal static partial class TInterface`
 
 The relays for the facts the engine records answer with, plus the localization, theme, usher and flag cache relays.
 Each relay hands one production operation through unchanged.
+
+## `internal static LParadigmStatus TParadigmSlotCheck(LParadigmRow row, bool pending, bool enabled)`
+
+Relays the status rule of the row's first slot, so a test pins each status without the wording.
 
 ## `static TInterface()`
 

@@ -18,48 +18,32 @@ public sealed record LFanqieGroup(
         ArgumentNullException.ThrowIfNull(groups);
         ArgumentNullException.ThrowIfNull(headword);
 
-        List<string> readings = [];
-        foreach (string character in LGlyph.LGlyphScan(headword))
-        {
-            if (LFanqieMarkedFind(groups, character) is { Length: > 0 } reading)
-            {
-                readings.Add(reading);
-            }
-        }
+        List<LFanqieRow> rows = [.. groups.SelectMany(static group => group.LFanqieGroupRows)];
+        return LFanqieReadingFormat(
+            LGlyph.LGlyphScan(headword).Select(character => LFanqieMarkedScan(rows, character)).ToList());
+    }
 
+    public static string LFanqieReadingFormat(IReadOnlyList<IReadOnlyList<string>> characters)
+    {
+        ArgumentNullException.ThrowIfNull(characters);
+
+        List<string> readings = [.. characters
+            .Where(static marked => marked.Count > 0)
+            .Select(static marked => string.Join(", ", marked))];
         return readings.Count == 0 ? string.Empty : '/' + string.Join(' ', readings) + '/';
     }
 
-    private static string LFanqieMarkedFind(IReadOnlyList<LFanqieGroup> groups, string character)
+    public static IReadOnlyList<string> LFanqieMarkedScan(IReadOnlyList<LFanqieRow> rows, string character)
     {
-        List<LFanqieRow> marked = [];
-        foreach (LFanqieGroup group in groups)
-        {
-            foreach (LFanqieRow row in group.LFanqieGroupRows)
-            {
-                if (row.LFanqieRowMarked
-                    && row.LFanqieRowSpoken
-                    && string.Equals(row.LFanqieRowCharacter, character, StringComparison.Ordinal))
-                {
-                    int place = 0;
-                    while (place < marked.Count
-                           && marked[place].LFanqieRowRepresentative <= row.LFanqieRowRepresentative)
-                    {
-                        place++;
-                    }
+        ArgumentNullException.ThrowIfNull(rows);
 
-                    marked.Insert(place, row);
-                }
-            }
-        }
-
-        List<string> readings = new(marked.Count);
-        foreach (LFanqieRow row in marked)
-        {
-            readings.Add(row.LFanqieRowReading);
-        }
-
-        return string.Join(", ", readings);
+        return rows
+            .Where(row => row.LFanqieRowMarked
+                && row.LFanqieRowSpoken
+                && string.Equals(row.LFanqieRowCharacter, character, StringComparison.Ordinal))
+            .OrderBy(static row => row.LFanqieRowRepresentative)
+            .Select(static row => row.LFanqieRowReading)
+            .ToList();
     }
 
     public static IReadOnlyList<LFanqieGroup> LFanqieGroupScan(

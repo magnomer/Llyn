@@ -1,5 +1,5 @@
 # QLibrary.cs
-Hash: `a89c6b41f99c31ee`
+Hash: `96e599628a33dafe`
 
 ## `internal sealed class QLibrary`
 
@@ -17,7 +17,8 @@ The rail's print and export buttons sit inside the page, so their commands reach
 It hands the rail `PLibraryRail` to a `QPanelRail`, with the bin, the new-record button and the export button.
 It hands `PLibraryOrder` to a `QChoiceOrder`, whose menu hangs under the whole `POrder` bar.
 It hands `PLibraryFilter` to a `QChoiceFilter`.
-The import button stands beside the rail as its own group, so its icon and click stay here.
+The import button is the rail's collapsed `PPanelRailMarkup`, found inside `PLibraryRail`.
+Only this panel imports, so it shows the button and sets its icon and click here.
 It subscribes the search field and the rail's notices.
 
 ## `private Border QOrder`

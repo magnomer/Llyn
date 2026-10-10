@@ -1,5 +1,5 @@
 # LParadigmClerk.cs
-Hash: `45d3391aab1a6af4`
+Hash: `c5d0b5bf0537b70b`
 
 ## `public sealed class LParadigmClerk`
 
@@ -43,7 +43,7 @@ The language the entry's slots are written in, or empty when it has none.
 It reads every slot, not only the shown ones.
 So an entry whose forms are all regular still names its language for the view's font.
 
-## `public LParadigmView? LParadigmClerkBuild(long entryId, bool pending, bool enabled, bool custom)`
+## `public LParadigmView? LParadigmClerkBuild(long entryId, bool pending, bool enabled, bool held, bool custom)`
 
 Builds the entry's inflection view from its slots and the layout of the pack's rule book.
 It answers null for a missing entry, a blank language, or a pack without a layout.
@@ -51,6 +51,7 @@ It also answers null when no slot lies on the layout's part.
 Custom cells carry the stored marks, widened to the root or ending when the cell is divided.
 It hands the view the language's rule book and the headword, so custom cells can split root from ending.
 `pending` and `enabled` feed each cell's status, as they do for the list.
+`held` passes on unread to the view, which picks each lost cell's tip by it.
 `custom` picks the custom sheets with their marks, or the default sheets without marks.
 
 ## `private LLanguage? LParadigmClerkFind(LEntry entry)`
@@ -105,11 +106,11 @@ The pack says which feature and which part the code belongs to.
 The archive is asked for exactly that row.
 A code the pack does not declare answers `null`.
 
-## `public static LParadigmStatus LParadigmClerkCheck(LParadigmRow row, bool pending, bool enabled)`
+## `public static LParadigmShown LParadigmClerkCheck(LParadigmRow row, bool pending, bool enabled, bool held)`
 
-Answers what stands in the row for its form.
-It asks `LParadigmSlot.LParadigmSlotCheck` of the row's first slot.
-So the list and the inflection view share one status rule.
+Answers the text and tip key that stand in the row for its form.
+It asks `LParadigmSlot.LParadigmSlotShow` of the row's first slot.
+So the list and the inflection view share one status rule and one wording.
 
 ## `public static bool LParadigmClerkMatch(LParadigm paradigm, string headword, string form)`
 

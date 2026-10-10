@@ -1,10 +1,11 @@
 # LReflexFacade.cs
-Hash: `c266d34f49d40dcd`
+Hash: `554705cb31ff39c1`
 
 ## `public sealed class LReflexFacade : LReflexPort`
 
 The engine's facade for reflex, wrapping the clerk's anchors and rules, the fetch the clerk holds, row guises and tones.
 It implements the reflex port itself, so Host hands it to Conduct with no outlet between.
+It also keeps each entry's "More readings" state and editor box state, through the fold clerk.
 
 ## `internal LReflexFacade(LEngineHearth hearth, LFanqieFacade fanqie, LSettingsFacade settings)`
 
@@ -63,6 +64,16 @@ Clears and fetches the reflexes of an entry again.
 
 Whether a reflex fetch is pending for the entry.
 
+## `public bool LEngineSpreadCheck(long entryId)`
+
+Whether the entry's "More readings" rows are opened, read through the fold clerk under the gate.
+
+## `public void LEngineReflexSpread(long entryId, bool opened)`
+
+Writes the opened state through the fold clerk under the gate.
+The fold bulletin is raised after the gate is released, as the card fold writes do.
+It is raised even for a refused id, since the clerk alone owns that rule.
+
 ## `public IReadOnlyList<LDescent> LEngineDescentRead(string language)`
 
 The tone classes the pack of a language declares, or none for a blank language.
@@ -73,3 +84,13 @@ The pack is loaded through the language clerk, taken under the gate and called o
 The entry's rime-book rows as the clerk's flat list, after starting the fetch of missing characters.
 The flat list runs character by character, each character's rows in the declared book order.
 Flattening the book groups would put book before character instead.
+
+## `public bool LEngineBoxCheck(long entryId, LFoldBox box)`
+
+Whether that editor box of the entry is opened, read through the fold clerk under the gate.
+
+## `public void LEngineBoxSpread(long entryId, LFoldBox box, bool opened)`
+
+Writes the opened state of the box through the fold clerk under the gate.
+The fold bulletin is raised after the gate is released, as the reflex fold write does.
+It is raised even for a refused id, since the clerk alone owns that rule.

@@ -1,5 +1,5 @@
 # PLibrary.xaml
-Hash: `83b94e908469cc1d`
+Hash: `fa075bb95d2d52e5`
 
 ## `<Rectangle ... Style="{StaticResource Theme.Panel.SeamRow}" />`
 
@@ -21,13 +21,12 @@ The ordering picker is the shared `PChoiceOrder`, placed here as `PLibraryOrder`
 The language filter is the shared `PChoiceFilter`, placed here as `PLibraryFilter`.
 Their own drivers set their icons and popups, and the panel wires the search field.
 
-## `<local:QRail Grid.Row="0" Grid.Column="1" Margin="0,0,0,18">`
+## `<veneer:PPanelRail x:Name="PLibraryRail" ...>`
 
 The entry actions over the reader, and the reader and editor toggle.
-The command row is the shared `PPanelRail`, placed here as `PLibraryRail`.
-The import button `PLibraryMarkup` stands after it as its own group, because no other panel imports.
-The outer rail sets the shared row and the import group side by side.
-It stacks them when the room is too narrow.
+The command row is the shared `PPanelRail`, placed bare like every other panel's.
+No outer rail wraps it, so its mode toggle keeps the right end.
+The import button is the rail's own `PPanelRailMarkup`, shown only here by `QLibrary`.
 
 ## `<ItemsControl x:Name="PIndex">`
 

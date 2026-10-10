@@ -48,6 +48,7 @@ internal static class TAuditDeportmentSetting
                 "CCatalogPronunciation",
                 "CStem",
                 "CStemPage",
+                "CStemMember",
                 "CDiwei",
                 "CDiweiPage",
                 "CDiweiSection",

@@ -94,7 +94,7 @@ The audits and convention tests measure the lag as falling ceilings.
 ## `<Project Path="src/Llyn.UIDeportment.Capsule/Llyn.UIDeportment.Capsule.csproj" />`
 
 - Capsule is Deportment's own storage.
-- It holds the GUI-only state that must outlive a run: window geometry, column widths, linked columns, split.
+- It holds the GUI-only state that must outlive a run: window geometry, column widths and linked columns.
 - It reads and writes that state on disk under the workspace root.
 - It holds no rule about what the state means.
   Deportment clamps, propagates and decides.
@@ -214,7 +214,7 @@ The audits and convention tests measure the lag as falling ceilings.
 
 ## `<Project Path="src/Llyn.Host/Llyn.Host.csproj" />`
 
-- Host is the only project that names every project.
+- Host is the only project that names every project except a driver's Capsule.
 - Host builds the engine and the Conduct root and hands them to a driver.
 - Host holds no behaviour.
 - Each medium's entry point adds only what depends on its medium.
@@ -224,7 +224,7 @@ The audits and convention tests measure the lag as falling ceilings.
 - Platform is a second axis that crosses every layer.
 - A layer splits into a portable half and a Windows twin.
 - The portable half targets `net10.0` only and holds no Windows code.
-- The Windows twin targets `net10.0-windows` and holds only that layer's Windows adaptation.
+- The Windows twin targets a `net10.0-windows` framework and holds only that layer's Windows adaptation.
 - Conduct and Deportment already follow this pattern for the GUI.
 - Demeanor and UITerminal are portable.
   The console needs no Windows twin.
@@ -254,7 +254,7 @@ The audits and convention tests measure the lag as falling ceilings.
 | ShellEngine | none |
 | Infrastructure | none |
 
-- `Llyn.Media` dissolves into Core.Windows.
+- `Llyn.Media` dissolved into Core.Windows.
 - Audio playback gets a port in the layer that owns sound.
   WPF `MediaPlayer` moves to that layer's twin.
 
@@ -262,11 +262,11 @@ The audits and convention tests measure the lag as falling ceilings.
 
 - A portable project targets exactly `net10.0`.
 - A portable project never references a `-windows` project.
-- CA1416 is an error in every portable project.
-- A Windows API in a portable project therefore fails the build.
+- CA1416 is an error in every portable source project.
+- A Windows API in a portable source project therefore fails the build.
 - The surface rules of the UI audit cover UITerminal as they cover the Veneer.
 - The driver rules of the UI audit cover Demeanor as they cover Deportment.
-- Both drivers call Conduct only through gates.
+- Both drivers name only the public Conduct types on their offer list.
 - The structure audit counts every type a UI layer names from below the cut, data included.
 - The Border family's Leaking kind reads each type on Conduct's offer list.
 - It counts every public signature there that names a type below Conduct.
@@ -291,7 +291,7 @@ The audits and convention tests measure the lag as falling ceilings.
 - The Veneer was treated as the actor that asks the engine, holds answers and branches on them.
   Wrong.
   The Veneer only calls.
-- The UI audit allowed 819 Veneer branches as "view state only".
+- The UI audit allowed some Veneer branches as view state.
   Wrong.
   Any branch in the Veneer is a violation, and so is any engine reach.
 - Deportment was treated as the home of every decision behind the screen.
@@ -308,7 +308,7 @@ The audits and convention tests measure the lag as falling ceilings.
   That project would mix every layer's role, so each layer gets its own twin.
 - `Llyn.Media` was treated as a separate media layer.
   Wrong.
-  It is Core's Windows twin.
+  It was Core's Windows twin.
 - UITerminal was treated as one layer that both draws and drives.
   Wrong.
   It only draws, and Demeanor drives it, as Deportment drives the Veneer.
@@ -351,5 +351,5 @@ The projects under `tests` are left out on purpose.
 ## Performance project
 
 `performance/Llyn.Performance` is left out on purpose too.
-It holds the drills, fixed workloads that `scripts/TracePerformance.ps1` builds and runs under the sampling profiler.
+It holds the drills, fixed workloads that no script runs at present.
 It references portable engine projects only, never a UI project.

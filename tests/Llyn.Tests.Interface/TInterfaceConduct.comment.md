@@ -1,5 +1,5 @@
 # TInterfaceConduct.cs
-Hash: `b874782b38994b42`
+Hash: `856394e61858593c`
 
 ## `internal static class TInterfaceConduct`
 
@@ -56,7 +56,8 @@ Only the port declaring `member` faults it, so a fault key names the narrow port
 ## `internal static CPhonologyBundle TPhonologyBundleCreate(Dictionary<string, Func<object?[]?, object?>> answers)`
 
 Every sound port a fake answering from `answers`, so one map answers each port a fact reaches.
-The scale, the cell kind and the paradigm status answer by the engine's own rule unless `answers` names them.
+The scale, the cell kind and a paradigm row's text and tip follow the engine's own rule.
+A fact overrides any of them by naming it in `answers`.
 Those were rules with no engine state, so a fake keeps them true without a test naming them.
 The inflection view answers null unless `answers` names it, so a fact sees the list alone as before.
 
@@ -98,7 +99,6 @@ The card and atlas map relays hand it on, so a fact without an engine still read
 ## `internal static LSettingsPort TSettingsCreate()`
 
 A settings port that answers only failure notices, text keys and fonts.
-It also takes the fold event's subscribe and unsubscribe, since the editor attaches to that event.
 A notice reads as the unexpected key it is handed, and a text key as the key itself.
 A test thus sees which wording a gate chose.
 A font reads as one with nothing set, as for a language whose pack sets none.

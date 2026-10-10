@@ -33,7 +33,7 @@ internal static class LLiverySound
                 continue;
             }
 
-            LReflexGuise? guise = index < page.LLiveryPageGuise.Count ? page.LLiveryPageGuise[index] : null;
+            LReflexGuise? guise = LReflexGuise.LReflexGuiseFind(page.LLiveryPageGuise, index);
             bool hidden = guise?.LReflexGuiseFolded
                 ?? page.LLiveryPageFolded.Contains(reflex.LReflexDraftLanguage, StringComparer.Ordinal);
             (hidden ? folded : shown).Add((reflex, guise));
@@ -96,12 +96,16 @@ internal static class LLiverySound
         LLiveryRowAppend(sheet, lines);
     }
 
-    private static void LLiveryReadingAppend(
+    internal static void LLiveryReadingAppend(
         StringBuilder sheet,
-        List<(LReflexDraft, LReflexGuise?)> readings,
+        IReadOnlyList<(LReflexDraft, LReflexGuise?)> readings,
         IReadOnlyList<LFanqieRow> rows,
         string headword)
     {
+        ArgumentNullException.ThrowIfNull(sheet);
+        ArgumentNullException.ThrowIfNull(readings);
+        ArgumentNullException.ThrowIfNull(rows);
+
         if (readings.Count == 0)
         {
             return;

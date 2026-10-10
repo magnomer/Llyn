@@ -1,9 +1,12 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Llyn.UIDeportment;assembly=Llyn.UIDeportment">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Base/PThemePalette.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Base/PThemeInput.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Sound/PThemeReflex.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="Theme.Stem.Empty" TargetType="TextBlock">
@@ -15,7 +18,7 @@
     </Style>
 
     <Style x:Key="Theme.Stem.Chip" TargetType="Button">
-        <Setter Property="Margin" Value="0,0,16,10" />
+        <Setter Property="Margin" Value="0,0,12,0" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
@@ -36,8 +39,25 @@
         </Setter>
     </Style>
 
-    <DataTemplate x:Key="Theme.Stem.Glyph">
-        <Button Style="{StaticResource Theme.Stem.Chip}" />
+    <Style x:Key="Theme.Stem.Fold" TargetType="ToggleButton" BasedOn="{StaticResource Theme.Reflex.Fold}">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="Margin" Value="0,0,0,2" />
+        <Setter Property="Content" Value="{DynamicResource Xiesheng.ReadingsShow}" />
+    </Style>
+
+    <DataTemplate x:Key="Theme.Stem.Member">
+        <StackPanel Margin="0,0,0,14">
+            <StackPanel Orientation="Horizontal">
+                <Button x:Name="PStemMemberGlyph" Style="{StaticResource Theme.Stem.Chip}" />
+                <TextBlock x:Name="PStemMemberReading" VerticalAlignment="Center" Style="{StaticResource Theme.Text.Reading}" />
+            </StackPanel>
+            <StackPanel Margin="12,4,0,0" HorizontalAlignment="Left">
+                <ToggleButton x:Name="PStemMemberHinge" Style="{StaticResource Theme.Stem.Fold}" Visibility="Collapsed" />
+                <local:QReflexFrame TextElement.FontFamily="{StaticResource Theme.Font}">
+                    <ItemsControl x:Name="PStemMemberReflex" ItemTemplate="{StaticResource Theme.Reflex.Display}" />
+                </local:QReflexFrame>
+            </StackPanel>
+        </StackPanel>
     </DataTemplate>
 
 </ResourceDictionary>

@@ -7,4 +7,5 @@ public sealed record CTimbreReflex(
     IReadOnlyList<CReflex> CTimbreReflexRows,
     CLecternAnchor CTimbreReflexAnchor,
     bool CTimbreReflexOpened,
-    bool CTimbreReflexPending);
+    bool CTimbreReflexPending,
+    bool CTimbreReflexFoldable);

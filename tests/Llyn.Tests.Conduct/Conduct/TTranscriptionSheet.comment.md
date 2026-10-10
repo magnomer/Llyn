@@ -1,9 +1,10 @@
 # TTranscriptionSheet.cs
-Hash: `4ad411b003b72096`
+Hash: `7260acae7db115f2`
 
 ## `public sealed class TTranscriptionSheet`
 
-Covers the editor's transcription block and its row gates end to end on a real workspace.
+Covers the editor's transcription block and its row gates end to end.
+Every test runs on a real workspace except the empty desk, which stands on stub ports.
 
 The read marks each row's dropdown by the one-scheme rule and answers whether a row can be added.
 A language without schemes hides the block but keeps its rows, and an empty desk answers nothing.

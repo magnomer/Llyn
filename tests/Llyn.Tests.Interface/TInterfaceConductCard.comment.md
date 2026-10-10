@@ -1,5 +1,5 @@
 # TInterfaceConductCard.cs
-Hash: `75f7cb9336fb9156`
+Hash: `8e32259e6250bd76`
 
 ## `internal static class TInterfaceConductCard`
 
@@ -14,7 +14,8 @@ Builds the card gates over `desk` and real outlets on `engine`, as the editor do
 
 ## `internal static CCardList TCardListCreate(CDesk desk)`
 
-Builds the card list gates over `desk`, as the editor does on every use.
+Builds the card list gates over `desk`, as the editor does once.
+Its stub card port supplies no real fold persistence.
 
 ## `internal static CSentence TSentenceCreate(LEngine engine, CDesk desk)`
 
@@ -38,3 +39,4 @@ Relays the internal video map, so a fact can hand it a row nobody located.
 ## `internal static CEntryDraft TCardEntryRead(LEntryDraft draft, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets)`
 
 Relays the entry draft map, so the facts pass engine drafts through the boundary.
+It hands no folded ids, so every card maps unfolded.

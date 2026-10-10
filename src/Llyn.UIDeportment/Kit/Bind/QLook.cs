@@ -23,6 +23,8 @@ internal static class QLook
         DependencyProperty QLookSetterProperty,
         QLookValue QLookSetterValue);
 
+    private sealed record QLookClaim(FrameworkElement QLookClaimOwner, QLookSetter QLookClaimSetter);
+
     internal static readonly DependencyProperty QLookCueProperty = DependencyProperty.RegisterAttached(
         "QLookCue",
         typeof(QLookCue),
@@ -45,10 +47,16 @@ internal static class QLook
 
     private static readonly Dictionary<Style, string> QLookStyle = [];
 
-    private static readonly ConditionalWeakTable<FrameworkElement, Dictionary<DependencyProperty, object>> QLookHeld =
-        [];
+    private static readonly ConditionalWeakTable<FrameworkElement, Dictionary<DependencyProperty, object>>
+        QLookHeld = [];
+
+    private static readonly ConditionalWeakTable<FrameworkElement, Dictionary<DependencyProperty, List<QLookClaim>>>
+        QLookClaimed = [];
 
     private static readonly ConditionalWeakTable<FrameworkElement, List<DependencyPropertyDescriptor>> QLookTrack = [];
+
+    private static readonly ConditionalWeakTable<FrameworkElement, DependencyPropertyChangedEventHandler>
+        QLookWatch = [];
 
     internal static Visibility QLookVisibleRead(bool shown)
     {
@@ -58,6 +66,14 @@ internal static class QLook
     internal static bool QLookCheckedRead(bool? shown)
     {
         return shown == true;
+    }
+
+    internal static void QLookCheckedRefine(ToggleButton shown, bool stored)
+    {
+        if (!stored)
+        {
+            shown.IsChecked = !QLookCheckedRead(shown.IsChecked);
+        }
     }
 
     internal static QLookChoice QLookFirstRead<QLookChoice>(bool first, QLookChoice chosen, QLookChoice other)
@@ -196,10 +212,11 @@ internal static class QLook
             return;
         }
 
-        if (!QLookHeld.TryGetValue(element, out _))
+        if (!QLookWatch.TryGetValue(element, out _))
         {
-            QLookHeld.Add(element, []);
-            element.IsEnabledChanged += (target, _) => QLookStateRefine(target, EventArgs.Empty);
+            DependencyPropertyChangedEventHandler watch = (target, _) => QLookStateRefine(target, EventArgs.Empty);
+            QLookWatch.Add(element, watch);
+            element.IsEnabledChanged += watch;
         }
 
         if (element.IsLoaded && !QLookTrack.TryGetValue(element, out _))
@@ -273,18 +290,45 @@ internal static class QLook
             }
 
             Dictionary<DependencyProperty, object> held = QLookHeld.GetValue(target, _ => []);
+            Dictionary<DependencyProperty, List<QLookClaim>> claims = QLookClaimed.GetValue(target, _ => []);
             if (winner is null)
             {
-                if (held.Remove(property, out object? saved))
+                if (!claims.TryGetValue(property, out List<QLookClaim>? standing)
+                    || standing.FindLast(claim => claim.QLookClaimOwner == element) is not QLookClaim released)
                 {
-                    rows.First(row => row.QLookSetterPart == part && row.QLookSetterProperty == property)
-                        .QLookSetterValue.QLookValueClear(target, property, saved);
+                    continue;
+                }
+
+                standing.RemoveAll(claim => claim.QLookClaimOwner == element);
+                if (standing.Count > 0)
+                {
+                    QLookClaim latest = standing[^1];
+                    latest.QLookClaimSetter.QLookSetterValue.QLookValueApply(latest.QLookClaimOwner, target, property);
+                    continue;
+                }
+
+                claims.Remove(property);
+                if (held.Remove(property, out object? original))
+                {
+                    released.QLookClaimSetter.QLookSetterValue.QLookValueClear(target, property, original);
                 }
 
                 continue;
             }
 
-            held.TryAdd(property, target.ReadLocalValue(property));
+            if (!held.ContainsKey(property))
+            {
+                held.Add(property, target.ReadLocalValue(property));
+            }
+
+            if (!claims.TryGetValue(property, out List<QLookClaim>? claimed))
+            {
+                claimed = [];
+                claims.Add(property, claimed);
+            }
+
+            claimed.RemoveAll(claim => claim.QLookClaimOwner == element);
+            claimed.Add(new QLookClaim(element, winner));
             winner.QLookSetterValue.QLookValueApply(element, target, property);
         }
     }

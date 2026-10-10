@@ -61,7 +61,6 @@ public sealed class QFanqie : Decorator
         QIconImage chevron = new() { Width = 12, Height = 12, QIconSource = QIcon.QIconResolve("expand", 12) };
         _qFanqieSwitch.Content = chevron;
         _qFanqieSwitch.SetResourceReference(StyleProperty, "Theme.Marker.Switch");
-        _qFanqieSwitch.Click += QFanqieFoldObserve;
         _qFanqieRefresh.SetResourceReference(StyleProperty, "Theme.Sound.Rebuild");
         _qFanqieRefresh.Click += QFanqieRefreshObserve;
         _qFanqieHead.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
@@ -124,8 +123,6 @@ public sealed class QFanqie : Decorator
 
     internal event Action? QFanqieRenewalNotice;
 
-    internal event Action<bool>? QFanqieFoldNotice;
-
     internal event Action<bool, string>? QFanqieDiweiNotice;
 
     internal event Action<string?>? QFanqieStemNotice;
@@ -164,10 +161,7 @@ public sealed class QFanqie : Decorator
         QFanqieRenewalNotice?.Invoke();
     }
 
-    private void QFanqieFoldObserve(object sender, RoutedEventArgs e)
-    {
-        QFanqieFoldNotice?.Invoke(QLook.QLookCheckedRead(_qFanqieSwitch.IsChecked));
-    }
+    internal ToggleButton QFanqieSwitch => _qFanqieSwitch;
 
     internal void QFanqieFoldRefine(bool opened)
     {

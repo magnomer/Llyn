@@ -140,6 +140,35 @@ internal static partial class TInterface
         engine.LEngineCatalog.LEngineFavoriteSave(entryId);
     }
 
+    internal static IReadOnlySet<long> TEngineFoldRead(this LEngine engine, long entryId) =>
+        engine.LEngineCard.LEngineFoldRead(entryId);
+
+    internal static void TEngineFoldSave(this LEngine engine, long entryId, long cardId)
+    {
+        engine.LEngineCard.LEngineFoldSave(entryId, cardId);
+    }
+
+    internal static void TEngineFoldDelete(this LEngine engine, long entryId, long cardId)
+    {
+        engine.LEngineCard.LEngineFoldDelete(entryId, cardId);
+    }
+
+    internal static bool TEngineSpreadCheck(this LEngine engine, long entryId) =>
+        engine.LEngineReflex.LEngineSpreadCheck(entryId);
+
+    internal static void TEngineReflexSpread(this LEngine engine, long entryId, bool opened)
+    {
+        engine.LEngineReflex.LEngineReflexSpread(entryId, opened);
+    }
+
+    internal static bool TEngineBoxCheck(this LEngine engine, long entryId, LFoldBox box) =>
+        engine.LEngineReflex.LEngineBoxCheck(entryId, box);
+
+    internal static void TEngineBoxSpread(this LEngine engine, long entryId, LFoldBox box, bool opened)
+    {
+        engine.LEngineReflex.LEngineBoxSpread(entryId, box, opened);
+    }
+
     internal static int TEngineGraspRead(this LEngine engine, long entryId) =>
         engine.LEngineEntry.LEngineGraspRead(entryId);
 

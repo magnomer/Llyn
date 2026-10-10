@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-Runs every audit, prints one result row per audit, and writes one summary page that links to every audit's page.
+Runs every audit, prints one progress line per audit, and writes and opens one summary page that links to every audit's page.
 
 .DESCRIPTION
 Reads the configuration from Audit.json next to this script, then performs these actions:
@@ -15,10 +15,13 @@ Reads the configuration from Audit.json next to this script, then performs these
      recorded as failed and the run continues.
   3. Collects from each audit its exit code, duration, Result table, verdict line and
      every Report line.
-  4. Prints one result row per audit, then the verdict.
+  4. Prints one progress line per audit as it finishes: its position, name, status and
+     duration. The results themselves go to the page, not the console.
   5. Writes the summary page {report.directory}\{prefix}{version}.html from the template
-     Audit.html next to this script, and opens it unless -NoOpen is given. The individual
-     audit pages are never opened.
+     Audit.html next to this script, with the code fingerprint from Audit.fingerprint.ps1,
+     prints the verdict, and opens the page unless -NoOpen is given. The individual
+     audit pages are never opened. AuditShow.ps1 reads the fingerprint to tell whether
+     the page is still current.
 The run exits with 1 when any audit failed or threw, else 0.
 
 An audit passes when it exits with 0, its verdict starts with PASS and no Result row
@@ -96,16 +99,18 @@ RUN
     -NoPause passed to every script that declares them. A missing or throwing
     script is recorded as failed and the run continues.
 
-RESULT
-    One row per audit. Count is the number of its gates above 0. OK when the
-    audit passed, WARN when it passed with warning rows, FAIL otherwise. The
-    history audits print no Result table: they pass when they exit with 0.
+PROGRESS
+    One line per audit as it finishes: position, name, status and duration.
+    OK when the audit passed, WARN when it passed with warning rows, FAIL
+    otherwise. The history audits print no Result table: they pass when they
+    exit with 0. The results themselves are on the page, not the console.
     The run exits with 1 when any audit failed or threw, else 0.
 
 PAGE
     Every run writes the summary page {report.directory}\{prefix}{version}.html.
     It opens in the default browser unless -NoOpen is given. The individual
-    audit pages are never opened.
+    audit pages are never opened. The page stores the code fingerprint, so
+    AuditShow can tell whether the code changed since this run.
 
 OPTIONS
     -ConfigPath <path>
@@ -461,42 +466,6 @@ function Invoke-Audit {
     return [pscustomobject]$result
 }
 
-function Write-SectionTitle {
-    param([Parameter(Mandatory = $true)][string]$Text)
-
-    Write-Host ''
-    Write-Host $Text -ForegroundColor Blue
-    Write-Host ('-' * $Text.Length) -ForegroundColor DarkGray
-}
-
-function Write-ResultTable {
-    param([Parameter(Mandatory = $true)][object[]]$Results)
-
-    Write-SectionTitle 'Result'
-    $statusWidth = 6
-    $countWidth = [Math]::Max(5, ($Results | ForEach-Object { (Format-Integer $_.Above).Length } | Measure-Object -Maximum).Maximum)
-    $gateWidth = [Math]::Max(4, ($Results | ForEach-Object { $_.Name.Length } | Measure-Object -Maximum).Maximum)
-    $meaningWidth = [Math]::Max(7, ($Results | ForEach-Object { $_.Verdict.Length } | Measure-Object -Maximum).Maximum)
-    Write-Host ('{0}  {1}  {2}  Meaning' -f 'Status'.PadRight($statusWidth), 'Count'.PadLeft($countWidth), 'Gate'.PadRight($gateWidth)) -ForegroundColor Cyan
-    Write-Host (@(('-' * $statusWidth), ('-' * $countWidth), ('-' * $gateWidth), ('-' * $meaningWidth)) -join '  ') -ForegroundColor Cyan
-    foreach ($result in $Results) {
-        $text = '{0}  {1}  {2}  {3}' -f $result.Status.PadRight($statusWidth), (Format-Integer $result.Above).PadLeft($countWidth), $result.Name.PadRight($gateWidth), $result.Verdict
-        $color = switch ($result.Status) { 'FAIL' { 'Red' } 'WARN' { 'Yellow' } default { 'Green' } }
-        Write-Host $result.Status -ForegroundColor $color -NoNewline
-        Write-Host $text.Substring($result.Status.Length)
-    }
-
-    $failed = @($Results | Where-Object { $_.Status -eq 'FAIL' })
-    Write-Host ''
-    if ($failed.Count -eq 0) {
-        Write-Host ('PASS: all {0} audits at 0.' -f $Results.Count) -ForegroundColor Green
-    }
-    else {
-        $names = ($failed | ForEach-Object { '"' + $_.Name + '"' }) -join ', '
-        Write-Host ('FAIL: {0} of {1} audits above 0. See {2}.' -f $failed.Count, $Results.Count, $names) -ForegroundColor Red
-    }
-}
-
 $repoRootFull = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..')).TrimEnd('\', '/')
 $config = Read-AuditConfig -Path $ConfigPath
 $audits = @($config.audits | ForEach-Object { [string]$_ } | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
@@ -540,14 +509,22 @@ Write-Host ('Scanned: {0} audits' -f (Format-Integer $audits.Count)) -Foreground
 $startedAt = Get-Date
 $totalWatch = [System.Diagnostics.Stopwatch]::StartNew()
 $results = [System.Collections.Generic.List[object]]::new()
+$nameWidth = ($audits | ForEach-Object { $_.Length } | Measure-Object -Maximum).Maximum
+$countWidth = ([string]$audits.Count).Length
 foreach ($name in $audits) {
-    Write-Host "Running $name..." -ForegroundColor DarkGray
-    $results.Add((Invoke-Audit -Name $name -Root $repoRootFull -Folder $reportFolder))
+    $position = ('[{0}/{1}]' -f ([string]($results.Count + 1)).PadLeft($countWidth), $audits.Count)
+    Write-Host ('{0} {1}  ' -f $position, $name.PadRight($nameWidth)) -NoNewline
+    $result = Invoke-Audit -Name $name -Root $repoRootFull -Folder $reportFolder
+    $results.Add($result)
+    $color = switch ($result.Status) { 'FAIL' { 'Red' } 'WARN' { 'Yellow' } default { 'Green' } }
+    Write-Host $result.Status.PadRight(4) -ForegroundColor $color -NoNewline
+    Write-Host ([string]::Format([System.Globalization.CultureInfo]::InvariantCulture, '  {0:0.0} s', $result.Duration / 1000.0)) -ForegroundColor DarkGray
 }
 $totalWatch.Stop()
 Set-Location -LiteralPath $repoRootFull
 
-Write-ResultTable -Results $results.ToArray()
+. (Join-Path $PSScriptRoot 'Audit.fingerprint.ps1')
+$fingerprint = Get-AuditFingerprint -Root $repoRootFull -Excluded ([string]$config.report.directory)
 
 # Page output: the summary as data inside the template Audit.html.
 $pageTemplatePath = Join-Path $PSScriptRoot 'Audit.html'
@@ -557,6 +534,7 @@ $pageData = [ordered]@{
     version = $version
     generated = $startedAt.ToString('yyyy-MM-dd HH:mm:ss zzz')
     duration = [long]$totalWatch.ElapsedMilliseconds
+    fingerprint = $fingerprint
     audits = @($results | ForEach-Object {
         [ordered]@{
             name = $_.Name
@@ -580,14 +558,22 @@ foreach ($marker in @('/*__DATA__*/', '__TITLE__')) {
 $pageText = $pageTemplate.Replace('__TITLE__', [System.Net.WebUtility]::HtmlEncode([string]$config.project)).Replace('/*__DATA__*/', (ConvertTo-PageJson $pageData))
 [System.IO.File]::WriteAllText($pagePathFull, ($pageText -replace "`r`n", "`n"), $utf8)
 
+$failed = @($results | Where-Object { $_.Status -eq 'FAIL' })
 Write-Host ''
+if ($failed.Count -eq 0) {
+    Write-Host ('PASS: all {0} audits at 0.' -f $results.Count) -ForegroundColor Green
+}
+else {
+    $names = ($failed | ForEach-Object { '"' + $_.Name + '"' }) -join ', '
+    Write-Host ('FAIL: {0} of {1} audits above 0. See {2}.' -f $failed.Count, $results.Count, $names) -ForegroundColor Red
+}
 Write-Host "Report: $pagePathFull"
 
 if (-not $NoOpen) {
     Start-Process -FilePath $pagePathFull
 }
 
-if (@($results | Where-Object { $_.Status -eq 'FAIL' }).Count -gt 0) {
+if ($failed.Count -gt 0) {
     exit 1
 }
 

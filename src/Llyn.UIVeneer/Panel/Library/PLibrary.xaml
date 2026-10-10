@@ -73,15 +73,7 @@
                 Text="{DynamicResource List.Empty}" />
         </Grid>
 
-        <local:QRail Grid.Row="0" Grid.Column="1" Margin="0,0,0,18">
-            <veneer:PPanelRail x:Name="PLibraryRail" />
-            <Border Style="{StaticResource Theme.Command.Group}">
-                <Button
-                    x:Name="PLibraryMarkup"
-                    Content="{DynamicResource List.Import}"
-                    Style="{StaticResource Theme.Command.Segment}" />
-            </Border>
-        </local:QRail>
+        <veneer:PPanelRail x:Name="PLibraryRail" Grid.Row="0" Grid.Column="1" Margin="0,0,0,18" />
 
         <Border Grid.Row="1" Grid.Column="1" Margin="0,14,0,0" ClipToBounds="True" Style="{StaticResource Theme.Panel.Surface}">
             <Grid>

@@ -1,5 +1,5 @@
 # LParadigmPort.cs
-Hash: `cc9d9c84fdee59b9`
+Hash: `69a99b994b18c278`
 
 ## `public interface LParadigmPort`
 
@@ -20,12 +20,15 @@ Slots on the part a layout draws are left to `LEngineInflectionRead`.
 
 The language the entry's paradigm is written in, or empty when it has no slots.
 
-## `LParadigmStatus LEngineParadigmCheck(LParadigmRow row, bool pending, bool enabled);`
+## `LParadigmShown LEngineParadigmCheck(LParadigmRow row, bool pending, bool enabled, bool held);`
 
-What stands in a paradigm row for its form.
-The readers ask the clerk's rule through the port, so the rule has one owner.
+The text and tip key that stand in a paradigm row for its form.
+The wording is `LParadigmShown`'s in Core, so the list and the inflection view never disagree.
+`held` is true for the editor, whose draft holds the missing forms.
+Conduct receives the ready answer and only lays it into its own record.
 
-## `LParadigmView? LEngineInflectionRead(long entryId, bool pending, bool enabled);`
+## `LParadigmView? LEngineInflectionRead(long entryId, bool pending, bool enabled, bool held);`
 
 The entry's inflection view in both shapes, or null without a layout or a slot on its part.
-`pending` and `enabled` feed each cell's status, as they do for `LEngineParadigmCheck`.
+`pending`, `enabled` and `held` feed each cell's text and tip, as they do for `LEngineParadigmCheck`.
+Each cell arrives ready, so a reader maps it without a rule.

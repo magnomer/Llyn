@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -43,11 +44,30 @@ internal static class TInterfaceDeportment
     internal static bool TCaretStepApply(string key, int length, int selection, Func<int, bool> move, Action place) =>
         QCaret.QCaretStepApply(key, length, selection, move, place);
 
-    internal static void TDisplayFoldSet(this CDisplay display, bool opened) =>
-        display.CDisplaySound.CDisplayReflexToggle(opened);
+    internal static void TDisplayEntryShow(this CDisplay display, long id, LEntryDraft draft) =>
+        display.LDisplayRule.LDisplaySound.LDisplaySoundShow(id, draft);
 
-    internal static bool TDisplayFoldRead(this CDisplay display) =>
-        display.LDisplayRule.LDisplaySound.LDisplayFoldOpened;
+    internal static void TReflexCreate(FrameworkElement surface, CEditor editor) =>
+        new QReflex(surface, new QAnchor(surface)).QReflexIntroduce(
+            editor.CEditorDesk, editor.CEditorEntry, editor.CEditorKindred, editor.CEditorSounding);
+
+    internal static void TCadenceCreate(FrameworkElement surface, CEditor editor, CLedger ledger, CEnvoy envoy) =>
+        new QCadence(surface).QCadenceIntroduce(
+            editor.CEditorDesk,
+            editor.CEditorEntry,
+            editor.CEditorTimbre,
+            editor.CEditorSounding,
+            editor.CEditorFold,
+            ledger,
+            envoy);
+
+    internal static QLecternSound TLecternSoundCreate(
+        CDisplay display, FrameworkElement surface, CLedger ledger, CEnvoy envoy) =>
+        new(surface, display.CDisplaySound, display.CDisplayFold, ledger, envoy);
+
+    internal static ToggleButton TFanqieSwitchRead(this QFanqie box) => box.QFanqieSwitch;
+
+    internal static ToggleButton TScriptSwitchRead(this QScript box) => box.QScriptSwitch;
 
     internal static void TEtymologySourceShow(this QEtymology etymology, bool linked) =>
         etymology.QEtymologySourceShow([], linked);
@@ -57,9 +77,6 @@ internal static class TInterfaceDeportment
         UIElementCollection faces = ((Panel)((Panel)((Border)etymology.Child).Child).Children[1]).Children;
         return (faces[0].Visibility, faces[1].Visibility);
     }
-
-    internal static void TReflexFoldRefine(ToggleButton fold, bool opened) =>
-        new QReflexList(new ItemsControl(), fold).QReflexFoldRefine(opened);
 
     internal static void TReflexTypeRefine(QReflexItem row, CReflexField field, string text) =>
         row.QReflexTypeRefine(row.QReflexItemReflex.CReflexTypedApply(field, text));
@@ -73,7 +90,8 @@ internal static class TInterfaceDeportment
             [],
             [],
             [],
-            new CCardDraft(0, 0, blank, blank, blank, [], [], [], [], [], [], []));
+            static card => card.PCardDefinition,
+            new CCardDraft(0, 0, blank, blank, blank, [], [], [], [], [], [], [], false, false));
     }
 
     internal static void TCardLabelShow(object card, IReadOnlyList<CTagDraft> drafts) =>
@@ -122,6 +140,42 @@ internal static class TInterfaceDeportment
     internal static void TCardPositionHide(object card) => ((PCard)card).PCardPositionHide();
 
     internal static void TCardPositionSet(object card, int position) => ((PCard)card).PCardPosition = position;
+
+    internal static object TCardFoldCreate(CCardDraft draft)
+    {
+        PCard card = new(string.Empty, [], [], [], [], static row => row.PCardDefinition, draft);
+        card.PCardFoldShow(draft.CCardDraftFolded);
+        return card;
+    }
+
+    internal static void TCardRowRefine(FrameworkElement container, object card) =>
+        QCard.QCardRowRefine(container, (PCard)card, null);
+
+    internal static void TCardHingeAttach(ItemsControl list, CEditor editor)
+    {
+        QCard card = new(null!, null!, null!, null!, null!, null!, null!, null!, null!, null!, [], [], []);
+        card.QCardIntroduce(editor.CEditorField, editor.CEditorList);
+        QLookItem.QLookItemAttach(list, card.QCardApply);
+    }
+
+    internal static object? TLookSettingRead(string style, string part, DependencyProperty property, bool folded)
+    {
+        QLookCue active = folded ? QLookCue.QLookCueChecked : QLookCue.QLookCueBase;
+        QLook.QLookSetter? winner = QLookSheet.QLookSheetState.LastOrDefault(row =>
+            row.QLookSetterStyle == style
+            && row.QLookSetterPart == part
+            && row.QLookSetterProperty == property
+            && (active & row.QLookSetterCue) == row.QLookSetterCue);
+        return (winner?.QLookSetterValue as QLookValue.QLookFix<Freezable>)?.QLookFixSetting;
+    }
+
+    internal static object TLeafItemCreate(CLeaf leaf, CStateWording peek) => new QLeafItem(leaf, peek);
+
+    internal static void TLeafCardRefine(FrameworkElement container, object card) =>
+        PLeaf.PLeafCardRefine(container, card, null);
+
+    internal static QLecternCard TLecternCardCreate(CDisplay display, FrameworkElement surface) =>
+        new(surface, display.CDisplayCard, display.CDisplayRoute, display.CDisplaySound);
 
     internal static void TCardRowShow(
         ObservableCollection<QTranscriptionItem> rows, IReadOnlyList<CTranscriptionDraft> drafts) =>

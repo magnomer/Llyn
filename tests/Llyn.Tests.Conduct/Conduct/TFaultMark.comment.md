@@ -1,5 +1,5 @@
 # TFaultMark.cs
-Hash: `cd3593836f09863a`
+Hash: `0f1918ca0cc50610`
 
 ## `public sealed partial class TFault`
 
@@ -11,10 +11,13 @@ It keeps `TFaultWrite.cs` within the line limit, and the rows join the sweep the
 A property, not a field, so the sweep's list reads it whatever the field order across files.
 Port rows fault the port member the gate itself calls, over `TInterfaceConduct.TAtelierFaultCreate`.
 Favorite and grasp rows read back the gate's own read, since it answers the written mark.
+Card fold rows fault `LCardPort.LEngineFoldSave` and read back the first meaning's fold from a fresh card read.
+They read the gate's verdict beside the fold, so a refused write must also answer false.
+The reading view row reads the leaf, and the editor row reads the held card draft.
 Tag and register creation read back the panel's row count, which a created row would raise.
 The union select reads back whether the autograph shows, since a merge would close it.
-Fold rows fault `LSettingsVault.LSettingsSave`, so the engine's own rollback is under test.
-Their read-back is the settings field the gate writes, read from the engine.
+Box fold rows fault `LReflexPort.LEngineBoxSpread` on a held stored entry.
+Their read-back is the box's stored state beside the gate's verdict, so a refused write must answer false.
 Fanqie set, rebuild and sound start rows read nothing back, since no gate read answers the engine work.
 Sound start is reached through the wing open, the display resonate, and the panel open and resonate.
 Other gates reach it only through these, so they hold no row of their own.
@@ -27,8 +30,8 @@ Stores a plain English entry and answers its id, the entry every mark row writes
 ## `private static TEditorFixture TFaultDeskOpen(TFaultStage stage)`
 
 Builds an editor over the faulted atelier and opens a stored entry in a library vista.
-It answers the fixture, so a row reads only the esteem, sounding or kindred facet.
-Esteem, sounding and reflex gates act only on a stored entry, so a fresh draft would reach no port.
+It answers the fixture, so a row reads only the esteem, sounding, kindred or fold facet.
+Esteem, sounding, reflex and box gates act only on a stored entry, so a fresh draft would reach no port.
 
 ## `private static CWing TFaultWingOpen(TFaultStage stage)`
 

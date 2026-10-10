@@ -1,5 +1,5 @@
 # TInterfacePortrait.cs
-Hash: `11a523f8150fe7ed`
+Hash: `1f1747d74bb4922f`
 
 ## `internal static partial class TInterface`
 
@@ -53,11 +53,6 @@ It passes the same style id and the same default `note` as the entry overload.
 Writes a rime-table category note through the matching `LLiverySheet.LLiveryFormat` overload.
 It passes the same style id and the same default `note` as the entry overload.
 
-## `internal static LLiveryNote TLiveryFormat(LLiveryLanguage language, Func<string, string> lookup, Func<long, string>? note = null)`
-
-Writes a language's sound note through the matching `LLiverySheet.LLiveryFormat` overload.
-It passes the same style id and the same default `note` as the entry overload.
-
 ## `internal static Func<long, string> TCourierNoteBuild(string stamp, IReadOnlyList<LEntry> entries)`
 
 Builds the courier's `note` map through `LCourierNote.LCourierNoteBuild`.
@@ -69,7 +64,7 @@ Runs one push through the engine's courier clerk with the readers it is handed.
 A test can then shape the entry pages and the language reads without fetching anything.
 Its `lookup` answers each key itself, so a test finds notebooks and notes by their keys.
 
-## `internal static LLiveryLanguage TLiveryLanguageBuild(string name, IReadOnlyList<LCatalogPronunciation> pronunciation, IReadOnlyList<LLiveryStem> stem, IReadOnlyList<LLiveryDiwei> diwei)`
+## `internal static LLiveryLanguage TLiveryLanguageBuild(string name, IReadOnlyList<LLiveryStem> stem, IReadOnlyList<LLiveryDiwei> diwei)`
 
 Builds a language read, handing its arguments to the constructor unchanged.
 A push test hands it to `TCourierSend`, so it chooses which reconstruction notes the language carries.
@@ -78,9 +73,15 @@ A push test hands it to `TCourierSend`, so it chooses which reconstruction notes
 
 Builds a series read, handing its arguments to the constructor unchanged.
 
-## `internal static LStemPage TStemPageCreate(string language, string key, IReadOnlyList<string> characters)`
+## `internal static LStemPage TStemPageCreate(string language, string key, IReadOnlyList<string> characters, IReadOnlyList<LStemMember>? members = null)`
 
 Builds a series page, handing its arguments to the constructor unchanged.
+Without members, the page makes one bare member per character.
+
+## `internal static LStemMember TStemMemberCreate(string character, IReadOnlyList<string> readings, IReadOnlyList<LReflexDraft> reflexes, IReadOnlyList<LReflexGuise>? guises = null)`
+
+Builds one series member, handing its arguments to the constructor unchanged.
+A test that has reflex rows hands one guise per row, as the engine does.
 
 ## `internal static LLiveryDiwei TLiveryDiweiCreate(string kind, string language, string key, IReadOnlyList<LEntry> entry)`
 

@@ -1,5 +1,7 @@
 using System;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Llyn.Conduct;
 
@@ -17,6 +19,8 @@ internal sealed class QStem
 
         _qStemSurface = surface;
         surface.CommandBindings.Add(new CommandBinding(QStemCommand.QStemCommandEntry, QStemEntryObserve));
+        QLookItem.QLookItemAttach(QStemList, QStemItem.QStemItemRefine);
+        QStemList.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QStemHingeObserve));
     }
 
     private TextBlock QStemHeadword => QContract.QContractFind<TextBlock>(_qStemSurface, "PStemHeadword");
@@ -42,12 +46,22 @@ internal sealed class QStem
         QStemHeadword.Text = page.CStemPageKey;
         QStemLanguage.Text = page.CStemPageLanguage;
         QStemFlag.Source = QEnsignImage.QEnsignRead(page.CStemPageLanguage);
-        QStemList.ItemsSource = page.CStemPageCharacters;
+        QStemList.ItemsSource = QStemItem.QStemItemBuild(page.CStemPageMembers);
         QStemEmpty.Visibility = QLook.QLookVisibleRead(page.CStemPageEmpty);
     }
 
     private void QStemEntryObserve(object sender, ExecutedRoutedEventArgs e)
     {
         _cXiesheng.CXieshengGlyphSelect(QSender.QSenderTextRead(e));
+    }
+
+    private void QStemHingeObserve(object sender, RoutedEventArgs e)
+    {
+        if (e.OriginalSource is ToggleButton { DataContext: QStemItem member } hinge)
+        {
+            QLook.QLookCheckedRefine(
+                hinge,
+                _cXiesheng.CXieshengFoldToggle(member.QStemItemCharacter, QLook.QLookCheckedRead(hinge.IsChecked)));
+        }
     }
 }

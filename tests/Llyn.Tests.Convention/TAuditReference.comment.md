@@ -1,5 +1,5 @@
 # TAuditReference.cs
-Hash: `fcb934e7ce7e1f37`
+Hash: `87cf89832a7a4f05`
 
 ## `internal static class TAuditReference`
 
@@ -10,6 +10,13 @@ A stale folder beside the right one can then never be read by mistake.
 ## `private const string TAuditReferenceSource = "src/*.csproj";`
 
 The pattern of the project files whose outputs are read.
+
+## `private static readonly Lazy<IReadOnlyList<MetadataReference>> TAuditReferences`
+
+One reference set, built on first read and shared by every compilation.
+Each set holds its images in native memory, which the collector frees only late.
+A fresh set per assay compilation once grew the test host past ten gigabytes.
+Shared references also let Roslyn reuse their symbols, so each assay binds faster.
 
 ## `public static List<string> TAuditGeneratedRead()`
 
@@ -25,7 +32,11 @@ The tracked project files, failing when there is none.
 
 The `bin` or `obj` folder of the project's configuration and target framework.
 
-## `public static List<MetadataReference> TAuditReferenceRead()`
+## `public static IReadOnlyList<MetadataReference> TAuditReferenceRead()`
+
+The shared reference set.
+
+## `private static IReadOnlyList<MetadataReference> TAuditReferenceCreate()`
 
 The assemblies of each framework pack and every package library in the reference root's build output.
 When two packs ship an assembly of the same name, the higher version wins.

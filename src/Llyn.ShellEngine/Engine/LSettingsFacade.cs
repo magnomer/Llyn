@@ -20,8 +20,6 @@ internal sealed class LSettingsFacade
         _lSettingsFacadeGate = _lSettingsFacadeHearth.LEngineGate;
     }
 
-    internal event Action? LEngineFoldChanged;
-
     internal LSettings LEngineSettingsRead()
     {
         return _lSettingsFacadeHearth.LEngineSettingsRead();
@@ -144,22 +142,6 @@ internal sealed class LSettingsFacade
 
     internal void LEngineTallySave(bool respelled) =>
         LEngineSettingsChange(settings => settings with { LSettingsTally = respelled });
-
-    internal void LEngineFanqieSave(bool opened)
-    {
-        if (LEngineSettingsChange(settings => settings with { LSettingsFanqieOpened = opened }))
-        {
-            LEngineFoldChanged?.Invoke();
-        }
-    }
-
-    internal void LEngineScriptSave(bool opened)
-    {
-        if (LEngineSettingsChange(settings => settings with { LSettingsScriptOpened = opened }))
-        {
-            LEngineFoldChanged?.Invoke();
-        }
-    }
 
     internal void LEngineFrequencySave(bool frequency)
     {

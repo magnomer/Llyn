@@ -30,8 +30,8 @@ No prefix, shape, base, verb, or count violations were found.
 ## Component Name Audit 0.18.14100
 
 - Version: `0.18.14100`
-- Source names examined: 21580
-- Files with findings: 1584
+- Source names examined: 21899
+- Files with findings: 1604
 - Non-conforming names: 0
 - Stale exempt rows: 0
 - Types outside their prefix turf: 45 (ceiling 45)
@@ -41,7 +41,7 @@ No prefix, shape, base, verb, or count violations were found.
 - Primary reason Base: 0
 - Primary reason Verb: 0
 - Primary reason Count: 0
-- At-limit review names: 11621
+- At-limit review names: 11786
 - Counting: `PS`, `QS`, `CS`, `LS`, `P`, `Q`, `C`, `L`, `T` is a prefix and is not counted as a component.
 - Non-conforming name: counted once, whatever number of reasons it carries; its primary reason is the first check that failed.
 - Prefix: a codebase-owned name carries no `PS`, `QS`, `CS`, `LS`, `P`, `Q`, `C`, `L`, `T` prefix, or a test method breaks the `T` test-prefix gate.
@@ -126,6 +126,19 @@ No prefix, shape, base, verb, or count violations were found.
   - `LCardEqualityMatch` - Review: 3 components: `Card` + `Equality` + `Match` - line 161
   - `LCardEqualityMatch` - Review: 3 components: `Card` + `Equality` + `Match` - line 182
   - `LCardEqualityMatch` - Review: 3 components: `Card` + `Equality` + `Match` - line 200
+
+#### `LFoldClerk.cs`
+
+- `LFoldClerk`
+  - `_lFoldClerkFolds` - Review: 3 components: `Fold` + `Clerk` + `Folds` - line 9
+  - `LFoldClerkRead` - Review: 3 components: `Fold` + `Clerk` + `Read` - line 17
+  - `LFoldClerkSave` - Review: 3 components: `Fold` + `Clerk` + `Save` - line 22
+  - `LFoldClerkDelete` - Review: 3 components: `Fold` + `Clerk` + `Delete` - line 30
+  - `LFoldClerkLoad` - Review: 3 components: `Fold` + `Clerk` + `Load` - line 38
+  - `LFoldClerkSpread` - Review: 3 components: `Fold` + `Clerk` + `Spread` - line 43
+  - `LFoldClerkLoad` - Review: 3 components: `Fold` + `Clerk` + `Load` - line 51
+  - `LFoldClerkSpread` - Review: 3 components: `Fold` + `Clerk` + `Spread` - line 56
+  - `LFoldClerkSpread` - Review: 3 components: `Fold` + `Clerk` + `Spread` - line 64
 
 #### `LMeaningClerk.cs`
 
@@ -963,26 +976,26 @@ No prefix, shape, base, verb, or count violations were found.
 #### `LCourierClerk.cs`
 
 - `LCourierClerk`
-  - `_lCourierClerkOutpost` - Review: 3 components: `Courier` + `Clerk` + `Outpost` - line 22
-  - `_lCourierClerkLivery` - Review: 3 components: `Courier` + `Clerk` + `Livery` - line 23
-  - `_lCourierClerkManifest` - Review: 3 components: `Courier` + `Clerk` + `Manifest` - line 24
-  - `_lCourierClerkWarrant` - Review: 3 components: `Courier` + `Clerk` + `Warrant` - line 25
-  - `_lCourierClerkWorkspaces` - Review: 3 components: `Courier` + `Clerk` + `Workspaces` - line 26
-  - `_lCourierClerkLanguages` - Review: 3 components: `Courier` + `Clerk` + `Languages` - line 27
-  - `_lCourierClerkEntry` - Review: 3 components: `Courier` + `Clerk` + `Entry` - line 28
-  - `_lCourierClerkPairing` - Review: 3 components: `Courier` + `Clerk` + `Pairing` - line 29
-  - `_lCourierClerkNote` - Review: 3 components: `Courier` + `Clerk` + `Note` - line 30
-  - `_lCourierClerkGate` - Review: 3 components: `Courier` + `Clerk` + `Gate` - line 31
-  - `_lCourierClerkSettings` - Review: 3 components: `Courier` + `Clerk` + `Settings` - line 32
-  - `_lCourierClerkFault` - Review: 3 components: `Courier` + `Clerk` + `Fault` - line 33
-  - `_lCourierClerkBusy` - Review: 3 components: `Courier` + `Clerk` + `Busy` - line 34
-  - `LCourierClerkSend` - Review: 3 components: `Courier` + `Clerk` + `Send` - line 62
-  - `LCourierClerkAttach` - Review: 3 components: `Courier` + `Clerk` + `Attach` - line 86
-  - `LCourierClerkCheck` - Review: 3 components: `Courier` + `Clerk` + `Check` - line 105
-  - `LCourierLinkBuild` - Review: 3 components: `Courier` + `Link` + `Build` - line 110
-    - `LCourierLinkKind` - Review: 3 components: `Courier` + `Link` + `Kind` - line 121
-    - `LCourierLinkKey` - Review: 3 components: `Courier` + `Link` + `Key` - line 121
-  - `LCourierBatchSend` - Review: 3 components: `Courier` + `Batch` + `Send` - line 144
+  - `_lCourierClerkOutpost` - Review: 3 components: `Courier` + `Clerk` + `Outpost` - line 20
+  - `_lCourierClerkLivery` - Review: 3 components: `Courier` + `Clerk` + `Livery` - line 21
+  - `_lCourierClerkManifest` - Review: 3 components: `Courier` + `Clerk` + `Manifest` - line 22
+  - `_lCourierClerkWarrant` - Review: 3 components: `Courier` + `Clerk` + `Warrant` - line 23
+  - `_lCourierClerkWorkspaces` - Review: 3 components: `Courier` + `Clerk` + `Workspaces` - line 24
+  - `_lCourierClerkLanguages` - Review: 3 components: `Courier` + `Clerk` + `Languages` - line 25
+  - `_lCourierClerkEntry` - Review: 3 components: `Courier` + `Clerk` + `Entry` - line 26
+  - `_lCourierClerkPairing` - Review: 3 components: `Courier` + `Clerk` + `Pairing` - line 27
+  - `_lCourierClerkNote` - Review: 3 components: `Courier` + `Clerk` + `Note` - line 28
+  - `_lCourierClerkGate` - Review: 3 components: `Courier` + `Clerk` + `Gate` - line 29
+  - `_lCourierClerkSettings` - Review: 3 components: `Courier` + `Clerk` + `Settings` - line 30
+  - `_lCourierClerkFault` - Review: 3 components: `Courier` + `Clerk` + `Fault` - line 31
+  - `_lCourierClerkBusy` - Review: 3 components: `Courier` + `Clerk` + `Busy` - line 32
+  - `LCourierClerkSend` - Review: 3 components: `Courier` + `Clerk` + `Send` - line 60
+  - `LCourierClerkAttach` - Review: 3 components: `Courier` + `Clerk` + `Attach` - line 84
+  - `LCourierClerkCheck` - Review: 3 components: `Courier` + `Clerk` + `Check` - line 103
+  - `LCourierLinkBuild` - Review: 3 components: `Courier` + `Link` + `Build` - line 108
+    - `LCourierLinkKind` - Review: 3 components: `Courier` + `Link` + `Kind` - line 119
+    - `LCourierLinkKey` - Review: 3 components: `Courier` + `Link` + `Key` - line 119
+  - `LCourierBatchSend` - Review: 3 components: `Courier` + `Batch` + `Send` - line 138
 
 #### `LCourierLanguage.cs`
 
@@ -1023,7 +1036,7 @@ No prefix, shape, base, verb, or count violations were found.
 
 - `LLiveryClerk`
   - `LLiveryClerkBuild` - Review: 3 components: `Livery` + `Clerk` + `Build` - line 10
-  - `LLiveryClerkBuild` - Review: 3 components: `Livery` + `Clerk` + `Build` - line 71
+  - `LLiveryClerkBuild` - Review: 3 components: `Livery` + `Clerk` + `Build` - line 73
 
 
 ### `D:\Programming\Llyn\src\Llyn.Application\Portrait`
@@ -1229,10 +1242,11 @@ No prefix, shape, base, verb, or count violations were found.
   - `LReflexRuleRead` - Review: 3 components: `Reflex` + `Rule` + `Read` - line 48
   - `LReflexClerkSort` - Review: 3 components: `Reflex` + `Clerk` + `Sort` - line 55
   - `LReflexClerkScan` - Review: 3 components: `Reflex` + `Clerk` + `Scan` - line 65
-  - `LReflexFoldedRead` - Review: 3 components: `Reflex` + `Folded` + `Read` - line 91
-  - `LReflexClerkSync` - Review: 3 components: `Reflex` + `Clerk` + `Sync` - line 99
-  - `LReflexClerkReset` - Review: 3 components: `Reflex` + `Clerk` + `Reset` - line 150
-  - `LReflexEpithetSave` - Review: 3 components: `Reflex` + `Epithet` + `Save` - line 163
+  - `LReflexWrittenScan` - Review: 3 components: `Reflex` + `Written` + `Scan` - line 91
+  - `LReflexFoldedRead` - Review: 3 components: `Reflex` + `Folded` + `Read` - line 98
+  - `LReflexClerkSync` - Review: 3 components: `Reflex` + `Clerk` + `Sync` - line 106
+  - `LReflexClerkReset` - Review: 3 components: `Reflex` + `Clerk` + `Reset` - line 157
+  - `LReflexEpithetSave` - Review: 3 components: `Reflex` + `Epithet` + `Save` - line 170
 
 #### `LReflexClerkEpithet.cs`
 
@@ -1343,14 +1357,22 @@ No prefix, shape, base, verb, or count violations were found.
 #### `LStemClerk.cs`
 
 - `LStemClerk`
-  - `_lStemClerkStems` - Review: 3 components: `Stem` + `Clerk` + `Stems` - line 9
-  - `_lStemClerkEntries` - Review: 3 components: `Stem` + `Clerk` + `Entries` - line 10
-  - `LStemClerkRead` - Review: 3 components: `Stem` + `Clerk` + `Read` - line 19
-  - `LStemClerkRead` - Review: 3 components: `Stem` + `Clerk` + `Read` - line 24
-  - `LStemClerkFind` - Review: 3 components: `Stem` + `Clerk` + `Find` - line 29
-  - `LStemClerkFind` - Review: 3 components: `Stem` + `Clerk` + `Find` - line 34
-  - `LStemEntryScan` - Review: 3 components: `Stem` + `Entry` + `Scan` - line 42
-  - `LStemPageRead` - Review: 3 components: `Stem` + `Page` + `Read` - line 54
+  - `_lStemClerkStems` - Review: 3 components: `Stem` + `Clerk` + `Stems` - line 10
+  - `_lStemClerkEntries` - Review: 3 components: `Stem` + `Clerk` + `Entries` - line 11
+  - `_lStemClerkFanqie` - Review: 3 components: `Stem` + `Clerk` + `Fanqie` - line 12
+  - `_lStemClerkReflexes` - Review: 3 components: `Stem` + `Clerk` + `Reflexes` - line 13
+  - `_lStemClerkReflex` - Review: 3 components: `Stem` + `Clerk` + `Reflex` - line 14
+  - `_lStemClerkFolds` - Review: 3 components: `Stem` + `Clerk` + `Folds` - line 15
+  - `LStemClerkRead` - Review: 3 components: `Stem` + `Clerk` + `Read` - line 29
+  - `LStemClerkRead` - Review: 3 components: `Stem` + `Clerk` + `Read` - line 34
+  - `LStemClerkFind` - Review: 3 components: `Stem` + `Clerk` + `Find` - line 39
+  - `LStemClerkFind` - Review: 3 components: `Stem` + `Clerk` + `Find` - line 44
+  - `LStemEntryScan` - Review: 3 components: `Stem` + `Entry` + `Scan` - line 52
+  - `LStemPageRead` - Review: 3 components: `Stem` + `Page` + `Read` - line 64
+  - `LStemEntryFind` - Review: 3 components: `Stem` + `Entry` + `Find` - line 73
+  - `LStemMemberScan` - Review: 3 components: `Stem` + `Member` + `Scan` - line 81
+  - `LStemEntryRead` - Review: 3 components: `Stem` + `Entry` + `Read` - line 95
+  - `LStemMemberRead` - Review: 3 components: `Stem` + `Member` + `Read` - line 106
 
 #### `LTranscriptionClerk.cs`
 
@@ -1871,12 +1893,12 @@ No prefix, shape, base, verb, or count violations were found.
   - `LParadigmRowRead` - Review: 3 components: `Paradigm` + `Row` + `Read` - line 92
   - `LParadigmLanguageRead` - Review: 3 components: `Paradigm` + `Language` + `Read` - line 105
   - `LParadigmClerkBuild` - Review: 3 components: `Paradigm` + `Clerk` + `Build` - line 111
-  - `LParadigmClerkFind` - Review: 3 components: `Paradigm` + `Clerk` + `Find` - line 130
-  - `LParadigmClerkUpdate` - Review: 3 components: `Paradigm` + `Clerk` + `Update` - line 137
-  - `LParadigmClerkScan` - Review: 3 components: `Paradigm` + `Clerk` + `Scan` - line 187
-  - `LParadigmClerkResolve` - Review: 3 components: `Paradigm` + `Clerk` + `Resolve` - line 223
-  - `LParadigmClerkCheck` - Review: 3 components: `Paradigm` + `Clerk` + `Check` - line 316
-  - `LParadigmClerkMatch` - Review: 3 components: `Paradigm` + `Clerk` + `Match` - line 323
+  - `LParadigmClerkFind` - Review: 3 components: `Paradigm` + `Clerk` + `Find` - line 131
+  - `LParadigmClerkUpdate` - Review: 3 components: `Paradigm` + `Clerk` + `Update` - line 138
+  - `LParadigmClerkScan` - Review: 3 components: `Paradigm` + `Clerk` + `Scan` - line 188
+  - `LParadigmClerkResolve` - Review: 3 components: `Paradigm` + `Clerk` + `Resolve` - line 224
+  - `LParadigmClerkCheck` - Review: 3 components: `Paradigm` + `Clerk` + `Check` - line 317
+  - `LParadigmClerkMatch` - Review: 3 components: `Paradigm` + `Clerk` + `Match` - line 324
 
 #### `LUnitClerk.cs`
 
@@ -2154,9 +2176,13 @@ No prefix, shape, base, verb, or count violations were found.
 
 - `CCardList`
   - `_cCardListDesk` - Review: 3 components: `Card` + `List` + `Desk` - line 9
-  - `CCardListQuill` - Review: 3 components: `Card` + `List` + `Quill` - line 18
-  - `CCardMeaningAdd` - Review: 3 components: `Card` + `Meaning` + `Add` - line 23
-  - `CCardCollocationAdd` - Review: 3 components: `Card` + `Collocation` + `Add` - line 28
+  - `_cCardListPort` - Review: 3 components: `Card` + `List` + `Port` - line 11
+  - `_cCardListSettings` - Review: 3 components: `Card` + `List` + `Settings` - line 13
+  - `_cCardListEnvoy` - Review: 3 components: `Card` + `List` + `Envoy` - line 15
+  - `CCardListQuill` - Review: 3 components: `Card` + `List` + `Quill` - line 30
+  - `CCardMeaningAdd` - Review: 3 components: `Card` + `Meaning` + `Add` - line 35
+  - `CCardCollocationAdd` - Review: 3 components: `Card` + `Collocation` + `Add` - line 40
+  - `CCardFoldToggle` - Review: 3 components: `Card` + `Fold` + `Toggle` - line 50
 
 #### `CCardSpeech.cs`
 
@@ -2177,17 +2203,17 @@ No prefix, shape, base, verb, or count violations were found.
 - `CFolio`
   - `CFolioTargetRead` - Review: 3 components: `Folio` + `Target` + `Read` - line 12
   - `CFolioEntryRead` - Review: 3 components: `Folio` + `Entry` + `Read` - line 24
-  - `CFolioStateRead` - Review: 3 components: `Folio` + `State` + `Read` - line 39
-  - `CFolioSheetRead` - Review: 3 components: `Folio` + `Sheet` + `Read` - line 44
-  - `CFolioPlaceRead` - Review: 3 components: `Folio` + `Place` + `Read` - line 80
-  - `CFolioOrdinalRead` - Review: 3 components: `Folio` + `Ordinal` + `Read` - line 103
-  - `CFolioOrderRead` - Review: 3 components: `Folio` + `Order` + `Read` - line 117
-  - `CFolioListRead` - Review: 3 components: `Folio` + `List` + `Read` - line 124
-  - `CFolioSentenceRead` - Review: 3 components: `Folio` + `Sentence` + `Read` - line 131
-  - `CFolioExampleRead` - Review: 3 components: `Folio` + `Example` + `Read` - line 146
-  - `CFolioGlossRead` - Review: 3 components: `Folio` + `Gloss` + `Read` - line 156
-  - `CFolioImageRead` - Review: 3 components: `Folio` + `Image` + `Read` - line 167
-  - `CFolioVideoRead` - Review: 3 components: `Folio` + `Video` + `Read` - line 180
+  - `CFolioStateRead` - Review: 3 components: `Folio` + `State` + `Read` - line 43
+  - `CFolioSheetRead` - Review: 3 components: `Folio` + `Sheet` + `Read` - line 48
+  - `CFolioPlaceRead` - Review: 3 components: `Folio` + `Place` + `Read` - line 87
+  - `CFolioOrdinalRead` - Review: 3 components: `Folio` + `Ordinal` + `Read` - line 110
+  - `CFolioOrderRead` - Review: 3 components: `Folio` + `Order` + `Read` - line 124
+  - `CFolioListRead` - Review: 3 components: `Folio` + `List` + `Read` - line 131
+  - `CFolioSentenceRead` - Review: 3 components: `Folio` + `Sentence` + `Read` - line 138
+  - `CFolioExampleRead` - Review: 3 components: `Folio` + `Example` + `Read` - line 153
+  - `CFolioGlossRead` - Review: 3 components: `Folio` + `Gloss` + `Read` - line 163
+  - `CFolioImageRead` - Review: 3 components: `Folio` + `Image` + `Read` - line 174
+  - `CFolioVideoRead` - Review: 3 components: `Folio` + `Video` + `Read` - line 187
 
 #### `CImage.cs`
 
@@ -2255,7 +2281,7 @@ No prefix, shape, base, verb, or count violations were found.
   - `LCatalogOrderRead` - Review: 3 components: `Catalog` + `Order` + `Read` - line 166
   - `LCatalogFilterRead` - Review: 3 components: `Catalog` + `Filter` + `Read` - line 191
   - `LCatalogSubjectRead` - Review: 3 components: `Catalog` + `Subject` + `Read` - line 198
-  - `LCatalogRowRead` - Review: 3 components: `Catalog` + `Row` + `Read` - line 225
+  - `LCatalogRowRead` - Review: 3 components: `Catalog` + `Row` + `Read` - line 227
 
 #### `CCatalogAuthor.cs`
 
@@ -2540,26 +2566,31 @@ No prefix, shape, base, verb, or count violations were found.
 #### `CEditor.cs`
 
 - `CEditor`
-  - `LEditorVistaRestore` - Review: 3 components: `Editor` + `Vista` + `Restore` - line 119
-  - `CEditorEntryOpen` - Review: 3 components: `Editor` + `Entry` + `Open` - line 128
-  - `CEditorEntryUndo` - Review: 3 components: `Editor` + `Entry` + `Undo` - line 145
-  - `CEditorEntrySave` - Review: 3 components: `Editor` + `Entry` + `Save` - line 150
-  - `CEditorStoredShow` - Review: 3 components: `Editor` + `Stored` + `Show` - line 166
+  - `LEditorVistaRestore` - Review: 3 components: `Editor` + `Vista` + `Restore` - line 122
+  - `CEditorEntryOpen` - Review: 3 components: `Editor` + `Entry` + `Open` - line 131
+  - `CEditorEntryUndo` - Review: 3 components: `Editor` + `Entry` + `Undo` - line 146
+  - `CEditorEntrySave` - Review: 3 components: `Editor` + `Entry` + `Save` - line 151
+  - `CEditorStoredShow` - Review: 3 components: `Editor` + `Stored` + `Show` - line 167
 
 #### `CEntry.cs`
 
 - `CEntry`
-  - `_cEntryDraftPort` - Review: 3 components: `Entry` + `Draft` + `Port` - line 11
-  - `_cEntryMediaPort` - Review: 3 components: `Entry` + `Media` + `Port` - line 13
-  - `CEntryDraftChanged` - Review: 3 components: `Entry` + `Draft` + `Changed` - line 36
-  - `CEntryPronunciationRead` - Review: 3 components: `Entry` + `Pronunciation` + `Read` - line 43
-  - `CEntryEtymonRead` - Review: 3 components: `Entry` + `Etymon` + `Read` - line 50
-  - `CEntryHeadwordSet` - Review: 3 components: `Entry` + `Headword` + `Set` - line 57
-  - `CEntryPronunciationSet` - Review: 3 components: `Entry` + `Pronunciation` + `Set` - line 65
-  - `CEntryNoteSet` - Review: 3 components: `Entry` + `Note` + `Set` - line 73
-  - `CEntryNoteCheck` - Review: 3 components: `Entry` + `Note` + `Check` - line 81
-  - `CEntryLanguageSet` - Review: 3 components: `Entry` + `Language` + `Set` - line 83
-  - `CEntryUnitSet` - Review: 3 components: `Entry` + `Unit` + `Set` - line 91
+  - `_cEntryDraftPort` - Review: 3 components: `Entry` + `Draft` + `Port` - line 12
+  - `_cEntryMediaPort` - Review: 3 components: `Entry` + `Media` + `Port` - line 14
+  - `_cEntryCardPort` - Review: 3 components: `Entry` + `Card` + `Port` - line 16
+  - `CEntryDraftChanged` - Review: 3 components: `Entry` + `Draft` + `Changed` - line 57
+  - `LEntryObserverAttach` - Review: 3 components: `Entry` + `Observer` + `Attach` - line 64
+  - `LEntryDraftRead` - Review: 3 components: `Entry` + `Draft` + `Read` - line 71
+  - `LEntryDraftShow` - Review: 3 components: `Entry` + `Draft` + `Show` - line 83
+  - `LEntryFoldRead` - Review: 3 components: `Entry` + `Fold` + `Read` - line 91
+  - `CEntryPronunciationRead` - Review: 3 components: `Entry` + `Pronunciation` + `Read` - line 109
+  - `CEntryEtymonRead` - Review: 3 components: `Entry` + `Etymon` + `Read` - line 116
+  - `CEntryHeadwordSet` - Review: 3 components: `Entry` + `Headword` + `Set` - line 123
+  - `CEntryPronunciationSet` - Review: 3 components: `Entry` + `Pronunciation` + `Set` - line 131
+  - `CEntryNoteSet` - Review: 3 components: `Entry` + `Note` + `Set` - line 139
+  - `CEntryNoteCheck` - Review: 3 components: `Entry` + `Note` + `Check` - line 147
+  - `CEntryLanguageSet` - Review: 3 components: `Entry` + `Language` + `Set` - line 149
+  - `CEntryUnitSet` - Review: 3 components: `Entry` + `Unit` + `Set` - line 157
 
 #### `CErrand.cs`
 
@@ -2699,26 +2730,27 @@ No prefix, shape, base, verb, or count violations were found.
 - `CDisplay`
   - `_cDisplayEntryPort` - Review: 3 components: `Display` + `Entry` + `Port` - line 13
   - `_cDisplayMarkdownPort` - Review: 3 components: `Display` + `Markdown` + `Port` - line 15
-  - `CDisplayFavoriteChanged` - Review: 3 components: `Display` + `Favorite` + `Changed` - line 88
-  - `CDisplayFrequencyChanged` - Review: 3 components: `Display` + `Frequency` + `Changed` - line 90
-  - `CDisplayParadigmChanged` - Review: 3 components: `Display` + `Paradigm` + `Changed` - line 92
-  - `CDisplayReflexChanged` - Review: 3 components: `Display` + `Reflex` + `Changed` - line 94
-  - `CDisplayScriptChanged` - Review: 3 components: `Display` + `Script` + `Changed` - line 96
-  - `CDisplayFanqieChanged` - Review: 3 components: `Display` + `Fanqie` + `Changed` - line 98
-  - `CDisplayEntryChanged` - Review: 3 components: `Display` + `Entry` + `Changed` - line 100
-  - `CDisplayWorkspaceChanged` - Review: 3 components: `Display` + `Workspace` + `Changed` - line 102
-  - `LDisplayNavigationAttach` - Review: 3 components: `Display` + `Navigation` + `Attach` - line 124
-  - `LDisplayVistaRestore` - Review: 3 components: `Display` + `Vista` + `Restore` - line 136
-  - `CDisplayPanelAttach` - Review: 3 components: `Display` + `Panel` + `Attach` - line 170
-  - `LDisplayDraftOpen` - Review: 3 components: `Display` + `Draft` + `Open` - line 178
-  - `LDisplayEntryOpen` - Review: 3 components: `Display` + `Entry` + `Open` - line 183
-  - `LDisplayStampRead` - Review: 3 components: `Display` + `Stamp` + `Read` - line 207
-  - `CDisplayEntryClose` - Review: 3 components: `Display` + `Entry` + `Close` - line 221
-  - `CDisplayEntryResonate` - Review: 3 components: `Display` + `Entry` + `Resonate` - line 228
-  - `CDisplayWorkspaceResonate` - Review: 3 components: `Display` + `Workspace` + `Resonate` - line 238
-  - `CDisplayFavoriteRead` - Review: 3 components: `Display` + `Favorite` + `Read` - line 243
-  - `CDisplayFavoriteToggle` - Review: 3 components: `Display` + `Favorite` + `Toggle` - line 248
-  - `CDisplayFrequencyRead` - Review: 3 components: `Display` + `Frequency` + `Read` - line 254
+  - `CDisplayFavoriteChanged` - Review: 3 components: `Display` + `Favorite` + `Changed` - line 94
+  - `CDisplayFrequencyChanged` - Review: 3 components: `Display` + `Frequency` + `Changed` - line 96
+  - `CDisplayParadigmChanged` - Review: 3 components: `Display` + `Paradigm` + `Changed` - line 98
+  - `CDisplayReflexChanged` - Review: 3 components: `Display` + `Reflex` + `Changed` - line 100
+  - `CDisplayScriptChanged` - Review: 3 components: `Display` + `Script` + `Changed` - line 102
+  - `CDisplayFanqieChanged` - Review: 3 components: `Display` + `Fanqie` + `Changed` - line 104
+  - `CDisplayEntryChanged` - Review: 3 components: `Display` + `Entry` + `Changed` - line 106
+  - `CDisplayWorkspaceChanged` - Review: 3 components: `Display` + `Workspace` + `Changed` - line 108
+  - `CDisplayFoldChanged` - Review: 3 components: `Display` + `Fold` + `Changed` - line 110
+  - `LDisplayNavigationAttach` - Review: 3 components: `Display` + `Navigation` + `Attach` - line 132
+  - `LDisplayVistaRestore` - Review: 3 components: `Display` + `Vista` + `Restore` - line 144
+  - `CDisplayPanelAttach` - Review: 3 components: `Display` + `Panel` + `Attach` - line 179
+  - `LDisplayDraftOpen` - Review: 3 components: `Display` + `Draft` + `Open` - line 187
+  - `LDisplayEntryOpen` - Review: 3 components: `Display` + `Entry` + `Open` - line 192
+  - `LDisplayStampRead` - Review: 3 components: `Display` + `Stamp` + `Read` - line 216
+  - `CDisplayEntryClose` - Review: 3 components: `Display` + `Entry` + `Close` - line 230
+  - `CDisplayEntryResonate` - Review: 3 components: `Display` + `Entry` + `Resonate` - line 237
+  - `CDisplayWorkspaceResonate` - Review: 3 components: `Display` + `Workspace` + `Resonate` - line 247
+  - `CDisplayFavoriteRead` - Review: 3 components: `Display` + `Favorite` + `Read` - line 252
+  - `CDisplayFavoriteToggle` - Review: 3 components: `Display` + `Favorite` + `Toggle` - line 257
+  - `CDisplayFrequencyRead` - Review: 3 components: `Display` + `Frequency` + `Read` - line 263
 
 #### `CDisplayAccent.cs`
 
@@ -2742,11 +2774,13 @@ No prefix, shape, base, verb, or count violations were found.
   - `_cDisplayReferencePort` - Review: 3 components: `Display` + `Reference` + `Port` - line 15
   - `_cDisplayExamplePort` - Review: 3 components: `Display` + `Example` + `Port` - line 17
   - `CDisplayCardRead` - Review: 3 components: `Display` + `Card` + `Read` - line 55
-  - `LDisplayTranslationRead` - Review: 3 components: `Display` + `Translation` + `Read` - line 75
-  - `LDisplayOrderRead` - Review: 3 components: `Display` + `Order` + `Read` - line 89
-  - `LDisplayCitationRead` - Review: 3 components: `Display` + `Citation` + `Read` - line 102
-  - `CDisplayIncomingRead` - Review: 3 components: `Display` + `Incoming` + `Read` - line 115
-  - `CDisplayEtymologyRead` - Review: 3 components: `Display` + `Etymology` + `Read` - line 133
+  - `CDisplayFoldToggle` - Review: 3 components: `Display` + `Fold` + `Toggle` - line 77
+  - `LDisplayFoldRead` - Review: 3 components: `Display` + `Fold` + `Read` - line 105
+  - `LDisplayTranslationRead` - Review: 3 components: `Display` + `Translation` + `Read` - line 123
+  - `LDisplayOrderRead` - Review: 3 components: `Display` + `Order` + `Read` - line 137
+  - `LDisplayCitationRead` - Review: 3 components: `Display` + `Citation` + `Read` - line 150
+  - `CDisplayIncomingRead` - Review: 3 components: `Display` + `Incoming` + `Read` - line 163
+  - `CDisplayEtymologyRead` - Review: 3 components: `Display` + `Etymology` + `Read` - line 181
 
 #### `CDisplayGrasp.cs`
 
@@ -2791,26 +2825,25 @@ No prefix, shape, base, verb, or count violations were found.
 - `CDisplaySound`
   - `_cDisplayEntryPort` - Review: 3 components: `Display` + `Entry` + `Port` - line 23
   - `_cDisplayGlyphPort` - Review: 3 components: `Display` + `Glyph` + `Port` - line 25
-  - `CDisplayFoldChanged` - Review: 3 components: `Display` + `Fold` + `Changed` - line 83
-  - `CDisplayRowChosen` - Review: 3 components: `Display` + `Row` + `Chosen` - line 85
-  - `CDisplayDiweiChosen` - Review: 3 components: `Display` + `Diwei` + `Chosen` - line 87
-  - `CDisplayStemChosen` - Review: 3 components: `Display` + `Stem` + `Chosen` - line 89
-  - `CDisplayFoldOpened` - Review: 3 components: `Display` + `Fold` + `Opened` - line 91
-  - `CDisplayGlyphRead` - Review: 3 components: `Display` + `Glyph` + `Read` - line 97
-  - `CDisplayGlyphOpen` - Review: 3 components: `Display` + `Glyph` + `Open` - line 132
-  - `CDisplayTranscriptionRead` - Review: 3 components: `Display` + `Transcription` + `Read` - line 145
-  - `CDisplayReflexRead` - Review: 3 components: `Display` + `Reflex` + `Read` - line 163
-  - `CDisplayReflexResonate` - Review: 3 components: `Display` + `Reflex` + `Resonate` - line 175
-  - `CDisplayReflexToggle` - Review: 3 components: `Display` + `Reflex` + `Toggle` - line 185
-  - `CDisplayFanqieRead` - Review: 3 components: `Display` + `Fanqie` + `Read` - line 191
-  - `CDisplayFanqieSet` - Review: 3 components: `Display` + `Fanqie` + `Set` - line 208
-  - `CDisplayDiweiOpen` - Review: 3 components: `Display` + `Diwei` + `Open` - line 226
-  - `CDisplayStemOpen` - Review: 3 components: `Display` + `Stem` + `Open` - line 237
-  - `CDisplayScriptRead` - Review: 3 components: `Display` + `Script` + `Read` - line 248
-  - `CDisplayParadigmRead` - Review: 3 components: `Display` + `Paradigm` + `Read` - line 263
-  - `LDisplayReflexScan` - Review: 3 components: `Display` + `Reflex` + `Scan` - line 285
-  - `LDisplayAnchorRead` - Review: 3 components: `Display` + `Anchor` + `Read` - line 301
-  - `CDisplayFontRead` - Review: 3 components: `Display` + `Font` + `Read` - line 313
+  - `CDisplayRowChosen` - Review: 3 components: `Display` + `Row` + `Chosen` - line 83
+  - `CDisplayDiweiChosen` - Review: 3 components: `Display` + `Diwei` + `Chosen` - line 85
+  - `CDisplayStemChosen` - Review: 3 components: `Display` + `Stem` + `Chosen` - line 87
+  - `CDisplayFoldOpened` - Review: 3 components: `Display` + `Fold` + `Opened` - line 89
+  - `CDisplayGlyphRead` - Review: 3 components: `Display` + `Glyph` + `Read` - line 95
+  - `CDisplayGlyphOpen` - Review: 3 components: `Display` + `Glyph` + `Open` - line 130
+  - `CDisplayTranscriptionRead` - Review: 3 components: `Display` + `Transcription` + `Read` - line 143
+  - `CDisplayReflexRead` - Review: 3 components: `Display` + `Reflex` + `Read` - line 161
+  - `CDisplayReflexResonate` - Review: 3 components: `Display` + `Reflex` + `Resonate` - line 176
+  - `CDisplayReflexToggle` - Review: 3 components: `Display` + `Reflex` + `Toggle` - line 186
+  - `CDisplayFanqieRead` - Review: 3 components: `Display` + `Fanqie` + `Read` - line 205
+  - `CDisplayFanqieSet` - Review: 3 components: `Display` + `Fanqie` + `Set` - line 222
+  - `CDisplayDiweiOpen` - Review: 3 components: `Display` + `Diwei` + `Open` - line 240
+  - `CDisplayStemOpen` - Review: 3 components: `Display` + `Stem` + `Open` - line 251
+  - `CDisplayScriptRead` - Review: 3 components: `Display` + `Script` + `Read` - line 262
+  - `CDisplayParadigmRead` - Review: 3 components: `Display` + `Paradigm` + `Read` - line 277
+  - `LDisplayReflexScan` - Review: 3 components: `Display` + `Reflex` + `Scan` - line 299
+  - `LDisplayAnchorRead` - Review: 3 components: `Display` + `Anchor` + `Read` - line 315
+  - `CDisplayFontRead` - Review: 3 components: `Display` + `Font` + `Read` - line 327
 
 #### `CGlyphCell.cs`
 
@@ -2911,6 +2944,7 @@ No prefix, shape, base, verb, or count violations were found.
   - `CLecternReflexRows` - Review: 3 components: `Lectern` + `Reflex` + `Rows` - line 6
   - `CLecternReflexAnchor` - Review: 3 components: `Lectern` + `Reflex` + `Anchor` - line 7
   - `CLecternReflexPending` - Review: 3 components: `Lectern` + `Reflex` + `Pending` - line 8
+  - `CLecternReflexFoldable` - Review: 3 components: `Lectern` + `Reflex` + `Foldable` - line 9
 
 #### `CLecternScript.cs`
 
@@ -2947,26 +2981,24 @@ No prefix, shape, base, verb, or count violations were found.
 - `LDisplaySound`
   - `_lDisplaySoundDraft` - Review: 3 components: `Display` + `Sound` + `Draft` - line 26
   - `_lDisplaySoundEntry` - Review: 3 components: `Display` + `Sound` + `Entry` - line 28
-  - `_lDisplaySoundOpened` - Review: 3 components: `Display` + `Sound` + `Opened` - line 30
-  - `_lDisplaySoundReflex` - Review: 3 components: `Display` + `Sound` + `Reflex` - line 32
-  - `LDisplayFoldOpened` - Review: 3 components: `Display` + `Fold` + `Opened` - line 67
-  - `LDisplaySoundFailed` - Review: 3 components: `Display` + `Sound` + `Failed` - line 71
-  - `LDisplayMarkFailed` - Review: 3 components: `Display` + `Mark` + `Failed` - line 73
-  - `LDisplaySoundShow` - Review: 3 components: `Display` + `Sound` + `Show` - line 75
-  - `LDisplaySoundClear` - Review: 3 components: `Display` + `Sound` + `Clear` - line 85
-  - `LDisplayFoldSet` - Review: 3 components: `Display` + `Fold` + `Set` - line 98
-  - `LDisplayReflexLoad` - Review: 3 components: `Display` + `Reflex` + `Load` - line 103
-  - `LDisplayReflexRead` - Review: 3 components: `Display` + `Reflex` + `Read` - line 120
-  - `LDisplayReflexCheck` - Review: 3 components: `Display` + `Reflex` + `Check` - line 126
-  - `LDisplayReflexRebuild` - Review: 3 components: `Display` + `Reflex` + `Rebuild` - line 131
-  - `LDisplayFanqieCheck` - Review: 3 components: `Display` + `Fanqie` + `Check` - line 136
-  - `LDisplayScriptCheck` - Review: 3 components: `Display` + `Script` + `Check` - line 141
-  - `LDisplayParadigmCheck` - Review: 3 components: `Display` + `Paradigm` + `Check` - line 146
-  - `LDisplayMorphologyRead` - Review: 3 components: `Display` + `Morphology` + `Read` - line 151
-  - `LDisplayPlaybackStop` - Review: 3 components: `Display` + `Playback` + `Stop` - line 164
-  - `LDisplayListRead` - Review: 3 components: `Display` + `List` + `Read` - line 169
-  - `LDisplayMarkSend` - Review: 3 components: `Display` + `Mark` + `Send` - line 188
-  - `LDisplayPendingRead` - Review: 3 components: `Display` + `Pending` + `Read` - line 205
+  - `_lDisplaySoundReflex` - Review: 3 components: `Display` + `Sound` + `Reflex` - line 30
+  - `LDisplaySoundFailed` - Review: 3 components: `Display` + `Sound` + `Failed` - line 67
+  - `LDisplayMarkFailed` - Review: 3 components: `Display` + `Mark` + `Failed` - line 69
+  - `LDisplaySoundShow` - Review: 3 components: `Display` + `Sound` + `Show` - line 71
+  - `LDisplaySoundClear` - Review: 3 components: `Display` + `Sound` + `Clear` - line 81
+  - `LDisplaySpreadCheck` - Review: 3 components: `Display` + `Spread` + `Check` - line 94
+  - `LDisplayReflexLoad` - Review: 3 components: `Display` + `Reflex` + `Load` - line 112
+  - `LDisplayReflexRead` - Review: 3 components: `Display` + `Reflex` + `Read` - line 129
+  - `LDisplayReflexCheck` - Review: 3 components: `Display` + `Reflex` + `Check` - line 135
+  - `LDisplayReflexRebuild` - Review: 3 components: `Display` + `Reflex` + `Rebuild` - line 140
+  - `LDisplayFanqieCheck` - Review: 3 components: `Display` + `Fanqie` + `Check` - line 145
+  - `LDisplayScriptCheck` - Review: 3 components: `Display` + `Script` + `Check` - line 150
+  - `LDisplayParadigmCheck` - Review: 3 components: `Display` + `Paradigm` + `Check` - line 155
+  - `LDisplayMorphologyRead` - Review: 3 components: `Display` + `Morphology` + `Read` - line 160
+  - `LDisplayPlaybackStop` - Review: 3 components: `Display` + `Playback` + `Stop` - line 173
+  - `LDisplayListRead` - Review: 3 components: `Display` + `List` + `Read` - line 178
+  - `LDisplayMarkSend` - Review: 3 components: `Display` + `Mark` + `Send` - line 197
+  - `LDisplayPendingRead` - Review: 3 components: `Display` + `Pending` + `Read` - line 214
 
 
 ### `D:\Programming\Llyn\src\Llyn.Conduct\Draft`
@@ -2986,6 +3018,8 @@ No prefix, shape, base, verb, or count violations were found.
   - `CCardDraftTag` - Review: 3 components: `Card` + `Draft` + `Tag` - line 15
   - `CCardDraftImage` - Review: 3 components: `Card` + `Draft` + `Image` - line 16
   - `CCardDraftVideo` - Review: 3 components: `Card` + `Draft` + `Video` - line 17
+  - `CCardDraftFolded` - Review: 3 components: `Card` + `Draft` + `Folded` - line 18
+  - `CCardDraftStored` - Review: 3 components: `Card` + `Draft` + `Stored` - line 19
 
 #### `CDraft.cs`
 
@@ -3341,6 +3375,14 @@ No prefix, shape, base, verb, or count violations were found.
   - `CMentionResultRead` - Review: 3 components: `Mention` + `Result` + `Read` - line 170
   - `LMentionLineRead` - Review: 3 components: `Mention` + `Line` + `Read` - line 180
   - `LMentionLabelRead` - Review: 3 components: `Mention` + `Label` + `Read` - line 201
+
+
+### `D:\Programming\Llyn\src\Llyn.Conduct\Notice`
+
+#### `CSubject.cs`
+
+- `CSubject`
+  - `CSubjectStemFold` - Review: 3 components: `Subject` + `Stem` + `Fold` - line 45
 
 
 ### `D:\Programming\Llyn\src\Llyn.Conduct\Panel`
@@ -3942,15 +3984,16 @@ No prefix, shape, base, verb, or count violations were found.
   - `LXieshengStemChosen` - Review: 3 components: `Xiesheng` + `Stem` + `Chosen` - line 75
   - `LXieshengVistaRestore` - Review: 3 components: `Xiesheng` + `Vista` + `Restore` - line 77
   - `LXieshengObserverAttach` - Review: 3 components: `Xiesheng` + `Observer` + `Attach` - line 85
-  - `CXieshengOrderRead` - Review: 3 components: `Xiesheng` + `Order` + `Read` - line 96
-  - `CXieshengGroveRead` - Review: 3 components: `Xiesheng` + `Grove` + `Read` - line 106
-  - `LXieshengKindredFind` - Review: 3 components: `Xiesheng` + `Kindred` + `Find` - line 117
-  - `CXieshengStemRead` - Review: 3 components: `Xiesheng` + `Stem` + `Read` - line 122
-  - `LXieshengWorkspaceResonate` - Review: 3 components: `Xiesheng` + `Workspace` + `Resonate` - line 134
-  - `CXieshengStemSelect` - Review: 3 components: `Xiesheng` + `Stem` + `Select` - line 142
-  - `LXieshengStemToggle` - Review: 3 components: `Xiesheng` + `Stem` + `Toggle` - line 157
-  - `LXieshengStemOpen` - Review: 3 components: `Xiesheng` + `Stem` + `Open` - line 164
-  - `CXieshengGlyphSelect` - Review: 3 components: `Xiesheng` + `Glyph` + `Select` - line 180
+  - `CXieshengOrderRead` - Review: 3 components: `Xiesheng` + `Order` + `Read` - line 98
+  - `CXieshengGroveRead` - Review: 3 components: `Xiesheng` + `Grove` + `Read` - line 108
+  - `LXieshengKindredFind` - Review: 3 components: `Xiesheng` + `Kindred` + `Find` - line 119
+  - `CXieshengStemRead` - Review: 3 components: `Xiesheng` + `Stem` + `Read` - line 124
+  - `CXieshengFoldToggle` - Review: 3 components: `Xiesheng` + `Fold` + `Toggle` - line 136
+  - `LXieshengWorkspaceResonate` - Review: 3 components: `Xiesheng` + `Workspace` + `Resonate` - line 155
+  - `CXieshengStemSelect` - Review: 3 components: `Xiesheng` + `Stem` + `Select` - line 163
+  - `LXieshengStemToggle` - Review: 3 components: `Xiesheng` + `Stem` + `Toggle` - line 178
+  - `LXieshengStemOpen` - Review: 3 components: `Xiesheng` + `Stem` + `Open` - line 185
+  - `CXieshengGlyphSelect` - Review: 3 components: `Xiesheng` + `Glyph` + `Select` - line 201
 
 #### `CYunjing.cs`
 
@@ -4180,12 +4223,12 @@ No prefix, shape, base, verb, or count violations were found.
 #### `CFold.cs`
 
 - `CFold`
-  - `_cFoldSettingsPort` - Review: 3 components: `Fold` + `Settings` + `Port` - line 8
-  - `LFoldObserverAttach` - Review: 3 components: `Fold` + `Observer` + `Attach` - line 25
-  - `CFoldFanqieOpened` - Review: 3 components: `Fold` + `Fanqie` + `Opened` - line 42
-  - `CFoldScriptOpened` - Review: 3 components: `Fold` + `Script` + `Opened` - line 44
-  - `CFoldFanqieToggle` - Review: 3 components: `Fold` + `Fanqie` + `Toggle` - line 46
-  - `CFoldScriptToggle` - Review: 3 components: `Fold` + `Script` + `Toggle` - line 60
+  - `_cFoldReflexPort` - Review: 3 components: `Fold` + `Reflex` + `Port` - line 11
+  - `_cFoldSettingsPort` - Review: 3 components: `Fold` + `Settings` + `Port` - line 13
+  - `CFoldFanqieOpened` - Review: 3 components: `Fold` + `Fanqie` + `Opened` - line 35
+  - `CFoldScriptOpened` - Review: 3 components: `Fold` + `Script` + `Opened` - line 38
+  - `CFoldFanqieSpread` - Review: 3 components: `Fold` + `Fanqie` + `Spread` - line 41
+  - `CFoldScriptSpread` - Review: 3 components: `Fold` + `Script` + `Spread` - line 60
 
 #### `CFont.cs`
 
@@ -4231,9 +4274,9 @@ No prefix, shape, base, verb, or count violations were found.
   - `_cKindredReflexPort` - Review: 3 components: `Kindred` + `Reflex` + `Port` - line 13
   - `_cKindredDraftPort` - Review: 3 components: `Kindred` + `Draft` + `Port` - line 17
   - `_cKindredSettingsPort` - Review: 3 components: `Kindred` + `Settings` + `Port` - line 19
-  - `LKindredRowRead` - Review: 3 components: `Kindred` + `Row` + `Read` - line 152
-  - `LKindredLeadRead` - Review: 3 components: `Kindred` + `Lead` + `Read` - line 160
-  - `LKindredObserverAttach` - Review: 3 components: `Kindred` + `Observer` + `Attach` - line 168
+  - `LKindredRowRead` - Review: 3 components: `Kindred` + `Row` + `Read` - line 172
+  - `LKindredLeadRead` - Review: 3 components: `Kindred` + `Lead` + `Read` - line 180
+  - `LKindredObserverAttach` - Review: 3 components: `Kindred` + `Observer` + `Attach` - line 188
 
 #### `CLookupStep.cs`
 
@@ -4283,7 +4326,6 @@ No prefix, shape, base, verb, or count violations were found.
   - `CParadigmFormTip` - Review: 3 components: `Paradigm` + `Form` + `Tip` - line 11
   - `CParadigmFormSplit` - Review: 3 components: `Paradigm` + `Form` + `Split` - line 12
   - `CParadigmFormCreate` - Review: 3 components: `Paradigm` + `Form` + `Create` - line 14
-  - `CParadigmFormResolve` - Review: 3 components: `Paradigm` + `Form` + `Resolve` - line 28
 
 #### `CParadigmLine.cs`
 
@@ -4331,13 +4373,14 @@ No prefix, shape, base, verb, or count violations were found.
 #### `CReflex.cs`
 
 - `CReflex`
-  - `CReflexLanguageKey` - Review: 3 components: `Reflex` + `Language` + `Key` - line 24
-  - `CReflexKindKey` - Review: 3 components: `Reflex` + `Kind` + `Key` - line 26
-  - `CReflexHiddenCheck` - Review: 3 components: `Reflex` + `Hidden` + `Check` - line 28
-  - `CReflexTypedApply` - Review: 3 components: `Reflex` + `Typed` + `Apply` - line 33
-  - `LReflexLeadRead` - Review: 3 components: `Reflex` + `Lead` + `Read` - line 49
-  - `LReflexAnchorRead` - Review: 3 components: `Reflex` + `Anchor` + `Read` - line 64
-  - `LReflexKeyRead` - Review: 3 components: `Reflex` + `Key` + `Read` - line 102
+  - `CReflexLanguageKey` - Review: 3 components: `Reflex` + `Language` + `Key` - line 25
+  - `CReflexKindKey` - Review: 3 components: `Reflex` + `Kind` + `Key` - line 27
+  - `CReflexHiddenCheck` - Review: 3 components: `Reflex` + `Hidden` + `Check` - line 29
+  - `CReflexTypedApply` - Review: 3 components: `Reflex` + `Typed` + `Apply` - line 34
+  - `LReflexFoldCheck` - Review: 3 components: `Reflex` + `Fold` + `Check` - line 50
+  - `LReflexLeadRead` - Review: 3 components: `Reflex` + `Lead` + `Read` - line 57
+  - `LReflexAnchorRead` - Review: 3 components: `Reflex` + `Anchor` + `Read` - line 72
+  - `LReflexKeyRead` - Review: 3 components: `Reflex` + `Key` + `Read` - line 110
 
 #### `CReflexField.cs`
 
@@ -4365,7 +4408,8 @@ No prefix, shape, base, verb, or count violations were found.
 
 - `CRespelling`
   - `LRespellingReflexScan` - Review: 3 components: `Respelling` + `Reflex` + `Scan` - line 11
-  - `LRespellingReflexRead` - Review: 3 components: `Respelling` + `Reflex` + `Read` - line 23
+  - `LRespellingReflexScan` - Review: 3 components: `Respelling` + `Reflex` + `Scan` - line 22
+  - `LRespellingReflexRead` - Review: 3 components: `Respelling` + `Reflex` + `Read` - line 33
 
 #### `CRespellingMark.cs`
 
@@ -4447,12 +4491,23 @@ No prefix, shape, base, verb, or count violations were found.
   - `CSoundingScriptRebuildable` - Review: 3 components: `Sounding` + `Script` + `Rebuildable` - line 8
   - `CSoundingScriptFont` - Review: 3 components: `Sounding` + `Script` + `Font` - line 9
 
+#### `CStemMember.cs`
+
+- `CStemMember`
+  - `CStemMemberCharacter` - Review: 3 components: `Stem` + `Member` + `Character` - line 9
+  - `CStemMemberReading` - Review: 3 components: `Stem` + `Member` + `Reading` - line 10
+  - `CStemMemberReflexes` - Review: 3 components: `Stem` + `Member` + `Reflexes` - line 11
+  - `CStemMemberOpened` - Review: 3 components: `Stem` + `Member` + `Opened` - line 12
+  - `CStemMemberFoldable` - Review: 3 components: `Stem` + `Member` + `Foldable` - line 13
+  - `LStemMemberRead` - Review: 3 components: `Stem` + `Member` + `Read` - line 15
+  - `LStemMemberRead` - Review: 3 components: `Stem` + `Member` + `Read` - line 22
+
 #### `CStemPage.cs`
 
 - `CStemPage`
   - `CStemPageLanguage` - Review: 3 components: `Stem` + `Page` + `Language` - line 6
   - `CStemPageKey` - Review: 3 components: `Stem` + `Page` + `Key` - line 7
-  - `CStemPageCharacters` - Review: 3 components: `Stem` + `Page` + `Characters` - line 8
+  - `CStemPageMembers` - Review: 3 components: `Stem` + `Page` + `Members` - line 8
   - `CStemPageEmpty` - Review: 3 components: `Stem` + `Page` + `Empty` - line 9
   - `CStemPageFont` - Review: 3 components: `Stem` + `Page` + `Font` - line 10
   - `CStemPageGlyph` - Review: 3 components: `Stem` + `Page` + `Glyph` - line 11
@@ -4512,6 +4567,7 @@ No prefix, shape, base, verb, or count violations were found.
   - `CTimbreReflexAnchor` - Review: 3 components: `Timbre` + `Reflex` + `Anchor` - line 8
   - `CTimbreReflexOpened` - Review: 3 components: `Timbre` + `Reflex` + `Opened` - line 9
   - `CTimbreReflexPending` - Review: 3 components: `Timbre` + `Reflex` + `Pending` - line 10
+  - `CTimbreReflexFoldable` - Review: 3 components: `Timbre` + `Reflex` + `Foldable` - line 11
 
 #### `CTranscription.cs`
 
@@ -4787,12 +4843,6 @@ No prefix, shape, base, verb, or count violations were found.
   - `LPostureStateSplit` - Review: 3 components: `Posture` + `State` + `Split` - line 8
   - `LPostureStateVolume` - Review: 3 components: `Posture` + `State` + `Volume` - line 9
 
-#### `LSettings.cs`
-
-- `LSettings`
-  - `LSettingsFanqieOpened` - Review: 3 components: `Settings` + `Fanqie` + `Opened` - line 11
-  - `LSettingsScriptOpened` - Review: 3 components: `Settings` + `Script` + `Opened` - line 12
-
 #### `LWorkspaceState.cs`
 
 - `LWorkspaceState`
@@ -4857,8 +4907,9 @@ No prefix, shape, base, verb, or count violations were found.
   - `LCardDraftMeaning` - Review: 3 components: `Card` + `Draft` + `Meaning` - line 29
   - `LCardDraftNormalize` - Review: 3 components: `Card` + `Draft` + `Normalize` - line 32
   - `LCardDraftExemplified` - Review: 3 components: `Card` + `Draft` + `Exemplified` - line 48
-  - `LCardDraftTally` - Review: 3 components: `Card` + `Draft` + `Tally` - line 50
-  - `LCardDraftEmpty` - Review: 3 components: `Card` + `Draft` + `Empty` - line 52
+  - `LCardDraftStored` - Review: 3 components: `Card` + `Draft` + `Stored` - line 50
+  - `LCardDraftTally` - Review: 3 components: `Card` + `Draft` + `Tally` - line 52
+  - `LCardDraftEmpty` - Review: 3 components: `Card` + `Draft` + `Empty` - line 54
 
 #### `LCardKind.cs`
 
@@ -5052,6 +5103,12 @@ No prefix, shape, base, verb, or count violations were found.
 - `LFeature`
   - `LFeatureSpeechId` - Review: 3 components: `Feature` + `Speech` + `Id` - line 5
 
+#### `LFoldBox.cs`
+
+- `LFoldBox`
+  - `LFoldBoxFanqie` - Review: 3 components: `Fold` + `Box` + `Fanqie` - line 5
+  - `LFoldBoxScript` - Review: 3 components: `Fold` + `Box` + `Script` - line 7
+
 #### `LForm.cs`
 
 - `LForm`
@@ -5079,7 +5136,7 @@ No prefix, shape, base, verb, or count violations were found.
 - `LParadigmForm`
   - `LParadigmFormText` - Review: 3 components: `Paradigm` + `Form` + `Text` - line 6
   - `LParadigmFormMarks` - Review: 3 components: `Paradigm` + `Form` + `Marks` - line 7
-  - `LParadigmFormStatus` - Review: 3 components: `Paradigm` + `Form` + `Status` - line 8
+  - `LParadigmFormTip` - Review: 3 components: `Paradigm` + `Form` + `Tip` - line 8
   - `LParadigmFormSplit` - Review: 3 components: `Paradigm` + `Form` + `Split` - line 9
 
 #### `LParadigmLine.cs`
@@ -5109,6 +5166,13 @@ No prefix, shape, base, verb, or count violations were found.
   - `_lParadigmRuleRegex` - Review: 3 components: `Paradigm` + `Rule` + `Regex` - line 11
   - `LParadigmRuleResolve` - Review: 3 components: `Paradigm` + `Rule` + `Resolve` - line 14
 
+#### `LParadigmShown.cs`
+
+- `LParadigmShown`
+  - `LParadigmShownText` - Review: 3 components: `Paradigm` + `Shown` + `Text` - line 5
+  - `LParadigmShownTip` - Review: 3 components: `Paradigm` + `Shown` + `Tip` - line 5
+  - `LParadigmShownResolve` - Review: 3 components: `Paradigm` + `Shown` + `Resolve` - line 7
+
 #### `LParadigmSlot.cs`
 
 - `LParadigmSlot`
@@ -5124,7 +5188,8 @@ No prefix, shape, base, verb, or count violations were found.
   - `LParadigmSlotKey` - Review: 3 components: `Paradigm` + `Slot` + `Key` - line 24
   - `LParadigmSlotName` - Review: 3 components: `Paradigm` + `Slot` + `Name` - line 27
   - `LParadigmSlotCheck` - Review: 3 components: `Paradigm` + `Slot` + `Check` - line 30
-  - `LParadigmSlotMatch` - Review: 3 components: `Paradigm` + `Slot` + `Match` - line 52
+  - `LParadigmSlotShow` - Review: 3 components: `Paradigm` + `Slot` + `Show` - line 52
+  - `LParadigmSlotMatch` - Review: 3 components: `Paradigm` + `Slot` + `Match` - line 58
 
 #### `LParadigmStatus.cs`
 
@@ -5147,8 +5212,8 @@ No prefix, shape, base, verb, or count violations were found.
   - `LParadigmViewCollapsed` - Review: 3 components: `Paradigm` + `View` + `Collapsed` - line 8
   - `LParadigmViewExpanded` - Review: 3 components: `Paradigm` + `View` + `Expanded` - line 9
   - `LParadigmViewScan` - Review: 3 components: `Paradigm` + `View` + `Scan` - line 11
-  - `LParadigmViewResolve` - Review: 3 components: `Paradigm` + `View` + `Resolve` - line 37
-  - `LParadigmViewDivide` - Review: 3 components: `Paradigm` + `View` + `Divide` - line 97
+  - `LParadigmViewResolve` - Review: 3 components: `Paradigm` + `View` + `Resolve` - line 40
+  - `LParadigmViewDivide` - Review: 3 components: `Paradigm` + `View` + `Divide` - line 102
 
 #### `LUnitKey.cs`
 
@@ -6154,14 +6219,22 @@ No prefix, shape, base, verb, or count violations were found.
   - `LMarkupReflexFormat` - Review: 3 components: `Markup` + `Reflex` + `Format` - line 166
 
 
+### `D:\Programming\Llyn\src\Llyn.Core\Notice`
+
+#### `LSubject.cs`
+
+- `LSubject`
+  - `LSubjectStemFold` - Review: 3 components: `Subject` + `Stem` + `Fold` - line 45
+
+
 ### `D:\Programming\Llyn\src\Llyn.Core\Outpost`
 
 #### `LLivery.cs`
 
 - `LLivery`
-  - `LLiveryMarkFormat` - Review: 3 components: `Livery` + `Mark` + `Format` - line 26
-  - `LLiveryIdFormat` - Review: 3 components: `Livery` + `Id` + `Format` - line 28
-  - `LLiveryDigestFormat` - Review: 3 components: `Livery` + `Digest` + `Format` - line 30
+  - `LLiveryMarkFormat` - Review: 3 components: `Livery` + `Mark` + `Format` - line 23
+  - `LLiveryIdFormat` - Review: 3 components: `Livery` + `Id` + `Format` - line 25
+  - `LLiveryDigestFormat` - Review: 3 components: `Livery` + `Digest` + `Format` - line 27
 
 #### `LLiveryDiwei.cs`
 
@@ -6174,9 +6247,8 @@ No prefix, shape, base, verb, or count violations were found.
 
 - `LLiveryLanguage`
   - `LLiveryLanguageName` - Review: 3 components: `Livery` + `Language` + `Name` - line 6
-  - `LLiveryLanguagePronunciation` - Review: 3 components: `Livery` + `Language` + `Pronunciation` - line 7
-  - `LLiveryLanguageStem` - Review: 3 components: `Livery` + `Language` + `Stem` - line 8
-  - `LLiveryLanguageDiwei` - Review: 3 components: `Livery` + `Language` + `Diwei` - line 9
+  - `LLiveryLanguageStem` - Review: 3 components: `Livery` + `Language` + `Stem` - line 7
+  - `LLiveryLanguageDiwei` - Review: 3 components: `Livery` + `Language` + `Diwei` - line 8
 
 #### `LLiveryNote.cs`
 
@@ -6195,19 +6267,21 @@ No prefix, shape, base, verb, or count violations were found.
   - `LLiveryPageAccent` - Review: 3 components: `Livery` + `Page` + `Accent` - line 11
   - `LLiveryPageGuise` - Review: 3 components: `Livery` + `Page` + `Guise` - line 12
   - `LLiveryPageFolded` - Review: 3 components: `Livery` + `Page` + `Folded` - line 13
-  - `LLiveryPageTranscription` - Review: 3 components: `Livery` + `Page` + `Transcription` - line 14
-  - `LLiveryPageGlyph` - Review: 3 components: `Livery` + `Page` + `Glyph` - line 15
-  - `LLiveryPageCell` - Review: 3 components: `Livery` + `Page` + `Cell` - line 16
-  - `LLiveryPageFrequency` - Review: 3 components: `Livery` + `Page` + `Frequency` - line 17
-  - `LLiveryPageParadigm` - Review: 3 components: `Livery` + `Page` + `Paradigm` - line 18
-  - `LLiveryPageFanqie` - Review: 3 components: `Livery` + `Page` + `Fanqie` - line 19
-  - `LLiveryPageScript` - Review: 3 components: `Livery` + `Page` + `Script` - line 20
-  - `LLiveryPageTarget` - Review: 3 components: `Livery` + `Page` + `Target` - line 21
-  - `LLiveryPageSource` - Review: 3 components: `Livery` + `Page` + `Source` - line 22
-  - `LLiveryPageIncoming` - Review: 3 components: `Livery` + `Page` + `Incoming` - line 23
-  - `LLiveryPageEtymon` - Review: 3 components: `Livery` + `Page` + `Etymon` - line 24
-  - `LLiveryPageBanner` - Review: 3 components: `Livery` + `Page` + `Banner` - line 25
-  - `LLiveryPageEnsign` - Review: 3 components: `Livery` + `Page` + `Ensign` - line 26
+  - `LLiveryPageFold` - Review: 3 components: `Livery` + `Page` + `Fold` - line 14
+  - `LLiveryPageTranscription` - Review: 3 components: `Livery` + `Page` + `Transcription` - line 15
+  - `LLiveryPageGlyph` - Review: 3 components: `Livery` + `Page` + `Glyph` - line 16
+  - `LLiveryPageCell` - Review: 3 components: `Livery` + `Page` + `Cell` - line 17
+  - `LLiveryPageFrequency` - Review: 3 components: `Livery` + `Page` + `Frequency` - line 18
+  - `LLiveryPageParadigm` - Review: 3 components: `Livery` + `Page` + `Paradigm` - line 19
+  - `LLiveryPageInflection` - Review: 3 components: `Livery` + `Page` + `Inflection` - line 20
+  - `LLiveryPageFanqie` - Review: 3 components: `Livery` + `Page` + `Fanqie` - line 21
+  - `LLiveryPageScript` - Review: 3 components: `Livery` + `Page` + `Script` - line 22
+  - `LLiveryPageTarget` - Review: 3 components: `Livery` + `Page` + `Target` - line 23
+  - `LLiveryPageSource` - Review: 3 components: `Livery` + `Page` + `Source` - line 24
+  - `LLiveryPageIncoming` - Review: 3 components: `Livery` + `Page` + `Incoming` - line 25
+  - `LLiveryPageEtymon` - Review: 3 components: `Livery` + `Page` + `Etymon` - line 26
+  - `LLiveryPageBanner` - Review: 3 components: `Livery` + `Page` + `Banner` - line 27
+  - `LLiveryPageEnsign` - Review: 3 components: `Livery` + `Page` + `Ensign` - line 28
 
 #### `LLiveryStem.cs`
 
@@ -6642,8 +6716,9 @@ No prefix, shape, base, verb, or count violations were found.
   - `LFanqieGroupStems` - Review: 3 components: `Fanqie` + `Group` + `Stems` - line 12
   - `LFanqieGroupStems` - Review: 3 components: `Fanqie` + `Group` + `Stems` - line 14
   - `LFanqieReadingFormat` - Review: 3 components: `Fanqie` + `Reading` + `Format` - line 16
-  - `LFanqieMarkedFind` - Review: 3 components: `Fanqie` + `Marked` + `Find` - line 33
-  - `LFanqieGroupScan` - Review: 3 components: `Fanqie` + `Group` + `Scan` - line 65
+  - `LFanqieReadingFormat` - Review: 3 components: `Fanqie` + `Reading` + `Format` - line 26
+  - `LFanqieMarkedScan` - Review: 3 components: `Fanqie` + `Marked` + `Scan` - line 36
+  - `LFanqieGroupScan` - Review: 3 components: `Fanqie` + `Group` + `Scan` - line 49
 
 #### `LFanqieRow.cs`
 
@@ -6778,9 +6853,10 @@ No prefix, shape, base, verb, or count violations were found.
 #### `LReflexGuise.cs`
 
 - `LReflexGuise`
-  - `LReflexGuiseRespelled` - Review: 3 components: `Reflex` + `Guise` + `Respelled` - line 3
-  - `LReflexGuisePhonemic` - Review: 3 components: `Reflex` + `Guise` + `Phonemic` - line 3
-  - `LReflexGuiseFolded` - Review: 3 components: `Reflex` + `Guise` + `Folded` - line 3
+  - `LReflexGuiseRespelled` - Review: 3 components: `Reflex` + `Guise` + `Respelled` - line 6
+  - `LReflexGuisePhonemic` - Review: 3 components: `Reflex` + `Guise` + `Phonemic` - line 6
+  - `LReflexGuiseFolded` - Review: 3 components: `Reflex` + `Guise` + `Folded` - line 6
+  - `LReflexGuiseFind` - Review: 3 components: `Reflex` + `Guise` + `Find` - line 8
 
 #### `LReflexOrder.cs`
 
@@ -7000,14 +7076,31 @@ No prefix, shape, base, verb, or count violations were found.
 - `LStem`
   - `LStemKeyScan` - Review: 3 components: `Stem` + `Key` + `Scan` - line 14
 
+#### `LStemMember.cs`
+
+- `LStemMember`
+  - `LStemMemberCharacter` - Review: 3 components: `Stem` + `Member` + `Character` - line 8
+  - `LStemMemberReadings` - Review: 3 components: `Stem` + `Member` + `Readings` - line 9
+  - `LStemMemberReflexes` - Review: 3 components: `Stem` + `Member` + `Reflexes` - line 10
+  - `LStemMemberGuises` - Review: 3 components: `Stem` + `Member` + `Guises` - line 11
+  - `LStemMemberGuises` - Review: 3 components: `Stem` + `Member` + `Guises` - line 13
+  - `LStemMemberOpened` - Review: 3 components: `Stem` + `Member` + `Opened` - line 15
+  - `LStemMemberReading` - Review: 3 components: `Stem` + `Member` + `Reading` - line 17
+  - `LStemMemberRows` - Review: 3 components: `Stem` + `Member` + `Rows` - line 19
+  - `LStemMemberLanguages` - Review: 3 components: `Stem` + `Member` + `Languages` - line 24
+  - `LStemBareScan` - Review: 3 components: `Stem` + `Bare` + `Scan` - line 27
+  - `LStemMemberFind` - Review: 3 components: `Stem` + `Member` + `Find` - line 34
+
 #### `LStemPage.cs`
 
 - `LStemPage`
   - `LStemPageLanguage` - Review: 3 components: `Stem` + `Page` + `Language` - line 6
   - `LStemPageKey` - Review: 3 components: `Stem` + `Page` + `Key` - line 7
   - `LStemPageCharacters` - Review: 3 components: `Stem` + `Page` + `Characters` - line 8
-  - `LStemPageBlank` - Review: 3 components: `Stem` + `Page` + `Blank` - line 10
-  - `LStemPageEmpty` - Review: 3 components: `Stem` + `Page` + `Empty` - line 12
+  - `LStemPageMembers` - Review: 3 components: `Stem` + `Page` + `Members` - line 9
+  - `LStemPageBlank` - Review: 3 components: `Stem` + `Page` + `Blank` - line 11
+  - `LStemPageMembers` - Review: 3 components: `Stem` + `Page` + `Members` - line 13
+  - `LStemPageEmpty` - Review: 3 components: `Stem` + `Page` + `Empty` - line 16
 
 
 ### `D:\Programming\Llyn\src\Llyn.Core\Pronunciation\Source`
@@ -7145,7 +7238,8 @@ No prefix, shape, base, verb, or count violations were found.
   - `LRigKeepingWorkspaces` - Review: 3 components: `Rig` + `Keeping` + `Workspaces` - line 6
   - `LRigKeepingTombstones` - Review: 3 components: `Rig` + `Keeping` + `Tombstones` - line 7
   - `LRigKeepingFavorites` - Review: 3 components: `Rig` + `Keeping` + `Favorites` - line 8
-  - `LRigKeepingNotes` - Review: 3 components: `Rig` + `Keeping` + `Notes` - line 9
+  - `LRigKeepingFolds` - Review: 3 components: `Rig` + `Keeping` + `Folds` - line 9
+  - `LRigKeepingNotes` - Review: 3 components: `Rig` + `Keeping` + `Notes` - line 10
 
 #### `LRigLexicon.cs`
 
@@ -7254,6 +7348,16 @@ No prefix, shape, base, verb, or count violations were found.
   - `LExampleReferenceRead` - Review: 3 components: `Example` + `Reference` + `Read` - line 19
   - `LExampleReferenceRead` - Review: 3 components: `Example` + `Reference` + `Read` - line 21
   - `LExampleUsageRead` - Review: 3 components: `Example` + `Usage` + `Read` - line 25
+
+#### `LFoldVault.cs`
+
+- `LFoldVault`
+  - `LFoldReflexSpread` - Review: 3 components: `Fold` + `Reflex` + `Spread` - line 13
+  - `LFoldReflexCheck` - Review: 3 components: `Fold` + `Reflex` + `Check` - line 15
+  - `LFoldBoxSpread` - Review: 3 components: `Fold` + `Box` + `Spread` - line 17
+  - `LFoldBoxCheck` - Review: 3 components: `Fold` + `Box` + `Check` - line 19
+  - `LFoldStemSpread` - Review: 3 components: `Fold` + `Stem` + `Spread` - line 21
+  - `LFoldStemCheck` - Review: 3 components: `Fold` + `Stem` + `Check` - line 23
 
 #### `LGlossVault.cs`
 
@@ -7586,14 +7690,12 @@ No prefix, shape, base, verb, or count violations were found.
   - `LSettingsLoaderEpithet` - Review: 3 components: `Settings` + `Loader` + `Epithet` - line 18
   - `LSettingsLoaderTally` - Review: 3 components: `Settings` + `Loader` + `Tally` - line 19
   - `LSettingsLoaderGloss` - Review: 3 components: `Settings` + `Loader` + `Gloss` - line 20
-  - `LSettingsLoaderFanqie` - Review: 3 components: `Settings` + `Loader` + `Fanqie` - line 21
-  - `LSettingsLoaderScript` - Review: 3 components: `Settings` + `Loader` + `Script` - line 22
-  - `LSettingsLoaderOutpost` - Review: 3 components: `Settings` + `Loader` + `Outpost` - line 23
-  - `LSettingsLoaderWarrant` - Review: 3 components: `Settings` + `Loader` + `Warrant` - line 24
-  - `LSettingsLoaderAnalysis` - Review: 3 components: `Settings` + `Loader` + `Analysis` - line 25
-  - `LSettingsLoaderDefault` - Review: 3 components: `Settings` + `Loader` + `Default` - line 26
-  - `_lSettingsLoaderRoot` - Review: 3 components: `Settings` + `Loader` + `Root` - line 28
-  - `_lSettingsLoaderUnread` - Review: 3 components: `Settings` + `Loader` + `Unread` - line 29
+  - `LSettingsLoaderOutpost` - Review: 3 components: `Settings` + `Loader` + `Outpost` - line 21
+  - `LSettingsLoaderWarrant` - Review: 3 components: `Settings` + `Loader` + `Warrant` - line 22
+  - `LSettingsLoaderAnalysis` - Review: 3 components: `Settings` + `Loader` + `Analysis` - line 23
+  - `LSettingsLoaderDefault` - Review: 3 components: `Settings` + `Loader` + `Default` - line 24
+  - `_lSettingsLoaderRoot` - Review: 3 components: `Settings` + `Loader` + `Root` - line 26
+  - `_lSettingsLoaderUnread` - Review: 3 components: `Settings` + `Loader` + `Unread` - line 27
 
 #### `LTrailSystem.cs`
 
@@ -7884,6 +7986,18 @@ No prefix, shape, base, verb, or count violations were found.
   - `LEtymologyMentionRead` - Review: 3 components: `Etymology` + `Mention` + `Read` - line 151
   - `LEtymologyMentionSave` - Review: 3 components: `Etymology` + `Mention` + `Save` - line 173
 
+#### `LFoldArchive.cs`
+
+- `LFoldArchive`
+  - `_lFoldArchiveDatabase` - Review: 3 components: `Fold` + `Archive` + `Database` - line 11
+  - `LFoldReflexSpread` - Review: 3 components: `Fold` + `Reflex` + `Spread` - line 86
+  - `LFoldReflexCheck` - Review: 3 components: `Fold` + `Reflex` + `Check` - line 105
+  - `LFoldBoxSpread` - Review: 3 components: `Fold` + `Box` + `Spread` - line 114
+  - `LFoldBoxCheck` - Review: 3 components: `Fold` + `Box` + `Check` - line 134
+  - `LFoldStemSpread` - Review: 3 components: `Fold` + `Stem` + `Spread` - line 144
+  - `LFoldStemCheck` - Review: 3 components: `Fold` + `Stem` + `Check` - line 166
+  - `LFoldTableSelect` - Review: 3 components: `Fold` + `Table` + `Select` - line 178
+
 #### `LGlossArchive.cs`
 
 - `LGlossArchive`
@@ -8030,6 +8144,11 @@ No prefix, shape, base, verb, or count violations were found.
 
 - `LSchemaEtymology`
   - `LSchemaEtymologyCreate` - Review: 3 components: `Schema` + `Etymology` + `Create` - line 8
+
+#### `LSchemaFold.cs`
+
+- `LSchemaFold`
+  - `LSchemaFoldCreate` - Review: 3 components: `Schema` + `Fold` + `Create` - line 8
 
 #### `LSchemaImage.cs`
 
@@ -8515,14 +8634,14 @@ No prefix, shape, base, verb, or count violations were found.
   - `LLiveryCardAppend` - Review: 3 components: `Livery` + `Card` + `Append` - line 13
   - `LLiveryDeckAppend` - Review: 3 components: `Livery` + `Deck` + `Append` - line 31
   - `LLiveryFaceAppend` - Review: 3 components: `Livery` + `Face` + `Append` - line 51
-  - `LLiveryNumberFormat` - Review: 3 components: `Livery` + `Number` + `Format` - line 116
-  - `LLiverySentenceAppend` - Review: 3 components: `Livery` + `Sentence` + `Append` - line 122
-  - `LLiveryTargetAppend` - Review: 3 components: `Livery` + `Target` + `Append` - line 172
-  - `LLiveryBadgeAppend` - Review: 3 components: `Livery` + `Badge` + `Append` - line 200
-  - `LLiveryMediaAppend` - Review: 3 components: `Livery` + `Media` + `Append` - line 221
-  - `LLiveryIncomingAppend` - Review: 3 components: `Livery` + `Incoming` + `Append` - line 259
-  - `LLiveryAddressFormat` - Review: 3 components: `Livery` + `Address` + `Format` - line 304
-  - `LLiveryAddressCheck` - Review: 3 components: `Livery` + `Address` + `Check` - line 311
+  - `LLiveryNumberFormat` - Review: 3 components: `Livery` + `Number` + `Format` - line 129
+  - `LLiverySentenceAppend` - Review: 3 components: `Livery` + `Sentence` + `Append` - line 135
+  - `LLiveryTargetAppend` - Review: 3 components: `Livery` + `Target` + `Append` - line 185
+  - `LLiveryBadgeAppend` - Review: 3 components: `Livery` + `Badge` + `Append` - line 213
+  - `LLiveryMediaAppend` - Review: 3 components: `Livery` + `Media` + `Append` - line 234
+  - `LLiveryIncomingAppend` - Review: 3 components: `Livery` + `Incoming` + `Append` - line 272
+  - `LLiveryAddressFormat` - Review: 3 components: `Livery` + `Address` + `Format` - line 317
+  - `LLiveryAddressCheck` - Review: 3 components: `Livery` + `Address` + `Check` - line 324
 
 #### `LLiveryEtymology.cs`
 
@@ -8546,20 +8665,22 @@ No prefix, shape, base, verb, or count violations were found.
   - `LLiveryPictureFormat` - Review: 3 components: `Livery` + `Picture` + `Format` - line 124
   - `LLiveryStarAppend` - Review: 3 components: `Livery` + `Star` + `Append` - line 153
 
-#### `LLiveryPhonology.cs`
+#### `LLiveryInflection.cs`
 
-- `LLiveryPhonology`
-  - `LLiveryPhonologyAppend` - Review: 3 components: `Livery` + `Phonology` + `Append` - line 9
+- `LLiveryInflection`
+  - `LLiveryInflectionAppend` - Review: 3 components: `Livery` + `Inflection` + `Append` - line 10
+  - `LLiveryTableFormat` - Review: 3 components: `Livery` + `Table` + `Format` - line 40
+  - `LLiveryInflectionFormat` - Review: 3 components: `Livery` + `Inflection` + `Format` - line 80
 
 #### `LLiveryRime.cs`
 
 - `LLiveryRime`
   - `LLiveryRimeColumns` - Review: 3 components: `Livery` + `Rime` + `Columns` - line 11
   - `LLiveryRimeAppend` - Review: 3 components: `Livery` + `Rime` + `Append` - line 13
-  - `LLiveryParadigmAppend` - Review: 3 components: `Livery` + `Paradigm` + `Append` - line 30
-  - `LLiveryFanqieAppend` - Review: 3 components: `Livery` + `Fanqie` + `Append` - line 53
-  - `LLiveryRowFormat` - Review: 3 components: `Livery` + `Row` + `Format` - line 130
-  - `LLiveryChipFormat` - Review: 3 components: `Livery` + `Chip` + `Format` - line 141
+  - `LLiveryParadigmAppend` - Review: 3 components: `Livery` + `Paradigm` + `Append` - line 31
+  - `LLiveryFanqieAppend` - Review: 3 components: `Livery` + `Fanqie` + `Append` - line 54
+  - `LLiveryRowFormat` - Review: 3 components: `Livery` + `Row` + `Format` - line 131
+  - `LLiveryChipFormat` - Review: 3 components: `Livery` + `Chip` + `Format` - line 142
 
 #### `LLiveryScript.cs`
 
@@ -8576,16 +8697,16 @@ No prefix, shape, base, verb, or count violations were found.
   - `LLiveryAudioCeiling` - Review: 3 components: `Livery` + `Audio` + `Ceiling` - line 20
   - `LLiveryVideoHead` - Review: 3 components: `Livery` + `Video` + `Head` - line 22
   - `LLiveryVideoCeiling` - Review: 3 components: `Livery` + `Video` + `Ceiling` - line 24
-  - `LLiveryMarkFormat` - Review: 3 components: `Livery` + `Mark` + `Format` - line 103
-  - `LLiveryIdFormat` - Review: 3 components: `Livery` + `Id` + `Format` - line 109
-  - `LLiveryDigestFormat` - Review: 3 components: `Livery` + `Digest` + `Format` - line 115
-  - `LLiverySheetBuild` - Review: 3 components: `Livery` + `Sheet` + `Build` - line 140
-  - `LLiveryStyleCheck` - Review: 3 components: `Livery` + `Style` + `Check` - line 150
-  - `LLiveryImageApply` - Review: 3 components: `Livery` + `Image` + `Apply` - line 165
-  - `LLiveryMediaApply` - Review: 3 components: `Livery` + `Media` + `Apply` - line 211
-  - `LLiveryAudioLoad` - Review: 3 components: `Livery` + `Audio` + `Load` - line 249
-  - `LLiveryVideoLoad` - Review: 3 components: `Livery` + `Video` + `Load` - line 266
-  - `LLiveryFileLoad` - Review: 3 components: `Livery` + `File` + `Load` - line 281
+  - `LLiveryMarkFormat` - Review: 3 components: `Livery` + `Mark` + `Format` - line 93
+  - `LLiveryIdFormat` - Review: 3 components: `Livery` + `Id` + `Format` - line 99
+  - `LLiveryDigestFormat` - Review: 3 components: `Livery` + `Digest` + `Format` - line 105
+  - `LLiverySheetBuild` - Review: 3 components: `Livery` + `Sheet` + `Build` - line 130
+  - `LLiveryStyleCheck` - Review: 3 components: `Livery` + `Style` + `Check` - line 140
+  - `LLiveryImageApply` - Review: 3 components: `Livery` + `Image` + `Apply` - line 155
+  - `LLiveryMediaApply` - Review: 3 components: `Livery` + `Media` + `Apply` - line 201
+  - `LLiveryAudioLoad` - Review: 3 components: `Livery` + `Audio` + `Load` - line 239
+  - `LLiveryVideoLoad` - Review: 3 components: `Livery` + `Video` + `Load` - line 256
+  - `LLiveryFileLoad` - Review: 3 components: `Livery` + `File` + `Load` - line 271
 
 #### `LLiverySound.cs`
 
@@ -8594,11 +8715,11 @@ No prefix, shape, base, verb, or count violations were found.
   - `LLiveryToneJoiner` - Review: 3 components: `Livery` + `Tone` + `Joiner` - line 15
   - `LLiverySoundAppend` - Review: 3 components: `Livery` + `Sound` + `Append` - line 17
   - `LLiveryReadingAppend` - Review: 3 components: `Livery` + `Reading` + `Append` - line 99
-  - `LLiveryRowAppend` - Review: 3 components: `Livery` + `Row` + `Append` - line 143
-  - `LLiveryPlayerFormat` - Review: 3 components: `Livery` + `Player` + `Format` - line 159
-  - `LLiveryContourFormat` - Review: 3 components: `Livery` + `Contour` + `Format` - line 167
-  - `LLiveryRoleFormat` - Review: 3 components: `Livery` + `Role` + `Format` - line 250
-  - `LLiveryToneFormat` - Review: 3 components: `Livery` + `Tone` + `Format` - line 263
+  - `LLiveryRowAppend` - Review: 3 components: `Livery` + `Row` + `Append` - line 147
+  - `LLiveryPlayerFormat` - Review: 3 components: `Livery` + `Player` + `Format` - line 163
+  - `LLiveryContourFormat` - Review: 3 components: `Livery` + `Contour` + `Format` - line 171
+  - `LLiveryRoleFormat` - Review: 3 components: `Livery` + `Role` + `Format` - line 254
+  - `LLiveryToneFormat` - Review: 3 components: `Livery` + `Tone` + `Format` - line 267
 
 #### `LLiveryStyle.cs`
 
@@ -8609,8 +8730,9 @@ No prefix, shape, base, verb, or count violations were found.
 
 - `LLiveryXiesheng`
   - `LLiveryXieshengAppend` - Review: 3 components: `Livery` + `Xiesheng` + `Append` - line 10
-  - `LLiveryCharacterFormat` - Review: 3 components: `Livery` + `Character` + `Format` - line 44
-  - `LLiveryEntryAppend` - Review: 3 components: `Livery` + `Entry` + `Append` - line 63
+  - `LLiveryMemberAppend` - Review: 3 components: `Livery` + `Member` + `Append` - line 36
+  - `LLiveryCharacterFormat` - Review: 3 components: `Livery` + `Character` + `Format` - line 53
+  - `LLiveryEntryAppend` - Review: 3 components: `Livery` + `Entry` + `Append` - line 72
 
 #### `LLiveryYunjing.cs`
 
@@ -9287,7 +9409,8 @@ No prefix, shape, base, verb, or count violations were found.
   - `LEntryStaffGrasp` - Review: 3 components: `Entry` + `Staff` + `Grasp` - line 10
   - `LEntryStaffOutcome` - Review: 3 components: `Entry` + `Staff` + `Outcome` - line 11
   - `LEntryStaffCitation` - Review: 3 components: `Entry` + `Staff` + `Citation` - line 12
-  - `LEntryStaffBuild` - Review: 3 components: `Entry` + `Staff` + `Build` - line 14
+  - `LEntryStaffFold` - Review: 3 components: `Entry` + `Staff` + `Fold` - line 13
+  - `LEntryStaffBuild` - Review: 3 components: `Entry` + `Staff` + `Build` - line 15
 
 #### `LLanguageFacade.cs`
 
@@ -9387,34 +9510,31 @@ No prefix, shape, base, verb, or count violations were found.
   - `_lSettingsFacadeHearth` - Review: 3 components: `Settings` + `Facade` + `Hearth` - line 10
   - `_lSettingsFacadeGate` - Review: 3 components: `Settings` + `Facade` + `Gate` - line 11
   - `LSettingsFacadeStaff` - Review: 3 components: `Settings` + `Facade` + `Staff` - line 13
-  - `LEngineFoldChanged` - Review: 3 components: `Engine` + `Fold` + `Changed` - line 23
-  - `LEngineSettingsRead` - Review: 3 components: `Engine` + `Settings` + `Read` - line 25
-  - `LEnginePostureLoad` - Review: 3 components: `Engine` + `Posture` + `Load` - line 30
-  - `LEnginePostureSave` - Review: 3 components: `Engine` + `Posture` + `Save` - line 39
-  - `LEngineStampRead` - Review: 3 components: `Engine` + `Stamp` + `Read` - line 48
-  - `LEngineTrailNormalize` - Review: 3 components: `Engine` + `Trail` + `Normalize` - line 56
-  - `LEngineLocalizationLoad` - Review: 3 components: `Engine` + `Localization` + `Load` - line 64
-  - `LEngineLocalizationRead` - Review: 3 components: `Engine` + `Localization` + `Read` - line 73
-  - `LEngineLocalizationScan` - Review: 3 components: `Engine` + `Localization` + `Scan` - line 78
-  - `LEngineTextRead` - Review: 3 components: `Engine` + `Text` + `Read` - line 80
-  - `LEngineTextFind` - Review: 3 components: `Engine` + `Text` + `Find` - line 82
-  - `LEngineGroupFind` - Review: 3 components: `Engine` + `Group` + `Find` - line 84
-  - `LEngineLocalizationSave` - Review: 3 components: `Engine` + `Localization` + `Save` - line 88
-  - `LEngineRespellingSave` - Review: 3 components: `Engine` + `Respelling` + `Save` - line 97
-  - `LEngineRespellingCheck` - Review: 3 components: `Engine` + `Respelling` + `Check` - line 105
-  - `LEnginePronunciationRead` - Review: 3 components: `Engine` + `Pronunciation` + `Read` - line 114
-  - `LEnginePhonemicCheck` - Review: 3 components: `Engine` + `Phonemic` + `Check` - line 122
-  - `LEngineMarkRead` - Review: 3 components: `Engine` + `Mark` + `Read` - line 130
-  - `LEngineEpithetSave` - Review: 3 components: `Engine` + `Epithet` + `Save` - line 137
-  - `LEngineTallySave` - Review: 3 components: `Engine` + `Tally` + `Save` - line 145
-  - `LEngineFanqieSave` - Review: 3 components: `Engine` + `Fanqie` + `Save` - line 148
-  - `LEngineScriptSave` - Review: 3 components: `Engine` + `Script` + `Save` - line 156
-  - `LEngineFrequencySave` - Review: 3 components: `Engine` + `Frequency` + `Save` - line 164
-  - `LEngineMorphologyCheck` - Review: 3 components: `Engine` + `Morphology` + `Check` - line 172
-  - `LEngineMorphologySave` - Review: 3 components: `Engine` + `Morphology` + `Save` - line 177
-  - `LEngineAnalysisCheck` - Review: 3 components: `Engine` + `Analysis` + `Check` - line 195
-  - `LEngineAnalysisSave` - Review: 3 components: `Engine` + `Analysis` + `Save` - line 200
-  - `LEngineSettingsChange` - Review: 3 components: `Engine` + `Settings` + `Change` - line 209
+  - `LEngineSettingsRead` - Review: 3 components: `Engine` + `Settings` + `Read` - line 23
+  - `LEnginePostureLoad` - Review: 3 components: `Engine` + `Posture` + `Load` - line 28
+  - `LEnginePostureSave` - Review: 3 components: `Engine` + `Posture` + `Save` - line 37
+  - `LEngineStampRead` - Review: 3 components: `Engine` + `Stamp` + `Read` - line 46
+  - `LEngineTrailNormalize` - Review: 3 components: `Engine` + `Trail` + `Normalize` - line 54
+  - `LEngineLocalizationLoad` - Review: 3 components: `Engine` + `Localization` + `Load` - line 62
+  - `LEngineLocalizationRead` - Review: 3 components: `Engine` + `Localization` + `Read` - line 71
+  - `LEngineLocalizationScan` - Review: 3 components: `Engine` + `Localization` + `Scan` - line 76
+  - `LEngineTextRead` - Review: 3 components: `Engine` + `Text` + `Read` - line 78
+  - `LEngineTextFind` - Review: 3 components: `Engine` + `Text` + `Find` - line 80
+  - `LEngineGroupFind` - Review: 3 components: `Engine` + `Group` + `Find` - line 82
+  - `LEngineLocalizationSave` - Review: 3 components: `Engine` + `Localization` + `Save` - line 86
+  - `LEngineRespellingSave` - Review: 3 components: `Engine` + `Respelling` + `Save` - line 95
+  - `LEngineRespellingCheck` - Review: 3 components: `Engine` + `Respelling` + `Check` - line 103
+  - `LEnginePronunciationRead` - Review: 3 components: `Engine` + `Pronunciation` + `Read` - line 112
+  - `LEnginePhonemicCheck` - Review: 3 components: `Engine` + `Phonemic` + `Check` - line 120
+  - `LEngineMarkRead` - Review: 3 components: `Engine` + `Mark` + `Read` - line 128
+  - `LEngineEpithetSave` - Review: 3 components: `Engine` + `Epithet` + `Save` - line 135
+  - `LEngineTallySave` - Review: 3 components: `Engine` + `Tally` + `Save` - line 143
+  - `LEngineFrequencySave` - Review: 3 components: `Engine` + `Frequency` + `Save` - line 146
+  - `LEngineMorphologyCheck` - Review: 3 components: `Engine` + `Morphology` + `Check` - line 154
+  - `LEngineMorphologySave` - Review: 3 components: `Engine` + `Morphology` + `Save` - line 159
+  - `LEngineAnalysisCheck` - Review: 3 components: `Engine` + `Analysis` + `Check` - line 177
+  - `LEngineAnalysisSave` - Review: 3 components: `Engine` + `Analysis` + `Save` - line 182
+  - `LEngineSettingsChange` - Review: 3 components: `Engine` + `Settings` + `Change` - line 191
 
 #### `LTenureFacade.cs`
 
@@ -9515,6 +9635,9 @@ No prefix, shape, base, verb, or count violations were found.
   - `LEngineIncomingRead` - Review: 3 components: `Engine` + `Incoming` + `Read` - line 8
   - `LEngineTranslationRead` - Review: 3 components: `Engine` + `Translation` + `Read` - line 10
   - `LEngineEtymologyRead` - Review: 3 components: `Engine` + `Etymology` + `Read` - line 12
+  - `LEngineFoldRead` - Review: 3 components: `Engine` + `Fold` + `Read` - line 14
+  - `LEngineFoldSave` - Review: 3 components: `Engine` + `Fold` + `Save` - line 16
+  - `LEngineFoldDelete` - Review: 3 components: `Engine` + `Fold` + `Delete` - line 18
 
 #### `LDiweiPort.cs`
 
@@ -9774,7 +9897,11 @@ No prefix, shape, base, verb, or count violations were found.
 - `LReflexPort`
   - `LEngineReflexCheck` - Review: 3 components: `Engine` + `Reflex` + `Check` - line 9
   - `LEngineReflexRebuild` - Review: 3 components: `Engine` + `Reflex` + `Rebuild` - line 11
-  - `LEngineGuiseRead` - Review: 3 components: `Engine` + `Guise` + `Read` - line 13
+  - `LEngineSpreadCheck` - Review: 3 components: `Engine` + `Spread` + `Check` - line 13
+  - `LEngineReflexSpread` - Review: 3 components: `Engine` + `Reflex` + `Spread` - line 15
+  - `LEngineBoxCheck` - Review: 3 components: `Engine` + `Box` + `Check` - line 17
+  - `LEngineBoxSpread` - Review: 3 components: `Engine` + `Box` + `Spread` - line 19
+  - `LEngineGuiseRead` - Review: 3 components: `Engine` + `Guise` + `Read` - line 21
 
 #### `LRegisterPort.cs`
 
@@ -9823,20 +9950,17 @@ No prefix, shape, base, verb, or count violations were found.
   - `LEngineAnalysisCheck` - Review: 3 components: `Engine` + `Analysis` + `Check` - line 65
   - `LEngineAnalysisSave` - Review: 3 components: `Engine` + `Analysis` + `Save` - line 67
   - `LEngineRespellingSave` - Review: 3 components: `Engine` + `Respelling` + `Save` - line 70
-  - `LEngineFanqieSave` - Review: 3 components: `Engine` + `Fanqie` + `Save` - line 73
-  - `LEngineScriptSave` - Review: 3 components: `Engine` + `Script` + `Save` - line 75
-  - `LEngineFoldChanged` - Review: 3 components: `Engine` + `Fold` + `Changed` - line 77
-  - `LEngineFailureRead` - Review: 3 components: `Engine` + `Failure` + `Read` - line 83
-    - `LEngineFailureNotice` - Review: 3 components: `Engine` + `Failure` + `Notice` - line 83
-    - `LEngineFailureLabel` - Review: 3 components: `Engine` + `Failure` + `Label` - line 83
-    - `LEngineFailurePath` - Review: 3 components: `Engine` + `Failure` + `Path` - line 83
-  - `LEngineFontRead` - Review: 3 components: `Engine` + `Font` + `Read` - line 87
-  - `LEngineEnsignLoad` - Review: 3 components: `Engine` + `Ensign` + `Load` - line 90
-  - `LEngineEstablishmentRead` - Review: 3 components: `Engine` + `Establishment` + `Read` - line 95
-  - `LEngineLanguageRead` - Review: 3 components: `Engine` + `Language` + `Read` - line 97
-  - `LEnginePhonemicCheck` - Review: 3 components: `Engine` + `Phonemic` + `Check` - line 99
-  - `LEngineRespellingCheck` - Review: 3 components: `Engine` + `Respelling` + `Check` - line 102
-  - `LEngineTallySave` - Review: 3 components: `Engine` + `Tally` + `Save` - line 105
+  - `LEngineFailureRead` - Review: 3 components: `Engine` + `Failure` + `Read` - line 73
+    - `LEngineFailureNotice` - Review: 3 components: `Engine` + `Failure` + `Notice` - line 73
+    - `LEngineFailureLabel` - Review: 3 components: `Engine` + `Failure` + `Label` - line 73
+    - `LEngineFailurePath` - Review: 3 components: `Engine` + `Failure` + `Path` - line 73
+  - `LEngineFontRead` - Review: 3 components: `Engine` + `Font` + `Read` - line 77
+  - `LEngineEnsignLoad` - Review: 3 components: `Engine` + `Ensign` + `Load` - line 80
+  - `LEngineEstablishmentRead` - Review: 3 components: `Engine` + `Establishment` + `Read` - line 85
+  - `LEngineLanguageRead` - Review: 3 components: `Engine` + `Language` + `Read` - line 87
+  - `LEnginePhonemicCheck` - Review: 3 components: `Engine` + `Phonemic` + `Check` - line 89
+  - `LEngineRespellingCheck` - Review: 3 components: `Engine` + `Respelling` + `Check` - line 92
+  - `LEngineTallySave` - Review: 3 components: `Engine` + `Tally` + `Save` - line 95
 
 #### `LSettingsPort.cs`
 
@@ -9862,21 +9986,18 @@ No prefix, shape, base, verb, or count violations were found.
   - `LEngineAnalysisCheck` - Review: 3 components: `Engine` + `Analysis` + `Check` - line 47
   - `LEngineAnalysisSave` - Review: 3 components: `Engine` + `Analysis` + `Save` - line 49
   - `LEngineRespellingSave` - Review: 3 components: `Engine` + `Respelling` + `Save` - line 51
-  - `LEngineFanqieSave` - Review: 3 components: `Engine` + `Fanqie` + `Save` - line 53
-  - `LEngineScriptSave` - Review: 3 components: `Engine` + `Script` + `Save` - line 55
-  - `LEngineFoldChanged` - Review: 3 components: `Engine` + `Fold` + `Changed` - line 57
-  - `LEngineFailureRead` - Review: 3 components: `Engine` + `Failure` + `Read` - line 59
-    - `LEngineFailureNotice` - Review: 3 components: `Engine` + `Failure` + `Notice` - line 59
-    - `LEngineFailureLabel` - Review: 3 components: `Engine` + `Failure` + `Label` - line 59
-    - `LEngineFailurePath` - Review: 3 components: `Engine` + `Failure` + `Path` - line 59
-  - `LEngineFontRead` - Review: 3 components: `Engine` + `Font` + `Read` - line 62
-  - `LEngineEnsignLoad` - Review: 3 components: `Engine` + `Ensign` + `Load` - line 64
-  - `LEngineEstablishmentRead` - Review: 3 components: `Engine` + `Establishment` + `Read` - line 67
-  - `LEngineLanguageRead` - Review: 3 components: `Engine` + `Language` + `Read` - line 69
-  - `LEnginePhonemicCheck` - Review: 3 components: `Engine` + `Phonemic` + `Check` - line 71
-  - `LEngineRespellingCheck` - Review: 3 components: `Engine` + `Respelling` + `Check` - line 73
-  - `LEngineTallySave` - Review: 3 components: `Engine` + `Tally` + `Save` - line 75
-  - `LEngineEnsignFormat` - Review: 3 components: `Engine` + `Ensign` + `Format` - line 77
+  - `LEngineFailureRead` - Review: 3 components: `Engine` + `Failure` + `Read` - line 53
+    - `LEngineFailureNotice` - Review: 3 components: `Engine` + `Failure` + `Notice` - line 53
+    - `LEngineFailureLabel` - Review: 3 components: `Engine` + `Failure` + `Label` - line 53
+    - `LEngineFailurePath` - Review: 3 components: `Engine` + `Failure` + `Path` - line 53
+  - `LEngineFontRead` - Review: 3 components: `Engine` + `Font` + `Read` - line 56
+  - `LEngineEnsignLoad` - Review: 3 components: `Engine` + `Ensign` + `Load` - line 58
+  - `LEngineEstablishmentRead` - Review: 3 components: `Engine` + `Establishment` + `Read` - line 61
+  - `LEngineLanguageRead` - Review: 3 components: `Engine` + `Language` + `Read` - line 63
+  - `LEnginePhonemicCheck` - Review: 3 components: `Engine` + `Phonemic` + `Check` - line 65
+  - `LEngineRespellingCheck` - Review: 3 components: `Engine` + `Respelling` + `Check` - line 67
+  - `LEngineTallySave` - Review: 3 components: `Engine` + `Tally` + `Save` - line 69
+  - `LEngineEnsignFormat` - Review: 3 components: `Engine` + `Ensign` + `Format` - line 71
 
 #### `LSituationPort.cs`
 
@@ -9891,7 +10012,8 @@ No prefix, shape, base, verb, or count violations were found.
   - `LEngineStemCheck` - Review: 3 components: `Engine` + `Stem` + `Check` - line 13
   - `LEngineStemResolve` - Review: 3 components: `Engine` + `Stem` + `Resolve` - line 15
   - `LEngineStemResolve` - Review: 3 components: `Engine` + `Stem` + `Resolve` - line 17
-  - `LEngineKindredFind` - Review: 3 components: `Engine` + `Kindred` + `Find` - line 19
+  - `LEngineStemSpread` - Review: 3 components: `Engine` + `Stem` + `Spread` - line 19
+  - `LEngineKindredFind` - Review: 3 components: `Engine` + `Kindred` + `Find` - line 21
 
 #### `LTagPort.cs`
 
@@ -10321,7 +10443,7 @@ No prefix, shape, base, verb, or count violations were found.
   - `_lLiveryFacadeVocabulary` - Review: 3 components: `Livery` + `Facade` + `Vocabulary` - line 21
   - `LLiveryFacadeStaff` - Review: 3 components: `Livery` + `Facade` + `Staff` - line 60
   - `LEngineLiveryRead` - Review: 3 components: `Engine` + `Livery` + `Read` - line 62
-  - `LEngineLiveryRead` - Review: 3 components: `Engine` + `Livery` + `Read` - line 102
+  - `LEngineLiveryRead` - Review: 3 components: `Engine` + `Livery` + `Read` - line 105
 
 #### `LMarkupFacade.cs`
 
@@ -10401,31 +10523,37 @@ No prefix, shape, base, verb, or count violations were found.
   - `LEngineReflexStart` - Review: 3 components: `Engine` + `Reflex` + `Start` - line 83
   - `LEngineReflexRebuild` - Review: 3 components: `Engine` + `Reflex` + `Rebuild` - line 88
   - `LEngineReflexCheck` - Review: 3 components: `Engine` + `Reflex` + `Check` - line 93
-  - `LEngineDescentRead` - Review: 3 components: `Engine` + `Descent` + `Read` - line 99
-  - `LEngineGuiseBuild` - Review: 3 components: `Engine` + `Guise` + `Build` - line 115
-  - `LEngineAnchorRead` - Review: 3 components: `Engine` + `Anchor` + `Read` - line 123
-  - `LReflexFacadeStaff` - Review: 3 components: `Reflex` + `Facade` + `Staff` - line 129
+  - `LEngineSpreadCheck` - Review: 3 components: `Engine` + `Spread` + `Check` - line 99
+  - `LEngineReflexSpread` - Review: 3 components: `Engine` + `Reflex` + `Spread` - line 107
+  - `LEngineBoxCheck` - Review: 3 components: `Engine` + `Box` + `Check` - line 117
+  - `LEngineBoxSpread` - Review: 3 components: `Engine` + `Box` + `Spread` - line 125
+  - `LEngineDescentRead` - Review: 3 components: `Engine` + `Descent` + `Read` - line 135
+  - `LEngineGuiseBuild` - Review: 3 components: `Engine` + `Guise` + `Build` - line 151
+  - `LEngineAnchorRead` - Review: 3 components: `Engine` + `Anchor` + `Read` - line 159
+  - `LReflexFacadeStaff` - Review: 3 components: `Reflex` + `Facade` + `Staff` - line 165
 
 #### `LStemFacade.cs`
 
 - `LStemFacade`
-  - `_lStemFacadeHearth` - Review: 3 components: `Stem` + `Facade` + `Hearth` - line 10
-  - `_lStemFacadeEntry` - Review: 3 components: `Stem` + `Facade` + `Entry` - line 11
-  - `_lStemFacadeLanguage` - Review: 3 components: `Stem` + `Facade` + `Language` - line 12
-  - `_lStemFacadeRow` - Review: 3 components: `Stem` + `Facade` + `Row` - line 13
-  - `_lStemFacadeGate` - Review: 3 components: `Stem` + `Facade` + `Gate` - line 14
-  - `LEngineStemRead` - Review: 3 components: `Engine` + `Stem` + `Read` - line 29
-  - `LEngineStemFind` - Review: 3 components: `Engine` + `Stem` + `Find` - line 37
-  - `LEngineStemFind` - Review: 3 components: `Engine` + `Stem` + `Find` - line 50
-  - `LEngineStemCheck` - Review: 3 components: `Engine` + `Stem` + `Check` - line 63
-  - `LEngineStemFind` - Review: 3 components: `Engine` + `Stem` + `Find` - line 68
-  - `LEngineStemResolve` - Review: 3 components: `Engine` + `Stem` + `Resolve` - line 101
-  - `LEngineStemResolve` - Review: 3 components: `Engine` + `Stem` + `Resolve` - line 112
-  - `LEngineKindredFind` - Review: 3 components: `Engine` + `Kindred` + `Find` - line 124
-  - `LEngineKindredFind` - Review: 3 components: `Engine` + `Kindred` + `Find` - line 137
-  - `LEngineLanguageRead` - Review: 3 components: `Engine` + `Language` + `Read` - line 150
-  - `LEngineStemCheck` - Review: 3 components: `Engine` + `Stem` + `Check` - line 155
-  - `LStemFacadeStaff` - Review: 3 components: `Stem` + `Facade` + `Staff` - line 163
+  - `_lStemFacadeHearth` - Review: 3 components: `Stem` + `Facade` + `Hearth` - line 11
+  - `_lStemFacadeEntry` - Review: 3 components: `Stem` + `Facade` + `Entry` - line 12
+  - `_lStemFacadeLanguage` - Review: 3 components: `Stem` + `Facade` + `Language` - line 13
+  - `_lStemFacadeRow` - Review: 3 components: `Stem` + `Facade` + `Row` - line 14
+  - `_lStemFacadeReflex` - Review: 3 components: `Stem` + `Facade` + `Reflex` - line 15
+  - `_lStemFacadeGate` - Review: 3 components: `Stem` + `Facade` + `Gate` - line 16
+  - `LEngineStemRead` - Review: 3 components: `Engine` + `Stem` + `Read` - line 34
+  - `LEngineStemFind` - Review: 3 components: `Engine` + `Stem` + `Find` - line 42
+  - `LEngineStemFind` - Review: 3 components: `Engine` + `Stem` + `Find` - line 55
+  - `LEngineStemCheck` - Review: 3 components: `Engine` + `Stem` + `Check` - line 68
+  - `LEngineStemFind` - Review: 3 components: `Engine` + `Stem` + `Find` - line 73
+  - `LEngineStemResolve` - Review: 3 components: `Engine` + `Stem` + `Resolve` - line 106
+  - `LEngineStemResolve` - Review: 3 components: `Engine` + `Stem` + `Resolve` - line 130
+  - `LEngineStemSpread` - Review: 3 components: `Engine` + `Stem` + `Spread` - line 142
+  - `LEngineKindredFind` - Review: 3 components: `Engine` + `Kindred` + `Find` - line 162
+  - `LEngineKindredFind` - Review: 3 components: `Engine` + `Kindred` + `Find` - line 175
+  - `LEngineLanguageRead` - Review: 3 components: `Engine` + `Language` + `Read` - line 188
+  - `LEngineStemCheck` - Review: 3 components: `Engine` + `Stem` + `Check` - line 193
+  - `LStemFacadeStaff` - Review: 3 components: `Stem` + `Facade` + `Staff` - line 201
 
 
 ### `D:\Programming\Llyn\src\Llyn.ShellEngine\Vista`
@@ -10485,7 +10613,10 @@ No prefix, shape, base, verb, or count violations were found.
   - `LEngineEtymologyRead` - Review: 3 components: `Engine` + `Etymology` + `Read` - line 177
   - `LEngineTargetRead` - Review: 3 components: `Engine` + `Target` + `Read` - line 183
   - `LEngineIncomingRead` - Review: 3 components: `Engine` + `Incoming` + `Read` - line 192
-  - `LEngineOwnerRaise` - Review: 3 components: `Engine` + `Owner` + `Raise` - line 201
+  - `LEngineFoldRead` - Review: 3 components: `Engine` + `Fold` + `Read` - line 201
+  - `LEngineFoldSave` - Review: 3 components: `Engine` + `Fold` + `Save` - line 209
+  - `LEngineFoldDelete` - Review: 3 components: `Engine` + `Fold` + `Delete` - line 219
+  - `LEngineOwnerRaise` - Review: 3 components: `Engine` + `Owner` + `Raise` - line 229
 
 #### `LCatalogFacade.cs`
 
@@ -10512,31 +10643,31 @@ No prefix, shape, base, verb, or count violations were found.
 #### `LEntryFacade.cs`
 
 - `LEntryFacade`
-  - `_lEntryFacadeHearth` - Review: 3 components: `Entry` + `Facade` + `Hearth` - line 12
-  - `_lEntryFacadeCard` - Review: 3 components: `Entry` + `Facade` + `Card` - line 13
-  - `_lEntryFacadeDraft` - Review: 3 components: `Entry` + `Facade` + `Draft` - line 14
-  - `_lEntryFacadeGate` - Review: 3 components: `Entry` + `Facade` + `Gate` - line 15
-  - `LEntryFacadeStaff` - Review: 3 components: `Entry` + `Facade` + `Staff` - line 28
-  - `LEngineEntryRead` - Review: 3 components: `Engine` + `Entry` + `Read` - line 30
-  - `LEngineStampRead` - Review: 3 components: `Engine` + `Stamp` + `Read` - line 38
-  - `LEngineStampFormat` - Review: 3 components: `Engine` + `Stamp` + `Format` - line 45
-  - `LEngineEntryFind` - Review: 3 components: `Engine` + `Entry` + `Find` - line 57
-  - `LEngineEntryFind` - Review: 3 components: `Engine` + `Entry` + `Find` - line 65
-  - `LEngineEntryLoad` - Review: 3 components: `Engine` + `Entry` + `Load` - line 90
-  - `LEngineEntryDelete` - Review: 3 components: `Engine` + `Entry` + `Delete` - line 98
-  - `LEngineReflexRead` - Review: 3 components: `Engine` + `Reflex` + `Read` - line 110
-  - `LEngineGlyphResolve` - Review: 3 components: `Engine` + `Glyph` + `Resolve` - line 117
-  - `LEngineUnitFormat` - Review: 3 components: `Engine` + `Unit` + `Format` - line 143
-  - `LEngineCardFind` - Review: 3 components: `Engine` + `Card` + `Find` - line 148
-  - `LEngineGraspStep` - Review: 3 components: `Engine` + `Grasp` + `Step` - line 153
-  - `LEngineGraspFormat` - Review: 3 components: `Engine` + `Grasp` + `Format` - line 155
-  - `LEngineGraspRead` - Review: 3 components: `Engine` + `Grasp` + `Read` - line 160
-  - `LEngineGraspSave` - Review: 3 components: `Engine` + `Grasp` + `Save` - line 169
-  - `LEngineEstablishmentRead` - Review: 3 components: `Engine` + `Establishment` + `Read` - line 179
-  - `LEngineUsageRead` - Review: 3 components: `Engine` + `Usage` + `Read` - line 199
-  - `LEngineTallyRead` - Review: 3 components: `Engine` + `Tally` + `Read` - line 207
-  - `LEngineTallyRead` - Review: 3 components: `Engine` + `Tally` + `Read` - line 212
-  - `LEngineUsageRead` - Review: 3 components: `Engine` + `Usage` + `Read` - line 220
+  - `_lEntryFacadeHearth` - Review: 3 components: `Entry` + `Facade` + `Hearth` - line 11
+  - `_lEntryFacadeCard` - Review: 3 components: `Entry` + `Facade` + `Card` - line 12
+  - `_lEntryFacadeDraft` - Review: 3 components: `Entry` + `Facade` + `Draft` - line 13
+  - `_lEntryFacadeGate` - Review: 3 components: `Entry` + `Facade` + `Gate` - line 14
+  - `LEntryFacadeStaff` - Review: 3 components: `Entry` + `Facade` + `Staff` - line 27
+  - `LEngineEntryRead` - Review: 3 components: `Engine` + `Entry` + `Read` - line 29
+  - `LEngineStampRead` - Review: 3 components: `Engine` + `Stamp` + `Read` - line 37
+  - `LEngineStampFormat` - Review: 3 components: `Engine` + `Stamp` + `Format` - line 44
+  - `LEngineEntryFind` - Review: 3 components: `Engine` + `Entry` + `Find` - line 56
+  - `LEngineEntryFind` - Review: 3 components: `Engine` + `Entry` + `Find` - line 64
+  - `LEngineEntryLoad` - Review: 3 components: `Engine` + `Entry` + `Load` - line 89
+  - `LEngineEntryDelete` - Review: 3 components: `Engine` + `Entry` + `Delete` - line 97
+  - `LEngineReflexRead` - Review: 3 components: `Engine` + `Reflex` + `Read` - line 109
+  - `LEngineGlyphResolve` - Review: 3 components: `Engine` + `Glyph` + `Resolve` - line 116
+  - `LEngineUnitFormat` - Review: 3 components: `Engine` + `Unit` + `Format` - line 142
+  - `LEngineCardFind` - Review: 3 components: `Engine` + `Card` + `Find` - line 147
+  - `LEngineGraspStep` - Review: 3 components: `Engine` + `Grasp` + `Step` - line 152
+  - `LEngineGraspFormat` - Review: 3 components: `Engine` + `Grasp` + `Format` - line 154
+  - `LEngineGraspRead` - Review: 3 components: `Engine` + `Grasp` + `Read` - line 159
+  - `LEngineGraspSave` - Review: 3 components: `Engine` + `Grasp` + `Save` - line 168
+  - `LEngineEstablishmentRead` - Review: 3 components: `Engine` + `Establishment` + `Read` - line 178
+  - `LEngineUsageRead` - Review: 3 components: `Engine` + `Usage` + `Read` - line 198
+  - `LEngineTallyRead` - Review: 3 components: `Engine` + `Tally` + `Read` - line 206
+  - `LEngineTallyRead` - Review: 3 components: `Engine` + `Tally` + `Read` - line 211
+  - `LEngineUsageRead` - Review: 3 components: `Engine` + `Usage` + `Read` - line 219
 
 #### `LExampleFacade.cs`
 
@@ -10727,8 +10858,8 @@ No prefix, shape, base, verb, or count violations were found.
 #### `QLectern.cs`
 
 - `QLectern`
-  - `QLecternContentsRefine` - Review: 3 components: `Lectern` + `Contents` + `Refine` - line 92
-  - `QLecternEmptyRefine` - Review: 3 components: `Lectern` + `Empty` + `Refine` - line 98
+  - `QLecternContentsRefine` - Review: 3 components: `Lectern` + `Contents` + `Refine` - line 98
+  - `QLecternEmptyRefine` - Review: 3 components: `Lectern` + `Empty` + `Refine` - line 104
 
 #### `QLecternAccent.cs`
 
@@ -10758,13 +10889,14 @@ No prefix, shape, base, verb, or count violations were found.
   - `_qLecternCardDefinition` - Review: 3 components: `Lectern` + `Card` + `Definition` - line 22
   - `_qLecternCardCollocation` - Review: 3 components: `Lectern` + `Card` + `Collocation` - line 24
   - `_qLecternCardPhrase` - Review: 3 components: `Lectern` + `Card` + `Phrase` - line 26
-  - `QLecternMentionNotice` - Review: 3 components: `Lectern` + `Mention` + `Notice` - line 52
-  - `QLecternExampleRefine` - Review: 3 components: `Lectern` + `Example` + `Refine` - line 54
-  - `QLecternGlossRefine` - Review: 3 components: `Lectern` + `Gloss` + `Refine` - line 60
-  - `QLecternCardRefine` - Review: 3 components: `Lectern` + `Card` + `Refine` - line 66
-  - `QLecternLeafRefine` - Review: 3 components: `Lectern` + `Leaf` + `Refine` - line 74
-  - `QLecternChipObserve` - Review: 3 components: `Lectern` + `Chip` + `Observe` - line 84
-  - `QLecternMentionObserve` - Review: 3 components: `Lectern` + `Mention` + `Observe` - line 93
+  - `QLecternMentionNotice` - Review: 3 components: `Lectern` + `Mention` + `Notice` - line 54
+  - `QLecternExampleRefine` - Review: 3 components: `Lectern` + `Example` + `Refine` - line 56
+  - `QLecternGlossRefine` - Review: 3 components: `Lectern` + `Gloss` + `Refine` - line 62
+  - `QLecternCardRefine` - Review: 3 components: `Lectern` + `Card` + `Refine` - line 68
+  - `QLecternLeafRefine` - Review: 3 components: `Lectern` + `Leaf` + `Refine` - line 76
+  - `QLecternChipObserve` - Review: 3 components: `Lectern` + `Chip` + `Observe` - line 86
+  - `QLecternHingeObserve` - Review: 3 components: `Lectern` + `Hinge` + `Observe` - line 95
+  - `QLecternMentionObserve` - Review: 3 components: `Lectern` + `Mention` + `Observe` - line 105
 
 #### `QLecternEntry.cs`
 
@@ -10861,27 +10993,32 @@ No prefix, shape, base, verb, or count violations were found.
   - `_qLecternReflexArea` - Review: 3 components: `Lectern` + `Reflex` + `Area` - line 11
   - `_qLecternReflexList` - Review: 3 components: `Lectern` + `Reflex` + `List` - line 13
   - `_qLecternSoundLoading` - Review: 3 components: `Lectern` + `Sound` + `Loading` - line 15
-  - `_qLecternSoundFold` - Review: 3 components: `Lectern` + `Sound` + `Fold` - line 17
-  - `QLecternReflexRefine` - Review: 3 components: `Lectern` + `Reflex` + `Refine` - line 35
-  - `QLecternRenewalRefine` - Review: 3 components: `Lectern` + `Renewal` + `Refine` - line 40
-  - `QLecternFoldRefine` - Review: 3 components: `Lectern` + `Fold` + `Refine` - line 45
-  - `QLecternAnchorRefine` - Review: 3 components: `Lectern` + `Anchor` + `Refine` - line 50
-  - `QLecternFoldObserve` - Review: 3 components: `Lectern` + `Fold` + `Observe` - line 55
-  - `QLecternReflexRefine` - Review: 3 components: `Lectern` + `Reflex` + `Refine` - line 60
+  - `_qLecternSoundHinge` - Review: 3 components: `Lectern` + `Sound` + `Hinge` - line 17
+  - `QLecternReflexRefine` - Review: 3 components: `Lectern` + `Reflex` + `Refine` - line 33
+  - `QLecternRenewalRefine` - Review: 3 components: `Lectern` + `Renewal` + `Refine` - line 38
+  - `QLecternFoldRefine` - Review: 3 components: `Lectern` + `Fold` + `Refine` - line 43
+  - `QLecternAnchorRefine` - Review: 3 components: `Lectern` + `Anchor` + `Refine` - line 48
+  - `QLecternHingeObserve` - Review: 3 components: `Lectern` + `Hinge` + `Observe` - line 53
+  - `QLecternHingeRefine` - Review: 3 components: `Lectern` + `Hinge` + `Refine` - line 59
+  - `QLecternReflexRefine` - Review: 3 components: `Lectern` + `Reflex` + `Refine` - line 67
 
 #### `QLecternSound.cs`
 
 - `QLecternSound`
-  - `_qLecternSoundArea` - Review: 3 components: `Lectern` + `Sound` + `Area` - line 10
-  - `_qLecternSoundFanqie` - Review: 3 components: `Lectern` + `Sound` + `Fanqie` - line 12
-  - `_qLecternSoundReading` - Review: 3 components: `Lectern` + `Sound` + `Reading` - line 14
-  - `_qLecternSoundScript` - Review: 3 components: `Lectern` + `Sound` + `Script` - line 16
-  - `_qLecternSoundParadigm` - Review: 3 components: `Lectern` + `Sound` + `Paradigm` - line 18
-  - `QLecternFanqieRefine` - Review: 3 components: `Lectern` + `Fanqie` + `Refine` - line 40
-  - `QLecternScriptRefine` - Review: 3 components: `Lectern` + `Script` + `Refine` - line 50
-  - `QLecternParadigmRefine` - Review: 3 components: `Lectern` + `Paradigm` + `Refine` - line 60
-  - `QLecternDiweiObserve` - Review: 3 components: `Lectern` + `Diwei` + `Observe` - line 70
-  - `QLecternStemObserve` - Review: 3 components: `Lectern` + `Stem` + `Observe` - line 75
+  - `_qLecternSoundArea` - Review: 3 components: `Lectern` + `Sound` + `Area` - line 11
+  - `_qLecternSoundFold` - Review: 3 components: `Lectern` + `Sound` + `Fold` - line 13
+  - `_qLecternSoundFanqie` - Review: 3 components: `Lectern` + `Sound` + `Fanqie` - line 15
+  - `_qLecternSoundReading` - Review: 3 components: `Lectern` + `Sound` + `Reading` - line 17
+  - `_qLecternSoundScript` - Review: 3 components: `Lectern` + `Sound` + `Script` - line 19
+  - `_qLecternSoundParadigm` - Review: 3 components: `Lectern` + `Sound` + `Paradigm` - line 21
+  - `QLecternBoxRefine` - Review: 3 components: `Lectern` + `Box` + `Refine` - line 47
+  - `QLecternFanqieRefine` - Review: 3 components: `Lectern` + `Fanqie` + `Refine` - line 53
+  - `QLecternScriptRefine` - Review: 3 components: `Lectern` + `Script` + `Refine` - line 63
+  - `QLecternParadigmRefine` - Review: 3 components: `Lectern` + `Paradigm` + `Refine` - line 73
+  - `QLecternSpellingObserve` - Review: 3 components: `Lectern` + `Spelling` + `Observe` - line 83
+  - `QLecternWritingObserve` - Review: 3 components: `Lectern` + `Writing` + `Observe` - line 90
+  - `QLecternDiweiObserve` - Review: 3 components: `Lectern` + `Diwei` + `Observe` - line 97
+  - `QLecternStemObserve` - Review: 3 components: `Lectern` + `Stem` + `Observe` - line 102
 
 #### `QLecternTranscription.cs`
 
@@ -10897,13 +11034,13 @@ No prefix, shape, base, verb, or count violations were found.
 
 - `PLeaf`
   - `PLeafCardRefine` - Review: 3 components: `Leaf` + `Card` + `Refine` - line 11
-  - `PLeafBodyRefine` - Review: 3 components: `Leaf` + `Body` + `Refine` - line 53
-  - `PLeafListRefine` - Review: 3 components: `Leaf` + `List` + `Refine` - line 98
-  - `PLeafSentenceRefine` - Review: 3 components: `Leaf` + `Sentence` + `Refine` - line 114
-  - `PLeafSituationRefine` - Review: 3 components: `Leaf` + `Situation` + `Refine` - line 162
-  - `PLeafRegisterRefine` - Review: 3 components: `Leaf` + `Register` + `Refine` - line 171
-  - `PLeafTagRefine` - Review: 3 components: `Leaf` + `Tag` + `Refine` - line 180
-  - `PLeafLinkRefine` - Review: 3 components: `Leaf` + `Link` + `Refine` - line 188
+  - `PLeafBodyRefine` - Review: 3 components: `Leaf` + `Body` + `Refine` - line 61
+  - `PLeafListRefine` - Review: 3 components: `Leaf` + `List` + `Refine` - line 106
+  - `PLeafSentenceRefine` - Review: 3 components: `Leaf` + `Sentence` + `Refine` - line 122
+  - `PLeafSituationRefine` - Review: 3 components: `Leaf` + `Situation` + `Refine` - line 170
+  - `PLeafRegisterRefine` - Review: 3 components: `Leaf` + `Register` + `Refine` - line 179
+  - `PLeafTagRefine` - Review: 3 components: `Leaf` + `Tag` + `Refine` - line 188
+  - `PLeafLinkRefine` - Review: 3 components: `Leaf` + `Link` + `Refine` - line 196
 
 #### `QLeafChip.cs`
 
@@ -10922,20 +11059,24 @@ No prefix, shape, base, verb, or count violations were found.
 
 - `QLeafItem`
   - `_qLeafItemCard` - Review: 3 components: `Leaf` + `Item` + `Card` - line 11
-  - `QLeafItemRank` - Review: 3 components: `Leaf` + `Item` + `Rank` - line 38
-  - `QLeafItemTitle` - Review: 3 components: `Leaf` + `Item` + `Title` - line 40
-  - `QLeafItemTitled` - Review: 3 components: `Leaf` + `Item` + `Titled` - line 42
-  - `QLeafItemExpression` - Review: 3 components: `Leaf` + `Item` + `Expression` - line 44
-  - `QLeafItemExpressed` - Review: 3 components: `Leaf` + `Item` + `Expressed` - line 46
-  - `QLeafItemMeaning` - Review: 3 components: `Leaf` + `Item` + `Meaning` - line 48
-  - `QLeafItemDefined` - Review: 3 components: `Leaf` + `Item` + `Defined` - line 50
-  - `QLeafItemSituation` - Review: 3 components: `Leaf` + `Item` + `Situation` - line 52
-  - `QLeafItemRegister` - Review: 3 components: `Leaf` + `Item` + `Register` - line 54
-  - `QLeafItemTag` - Review: 3 components: `Leaf` + `Item` + `Tag` - line 56
-  - `QLeafItemTranslation` - Review: 3 components: `Leaf` + `Item` + `Translation` - line 58
-  - `QLeafItemSentence` - Review: 3 components: `Leaf` + `Item` + `Sentence` - line 60
-  - `QLeafItemImage` - Review: 3 components: `Leaf` + `Item` + `Image` - line 62
-  - `QLeafItemVideo` - Review: 3 components: `Leaf` + `Item` + `Video` - line 64
+  - `QLeafItemId` - Review: 3 components: `Leaf` + `Item` + `Id` - line 42
+  - `QLeafItemRank` - Review: 3 components: `Leaf` + `Item` + `Rank` - line 44
+  - `QLeafItemTitle` - Review: 3 components: `Leaf` + `Item` + `Title` - line 46
+  - `QLeafItemTitled` - Review: 3 components: `Leaf` + `Item` + `Titled` - line 48
+  - `QLeafItemExpression` - Review: 3 components: `Leaf` + `Item` + `Expression` - line 50
+  - `QLeafItemExpressed` - Review: 3 components: `Leaf` + `Item` + `Expressed` - line 52
+  - `QLeafItemMeaning` - Review: 3 components: `Leaf` + `Item` + `Meaning` - line 54
+  - `QLeafItemDefined` - Review: 3 components: `Leaf` + `Item` + `Defined` - line 56
+  - `QLeafItemPeek` - Review: 3 components: `Leaf` + `Item` + `Peek` - line 58
+  - `QLeafItemFolded` - Review: 3 components: `Leaf` + `Item` + `Folded` - line 60
+  - `QLeafItemStored` - Review: 3 components: `Leaf` + `Item` + `Stored` - line 62
+  - `QLeafItemSituation` - Review: 3 components: `Leaf` + `Item` + `Situation` - line 64
+  - `QLeafItemRegister` - Review: 3 components: `Leaf` + `Item` + `Register` - line 66
+  - `QLeafItemTag` - Review: 3 components: `Leaf` + `Item` + `Tag` - line 68
+  - `QLeafItemTranslation` - Review: 3 components: `Leaf` + `Item` + `Translation` - line 70
+  - `QLeafItemSentence` - Review: 3 components: `Leaf` + `Item` + `Sentence` - line 72
+  - `QLeafItemImage` - Review: 3 components: `Leaf` + `Item` + `Image` - line 74
+  - `QLeafItemVideo` - Review: 3 components: `Leaf` + `Item` + `Video` - line 76
 
 #### `QLeafLine.cs`
 
@@ -10994,15 +11135,16 @@ No prefix, shape, base, verb, or count violations were found.
 #### `PCard.cs`
 
 - `PCard`
-  - `_pCardPositionActive` - Review: 3 components: `Card` + `Position` + `Active` - line 14
-  - `PCardPositionText` - Review: 3 components: `Card` + `Position` + `Text` - line 85
-  - `PCardPositionActive` - Review: 3 components: `Card` + `Position` + `Active` - line 87
-  - `PCardPositionHide` - Review: 3 components: `Card` + `Position` + `Hide` - line 102
-  - `PCardTitleShow` - Review: 3 components: `Card` + `Title` + `Show` - line 115
-  - `PCardDefinitionShow` - Review: 3 components: `Card` + `Definition` + `Show` - line 128
-  - `PCardExpressionShow` - Review: 3 components: `Card` + `Expression` + `Show` - line 141
-  - `PCardImageShow` - Review: 3 components: `Card` + `Image` + `Show` - line 154
-  - `PCardVideoShow` - Review: 3 components: `Card` + `Video` + `Show` - line 169
+  - `_pCardPositionActive` - Review: 3 components: `Card` + `Position` + `Active` - line 15
+  - `PCardPositionText` - Review: 3 components: `Card` + `Position` + `Text` - line 91
+  - `PCardPositionActive` - Review: 3 components: `Card` + `Position` + `Active` - line 93
+  - `PCardPositionHide` - Review: 3 components: `Card` + `Position` + `Hide` - line 108
+  - `PCardTitleShow` - Review: 3 components: `Card` + `Title` + `Show` - line 127
+  - `PCardDefinitionShow` - Review: 3 components: `Card` + `Definition` + `Show` - line 140
+  - `PCardExpressionShow` - Review: 3 components: `Card` + `Expression` + `Show` - line 153
+  - `PCardFoldShow` - Review: 3 components: `Card` + `Fold` + `Show` - line 166
+  - `PCardImageShow` - Review: 3 components: `Card` + `Image` + `Show` - line 177
+  - `PCardVideoShow` - Review: 3 components: `Card` + `Video` + `Show` - line 192
 
 #### `PCardSentence.cs`
 
@@ -11055,14 +11197,16 @@ No prefix, shape, base, verb, or count violations were found.
 
 - `QCadence`
   - `QCadenceFoldRefine` - Review: 3 components: `Cadence` + `Fold` + `Refine` - line 51
-  - `QCadenceParadigmRefine` - Review: 3 components: `Cadence` + `Paradigm` + `Refine` - line 57
-  - `QCadenceScriptRefine` - Review: 3 components: `Cadence` + `Script` + `Refine` - line 65
-  - `QCadenceScriptObserve` - Review: 3 components: `Cadence` + `Script` + `Observe` - line 75
-  - `QCadenceFanqieRefine` - Review: 3 components: `Cadence` + `Fanqie` + `Refine` - line 80
-  - `QCadenceFanqieObserve` - Review: 3 components: `Cadence` + `Fanqie` + `Observe` - line 89
-  - `QCadenceDiweiObserve` - Review: 3 components: `Cadence` + `Diwei` + `Observe` - line 94
-  - `QCadenceRepresentativeObserve` - Review: 3 components: `Cadence` + `Representative` + `Observe` - line 99
-  - `QCadenceReadingRefine` - Review: 3 components: `Cadence` + `Reading` + `Refine` - line 104
+  - `QCadenceSpellingObserve` - Review: 3 components: `Cadence` + `Spelling` + `Observe` - line 57
+  - `QCadenceWritingObserve` - Review: 3 components: `Cadence` + `Writing` + `Observe` - line 63
+  - `QCadenceParadigmRefine` - Review: 3 components: `Cadence` + `Paradigm` + `Refine` - line 69
+  - `QCadenceScriptRefine` - Review: 3 components: `Cadence` + `Script` + `Refine` - line 77
+  - `QCadenceScriptObserve` - Review: 3 components: `Cadence` + `Script` + `Observe` - line 87
+  - `QCadenceFanqieRefine` - Review: 3 components: `Cadence` + `Fanqie` + `Refine` - line 92
+  - `QCadenceFanqieObserve` - Review: 3 components: `Cadence` + `Fanqie` + `Observe` - line 101
+  - `QCadenceDiweiObserve` - Review: 3 components: `Cadence` + `Diwei` + `Observe` - line 106
+  - `QCadenceRepresentativeObserve` - Review: 3 components: `Cadence` + `Representative` + `Observe` - line 111
+  - `QCadenceReadingRefine` - Review: 3 components: `Cadence` + `Reading` + `Refine` - line 116
 
 #### `QEditor.cs`
 
@@ -11095,9 +11239,9 @@ No prefix, shape, base, verb, or count violations were found.
   - `QEditorCardIntroduce` - Review: 3 components: `Editor` + `Card` + `Introduce` - line 95
   - `QEditorStartRefine` - Review: 3 components: `Editor` + `Start` + `Refine` - line 128
   - `QEditorMeaningRefine` - Review: 3 components: `Editor` + `Meaning` + `Refine` - line 134
-  - `QEditorCollocationRefine` - Review: 3 components: `Editor` + `Collocation` + `Refine` - line 139
-  - `QEditorTextObserve` - Review: 3 components: `Editor` + `Text` + `Observe` - line 144
-  - `QEditorFieldObserve` - Review: 3 components: `Editor` + `Field` + `Observe` - line 152
+  - `QEditorCollocationRefine` - Review: 3 components: `Editor` + `Collocation` + `Refine` - line 140
+  - `QEditorTextObserve` - Review: 3 components: `Editor` + `Text` + `Observe` - line 149
+  - `QEditorFieldObserve` - Review: 3 components: `Editor` + `Field` + `Observe` - line 157
 
 #### `QEditorFont.cs`
 
@@ -11127,15 +11271,15 @@ No prefix, shape, base, verb, or count violations were found.
   - `QEditorSoundCloser` - Review: 3 components: `Editor` + `Sound` + `Closer` - line 72
   - `QEditorSoundContour` - Review: 3 components: `Editor` + `Sound` + `Contour` - line 75
   - `QEditorSoundIntroduce` - Review: 3 components: `Editor` + `Sound` + `Introduce` - line 77
-  - `QEditorFailureObserve` - Review: 3 components: `Editor` + `Failure` + `Observe` - line 102
-  - `QEditorPlayerRefine` - Review: 3 components: `Editor` + `Player` + `Refine` - line 107
-  - `QEditorReadingRefine` - Review: 3 components: `Editor` + `Reading` + `Refine` - line 112
-  - `QEditorPronunciationRefine` - Review: 3 components: `Editor` + `Pronunciation` + `Refine` - line 117
-  - `QEditorTimbreRefine` - Review: 3 components: `Editor` + `Timbre` + `Refine` - line 122
-  - `QEditorContourRefine` - Review: 3 components: `Editor` + `Contour` + `Refine` - line 131
-  - `QEditorContourRefine` - Review: 3 components: `Editor` + `Contour` + `Refine` - line 136
-  - `QEditorContourRefine` - Review: 3 components: `Editor` + `Contour` + `Refine` - line 141
-  - `QEditorPronunciationObserve` - Review: 3 components: `Editor` + `Pronunciation` + `Observe` - line 148
+  - `QEditorFailureObserve` - Review: 3 components: `Editor` + `Failure` + `Observe` - line 101
+  - `QEditorPlayerRefine` - Review: 3 components: `Editor` + `Player` + `Refine` - line 106
+  - `QEditorReadingRefine` - Review: 3 components: `Editor` + `Reading` + `Refine` - line 111
+  - `QEditorPronunciationRefine` - Review: 3 components: `Editor` + `Pronunciation` + `Refine` - line 116
+  - `QEditorTimbreRefine` - Review: 3 components: `Editor` + `Timbre` + `Refine` - line 121
+  - `QEditorContourRefine` - Review: 3 components: `Editor` + `Contour` + `Refine` - line 130
+  - `QEditorContourRefine` - Review: 3 components: `Editor` + `Contour` + `Refine` - line 135
+  - `QEditorContourRefine` - Review: 3 components: `Editor` + `Contour` + `Refine` - line 140
+  - `QEditorPronunciationObserve` - Review: 3 components: `Editor` + `Pronunciation` + `Observe` - line 147
 
 #### `QInput.cs`
 
@@ -11327,13 +11471,14 @@ No prefix, shape, base, verb, or count violations were found.
 #### `QCard.cs`
 
 - `QCard`
-  - `QCardRowRefine` - Review: 3 components: `Card` + `Row` + `Refine` - line 131
-  - `QCardFieldApply` - Review: 3 components: `Card` + `Field` + `Apply` - line 212
-  - `QCardRemoveObserve` - Review: 3 components: `Card` + `Remove` + `Observe` - line 265
-  - `QCardDraftRefine` - Review: 3 components: `Card` + `Draft` + `Refine` - line 328
-  - `QCardTitleObserve` - Review: 3 components: `Card` + `Title` + `Observe` - line 343
-  - `QCardExpressionObserve` - Review: 3 components: `Card` + `Expression` + `Observe` - line 351
-  - `QCardDefinitionObserve` - Review: 3 components: `Card` + `Definition` + `Observe` - line 359
+  - `QCardRowRefine` - Review: 3 components: `Card` + `Row` + `Refine` - line 137
+  - `QCardFieldApply` - Review: 3 components: `Card` + `Field` + `Apply` - line 226
+  - `QCardRemoveObserve` - Review: 3 components: `Card` + `Remove` + `Observe` - line 279
+  - `QCardDraftRefine` - Review: 3 components: `Card` + `Draft` + `Refine` - line 344
+  - `QCardHingeObserve` - Review: 3 components: `Card` + `Hinge` + `Observe` - line 360
+  - `QCardTitleObserve` - Review: 3 components: `Card` + `Title` + `Observe` - line 369
+  - `QCardExpressionObserve` - Review: 3 components: `Card` + `Expression` + `Observe` - line 377
+  - `QCardDefinitionObserve` - Review: 3 components: `Card` + `Definition` + `Observe` - line 385
 
 #### `QCardDrag.cs`
 
@@ -11345,6 +11490,11 @@ No prefix, shape, base, verb, or count violations were found.
   - `QCardDragRefine` - Review: 3 components: `Card` + `Drag` + `Refine` - line 35
   - `QCardDragUpdate` - Review: 3 components: `Card` + `Drag` + `Update` - line 61
   - `QCardDragReset` - Review: 3 components: `Card` + `Drag` + `Reset` - line 85
+
+#### `QCardFold.cs`
+
+- `QCardFold`
+  - `QCardFoldRefine` - Review: 3 components: `Card` + `Fold` + `Refine` - line 9
 
 #### `QCardGesture.cs`
 
@@ -11677,22 +11827,26 @@ No prefix, shape, base, verb, or count violations were found.
     - `QLookSetterPart` - Review: 3 components: `Look` + `Setter` + `Part` - line 22
     - `QLookSetterProperty` - Review: 3 components: `Look` + `Setter` + `Property` - line 23
     - `QLookSetterValue` - Review: 3 components: `Look` + `Setter` + `Value` - line 24
-  - `QLookCueProperty` - Review: 3 components: `Look` + `Cue` + `Property` - line 26
-  - `QLookIconProperty` - Review: 3 components: `Look` + `Icon` + `Property` - line 32
-  - `QLookReachProperty` - Review: 3 components: `Look` + `Reach` + `Property` - line 38
-  - `QLookVisibleRead` - Review: 3 components: `Look` + `Visible` + `Read` - line 53
-  - `QLookCheckedRead` - Review: 3 components: `Look` + `Checked` + `Read` - line 58
-  - `QLookFirstRead` - Review: 3 components: `Look` + `First` + `Read` - line 63
-  - `QLookEpithetRead` - Review: 3 components: `Look` + `Epithet` + `Read` - line 68
-  - `QLookPromptApply` - Review: 3 components: `Look` + `Prompt` + `Apply` - line 73
-  - `QLookStateAttach` - Review: 3 components: `Look` + `State` + `Attach` - line 97
-  - `QLookStyleAttach` - Review: 3 components: `Look` + `Style` + `Attach` - line 129
-  - `QLookPartFind` - Review: 3 components: `Look` + `Part` + `Find` - line 137
-  - `QLookStateRefine` - Review: 3 components: `Look` + `State` + `Refine` - line 170
-  - `QLookCueRead` - Review: 3 components: `Look` + `Cue` + `Read` - line 292
-  - `QLookStateTeardown` - Review: 3 components: `Look` + `State` + `Teardown` - line 297
-  - `QLookReachRefine` - Review: 3 components: `Look` + `Reach` + `Refine` - line 313
-  - `QLookStyleScan` - Review: 3 components: `Look` + `Style` + `Scan` - line 330
+  - `QLookClaim`
+    - `QLookClaimOwner` - Review: 3 components: `Look` + `Claim` + `Owner` - line 26
+    - `QLookClaimSetter` - Review: 3 components: `Look` + `Claim` + `Setter` - line 26
+  - `QLookCueProperty` - Review: 3 components: `Look` + `Cue` + `Property` - line 28
+  - `QLookIconProperty` - Review: 3 components: `Look` + `Icon` + `Property` - line 34
+  - `QLookReachProperty` - Review: 3 components: `Look` + `Reach` + `Property` - line 40
+  - `QLookVisibleRead` - Review: 3 components: `Look` + `Visible` + `Read` - line 61
+  - `QLookCheckedRead` - Review: 3 components: `Look` + `Checked` + `Read` - line 66
+  - `QLookCheckedRefine` - Review: 3 components: `Look` + `Checked` + `Refine` - line 71
+  - `QLookFirstRead` - Review: 3 components: `Look` + `First` + `Read` - line 79
+  - `QLookEpithetRead` - Review: 3 components: `Look` + `Epithet` + `Read` - line 84
+  - `QLookPromptApply` - Review: 3 components: `Look` + `Prompt` + `Apply` - line 89
+  - `QLookStateAttach` - Review: 3 components: `Look` + `State` + `Attach` - line 113
+  - `QLookStyleAttach` - Review: 3 components: `Look` + `Style` + `Attach` - line 145
+  - `QLookPartFind` - Review: 3 components: `Look` + `Part` + `Find` - line 153
+  - `QLookStateRefine` - Review: 3 components: `Look` + `State` + `Refine` - line 186
+  - `QLookCueRead` - Review: 3 components: `Look` + `Cue` + `Read` - line 336
+  - `QLookStateTeardown` - Review: 3 components: `Look` + `State` + `Teardown` - line 341
+  - `QLookReachRefine` - Review: 3 components: `Look` + `Reach` + `Refine` - line 357
+  - `QLookStyleScan` - Review: 3 components: `Look` + `Style` + `Scan` - line 374
 
 #### `QLookControl.cs`
 
@@ -12734,27 +12888,27 @@ No prefix, shape, base, verb, or count violations were found.
 #### `QLibrary.cs`
 
 - `QLibrary`
-  - `QLibraryBinIcon` - Review: 3 components: `Library` + `Bin` + `Icon` - line 68
-  - `QLibraryIndexIntroduce` - Review: 3 components: `Library` + `Index` + `Introduce` - line 103
-  - `QLibraryIndexRefine` - Review: 3 components: `Library` + `Index` + `Refine` - line 110
-  - `QLibraryIndexRefine` - Review: 3 components: `Library` + `Index` + `Refine` - line 115
-  - `QLibraryStoreRefine` - Review: 3 components: `Library` + `Store` + `Refine` - line 120
-  - `QLibraryVistaRefine` - Review: 3 components: `Library` + `Vista` + `Refine` - line 125
-  - `QLibraryWorkspaceRefine` - Review: 3 components: `Library` + `Workspace` + `Refine` - line 135
-  - `QLibraryShownCheck` - Review: 3 components: `Library` + `Shown` + `Check` - line 140
-  - `QLibraryExitRefine` - Review: 3 components: `Library` + `Exit` + `Refine` - line 145
-  - `QLibraryModeRefine` - Review: 3 components: `Library` + `Mode` + `Refine` - line 150
-  - `QLibraryIndexObserve` - Review: 3 components: `Library` + `Index` + `Observe` - line 163
-  - `QLibraryRowRefine` - Review: 3 components: `Library` + `Row` + `Refine` - line 169
-  - `QLibraryFreshObserve` - Review: 3 components: `Library` + `Fresh` + `Observe` - line 180
-  - `QLibraryScribeObserve` - Review: 3 components: `Library` + `Scribe` + `Observe` - line 185
-  - `QLibraryStoreObserve` - Review: 3 components: `Library` + `Store` + `Observe` - line 190
-  - `QLibraryBinObserve` - Review: 3 components: `Library` + `Bin` + `Observe` - line 195
-  - `QLibraryMarkupObserve` - Review: 3 components: `Library` + `Markup` + `Observe` - line 200
-  - `QLibraryPressRefine` - Review: 3 components: `Library` + `Press` + `Refine` - line 205
-  - `QLibraryPressObserve` - Review: 3 components: `Library` + `Press` + `Observe` - line 210
-  - `QLibraryPortraitObserve` - Review: 3 components: `Library` + `Portrait` + `Observe` - line 215
-  - `QLibraryChronicleRefine` - Review: 3 components: `Library` + `Chronicle` + `Refine` - line 220
+  - `QLibraryBinIcon` - Review: 3 components: `Library` + `Bin` + `Icon` - line 70
+  - `QLibraryIndexIntroduce` - Review: 3 components: `Library` + `Index` + `Introduce` - line 105
+  - `QLibraryIndexRefine` - Review: 3 components: `Library` + `Index` + `Refine` - line 112
+  - `QLibraryIndexRefine` - Review: 3 components: `Library` + `Index` + `Refine` - line 117
+  - `QLibraryStoreRefine` - Review: 3 components: `Library` + `Store` + `Refine` - line 122
+  - `QLibraryVistaRefine` - Review: 3 components: `Library` + `Vista` + `Refine` - line 127
+  - `QLibraryWorkspaceRefine` - Review: 3 components: `Library` + `Workspace` + `Refine` - line 137
+  - `QLibraryShownCheck` - Review: 3 components: `Library` + `Shown` + `Check` - line 142
+  - `QLibraryExitRefine` - Review: 3 components: `Library` + `Exit` + `Refine` - line 147
+  - `QLibraryModeRefine` - Review: 3 components: `Library` + `Mode` + `Refine` - line 152
+  - `QLibraryIndexObserve` - Review: 3 components: `Library` + `Index` + `Observe` - line 165
+  - `QLibraryRowRefine` - Review: 3 components: `Library` + `Row` + `Refine` - line 171
+  - `QLibraryFreshObserve` - Review: 3 components: `Library` + `Fresh` + `Observe` - line 182
+  - `QLibraryScribeObserve` - Review: 3 components: `Library` + `Scribe` + `Observe` - line 187
+  - `QLibraryStoreObserve` - Review: 3 components: `Library` + `Store` + `Observe` - line 192
+  - `QLibraryBinObserve` - Review: 3 components: `Library` + `Bin` + `Observe` - line 197
+  - `QLibraryMarkupObserve` - Review: 3 components: `Library` + `Markup` + `Observe` - line 202
+  - `QLibraryPressRefine` - Review: 3 components: `Library` + `Press` + `Refine` - line 207
+  - `QLibraryPressObserve` - Review: 3 components: `Library` + `Press` + `Observe` - line 212
+  - `QLibraryPortraitObserve` - Review: 3 components: `Library` + `Portrait` + `Observe` - line 217
+  - `QLibraryChronicleRefine` - Review: 3 components: `Library` + `Chronicle` + `Refine` - line 222
 
 #### `QWing.cs`
 
@@ -13409,44 +13563,44 @@ No prefix, shape, base, verb, or count violations were found.
   - `_qReflexItemReflex` - Review: 3 components: `Reflex` + `Item` + `Reflex` - line 15
   - `QReflexItemTyped` - Review: 3 components: `Reflex` + `Item` + `Typed` - line 28
   - `QReflexItemId` - Review: 3 components: `Reflex` + `Item` + `Id` - line 30
-  - `QReflexItemFolded` - Review: 3 components: `Reflex` + `Item` + `Folded` - line 32
-  - `QReflexItemOpener` - Review: 3 components: `Reflex` + `Item` + `Opener` - line 34
-  - `QReflexItemCloser` - Review: 3 components: `Reflex` + `Item` + `Closer` - line 36
-  - `QReflexItemKind` - Review: 3 components: `Reflex` + `Item` + `Kind` - line 38
-  - `QReflexItemText` - Review: 3 components: `Reflex` + `Item` + `Text` - line 44
-  - `QReflexItemRomanization` - Review: 3 components: `Reflex` + `Item` + `Romanization` - line 50
-  - `QReflexItemMeaning` - Review: 3 components: `Reflex` + `Item` + `Meaning` - line 56
-  - `QReflexItemNote` - Review: 3 components: `Reflex` + `Item` + `Note` - line 62
-  - `QReflexItemMain` - Review: 3 components: `Reflex` + `Item` + `Main` - line 68
-  - `QReflexItemLead` - Review: 3 components: `Reflex` + `Item` + `Lead` - line 70
-  - `QReflexItemHidden` - Review: 3 components: `Reflex` + `Item` + `Hidden` - line 88
-  - `QReflexItemAnchor` - Review: 3 components: `Reflex` + `Item` + `Anchor` - line 103
-  - `QReflexItemAnchorable` - Review: 3 components: `Reflex` + `Item` + `Anchorable` - line 118
-  - `QReflexItemHead` - Review: 3 components: `Reflex` + `Item` + `Head` - line 133
-  - `QReflexItemLabel` - Review: 3 components: `Reflex` + `Item` + `Label` - line 139
-  - `QReflexItemArea` - Review: 3 components: `Reflex` + `Item` + `Area` - line 144
-  - `QReflexItemTag` - Review: 3 components: `Reflex` + `Item` + `Tag` - line 146
-  - `QReflexItemReflex` - Review: 3 components: `Reflex` + `Item` + `Reflex` - line 149
-  - `QReflexItemRefine` - Review: 3 components: `Reflex` + `Item` + `Refine` - line 151
-  - `QReflexTextRefine` - Review: 3 components: `Reflex` + `Text` + `Refine` - line 234
-  - `QReflexStateRefine` - Review: 3 components: `Reflex` + `State` + `Refine` - line 252
-  - `QReflexTypeRefine` - Review: 3 components: `Reflex` + `Type` + `Refine` - line 260
-  - `QReflexLabelRefine` - Review: 3 components: `Reflex` + `Label` + `Refine` - line 268
-  - `QReflexValueRefine` - Review: 3 components: `Reflex` + `Value` + `Refine` - line 273
-  - `QReflexChangeRefine` - Review: 3 components: `Reflex` + `Change` + `Refine` - line 334
+  - `QReflexItemOpener` - Review: 3 components: `Reflex` + `Item` + `Opener` - line 32
+  - `QReflexItemCloser` - Review: 3 components: `Reflex` + `Item` + `Closer` - line 34
+  - `QReflexItemKind` - Review: 3 components: `Reflex` + `Item` + `Kind` - line 36
+  - `QReflexItemText` - Review: 3 components: `Reflex` + `Item` + `Text` - line 42
+  - `QReflexItemRomanization` - Review: 3 components: `Reflex` + `Item` + `Romanization` - line 48
+  - `QReflexItemMeaning` - Review: 3 components: `Reflex` + `Item` + `Meaning` - line 54
+  - `QReflexItemNote` - Review: 3 components: `Reflex` + `Item` + `Note` - line 60
+  - `QReflexItemMain` - Review: 3 components: `Reflex` + `Item` + `Main` - line 66
+  - `QReflexItemLead` - Review: 3 components: `Reflex` + `Item` + `Lead` - line 68
+  - `QReflexItemHidden` - Review: 3 components: `Reflex` + `Item` + `Hidden` - line 86
+  - `QReflexItemAnchor` - Review: 3 components: `Reflex` + `Item` + `Anchor` - line 101
+  - `QReflexItemAnchorable` - Review: 3 components: `Reflex` + `Item` + `Anchorable` - line 116
+  - `QReflexItemHead` - Review: 3 components: `Reflex` + `Item` + `Head` - line 131
+  - `QReflexItemLabel` - Review: 3 components: `Reflex` + `Item` + `Label` - line 137
+  - `QReflexItemArea` - Review: 3 components: `Reflex` + `Item` + `Area` - line 142
+  - `QReflexItemTag` - Review: 3 components: `Reflex` + `Item` + `Tag` - line 144
+  - `QReflexItemReflex` - Review: 3 components: `Reflex` + `Item` + `Reflex` - line 147
+  - `QReflexItemRefine` - Review: 3 components: `Reflex` + `Item` + `Refine` - line 149
+  - `QReflexTextRefine` - Review: 3 components: `Reflex` + `Text` + `Refine` - line 232
+  - `QReflexStateRefine` - Review: 3 components: `Reflex` + `State` + `Refine` - line 250
+  - `QReflexTypeRefine` - Review: 3 components: `Reflex` + `Type` + `Refine` - line 258
+  - `QReflexLabelRefine` - Review: 3 components: `Reflex` + `Label` + `Refine` - line 266
+  - `QReflexValueRefine` - Review: 3 components: `Reflex` + `Value` + `Refine` - line 271
+  - `QReflexChangeRefine` - Review: 3 components: `Reflex` + `Change` + `Refine` - line 332
 
 #### `QReflexList.cs`
 
 - `QReflexList`
   - `_qReflexListRow` - Review: 3 components: `Reflex` + `List` + `Row` - line 13
-  - `_qReflexListFold` - Review: 3 components: `Reflex` + `List` + `Fold` - line 15
+  - `_qReflexListHinge` - Review: 3 components: `Reflex` + `List` + `Hinge` - line 15
   - `QReflexListTyped` - Review: 3 components: `Reflex` + `List` + `Typed` - line 27
   - `QReflexListShow` - Review: 3 components: `Reflex` + `List` + `Show` - line 29
-  - `QReflexLeadRefine` - Review: 3 components: `Reflex` + `Lead` + `Refine` - line 42
-  - `QReflexAnchorRefine` - Review: 3 components: `Reflex` + `Anchor` + `Refine` - line 58
-  - `QReflexFoldRefine` - Review: 3 components: `Reflex` + `Fold` + `Refine` - line 70
-  - `QReflexRowRefine` - Review: 3 components: `Reflex` + `Row` + `Refine` - line 83
-  - `QReflexStateRefine` - Review: 3 components: `Reflex` + `State` + `Refine` - line 90
+  - `QReflexLeadRefine` - Review: 3 components: `Reflex` + `Lead` + `Refine` - line 43
+  - `QReflexAnchorRefine` - Review: 3 components: `Reflex` + `Anchor` + `Refine` - line 59
+  - `QReflexFoldRefine` - Review: 3 components: `Reflex` + `Fold` + `Refine` - line 71
+  - `QReflexHiddenRefine` - Review: 3 components: `Reflex` + `Hidden` + `Refine` - line 77
+  - `QReflexRowRefine` - Review: 3 components: `Reflex` + `Row` + `Refine` - line 87
+  - `QReflexStateRefine` - Review: 3 components: `Reflex` + `State` + `Refine` - line 94
 
 #### `QTranscriptionChoice.cs`
 
@@ -13728,18 +13882,16 @@ No prefix, shape, base, verb, or count violations were found.
   - `QFanqiePendingProperty` - Review: 3 components: `Fanqie` + `Pending` + `Property` - line 19
   - `QFanqieFoldedProperty` - Review: 3 components: `Fanqie` + `Folded` + `Property` - line 25
   - `QFanqieRenewableProperty` - Review: 3 components: `Fanqie` + `Renewable` + `Property` - line 36
-  - `QFanqieRenewalNotice` - Review: 3 components: `Fanqie` + `Renewal` + `Notice` - line 125
-  - `QFanqieFoldNotice` - Review: 3 components: `Fanqie` + `Fold` + `Notice` - line 127
-  - `QFanqieDiweiNotice` - Review: 3 components: `Fanqie` + `Diwei` + `Notice` - line 129
-  - `QFanqieStemNotice` - Review: 3 components: `Fanqie` + `Stem` + `Notice` - line 131
-  - `QFanqieRepresentativeNotice` - Review: 3 components: `Fanqie` + `Representative` + `Notice` - line 133
-  - `QFanqieDiweiObserve` - Review: 3 components: `Fanqie` + `Diwei` + `Observe` - line 135
-  - `QFanqieStemObserve` - Review: 3 components: `Fanqie` + `Stem` + `Observe` - line 146
-  - `QFanqieRepresentativeObserve` - Review: 3 components: `Fanqie` + `Representative` + `Observe` - line 151
-  - `QFanqieRefreshObserve` - Review: 3 components: `Fanqie` + `Refresh` + `Observe` - line 162
-  - `QFanqieFoldObserve` - Review: 3 components: `Fanqie` + `Fold` + `Observe` - line 167
-  - `QFanqieFoldRefine` - Review: 3 components: `Fanqie` + `Fold` + `Refine` - line 172
-  - `QFanqieStateRefine` - Review: 3 components: `Fanqie` + `State` + `Refine` - line 178
+  - `QFanqieRenewalNotice` - Review: 3 components: `Fanqie` + `Renewal` + `Notice` - line 124
+  - `QFanqieDiweiNotice` - Review: 3 components: `Fanqie` + `Diwei` + `Notice` - line 126
+  - `QFanqieStemNotice` - Review: 3 components: `Fanqie` + `Stem` + `Notice` - line 128
+  - `QFanqieRepresentativeNotice` - Review: 3 components: `Fanqie` + `Representative` + `Notice` - line 130
+  - `QFanqieDiweiObserve` - Review: 3 components: `Fanqie` + `Diwei` + `Observe` - line 132
+  - `QFanqieStemObserve` - Review: 3 components: `Fanqie` + `Stem` + `Observe` - line 143
+  - `QFanqieRepresentativeObserve` - Review: 3 components: `Fanqie` + `Representative` + `Observe` - line 148
+  - `QFanqieRefreshObserve` - Review: 3 components: `Fanqie` + `Refresh` + `Observe` - line 159
+  - `QFanqieFoldRefine` - Review: 3 components: `Fanqie` + `Fold` + `Refine` - line 166
+  - `QFanqieStateRefine` - Review: 3 components: `Fanqie` + `State` + `Refine` - line 172
 
 #### `QFanqieCommand.cs`
 
@@ -13812,13 +13964,13 @@ No prefix, shape, base, verb, or count violations were found.
 - `QParadigm`
   - `QParadigmItemsProperty` - Review: 3 components: `Paradigm` + `Items` + `Property` - line 14
   - `QParadigmSheetProperty` - Review: 3 components: `Paradigm` + `Sheet` + `Property` - line 20
-  - `QParadigmItemRefine` - Review: 3 components: `Paradigm` + `Item` + `Refine` - line 85
-  - `QParadigmItemsRefine` - Review: 3 components: `Paradigm` + `Items` + `Refine` - line 114
-  - `QParadigmSheetRefine` - Review: 3 components: `Paradigm` + `Sheet` + `Refine` - line 122
-  - `QParadigmFoldRefine` - Review: 3 components: `Paradigm` + `Fold` + `Refine` - line 140
-  - `QParadigmTableRefine` - Review: 3 components: `Paradigm` + `Table` + `Refine` - line 148
-  - `QParadigmRuleDraw` - Review: 3 components: `Paradigm` + `Rule` + `Draw` - line 228
-  - `QParadigmFormRefine` - Review: 3 components: `Paradigm` + `Form` + `Refine` - line 239
+  - `QParadigmItemRefine` - Review: 3 components: `Paradigm` + `Item` + `Refine` - line 84
+  - `QParadigmItemsRefine` - Review: 3 components: `Paradigm` + `Items` + `Refine` - line 113
+  - `QParadigmSheetRefine` - Review: 3 components: `Paradigm` + `Sheet` + `Refine` - line 121
+  - `QParadigmFoldRefine` - Review: 3 components: `Paradigm` + `Fold` + `Refine` - line 138
+  - `QParadigmTableRefine` - Review: 3 components: `Paradigm` + `Table` + `Refine` - line 146
+  - `QParadigmRuleDraw` - Review: 3 components: `Paradigm` + `Rule` + `Draw` - line 226
+  - `QParadigmFormRefine` - Review: 3 components: `Paradigm` + `Form` + `Refine` - line 237
 
 #### `QParadigmForm.cs`
 
@@ -13871,18 +14023,18 @@ No prefix, shape, base, verb, or count violations were found.
 #### `QReflex.cs`
 
 - `QReflex`
-  - `QReflexAddObserve` - Review: 3 components: `Reflex` + `Add` + `Observe` - line 69
-  - `QReflexRemoveObserve` - Review: 3 components: `Reflex` + `Remove` + `Observe` - line 74
-  - `QReflexMainObserve` - Review: 3 components: `Reflex` + `Main` + `Observe` - line 82
-  - `QReflexRebuildRefine` - Review: 3 components: `Reflex` + `Rebuild` + `Refine` - line 90
-  - `QReflexRebuildObserve` - Review: 3 components: `Reflex` + `Rebuild` + `Observe` - line 96
-  - `QReflexTypeObserve` - Review: 3 components: `Reflex` + `Type` + `Observe` - line 102
-  - `QReflexAnchorRefine` - Review: 3 components: `Reflex` + `Anchor` + `Refine` - line 124
-  - `QReflexAnchorRefine` - Review: 3 components: `Reflex` + `Anchor` + `Refine` - line 129
-  - `QReflexPendingRefine` - Review: 3 components: `Reflex` + `Pending` + `Refine` - line 134
-  - `QReflexPendingRefine` - Review: 3 components: `Reflex` + `Pending` + `Refine` - line 139
-  - `QReflexFoldObserve` - Review: 3 components: `Reflex` + `Fold` + `Observe` - line 153
-  - `QReflexFoldRefine` - Review: 3 components: `Reflex` + `Fold` + `Refine` - line 159
+  - `QReflexAddObserve` - Review: 3 components: `Reflex` + `Add` + `Observe` - line 63
+  - `QReflexRemoveObserve` - Review: 3 components: `Reflex` + `Remove` + `Observe` - line 68
+  - `QReflexMainObserve` - Review: 3 components: `Reflex` + `Main` + `Observe` - line 76
+  - `QReflexRebuildRefine` - Review: 3 components: `Reflex` + `Rebuild` + `Refine` - line 84
+  - `QReflexRebuildObserve` - Review: 3 components: `Reflex` + `Rebuild` + `Observe` - line 90
+  - `QReflexTypeObserve` - Review: 3 components: `Reflex` + `Type` + `Observe` - line 96
+  - `QReflexAnchorRefine` - Review: 3 components: `Reflex` + `Anchor` + `Refine` - line 118
+  - `QReflexAnchorRefine` - Review: 3 components: `Reflex` + `Anchor` + `Refine` - line 123
+  - `QReflexPendingRefine` - Review: 3 components: `Reflex` + `Pending` + `Refine` - line 128
+  - `QReflexPendingRefine` - Review: 3 components: `Reflex` + `Pending` + `Refine` - line 133
+  - `QReflexHingeObserve` - Review: 3 components: `Reflex` + `Hinge` + `Observe` - line 147
+  - `QReflexHingeRefine` - Review: 3 components: `Reflex` + `Hinge` + `Refine` - line 152
 
 #### `QReflexCommand.cs`
 
@@ -13918,15 +14070,13 @@ No prefix, shape, base, verb, or count violations were found.
   - `QScriptPendingProperty` - Review: 3 components: `Script` + `Pending` + `Property` - line 19
   - `QScriptFoldedProperty` - Review: 3 components: `Script` + `Folded` + `Property` - line 25
   - `QScriptRenewableProperty` - Review: 3 components: `Script` + `Renewable` + `Property` - line 36
-  - `QScriptRenewalNotice` - Review: 3 components: `Script` + `Renewal` + `Notice` - line 118
-  - `QScriptFoldNotice` - Review: 3 components: `Script` + `Fold` + `Notice` - line 120
-  - `QScriptFailureNotice` - Review: 3 components: `Script` + `Failure` + `Notice` - line 122
-  - `QScriptFailureRefine` - Review: 3 components: `Script` + `Failure` + `Refine` - line 124
-  - `QScriptLanguageRefine` - Review: 3 components: `Script` + `Language` + `Refine` - line 129
-  - `QScriptRefreshObserve` - Review: 3 components: `Script` + `Refresh` + `Observe` - line 145
-  - `QScriptFoldObserve` - Review: 3 components: `Script` + `Fold` + `Observe` - line 150
-  - `QScriptFoldRefine` - Review: 3 components: `Script` + `Fold` + `Refine` - line 155
-  - `QScriptStateRefine` - Review: 3 components: `Script` + `State` + `Refine` - line 161
+  - `QScriptRenewalNotice` - Review: 3 components: `Script` + `Renewal` + `Notice` - line 117
+  - `QScriptFailureNotice` - Review: 3 components: `Script` + `Failure` + `Notice` - line 119
+  - `QScriptFailureRefine` - Review: 3 components: `Script` + `Failure` + `Refine` - line 121
+  - `QScriptLanguageRefine` - Review: 3 components: `Script` + `Language` + `Refine` - line 126
+  - `QScriptRefreshObserve` - Review: 3 components: `Script` + `Refresh` + `Observe` - line 142
+  - `QScriptFoldRefine` - Review: 3 components: `Script` + `Fold` + `Refine` - line 149
+  - `QScriptStateRefine` - Review: 3 components: `Script` + `State` + `Refine` - line 155
 
 #### `QScriptImage.cs`
 
@@ -13995,12 +14145,24 @@ No prefix, shape, base, verb, or count violations were found.
 #### `QStem.cs`
 
 - `QStem`
-  - `QStemEntryObserve` - Review: 3 components: `Stem` + `Entry` + `Observe` - line 49
+  - `QStemEntryObserve` - Review: 3 components: `Stem` + `Entry` + `Observe` - line 53
+  - `QStemHingeObserve` - Review: 3 components: `Stem` + `Hinge` + `Observe` - line 58
 
 #### `QStemCommand.cs`
 
 - `QStemCommand`
   - `QStemCommandEntry` - Review: 3 components: `Stem` + `Command` + `Entry` - line 7
+
+#### `QStemItem.cs`
+
+- `QStemItem`
+  - `QStemItemCharacter` - Review: 3 components: `Stem` + `Item` + `Character` - line 23
+  - `QStemItemReading` - Review: 3 components: `Stem` + `Item` + `Reading` - line 25
+  - `QStemItemReflexes` - Review: 3 components: `Stem` + `Item` + `Reflexes` - line 27
+  - `QStemItemOpened` - Review: 3 components: `Stem` + `Item` + `Opened` - line 29
+  - `QStemItemFoldable` - Review: 3 components: `Stem` + `Item` + `Foldable` - line 31
+  - `QStemItemBuild` - Review: 3 components: `Stem` + `Item` + `Build` - line 33
+  - `QStemItemRefine` - Review: 3 components: `Stem` + `Item` + `Refine` - line 40
 
 #### `QXiesheng.cs`
 
@@ -14086,7 +14248,7 @@ No prefix, shape, base, verb, or count violations were found.
     - `PDisplayGraspLabel` - Review: 3 components: `Display` + `Grasp` + `Label` - line 66
   - `PDisplayReflexTable` - Review: 3 components: `Display` + `Reflex` + `Table` - line 70
     - `PDisplayReflexLoading` - Review: 3 components: `Display` + `Reflex` + `Loading` - line 74
-    - `PDisplayReflexFold` - Review: 3 components: `Display` + `Reflex` + `Fold` - line 76
+    - `PDisplayReflexHinge` - Review: 3 components: `Display` + `Reflex` + `Hinge` - line 76
   - `PDisplayPronunciationSurface` - Review: 3 components: `Display` + `Pronunciation` + `Surface` - line 81
     - `PDisplayPronunciationLead` - Review: 3 components: `Display` + `Pronunciation` + `Lead` - line 84
     - `PDisplayPronunciationFlag` - Review: 3 components: `Display` + `Pronunciation` + `Flag` - line 88
@@ -14137,10 +14299,11 @@ No prefix, shape, base, verb, or count violations were found.
 - `PCardHeader`
   - `PCardPosition`
     - `PCardPositionText` - Review: 3 components: `Card` + `Position` + `Text` - line 21
-- `PCardImageChooser` - Review: 3 components: `Card` + `Image` + `Chooser` - line 63
-  - `PCardImageIcon` - Review: 3 components: `Card` + `Image` + `Icon` - line 64
-- `PCardVideoChooser` - Review: 3 components: `Card` + `Video` + `Chooser` - line 69
-  - `PCardVideoIcon` - Review: 3 components: `Card` + `Video` + `Icon` - line 70
+- `PCardBody`
+  - `PCardImageChooser` - Review: 3 components: `Card` + `Image` + `Chooser` - line 66
+    - `PCardImageIcon` - Review: 3 components: `Card` + `Image` + `Icon` - line 67
+  - `PCardVideoChooser` - Review: 3 components: `Card` + `Video` + `Chooser` - line 72
+    - `PCardVideoIcon` - Review: 3 components: `Card` + `Video` + `Icon` - line 73
 
 
 ### `D:\Programming\Llyn\src\Llyn.UIVeneer\Editor\Sentence`
@@ -14150,10 +14313,11 @@ No prefix, shape, base, verb, or count violations were found.
 - `PCardHeader`
   - `PCardPosition`
     - `PCardPositionText` - Review: 3 components: `Card` + `Position` + `Text` - line 21
-- `PCardImageChooser` - Review: 3 components: `Card` + `Image` + `Chooser` - line 65
-  - `PCardImageIcon` - Review: 3 components: `Card` + `Image` + `Icon` - line 66
-- `PCardVideoChooser` - Review: 3 components: `Card` + `Video` + `Chooser` - line 71
-  - `PCardVideoIcon` - Review: 3 components: `Card` + `Video` + `Icon` - line 72
+- `PCardBody`
+  - `PCardImageChooser` - Review: 3 components: `Card` + `Image` + `Chooser` - line 68
+    - `PCardImageIcon` - Review: 3 components: `Card` + `Image` + `Icon` - line 69
+  - `PCardVideoChooser` - Review: 3 components: `Card` + `Video` + `Chooser` - line 74
+    - `PCardVideoIcon` - Review: 3 components: `Card` + `Video` + `Icon` - line 75
 
 #### `PSentenceTemplate.xaml`
 
@@ -14323,7 +14487,7 @@ No prefix, shape, base, verb, or count violations were found.
 #### `PLibrary.xaml`
 
 - `PLibraryBin`
-  - `PLibraryBinIcon` - Review: 3 components: `Library` + `Bin` + `Icon` - line 100
+  - `PLibraryBinIcon` - Review: 3 components: `Library` + `Bin` + `Icon` - line 92
 
 #### `PWing.xaml`
 
@@ -14350,11 +14514,12 @@ No prefix, shape, base, verb, or count violations were found.
 - `PPanelRailChronicle` - Review: 3 components: `Panel` + `Rail` + `Chronicle` - line 33
   - `PPanelRailBackward` - Review: 3 components: `Panel` + `Rail` + `Backward` - line 35
   - `PPanelRailForward` - Review: 3 components: `Panel` + `Rail` + `Forward` - line 40
-- `PPanelRailPortrait` - Review: 3 components: `Panel` + `Rail` + `Portrait` - line 47
-- `PPanelRailPress` - Review: 3 components: `Panel` + `Rail` + `Press` - line 51
-- `PPanelRailMode` - Review: 3 components: `Panel` + `Rail` + `Mode` - line 57
-  - `PPanelRailViewer` - Review: 3 components: `Panel` + `Rail` + `Viewer` - line 62
-  - `PPanelRailScribe` - Review: 3 components: `Panel` + `Rail` + `Scribe` - line 67
+- `PPanelRailMarkup` - Review: 3 components: `Panel` + `Rail` + `Markup` - line 47
+- `PPanelRailPortrait` - Review: 3 components: `Panel` + `Rail` + `Portrait` - line 52
+- `PPanelRailPress` - Review: 3 components: `Panel` + `Rail` + `Press` - line 56
+- `PPanelRailMode` - Review: 3 components: `Panel` + `Rail` + `Mode` - line 62
+  - `PPanelRailViewer` - Review: 3 components: `Panel` + `Rail` + `Viewer` - line 67
+  - `PPanelRailScribe` - Review: 3 components: `Panel` + `Rail` + `Scribe` - line 72
 
 
 ### `D:\Programming\Llyn\src\Llyn.UIVeneer\Panel\Repertoire`
@@ -14466,6 +14631,13 @@ No prefix, shape, base, verb, or count violations were found.
 - `PFanqieMedial`
   - `PFanqieMedialText` - Review: 3 components: `Fanqie` + `Medial` + `Text` - line 204
 
+#### `PThemeXiesheng.xaml`
+
+- `PStemMemberGlyph` - Review: 3 components: `Stem` + `Member` + `Glyph` - line 45
+- `PStemMemberReading` - Review: 3 components: `Stem` + `Member` + `Reading` - line 46
+- `PStemMemberReflex` - Review: 3 components: `Stem` + `Member` + `Reflex` - line 50
+- `PStemMemberHinge` - Review: 3 components: `Stem` + `Member` + `Hinge` - line 52
+
 
 ### `D:\Programming\Llyn\tests\Llyn.Tests.Conduct\Conduct`
 
@@ -14482,7 +14654,7 @@ No prefix, shape, base, verb, or count violations were found.
 #### `TAtelier.cs`
 
 - `TAtelier`
-  - `TAtelierMediaCreate` - Review: 3 components: `Atelier` + `Media` + `Create` - line 379
+  - `TAtelierMediaCreate` - Review: 3 components: `Atelier` + `Media` + `Create` - line 358
 
 #### `TAtelierMention.cs`
 
@@ -14523,6 +14695,11 @@ No prefix, shape, base, verb, or count violations were found.
 
 - `TCardEtymology`
   - `TCardEtymologyRead` - Review: 3 components: `Card` + `Etymology` + `Read` - line 112
+
+#### `TCardFold.cs`
+
+- `TCardFold`
+  - `TCardFoldPrepare` - Review: 3 components: `Card` + `Fold` + `Prepare` - line 235
 
 #### `TCardList.cs`
 
@@ -14578,18 +14755,18 @@ No prefix, shape, base, verb, or count violations were found.
 #### `TCourier.cs`
 
 - `TCourier`
-  - `TCourierEngineStart` - Review: 3 components: `Courier` + `Engine` + `Start` - line 266
-  - `TCourierEntrySave` - Review: 3 components: `Courier` + `Entry` + `Save` - line 277
-  - `TCourierSeriesSend` - Review: 3 components: `Courier` + `Series` + `Send` - line 288
-  - `TCourierFolderFind` - Review: 3 components: `Courier` + `Folder` + `Find` - line 303
-  - `TCourierNoteFind` - Review: 3 components: `Courier` + `Note` + `Find` - line 311
-  - `TCourierWarrantSave` - Review: 3 components: `Courier` + `Warrant` + `Save` - line 317
+  - `TCourierEngineStart` - Review: 3 components: `Courier` + `Engine` + `Start` - line 262
+  - `TCourierEntrySave` - Review: 3 components: `Courier` + `Entry` + `Save` - line 273
+  - `TCourierSeriesSend` - Review: 3 components: `Courier` + `Series` + `Send` - line 284
+  - `TCourierFolderFind` - Review: 3 components: `Courier` + `Folder` + `Find` - line 298
+  - `TCourierNoteFind` - Review: 3 components: `Courier` + `Note` + `Find` - line 306
+  - `TCourierWarrantSave` - Review: 3 components: `Courier` + `Warrant` + `Save` - line 312
 
 #### `TDisplay.cs`
 
 - `TDisplay`
-  - `TFrequencyPortCreate` - Review: 3 components: `Frequency` + `Port` + `Create` - line 195
-  - `TDisplayDraftCreate` - Review: 3 components: `Display` + `Draft` + `Create` - line 201
+  - `TFrequencyPortCreate` - Review: 3 components: `Frequency` + `Port` + `Create` - line 182
+  - `TDisplayDraftCreate` - Review: 3 components: `Display` + `Draft` + `Create` - line 188
 
 #### `TDisplayAccent.cs`
 
@@ -14616,8 +14793,8 @@ No prefix, shape, base, verb, or count violations were found.
 #### `TDisplayFailure.cs`
 
 - `TDisplayFailure`
-  - `TDisplayAtelierCreate` - Review: 3 components: `Display` + `Atelier` + `Create` - line 246
-  - `TDisplayWingOpen` - Review: 3 components: `Display` + `Wing` + `Open` - line 252
+  - `TDisplayAtelierCreate` - Review: 3 components: `Display` + `Atelier` + `Create` - line 262
+  - `TDisplayWingOpen` - Review: 3 components: `Display` + `Wing` + `Open` - line 268
 
 #### `TDisplayGrasp.cs`
 
@@ -14636,10 +14813,10 @@ No prefix, shape, base, verb, or count violations were found.
 #### `TDisplaySound.cs`
 
 - `TDisplaySound`
-  - `TDisplayWingPrepare` - Review: 3 components: `Display` + `Wing` + `Prepare` - line 174
-  - `TDisplayDraftCreate` - Review: 3 components: `Display` + `Draft` + `Create` - line 180
-  - `TDisplayEnglishSave` - Review: 3 components: `Display` + `English` + `Save` - line 191
-  - `TDisplayKoreanSave` - Review: 3 components: `Display` + `Korean` + `Save` - line 194
+  - `TDisplayWingPrepare` - Review: 3 components: `Display` + `Wing` + `Prepare` - line 157
+  - `TDisplayDraftCreate` - Review: 3 components: `Display` + `Draft` + `Create` - line 163
+  - `TDisplayEnglishSave` - Review: 3 components: `Display` + `English` + `Save` - line 174
+  - `TDisplayKoreanSave` - Review: 3 components: `Display` + `Korean` + `Save` - line 177
 
 #### `TDisplaySoundBlock.cs`
 
@@ -14662,12 +14839,12 @@ No prefix, shape, base, verb, or count violations were found.
 #### `TEditorField.cs`
 
 - `TEditorField`
-  - `TEditorFieldPrepare` - Review: 3 components: `Editor` + `Field` + `Prepare` - line 274
   - `TEditorFieldPrepare` - Review: 3 components: `Editor` + `Field` + `Prepare` - line 279
-  - `TEditorSheetAdd` - Review: 3 components: `Editor` + `Sheet` + `Add` - line 288
-  - `TEditorCardRead` - Review: 3 components: `Editor` + `Card` + `Read` - line 295
-  - `TEditorSentenceAdd` - Review: 3 components: `Editor` + `Sentence` + `Add` - line 300
-  - `TEditorGlossRead` - Review: 3 components: `Editor` + `Gloss` + `Read` - line 310
+  - `TEditorFieldPrepare` - Review: 3 components: `Editor` + `Field` + `Prepare` - line 284
+  - `TEditorSheetAdd` - Review: 3 components: `Editor` + `Sheet` + `Add` - line 293
+  - `TEditorCardRead` - Review: 3 components: `Editor` + `Card` + `Read` - line 300
+  - `TEditorSentenceAdd` - Review: 3 components: `Editor` + `Sentence` + `Add` - line 305
+  - `TEditorGlossRead` - Review: 3 components: `Editor` + `Gloss` + `Read` - line 315
 
 #### `TEditorUnit.cs`
 
@@ -14729,10 +14906,10 @@ No prefix, shape, base, verb, or count violations were found.
 
 - `TFault`
   - `TFaultMarkRows` - Review: 3 components: `Fault` + `Mark` + `Rows` - line 11
-  - `TFaultEntrySave` - Review: 3 components: `Fault` + `Entry` + `Save` - line 199
-  - `TFaultDeskOpen` - Review: 3 components: `Fault` + `Desk` + `Open` - line 203
-  - `TFaultWingOpen` - Review: 3 components: `Fault` + `Wing` + `Open` - line 213
-  - `TFaultConsentCreate` - Review: 3 components: `Fault` + `Consent` + `Create` - line 222
+  - `TFaultEntrySave` - Review: 3 components: `Fault` + `Entry` + `Save` - line 215
+  - `TFaultDeskOpen` - Review: 3 components: `Fault` + `Desk` + `Open` - line 219
+  - `TFaultWingOpen` - Review: 3 components: `Fault` + `Wing` + `Open` - line 229
+  - `TFaultConsentCreate` - Review: 3 components: `Fault` + `Consent` + `Create` - line 238
 
 #### `TFaultPortrait.cs`
 
@@ -14787,8 +14964,7 @@ No prefix, shape, base, verb, or count violations were found.
 #### `TFold.cs`
 
 - `TFold`
-  - `TFoldEntrySave` - Review: 3 components: `Fold` + `Entry` + `Save` - line 147
-  - `TFoldEditorPrepare` - Review: 3 components: `Fold` + `Editor` + `Prepare` - line 153
+  - `TFoldEntrySave` - Review: 3 components: `Fold` + `Entry` + `Save` - line 370
 
 #### `TFootnote.cs`
 
@@ -14846,6 +15022,11 @@ No prefix, shape, base, verb, or count violations were found.
 - `TPortrait`
   - `TPortraitSettingsCreate` - Review: 3 components: `Portrait` + `Settings` + `Create` - line 312
 
+#### `TReflexOpening.cs`
+
+- `TReflexOpening`
+  - `TReflexOpeningPrepare` - Review: 3 components: `Reflex` + `Opening` + `Prepare` - line 222
+
 #### `TReflexRow.cs`
 
 - `TReflexRow`
@@ -14883,10 +15064,10 @@ No prefix, shape, base, verb, or count violations were found.
 #### `TSounding.cs`
 
 - `TSounding`
-  - `TSoundingDiweiPrepare` - Review: 3 components: `Sounding` + `Diwei` + `Prepare` - line 335
-  - `TSoundingEntrySave` - Review: 3 components: `Sounding` + `Entry` + `Save` - line 346
-  - `TSoundingEditorPrepare` - Review: 3 components: `Sounding` + `Editor` + `Prepare` - line 352
-  - `TSoundingPackCreate` - Review: 3 components: `Sounding` + `Pack` + `Create` - line 373
+  - `TSoundingDiweiPrepare` - Review: 3 components: `Sounding` + `Diwei` + `Prepare` - line 333
+  - `TSoundingEntrySave` - Review: 3 components: `Sounding` + `Entry` + `Save` - line 344
+  - `TSoundingEditorPrepare` - Review: 3 components: `Sounding` + `Editor` + `Prepare` - line 350
+  - `TSoundingPackCreate` - Review: 3 components: `Sounding` + `Pack` + `Create` - line 371
 
 #### `TSoundingAnchor.cs`
 
@@ -15745,11 +15926,12 @@ No prefix, shape, base, verb, or count violations were found.
 
 - `TAuditReference`
   - `TAuditReferenceSource` - Review: 3 components: `Audit` + `Reference` + `Source` - line 10
-  - `TAuditGeneratedRead` - Review: 3 components: `Audit` + `Generated` + `Read` - line 12
-  - `TAuditProjectRead` - Review: 3 components: `Audit` + `Project` + `Read` - line 35
-  - `TAuditTargetRead` - Review: 3 components: `Audit` + `Target` + `Read` - line 44
-  - `TAuditReferenceRead` - Review: 3 components: `Audit` + `Reference` + `Read` - line 54
-  - `TAuditAssemblyAdd` - Review: 3 components: `Audit` + `Assembly` + `Add` - line 94
+  - `TAuditGeneratedRead` - Review: 3 components: `Audit` + `Generated` + `Read` - line 14
+  - `TAuditProjectRead` - Review: 3 components: `Audit` + `Project` + `Read` - line 37
+  - `TAuditTargetRead` - Review: 3 components: `Audit` + `Target` + `Read` - line 46
+  - `TAuditReferenceRead` - Review: 3 components: `Audit` + `Reference` + `Read` - line 56
+  - `TAuditReferenceCreate` - Review: 3 components: `Audit` + `Reference` + `Create` - line 58
+  - `TAuditAssemblyAdd` - Review: 3 components: `Audit` + `Assembly` + `Add` - line 98
 
 #### `TAuditStrict.cs`
 
@@ -16285,7 +16467,12 @@ No prefix, shape, base, verb, or count violations were found.
 #### `TEngineLiveryCard.cs`
 
 - `TEngineLiveryCard` - Review: 3 components: `Engine` + `Livery` + `Card` - line 7
-  - `TLiveryPageRead` - Review: 3 components: `Livery` + `Page` + `Read` - line 167
+  - `TLiveryPageRead` - Review: 3 components: `Livery` + `Page` + `Read` - line 218
+
+#### `TEngineLiveryInflection.cs`
+
+- `TEngineLiveryInflection` - Review: 3 components: `Engine` + `Livery` + `Inflection` - line 8
+  - `TLiveryFormCreate` - Review: 3 components: `Livery` + `Form` + `Create` - line 165
 
 #### `TEngineLiveryLanguage.cs`
 
@@ -16296,9 +16483,9 @@ No prefix, shape, base, verb, or count violations were found.
   - `TLiveryLanguageBook` - Review: 3 components: `Livery` + `Language` + `Book` - line 36
   - `TLiveryLanguagePatience` - Review: 3 components: `Livery` + `Language` + `Patience` - line 38
   - `TLiveryLanguageTables` - Review: 3 components: `Livery` + `Language` + `Tables` - line 40
-  - `TLiveryLanguagePlace` - Review: 3 components: `Livery` + `Language` + `Place` - line 232
-  - `TLiveryLanguageSettle` - Review: 3 components: `Livery` + `Language` + `Settle` - line 253
-  - `TLiveryLanguageCreate` - Review: 3 components: `Livery` + `Language` + `Create` - line 263
+  - `TLiveryLanguagePlace` - Review: 3 components: `Livery` + `Language` + `Place` - line 228
+  - `TLiveryLanguageSettle` - Review: 3 components: `Livery` + `Language` + `Settle` - line 249
+  - `TLiveryLanguageCreate` - Review: 3 components: `Livery` + `Language` + `Create` - line 259
 
 #### `TEngineLiveryPage.cs`
 
@@ -16320,9 +16507,9 @@ No prefix, shape, base, verb, or count violations were found.
 #### `TEngineParadigmView.cs`
 
 - `TEngineParadigmView` - Review: 3 components: `Engine` + `Paradigm` + `View` - line 8
-  - `TParadigmLineFind` - Review: 3 components: `Paradigm` + `Line` + `Find` - line 198
-  - `TParadigmEntrySave` - Review: 3 components: `Paradigm` + `Entry` + `Save` - line 202
-  - `TParadigmFormSave` - Review: 3 components: `Paradigm` + `Form` + `Save` - line 214
+  - `TParadigmLineFind` - Review: 3 components: `Paradigm` + `Line` + `Find` - line 216
+  - `TParadigmEntrySave` - Review: 3 components: `Paradigm` + `Entry` + `Save` - line 220
+  - `TParadigmFormSave` - Review: 3 components: `Paradigm` + `Form` + `Save` - line 232
 
 #### `TEngineRecordingSweeping.cs`
 
@@ -16437,6 +16624,11 @@ No prefix, shape, base, verb, or count violations were found.
 - `TEtymology`
   - `TEtymologyEntryCreate` - Review: 3 components: `Etymology` + `Entry` + `Create` - line 216
   - `TEtymologyHeldRead` - Review: 3 components: `Etymology` + `Held` + `Read` - line 227
+
+#### `TFold.cs`
+
+- `TFold`
+  - `TFoldEntryCreate` - Review: 3 components: `Fold` + `Entry` + `Create` - line 249
 
 #### `TMarkupClerkImporting.cs`
 
@@ -16780,7 +16972,7 @@ No prefix, shape, base, verb, or count violations were found.
   - `TEngineStemBooks` - Review: 3 components: `Engine` + `Stem` + `Books` - line 21
   - `TEngineStemModule` - Review: 3 components: `Engine` + `Stem` + `Module` - line 28
   - `TEngineStemPatience` - Review: 3 components: `Engine` + `Stem` + `Patience` - line 35
-  - `TStemDraftCreate` - Review: 3 components: `Stem` + `Draft` + `Create` - line 142
+  - `TStemDraftCreate` - Review: 3 components: `Stem` + `Draft` + `Create` - line 234
 
 #### `TEpoch.cs`
 
@@ -17105,30 +17297,30 @@ No prefix, shape, base, verb, or count violations were found.
   - `TPhonologyBundleCreate` - Review: 3 components: `Phonology` + `Bundle` + `Create` - line 103
   - `TPhonologyBundleCreate` - Review: 3 components: `Phonology` + `Bundle` + `Create` - line 113
   - `TPhonologyBundleCreate` - Review: 3 components: `Phonology` + `Bundle` + `Create` - line 123
-  - `TSettingsOutletCreate` - Review: 3 components: `Settings` + `Outlet` + `Create` - line 142
-  - `TAtelierMediaCreate` - Review: 3 components: `Atelier` + `Media` + `Create` - line 144
-  - `TVoyageStationAdd` - Review: 3 components: `Voyage` + `Station` + `Add` - line 220
-  - `TAtelierSplitRead` - Review: 3 components: `Atelier` + `Split` + `Read` - line 229
-  - `TAtelierEstablishmentRead` - Review: 3 components: `Atelier` + `Establishment` + `Read` - line 231
-  - `TWorkspaceDraftAdd` - Review: 3 components: `Workspace` + `Draft` + `Add` - line 234
-  - `TWorkspaceObserverAttach` - Review: 3 components: `Workspace` + `Observer` + `Attach` - line 237
-  - `TWorkspaceStateAdd` - Review: 3 components: `Workspace` + `State` + `Add` - line 240
-  - `TLedgerFailureShow` - Review: 3 components: `Ledger` + `Failure` + `Show` - line 243
-  - `TLedgerRepaintShow` - Review: 3 components: `Ledger` + `Repaint` + `Show` - line 246
-  - `TLedgerNoticeRead` - Review: 3 components: `Ledger` + `Notice` + `Read` - line 249
-  - `TLedgerShowRead` - Review: 3 components: `Ledger` + `Show` + `Read` - line 252
-  - `TLedgerPortCreate` - Review: 3 components: `Ledger` + `Port` + `Create` - line 260
-  - `TAtelierStateOpen` - Review: 3 components: `Atelier` + `State` + `Open` - line 281
-  - `TAtelierStubOpen` - Review: 3 components: `Atelier` + `Stub` + `Open` - line 291
+  - `TSettingsOutletCreate` - Review: 3 components: `Settings` + `Outlet` + `Create` - line 143
+  - `TAtelierMediaCreate` - Review: 3 components: `Atelier` + `Media` + `Create` - line 145
+  - `TVoyageStationAdd` - Review: 3 components: `Voyage` + `Station` + `Add` - line 219
+  - `TAtelierSplitRead` - Review: 3 components: `Atelier` + `Split` + `Read` - line 228
+  - `TAtelierEstablishmentRead` - Review: 3 components: `Atelier` + `Establishment` + `Read` - line 230
+  - `TWorkspaceDraftAdd` - Review: 3 components: `Workspace` + `Draft` + `Add` - line 233
+  - `TWorkspaceObserverAttach` - Review: 3 components: `Workspace` + `Observer` + `Attach` - line 236
+  - `TWorkspaceStateAdd` - Review: 3 components: `Workspace` + `State` + `Add` - line 239
+  - `TLedgerFailureShow` - Review: 3 components: `Ledger` + `Failure` + `Show` - line 242
+  - `TLedgerRepaintShow` - Review: 3 components: `Ledger` + `Repaint` + `Show` - line 245
+  - `TLedgerNoticeRead` - Review: 3 components: `Ledger` + `Notice` + `Read` - line 248
+  - `TLedgerShowRead` - Review: 3 components: `Ledger` + `Show` + `Read` - line 251
+  - `TLedgerPortCreate` - Review: 3 components: `Ledger` + `Port` + `Create` - line 259
+  - `TAtelierStateOpen` - Review: 3 components: `Atelier` + `State` + `Open` - line 280
+  - `TAtelierStubOpen` - Review: 3 components: `Atelier` + `Stub` + `Open` - line 290
 
 #### `TInterfaceConductCard.cs`
 
 - `TInterfaceConductCard` - Review: 3 components: `Interface` + `Conduct` + `Card` - line 9
   - `TCardListCreate` - Review: 3 components: `Card` + `List` + `Create` - line 14
-  - `TCardStateRead` - Review: 3 components: `Card` + `State` + `Read` - line 24
-  - `TCardImageRead` - Review: 3 components: `Card` + `Image` + `Read` - line 26
-  - `TCardVideoRead` - Review: 3 components: `Card` + `Video` + `Read` - line 29
-  - `TCardEntryRead` - Review: 3 components: `Card` + `Entry` + `Read` - line 32
+  - `TCardStateRead` - Review: 3 components: `Card` + `State` + `Read` - line 28
+  - `TCardImageRead` - Review: 3 components: `Card` + `Image` + `Read` - line 30
+  - `TCardVideoRead` - Review: 3 components: `Card` + `Video` + `Read` - line 33
+  - `TCardEntryRead` - Review: 3 components: `Card` + `Entry` + `Read` - line 36
 
 #### `TInterfaceConductDesk.cs`
 
@@ -17235,17 +17427,17 @@ No prefix, shape, base, verb, or count violations were found.
 - `TInterfaceConductSound` - Review: 3 components: `Interface` + `Conduct` + `Sound` - line 11
   - `TReflexLeadRead` - Review: 3 components: `Reflex` + `Lead` + `Read` - line 13
   - `TDisplaySoundCreate` - Review: 3 components: `Display` + `Sound` + `Create` - line 16
-  - `TDisplayFoldSet` - Review: 3 components: `Display` + `Fold` + `Set` - line 26
+  - `TDisplaySpreadCheck` - Review: 3 components: `Display` + `Spread` + `Check` - line 26
   - `TDisplaySoundShow` - Review: 3 components: `Display` + `Sound` + `Show` - line 28
   - `TDisplaySoundClear` - Review: 3 components: `Display` + `Sound` + `Clear` - line 31
   - `TDisplayReflexLoad` - Review: 3 components: `Display` + `Reflex` + `Load` - line 33
   - `TDisplayReflexRead` - Review: 3 components: `Display` + `Reflex` + `Read` - line 35
   - `TDisplayChosenCreate` - Review: 3 components: `Display` + `Chosen` + `Create` - line 38
-  - `TDisplayFrequencyRead` - Review: 3 components: `Display` + `Frequency` + `Read` - line 54
-  - `TDisplayGraspRead` - Review: 3 components: `Display` + `Grasp` + `Read` - line 57
-  - `TDisplayFavoriteRead` - Review: 3 components: `Display` + `Favorite` + `Read` - line 60
-  - `TDisplayAccentLoad` - Review: 3 components: `Display` + `Accent` + `Load` - line 63
-  - `TRespellingReflexScan` - Review: 3 components: `Respelling` + `Reflex` + `Scan` - line 103
+  - `TDisplayFrequencyRead` - Review: 3 components: `Display` + `Frequency` + `Read` - line 59
+  - `TDisplayGraspRead` - Review: 3 components: `Display` + `Grasp` + `Read` - line 62
+  - `TDisplayFavoriteRead` - Review: 3 components: `Display` + `Favorite` + `Read` - line 65
+  - `TDisplayAccentLoad` - Review: 3 components: `Display` + `Accent` + `Load` - line 68
+  - `TRespellingReflexScan` - Review: 3 components: `Respelling` + `Reflex` + `Scan` - line 114
 
 #### `TInterfaceContent.cs`
 
@@ -17348,12 +17540,13 @@ No prefix, shape, base, verb, or count violations were found.
   - `TDiweiArchiveCreate` - Review: 3 components: `Diwei` + `Archive` + `Create` - line 303
   - `TDiweiEntryScan` - Review: 3 components: `Diwei` + `Entry` + `Scan` - line 324
   - `TFanqieArchiveCreate` - Review: 3 components: `Fanqie` + `Archive` + `Create` - line 328
-  - `TEntryEpithetRead` - Review: 3 components: `Entry` + `Epithet` + `Read` - line 341
-  - `TVideoArchiveCreate` - Review: 3 components: `Video` + `Archive` + `Create` - line 344
-  - `TWorkspaceArchiveCreate` - Review: 3 components: `Workspace` + `Archive` + `Create` - line 350
-  - `TWorkspaceCourtRead` - Review: 3 components: `Workspace` + `Court` + `Read` - line 353
-  - `TWorkspaceDraftRead` - Review: 3 components: `Workspace` + `Draft` + `Read` - line 356
-  - `TWorkspaceStateRead` - Review: 3 components: `Workspace` + `State` + `Read` - line 359
+  - `TFanqieRepresentativeSet` - Review: 3 components: `Fanqie` + `Representative` + `Set` - line 341
+  - `TEntryEpithetRead` - Review: 3 components: `Entry` + `Epithet` + `Read` - line 346
+  - `TVideoArchiveCreate` - Review: 3 components: `Video` + `Archive` + `Create` - line 349
+  - `TWorkspaceArchiveCreate` - Review: 3 components: `Workspace` + `Archive` + `Create` - line 355
+  - `TWorkspaceCourtRead` - Review: 3 components: `Workspace` + `Court` + `Read` - line 358
+  - `TWorkspaceDraftRead` - Review: 3 components: `Workspace` + `Draft` + `Read` - line 361
+  - `TWorkspaceStateRead` - Review: 3 components: `Workspace` + `State` + `Read` - line 364
 
 #### `TInterfaceDraft.cs`
 
@@ -17421,13 +17614,20 @@ No prefix, shape, base, verb, or count violations were found.
   - `TEngineFavoriteCheck` - Review: 3 components: `Engine` + `Favorite` + `Check` - line 130
   - `TEngineFavoriteDelete` - Review: 3 components: `Engine` + `Favorite` + `Delete` - line 133
   - `TEngineFavoriteSave` - Review: 3 components: `Engine` + `Favorite` + `Save` - line 138
-  - `TEngineGraspRead` - Review: 3 components: `Engine` + `Grasp` + `Read` - line 143
-  - `TEngineGraspSave` - Review: 3 components: `Engine` + `Grasp` + `Save` - line 146
-  - `TEngineMentionFind` - Review: 3 components: `Engine` + `Mention` + `Find` - line 151
-  - `TEngineMentionFind` - Review: 3 components: `Engine` + `Mention` + `Find` - line 154
-  - `TEngineLeftoverRead` - Review: 3 components: `Engine` + `Leftover` + `Read` - line 163
-  - `TEngineLeftoverSweep` - Review: 3 components: `Engine` + `Leftover` + `Sweep` - line 175
-  - `TEngineRequestApply` - Review: 3 components: `Engine` + `Request` + `Apply` - line 180
+  - `TEngineFoldRead` - Review: 3 components: `Engine` + `Fold` + `Read` - line 143
+  - `TEngineFoldSave` - Review: 3 components: `Engine` + `Fold` + `Save` - line 146
+  - `TEngineFoldDelete` - Review: 3 components: `Engine` + `Fold` + `Delete` - line 151
+  - `TEngineSpreadCheck` - Review: 3 components: `Engine` + `Spread` + `Check` - line 156
+  - `TEngineReflexSpread` - Review: 3 components: `Engine` + `Reflex` + `Spread` - line 159
+  - `TEngineBoxCheck` - Review: 3 components: `Engine` + `Box` + `Check` - line 164
+  - `TEngineBoxSpread` - Review: 3 components: `Engine` + `Box` + `Spread` - line 167
+  - `TEngineGraspRead` - Review: 3 components: `Engine` + `Grasp` + `Read` - line 172
+  - `TEngineGraspSave` - Review: 3 components: `Engine` + `Grasp` + `Save` - line 175
+  - `TEngineMentionFind` - Review: 3 components: `Engine` + `Mention` + `Find` - line 180
+  - `TEngineMentionFind` - Review: 3 components: `Engine` + `Mention` + `Find` - line 183
+  - `TEngineLeftoverRead` - Review: 3 components: `Engine` + `Leftover` + `Read` - line 192
+  - `TEngineLeftoverSweep` - Review: 3 components: `Engine` + `Leftover` + `Sweep` - line 204
+  - `TEngineRequestApply` - Review: 3 components: `Engine` + `Request` + `Apply` - line 209
 
 #### `TInterfaceEngineFanqie.cs`
 
@@ -17470,7 +17670,8 @@ No prefix, shape, base, verb, or count violations were found.
   - `TEngineStemRead` - Review: 3 components: `Engine` + `Stem` + `Read` - line 96
   - `TEngineStemFind` - Review: 3 components: `Engine` + `Stem` + `Find` - line 99
   - `TEngineStemResolve` - Review: 3 components: `Engine` + `Stem` + `Resolve` - line 102
-  - `TEngineKindredFind` - Review: 3 components: `Engine` + `Kindred` + `Find` - line 105
+  - `TEngineStemSpread` - Review: 3 components: `Engine` + `Stem` + `Spread` - line 105
+  - `TEngineKindredFind` - Review: 3 components: `Engine` + `Kindred` + `Find` - line 110
 
 #### `TInterfaceEngineMarkup.cs`
 
@@ -17585,7 +17786,7 @@ No prefix, shape, base, verb, or count violations were found.
   - `TStateAnchorCreate` - Review: 3 components: `State` + `Anchor` + `Create` - line 184
   - `TStateUnreadableCreate` - Review: 3 components: `State` + `Unreadable` + `Create` - line 187
   - `TParadigmRowScan` - Review: 3 components: `Paradigm` + `Row` + `Scan` - line 190
-  - `TParadigmClerkCheck` - Review: 3 components: `Paradigm` + `Clerk` + `Check` - line 193
+  - `TParadigmSlotCheck` - Review: 3 components: `Paradigm` + `Slot` + `Check` - line 193
   - `TParadigmSlotCreate` - Review: 3 components: `Paradigm` + `Slot` + `Create` - line 196
   - `TSentenceOrderCreate` - Review: 3 components: `Sentence` + `Order` + `Create` - line 200
   - `TFrequencyUnitCreate` - Review: 3 components: `Frequency` + `Unit` + `Create` - line 203
@@ -17624,19 +17825,20 @@ No prefix, shape, base, verb, or count violations were found.
 
 - `TInterfaceInflection`
   - `TParadigmTableCreate` - Review: 3 components: `Paradigm` + `Table` + `Create` - line 31
-  - `TParadigmLineCreate` - Review: 3 components: `Paradigm` + `Line` + `Create` - line 35
-  - `TParadigmFormCreate` - Review: 3 components: `Paradigm` + `Form` + `Create` - line 38
-  - `TInflectionMarkCreate` - Review: 3 components: `Inflection` + `Mark` + `Create` - line 42
-  - `TInflectionMarkFormat` - Review: 3 components: `Inflection` + `Mark` + `Format` - line 45
-  - `TInflectionMarkParse` - Review: 3 components: `Inflection` + `Mark` + `Parse` - line 48
-  - `TInflectionDifferenceScan` - Review: 3 components: `Inflection` + `Difference` + `Scan` - line 51
-  - `TInflectionDifferenceDivide` - Review: 3 components: `Inflection` + `Difference` + `Divide` - line 55
-  - `TInflectionBookResolve` - Review: 3 components: `Inflection` + `Book` + `Resolve` - line 59
-  - `TInflectionBookDivide` - Review: 3 components: `Inflection` + `Book` + `Divide` - line 62
-  - `TInflectionBookCreate` - Review: 3 components: `Inflection` + `Book` + `Create` - line 66
-  - `TInflectionStemCreate` - Review: 3 components: `Inflection` + `Stem` + `Create` - line 75
-  - `TInflectionEndingCreate` - Review: 3 components: `Inflection` + `Ending` + `Create` - line 81
-  - `TParadigmRuleResolve` - Review: 3 components: `Paradigm` + `Rule` + `Resolve` - line 84
+  - `TParadigmViewCreate` - Review: 3 components: `Paradigm` + `View` + `Create` - line 35
+  - `TParadigmLineCreate` - Review: 3 components: `Paradigm` + `Line` + `Create` - line 38
+  - `TParadigmFormCreate` - Review: 3 components: `Paradigm` + `Form` + `Create` - line 41
+  - `TInflectionMarkCreate` - Review: 3 components: `Inflection` + `Mark` + `Create` - line 45
+  - `TInflectionMarkFormat` - Review: 3 components: `Inflection` + `Mark` + `Format` - line 48
+  - `TInflectionMarkParse` - Review: 3 components: `Inflection` + `Mark` + `Parse` - line 51
+  - `TInflectionDifferenceScan` - Review: 3 components: `Inflection` + `Difference` + `Scan` - line 54
+  - `TInflectionDifferenceDivide` - Review: 3 components: `Inflection` + `Difference` + `Divide` - line 58
+  - `TInflectionBookResolve` - Review: 3 components: `Inflection` + `Book` + `Resolve` - line 62
+  - `TInflectionBookDivide` - Review: 3 components: `Inflection` + `Book` + `Divide` - line 65
+  - `TInflectionBookCreate` - Review: 3 components: `Inflection` + `Book` + `Create` - line 69
+  - `TInflectionStemCreate` - Review: 3 components: `Inflection` + `Stem` + `Create` - line 78
+  - `TInflectionEndingCreate` - Review: 3 components: `Inflection` + `Ending` + `Create` - line 84
+  - `TParadigmRuleResolve` - Review: 3 components: `Paradigm` + `Rule` + `Resolve` - line 87
 
 #### `TInterfaceLexicon.cs`
 
@@ -17767,36 +17969,37 @@ No prefix, shape, base, verb, or count violations were found.
   - `TPortraitLabelRead` - Review: 3 components: `Portrait` + `Label` + `Read` - line 13
   - `TPortraitLinkCreate` - Review: 3 components: `Portrait` + `Link` + `Create` - line 44
   - `TPortraitMediaCreate` - Review: 3 components: `Portrait` + `Media` + `Create` - line 47
-  - `TCourierNoteBuild` - Review: 3 components: `Courier` + `Note` + `Build` - line 94
-  - `TLiveryLanguageBuild` - Review: 3 components: `Livery` + `Language` + `Build` - line 102
-  - `TLiveryStemCreate` - Review: 3 components: `Livery` + `Stem` + `Create` - line 109
-  - `TStemPageCreate` - Review: 3 components: `Stem` + `Page` + `Create` - line 112
-  - `TLiveryDiweiCreate` - Review: 3 components: `Livery` + `Diwei` + `Create` - line 115
-  - `TDiweiSectionCreate` - Review: 3 components: `Diwei` + `Section` + `Create` - line 119
-  - `TDiweiLineCreate` - Review: 3 components: `Diwei` + `Line` + `Create` - line 127
-  - `TTallyMarkCreate` - Review: 3 components: `Tally` + `Mark` + `Create` - line 131
-  - `TTallyRowCreate` - Review: 3 components: `Tally` + `Row` + `Create` - line 134
-  - `TLiveryStyleFormat` - Review: 3 components: `Livery` + `Style` + `Format` - line 139
-  - `TTranslationTargetCreate` - Review: 3 components: `Translation` + `Target` + `Create` - line 141
-  - `TGlossDraftCreate` - Review: 3 components: `Gloss` + `Draft` + `Create` - line 148
-  - `TSentenceDraftCreate` - Review: 3 components: `Sentence` + `Draft` + `Create` - line 151
-  - `TEtymologyDraftCreate` - Review: 3 components: `Etymology` + `Draft` + `Create` - line 154
-  - `TFanqieGroupCreate` - Review: 3 components: `Fanqie` + `Group` + `Create` - line 157
-  - `TScriptImageCreate` - Review: 3 components: `Script` + `Image` + `Create` - line 161
-  - `TScriptGroupCreate` - Review: 3 components: `Script` + `Group` + `Create` - line 165
-  - `TFolioLineFormat` - Review: 3 components: `Folio` + `Line` + `Format` - line 173
-  - `TPortraitLegendRead` - Review: 3 components: `Portrait` + `Legend` + `Read` - line 175
-  - `TPortraitTextRead` - Review: 3 components: `Portrait` + `Text` + `Read` - line 191
-  - `TPortraitTextRead` - Review: 3 components: `Portrait` + `Text` + `Read` - line 206
-  - `TPortraitTextAdd` - Review: 3 components: `Portrait` + `Text` + `Add` - line 239
-  - `TPortraitTextAdd` - Review: 3 components: `Portrait` + `Text` + `Add` - line 247
-  - `TPortraitTextAdd` - Review: 3 components: `Portrait` + `Text` + `Add` - line 255
-  - `TPortraitLineCreate` - Review: 3 components: `Portrait` + `Line` + `Create` - line 264
-  - `TPortraitSectionCreate` - Review: 3 components: `Portrait` + `Section` + `Create` - line 268
-  - `TPortraitSectionCreate` - Review: 3 components: `Portrait` + `Section` + `Create` - line 276
-  - `TPortraitPageCreate` - Review: 3 components: `Portrait` + `Page` + `Create` - line 288
-  - `TPortraitPageCreate` - Review: 3 components: `Portrait` + `Page` + `Create` - line 295
-  - `TPressTicketCreate` - Review: 3 components: `Press` + `Ticket` + `Create` - line 304
+  - `TCourierNoteBuild` - Review: 3 components: `Courier` + `Note` + `Build` - line 86
+  - `TLiveryLanguageBuild` - Review: 3 components: `Livery` + `Language` + `Build` - line 94
+  - `TLiveryStemCreate` - Review: 3 components: `Livery` + `Stem` + `Create` - line 98
+  - `TStemPageCreate` - Review: 3 components: `Stem` + `Page` + `Create` - line 101
+  - `TStemMemberCreate` - Review: 3 components: `Stem` + `Member` + `Create` - line 105
+  - `TLiveryDiweiCreate` - Review: 3 components: `Livery` + `Diwei` + `Create` - line 109
+  - `TDiweiSectionCreate` - Review: 3 components: `Diwei` + `Section` + `Create` - line 113
+  - `TDiweiLineCreate` - Review: 3 components: `Diwei` + `Line` + `Create` - line 121
+  - `TTallyMarkCreate` - Review: 3 components: `Tally` + `Mark` + `Create` - line 125
+  - `TTallyRowCreate` - Review: 3 components: `Tally` + `Row` + `Create` - line 128
+  - `TLiveryStyleFormat` - Review: 3 components: `Livery` + `Style` + `Format` - line 133
+  - `TTranslationTargetCreate` - Review: 3 components: `Translation` + `Target` + `Create` - line 135
+  - `TGlossDraftCreate` - Review: 3 components: `Gloss` + `Draft` + `Create` - line 142
+  - `TSentenceDraftCreate` - Review: 3 components: `Sentence` + `Draft` + `Create` - line 145
+  - `TEtymologyDraftCreate` - Review: 3 components: `Etymology` + `Draft` + `Create` - line 148
+  - `TFanqieGroupCreate` - Review: 3 components: `Fanqie` + `Group` + `Create` - line 151
+  - `TScriptImageCreate` - Review: 3 components: `Script` + `Image` + `Create` - line 155
+  - `TScriptGroupCreate` - Review: 3 components: `Script` + `Group` + `Create` - line 159
+  - `TFolioLineFormat` - Review: 3 components: `Folio` + `Line` + `Format` - line 167
+  - `TPortraitLegendRead` - Review: 3 components: `Portrait` + `Legend` + `Read` - line 169
+  - `TPortraitTextRead` - Review: 3 components: `Portrait` + `Text` + `Read` - line 185
+  - `TPortraitTextRead` - Review: 3 components: `Portrait` + `Text` + `Read` - line 200
+  - `TPortraitTextAdd` - Review: 3 components: `Portrait` + `Text` + `Add` - line 233
+  - `TPortraitTextAdd` - Review: 3 components: `Portrait` + `Text` + `Add` - line 241
+  - `TPortraitTextAdd` - Review: 3 components: `Portrait` + `Text` + `Add` - line 249
+  - `TPortraitLineCreate` - Review: 3 components: `Portrait` + `Line` + `Create` - line 258
+  - `TPortraitSectionCreate` - Review: 3 components: `Portrait` + `Section` + `Create` - line 262
+  - `TPortraitSectionCreate` - Review: 3 components: `Portrait` + `Section` + `Create` - line 270
+  - `TPortraitPageCreate` - Review: 3 components: `Portrait` + `Page` + `Create` - line 282
+  - `TPortraitPageCreate` - Review: 3 components: `Portrait` + `Page` + `Create` - line 289
+  - `TPressTicketCreate` - Review: 3 components: `Press` + `Ticket` + `Create` - line 298
 
 #### `TInterfacePronunciation.cs`
 
@@ -18237,24 +18440,24 @@ No prefix, shape, base, verb, or count violations were found.
   - `TRigFakeBuild` - Review: 3 components: `Rig` + `Fake` + `Build` - line 17
   - `TRigFakeBuild` - Review: 3 components: `Rig` + `Fake` + `Build` - line 20
   - `TRigFakeBuild` - Review: 3 components: `Rig` + `Fake` + `Build` - line 23
-  - `TRigSourceCreate` - Review: 3 components: `Rig` + `Source` + `Create` - line 101
-  - `TRigFaultRead` - Review: 3 components: `Rig` + `Fault` + `Read` - line 103
-  - `TRigStubCreate` - Review: 3 components: `Rig` + `Stub` + `Create` - line 105
-    - `TRigFakePort` - Review: 3 components: `Rig` + `Fake` + `Port` - line 105
-  - `TRigFakeProxy` - Review: 3 components: `Rig` + `Fake` + `Proxy` - line 108
-  - `TRigFakeVault` - Review: 3 components: `Rig` + `Fake` + `Vault` - line 114
-    - `LVaultSessionStart` - Review: 3 components: `Vault` + `Session` + `Start` - line 116
-  - `TRigFakeSession` - Review: 3 components: `Rig` + `Fake` + `Session` - line 121
-    - `LVaultSessionCommit` - Review: 3 components: `Vault` + `Session` + `Commit` - line 123
-  - `TRigFakeAudit` - Review: 3 components: `Rig` + `Fake` + `Audit` - line 132
-  - `TRigFakeDoctor` - Review: 3 components: `Rig` + `Fake` + `Doctor` - line 137
-    - `LDoctorDatabaseCreate` - Review: 3 components: `Doctor` + `Database` + `Create` - line 139
-  - `TRigFakeSettings` - Review: 3 components: `Rig` + `Fake` + `Settings` - line 142
-    - `_tRigFakeSaved` - Review: 3 components: `Rig` + `Fake` + `Saved` - line 144
-  - `TRigFakeLanguages` - Review: 3 components: `Rig` + `Fake` + `Languages` - line 156
-    - `LLanguageNameValidate` - Review: 3 components: `Language` + `Name` + `Validate` - line 162
-    - `LLanguageFlagRead` - Review: 3 components: `Language` + `Flag` + `Read` - line 164
-    - `LLanguageFlagFind` - Review: 3 components: `Language` + `Flag` + `Find` - line 167
+  - `TRigSourceCreate` - Review: 3 components: `Rig` + `Source` + `Create` - line 102
+  - `TRigFaultRead` - Review: 3 components: `Rig` + `Fault` + `Read` - line 104
+  - `TRigStubCreate` - Review: 3 components: `Rig` + `Stub` + `Create` - line 106
+    - `TRigFakePort` - Review: 3 components: `Rig` + `Fake` + `Port` - line 106
+  - `TRigFakeProxy` - Review: 3 components: `Rig` + `Fake` + `Proxy` - line 109
+  - `TRigFakeVault` - Review: 3 components: `Rig` + `Fake` + `Vault` - line 115
+    - `LVaultSessionStart` - Review: 3 components: `Vault` + `Session` + `Start` - line 117
+  - `TRigFakeSession` - Review: 3 components: `Rig` + `Fake` + `Session` - line 122
+    - `LVaultSessionCommit` - Review: 3 components: `Vault` + `Session` + `Commit` - line 124
+  - `TRigFakeAudit` - Review: 3 components: `Rig` + `Fake` + `Audit` - line 133
+  - `TRigFakeDoctor` - Review: 3 components: `Rig` + `Fake` + `Doctor` - line 138
+    - `LDoctorDatabaseCreate` - Review: 3 components: `Doctor` + `Database` + `Create` - line 140
+  - `TRigFakeSettings` - Review: 3 components: `Rig` + `Fake` + `Settings` - line 143
+    - `_tRigFakeSaved` - Review: 3 components: `Rig` + `Fake` + `Saved` - line 145
+  - `TRigFakeLanguages` - Review: 3 components: `Rig` + `Fake` + `Languages` - line 157
+    - `LLanguageNameValidate` - Review: 3 components: `Language` + `Name` + `Validate` - line 163
+    - `LLanguageFlagRead` - Review: 3 components: `Language` + `Flag` + `Read` - line 165
+    - `LLanguageFlagFind` - Review: 3 components: `Language` + `Flag` + `Find` - line 168
 
 #### `TSourceHandler.cs`
 
@@ -18400,10 +18603,37 @@ No prefix, shape, base, verb, or count violations were found.
 - `TCardCaret`
   - `TCardCaretRun` - Review: 3 components: `Card` + `Caret` + `Run` - line 86
 
+#### `TCardHinge.cs`
+
+- `TCardHinge`
+  - `TCardHingeBlank` - Review: 3 components: `Card` + `Hinge` + `Blank` - line 19
+  - `TCardHingeTitle` - Review: 3 components: `Card` + `Hinge` + `Title` - line 21
+  - `TCardHingeMeaning` - Review: 3 components: `Card` + `Hinge` + `Meaning` - line 23
+  - `TCardHingeRefine` - Review: 3 components: `Card` + `Hinge` + `Refine` - line 187
+  - `TCardHingeResolve` - Review: 3 components: `Card` + `Hinge` + `Resolve` - line 201
+  - `TCardHingeBuild` - Review: 3 components: `Card` + `Hinge` + `Build` - line 206
+  - `TCardHingeCreate` - Review: 3 components: `Card` + `Hinge` + `Create` - line 220
+  - `TCardHingeLoad` - Review: 3 components: `Card` + `Hinge` + `Load` - line 227
+  - `TCardHingeSettle` - Review: 3 components: `Card` + `Hinge` + `Settle` - line 242
+  - `TCardHingeFind` - Review: 3 components: `Card` + `Hinge` + `Find` - line 249
+  - `TCardHingeToggle` - Review: 3 components: `Card` + `Hinge` + `Toggle` - line 255
+  - `TCardHingePrepare` - Review: 3 components: `Card` + `Hinge` + `Prepare` - line 261
+  - `TCardLookPrepare` - Review: 3 components: `Card` + `Look` + `Prepare` - line 267
+  - `TCardHingeRun` - Review: 3 components: `Card` + `Hinge` + `Run` - line 276
+
 #### `TCardOrdinal.cs`
 
 - `TCardOrdinal`
   - `TCardOrdinalRun` - Review: 3 components: `Card` + `Ordinal` + `Run` - line 96
+
+#### `TFoldSwitch.cs`
+
+- `TFoldSwitch`
+  - `TFoldSwitchCreate` - Review: 3 components: `Fold` + `Switch` + `Create` - line 184
+  - `TFoldViewCreate` - Review: 3 components: `Fold` + `View` + `Create` - line 194
+  - `TFoldSwitchToggle` - Review: 3 components: `Fold` + `Switch` + `Toggle` - line 206
+  - `TFoldSwitchPrepare` - Review: 3 components: `Fold` + `Switch` + `Prepare` - line 212
+  - `TFoldIconPrepare` - Review: 3 components: `Fold` + `Icon` + `Prepare` - line 218
 
 #### `TIndexItem.cs`
 
@@ -18411,11 +18641,25 @@ No prefix, shape, base, verb, or count violations were found.
   - `TIndexRowCreate` - Review: 3 components: `Index` + `Row` + `Create` - line 68
   - `TIndexItemCreate` - Review: 3 components: `Index` + `Item` + `Create` - line 71
 
+#### `TLecternHinge.cs`
+
+- `TLecternHinge`
+  - `TLecternHingeRead` - Review: 3 components: `Lectern` + `Hinge` + `Read` - line 166
+
 #### `TParadigmGrid.cs`
 
 - `TParadigmGrid`
   - `TParadigmSheetCreate` - Review: 3 components: `Paradigm` + `Sheet` + `Create` - line 166
   - `TParadigmPartsRead` - Review: 3 components: `Paradigm` + `Parts` + `Read` - line 182
+
+#### `TReflexHinge.cs`
+
+- `TReflexHinge`
+  - `TReflexLecternCreate` - Review: 3 components: `Reflex` + `Lectern` + `Create` - line 91
+  - `TReflexHingeFind` - Review: 3 components: `Reflex` + `Hinge` + `Find` - line 100
+  - `TReflexHingeToggle` - Review: 3 components: `Reflex` + `Hinge` + `Toggle` - line 113
+  - `TReflexHingePrepare` - Review: 3 components: `Reflex` + `Hinge` + `Prepare` - line 119
+  - `TReflexHingeRun` - Review: 3 components: `Reflex` + `Hinge` + `Run` - line 125
 
 
 ### `D:\Programming\Llyn\tests\Llyn.Tests.Windows\Interface`
@@ -18430,28 +18674,36 @@ No prefix, shape, base, verb, or count violations were found.
 #### `TInterfaceDeportment.cs`
 
 - `TInterfaceDeportment`
-  - `TDeskChronicleRead` - Review: 3 components: `Desk` + `Chronicle` + `Read` - line 23
-  - `TIndexItemBuild` - Review: 3 components: `Index` + `Item` + `Build` - line 33
-  - `TIndexItemMatch` - Review: 3 components: `Index` + `Item` + `Match` - line 36
-  - `TIndexItemSync` - Review: 3 components: `Index` + `Item` + `Sync` - line 38
-  - `TCaretEdgeApply` - Review: 3 components: `Caret` + `Edge` + `Apply` - line 40
-  - `TCaretStepApply` - Review: 3 components: `Caret` + `Step` + `Apply` - line 43
-  - `TDisplayFoldSet` - Review: 3 components: `Display` + `Fold` + `Set` - line 46
-  - `TDisplayFoldRead` - Review: 3 components: `Display` + `Fold` + `Read` - line 49
-  - `TEtymologySourceShow` - Review: 3 components: `Etymology` + `Source` + `Show` - line 52
-  - `TEtymologyFaceRead` - Review: 3 components: `Etymology` + `Face` + `Read` - line 55
-  - `TReflexFoldRefine` - Review: 3 components: `Reflex` + `Fold` + `Refine` - line 61
-  - `TReflexTypeRefine` - Review: 3 components: `Reflex` + `Type` + `Refine` - line 64
-  - `TCardLabelShow` - Review: 3 components: `Card` + `Label` + `Show` - line 79
-  - `TCardLabelMove` - Review: 3 components: `Card` + `Label` + `Move` - line 82
-  - `TCardLabelFind` - Review: 3 components: `Card` + `Label` + `Find` - line 84
-  - `TCardLabelRead` - Review: 3 components: `Card` + `Label` + `Read` - line 87
-  - `TCardPositionAttach` - Review: 3 components: `Card` + `Position` + `Attach` - line 99
-  - `TCardPositionShow` - Review: 3 components: `Card` + `Position` + `Show` - line 120
-  - `TCardPositionHide` - Review: 3 components: `Card` + `Position` + `Hide` - line 122
-  - `TCardPositionSet` - Review: 3 components: `Card` + `Position` + `Set` - line 124
-  - `TCardRowShow` - Review: 3 components: `Card` + `Row` + `Show` - line 126
-  - `TTranscriptionSchemeRefine` - Review: 3 components: `Transcription` + `Scheme` + `Refine` - line 136
+  - `TDeskChronicleRead` - Review: 3 components: `Desk` + `Chronicle` + `Read` - line 24
+  - `TIndexItemBuild` - Review: 3 components: `Index` + `Item` + `Build` - line 34
+  - `TIndexItemMatch` - Review: 3 components: `Index` + `Item` + `Match` - line 37
+  - `TIndexItemSync` - Review: 3 components: `Index` + `Item` + `Sync` - line 39
+  - `TCaretEdgeApply` - Review: 3 components: `Caret` + `Edge` + `Apply` - line 41
+  - `TCaretStepApply` - Review: 3 components: `Caret` + `Step` + `Apply` - line 44
+  - `TDisplayEntryShow` - Review: 3 components: `Display` + `Entry` + `Show` - line 47
+  - `TLecternSoundCreate` - Review: 3 components: `Lectern` + `Sound` + `Create` - line 64
+  - `TFanqieSwitchRead` - Review: 3 components: `Fanqie` + `Switch` + `Read` - line 68
+  - `TScriptSwitchRead` - Review: 3 components: `Script` + `Switch` + `Read` - line 70
+  - `TEtymologySourceShow` - Review: 3 components: `Etymology` + `Source` + `Show` - line 72
+  - `TEtymologyFaceRead` - Review: 3 components: `Etymology` + `Face` + `Read` - line 75
+  - `TReflexTypeRefine` - Review: 3 components: `Reflex` + `Type` + `Refine` - line 81
+  - `TCardLabelShow` - Review: 3 components: `Card` + `Label` + `Show` - line 97
+  - `TCardLabelMove` - Review: 3 components: `Card` + `Label` + `Move` - line 100
+  - `TCardLabelFind` - Review: 3 components: `Card` + `Label` + `Find` - line 102
+  - `TCardLabelRead` - Review: 3 components: `Card` + `Label` + `Read` - line 105
+  - `TCardPositionAttach` - Review: 3 components: `Card` + `Position` + `Attach` - line 117
+  - `TCardPositionShow` - Review: 3 components: `Card` + `Position` + `Show` - line 138
+  - `TCardPositionHide` - Review: 3 components: `Card` + `Position` + `Hide` - line 140
+  - `TCardPositionSet` - Review: 3 components: `Card` + `Position` + `Set` - line 142
+  - `TCardFoldCreate` - Review: 3 components: `Card` + `Fold` + `Create` - line 144
+  - `TCardRowRefine` - Review: 3 components: `Card` + `Row` + `Refine` - line 151
+  - `TCardHingeAttach` - Review: 3 components: `Card` + `Hinge` + `Attach` - line 154
+  - `TLookSettingRead` - Review: 3 components: `Look` + `Setting` + `Read` - line 161
+  - `TLeafItemCreate` - Review: 3 components: `Leaf` + `Item` + `Create` - line 172
+  - `TLeafCardRefine` - Review: 3 components: `Leaf` + `Card` + `Refine` - line 174
+  - `TLecternCardCreate` - Review: 3 components: `Lectern` + `Card` + `Create` - line 177
+  - `TCardRowShow` - Review: 3 components: `Card` + `Row` + `Show` - line 180
+  - `TTranscriptionSchemeRefine` - Review: 3 components: `Transcription` + `Scheme` + `Refine` - line 190
 
 
 ### Exempt registry

@@ -29,8 +29,6 @@ public sealed class QReflexItem : INotifyPropertyChanged
 
     public long QReflexItemId { get; }
 
-    public bool QReflexItemFolded => _qReflexItemReflex.CReflexFolded;
-
     public string QReflexItemOpener => _qReflexItemReflex.CReflexMark.CRespellingMarkOpener;
 
     public string QReflexItemCloser => _qReflexItemReflex.CReflexMark.CRespellingMarkCloser;

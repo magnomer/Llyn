@@ -1,5 +1,5 @@
 # CDisplay.cs
-Hash: `38514aaefa1cd87c`
+Hash: `6c05014bb579e874`
 
 ## `public sealed class CDisplay`
 
@@ -8,8 +8,9 @@ It owns the entry's life on the lectern, the favourite gate, and the change even
 The editor and each wing build one, and it builds its rules and its other areas once.
 So every driver over it hears the same events.
 The lectern names the entry's lexical unit by the localization key `LEngineUnitFormat` gives.
-Drivers hold this area and the areas it hands out, never its rules, so no `L` type crosses into Deportment.
+Its public areas expose Conduct records rather than engine rules.
 The sound half stands on [CDisplaySound](CDisplaySound.comment.md), which reads the header here.
+The rime-book and script box openings stand on [CFold](../Sound/CFold.comment.md), over the shown entry.
 The pronunciation block stands on [CDisplayAccent](CDisplayAccent.comment.md).
 The play button stands on [CDisplayPlayback](CDisplayPlayback.comment.md).
 The grasp stars stand on [CDisplayGrasp](CDisplayGrasp.comment.md).
@@ -17,7 +18,7 @@ The card reads stand on [CDisplayCard](CDisplayCard.comment.md).
 The clicks that open another place stand on [CDisplayRoute](CDisplayRoute.comment.md).
 The floating contents stand on [CCompass](CCompass.comment.md).
 The rules it shares with the editor's esteem stay on [LDisplay](LDisplay.comment.md), which it builds and calls.
-It holds no state beyond the shown header.
+Its child areas share display rules, while this area retains the shown header and its supporting ports.
 
 ## `private static readonly CLectern _cDisplayBlank`
 
@@ -93,6 +94,12 @@ Each of those can change what the draft shows.
 
 Raised when the workspace was swapped, so a driver hands it to `CDisplayWorkspaceResonate`.
 
+## `public event Action<CBulletin>? CDisplayFoldChanged;`
+
+Raised for the chosen entry's card, reflex-list or box fold bulletin.
+A driver then repaints the card chevrons, the reflex list and the rime-book and script boxes from storage.
+It carries no draft, since a fold is view state and no edit.
+
 ## `public CLectern CDisplayShown { get; private set; }`
 
 The header of the shown entry, or the blank header while nothing is shown.
@@ -101,6 +108,12 @@ The header of the shown entry, or the blank header while nothing is shown.
 
 The lectern's sound area, built once here over the rules' sound half and this header area.
 A driver reaches it from this area, so it holds one C object for the whole lectern.
+
+## `public CFold CDisplayFold { get; }`
+
+The lectern's box fold area, the same class the editor uses, built over the shown entry.
+One rule owns the box fold, so the view reuses it instead of copying it.
+It takes the rules' repaint memory, so its read notices share the lectern's memory.
 
 ## `public CDisplayAccent CDisplayAccent { get; }`
 
@@ -139,10 +152,6 @@ The display rules this area builds and calls.
 The editor's esteem, sound sheet and sound facts take them from here, so all share one shown draft.
 It stays internal, so no driver names an `L` type.
 
-## `private long? LDisplayChosen`
-
-The id of the entry the rules say is chosen, or null.
-
 ## `internal void LDisplayNavigationAttach(CNavigation navigation, CMention mention)`
 
 Hands every record, rime cell and series the route area and the sound area raise to the atelier's navigation.
@@ -155,6 +164,7 @@ Hands the new vista to the rules, then subscribes the plan of which subjects ref
 Each vista is new, so the plan is subscribed once per vista.
 It stays internal, since the vista is an engine type no driver may name.
 Script, fanqie and workspace bulletins count for any entry, since their sections redraw whole.
+A fold bulletin counts only for the chosen entry, so a fold elsewhere leaves this view still.
 
 ## `public void CDisplayPanelAttach(CPanel panel)`
 
@@ -177,7 +187,8 @@ The stamp is read from the stored entry, and a refused read hides it.
 ## `private (bool, string, string) LDisplayStampRead(long id)`
 
 The stamp of the stored entry.
-A refused read shows `Display.StampFailed` once until the user acts, and answers an empty stamp, so the entry still opens.
+A refused read shows `Display.StampFailed` through repaint memory.
+An empty stamp lets the entry still open.
 
 ## `public void CDisplayEntryClose()`
 
@@ -200,7 +211,7 @@ Whether the chosen entry is a favorite.
 
 ## `public bool CDisplayFavoriteToggle(bool marked)`
 
-The gate for the heart: stores `marked` on the chosen entry, then answers the stored value.
+The heart gate returns a fresh favorite read after asking the rules to store `marked`.
 A refused mark thus answers the old value, and the display reports the failure.
 
 ## `public CFrequency? CDisplayFrequencyRead(Func<string, string> lookup)`

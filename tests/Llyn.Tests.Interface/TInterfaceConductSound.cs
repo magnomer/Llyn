@@ -13,6 +13,9 @@ internal static class TInterfaceConductSound
     internal static IReadOnlyList<bool> TReflexLeadRead(IReadOnlyList<string> languages) =>
         CReflex.LReflexLeadRead(languages);
 
+    internal static IReadOnlyList<CStemMember> TStemMemberRead(IReadOnlyList<LStemMember> members) =>
+        CStemMember.LStemMemberRead(members);
+
     internal static LDisplaySound TDisplaySoundCreate(LEngine engine) => new(
         engine.LEngineEntry,
         engine.LEngineLanguage,
@@ -23,7 +26,7 @@ internal static class TInterfaceConductSound
         new LMediaOutlet(engine),
         new LSettingsOutlet(engine));
 
-    internal static void TDisplayFoldSet(this LDisplaySound sound, bool opened) => sound.LDisplayFoldSet(opened);
+    internal static bool TDisplaySpreadCheck(this LDisplaySound sound, long? id) => sound.LDisplaySpreadCheck(id);
 
     internal static void TDisplaySoundShow(this LDisplaySound sound, long? id, LEntryDraft draft) =>
         sound.LDisplaySoundShow(id, draft);
@@ -35,15 +38,20 @@ internal static class TInterfaceConductSound
     internal static IReadOnlyList<LReflexDraft> TDisplayReflexRead(this LDisplaySound sound) =>
         sound.LDisplayReflexRead();
 
-    internal static CDisplay TDisplayChosenCreate(LEngine engine, CEntryBundle entries, long chosen)
+    internal static CDisplay TDisplayChosenCreate(
+        LEngine engine,
+        CEntryBundle entries,
+        long chosen,
+        CPhonologyBundle? phonology = null,
+        List<string>? asked = null)
     {
         CDisplay display = new(
             new LDraftOutlet(engine),
             entries,
-            TInterfaceConduct.TPhonologyBundleCreate(engine),
+            phonology ?? TInterfaceConduct.TPhonologyBundleCreate(engine),
             new LSettingsOutlet(engine),
             TEngineFake.TEngineStubCreate<LMediaPort>(),
-            TEnvoyFake.TEnvoyCreate(false, []),
+            TEnvoyFake.TEnvoyCreate(false, asked ?? []),
             new CLedgerNoticed());
         LVista vista = engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword);
         display.LDisplayVistaRestore(vista);
@@ -98,7 +106,13 @@ internal static class TInterfaceConductSound
         IReadOnlyList<LContour> syllables, IReadOnlyList<int> scale) =>
         CContour.CContourRead(syllables, scale);
 
-    internal static CFold TFoldCreate(LSettingsPort settings, CEnvoy envoy) => new(settings, envoy);
+    internal static CFold TFoldCreate(TEditorFixture editor, CPhonologyBundle phonology, List<string> asked) =>
+        new(
+            editor.TEditorFixtureDesk.CDeskStoredRead,
+            phonology.CPhonologyBundleReflex,
+            TInterfaceConduct.TSettingsCreate(),
+            TEnvoyFake.TEnvoyCreate(false, asked),
+            new CLedgerNoticed());
 
     internal static IReadOnlyList<CReflex> TRespellingReflexScan(
         LReflexPort port, string language, IReadOnlyList<CReflexDraft> reflexes) =>
@@ -107,12 +121,13 @@ internal static class TInterfaceConductSound
     internal static string TRespellingResolve(CRespellingMark mark, string phonetic, string? respelling) =>
         CRespelling.LRespellingResolve(mark, phonetic, respelling);
 
-    internal static CKindred TKindredCreate(TEditorFixture editor, CPhonologyBundle phonology, LDraftPort drafts) =>
+    internal static CKindred TKindredCreate(
+        TEditorFixture editor, CPhonologyBundle phonology, LDraftPort drafts, List<string>? asked = null) =>
         new(
             editor.TEditorFixtureDesk,
             phonology.CPhonologyBundleReflex,
             editor.TEditorFixtureDisplay.LDisplayRule,
             drafts,
             TInterfaceConduct.TSettingsCreate(),
-            TEnvoyFake.TEnvoyCreate(false, []));
+            TEnvoyFake.TEnvoyCreate(false, asked ?? []));
 }

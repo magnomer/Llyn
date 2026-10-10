@@ -13,6 +13,7 @@ public sealed record LParadigmView(
         IReadOnlyList<LParadigmSlot> slots,
         bool pending,
         bool enabled,
+        bool held,
         bool custom,
         LInflectionBook? book,
         string headword)
@@ -30,8 +31,10 @@ public sealed record LParadigmView(
 
         LInflectionLayout chosen = custom ? layout.LInflectionLayoutCustom ?? layout : layout;
         return new LParadigmView(
-            LParadigmViewResolve(chosen.LInflectionLayoutCollapsed, part, pending, enabled, custom, book, headword),
-            LParadigmViewResolve(chosen.LInflectionLayoutExpanded, part, pending, enabled, custom, book, headword));
+            LParadigmViewResolve(
+                chosen.LInflectionLayoutCollapsed, part, pending, enabled, held, custom, book, headword),
+            LParadigmViewResolve(
+                chosen.LInflectionLayoutExpanded, part, pending, enabled, held, custom, book, headword));
     }
 
     private static LParadigmTable LParadigmViewResolve(
@@ -39,6 +42,7 @@ public sealed record LParadigmView(
         IReadOnlyList<LParadigmSlot> slots,
         bool pending,
         bool enabled,
+        bool held,
         bool custom,
         LInflectionBook? book,
         string headword)
@@ -52,7 +56,7 @@ public sealed record LParadigmView(
                 LParadigmSlot? slot = slots.FirstOrDefault(row => row.LParadigmSlotCodes.SequenceEqual(cell));
                 if (slot is null)
                 {
-                    forms.Add(new LParadigmForm(string.Empty, [], LParadigmStatus.LParadigmStatusText));
+                    forms.Add(new LParadigmForm(string.Empty, [], null));
                     continue;
                 }
 
@@ -60,14 +64,15 @@ public sealed record LParadigmView(
                 if (slot.LParadigmSlotInflection is not LInflection inflection
                     || status != LParadigmStatus.LParadigmStatusText)
                 {
-                    forms.Add(new LParadigmForm(string.Empty, [], status));
+                    LParadigmShown shown = LParadigmShown.LParadigmShownResolve(status, string.Empty, held);
+                    forms.Add(new LParadigmForm(shown.LParadigmShownText, [], shown.LParadigmShownTip));
                     continue;
                 }
 
                 string text = inflection.LInflectionText;
                 if (!custom)
                 {
-                    forms.Add(new LParadigmForm(text, [], status));
+                    forms.Add(new LParadigmForm(text, [], null));
                     continue;
                 }
 
@@ -85,7 +90,7 @@ public sealed record LParadigmView(
                     }
                 }
 
-                forms.Add(new LParadigmForm(text, marks, status, split));
+                forms.Add(new LParadigmForm(text, marks, null, split));
             }
 
             lines.Add(new LParadigmLine(line.LInflectionLineGroup, line.LInflectionLineLabel, forms));

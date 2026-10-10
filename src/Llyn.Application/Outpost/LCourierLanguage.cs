@@ -81,8 +81,6 @@ public sealed class LCourierLanguage
                 () => livery.LLiveryFormat(diwei, style, note, lookup)));
         }
 
-        notes.Add((link(name, LCourierClerk.LCourierPhonology, string.Empty), shelf,
-            () => lookup("Navigation.Phonology"), () => livery.LLiveryFormat(language, style, note, lookup)));
         notes.RemoveAll(static row => row.LCourierNoteId.Length == 0);
 
         HashSet<string> held = [.. notes.Select(static row => row.LCourierNoteFolder)];

@@ -1,5 +1,5 @@
 # CParadigmForm.cs
-Hash: `3715e9d57837238e`
+Hash: `8f54fcdf81586f39`
 
 ## `public sealed record CParadigmForm(string CParadigmFormText, IReadOnlyList<CParadigmMark> CParadigmFormMarks, string? CParadigmFormTip, int CParadigmFormSplit = 0)`
 
@@ -13,15 +13,10 @@ The text is the form or the mark standing in for a missing one.
 - `CParadigmFormTip`: the localization key of the tip, or null when the cell shows its form.
 - `CParadigmFormSplit`: where the ending starts, or 0 when the form is not divided.
 
-## `internal static CParadigmForm CParadigmFormCreate(LParadigmForm form, bool held)`
+## `internal static CParadigmForm CParadigmFormCreate(LParadigmForm form)`
 
-Maps one cell of the box through `CParadigmFormResolve`.
-A shown form also carries its marked ranges and its split, copied as Core gave them.
-
-## `internal static CParadigmForm CParadigmFormResolve(LParadigmStatus status, string text, bool held)`
-
-Maps a status to the text shown and the key of its tip, with no marks.
-It is the one owner of this wording, for the box and for the plain slot list.
-A shown form keeps `text`, and every other status shows a stand-in mark.
-Only lost cells use `held` to choose between held and lost tooltip keys.
-An unrecognized enum value throws rather than silently displaying a placeholder.
+Maps one ready cell of the box, its text and tip key as the engine answered them.
+The wording stays in Core, so the box, the plain slot list and the Joplin note agree.
+It copies the marked ranges and the split as Core gave them, whatever the status.
+Core leaves both empty for a cell that shows a status, so no check is needed here.
+The ranges are copied into an array, so an empty source keeps the shared empty value.

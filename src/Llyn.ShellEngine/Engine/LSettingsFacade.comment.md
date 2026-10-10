@@ -1,5 +1,5 @@
 # LSettingsFacade.cs
-Hash: `cff33189bde243a7`
+Hash: `b4fa5ce04b1463d9`
 
 ## `internal sealed class LSettingsFacade`
 
@@ -14,12 +14,6 @@ A workspace moved onto keeps its own settings, and only one without any inherits
 Stores the hearth and its gate.
 It calls no sibling facade, so `LEngine` builds it among the first.
 The gate, the staff and the shared state are read through the hearth.
-
-## `internal event Action? LEngineFoldChanged;`
-
-A saved fold state changed, so every open editor over this engine repaints its rime-book and script switches.
-It is the narrow notice of the folds, raised outside the gate.
-An unchanged save raises nothing, so a repainted switch that echoes its state cannot loop.
 
 ## `internal LSettings LEngineSettingsRead()`
 
@@ -108,17 +102,6 @@ A settings bulletin is raised when the switch changed, so the settings panel rew
 
 Persists whether the tally lines of a category page print the respelling set and keeps it current.
 The page reads the switch on every fill, so the choice survives a restart and a change of category alike.
-
-## `internal void LEngineFanqieSave(bool opened)`
-
-Persists whether the editor's rime-book box stands open and keeps it current.
-A real change raises `LEngineFoldChanged`, so every open editor repaints its switch.
-No settings bulletin is raised, since that would refill every panel for one switch.
-
-## `internal void LEngineScriptSave(bool opened)`
-
-Persists whether the editor's script box stands open and keeps it current.
-It raises `LEngineFoldChanged` on a real change, as the rime-book save does.
 
 ## `internal void LEngineFrequencySave(bool frequency)`
 

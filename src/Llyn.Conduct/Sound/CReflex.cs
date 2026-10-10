@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Llyn.ShellEngine;
 
 namespace Llyn.Conduct;
@@ -44,6 +45,13 @@ public sealed record CReflex(
             CReflexField.CReflexFieldNote => this with { CReflexNote = text },
             _ => throw new ArgumentOutOfRangeException(nameof(field), field, null),
         };
+    }
+
+    internal static bool LReflexFoldCheck(IReadOnlyList<CReflex> rows)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+
+        return rows.Any(static row => row.CReflexFolded);
     }
 
     internal static IReadOnlyList<bool> LReflexLeadRead(IReadOnlyList<string> languages)

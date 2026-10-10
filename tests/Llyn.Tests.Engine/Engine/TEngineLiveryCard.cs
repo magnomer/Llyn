@@ -164,6 +164,57 @@ public sealed class TEngineLiveryCard
         Assert.DoesNotContain("<video", note.LLiveryNoteBody, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public void LiveryFormat_StoredOpenCard_WritesOpenDetailsWithSummary()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LLiveryPage page = TLiveryPageRead(engine, "break");
+
+        string body = TInterface.TLiveryFormat(page, static key => key).LLiveryNoteBody;
+
+        Assert.Contains(
+            "<details class=\"llyn-card\" open>\n<summary><span class=\"llyn-number\">1</span> ",
+            body,
+            StringComparison.Ordinal);
+        Assert.Contains("</span></summary>\n\n", body, StringComparison.Ordinal);
+        Assert.Contains("</details>", body, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void LiveryFormat_FoldedCard_WritesDetailsWithoutOpen()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "break", "English", string.Empty, string.Empty, [TInterface.TCardCreate("a sense", 1)], []));
+        LEntryDraft held = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(entry.LEntryId));
+        engine.TEngineFoldSave(entry.LEntryId, held.LEntryDraftMeanings[0].LCardDraftId);
+        LLiveryPage page = Assert.IsType<LLiveryPage>(engine.TLiveryRead(entry.LEntryId));
+
+        string body = TInterface.TLiveryFormat(page, static key => key).LLiveryNoteBody;
+
+        Assert.Contains("<details class=\"llyn-card\">\n<summary>", body, StringComparison.Ordinal);
+        Assert.DoesNotContain("<details class=\"llyn-card\" open>", body, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void LiveryFormat_UnstoredCard_WritesPlainDiv()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LLiveryPage page = TLiveryPageRead(engine, "break");
+        LStateValue none = LStateValue.LStateValueUnspecified;
+        LCardDraft card = TInterface.TCardDraftCreate("Physically break", none, none, [], [], [], [], [], 1);
+        page = page with { LLiveryPageDraft = page.LLiveryPageDraft with { LEntryDraftMeanings = [card] } };
+
+        string body = TInterface.TLiveryFormat(page, static key => key).LLiveryNoteBody;
+
+        Assert.Contains(
+            "<div class=\"llyn-card\">\n\n<span class=\"llyn-number\">1</span>", body, StringComparison.Ordinal);
+        Assert.DoesNotContain("<summary>", body, StringComparison.Ordinal);
+    }
+
     private static LLiveryPage TLiveryPageRead(LEngine engine, string headword)
     {
         LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(

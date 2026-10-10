@@ -1,5 +1,5 @@
 # TEngineLiveryPage.cs
-Hash: `8fea4145e9530e58`
+Hash: `0918e6a5f42a4ede`
 
 ## `public sealed class TEngineLiveryPage`
 
@@ -40,6 +40,11 @@ Reads an id with no stored entry and finds null.
 Saves an entry with two reflexes under a pack that folds one.
 Reads the page and checks the folded list, the reflex order and the guise folded flags.
 
+## `public void LiveryRead_FoldedStoredCard_KeepsCardIdInFold()`
+
+Saves an entry with two meanings and folds the first through the engine.
+Reads the page and checks that only the folded card's id is in `LLiveryPageFold`.
+
 ## `public void LiveryRead_StoredFanqie_KeepsGroups()`
 
 Saves one fanqie row through `TFanqieSave`, then reads the page.
@@ -50,6 +55,12 @@ Checks the one group `LEngineFanqieDivide` answers.
 Reads the page before any fetch and finds no script.
 Starts the script fetch through `TEngineScriptStart`, waits on `TEngineScriptCheck`, and reads again.
 Checks the one style group `LEngineScriptDivide` answers.
+
+## `public void LiveryRead_SpanishVerbWithMorphologyOff_CarriesStoredFormInTheExpandedTable()`
+
+Turns morphology and analysis off, saves a Spanish verb and stores one present form.
+Reads the page and checks the expanded sheet's first line carries that form.
+Checks an unstored cell has the absent tip, so `enabled` follows the morphology setting.
 
 ## `public void LiveryRead_CardWithStoredTarget_KeepsTarget()`
 

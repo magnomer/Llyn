@@ -386,8 +386,6 @@ public sealed class TTimbre
 
     internal static TEditorFixture TTimbreEditorPrepare(Dictionary<string, Func<object?[]?, object?>> answers)
     {
-        answers.TryAdd("add_LEngineFoldChanged", _ => null);
-        answers.TryAdd("remove_LEngineFoldChanged", _ => null);
         return new(TInterfaceEditor.TEditorCreate(
             TEngineFake.TEngineStubCreate<LDraftPort>(),
             TInterfaceConduct.TEntryBundleCreate([]),

@@ -177,15 +177,12 @@ public sealed class TCourier
         LFanqieRow row = TInterface.TFanqieRowCreate(
             "瀧", "Book", "text", initial: "來", rime: "寒", division: "一", toneClass: "1");
         LFanqieGroup group = TInterface.TFanqieGroupCreate(string.Empty, "Book", "Wiki", [row], []);
-        IReadOnlyList<LCatalogPronunciation> spoken =
-            engine.TLiveryRead(TCourierLanguage).LLiveryLanguagePronunciation;
 
         await TInterface.TCourierSend(
             engine,
             id => engine.TLiveryRead(id) is LLiveryPage page ? page with { LLiveryPageFanqie = [group] } : null,
             language => TInterface.TLiveryLanguageBuild(
                 language,
-                spoken,
                 [],
                 [
                     TInterface.TLiveryDiweiCreate(LDiwei.LDiweiInitial, language, "來", []),
@@ -205,10 +202,9 @@ public sealed class TCourier
         LOutpostNote initial = TCourierNoteFind(outpost, "來");
         LOutpostNote rime = TCourierNoteFind(outpost, row.LFanqieRowCell);
         LOutpostNote tone = TCourierNoteFind(outpost, "Display.FanqieTone");
-        LOutpostNote sound = TCourierNoteFind(outpost, "Navigation.Phonology");
         Assert.Equal(
-            (onset, rimes, table, shelf),
-            (initial.LOutpostNoteFolder, rime.LOutpostNoteFolder, tone.LOutpostNoteFolder, sound.LOutpostNoteFolder));
+            (onset, rimes, table),
+            (initial.LOutpostNoteFolder, rime.LOutpostNoteFolder, tone.LOutpostNoteFolder));
         string body = TCourierNoteFind(outpost, "瀧").LOutpostNoteBody;
         Assert.Contains("[<span class=\"llyn-initial\">來</span>](:/" + initial.LOutpostNoteId + ")", body);
         Assert.Contains(
@@ -295,7 +291,6 @@ public sealed class TCourier
                 ? throw new InvalidOperationException("The language pack is unreadable.")
                 : TInterface.TLiveryLanguageBuild(
                     language,
-                    [],
                     series ? [TInterface.TLiveryStemCreate(TInterface.TStemPageCreate(language, "龍", ["龍"]), [])] : [],
                     []));
     }

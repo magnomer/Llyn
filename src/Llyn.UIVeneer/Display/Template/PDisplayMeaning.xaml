@@ -9,7 +9,7 @@
                     <RowDefinition Height="55" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <Border Style="{DynamicResource Theme.Card.Header}">
+                <Border x:Name="PCardHeader" Style="{DynamicResource Theme.Card.Header}">
                     <Grid Style="{DynamicResource Theme.Card.Crown}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
@@ -25,9 +25,11 @@
                         </Border>
                         <TextBlock x:Name="PCardTitle" Grid.Column="1" Style="{DynamicResource Display.Card.Title}" />
                         <TextBlock x:Name="PCardCaption" Grid.Column="1" Style="{DynamicResource Display.Card.Kind}" Text="{DynamicResource Display.MeaningSingle}" />
+                        <TextBlock x:Name="PCardPeek" Grid.Column="1" Style="{DynamicResource Theme.Card.Peek}" />
+                        <ToggleButton x:Name="PCardHinge" Grid.Column="0" Grid.ColumnSpan="2" Style="{DynamicResource Theme.Card.Hinge}" />
                     </Grid>
                 </Border>
-                <Grid Grid.Row="1" Style="{DynamicResource Theme.Card.Body}">
+                <Grid x:Name="PCardBody" Grid.Row="1" Style="{DynamicResource Theme.Card.Body}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Style="{DynamicResource Theme.Card.Gutter}" />

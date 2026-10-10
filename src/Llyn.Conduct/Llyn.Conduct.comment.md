@@ -1,11 +1,11 @@
 # Llyn.Conduct.csproj
 Hash: `246ef06664a7ce7e`
 
-Builds Conduct, which holds every behaviour of the application behind the screen.
+Builds the Conduct assembly against ShellEngine, without a platform-specific target framework.
 
 ## `<TargetFramework>net10.0</TargetFramework>`
 
-Conduct names no window or control, so it builds for every platform.
+The target framework has no Windows qualifier, keeping this project's target independent of the Windows UI.
 
 ## `<WarningsAsErrors>CA1416</WarningsAsErrors>`
 
@@ -21,7 +21,7 @@ Some Conduct test bodies still reach internal Conduct members directly.
 
 ## `<InternalsVisibleTo Include="Llyn.Tests.Windows" />`
 
-The Windows behaviour tests read `LDisplayFoldOpened`, the internal fold state of a sound display.
+The Windows behaviour relay shows an entry through `LDisplayRule`, the internal rules of a display.
 
 ## `<InternalsVisibleTo Include="Llyn" />`
 
@@ -30,5 +30,5 @@ The constructor naming those ports stays internal, so no driver can build one.
 
 ## `<ProjectReference Include="..\Llyn.ShellEngine\Llyn.ShellEngine.csproj" />`
 
-Conduct reads the engine through the `L*Port` slices alone.
+The sole direct project reference is ShellEngine, which supplies engine ports and tenure quills.
 Core and Application arrive through ShellEngine, never by a reference of their own.

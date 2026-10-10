@@ -1,5 +1,5 @@
 # en.json
-Hash: `8252701f198f6db4`
+Hash: `d7fd87ebbc55eed6`
 
 The English interface catalog, and the language every launch starts from.
 It is embedded into `Llyn.Infrastructure` and never read from disk.
@@ -26,8 +26,10 @@ They are generic, so every pack can reuse them, and the box shows them in the in
 `Paradigm.Fold` names the switch between the short and the full inflection table.
 `Paradigm.Short` labels the switch button that shows the short inflection table.
 `Paradigm.Full` labels the switch button that shows the full inflection table.
+`Card.Fold` and `Card.Unfold` are the hinge tooltips that fold or unfold one card.
+`Xiesheng.ReadingsShow` and `Xiesheng.ReadingsHide` label the series member hinge that shows or hides all its readings.
 `Settings.Inflection` names the settings tab that holds the `Analysis.*` switch and its hint.
 A failure text is keyed `<Area>.<Action>Failed` beside its area's other texts.
 The ledger shows it when a read or a write fails.
-An area with no other texts, such as `Sentence` or `Language`, sits beside the nearest texts on the same subject.
+An area without other texts, such as `Sentence`, `Fold` or `Box`, sits beside the nearest texts on the same subject.
 Every other catalog must carry exactly these keys, or a `TLocalizationLoader` test fails.

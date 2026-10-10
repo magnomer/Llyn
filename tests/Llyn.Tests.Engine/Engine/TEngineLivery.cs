@@ -1,7 +1,6 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Llyn.Core;
-using Llyn.Infrastructure;
 using Llyn.ShellEngine;
 using Xunit;
 
@@ -271,7 +270,7 @@ public sealed class TEngineLivery
             "ink", "muted", "line", "canvas", "surface", "accent", "accentSoft",
             "situation", "situationSoft", "situationEdge", "surfaceRaised", "favorite",
             "helper", "helperSoft", "helperEdge", "frequencyCore", "frequencyEveryday", "frequencyAdvanced",
-            "frequencyRare",
+            "frequencyRare", "warning",
         ];
         LTheme theme = TInterface.TThemeCreate(
             roles.ToDictionary(static role => role, static role => "var(--" + role + ")"));
@@ -289,5 +288,50 @@ public sealed class TEngineLivery
             selector == ".llyn" || selector.StartsWith(".llyn ", StringComparison.Ordinal), selector));
         Assert.DoesNotContain("#", css, StringComparison.Ordinal);
         Assert.DoesNotMatch(new Regex(@"(?<![\w-])(rgba?|hsla?|white|black|transparent)(?![\w-])"), css);
+    }
+
+    [Fact]
+    public void LiveryStyleFormat_CardSummary_DrawsFoldChevronAtRightEnd()
+    {
+        string[] roles =
+        [
+            "ink", "muted", "line", "canvas", "surface", "accent", "accentSoft",
+            "situation", "situationSoft", "situationEdge", "surfaceRaised", "favorite",
+            "helper", "helperSoft", "helperEdge", "frequencyCore", "frequencyEveryday", "frequencyAdvanced",
+            "frequencyRare", "warning",
+        ];
+        LTheme theme = TInterface.TThemeCreate(
+            roles.ToDictionary(static role => role, static role => "var(--" + role + ")"));
+
+        string css = TInterface.TLiveryStyleFormat(theme);
+
+        Assert.Contains(".llyn-card > summary::after", css, StringComparison.Ordinal);
+        Assert.Contains(".llyn-card[open] > summary::after", css, StringComparison.Ordinal);
+        Assert.Contains(".llyn-card:not([open]) > summary::after", css, StringComparison.Ordinal);
+        Assert.Contains(".llyn-card > summary::-webkit-details-marker", css, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void LiveryStyleFormat_OpenFullDetails_HidesShortTable()
+    {
+        string[] roles =
+        [
+            "ink", "muted", "line", "canvas", "surface", "accent", "accentSoft",
+            "situation", "situationSoft", "situationEdge", "surfaceRaised", "favorite",
+            "helper", "helperSoft", "helperEdge", "frequencyCore", "frequencyEveryday", "frequencyAdvanced",
+            "frequencyRare", "warning",
+        ];
+        LTheme theme = TInterface.TThemeCreate(
+            roles.ToDictionary(static role => role, static role => "var(--" + role + ")"));
+
+        string css = TInterface.TLiveryStyleFormat(theme);
+
+        Assert.Contains(
+            ".llyn .llyn-inflection-full[open] + .llyn-inflection-short { display: none; }",
+            css,
+            StringComparison.Ordinal);
+        Assert.Matches(
+            new Regex(@"\.llyn \.llyn-inflection-full > summary \{[^}]*margin: 0 0 10px auto;[^}]*text-align: right;"),
+            css);
     }
 }

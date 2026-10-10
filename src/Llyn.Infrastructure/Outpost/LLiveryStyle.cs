@@ -28,9 +28,10 @@ public static class LLiveryStyle
         string everyday = theme.LThemeRead("frequencyEveryday");
         string advanced = theme.LThemeRead("frequencyAdvanced");
         string rare = theme.LThemeRead("frequencyRare");
+        string warning = theme.LThemeRead("warning");
         string table = ".llyn table:has(> thead > tr > th:empty)";
         string reading = ".llyn table:has(> thead > tr > th:nth-child(5):last-child:empty)";
-        string sound = ".llyn table:not(.llyn-paradigm table):not(.llyn-phonology table)"
+        string sound = ".llyn table:not(.llyn-paradigm table)"
             + ":has(> thead > tr > th:nth-child(2):last-child:empty)";
 
         return $$"""
@@ -121,6 +122,46 @@ public static class LLiveryStyle
             .llyn .llyn-paradigm table { margin: 0; }
             .llyn .llyn-paradigm td { height: 23px; padding: 0 14px 0 0; }
             .llyn .llyn-label { color: {{muted}}; font-size: 12px; }
+            .llyn table.llyn-inflection {
+                width: auto; margin: 0 0 14px; border: 0; border-collapse: collapse; background: none;
+            }
+            .llyn .llyn-inflection tr { border: 0; background: none; }
+            .llyn .llyn-inflection th, .llyn .llyn-inflection td {
+                height: 27px; padding: 0 18px 0 0; border: 0; background: none; text-align: left;
+                white-space: nowrap; vertical-align: middle;
+            }
+            .llyn .llyn-inflection th {
+                border-bottom: 1px solid {{line}}; color: {{muted}}; font-size: 12px; font-weight: 400;
+            }
+            .llyn .llyn-inflection td { font-size: 15px; }
+            .llyn .llyn-inflection tr.llyn-rule td:not(:first-child) { border-top: 1px dotted {{line}}; }
+            .llyn .llyn-inflection tr.llyn-close td { border-top: 1px solid {{line}}; }
+            .llyn .llyn-inflection td.llyn-group { color: {{accent}}; font-size: 14px; font-weight: 600; }
+            .llyn .llyn-inflection td.llyn-label { font-size: 12px; }
+            .llyn .llyn-inflection .llyn-marked { color: {{warning}}; }
+            .llyn .llyn-inflection .llyn-cut { color: {{muted}}; }
+            .llyn .llyn-inflection .llyn-muted { color: {{muted}}; }
+            .llyn .llyn-inflection-box {
+                display: inline-block; margin: 0 0 14px; padding: 14px 16px; border: 1px solid {{line}};
+                border-radius: 12px; background: {{surface}};
+            }
+            .llyn .llyn-inflection-box table.llyn-inflection { margin: 0; }
+            .llyn .llyn-inflection-full > summary {
+                display: block; width: fit-content; margin: 0 0 10px auto; padding: 2px; border-radius: 9px;
+                background: {{raised}}; text-align: right; list-style: none; cursor: pointer;
+                font-size: 12px; font-weight: 600; line-height: 20px;
+            }
+            .llyn .llyn-inflection-full > summary::-webkit-details-marker { display: none; }
+            .llyn .llyn-inflection-full > summary > span {
+                display: inline-block; padding: 2px 11px; border: 1px solid {{raised}}; border-radius: 7px;
+                color: {{muted}};
+            }
+            .llyn .llyn-inflection-full > summary > span:hover { color: {{ink}}; }
+            .llyn .llyn-inflection-full:not([open]) > summary > .llyn-inflection-switch-short,
+            .llyn .llyn-inflection-full[open] > summary > .llyn-inflection-switch-long {
+                border-color: {{line}}; background: {{surface}}; color: {{accent}};
+            }
+            .llyn .llyn-inflection-full[open] + .llyn-inflection-short { display: none; }
             .llyn .llyn-card {
                 margin: 0 0 28px; padding: 14px; border: 1px solid {{line}}; border-radius: 8px;
                 background: {{surface}};
@@ -174,10 +215,25 @@ public static class LLiveryStyle
             .llyn .llyn-caption { display: block; color: {{muted}}; font-size: 10px; line-height: 14px; }
             .llyn .llyn-epoch { display: block; }
             .llyn .llyn-quote { display: block; margin-left: 64px; font-size: 12px; }
-            .llyn .llyn-card:has(> p > .llyn-number) { padding: 14px 30px 20px; }
+            .llyn .llyn-card:has(> p > .llyn-number), .llyn .llyn-card:has(> summary > .llyn-number) {
+                padding: 14px 30px 20px;
+            }
             .llyn .llyn-card > p:has(> .llyn-number) {
                 margin: -14px -30px 20px; padding: 14px 23px; border-bottom: 1px solid {{line}};
             }
+            .llyn .llyn-card > summary {
+                display: block; position: relative; list-style: none; margin: -14px -30px 20px; padding: 14px 23px;
+                border-bottom: 1px solid {{line}};
+                cursor: pointer;
+            }
+            .llyn .llyn-card > summary::-webkit-details-marker { display: none; }
+            .llyn .llyn-card > summary::after {
+                content: ""; position: absolute; top: 50%; right: 23px; width: 8px; height: 8px;
+                border-right: 2px solid {{muted}}; border-bottom: 2px solid {{muted}};
+            }
+            .llyn .llyn-card[open] > summary::after { transform: translateY(-25%) rotate(-135deg); }
+            .llyn .llyn-card:not([open]) > summary::after { transform: translateY(-75%) rotate(45deg); }
+            .llyn .llyn-card:not([open]) > summary { margin-bottom: -20px; border-bottom: 0; }
             .llyn .llyn-number {
                 display: inline-block; width: 26px; height: 26px; margin-right: 12px; border-radius: 13px;
                 background: {{soft}}; color: {{accent}}; font-size: 12px; line-height: 26px; text-align: center;
@@ -240,9 +296,6 @@ public static class LLiveryStyle
                 border-radius: 12px; background: {{surface}}; font-size: 13px; line-height: 21px;
             }
             .llyn .llyn-count { margin-left: 2px; color: {{muted}}; font-size: 11px; }
-            .llyn .llyn-phonology table { margin: 0 0 14px; }
-            .llyn .llyn-phonology td { height: 30px; padding: 0 24px 0 0; }
-            .llyn .llyn-phonology td:last-child { color: {{muted}}; }
             """;
     }
 }

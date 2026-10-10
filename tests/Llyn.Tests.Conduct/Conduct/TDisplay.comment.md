@@ -1,13 +1,9 @@
 # TDisplay.cs
-Hash: `3b053518f99182d9`
+Hash: `47922d4cce7edbc2`
 
 ## `public sealed class TDisplay`
 
 Covers the reading view rules that moved into the conduct, driven with no window.
-
-## `public void DisplayFoldSet_CurrentValue_KeepsFold()`
-
-Setting the fold to the value it already holds leaves it there, so a toggle echo changes nothing.
 
 ## `public void DisplaySoundClear_ShownDraft_DropsDraftAndEntry()`
 

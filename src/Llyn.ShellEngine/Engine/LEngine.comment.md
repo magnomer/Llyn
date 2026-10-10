@@ -1,5 +1,5 @@
 # LEngine.cs
-Hash: `49a79517ceed7ee9`
+Hash: `fd0f280efec8db70`
 
 ## `public sealed class LEngine : IDisposable`
 
@@ -45,6 +45,7 @@ The hearth comes first, building the clerks and reading the settings.
 The row facade follows it, so every facade that builds vista rows finds it.
 The facades come last, so none of them can ever see an engine without its staff.
 Each facade is built after the siblings it takes, so its constructor needs no engine.
+The stem facade follows the reflex facade, whose guise read gives the series members their reflex rows' guises.
 The tenure facade comes last and alone takes the engine, since its tenures reach every facade.
 The workspace opens at the very end, after the workspace facade has created the database.
 

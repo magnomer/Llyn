@@ -49,6 +49,12 @@ public sealed record LParadigmSlot(
         return enabled ? LParadigmStatus.LParadigmStatusLost : LParadigmStatus.LParadigmStatusAbsent;
     }
 
+    public LParadigmShown LParadigmSlotShow(bool pending, bool enabled, bool held)
+    {
+        return LParadigmShown.LParadigmShownResolve(
+            LParadigmSlotCheck(pending, enabled), LParadigmSlotInflection?.LInflectionText ?? string.Empty, held);
+    }
+
     public bool LParadigmSlotMatch(LParadigmSlot other)
     {
         ArgumentNullException.ThrowIfNull(other);

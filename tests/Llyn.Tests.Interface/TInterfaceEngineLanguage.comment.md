@@ -1,5 +1,5 @@
 # TInterfaceEngineLanguage.cs
-Hash: `4a9b4899418a39e1`
+Hash: `b5fce1b3a7374ccb`
 
 ## `internal static class TInterfaceEngineLanguage`
 
@@ -26,7 +26,12 @@ It is the call the settings outlet forwards to, so a test reads both the stored 
 
 Relays the gauge the entry view's chip and tooltip show, resolved over the stored rows.
 
-## `internal static LParadigmView? TEngineInflectionRead(this LEngine engine, long entryId, bool pending, bool enabled)`
+## `internal static LParadigmView? TEngineInflectionRead(this LEngine engine, long entryId, bool pending, bool enabled, bool held = false)`
 
 `pending` and `enabled` stand for the fetch check and the morphology setting the shell passes in.
-A test sets them directly, so it reaches every status the view shows without a live fetch.
+`held` defaults off, as the reading view and the note ask.
+A test sets them directly, so it reaches every cell tip the view shows without a live fetch.
+
+## `internal static void TEngineStemSpread(this LEngine engine, long? id, string character, bool opened)`
+
+Relays a series member's fold toggle, the call the xiesheng gate makes.

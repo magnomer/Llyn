@@ -94,6 +94,27 @@ public sealed class TEngineLiveryPage
     }
 
     [Fact]
+    public void LiveryRead_FoldedStoredCard_KeepsCardIdInFold()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "break",
+            "English",
+            string.Empty,
+            string.Empty,
+            [TInterface.TCardCreate("to come apart", 1), TInterface.TCardCreate("to stop", 2)],
+            []));
+        LEntryDraft held = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(entry.LEntryId));
+        long folded = held.LEntryDraftMeanings[0].LCardDraftId;
+        engine.TEngineFoldSave(entry.LEntryId, folded);
+
+        LLiveryPage page = Assert.IsType<LLiveryPage>(engine.TLiveryRead(entry.LEntryId));
+
+        Assert.Equal([folded], page.LLiveryPageFold);
+    }
+
+    [Fact]
     public void LiveryRead_StoredFanqie_KeepsGroups()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineLiveryFanqie);
@@ -136,6 +157,44 @@ public sealed class TEngineLiveryPage
         LScriptGroup group = Assert.Single(page.LLiveryPageScript);
         Assert.Equal("Seal", group.LScriptGroupStyle);
         Assert.Single(group.LScriptGroupImages);
+    }
+
+    [Fact]
+    public void LiveryRead_SpanishVerbWithMorphologyOff_CarriesStoredFormInTheExpandedTable()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineMorphologySave(false);
+        engine.TEngineAnalysisSave(false);
+        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "hablar",
+            "Spanish",
+            string.Empty,
+            string.Empty,
+            [TInterface.TCardDraftCreate(string.Empty, string.Empty, "a meaning", [], [], [], [], [], 1)],
+            [],
+            string.Empty,
+            null,
+            ["Verb"]));
+        LParadigmSlot slot = engine.TEngineParadigmShow(entry.LEntryId)
+            .Single(static row => string.Equals(row.LParadigmSlotKey, "9+12+17+20", StringComparison.Ordinal));
+        engine.TEntryInflectionSave(entry.LEntryId, [
+            TInterfaceInflection.TInflectionCreate(
+                entry.LEntryId,
+                0,
+                "hablo",
+                null,
+                slot.LParadigmSlotSpeech.LSpeechValueId,
+                [.. slot.LParadigmSlotMorphologies.Select(static morphology => morphology.LMorphologyId)]),
+        ]);
+
+        LLiveryPage page = Assert.IsType<LLiveryPage>(engine.TLiveryRead(entry.LEntryId));
+
+        LParadigmView view = Assert.IsType<LParadigmView>(page.LLiveryPageInflection);
+        LParadigmLine present = view.LParadigmViewExpanded.LParadigmTableLines[0];
+        Assert.Equal("Inflection.Present", present.LParadigmLineLabel);
+        Assert.Equal("hablo", present.LParadigmLineForms[0].LParadigmFormText);
+        Assert.Equal("Paradigm.Absent", present.LParadigmLineForms[1].LParadigmFormTip);
     }
 
     [Fact]

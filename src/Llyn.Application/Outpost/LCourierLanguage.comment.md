@@ -1,5 +1,5 @@
 # LCourierLanguage.cs
-Hash: `a9916fddfae466be`
+Hash: `30d6bd5fcaad5e62`
 
 ## `public sealed class LCourierLanguage`
 
@@ -20,10 +20,9 @@ So its failures leave the same trace as an entry's.
 
 ## `public async Task<int> LCourierLanguageSend(int port, string token, string shelf, string style, LLiveryLanguage language, Func<long, string> note, Func<string, string, string, string> link, Func<string, string> lookup, Func<LOutpostNote, IReadOnlyList<LParcel>, Task<bool>> send, ISet<string> current, IList<string> failed, int stalled, CancellationToken cancellation)`
 
-Writes one note per series, initial, rime and tone, and the sound note, into the language's notebooks.
+Writes one note per series, initial, rime and tone into the language's notebooks.
 Series notes go under `Navigation.Xiesheng`, tone notes under `Navigation.Yunjing`.
 Initial and rime notes go under `Yunjing.Shengmu` and `Yunjing.Yunmu` inside the rime-table notebook.
-The sound note, titled `Navigation.Phonology`, sits in the language notebook `shelf` itself.
 Every notebook title comes through `lookup`.
 A tone note is titled through `Display.FanqieTone` over its key.
 Every note title is looked up and formatted inside that note's own failure guard.
@@ -36,7 +35,7 @@ A `TimeoutException` while saving a notebook goes to `fault`, then refuses with 
 Any other failure while saving a notebook stops the whole push, as it does for the clerk's notebooks.
 Every note id comes from `link` and nowhere else, so a chip and its note always agree.
 The clerk passes the unfiltered id map here, and filters the entries' map by what answered.
-A note whose id `link` answers empty is not sent, which drops a blank key and a soundless language.
+A note whose id `link` answers empty is not sent, which drops a blank key.
 Each id joins `current` before sending, so a failed note is never trashed.
 Every note goes through `send`, the clerk's own note send, so keeping and digests work as for entries.
 `send` also counts the note and records its id once Joplin answers.

@@ -1,10 +1,11 @@
 # CDisplayCard.cs
-Hash: `ea488158eb31ab7f`
+Hash: `5c82cee2a988cacc`
 
 ## `public sealed class CDisplayCard`
 
-The reading view's card reads.
+The reading view's card reads and its card fold gate.
 It reads the cards, the usages pointing at the entry, and the etymology.
+It also folds or unfolds one card of the chosen entry.
 Only [CDisplay](CDisplay.comment.md) builds one, over its own rules, and hands it out.
 So every driver over one display reads the same shown draft.
 It holds no state of its own.
@@ -15,7 +16,8 @@ The display rules the shown draft, the chosen entry, the media port and the repa
 
 ## `private readonly LCardPort _cDisplayCardPort;`
 
-The card port the link targets, usages and etymology are read through.
+The card port the link targets, usages, etymology and folds are read through.
+A fold is also saved and deleted through it.
 
 ## `private readonly LReferencePort _cDisplayReferencePort;`
 
@@ -54,24 +56,49 @@ Every read here runs on a repaint and shows its failure through it, so a lasting
 ## `public CLecternCard CDisplayCardRead()`
 
 The shown entry's cards, each ready to paint, with whether their sections show.
-The order, the Source lines and the link targets are three reads, each answering a fallback when refused.
+The order, the Source lines, the link targets and the folds are four reads, each answering a fallback when refused.
 Each refusal also shows its own notice, so the page still draws.
 The unknown mark is the engine's word, so a frame or a sentence embeds it ready.
+The folds are one read for the whole entry, never one read per card.
+
+## `public bool CDisplayFoldToggle(long cardId, bool folded)`
+
+The user folded or unfolded one card of the chosen entry.
+It makes one save or delete call and answers whether the port returned without throwing.
+Ignoring a nonpositive card id still yields true, without confirming a stored row change.
+The port raises the fold bulletin, and `CDisplay.CDisplayFoldChanged` then makes the driver read the cards again.
+So this view and every other view on the entry repaint from the store alike.
+The card id is the leaf's own `CLeafId`, handed back unread.
+An unsaved card writes nothing, since the clerk below refuses its id.
+No entry chosen writes nothing and answers false.
+A refused write shows `Fold.SaveFailed` every time, since the user acted, and answers false.
+The caller puts its chevron back on false, since no bulletin will repaint it.
+Folding is no edit, so it never dirties a draft and never enters undo.
+
+## `private IReadOnlySet<long> LDisplayFoldRead()`
+
+The ids of every folded card of the chosen entry, Meanings and Collocations together.
+No entry chosen answers an empty set.
+A refused read shows `Fold.ReadFailed` through repaint memory.
+An empty set keeps the cards drawable.
 
 ## `private IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> LDisplayTranslationRead(LEntryDraft shown)`
 
 The link targets of every card of the shown entry, keyed by card id.
-A refused read shows `Display.TranslationFailed` once until the user acts, and answers no targets, so the cards still draw.
+A refused read shows `Display.TranslationFailed` through repaint memory.
+No targets keeps the cards drawable.
 
 ## `private LSentenceOrder LDisplayOrderRead(string language)`
 
 The sentence order of `language`.
-A refused read shows `Display.OrderFailed` once until the user acts, and answers the default order, so the cards still draw.
+A refused read shows `Display.OrderFailed` through repaint memory.
+The default order keeps the cards drawable.
 
 ## `private IReadOnlyDictionary<long, string> LDisplayCitationRead(LEntryDraft shown)`
 
 The ready line of every Source the shown entry cites.
-A refused read shows `Display.CitationFailed` once until the user acts, and answers no lines, so the cards still draw.
+A refused read shows `Display.CitationFailed` through repaint memory.
+No citation lines keeps the cards drawable.
 It is read on every card read, so a Source edited elsewhere reads fresh.
 
 ## `public IReadOnlyList<CUsage> CDisplayIncomingRead()`

@@ -126,7 +126,8 @@ internal static class TInterfaceConduct
         answers.TryAdd("LEngineDiweiRead", args => LDiweiClerk.LDiweiKindRead(!(bool)args![0]!, (string)args[1]!));
         answers.TryAdd(
             "LEngineParadigmCheck",
-            args => LParadigmClerk.LParadigmClerkCheck((LParadigmRow)args![0]!, (bool)args[1]!, (bool)args[2]!));
+            args => LParadigmClerk.LParadigmClerkCheck(
+                (LParadigmRow)args![0]!, (bool)args[1]!, (bool)args[2]!, (bool)args[3]!));
         answers.TryAdd("LEngineInflectionRead", _ => null);
         return new(
             TEngineFake.TEngineCreate<LFanqiePort>(answers),
@@ -211,8 +212,6 @@ internal static class TInterfaceConduct
             ["LEngineFailureRead"] = args => ((string)args![1]!, (string?)null, (string?)null),
             ["LEngineTextRead"] = args => (string)args![0]!,
             ["LEngineFontRead"] = _ => new LFont(null, 0),
-            ["add_LEngineFoldChanged"] = _ => null,
-            ["remove_LEngineFoldChanged"] = _ => null,
         });
 
     internal static CVoyageState TVoyageRead(this CVoyage voyage) => voyage.LVoyageRead();

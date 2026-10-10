@@ -1,14 +1,16 @@
 # LStemFacade.cs
-Hash: `2ec5be9bd3ab2845`
+Hash: `7768740ca6bbd9e7`
 
 ## `public sealed class LStemFacade : LStemPort`
 
 The engine's facade for stem, the phonetic series the xiesheng panel browses by.
 It implements the stem port itself, so Host hands it to Conduct with no outlet between.
 It reads the series and the entries they reach, and composes one series page.
-The links themselves are written where a series is stored, so nothing here writes.
+The links themselves are written where a series is stored, so nothing here writes them.
+Its own write is a member's fold, through the fold clerk.
+The character resolve may make an entry, but through `LEntryFacade`.
 
-## `internal LStemFacade(LEngineHearth hearth, LEntryFacade entry, LLanguageFacade language, LVistaRowFacade row)`
+## `internal LStemFacade(LEngineHearth hearth, LEntryFacade entry, LLanguageFacade language, LVistaRowFacade row, LReflexFacade reflex)`
 
 Stores the hearth, its gate and the sibling facades it calls, all built by `LEngine` before this one.
 The gate, the staff and the shared state are read through the hearth.
@@ -25,7 +27,7 @@ A blank key or a series never stored answers null.
 
 ## `public string? LEngineStemFind()`
 
-The first loaded pack that declares a series source, or null when none does.
+The language of the first loaded pack that declares a series source, or null when none does.
 The panel is shown only while one answers, as the yunjing panel waits for rime books.
 
 ## `public bool LEngineStemCheck()`
@@ -41,6 +43,9 @@ A chosen series that the narrowing dropped is unchosen, so the column never poin
 ## `public LStemPage LEngineStemResolve(long? id)`
 
 The page of the chosen series, or the blank page when nothing was chosen.
+Its members come from `LStemClerk` with their own folds, and pass through given the guises of their rows.
+The guises come from `LReflexFacade.LEngineGuiseRead`, the read the entry page's reflex rows take.
+So the reader maps the whole page from this one call and asks the engine nothing more.
 
 ## `public long LEngineStemResolve(long? id, string character)`
 
@@ -48,6 +53,14 @@ The entry of a character on the series' page, in the page's language, made first
 The entry resolve is the entry facade's own, so a glyph chip anywhere lands on the same entry.
 The series is read under this facade's gate, and the resolve takes the entry facade's gate afterwards.
 With no series the page's language is blank, which the resolve refuses.
+
+## `public void LEngineStemSpread(long? id, string character, bool opened)`
+
+Opens or closes one member's fold: reads the series, finds the member's entry, then writes the fold.
+`LStemClerk.LStemEntryFind` finds the entry, and `LFoldClerk` writes it under the series key.
+A StemFold notice is raised on the entry afterwards, outside the gate, as `LReflexFacade` raises its own.
+Its own subject keeps entry page and card folds from redrawing the series page.
+No series or a bare member writes nothing and raises nothing.
 
 ## `public IReadOnlyList<LVistaRow> LEngineKindredFind(LVista grove, LVista vista)`
 

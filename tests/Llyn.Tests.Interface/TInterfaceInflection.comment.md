@@ -1,5 +1,5 @@
 # TInterfaceInflection.cs
-Hash: `48b276c29daf6f53`
+Hash: `2917b71e5a0d84ca`
 Hash: `7ce4ad409c79448e`
 
 ## `internal static class TInterfaceInflection`
@@ -27,13 +27,20 @@ A paradigm without stated rules or exceptions is the common fixture, so both def
 
 Tests build an expected view table through this relay rather than its constructor.
 
+## `internal static LParadigmView TParadigmViewCreate(LParadigmTable collapsed, LParadigmTable expanded)`
+
+Tests build a view of two tables through this relay rather than its constructor.
+
 ## `internal static LParadigmLine TParadigmLineCreate(string group, string label, IReadOnlyList<LParadigmForm> forms)`
 
 Tests build an expected view line through this relay rather than its constructor.
 
-## `internal static LParadigmForm TParadigmFormCreate(string text, IReadOnlyList<LInflectionMark> marks, LParadigmStatus status)`
+## `internal static LParadigmForm TParadigmFormCreate(string text, IReadOnlyList<LInflectionMark> marks, string? tip, int split = 0)`
 
-The built cell keeps the default split, so it stands for an undivided form.
+A test passes the ready text and tip a cell shows, as the Core view build answers them.
+
+The split defaults to 0, so a cell built without one stands for an undivided form.
+A test of a divided form passes where its ending starts.
 
 ## `internal static LInflectionMark TInflectionMarkCreate(int offset, int length)`
 

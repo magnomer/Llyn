@@ -1,11 +1,12 @@
 # PEditor.xaml
-Hash: `a43dacb11f3b75c7`
+Hash: `57a6e3de77dc4eea`
 
 ## `UserControl`
 
 The shared editor as markup alone.
 Its `x:Class` shell only builds it, and the Deportment driver `QEditor` drives every part.
-Every icon, click, command and popup link is set by that driver, so the markup holds no hook.
+`QEditor` and its subordinate drivers supply event and command wiring.
+This markup declares no event handlers.
 
 ## `<Grid UseLayoutRounding="False">`
 
@@ -69,15 +70,18 @@ The rows start at the headword's own margin, because an indent here read as a di
 ## `<local:QScript x:Name="PEditorScript" Margin="0,14,0,0" QScriptFolded="True" />`
 
 The character styles of the entry, the same box the reading view shows, folded under its head here.
-The editor never writes them, so they sit closed as reference until the switch opens them.
+Pictures are reference rather than manually editable fields.
+Rebuilding can replace them independently of the stored box opening.
+Each entry keeps its own open state, stored in the database.
 
 ## `<local:QFanqie x:Name="PEditorFanqie" Margin="0,14,0,0" QFanqieFolded="True" />`
 
 The rime-book placements of the entry, the same box the reading view shows, folded under its head here.
+Each entry keeps its own open state, as the script box does.
 
 ## `<Border x:Name="PPronunciation" Style="{StaticResource Theme.Pronunciation.Surface}">`
 
-The primary pronunciation: its variety as a flag or a label, then the bracketed field, then its buttons.
+The primary pronunciation places its variety before the bracketed field and its buttons after it.
 The brackets are named so the editor can turn them into slashes for a phonemic respelling.
 The chip is empty for a pronunciation without a variety, so the brackets then open at the margin.
 The buttons are the accent tool style, so the primary row reads as the further rows do.
@@ -94,11 +98,12 @@ The editor sets the tonal flag whenever the language changes.
 ## `<Grid x:Name="PReflexBlock" Visibility="Collapsed">`
 
 The reflex block at the head of the reading stack.
-It holds the rows, the fetching line and the fold switch.
+It holds the rows, the fetching line and the hinge.
 It stays collapsed until a draft in a language with reflex rules or reflex rows is rendered.
 `PReflexTable` is the stack of rows, sized by hand while a fetch runs.
 `PReflexLoading` is the fetching line under the rows, shown only while a fetch runs.
-`PReflexFold` shows or hides the folded rows, and stays hidden while no row is folded.
+`PReflexHinge` shows or hides the folded rows, and stays hidden while no row is folded.
+Its state is stored per entry, so each entry opens as it was left.
 `PAnchor` is the anchor dropdown, one popup for every row, targeted at the label that opened it.
 `PAnchorList` holds its tick rows and `PAnchorEmpty` the notice shown when the character has no placement.
 

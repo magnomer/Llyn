@@ -1,12 +1,11 @@
 # LSchemaMigration.cs
-Hash: `f232bb4ce9e242dc`
-Hash: `05ad3d84636fbb0a`
+Hash: `911d4955cbc5cf89`
 
 ## `public static class LSchemaMigration`
 
 Reads the version an existing database was built at and brings the file to the version this build produces.
 It exists because `CREATE TABLE IF NOT EXISTS` leaves an existing table exactly as it stands.
-That is everything `LSchema` runs.
+`LSchema` also creates indexes and stamps, but its table calls cannot replace an existing shape.
 A column, a constraint, or a foreign key added to an already-created table never reaches such a file.
 Stamping a version without acting on the one already stored would record a shape the file does not have.
 
@@ -23,7 +22,7 @@ So a crash at any point leaves it whole, at one version or the other.
 A copy of the old file is kept beside it under its version, so nothing is lost to a rebuild.
 The same rebuild serves a file written by a newer build, since what this build cannot read it cannot keep.
 
-## `public const long LSchemaMigrationVersion = 77;`
+## `public const long LSchemaMigrationVersion = 79;`
 
 The schema version this build produces.
 A change to any table raises it.
@@ -116,4 +115,12 @@ A name already taken is stepped past rather than overwritten.
 
 ## `private static void LSchemaMigrationDelete(string fresh)`
 
-Removes the fresh file and its journal, whether half-built or spent, so a retried rebuild starts clean.
+Removes the fresh file and its WAL and shared-memory companions, so a retried rebuild starts clean.
+
+## `private const string LSchemaMigrationMain = "main";`
+
+The original database keeps this attached-schema name throughout the transactional replacement.
+
+## `private static readonly string[] LSchemaMigrationCompanion`
+
+Cleanup covers the fresh database, its WAL and its shared-memory file.

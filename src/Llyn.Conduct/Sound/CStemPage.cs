@@ -5,7 +5,7 @@ namespace Llyn.Conduct;
 public sealed record CStemPage(
     string CStemPageLanguage,
     string CStemPageKey,
-    IReadOnlyList<string> CStemPageCharacters,
+    IReadOnlyList<CStemMember> CStemPageMembers,
     bool CStemPageEmpty,
     CFont CStemPageFont,
     CFont CStemPageGlyph);

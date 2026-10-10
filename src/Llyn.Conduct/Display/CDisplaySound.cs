@@ -80,15 +80,13 @@ public sealed class CDisplaySound
         _cDisplayEnvoy = envoy;
     }
 
-    public event Action? CDisplayFoldChanged;
-
     internal event Action<string, long>? CDisplayRowChosen;
 
     internal event Action<string, string, string>? CDisplayDiweiChosen;
 
     internal event Action<string, string?>? CDisplayStemChosen;
 
-    public bool CDisplayFoldOpened => _cDisplayVoice.LDisplayFoldOpened;
+    public bool CDisplayFoldOpened => _cDisplayVoice.LDisplaySpreadCheck(LDisplayEntry);
 
     private LEntryDraft? LDisplayShown => _cDisplayVoice.LDisplayShown;
 
@@ -164,12 +162,15 @@ public sealed class CDisplaySound
     {
         if (LDisplayShown is null)
         {
-            return new CLecternReflex([], _cDisplayUnanchored, false);
+            return new CLecternReflex([], _cDisplayUnanchored, false, false);
         }
 
         IReadOnlyList<CReflex> rows = LDisplayReflexScan();
         return new CLecternReflex(
-            rows, LDisplayAnchorRead(rows), _cDisplayVoice.LDisplayReflexCheck(LDisplayEntry));
+            rows,
+            LDisplayAnchorRead(rows),
+            _cDisplayVoice.LDisplayReflexCheck(LDisplayEntry),
+            CReflex.LReflexFoldCheck(rows));
     }
 
     public CLecternReflex CDisplayReflexResonate()
@@ -182,10 +183,23 @@ public sealed class CDisplaySound
         return CDisplayReflexRead();
     }
 
-    public void CDisplayReflexToggle(bool opened)
+    public bool CDisplayReflexToggle(bool opened)
     {
-        _cDisplayVoice.LDisplayFoldSet(opened);
-        CDisplayFoldChanged?.Invoke();
+        if (LDisplayEntry is not long id)
+        {
+            return false;
+        }
+
+        try
+        {
+            _cDisplayReflex.LEngineReflexSpread(id, opened);
+            return true;
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(_cDisplayEnvoy, _cDisplaySettings, "Reflex.SpreadFailed", exception);
+            return false;
+        }
     }
 
     public CLecternFanqie CDisplayFanqieRead()
@@ -274,12 +288,12 @@ public sealed class CDisplaySound
         bool pending = _cDisplayVoice.LDisplayParadigmCheck(id);
         bool enabled = _cDisplayVoice.LDisplayMorphologyRead();
         LParadigmView? view = _cDisplayNoticed.LLedgerRepaintRead<LParadigmView?>(_cDisplayEnvoy, _cDisplaySettings,
-            () => _cDisplayParadigm.LEngineInflectionRead(id, pending, enabled),
+            () => _cDisplayParadigm.LEngineInflectionRead(id, pending, enabled, false),
             null, "Display.ParadigmReadFailed");
         return new CLecternParadigm(
             CSounding.CSoundingParadigmRead(_cDisplayParadigm, rows, pending, enabled, false),
             CFont.CFontRead(_cDisplaySettings, language, CFontRole.CFontRoleHeadword),
-            CParadigmView.CParadigmViewCreate(view, false));
+            CParadigmView.CParadigmViewCreate(view));
     }
 
     private IReadOnlyList<CReflex> LDisplayReflexScan()

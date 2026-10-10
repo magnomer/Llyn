@@ -71,12 +71,8 @@ internal static class TInterfaceEditor
 
     internal static CEntryDraft? TEditorDraftRead(this CEditor editor) =>
         editor.CEditorDesk.CDeskDraft.CDeskDraftTenure is LTenure held
-        && editor.CEditorDesk.CDeskDraft.CDeskDraftChip is LQuillChip chip
         && held.LTenureRead() is { } draft
-            ? CFolio.CFolioEntryRead(
-                draft.LDraftContent,
-                chip.LQuillTranslationRead(draft.LDraftContent),
-                editor.CEditorDisplay.LDisplayRule.LDisplayMediaPort)
+            ? editor.CEditorEntry.LEntryDraftRead(held, draft)
             : null;
 
     internal static bool TEditorFinish(this CEditor editor, bool store) => editor.LEditorFinish(store);

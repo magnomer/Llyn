@@ -9,12 +9,12 @@ public sealed record CParadigmTable(
     IReadOnlyList<string> CParadigmTableHeaders,
     IReadOnlyList<CParadigmLine> CParadigmTableLines)
 {
-    internal static CParadigmTable CParadigmTableCreate(LParadigmTable table, bool held)
+    internal static CParadigmTable CParadigmTableCreate(LParadigmTable table)
     {
         ArgumentNullException.ThrowIfNull(table);
 
         return new CParadigmTable(
             table.LParadigmTableHeaders,
-            table.LParadigmTableLines.Select(line => CParadigmLine.CParadigmLineCreate(line, held)).ToList());
+            table.LParadigmTableLines.Select(CParadigmLine.CParadigmLineCreate).ToList());
     }
 }

@@ -1,5 +1,5 @@
 # QParadigm.cs
-Hash: `d02565de315935e5`
+Hash: `3e26747dc81aaded`
 Hash: `64fcce5d82c31306`
 
 ## `public sealed class QParadigm : Decorator`
@@ -25,15 +25,16 @@ It is `null` for a pack without a layout, and the box then shows only its rows.
 
 ## `public QParadigm()`
 
-A box in the paradigm theme holding a stack of the list, the switch panel and both tables.
+A box in the paradigm theme holding a stack of the list, the switch and both tables.
 The list is a shared size scope, so the part and name columns line up across every row.
 The row template is read from the theme by key, so the box carries no markup of its own.
 The box never takes focus, and only the two switch buttons are tab stops.
 Each realized row is filled by `QParadigmItemRefine`, since the template carries no bindings.
-The switch is two text buttons in one panel, so both choices stay readable at once.
-They share the panel as their group, so checking one unchecks the other.
+The switch is two text buttons on one track, so both choices stay readable at once.
+They share the track's panel as their group, so checking one unchecks the other.
 The short button starts checked, so the collapsed table shows first.
-The panel carries the `Paradigm.Fold` tooltip and accessible name for the pair.
+The track carries the `Paradigm.Fold` tooltip and accessible name for the pair.
+It starts collapsed, so a box without a sheet draws no empty track.
 
 ## `private static void QParadigmItemRefine(FrameworkElement container, object item, string? _)`
 
@@ -47,7 +48,7 @@ Hands the new rows to the list and shows the box while it has rows or a sheet.
 
 ## `private static void QParadigmSheetRefine(DependencyObject sender, DependencyPropertyChangedEventArgs e)`
 
-Rebuilds both tables from the new sheet and shows the switch buttons only while a sheet exists.
+Rebuilds both tables from the new sheet and shows the switch only while a sheet exists.
 The buttons keep their state, so a repaint after a save does not fold the table back.
 The box shows while it has rows or a sheet.
 

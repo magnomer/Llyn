@@ -1,18 +1,19 @@
 # LDisplaySound.cs
-Hash: `0897c31e079a7e77`
+Hash: `3b183f53f5877bd0`
 
 ## `internal sealed class LDisplaySound`
 
-The reading view's sound state: the shown draft, its entry, the reflex fold and the latest play.
+The reading view's sound state holds the shown draft, its entry and the latest play ticket.
 The gates and reads over it stand on [CDisplaySound](CDisplaySound.comment.md), which holds no state of its own.
 The pronunciation reads stand on [CDisplayAccent](CDisplayAccent.comment.md), and the play gates on [CDisplayPlayback](CDisplayPlayback.comment.md).
-A list read or check the engine refuses answers empty or false, so a section draws nothing.
+Caught list-read and check failures answer empty or false, so their sections can still draw.
+`LDisplayReflexRead` does not catch failures itself.
 Every refused read it catches raises `LDisplaySoundFailed` with its text key, so none passes unseen.
 Every refused send raises `LDisplayMarkFailed` instead, since a send follows a show the user caused.
 The engine owns the player, so the view holds no player of its own.
 It keeps its latest play's ticket, so it never stops another view's sound.
-The editor's [CKindred](../Sound/CKindred.comment.md) reads the fold and the reflex check here, and asks for a rebuild.
-So the fold is one state, shared by the reading view and the editor.
+The editor's [CKindred](../Sound/CKindred.comment.md) reads the opened state and the reflex check here, and asks for a rebuild.
+It holds no opened state, since the engine stores it per entry.
 The editor's sound sheet, [CSounding](../Sound/CSounding.comment.md), reads the morphology verdict here too.
 Only Conduct reads it, so the drivers are offered no Core draft.
 
@@ -28,10 +29,6 @@ The shown draft, which the lectern's areas and its compass read.
 ## `internal long? LDisplayEntry`
 
 The id of the shown entry, which every sound read and fetch request is made for.
-
-## `internal bool LDisplayFoldOpened`
-
-Whether the folded reflexes are shown, shared by the reading view and the editor.
 
 ## `internal int LDisplayTicket { get; set; }`
 
@@ -53,7 +50,7 @@ Raised with the text key and the exception when a fetch start or a reflex rebuil
 
 Holds `draft` and its entry `id` as the entry the verdicts and reads work on.
 Reflexes loaded for an earlier entry are dropped, so the rows follow the new draft.
-It starts every background fetch the view shows through one engine call, whose order is the engine's.
+A present entry id starts background sound fetches through one engine call, leaving their order to the engine.
 The start runs on every show of a draft.
 A refused start raises `LDisplayMarkFailed` with `Sound.StartFailed`.
 
@@ -63,9 +60,12 @@ Drops the shown draft, its id and the loaded reflexes.
 It stops its own playback, and a sound another view started plays on.
 A display that shows nothing has no playback, so clearing it again stops nothing.
 
-## `internal void LDisplayFoldSet(bool opened)`
+## `internal bool LDisplaySpreadCheck(long? id)`
 
-Sets whether the folded reflexes are shown, behind the gate `CDisplaySound.CDisplayReflexToggle`.
+Whether the entry's "More readings" is opened, as the engine stores it for that entry.
+No entry answers false, and so does a refusal.
+A refusal raises `LDisplaySoundFailed` with `Reflex.SpreadReadFailed`.
+The reading view and the editor both read here, each for its own entry.
 
 ## `internal void LDisplayReflexLoad()`
 

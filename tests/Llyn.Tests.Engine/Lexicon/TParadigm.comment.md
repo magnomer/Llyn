@@ -1,5 +1,5 @@
 # TParadigm.cs
-Hash: `4b097f2afa171cf3`
+Hash: `bc4fc56ee1db2d47`
 Hash: `c6bae55e50ed8a88`
 
 ## `public sealed class TParadigm`
@@ -67,4 +67,4 @@ Writes one vocabulary file under the application's language folder and removes i
 
 ## `private static LParadigmStatus TParadigmStatusRead(LInflection? inflection, LState state, bool pending, bool enabled)`
 
-Builds a one-slot row and asks it for its status.
+Builds a one-slot row and asks its first slot for its status through the `TParadigmSlotCheck` relay.

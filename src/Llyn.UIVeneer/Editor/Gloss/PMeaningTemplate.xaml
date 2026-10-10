@@ -20,20 +20,23 @@
                         <Border x:Name="PCardPosition" Style="{StaticResource Theme.Card.Position}" ToolTip="{DynamicResource Card.PositionHint}">
                             <TextBox x:Name="PCardPositionText" Style="{StaticResource Theme.Card.Ordinal}" />
                         </Border>
-                        <TextBox x:Name="PTitle" Grid.Column="1" Margin="0,0,34,0" Style="{DynamicResource Theme.Card.Title}" />
+                        <TextBlock x:Name="PCardPeek" Grid.Column="1" Style="{DynamicResource Theme.Card.Peek}" />
+                        <TextBox x:Name="PTitle" Grid.Column="1" Margin="{DynamicResource Theme.Card.TitleMargin}" Style="{DynamicResource Theme.Card.Title}" />
                         <Button
                             x:Name="PCardEraser"
                             Grid.Column="0"
                             Grid.ColumnSpan="2"
+                            Margin="{DynamicResource Theme.Card.EraserMargin}"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
                             Style="{DynamicResource Theme.Card.Handle}">
                             <local:QIconImage x:Name="PCardIcon" Width="12" Height="12" />
                         </Button>
+                        <ToggleButton x:Name="PCardHinge" Grid.Column="0" Grid.ColumnSpan="2" Style="{DynamicResource Theme.Card.Hinge}" />
                     </Grid>
                 </Border>
 
-                <Grid Grid.Row="1" Style="{DynamicResource Theme.Card.Body}">
+                <Grid x:Name="PCardBody" Grid.Row="1" Style="{DynamicResource Theme.Card.Body}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Style="{DynamicResource Theme.Card.Gutter}" />

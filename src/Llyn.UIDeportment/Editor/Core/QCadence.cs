@@ -1,5 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
@@ -26,7 +27,7 @@ internal sealed class QCadence
     private QScript QCadenceScript => QContract.QContractFind<QScript>(_qCadenceSurface, "PEditorScript");
 
     internal void QCadenceIntroduce(
-        CDesk desk, CTimbre timbre, CSounding sounding, CFold fold, CLedger ledger, CEnvoy envoy)
+        CDesk desk, CEntry entry, CTimbre timbre, CSounding sounding, CFold fold, CLedger ledger, CEnvoy envoy)
     {
         _cSounding = sounding;
         _cFold = fold;
@@ -35,23 +36,34 @@ internal sealed class QCadence
         desk.CDeskStarted += QCadenceParadigmRefine;
         desk.CDeskStarted += QCadenceScriptRefine;
         desk.CDeskStarted += QCadenceFanqieRefine;
-        desk.CDeskStarted += QCadenceFoldRefine;
         timbre.CTimbreParadigmChanged += QCadenceParadigmRefine;
         timbre.CTimbreScriptChanged += QCadenceScriptRefine;
         sounding.CSoundingChanged += QCadenceFanqieRefine;
-        fold.CFoldChanged += QCadenceFoldRefine;
+        entry.CEntryDraftChanged += QCadenceFoldRefine;
         QCadenceScript.QScriptRenewalNotice += QCadenceScriptObserve;
         QCadenceFanqie.QFanqieRenewalNotice += QCadenceFanqieObserve;
         QCadenceFanqie.QFanqieDiweiNotice += QCadenceDiweiObserve;
         QCadenceFanqie.QFanqieRepresentativeNotice += QCadenceRepresentativeObserve;
-        QCadenceFanqie.QFanqieFoldNotice += fold.CFoldFanqieToggle;
-        QCadenceScript.QScriptFoldNotice += fold.CFoldScriptToggle;
+        QCadenceFanqie.QFanqieSwitch.Click += QCadenceSpellingObserve;
+        QCadenceScript.QScriptSwitch.Click += QCadenceWritingObserve;
     }
 
-    private void QCadenceFoldRefine()
+    private void QCadenceFoldRefine(CEntryDraft _)
     {
         QCadenceFanqie.QFanqieFoldRefine(_cFold.CFoldFanqieOpened);
         QCadenceScript.QScriptFoldRefine(_cFold.CFoldScriptOpened);
+    }
+
+    private void QCadenceSpellingObserve(object sender, RoutedEventArgs e)
+    {
+        ToggleButton shown = QCadenceFanqie.QFanqieSwitch;
+        QLook.QLookCheckedRefine(shown, _cFold.CFoldFanqieSpread(QLook.QLookCheckedRead(shown.IsChecked)));
+    }
+
+    private void QCadenceWritingObserve(object sender, RoutedEventArgs e)
+    {
+        ToggleButton shown = QCadenceScript.QScriptSwitch;
+        QLook.QLookCheckedRefine(shown, _cFold.CFoldScriptSpread(QLook.QLookCheckedRead(shown.IsChecked)));
     }
 
     private void QCadenceParadigmRefine()

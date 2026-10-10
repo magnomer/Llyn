@@ -48,6 +48,7 @@ internal static class TAuditDemeanorSetting
                 "CCatalogPronunciation",
                 "CStem",
                 "CStemPage",
+                "CStemMember",
                 "CDiwei",
                 "CDiweiPage",
                 "CDiweiSection",

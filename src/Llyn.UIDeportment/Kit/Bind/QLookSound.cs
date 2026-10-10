@@ -137,6 +137,7 @@ internal static class QLookSound
             TextBlock.ForegroundProperty, Control.ForegroundProperty),
         new("Theme.Stem.Chip", QLookCue.QLookCueHover, "PStemCharacter",
             TextBlock.TextDecorationsProperty, TextDecorations.Underline),
+        new("Theme.Stem.Fold", QLookCue.QLookCueChecked, null, ContentControl.ContentProperty, "Xiesheng.ReadingsHide"),
 
         new("Theme.Diwei.Choice", QLookCue.QLookCueBase, null,
             ButtonBase.CommandProperty, QDiweiCommand.QDiweiCommandSwitch),

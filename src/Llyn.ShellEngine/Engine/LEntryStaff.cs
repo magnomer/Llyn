@@ -9,7 +9,8 @@ internal sealed record LEntryStaff(
     LEntryQueryClerk LEntryStaffQuery,
     LGraspClerk LEntryStaffGrasp,
     LOutcomeClerk LEntryStaffOutcome,
-    LCitationClerk LEntryStaffCitation)
+    LCitationClerk LEntryStaffCitation,
+    LFoldClerk LEntryStaffFold)
 {
     internal static LEntryStaff LEntryStaffBuild(
         LRig rig,
@@ -38,7 +39,8 @@ internal sealed record LEntryStaff(
         LCitationClerk citation = new(
             rig, identity, claim.LClaimStaffClaim, catalog.LCatalogStaffAuthor, catalog.LCatalogStaffExample,
             catalog.LCatalogStaffReference, catalog.LCatalogStaffSituation, entry, revision);
+        LFoldClerk fold = new(rig);
 
-        return new LEntryStaff(meaning, entry, query, grasp, outcome, citation);
+        return new LEntryStaff(meaning, entry, query, grasp, outcome, citation, fold);
     }
 }

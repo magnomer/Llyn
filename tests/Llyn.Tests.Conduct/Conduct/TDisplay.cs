@@ -11,19 +11,6 @@ namespace Llyn.Tests;
 public sealed class TDisplay
 {
     [Fact]
-    public void DisplayFoldSet_CurrentValue_KeepsFold()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        LDisplaySound sound = TInterfaceConductSound.TDisplaySoundCreate(engine);
-
-        sound.TDisplayFoldSet(true);
-        sound.TDisplayFoldSet(true);
-
-        Assert.True(sound.LDisplayFoldOpened);
-    }
-
-    [Fact]
     public void DisplaySoundClear_ShownDraft_DropsDraftAndEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

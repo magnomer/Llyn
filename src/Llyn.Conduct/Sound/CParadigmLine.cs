@@ -10,13 +10,13 @@ public sealed record CParadigmLine(
     string CParadigmLineLabel,
     IReadOnlyList<CParadigmForm> CParadigmLineForms)
 {
-    internal static CParadigmLine CParadigmLineCreate(LParadigmLine line, bool held)
+    internal static CParadigmLine CParadigmLineCreate(LParadigmLine line)
     {
         ArgumentNullException.ThrowIfNull(line);
 
         return new CParadigmLine(
             line.LParadigmLineGroup,
             line.LParadigmLineLabel,
-            line.LParadigmLineForms.Select(form => CParadigmForm.CParadigmFormCreate(form, held)).ToList());
+            line.LParadigmLineForms.Select(CParadigmForm.CParadigmFormCreate).ToList());
     }
 }

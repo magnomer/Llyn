@@ -44,7 +44,7 @@ public sealed class TKindred
                     return "Guangyun";
                 },
             }));
-        editor.TEditorFixtureDisplay.CDisplaySound.CDisplayReflexToggle(true);
+        engine.TEngineReflexSpread(editor.TEditorFixtureDesk.CDeskStoredRead()!.Value, true);
 
         CTimbreReflex reflex = kindred.CKindredRead();
 

@@ -26,6 +26,7 @@ public sealed class QParadigm : Decorator
     private readonly ItemsControl _qParadigmList = new();
     private readonly RadioButton _qParadigmShort = new();
     private readonly RadioButton _qParadigmFull = new();
+    private readonly Border _qParadigmSwitch = new();
     private readonly Grid _qParadigmCollapsed = new();
     private readonly Grid _qParadigmExpanded = new();
 
@@ -38,19 +39,17 @@ public sealed class QParadigm : Decorator
         _qParadigmList.SetResourceReference(ItemsControl.ItemTemplateProperty, "Theme.Paradigm.Row");
         QLookItem.QLookItemAttach(_qParadigmList, QParadigmItemRefine);
 
-        StackPanel fold = new()
-        {
-            Orientation = Orientation.Horizontal,
-            HorizontalAlignment = HorizontalAlignment.Right,
-        };
-        fold.SetResourceReference(ToolTipProperty, "Paradigm.Fold");
-        fold.SetResourceReference(AutomationProperties.NameProperty, "Paradigm.Fold");
+        StackPanel fold = new() { Orientation = Orientation.Horizontal };
+        _qParadigmSwitch.Child = fold;
+        _qParadigmSwitch.Visibility = Visibility.Collapsed;
+        _qParadigmSwitch.SetResourceReference(StyleProperty, "Theme.Paradigm.Switch");
+        _qParadigmSwitch.SetResourceReference(ToolTipProperty, "Paradigm.Fold");
+        _qParadigmSwitch.SetResourceReference(AutomationProperties.NameProperty, "Paradigm.Fold");
         (RadioButton, string)[] buttons = [(_qParadigmShort, "Paradigm.Short"), (_qParadigmFull, "Paradigm.Full")];
         foreach ((RadioButton button, string key) in buttons)
         {
             button.SetResourceReference(ContentControl.ContentProperty, key);
             button.SetResourceReference(StyleProperty, "Theme.Paradigm.Fold");
-            button.Visibility = Visibility.Collapsed;
             button.Checked += QParadigmFoldRefine;
             fold.Children.Add(button);
         }
@@ -61,7 +60,7 @@ public sealed class QParadigm : Decorator
 
         StackPanel stack = new();
         stack.Children.Add(_qParadigmList);
-        stack.Children.Add(fold);
+        stack.Children.Add(_qParadigmSwitch);
         stack.Children.Add(_qParadigmCollapsed);
         stack.Children.Add(_qParadigmExpanded);
 
@@ -131,8 +130,7 @@ public sealed class QParadigm : Decorator
             QParadigmTableRefine(box._qParadigmExpanded, sheet.QParadigmSheetExpanded);
         }
 
-        box._qParadigmShort.Visibility = QLook.QLookVisibleRead(sheet is not null);
-        box._qParadigmFull.Visibility = QLook.QLookVisibleRead(sheet is not null);
+        box._qParadigmSwitch.Visibility = QLook.QLookVisibleRead(sheet is not null);
         box.QParadigmFoldRefine(box, new RoutedEventArgs());
         box.Visibility = QLook.QLookVisibleRead(box.QParadigmItems is { Count: > 0 } || sheet is not null);
     }

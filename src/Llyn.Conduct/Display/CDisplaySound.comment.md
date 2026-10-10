@@ -1,17 +1,19 @@
 # CDisplaySound.cs
-Hash: `92c7ad3fda4d1c64`
+Hash: `af27f78a6c6f0e76`
 
 ## `public sealed class CDisplaySound`
 
-The reading view's sound area, holding the gates and reads of its glyph, reflex, rime-book, script and paradigm blocks.
+The reading view's sound area provides gates and reads for glyph, reflex, rime-book, script and paradigm blocks.
+The rime-book and script box openings live on [CFold](../Sound/CFold.comment.md), reached as `CDisplay.CDisplayFold`.
 It is split from [CDisplay](CDisplay.comment.md) by role, since the header keeps its own area.
 The pronunciation block went to [CDisplayAccent](CDisplayAccent.comment.md), and playback to [CDisplayPlayback](CDisplayPlayback.comment.md).
 The header area builds one over the rules' sound half and itself.
 So every driver over that area hears the same events.
 It holds no state of its own.
-The shown draft and the fold stay in [LDisplaySound](LDisplaySound.comment.md).
-The shown language and headword come from the header's C record, so no engine record is read for them.
-Every read answers the empty block while nothing is shown, so a late notice paints what a close painted.
+The shown draft stays in [LDisplaySound](LDisplaySound.comment.md), and the engine stores each entry's reflex opening.
+The header supplies displayed language and headword for anchors, navigation and fonts.
+Glyph and transcription reads use the shown engine draft.
+Block reads answer empty while nothing is shown, so late notices cannot restore closed sections.
 
 ## `private static readonly CFont _cDisplayBare`
 
@@ -30,10 +32,6 @@ Ledger-backed repaint reads share failure memory, while user actions report fail
 Each sound block reads through its own narrow port, so no block reaches a slice it never shows.
 The fanqie gate answers a user act, so it shows every failure.
 
-## `public event Action? CDisplayFoldChanged;`
-
-Raised when the fold gate sets the fold, so every lectern over the display repaints its reflex rows.
-
 ## `internal event Action<string, long>? CDisplayRowChosen;`
 
 Raised with the library tab and the entry a glyph cell resolved to.
@@ -49,7 +47,8 @@ The event carries two values, with a null key allowed for navigation without a s
 
 ## `public bool CDisplayFoldOpened`
 
-Whether the folded reflexes are shown, the state a driver's fold repaint reads.
+Whether the shown entry's folded reflexes are shown, as the engine stores it for that entry.
+A driver's fold repaint reads it, and nothing shown answers false.
 
 ## `private LEntryDraft? LDisplayShown`
 
@@ -82,6 +81,7 @@ The engine filters them, and a refused read shows `Sound.LoadFailed` once and an
 
 The shown entry's reflex block, ready to draw.
 The rows come from the one reflex scan the editor shares, `CRespelling.LRespellingReflexScan`.
+The fold verdict is read from those rows by `CReflex.LReflexFoldCheck`.
 
 ## `public CLecternReflex CDisplayReflexResonate()`
 
@@ -89,11 +89,14 @@ Answers the reflex notice the driver hands over.
 It reloads the stored rows, then reads the block again.
 The reload only reaches the reflexes, so the header and the other blocks keep the draft on screen.
 
-## `public void CDisplayReflexToggle(bool opened)`
+## `public bool CDisplayReflexToggle(bool opened)`
 
-The gate for the fold toggle.
-It sets whether folded reflexes show and raises `CDisplayFoldChanged`.
-The editor's reflex block and the reading view share the one fold.
+The gate for the reading view's "More readings" hinge.
+It makes one engine call, which stores `opened` for the shown entry.
+The engine then raises the fold bulletin, so `CDisplay.CDisplayFoldChanged` and the editor repaint from the store.
+True means the port returned without throwing, not that a stored row changed.
+Nothing shown answers false and writes nothing.
+A refusal shows `Reflex.SpreadFailed` every time and answers false, so the driver puts the hinge back.
 
 ## `public CLecternFanqie CDisplayFanqieRead()`
 
@@ -129,11 +132,12 @@ A refused row read shows `Display.ScriptReadFailed` through the voice's failure 
 
 The shown entry's paradigm block, ready to draw.
 Its font follows the paradigm's own language, which the engine resolves.
-The slots carry their status and tip key, so the driver reads neither verdict.
+The slots carry their ready text and tip key, so the driver reads neither verdict.
 The inflection fetch is started when the entry opens, never by this read.
 A refused row read shows `Display.ParadigmReadFailed` through the voice's failure event.
-The inflection box is read through the same ledger read with the same failure key.
+The inflection box has a separate ledger-backed read using the same failure key.
 A refused box read shows that notice and answers a null view.
+The box is asked with `held` off, so a lost cell reads as lost.
 
 ## `private IReadOnlyList<CReflex> LDisplayReflexScan()`
 
@@ -150,3 +154,55 @@ It hands the map this view's envoy, settings and repaint memory, so a refusal sh
 
 The font of `role` in the shown language, through the one font rule `CFont.CFontRead` holds.
 The reading view paints its headword and its example cards from it, so no driver hands a language back.
+
+## `private readonly LDisplaySound _cDisplayVoice;`
+
+Shared sound state supplies the shown draft, entry and engine-backed checks.
+
+## `private readonly CLedgerNoticed _cDisplayNoticed;`
+
+Repaint failures share the display's notice memory rather than accumulating independent notices per block.
+
+## `private readonly CDisplay _cDisplayHeader;`
+
+The displayed header supplies language and headword for navigation, fonts and anchors.
+
+## `private readonly LDraftPort _cDisplayDraft;`
+
+Anchor mapping uses the draft port without exposing it to the driver.
+
+## `private readonly LEntryPort _cDisplayEntryPort;`
+
+Glyph navigation resolves its entry through this port.
+
+## `private readonly LGlyphPort _cDisplayGlyphPort;`
+
+Glyph and transcription reads share the shown draft through this port.
+
+## `private readonly LFanqiePort _cDisplayFanqie;`
+
+Fanqie rows, representative readings and rank changes keep one engine owner.
+
+## `private readonly LDiweiPort _cDisplayDiwei;`
+
+Rime navigation uses the engine's cell-kind verdict.
+
+## `private readonly LScriptPort _cDisplayScript;`
+
+Script blocks receive rows from their own narrow port.
+
+## `private readonly LParadigmPort _cDisplayParadigm;`
+
+Paradigm rows, language and inflection views keep one engine owner.
+
+## `private readonly LReflexPort _cDisplayReflex;`
+
+Reflex presentation and per-entry opening writes share this port.
+
+## `private readonly LSettingsPort _cDisplaySettings;`
+
+Typography, epoch wording and failure notices use the same settings port.
+
+## `private readonly CEnvoy _cDisplayEnvoy;`
+
+Failures are reported through the display's envoy rather than a driver-owned channel.

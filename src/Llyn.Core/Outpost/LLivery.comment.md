@@ -1,5 +1,5 @@
 # LLivery.cs
-Hash: `b821f5d7734a9804`
+Hash: `791b17789a18977b`
 
 ## `public interface LLivery`
 
@@ -34,11 +34,6 @@ So the trash check proves a series note as Llyn's own too.
 ## `LLiveryNote LLiveryFormat(LLiveryDiwei diwei, string style, Func<long, string> note, Func<string, string> lookup);`
 
 One rime-table category note body, written as Markdown from `diwei`.
-It shares the style import, the mark and the meaning of `note` and `lookup` with an entry body.
-
-## `LLiveryNote LLiveryFormat(LLiveryLanguage language, string style, Func<long, string> note, Func<string, string> lookup);`
-
-One language's sound note body, written as Markdown from `language`.
 It shares the style import, the mark and the meaning of `note` and `lookup` with an entry body.
 
 ## `string LLiveryMarkFormat(string style);`

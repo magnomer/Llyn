@@ -1,5 +1,5 @@
 # QLookSound.cs
-Hash: `feeb51addafd4602`
+Hash: `369c1c12b487a6e6`
 
 ## `internal static class QLookSound`
 
@@ -10,6 +10,7 @@ The rows of the sound themes, kept apart so `QLookSheet` stays under the line ce
 
 One row per dismantled trigger, command, template binding or icon of the sound themes.
 A derived style carries only its own rows, since `QLook` also applies its base styles' rows.
+The series hinge `Theme.Stem.Fold` overrides only the checked text of `Theme.Reflex.Fold`, as its derived row wins.
 A command parameter that was the row itself is a copy of the control's data context.
 A chip's text that was its item copies the data context too, so a string list needs no fill.
 The hover pair of a pronunciation row is shown by the surface's hover and focus rows.

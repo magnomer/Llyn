@@ -96,6 +96,7 @@ internal static class TAuditVerbRegistry
         "Shorten",
         "Show",
         "Sort",
+        "Spread",
         "Start",
         "Stop",
         "Suspend",

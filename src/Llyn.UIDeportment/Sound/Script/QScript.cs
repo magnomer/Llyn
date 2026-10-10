@@ -61,7 +61,6 @@ public sealed class QScript : Decorator
         QIconImage chevron = new() { Width = 12, Height = 12, QIconSource = QIcon.QIconResolve("expand", 12) };
         _qScriptSwitch.Content = chevron;
         _qScriptSwitch.SetResourceReference(StyleProperty, "Theme.Marker.Switch");
-        _qScriptSwitch.Click += QScriptFoldObserve;
         _qScriptRefresh.SetResourceReference(StyleProperty, "Theme.Sound.Rebuild");
         _qScriptRefresh.Click += QScriptRefreshObserve;
         _qScriptHead.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
@@ -117,8 +116,6 @@ public sealed class QScript : Decorator
 
     internal event Action? QScriptRenewalNotice;
 
-    internal event Action<bool>? QScriptFoldNotice;
-
     internal event Action<Exception>? QScriptFailureNotice;
 
     internal void QScriptFailureRefine(Exception exception)
@@ -147,10 +144,7 @@ public sealed class QScript : Decorator
         QScriptRenewalNotice?.Invoke();
     }
 
-    private void QScriptFoldObserve(object sender, RoutedEventArgs e)
-    {
-        QScriptFoldNotice?.Invoke(QLook.QLookCheckedRead(_qScriptSwitch.IsChecked));
-    }
+    internal ToggleButton QScriptSwitch => _qScriptSwitch;
 
     internal void QScriptFoldRefine(bool opened)
     {

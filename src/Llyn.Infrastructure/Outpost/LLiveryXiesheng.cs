@@ -24,21 +24,30 @@ internal static class LLiveryXiesheng
         }
         else
         {
-            sheet.Append("<div class=\"llyn-card\">\n\n");
-            foreach (string character in page.LStemPageCharacters)
+            foreach (LStemMember member in page.LStemPageMembers)
             {
-                sheet.Append(LLiveryCharacterFormat(character, stem.LLiveryStemEntry, note)).Append(' ');
+                LLiveryMemberAppend(sheet, member, stem.LLiveryStemEntry, note);
             }
-
-            if (sheet[^1] == ' ')
-            {
-                sheet.Length--;
-            }
-
-            sheet.Append("\n\n</div>\n\n");
         }
 
         LLiveryEntryAppend(sheet, stem.LLiveryStemEntry, note, lookup("Xiesheng.KindredVacant"));
+    }
+
+    private static void LLiveryMemberAppend(
+        StringBuilder sheet, LStemMember member, IReadOnlyList<LEntry> entries, Func<long, string> note)
+    {
+        sheet.Append("<div class=\"llyn-card\">\n\n")
+            .Append(LLiveryCharacterFormat(member.LStemMemberCharacter, entries, note));
+        string reading = member.LStemMemberReading;
+        if (reading.Length > 0)
+        {
+            sheet.Append(" <span class=\"llyn-accent\">").Append(LLiveryHeader.LLiveryTextFormat(reading))
+                .Append("</span>");
+        }
+
+        sheet.Append("\n\n");
+        LLiverySound.LLiveryReadingAppend(sheet, member.LStemMemberRows, [], member.LStemMemberCharacter);
+        sheet.Append("</div>\n\n");
     }
 
     internal static string LLiveryCharacterFormat(

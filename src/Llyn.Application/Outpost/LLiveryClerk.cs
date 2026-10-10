@@ -16,11 +16,13 @@ public static class LLiveryClerk
         LAccentSheet accent,
         IReadOnlyList<LReflexGuise> guise,
         IReadOnlyList<string> folded,
+        IReadOnlySet<long> fold,
         IReadOnlyList<LTranscriptionDraft> transcription,
         LGlyph? glyph,
         IReadOnlyList<LGlyphCell> cell,
         IReadOnlyList<LFrequency> frequency,
         IReadOnlyList<LParadigmRow> paradigm,
+        LParadigmView? inflection,
         IReadOnlyList<LFanqieGroup> fanqie,
         IReadOnlyList<LScriptGroup> script,
         IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> target,
@@ -64,13 +66,12 @@ public static class LLiveryClerk
         }
 
         return new LLiveryPage(
-            draft, favorite, grasp, created, updated, accent, guise, folded, transcription, glyph, cell,
-            frequency, paradigm, fanqie, script, target, source, incoming, etymon, banner, ensign);
+            draft, favorite, grasp, created, updated, accent, guise, folded, fold, transcription, glyph, cell,
+            frequency, paradigm, inflection, fanqie, script, target, source, incoming, etymon, banner, ensign);
     }
 
     public static LLiveryLanguage LLiveryClerkBuild(
         string language,
-        IReadOnlyList<LCatalogPronunciation> pronunciation,
         LStemClerk? stem,
         LDiweiClerk? diwei,
         bool switched,
@@ -78,11 +79,7 @@ public static class LLiveryClerk
         Func<string, string?> localize)
     {
         ArgumentNullException.ThrowIfNull(language);
-        ArgumentNullException.ThrowIfNull(pronunciation);
         ArgumentNullException.ThrowIfNull(localize);
-
-        IReadOnlyList<LCatalogPronunciation> spoken = [.. pronunciation.Where(row =>
-            string.Equals(row.LCatalogPronunciationEntry.LEntryLanguage.Trim(), language, StringComparison.Ordinal))];
 
         List<LLiveryStem> series = [];
         if (stem is not null)
@@ -90,7 +87,7 @@ public static class LLiveryClerk
             foreach (LStem row in stem.LStemClerkFind(language, string.Empty, LCatalogOrder.LCatalogOrderName))
             {
                 series.Add(new LLiveryStem(
-                    stem.LStemPageRead(row),
+                    stem.LStemPageRead(row, false),
                     stem.LStemEntryScan(language, [row.LStemId], string.Empty, LCatalogOrder.LCatalogOrderHeadword)));
             }
         }
@@ -112,6 +109,6 @@ public static class LLiveryClerk
             }
         }
 
-        return new LLiveryLanguage(language, spoken, series, categories);
+        return new LLiveryLanguage(language, series, categories);
     }
 }

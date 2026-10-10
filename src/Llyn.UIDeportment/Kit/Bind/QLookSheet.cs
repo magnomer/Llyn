@@ -150,6 +150,16 @@ internal static class QLookSheet
         new("Theme.Card.Switch", QLookCue.QLookCueChecked, "PCardSurface",
             Border.BackgroundProperty, "Theme.AccentSoft"),
 
+        new("Theme.Card.Hinge", QLookCue.QLookCueBase, "PSurfaceMark",
+            QIconImage.QIconSourceProperty, QIcon.QIconResolve("expand", 12)),
+        new("Theme.Card.Hinge", QLookCue.QLookCueBase, "PSurfaceMark",
+            UIElement.RenderTransformProperty, new RotateTransform(180).GetAsFrozen()),
+        new("Theme.Card.Hinge", QLookCue.QLookCueBase, null, FrameworkElement.ToolTipProperty, "Card.Fold"),
+        new("Theme.Card.Hinge", QLookCue.QLookCueHover, "PSurface", Border.BackgroundProperty, "Theme.AccentSoft"),
+        new("Theme.Card.Hinge", QLookCue.QLookCueChecked, "PSurfaceMark",
+            UIElement.RenderTransformProperty, Transform.Identity),
+        new("Theme.Card.Hinge", QLookCue.QLookCueChecked, null, FrameworkElement.ToolTipProperty, "Card.Unfold"),
+
         new("Theme.Favorite.Mark", QLookCue.QLookCueBase, "PSurfaceContent",
             FrameworkElement.MarginProperty, Control.PaddingProperty),
         new("Theme.Favorite.Mark", QLookCue.QLookCueBase, "PFavoriteMark",
@@ -183,6 +193,8 @@ internal static class QLookSheet
 
         new("Theme.Paradigm.Fold", QLookCue.QLookCueHover, null, Control.ForegroundProperty, "Theme.Ink"),
         new("Theme.Paradigm.Fold", QLookCue.QLookCueChecked, null, Control.ForegroundProperty, "Theme.Accent"),
+        new("Theme.Paradigm.Fold", QLookCue.QLookCueChecked, "PSurface", Border.BackgroundProperty, "Theme.Surface"),
+        new("Theme.Paradigm.Fold", QLookCue.QLookCueChecked, "PSurface", Border.BorderBrushProperty, "Theme.Line"),
 
         new("Theme.Glyph.Phonetician", QLookCue.QLookCueBase, null,
             ButtonBase.CommandProperty, QGlyphCommand.QGlyphCommandNotation),

@@ -1,5 +1,5 @@
 # QEditorSound.cs
-Hash: `06dec3147a4ae555`
+Hash: `d7e823badab64ad6`
 
 ## `internal sealed class QEditorSound`
 
@@ -23,6 +23,7 @@ Hands each sound driver only the editor facets it uses.
 The anchor menu gets its anchor over the editor's kindred facet.
 The transcription facet is read once, so the glyph and transcription rows share one.
 The volume slider and the player are attached to the window's one volume owner.
+The sound panels also get the editor's fold facet, which reads and writes this entry's Fanqie and Script box states.
 The ledger and the envoy go on to the sound panels, which show a picture's decode failure through them.
 The ledger and the envoy are also kept for `QEditorFailureObserve`.
 The player's failure is subscribed here once, since the clip, the accents and the playback share it.

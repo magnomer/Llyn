@@ -90,20 +90,21 @@ public sealed class TEngineStem
         using LEngine engine = workspace.TWorkspaceEngineStart();
         string language = pack.TLanguageFixtureName;
         string rare = char.ConvertFromUtf32(0x20000);
+        string compatibility = char.ConvertFromUtf32(0xF900);
         LShengfuArchive shengfu = TInterface.TShengfuArchiveCreate(workspace.TWorkspaceDatabase);
         LStemArchive archive = TInterface.TStemArchiveCreate(workspace.TWorkspaceDatabase);
-        foreach (string character in new[] { rare, "江", "豈", "工" })
+        foreach (string character in new[] { rare, "江", compatibility, "工" })
         {
             shengfu.TShengfuSave(language, TInterface.TShengfuCreate(character, "工"));
             archive.TStemApply(language, character, ["工"]);
         }
 
         LStem stem = Assert.IsType<LStem>(archive.TStemFind(language, "工"));
-        Assert.Equal([rare, "江", "豈", "工"], archive.TStemCharacterRead(stem.LStemId));
+        Assert.Equal([rare, "江", compatibility, "工"], archive.TStemCharacterRead(stem.LStemId));
 
         LStemPage page = engine.TEngineStemResolve(stem.LStemId);
 
-        Assert.Equal(["工", "江", "豈", rare], page.LStemPageCharacters);
+        Assert.Equal(["工", "江", compatibility, rare], page.LStemPageCharacters);
     }
 
     [Fact]
@@ -127,6 +128,97 @@ public sealed class TEngineStem
 
         Assert.Equal(["工a", "工b"], plain.Select(row => row.LVistaRowHeadword));
         Assert.Equal(["工b", "工a"], reversed.Select(row => row.LVistaRowHeadword));
+    }
+
+    [Fact]
+    public void StemResolve_MembersWithAndWithoutEntry_MatchByHeadwordAndCreateNothing()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("""{ "language": "Fixture" }""");
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        string language = pack.TLanguageFixtureName;
+        LShengfuArchive shengfu = TInterface.TShengfuArchiveCreate(workspace.TWorkspaceDatabase);
+        LStemArchive archive = TInterface.TStemArchiveCreate(workspace.TWorkspaceDatabase);
+        foreach (string character in new[] { "工", "江" })
+        {
+            shengfu.TShengfuSave(language, TInterface.TShengfuCreate(character, "工"));
+            archive.TStemApply(language, character, ["工"]);
+        }
+
+        engine.TEngineEntrySave(TStemDraftCreate("工", language) with
+        {
+            LEntryDraftReflexes = [TInterface.TReflexDraftCreate("Korean", string.Empty, "공")],
+        });
+        LFanqieArchive fanqie = TInterface.TFanqieArchiveCreate(workspace.TWorkspaceDatabase);
+        fanqie.TFanqieSave(language, "江", [TInterface.TFanqieRowCreate("江", "book", "古雙", reading: "kaewng")]);
+        fanqie.TFanqieRepresentativeSet(Assert.Single(fanqie.TFanqieRead(language, "江")).LFanqieRowId, 1);
+        LStem stem = Assert.IsType<LStem>(archive.TStemFind(language, "工"));
+        long entries = workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM entry;");
+
+        LStemPage page = engine.TEngineStemResolve(stem.LStemId);
+
+        Assert.Equal(["工", "江"], page.LStemPageMembers.Select(member => member.LStemMemberCharacter));
+        LStemMember written = page.LStemPageMembers[0];
+        LReflexDraft reflex = Assert.Single(written.LStemMemberReflexes);
+        Assert.Equal(("Korean", "공"), (reflex.LReflexDraftLanguage, reflex.LReflexDraftText));
+        Assert.Single(written.LStemMemberGuises);
+        LStemMember bare = page.LStemPageMembers[1];
+        Assert.Empty(bare.LStemMemberReflexes);
+        Assert.Equal(["kaewng"], bare.LStemMemberReadings);
+        Assert.Equal("/kaewng/", bare.LStemMemberReading);
+        Assert.Equal(entries, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM entry;"));
+    }
+
+    [Fact]
+    public void StemSpread_MemberOpenedThenClosed_KeepsItsStateApartFromTheEntryPage()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(
+            """
+            { "reflex": [
+                { "language": "Jin", "url": "https://example.test/{word}", "match": "(?<text>x)", "folded": true },
+                { "language": "Wu", "url": "https://example.test/{word}", "match": "(?<text>x)" } ] }
+            """);
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        string language = pack.TLanguageFixtureName;
+        LShengfuArchive shengfu = TInterface.TShengfuArchiveCreate(workspace.TWorkspaceDatabase);
+        LStemArchive archive = TInterface.TStemArchiveCreate(workspace.TWorkspaceDatabase);
+        foreach (string character in new[] { "工", "江", "紅" })
+        {
+            shengfu.TShengfuSave(language, TInterface.TShengfuCreate(character, "工"));
+            archive.TStemApply(language, character, ["工"]);
+        }
+
+        long gong = engine.TEngineEntrySave(TStemDraftCreate("工", language) with
+        {
+            LEntryDraftReflexes =
+            [
+                TInterface.TReflexDraftCreate("Jin", string.Empty, "kung"),
+                TInterface.TReflexDraftCreate("Wu", string.Empty, "kon"),
+            ],
+        }).LEntryId;
+        long jiang = engine.TEngineEntrySave(TStemDraftCreate("江", language) with
+        {
+            LEntryDraftReflexes = [TInterface.TReflexDraftCreate("Wu", string.Empty, "kaon")],
+        }).LEntryId;
+        LStem stem = Assert.IsType<LStem>(archive.TStemFind(language, "工"));
+
+        engine.TEngineStemSpread(stem.LStemId, "工", true);
+        engine.TEngineStemSpread(stem.LStemId, "紅", true);
+        LStemPage opened = engine.TEngineStemResolve(stem.LStemId);
+        engine.TEngineReflexSpread(jiang, true);
+        engine.TEngineStemSpread(stem.LStemId, "工", false);
+        LStemPage closed = engine.TEngineStemResolve(stem.LStemId);
+
+        Assert.Equal([true, false, false], opened.LStemPageMembers.Select(static member => member.LStemMemberOpened));
+        Assert.Equal(
+            [true, false, false],
+            opened.LStemPageMembers.Select(
+                static member => member.LStemMemberGuises.Any(static guise => guise.LReflexGuiseFolded)));
+        Assert.False(engine.TEngineSpreadCheck(gong));
+        Assert.All(closed.LStemPageMembers, static member => Assert.False(member.LStemMemberOpened));
+        Assert.True(engine.TEngineSpreadCheck(jiang));
+        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM stem_fold;"));
     }
 
     private static async Task TStemSettle(LEngine engine, long entryId)

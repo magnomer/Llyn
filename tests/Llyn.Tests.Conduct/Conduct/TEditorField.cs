@@ -208,20 +208,25 @@ public sealed class TEditorField
     }
 
     [Fact]
-    public void EditorEntryOpen_ClosedThenReopened_HearsTheFoldChangeAgain()
+    public void EditorEntryOpen_ClosedThenReopened_HearsTheBoxFoldAgain()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CFold toggled = TEditorFieldPrepare(engine).TEditorFixtureFold;
+        long water = engine.TEngineEntrySave(
+            TInterface.TEntryDraftCreate("water", "English", string.Empty, string.Empty, [], [])).LEntryId;
+        TEditorFixture toggled = TEditorFieldPrepare(engine);
+        toggled.TEditorFixtureOpen(water);
         TEditorFixture editor = TEditorFieldPrepare(engine);
-        int changed = 0;
-        editor.TEditorFixtureFold.CFoldChanged += () => changed++;
+        editor.TEditorFixtureOpen(water);
         editor.TEditorFixtureClose();
+        editor.TEditorFixtureOpen(water);
+        int changed = 0;
+        editor.TEditorFixtureEntry.CEntryDraftChanged += _ => changed++;
 
-        editor.TEditorFixtureOpen(null);
-        toggled.CFoldScriptToggle(true);
+        toggled.TEditorFixtureFold.CFoldScriptSpread(true);
 
         Assert.Equal(1, changed);
+        Assert.True(editor.TEditorFixtureFold.CFoldScriptOpened);
     }
 
     [Fact]

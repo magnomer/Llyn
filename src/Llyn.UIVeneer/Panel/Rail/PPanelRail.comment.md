@@ -1,5 +1,5 @@
 # PPanelRail.xaml
-Hash: `cbdf4d4ccc711a2d`
+Hash: `38b87792cfecc596`
 
 ## `<local:QRail>`
 
@@ -16,6 +16,12 @@ Panels that never write a record here hide it through the driver.
 
 The trail pair shows with the reader and the chronicle pair with the editor.
 `PPanelRailChronicle` starts collapsed because the reader is the side shown first.
+
+## `<Button x:Name="PPanelRailMarkup" ...>`
+
+The import button stands just before export, so the two transfer actions sit together.
+It starts collapsed because only the list panel imports.
+That panel's driver `QLibrary` shows it and wires its click.
 
 ## `<Border x:Name="PPanelRailMode" ...>`
 

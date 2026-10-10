@@ -39,4 +39,8 @@ public enum CSubject
     CSubjectTenure,
 
     CSubjectVista,
+
+    CSubjectFold,
+
+    CSubjectStemFold,
 }

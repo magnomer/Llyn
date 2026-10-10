@@ -65,6 +65,12 @@ public sealed class CDisplay
             phonology.CPhonologyBundleReflex,
             settings,
             envoy);
+        CDisplayFold = new CFold(
+            () => LDisplayRule.LDisplaySound.LDisplayEntry,
+            phonology.CPhonologyBundleReflex,
+            settings,
+            envoy,
+            LDisplayRule.LDisplayNoticed);
         CDisplayAccent = new CDisplayAccent(LDisplayRule, phonology.CPhonologyBundleLanguage, settings, envoy);
         CDisplayPlayback = new CDisplayPlayback(LDisplayRule, media, settings, envoy);
         CDisplayGrasp = new CDisplayGrasp(LDisplayRule);
@@ -101,9 +107,13 @@ public sealed class CDisplay
 
     public event Action<CBulletin>? CDisplayWorkspaceChanged;
 
+    public event Action<CBulletin>? CDisplayFoldChanged;
+
     public CLectern CDisplayShown { get; private set; } = _cDisplayBlank;
 
     public CDisplaySound CDisplaySound { get; }
+
+    public CFold CDisplayFold { get; }
 
     public CDisplayAccent CDisplayAccent { get; }
 
@@ -118,8 +128,6 @@ public sealed class CDisplay
     public CCompass CDisplayCompass { get; }
 
     internal LDisplay LDisplayRule { get; }
-
-    private long? LDisplayChosen => LDisplayRule.LDisplayChosen;
 
     internal void LDisplayNavigationAttach(CNavigation navigation, CMention mention)
     {
@@ -146,6 +154,7 @@ public sealed class CDisplay
         LDisplayRule.LDisplayChosenAttach(
             CSubject.CSubjectReflex, bulletin => CDisplayReflexChanged?.Invoke(bulletin));
         LDisplayRule.LDisplayChosenAttach(CSubject.CSubjectEntry, bulletin => CDisplayEntryChanged?.Invoke(bulletin));
+        LDisplayRule.LDisplayChosenAttach(CSubject.CSubjectFold, bulletin => CDisplayFoldChanged?.Invoke(bulletin));
         LDisplayRule.LDisplayObserverAttach(
             CSubject.CSubjectScript, bulletin => CDisplayScriptChanged?.Invoke(bulletin));
         LDisplayRule.LDisplayObserverAttach(
@@ -182,7 +191,7 @@ public sealed class CDisplay
 
     internal void LDisplayEntryOpen(LEntryDraft? draft)
     {
-        if (draft is null || LDisplayChosen is not long id)
+        if (draft is null || LDisplayRule.LDisplayChosen is not long id)
         {
             CDisplayEntryClose();
             return;
@@ -227,7 +236,7 @@ public sealed class CDisplay
 
     public void CDisplayEntryResonate()
     {
-        if (LDisplayChosen is null)
+        if (LDisplayRule.LDisplayChosen is null)
         {
             return;
         }
@@ -242,12 +251,12 @@ public sealed class CDisplay
 
     public bool CDisplayFavoriteRead()
     {
-        return LDisplayRule.LDisplayFavoriteRead(LDisplayChosen);
+        return LDisplayRule.LDisplayFavoriteRead(LDisplayRule.LDisplayChosen);
     }
 
     public bool CDisplayFavoriteToggle(bool marked)
     {
-        LDisplayRule.LDisplayFavoriteSave(LDisplayChosen, marked);
+        LDisplayRule.LDisplayFavoriteSave(LDisplayRule.LDisplayChosen, marked);
         return CDisplayFavoriteRead();
     }
 
@@ -255,6 +264,6 @@ public sealed class CDisplay
     {
         ArgumentNullException.ThrowIfNull(lookup);
 
-        return LDisplayRule.LDisplayFrequencyRead(LDisplayChosen, lookup("Frequency.Once"));
+        return LDisplayRule.LDisplayFrequencyRead(LDisplayRule.LDisplayChosen, lookup("Frequency.Once"));
     }
 }

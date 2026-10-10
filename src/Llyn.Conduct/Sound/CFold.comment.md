@@ -1,73 +1,69 @@
 # CFold.cs
-Hash: `3fa924a8083aac80`
+Hash: `1d4f1209ad356aac`
 
 ## `public sealed class CFold`
 
-The open state of the editor's rime-book and script boxes, which the user keeps across entries.
-It belongs to the user, not to the entry, so it reads no desk and holds no entry.
-It is its own area since the remembered state and its gates form one concern apart from the sound sheet.
+Rime-book and script box states belong to one entry, not to settings or this area's memory.
+Each read asks the engine for that entry's stored state.
+These states and their failure gates form a concern separate from the sound sheet.
+The editor builds one over its held entry, and the reading view builds one over its shown entry.
+Both modes share one rule and one owner, so the area takes an entry source, never a mode flag.
+
+## `private readonly Func<long?> _cFoldEntry;`
+
+The entry source names the stored entry owning both box states.
+It is asked on every read and write, so the area never holds a stale id.
+
+## `private readonly LReflexPort _cFoldReflexPort;`
+
+The reflex port keeps box persistence behind the engine boundary.
 
 ## `private readonly LSettingsPort _cFoldSettingsPort;`
 
-The settings port the open states are read from, saved through, and heard on.
+Failure notices obtain their wording through the settings port.
 
 ## `private readonly CEnvoy _cFoldEnvoy;`
 
-The editor's envoy, through which a failed save shows its notice.
+The envoy presents read and write failures within its owner's notice scope.
 
-## `private Action? _cFoldObserver;`
+## `private readonly CLedgerNoticed _cFoldNoticed;`
 
-The fold handler the attach built, held so the same delegate can be removed.
-A fold built without its editor keeps it null, so its attach and detach do nothing.
+Repaint memory suppresses repeated read-failure notices until the user acts.
 
-## `internal CFold(LSettingsPort settings, CEnvoy envoy)`
+## `internal CFold(Func<long?> entry, LReflexPort reflexes, LSettingsPort settings, CEnvoy envoy, CLedgerNoticed noticed)`
 
-Takes the settings port and the envoy the editor hands its sound sheet.
-Only the editor builds one, so the constructor is internal.
-
-## `public event Action? CFoldChanged;`
-
-A fold gate landed here or in another editor, so every driver repaints the rime-book and script switches.
-A closed editor hears only its own gates until it opens again, since its close takes the engine handler off.
-
-## `internal void LFoldObserverAttach(Action<Action> marshal)`
-
-Hears the settings port's `LEngineFoldChanged` and raises `CFoldChanged` through the editor's marshal.
-A fold toggled in another editor so repaints this editor's switches too.
-On a real change the editor that toggled hears it twice, which repaints the same state.
-The settings bulletin is not used, since it refills the whole draft and every panel.
-The handler is kept in `_cFoldObserver`, so the editor's close can take it off the engine event.
-
-## `internal void LFoldAttach()`
-
-Puts the fold handler on the engine's `LEngineFoldChanged`, once however often it is called.
-The editor calls it on every open, so a reopened editor hears the folds again.
-
-## `internal void LFoldDetach()`
-
-Takes the fold handler off the engine's `LEngineFoldChanged`.
-The editor calls it on close, so a closed editor hears no other editor's fold.
-The engine then lets the closed editor go.
+The owner supplies entry context, persistence and notice dependencies together.
+The editor passes its desk's stored entry, and the reading view passes its shown entry.
+Each owner passes the repaint memory its other reads already use.
+The internal constructor keeps composition within Conduct.
 
 ## `public bool CFoldFanqieOpened`
 
-Whether the user keeps the rime-book box open, read from the saved settings.
-It holds across entries and restarts.
+The entry's rime-book box defaults to closed without a stored entry or after a refused storage read.
 
 ## `public bool CFoldScriptOpened`
 
-Whether the user keeps the script box open, read from the saved settings like the rime-book state.
+The script box follows the same entry-scoped read and closed fallback as the rime-book box.
 
-## `public void CFoldFanqieToggle(bool opened)`
+## `public bool CFoldFanqieSpread(bool opened)`
 
-The user opened or closed the rime-book box.
-It saves the state through the settings port and raises `CFoldChanged`.
-A failed save is shown, and the remembered state stays as saved.
-A saved change also tells every other editor through `LEngineFoldChanged`.
+True means the port returned normally, not that a row changed.
+The engine's fold bulletin lets the editor and the reading view repaint from storage.
+So a fold in either mode folds both.
+Without a stored entry, false is returned without a write.
+A write failure shows `Box.SpreadFailed` and returns false, allowing the driver to restore the switch.
 
-## `public void CFoldScriptToggle(bool opened)`
+## `public bool CFoldScriptSpread(bool opened)`
 
-The user opened or closed the script box.
-It saves the state and raises `CFoldChanged`, as the rime-book toggle does.
-A failed save is shown, and the remembered state stays as saved.
-A saved change also tells every other editor through `LEngineFoldChanged`.
+The script gate has the same normal-return verdict, absent-entry refusal and failure notice as the rime-book gate.
+
+## `private static bool LFoldCheck(LReflexPort reflexes, CLedgerNoticed noticed, CEnvoy envoy, LSettingsPort settings, long? entry, LFoldBox box)`
+
+Both box reads share one closed fallback and repaint-failure policy.
+Only this area calls it, since the reading view reads through its own instance.
+No entry means no engine read.
+Storage failures use `Box.SpreadReadFailed` through repaint memory and answer closed.
+
+## `private long? LFoldEntry`
+
+A fresh draft, an empty desk or an empty lectern has no stored entry to own box state.

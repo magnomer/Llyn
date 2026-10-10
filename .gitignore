@@ -121,6 +121,7 @@ $RECYCLE.BIN/
 # Helper scripts: allowlist only
 !/scripts/
 /scripts/*
+!/scripts/Audit.fingerprint.ps1
 !/scripts/Audit.html
 !/scripts/Audit.json
 !/scripts/Audit.ps1
@@ -164,6 +165,7 @@ $RECYCLE.BIN/
 !/scripts/AuditPlatform.html
 !/scripts/AuditPlatform.json
 !/scripts/AuditPlatform.ps1
+!/scripts/AuditShow.ps1
 !/scripts/AuditStructure.html
 !/scripts/AuditStructure.json
 !/scripts/AuditStructure.ps1

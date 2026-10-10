@@ -128,23 +128,6 @@ public sealed class TEngineLiveryLanguage
         Assert.Equal(language, page.LLiveryLanguageName);
         Assert.Empty(page.LLiveryLanguageStem);
         Assert.Empty(page.LLiveryLanguageDiwei);
-        Assert.Equal("爛", Assert.Single(page.LLiveryLanguagePronunciation).LCatalogPronunciationEntry.LEntryHeadword);
-    }
-
-    [Fact]
-    public void LiveryRead_EntriesOfTwoLanguages_KeepsOnlyTheAskedLanguageInHeadwordOrder()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        engine.TEngineEntrySave(TLiveryLanguageCreate("water", "English"));
-        engine.TEngineEntrySave(TLiveryLanguageCreate("agua", "Spanish"));
-        engine.TEngineEntrySave(TLiveryLanguageCreate("air", "English"));
-
-        LLiveryLanguage page = engine.TLiveryRead("English");
-
-        Assert.Equal(
-            ["air", "water"],
-            page.LLiveryLanguagePronunciation.Select(static row => row.LCatalogPronunciationEntry.LEntryHeadword));
     }
 
     [Fact]
@@ -163,6 +146,34 @@ public sealed class TEngineLiveryLanguage
             body);
         Assert.Contains("<span class=\"llyn-stem\">瀧</span>", body);
         Assert.DoesNotContain("[瀧]", body);
+    }
+
+    [Fact]
+    public void LiveryFormat_SeriesNote_PrintsEachMemberReadingAndReflexRowsAndABareMemberAlone()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LEntry entry = engine.TEngineEntrySave(TLiveryLanguageCreate("龍", TLiveryLanguageBook));
+        LStemPage page = TInterface.TStemPageCreate(
+            TLiveryLanguageBook,
+            "龍",
+            ["龍", "瀧"],
+            [
+                TInterface.TStemMemberCreate(
+                    "龍", ["lyowng", "<b>"], [TInterface.TReflexDraftCreate("Korean", "", "룡")]),
+                TInterface.TStemMemberCreate("瀧", [], []),
+            ]);
+
+        string body = TInterface.TLiveryFormat(TInterface.TLiveryStemCreate(page, [entry]), static key => key)
+            .LLiveryNoteBody;
+
+        Assert.Contains(
+            "<div class=\"llyn-card\">\n\n<span class=\"llyn-stem\">[龍](:/"
+            + entry.LEntryId.ToString(CultureInfo.InvariantCulture)
+            + ")</span> <span class=\"llyn-accent\">/lyowng, &lt;b&gt;/</span>\n\n"
+            + "| | | | | |\n|---|---|---|---|---|\n| Korean |  | 룡 |  |  |\n\n</div>",
+            body);
+        Assert.Contains("<div class=\"llyn-card\">\n\n<span class=\"llyn-stem\">瀧</span>\n\n</div>", body);
     }
 
     [Fact]
@@ -212,21 +223,6 @@ public sealed class TEngineLiveryLanguage
 
         Assert.Contains("# Tone 1\n", body);
         Assert.Contains("- [爛](:/" + entry.LEntryId.ToString(CultureInfo.InvariantCulture) + ")\n", body);
-    }
-
-    [Fact]
-    public void LiveryFormat_SoundNote_HoldsOnlyItsLanguageRowsAndMarksAMissingSound()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        LEntry water = engine.TEngineEntrySave(TLiveryLanguageCreate("water", "English"));
-        engine.TEngineEntrySave(TLiveryLanguageCreate("agua", "Spanish"));
-
-        string body = TInterface.TLiveryFormat(engine.TLiveryRead("English"), static key => key).LLiveryNoteBody;
-
-        Assert.Contains(
-            "| [water](:/" + water.LEntryId.ToString(CultureInfo.InvariantCulture) + ") | \\[ \\] |", body);
-        Assert.DoesNotContain("agua", body);
     }
 
     private static LEntry TLiveryLanguagePlace(LEngine engine, TWorkspace workspace)

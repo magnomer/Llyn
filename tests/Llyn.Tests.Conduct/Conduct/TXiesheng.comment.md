@@ -1,5 +1,5 @@
 # TXiesheng.cs
-Hash: `f3f96e46afea55e2`
+Hash: `83ab5684508b32c9`
 
 ## `public sealed class TXiesheng`
 
@@ -32,7 +32,8 @@ The bundled series pack still shows the tab, the page is blank, and the reader s
 
 Opening a fetched series by key lists it chosen, with its count of one.
 The change is raised once, and the reader shows the series page instead of an entry.
-The page names the language, the key and the character, and the entry list holds the series entry.
+The page names the language and the key, and its members carry only the character.
+The entry list holds the series entry.
 
 ## `public async Task XieshengStemRead_ShownSeries_CarriesTheFontsOfTheSeriesLanguage()`
 

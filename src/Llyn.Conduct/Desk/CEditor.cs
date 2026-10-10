@@ -40,7 +40,8 @@ public sealed class CEditor
             settings,
             CEditorDisplay.LDisplayRule,
             envoy);
-        CEditorFold = new CFold(settings, envoy);
+        CEditorFold = new CFold(
+            CEditorDesk.CDeskStoredRead, phonology.CPhonologyBundleReflex, settings, envoy, noticed);
         CEditorEsteem = new CEsteem(CEditorDesk, CEditorDisplay.LDisplayRule);
         CEditorTimbre = new CTimbre(CEditorDesk, phonology.CPhonologyBundleLanguage, settings, envoy);
         CEditorKindred = new CKindred(
@@ -48,14 +49,16 @@ public sealed class CEditor
         CEditorPlayback = new CPlayback(CEditorDesk, media);
         CEditorSpeech = new CCardSpeech(CEditorDesk, entries.CEntryBundleEntry);
         CEditorDesk.CDeskFinished += CEditorStoredShow;
-        CEditorEntry = new CEntry(CEditorDesk, drafts, media);
+        CEditorEntry = new CEntry(
+            CEditorDesk, drafts, entries.CEntryBundleCard, media, settings, envoy, noticed);
+        CEditorList = new CCardList(CEditorDesk, entries.CEntryBundleCard, settings, envoy);
         CEditorDesk.CDeskObserverAttach(marshal);
         CEditorEsteem.LEsteemObserverAttach(marshal);
         CEditorTimbre.LTimbreObserverAttach(marshal);
         CEditorKindred.LKindredObserverAttach(marshal);
         CEditorSounding.LSoundingObserverAttach(marshal);
-        CEditorFold.LFoldObserverAttach(marshal);
         CEditorSentence.LSentenceObserverAttach(marshal);
+        CEditorEntry.LEntryObserverAttach(marshal);
         CEditorDesk.CDeskVigil.LVigilObserverAttach(
             CSubject.CSubjectSettings, _ => marshal(CEditorDesk.CDeskDraft.CDeskDraftResonate));
     }
@@ -108,7 +111,7 @@ public sealed class CEditor
 
     public CCardField CEditorField => new(CEditorDesk);
 
-    public CCardList CEditorList => new(CEditorDesk);
+    public CCardList CEditorList { get; }
 
     public CImage CEditorImage => new(CEditorDesk);
 
@@ -127,7 +130,6 @@ public sealed class CEditor
 
     public void CEditorEntryOpen(long? id)
     {
-        CEditorFold.LFoldAttach();
         CEditorDesk.CDeskStart(id);
         if (id is not null && !CEditorDesk.CDeskHeld)
         {
@@ -137,7 +139,6 @@ public sealed class CEditor
 
     public void CEditorClose()
     {
-        CEditorFold.LFoldDetach();
         CEditorDesk.CDeskCancel();
         CEditorDesk.CDeskErrand.CErrandCancel();
     }

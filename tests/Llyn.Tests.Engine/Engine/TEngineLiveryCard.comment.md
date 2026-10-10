@@ -1,5 +1,5 @@
 # TEngineLiveryCard.cs
-Hash: `cbcc615c59c43e13`
+Hash: `e96a6501a7a378a6`
 
 ## `public sealed class TEngineLiveryCard`
 
@@ -35,6 +35,21 @@ Checks that the usage links its entry's note under the incoming heading and carr
 
 Gives a stored page one meaning card with a stored video file.
 Checks that the file becomes one video parcel behind a Markdown link, with no `<video>` tag left.
+
+## `public void LiveryFormat_StoredOpenCard_WritesOpenDetailsWithSummary()`
+
+Formats a stored page whose only meaning is not folded.
+Checks that the card is an open `details` block with its number chip inside a `summary`.
+
+## `public void LiveryFormat_FoldedCard_WritesDetailsWithoutOpen()`
+
+Folds the only meaning of a stored entry and formats its page.
+Checks that the card is a `details` block with a `summary` and no `open` attribute.
+
+## `public void LiveryFormat_UnstoredCard_WritesPlainDiv()`
+
+Swaps in a meaning card with no stored id and formats the page.
+Checks that the card stays a `div` with no `summary`.
 
 ## `private static LLiveryPage TLiveryPageRead(LEngine engine, string headword)`
 

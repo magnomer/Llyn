@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Llyn.Application;
 using Llyn.Core;
 
@@ -11,18 +12,22 @@ public sealed class LStemFacade : LStemPort
     private readonly LEntryFacade _lStemFacadeEntry;
     private readonly LLanguageFacade _lStemFacadeLanguage;
     private readonly LVistaRowFacade _lStemFacadeRow;
+    private readonly LReflexFacade _lStemFacadeReflex;
     private readonly object _lStemFacadeGate;
 
-    internal LStemFacade(LEngineHearth hearth, LEntryFacade entry, LLanguageFacade language, LVistaRowFacade row)
+    internal LStemFacade(
+        LEngineHearth hearth, LEntryFacade entry, LLanguageFacade language, LVistaRowFacade row, LReflexFacade reflex)
     {
         ArgumentNullException.ThrowIfNull(hearth);
         ArgumentNullException.ThrowIfNull(entry);
         ArgumentNullException.ThrowIfNull(language);
         ArgumentNullException.ThrowIfNull(row);
+        ArgumentNullException.ThrowIfNull(reflex);
         _lStemFacadeHearth = hearth;
         _lStemFacadeEntry = entry;
         _lStemFacadeLanguage = language;
         _lStemFacadeRow = row;
+        _lStemFacadeReflex = reflex;
         _lStemFacadeGate = _lStemFacadeHearth.LEngineGate;
     }
 
@@ -103,9 +108,22 @@ public sealed class LStemFacade : LStemPort
         lock (_lStemFacadeGate)
         {
             LStem? stem = LStemFacadeStaff.LEngineStaffLanguage.LLanguageStaffStem.LStemClerkRead(id);
-            return stem is null
-                ? LStemPage.LStemPageBlank
-                : LStemFacadeStaff.LEngineStaffLanguage.LLanguageStaffStem.LStemPageRead(stem);
+            if (stem is null)
+            {
+                return LStemPage.LStemPageBlank;
+            }
+
+            LStemPage page = LStemFacadeStaff.LEngineStaffLanguage.LLanguageStaffStem.LStemPageRead(stem, true);
+            return page with
+            {
+                LStemPageMembers = page.LStemPageMembers
+                    .Select(member => member with
+                    {
+                        LStemMemberGuises = _lStemFacadeReflex.LEngineGuiseRead(
+                            page.LStemPageLanguage, member.LStemMemberLanguages),
+                    })
+                    .ToList(),
+            };
         }
     }
 
@@ -119,6 +137,26 @@ public sealed class LStemFacade : LStemPort
 
         return _lStemFacadeEntry.LEngineGlyphResolve(
             character, stem?.LStemLanguage ?? LStemPage.LStemPageBlank.LStemPageLanguage).LEntryId;
+    }
+
+    public void LEngineStemSpread(long? id, string character, bool opened)
+    {
+        ArgumentNullException.ThrowIfNull(character);
+
+        long member;
+        lock (_lStemFacadeGate)
+        {
+            LStemClerk stems = LStemFacadeStaff.LEngineStaffLanguage.LLanguageStaffStem;
+            if (stems.LStemClerkRead(id) is not LStem stem || stems.LStemEntryFind(stem, character) is not long entry)
+            {
+                return;
+            }
+
+            LStemFacadeStaff.LEngineStaffEntry.LEntryStaffFold.LFoldClerkSpread(entry, stem.LStemKey, opened);
+            member = entry;
+        }
+
+        _lStemFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectStemFold, member);
     }
 
     public IReadOnlyList<LVistaRow> LEngineKindredFind(LVista grove, LVista vista)

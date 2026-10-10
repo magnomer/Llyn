@@ -1,5 +1,5 @@
 # PDisplayExample.xaml
-Hash: `19b2788a0c241a48`
+Hash: `c3a66be3055d55b1`
 
 ## `ResourceDictionary`
 
@@ -41,9 +41,11 @@ The flag and the globe come from the shared Gloss theme, so both modes draw the 
 Its top margin equals the bottom margin the writing side's sentence field carries.
 So a Gloss sits the same distance under its sentence in both modes.
 
-### `<ItemsControl x:Name="PExampleGloss" ItemTemplate="{StaticResource Display.Card.ExampleGloss}" Style="{DynamicResource Theme.Gloss.Line}" />`
+### `<ItemsControl x:Name="PExampleGloss" Margin="0,8,0,12" ItemTemplate="{StaticResource Display.Card.ExampleGloss}" Style="{DynamicResource Theme.Gloss.Line}" />`
 
 The Glosses stand under the sentence, aligned with its first character rather than with the frame.
+The margin below them keeps the last Gloss nearer its own sentence than the next one.
+It matches the space each Gloss row leaves under itself on the writing side.
 Its parts carry the editor's Gloss names, so the editor's row fill sets them.
 The list folds away when the Example carries none.
 

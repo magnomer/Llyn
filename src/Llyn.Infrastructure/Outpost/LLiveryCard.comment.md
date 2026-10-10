@@ -1,5 +1,5 @@
 # LLiveryCard.cs
-Hash: `87a44c45fcddb6a4`
+Hash: `f6203f12577e0837`
 
 ## `internal static class LLiveryCard`
 
@@ -21,7 +21,12 @@ No cards write nothing, not even the heading.
 
 ## `private static void LLiveryFaceAppend(StringBuilder sheet, LLiveryPage page, LCardDraft card, string number, string blank, Func<long, string> note)`
 
-Writes one card as a `llyn-card` div, with a blank line inside both ends.
+Writes one card as a `llyn-card` block, followed by a blank line.
+A stored card is a `details` block, open unless `LLiveryPageFold` holds its id.
+Its head sits inside a `summary`, so a folded card keeps its number and title.
+A blank line follows the head, so Markdown parses the body inside the HTML block.
+A card with no stored id stays a plain div, since it has nothing to fold.
+Nested child cards follow the same rule.
 The head holds `number` as a `llyn-number` chip and the title as a `llyn-title` span.
 The title is the stored title, else the expression, else `blank` with `llyn-blank` added.
 A collocation with both a title and an expression writes the expression under the head.

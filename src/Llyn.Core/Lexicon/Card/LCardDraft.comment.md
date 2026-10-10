@@ -1,120 +1,67 @@
 # LCardDraft.cs
-Hash: `43ce7f51490543d4`
+Hash: `4575bde59cbc571c`
 
 ## `public sealed record LCardDraft(LStateValue LCardDraftTitle, LStateValue LCardDraftExpression, LStateValue LCardDraftMeaning, IReadOnlyList<LSentenceDraft> LCardDraftSentence, IReadOnlyList<LSituationDraft> LCardDraftSituation, IReadOnlyList<LRegisterDraft> LCardDraftRegister, IReadOnlyList<long> LCardDraftTranslation, IReadOnlyList<LTagDraft> LCardDraftTag, IReadOnlyList<LImageDraft> LCardDraftImage, IReadOnlyList<LVideoDraft> LCardDraftVideo, int LCardDraftPosition, long LCardDraftId = 0, IReadOnlyList<LCardDraft>? LCardDraftChild = null)`
 
-One card of the input form, captured as an immutable value.
-A Meaning card and a Collocation card are the same card.
-Both carry Title, a meaning text, Sentence, Situation, Register, Translation and Tags.
-So they are the same value here.
-The Collocation's own Expression field is the single member a Meaning card leaves empty.
-A field added to the form is therefore added once.
-
-A draft is what the shell hands the engine before anything is persisted.
-It carries the typed text exactly as it stands on screen.
-It also carries the id of the row it was loaded from when it came from one.
-There is no state, and no database concern beyond saying which stored card it is.
-Empty fields stay unspecified rather than `null`, because "nothing was typed" is what the form means.
-The card carries the number it is shown by, so no view has to count the list itself.
-The save still ignores it and rewrites every position from the order of the list.
-The load fills it from the stored position, which is the same order read back.
-
-Sentence, Situation, Register, Translation, Tag, Image and Video are ordered sets, because the store models them as many-per-card.
-A card may reference any number of each.
-The order of the list is the order they are stored in and read back.
-A field the form leaves empty is an empty list, never a list holding an empty string.
-Turning what a control holds into such a list is the shell's job.
-The engine takes the list as given and never splits text into rows itself.
-Two cards holding equal lists are not equal values.
-The generated equality compares those lists by reference.
-A comparison that means "the same card" walks the lists itself.
+Meanings and collocations share one immutable card shape, so their common fields have one definition.
+The record carries lexical content and row identity, but no fold state.
+Collection order belongs to the supplied draft, rather than being reconstructed by this value.
+Generated equality compares collection references, so equal row contents alone do not guarantee equal cards.
 
 **Parameters**
 
-- `LCardDraftTitle` — Title from the card's Title field, and what is known about it.
-  Nothing was recorded when the field stands empty.
-  It is unknown when the user marked it as not known.
-- `LCardDraftExpression` — Expression text from a Collocation card's Expression field.
-  It is always empty for a Meaning card, whose template has no Expression control.
-- `LCardDraftMeaning` — The card's meaning text: the Definition field of a Meaning card, the Meaning field of a Collocation card.
-  One field, labelled differently on the two templates.
-- `LCardDraftSentence` — The card's holds on Examples, in the order they are shown.
-  A card holds these rows and never holds an Example directly.
-  Each names at most one Example and states the frame the card reads it under.
-  A row naming no Example carries a frame alone, which the store keeps.
-- `LCardDraftSituation` — The Situations the card references, in the order they are shown.
-  Each carries its id, its wording and the Source it cites.
-- `LCardDraftRegister` — The Registers the card is marked with, in the order they are shown.
-  Each carries its id and its wording, the way a Situation row does.
-  A Register is shared data, so two cards marked the same way reference one stored row.
-  The wording a chip shows is read back from that row, so a renamed Register follows.
-  A row a language pack ships and a row the user wrote sit in the same list.
-- `LCardDraftTranslation` — The Entries this card is translated by, in the order they are shown.
-  Each is the id of a stored Entry and never the word it shows.
-  The word a chip shows is read back from that Entry, so a renamed headword follows.
-  A link crosses languages, so a target sits in a language pack the card's own entry does not.
-  The list is one way: the target holds nothing pointing back.
-- `LCardDraftTag` — The Tags the card carries, in the order they are shown.
-  Each carries the id of the stored Tag it links and the text it shows.
-  A Tag is shared data, so two cards carrying the same word link one stored row.
-  A row typed on the card carries no id yet.
-  The engine names it on the next draft save.
-- `LCardDraftImage` — The Images the card references, in the order they are shown.
-  Each carries the location it is loaded from, a file on this machine or a web address.
-  Each also carries what is known about that location, and the stored row it stands for.
-  The row id is what lets two cards reference one picture rather than a copy each.
-- `LCardDraftVideo` — The Videos the card references, in the order they are shown.
-  Each carries the location it is loaded from, a file on this machine or a web address.
-  Each also carries what is known about that location, and the stored row it stands for.
-  A Video is kept with the card exactly as an Image is.
-- `LCardDraftPosition` — The number this card is shown by, counted from one.
-  It is the reader's number and never the offset the store keeps.
-  The store counts from zero, so the load adds one on the way out.
-  There is no default, so every caller states the number the card stands at.
-  A card the engine saves has its number rewritten from the order of the list it sits in.
-- `LCardDraftChild` — The cards nested under this one, in the order they are shown.
-  Only a Meaning card nests, because only a sense names a parent in the store.
-  A Collocation carrying children is refused rather than saved with them dropped.
-  A child keeps its place among its siblings and never among the entry's top cards.
-  No card template offers a control for it, so the form carries it through untouched.
-- `LCardDraftId` — Id of the stored row this card was loaded from.
-  It is empty for a card that has never been stored.
-  It is the one member that is not typed text, and it exists only for the update.
-  A draft handed back for saving must say which stored Meaning or Collocation each card is.
-  Otherwise an update could only match cards by their place in the list.
-  That would move one card's text onto another card's row.
-  A card carrying no id is a new card and is created.
-  The form builds its cards without one, so nothing in the shell carries it until it chooses to.
+- `LCardDraftTitle`: the title and its knowledge state.
+- `LCardDraftExpression`: the expression field shared by the card shape.
+- `LCardDraftMeaning`: the meaning field, labelled Definition for meanings and Meaning for collocations.
+- `LCardDraftSentence`: ordered sentence holds, which can carry a frame without an example.
+- `LCardDraftSituation`: ordered situation references and their ready values.
+- `LCardDraftRegister`: ordered register references and their ready names.
+- `LCardDraftTranslation`: ordered target entry ids, rather than copies of target headwords.
+- `LCardDraftTag`: ordered tag references and their text.
+- `LCardDraftImage`: ordered image rows with location state and row identity.
+- `LCardDraftVideo`: ordered video rows with location state and row identity.
+- `LCardDraftPosition`: the supplied display number, independent of this record's row id.
+- `LCardDraftId`: the stored row identity, zero by default.
+  Negative editor ids and zero both remain unsaved according to `LCardDraftStored`.
+- `LCardDraftChild`: nested cards, empty when the constructor receives null.
 
 ## `public IReadOnlyList<LCardDraft> LCardDraftChild { get; init; }`
 
-A null handed in becomes the empty list, so a reader walks it without a check.
+Constructor null becomes an empty child list, so ordinary readers need no constructor-null check.
 
 ## `public LStateValue LCardDraftTitle { get; init; }`
 
-A null handed in becomes unspecified, so no reader checks for null.
-`LCardDraftExpression` and `LCardDraftMeaning` do the same.
+Constructor null becomes unspecified, preserving a value rather than a missing title object.
 
-## Inline notes
+## `public LStateValue LCardDraftExpression { get; init; }`
 
-### `public bool LCardDraftEmpty`
+Constructor null becomes unspecified, matching the title's initialization rule.
 
-A card is empty when every field a reader can fill is empty.
-The save drops such a card, and the update reads it as a card the user removed.
-The test lives here rather than in the engine because the fields it walks live here.
-A field added to the record is added to this walk in the same file, at the same time.
-The engine restated the list by hand once, and fell three fields behind the record.
+## `public LStateValue LCardDraftMeaning { get; init; }`
+
+Constructor null becomes unspecified, matching the other scalar value fields.
 
 ## `public LCardDraft LCardDraftNormalize()`
 
-The same card, its rows, and its children with every unreadable value dropped to unspecified.
-Called only after the user agreed to lose what the store could not read.
+Normalizes scalar values, supporting rows and descendants without changing card identity or position.
+Translation ids and tags remain untouched, since this normalization walks state-bearing values.
 
 ## `public bool LCardDraftExemplified`
 
-True once the card holds any sentence row, even an empty one.
-A card without one gets a blank row when its draft is prepared.
+Any sentence hold counts, even when that hold is empty.
+
+## `public bool LCardDraftStored`
+
+Only a positive id represents a stored card.
+This shared verdict lets views decide fold eligibility without deriving it from ids themselves.
 
 ## `public int LCardDraftTally`
 
-Counts this card and every card nested under it, at any depth.
+Counts this card and all descendants, so nested cards contribute at every depth.
+
+## `public bool LCardDraftEmpty`
+
+Emptiness covers the scalar fields, supporting rows and translations, but not identity or position.
+Any child prevents emptiness, even when that child's own fields are empty.
+Situation and register rows contribute their title and name respectively.
+Only zero translation ids are empty, and blank tag text contributes nothing.

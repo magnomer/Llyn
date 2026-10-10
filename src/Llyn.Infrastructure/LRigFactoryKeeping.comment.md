@@ -1,5 +1,5 @@
 # LRigFactoryKeeping.cs
-Hash: `4c63ca8cbe665362`
+Hash: `d2b3c98cc215a0a2`
 
 ## `public static class LRigFactoryKeeping`
 

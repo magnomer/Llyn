@@ -1,5 +1,5 @@
 # TRigFake.cs
-Hash: `3d77baed87d81d94`
+Hash: `107acadf74bc9944`
 
 ## `internal static class TRigFake`
 
@@ -56,7 +56,7 @@ A test asserting a recorded stub fault reads it here instead of copying the text
 ## `private static TRigFakePort TRigStubCreate<TRigFakePort>() where TRigFakePort : class`
 
 One throwing stub for the port `TRigFakePort`, generated over the proxy below.
-A generated stub per port spares the suite a hand-written class for every one of the forty-odd ports.
+A generated stub per port spares the suite a hand-written class for every one of the fifty stubbed ports.
 
 ## `public class TRigFakeProxy : DispatchProxy`
 

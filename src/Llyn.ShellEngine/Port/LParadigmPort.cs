@@ -12,7 +12,7 @@ public interface LParadigmPort
 
     string LEngineLanguageResolve(long entryId);
 
-    LParadigmStatus LEngineParadigmCheck(LParadigmRow row, bool pending, bool enabled);
+    LParadigmShown LEngineParadigmCheck(LParadigmRow row, bool pending, bool enabled, bool held);
 
-    LParadigmView? LEngineInflectionRead(long entryId, bool pending, bool enabled);
+    LParadigmView? LEngineInflectionRead(long entryId, bool pending, bool enabled, bool held);
 }

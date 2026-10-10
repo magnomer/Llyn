@@ -1,5 +1,5 @@
 # PDisplayCard.xaml
-Hash: `41272158f1fa21c6`
+Hash: `1de233e757cac543`
 
 ## `ResourceDictionary`
 
@@ -15,7 +15,8 @@ Each row of a card body is written in its own dictionary and merged back in.
 ### `<ResourceDictionary.MergedDictionaries>`
 
 A card body is a stack of independent rows, so each row is written where it can be read alone.
-The merge order is the reading order of a card, so the file list doubles as the card's outline.
+The merged dictionaries supply independent body-row templates.
+`Display.Card.Body` determines their displayed order.
 
 ### `<ResourceDictionary Source="/Llyn.UIVeneer;component/Media/Image/PDisplayImage.xaml" />`
 
@@ -23,8 +24,9 @@ The picture and video rows live with the other media markup, and the leaf fills 
 
 ### `<Style x:Key="Display.Card.Title" TargetType="TextBlock">`
 
-The right margin equals the one the writing card's title field carries.
+The right margin is `Theme.Card.TitleMargin`, the one the writing card's title field carries.
 So a long title is cut at the same width in both modes.
+The margin keeps room for an eraser this card never shows, beside the hinge it does show.
 
 ### `<DataTemplate x:Key="Display.Card.Body">`
 
@@ -36,6 +38,14 @@ A meaning card adds its definition above it, and a collocation card its expressi
 ### `<Style x:Key="Display.Card.Definition" TargetType="TextBlock">`
 
 The definition is the sentence the card exists for.
-It is set at the weight of a title, not of a field value.
+Its style sets definition size and wrapping, without assigning title weight.
 No label stands over it.
 A label naming what a reader can already see only pushes the reading down the card.
+
+### `<Style x:Key="Display.Card.Kind" TargetType="TextBlock">`
+
+Untitled, unfolded cards retain a muted kind caption in the title slot.
+
+### `<Style x:Key="Display.Card.Expression" TargetType="TextBlock">`
+
+The expression leads a collocation with semibold emphasis and separation from its definition.

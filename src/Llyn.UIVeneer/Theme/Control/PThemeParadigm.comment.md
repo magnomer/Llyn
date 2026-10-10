@@ -1,14 +1,16 @@
 # PThemeParadigm.xaml
-Hash: `e595775c0aa5ba4f`
+Hash: `61034931bc36ccb6`
 Hash: `82e28a6350ce0db9`
 
 ## `<Style x:Key="Theme.Paradigm.Box" TargetType="Border">`
 
 The frame the paradigm rows sit in, above the first meaning.
 The inflection switch and both inflection tables sit in the same frame below the rows.
-It draws no ground, line or corner, so the table reads as open text ruled by its own lines.
-The border stays in the tree, so the control keeps one shape whether or not a plate is drawn.
-The box hugs its rows rather than stretching, because the rows are short.
+It draws a hairline outline with the corner and padding of the link cards.
+So it reads as one of the cards on the page.
+Its ground stays clear, so the table's own rules carry the structure and no tint competes with the chips.
+It hugs its table rather than stretching, so the switch sits at the table's right edge.
+A stretched box would park the switch under the contents popup at the page's far right.
 
 ## `<Style x:Key="Theme.Paradigm.Part" TargetType="TextBlock">`
 
@@ -25,7 +27,8 @@ An inflection table uses `Theme.Paradigm.Label` instead, which keeps this look w
 ## `<Style x:Key="Theme.Paradigm.Group" TargetType="TextBlock">`
 
 The group name of an inflection table, such as a mood, beside its group's first line.
-It is italic ink rather than accent, so the group reads as a heading and not as a link.
+It is accent and semibold, like the particle and dependence labels of a sentence.
+So the row headings read as headings against the small muted labels.
 The wide right margin keeps the group column apart from the labels.
 It pins the interface font, since the box carries the headword font for the forms.
 
@@ -64,18 +67,25 @@ The solid line under the header row and under the last line of a group.
 It closes a block, so the eye finds where each group ends without a plate.
 It never takes the mouse, so the cells beneath keep their tooltips.
 
+## `<Style x:Key="Theme.Paradigm.Switch" TargetType="Border">`
+
+The track of the switch between the short and the full table.
+Its tinted ground and round corners make the two words read as one segmented control.
+It sits at the table's right edge, and the bottom margin parts it from the table.
+
 ## `<Style x:Key="Theme.Paradigm.Fold" TargetType="RadioButton">`
 
-One text button of the switch between the short and the full table.
-It has no frame, so the pair reads as two words.
-Both start muted, and the state sheet gives hover its ink and checked its accent, since markup never branches.
+One side of the switch, sitting on the `Theme.Paradigm.Switch` track.
+Its template part `PSurface` is a clear thumb, so an unchecked side reads as a word on the track.
+The state sheet gives the checked side the page ground, a faint outline and accent ink.
+So the chosen side reads as a raised thumb, since markup never branches.
 The hand cursor and the hover ink tell the user a word can be clicked.
 The default focus visual stays, so a keyboard user still sees which button holds focus.
 
 ## `<Style x:Key="Theme.Paradigm.Marked" TargetType="Run">`
 
 The part of a form holding letters the rules did not predict.
-It uses Theme.Situation, so an irregular part reads as notable rather than as an error.
+It uses Theme.Warning, so the letters outside the expected forms stand out in red.
 
 ## `<Style x:Key="Theme.Paradigm.Cut" TargetType="Run">`
 

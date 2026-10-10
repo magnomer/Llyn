@@ -14,7 +14,7 @@ public sealed class QLecternReflex
 
     private readonly TextBlock _qLecternSoundLoading;
 
-    private readonly ToggleButton _qLecternSoundFold;
+    private readonly ToggleButton _qLecternSoundHinge;
 
     public QLecternReflex(FrameworkElement surface, CDisplaySound area)
     {
@@ -24,12 +24,10 @@ public sealed class QLecternReflex
         _qLecternReflexArea = area;
         ItemsControl reflex = QContract.QContractFind<ItemsControl>(surface, "PDisplayReflex");
         _qLecternSoundLoading = QContract.QContractFind<TextBlock>(surface, "PDisplayReflexLoading");
-        _qLecternSoundFold = QContract.QContractFind<ToggleButton>(surface, "PDisplayReflexFold");
-        _qLecternReflexList = new QReflexList(reflex, _qLecternSoundFold);
+        _qLecternSoundHinge = QContract.QContractFind<ToggleButton>(surface, "PDisplayReflexHinge");
+        _qLecternReflexList = new QReflexList(reflex, _qLecternSoundHinge);
 
-        _qLecternSoundFold.Checked += QLecternFoldObserve;
-        _qLecternSoundFold.Unchecked += QLecternFoldObserve;
-        _qLecternReflexArea.CDisplayFoldChanged += QLecternFoldRefine;
+        _qLecternSoundHinge.Click += QLecternHingeObserve;
     }
 
     public void QLecternReflexRefine()
@@ -52,14 +50,23 @@ public sealed class QLecternReflex
         _qLecternReflexList.QReflexAnchorRefine(_qLecternReflexArea.CDisplayReflexRead().CLecternReflexAnchor);
     }
 
-    private void QLecternFoldObserve(object sender, RoutedEventArgs e)
+    private void QLecternHingeObserve(object sender, RoutedEventArgs e)
     {
-        _qLecternReflexArea.CDisplayReflexToggle(QLook.QLookCheckedRead(_qLecternSoundFold.IsChecked));
+        QLecternHingeRefine(
+            _qLecternReflexArea.CDisplayReflexToggle(QLook.QLookCheckedRead(_qLecternSoundHinge.IsChecked)));
+    }
+
+    private void QLecternHingeRefine(bool stored)
+    {
+        if (!stored)
+        {
+            _qLecternSoundHinge.IsChecked = !QLook.QLookCheckedRead(_qLecternSoundHinge.IsChecked);
+        }
     }
 
     private void QLecternReflexRefine(CLecternReflex reflex)
     {
-        _qLecternReflexList.QReflexListShow(reflex.CLecternReflexRows);
+        _qLecternReflexList.QReflexListShow(reflex.CLecternReflexRows, reflex.CLecternReflexFoldable);
         _qLecternReflexList.QReflexAnchorRefine(reflex.CLecternReflexAnchor);
         _qLecternSoundLoading.Visibility = QLook.QLookVisibleRead(reflex.CLecternReflexPending);
     }

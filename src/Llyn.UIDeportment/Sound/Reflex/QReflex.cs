@@ -14,8 +14,6 @@ internal sealed class QReflex
 
     private readonly QAnchor _qReflexAnchor;
 
-    private CDisplaySound _cDisplaySound = null!;
-
     private CKindred _cKindred = null!;
 
     internal QReflex(FrameworkElement surface, QAnchor anchor)
@@ -23,7 +21,7 @@ internal sealed class QReflex
         _qReflexSurface = surface;
         _qReflexAnchor = anchor;
         ItemsControl list = QContract.QContractFind<ItemsControl>(_qReflexSurface, "PReflex");
-        _qReflexRow = new QReflexList(list, QReflexFold);
+        _qReflexRow = new QReflexList(list, QReflexHinge);
         _qReflexRow.QReflexListTyped += QReflexTypeObserve;
         QQuill.QQuillIntroduce(list);
         QAccentControl.QAccentControlAttach(list);
@@ -40,8 +38,7 @@ internal sealed class QReflex
         renewal.Executed += QReflexRebuildRefine;
         renewal.Executed += QReflexRebuildObserve;
         QReflexRenewal.CommandBindings.Add(renewal);
-        QReflexFold.Checked += QReflexFoldObserve;
-        QReflexFold.Unchecked += QReflexFoldObserve;
+        QReflexHinge.Click += QReflexHingeObserve;
     }
 
     private Grid QReflexBlock => QContract.QContractFind<Grid>(_qReflexSurface, "PReflexBlock");
@@ -50,19 +47,16 @@ internal sealed class QReflex
 
     private TextBlock QReflexLoading => QContract.QContractFind<TextBlock>(_qReflexSurface, "PReflexLoading");
 
-    private ToggleButton QReflexFold => QContract.QContractFind<ToggleButton>(_qReflexSurface, "PReflexFold");
+    private ToggleButton QReflexHinge => QContract.QContractFind<ToggleButton>(_qReflexSurface, "PReflexHinge");
 
     private Button QReflexRenewal => QContract.QContractFind<Button>(_qReflexSurface, "PReflexRenewal");
 
-    internal void QReflexIntroduce(
-        CDesk desk, CDisplaySound displaySound, CEntry entry, CKindred kindred, CSounding sounding)
+    internal void QReflexIntroduce(CDesk desk, CEntry entry, CKindred kindred, CSounding sounding)
     {
-        _cDisplaySound = displaySound;
         _cKindred = kindred;
         desk.CDeskStarted += QReflexAnchorRefine;
         sounding.CSoundingChanged += QReflexAnchorRefine;
         kindred.CKindredChanged += QReflexPendingRefine;
-        displaySound.CDisplayFoldChanged += QReflexFoldRefine;
         entry.CEntryDraftChanged += QReflexRefine;
     }
 
@@ -115,7 +109,7 @@ internal sealed class QReflex
     {
         QReflexBlock.Visibility = QLook.QLookVisibleRead(reflex.CTimbreReflexShown);
         QReflexRenewal.Visibility = QReflexBlock.Visibility;
-        _qReflexRow.QReflexListShow(reflex.CTimbreReflexRows);
+        _qReflexRow.QReflexListShow(reflex.CTimbreReflexRows, reflex.CTimbreReflexFoldable);
         _qReflexRow.QReflexFoldRefine(reflex.CTimbreReflexOpened);
         QReflexAnchorRefine(reflex.CTimbreReflexAnchor);
         QReflexPendingRefine(reflex.CTimbreReflexPending);
@@ -150,14 +144,16 @@ internal sealed class QReflex
             QLook.QLookFirstRead(pending, QLookCue.QLookCuePending, QLookCue.QLookCueBase));
     }
 
-    private void QReflexFoldObserve(object sender, RoutedEventArgs e)
+    private void QReflexHingeObserve(object sender, RoutedEventArgs e)
     {
-        _cDisplaySound.CDisplayReflexToggle(
-            QLook.QLookCheckedRead(QReflexFold.IsChecked));
+        QReflexHingeRefine(_cKindred.CKindredSpread(QLook.QLookCheckedRead(QReflexHinge.IsChecked)));
     }
 
-    private void QReflexFoldRefine()
+    private void QReflexHingeRefine(bool stored)
     {
-        _qReflexRow.QReflexFoldRefine(_cDisplaySound.CDisplayFoldOpened);
+        if (!stored)
+        {
+            QReflexHinge.IsChecked = !QLook.QLookCheckedRead(QReflexHinge.IsChecked);
+        }
     }
 }

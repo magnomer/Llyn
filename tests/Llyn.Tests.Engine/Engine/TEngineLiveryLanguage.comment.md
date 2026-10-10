@@ -1,5 +1,5 @@
 # TEngineLiveryLanguage.cs
-Hash: `784cce2be075dd04`
+Hash: `5ff89c9c9ea35ec8`
 
 ## `public sealed class TEngineLiveryLanguage`
 
@@ -50,17 +50,19 @@ Only the initial and rime sections can hold them, since a reflex has no tone par
 ## `public void LiveryRead_LanguageWithoutBooksOrSeries_AnswersEmptyLists()`
 
 Places a character under a pack with neither a fanqie book nor a series rule.
-Reads that language and finds no series and no categories, but keeps its pronunciation row.
-
-## `public void LiveryRead_EntriesOfTwoLanguages_KeepsOnlyTheAskedLanguageInHeadwordOrder()`
-
-Saves two English entries and one Spanish entry, then reads English.
-Checks that only the English rows remain, in headword order.
+Reads that language and finds no series and no categories.
 
 ## `public void LiveryFormat_SeriesNote_LinksTheStoredEntryAndLeavesAnUnstoredCharacterPlain()`
 
 Saves one entry and builds a series holding its character and one unstored character.
 Writes the series note through `TLiveryFormat` and finds the stored character linked and the other plain.
+
+## `public void LiveryFormat_SeriesNote_PrintsEachMemberReadingAndReflexRowsAndABareMemberAlone()`
+
+Builds a series page with a stored member carrying two readings and one Korean reflex, and one bare member.
+The members are built without an entry, since a member carries only readings and reflex rows.
+The stored member's card holds its linked chip, its escaped reading line and its reflex table.
+The bare member's card holds only its plain chip.
 
 ## `public void LiveryFormat_RimeNote_PrintsSectionsInPageOrderWithReadingsAndTallies()`
 
@@ -71,11 +73,6 @@ Checks section order, each line's reading and label, the rounded mark and the ta
 
 Reads the placed character's tone category and writes its note with a `Display.FanqieTone` pattern.
 Checks the heading shows the formatted tone and the entry list links the placed entry.
-
-## `public void LiveryFormat_SoundNote_HoldsOnlyItsLanguageRowsAndMarksAMissingSound()`
-
-Saves an English and a Spanish entry without sounds, then writes the English sound note.
-Checks the English row links its headword beside the escaped `[ ]` and the Spanish headword is absent.
 
 ## `private static LEntry TLiveryLanguagePlace(LEngine engine, TWorkspace workspace)`
 

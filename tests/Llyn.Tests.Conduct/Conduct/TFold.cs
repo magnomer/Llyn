@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.IO;
 using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -11,150 +9,367 @@ namespace Llyn.Tests;
 public sealed class TFold
 {
     [Fact]
-    public void FoldToggle_OpenedBoxes_ReadsTheNewStateAndRaisesTheChange()
+    public void FoldOpened_AnotherEntryHeld_ReadsEachHeldEntrysOwnStoredState()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
+        long water = TFoldEntrySave(engine, "water");
+        long salt = TFoldEntrySave(engine, "salt");
+        engine.TEngineBoxSpread(water, LFoldBox.LFoldBoxFanqie, true);
+        engine.TEngineBoxSpread(salt, LFoldBox.LFoldBoxScript, true);
+        TEditorFixture editor = TEditor.TEditorPrepare(engine, "library");
+
+        editor.TEditorFixtureOpen(water);
+        (bool, bool) first =
+            (editor.TEditorFixtureFold.CFoldFanqieOpened, editor.TEditorFixtureFold.CFoldScriptOpened);
+        editor.TEditorFixtureOpen(salt);
+
+        Assert.Equal((true, false), first);
+        Assert.False(editor.TEditorFixtureFold.CFoldFanqieOpened);
+        Assert.True(editor.TEditorFixtureFold.CFoldScriptOpened);
+    }
+
+    [Fact]
+    public void FoldSpread_HeldEntry_StoresBothBoxesAnswersTrueAndRefreshesTheEditor()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        long water = TFoldEntrySave(engine, "water");
+        TEditorFixture editor = TEditor.TEditorPrepare(engine, "library");
+        editor.TEditorFixtureOpen(water);
+        int shown = 0;
+        editor.TEditorFixtureEntry.CEntryDraftChanged += _ => shown++;
+
+        bool fanqie = editor.TEditorFixtureFold.CFoldFanqieSpread(true);
+        bool script = editor.TEditorFixtureFold.CFoldScriptSpread(true);
+
+        Assert.True(fanqie);
+        Assert.True(script);
+        Assert.Equal(2, shown);
+        Assert.True(engine.TEngineBoxCheck(water, LFoldBox.LFoldBoxFanqie));
+        Assert.True(engine.TEngineBoxCheck(water, LFoldBox.LFoldBoxScript));
+        Assert.True(editor.TEditorFixtureFold.CFoldFanqieOpened);
+        Assert.True(editor.TEditorFixtureFold.CFoldScriptOpened);
+
+        editor.TEditorFixtureFold.CFoldFanqieSpread(false);
+
+        Assert.False(editor.TEditorFixtureFold.CFoldFanqieOpened);
+        Assert.True(editor.TEditorFixtureFold.CFoldScriptOpened);
+    }
+
+    [Fact]
+    public void FoldSpread_NoStoredEntryHeld_AnswersFalseAndStoresNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        long water = TFoldEntrySave(engine, "water");
+        TEditorFixture editor = TEditor.TEditorPrepare(engine, "library");
+        editor.TEditorFixtureOpen(null);
+
+        bool fanqie = editor.TEditorFixtureFold.CFoldFanqieSpread(true);
+        bool script = editor.TEditorFixtureFold.CFoldScriptSpread(true);
+
+        Assert.False(fanqie);
+        Assert.False(script);
+        Assert.False(editor.TEditorFixtureFold.CFoldFanqieOpened);
+        Assert.False(editor.TEditorFixtureFold.CFoldScriptOpened);
+        Assert.False(engine.TEngineBoxCheck(water, LFoldBox.LFoldBoxFanqie));
+        Assert.False(engine.TEngineBoxCheck(water, LFoldBox.LFoldBoxScript));
+    }
+
+    [Fact]
+    public void FoldSpread_FailingPort_ShowsTheNoticeAnswersFalseAndTellsNoOtherEditor()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        long water = TFoldEntrySave(engine, "water");
+        engine.TEngineBoxSpread(water, LFoldBox.LFoldBoxScript, true);
+        TEditorFixture editor = TEditor.TEditorPrepare(engine, "library");
+        editor.TEditorFixtureOpen(water);
+        TEditorFixture second = TEditor.TEditorPrepare(engine, "library");
+        second.TEditorFixtureOpen(water);
+        int shown = 0;
+        second.TEditorFixtureEntry.CEntryDraftChanged += _ => shown++;
+        List<string> asked = [];
         CFold fold = TInterfaceConductSound.TFoldCreate(
-            TInterfaceConduct.TSettingsOutletCreate(engine), TEnvoyFake.TEnvoyCreate(false, []));
-        int changed = 0;
-        fold.CFoldChanged += () => changed++;
+            editor, TInterfaceConduct.TPhonologyBundleCreate(engine, "LReflexPort.LEngineBoxSpread", true), asked);
 
-        fold.CFoldFanqieToggle(true);
-        fold.CFoldScriptToggle(true);
+        bool fanqie = fold.CFoldFanqieSpread(true);
+        bool script = fold.CFoldScriptSpread(false);
 
-        Assert.True(fold.CFoldFanqieOpened);
-        Assert.True(fold.CFoldScriptOpened);
-        Assert.Equal(2, changed);
-
-        fold.CFoldFanqieToggle(false);
-
+        Assert.False(fanqie);
+        Assert.False(script);
+        Assert.Equal(["Box.SpreadFailed", "Box.SpreadFailed"], asked);
+        Assert.Equal(0, shown);
+        Assert.False(engine.TEngineBoxCheck(water, LFoldBox.LFoldBoxFanqie));
+        Assert.True(engine.TEngineBoxCheck(water, LFoldBox.LFoldBoxScript));
         Assert.False(fold.CFoldFanqieOpened);
         Assert.True(fold.CFoldScriptOpened);
     }
 
     [Fact]
-    public void FoldToggle_FreshConduct_KeepsTheSavedState()
+    public void FoldOpened_FaultingPort_AnswersFoldedAndShowsTheReadNoticeOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        TFoldEditorPrepare(engine, null).TEditorFixtureFold.CFoldFanqieToggle(true);
-        TFoldEditorPrepare(engine, null).TEditorFixtureFold.CFoldScriptToggle(true);
+        long water = TFoldEntrySave(engine, "water");
+        engine.TEngineBoxSpread(water, LFoldBox.LFoldBoxFanqie, true);
+        engine.TEngineBoxSpread(water, LFoldBox.LFoldBoxScript, true);
+        TEditorFixture editor = TEditor.TEditorPrepare(engine, "library");
+        editor.TEditorFixtureOpen(water);
+        List<string> asked = [];
+        CFold fold = TInterfaceConductSound.TFoldCreate(
+            editor, TInterfaceConduct.TPhonologyBundleCreate(engine, "LReflexPort.LEngineBoxCheck", true), asked);
 
-        CFold fresh = TFoldEditorPrepare(engine, TFoldEntrySave(engine)).TEditorFixtureFold;
+        bool fanqie = fold.CFoldFanqieOpened;
+        bool script = fold.CFoldScriptOpened;
 
-        Assert.True(fresh.CFoldFanqieOpened);
-        Assert.True(fresh.CFoldScriptOpened);
-        Assert.True(TInterface.TSettingsLoad(workspace.TWorkspaceFolder).LSettingsFanqieOpened);
-        Assert.True(TInterface.TSettingsLoad(workspace.TWorkspaceFolder).LSettingsScriptOpened);
+        Assert.False(fanqie);
+        Assert.False(script);
+        Assert.Equal(["Box.SpreadReadFailed"], asked);
+        Assert.True(engine.TEngineBoxCheck(water, LFoldBox.LFoldBoxFanqie));
     }
 
     [Fact]
-    public void FoldToggle_SecondEditor_RaisesEachSavedChangeThere()
+    public void FoldSpread_TwoEntriesAndTwoBoxes_KeepsEachStateApart()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CFold toggled = TFoldEditorPrepare(engine, null).TEditorFixtureFold;
-        CFold second = TFoldEditorPrepare(engine, null).TEditorFixtureFold;
-        int changed = 0;
-        second.CFoldChanged += () => changed++;
+        long water = TFoldEntrySave(engine, "water");
+        long salt = TFoldEntrySave(engine, "salt");
+        TEditorFixture editor = TEditor.TEditorPrepare(engine, "library");
+        editor.TEditorFixtureOpen(water);
+        editor.TEditorFixtureFold.CFoldFanqieSpread(true);
+        editor.TEditorFixtureOpen(salt);
 
-        toggled.CFoldFanqieToggle(true);
-        toggled.CFoldScriptToggle(true);
-        toggled.CFoldScriptToggle(true);
+        editor.TEditorFixtureFold.CFoldScriptSpread(true);
 
-        Assert.Equal(2, changed);
-        Assert.True(second.CFoldFanqieOpened);
-        Assert.True(second.CFoldScriptOpened);
+        Assert.True(engine.TEngineBoxCheck(water, LFoldBox.LFoldBoxFanqie));
+        Assert.False(engine.TEngineBoxCheck(water, LFoldBox.LFoldBoxScript));
+        Assert.False(engine.TEngineBoxCheck(salt, LFoldBox.LFoldBoxFanqie));
+        Assert.True(engine.TEngineBoxCheck(salt, LFoldBox.LFoldBoxScript));
     }
 
     [Fact]
-    public void FoldToggle_SecondEditorClosed_RaisesNothingThere()
+    public void FoldSpread_FreshEditorOnTheSameEntry_ReadsTheStoredState()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        CFold toggled = TFoldEditorPrepare(engine, null).TEditorFixtureFold;
-        TEditorFixture second = TFoldEditorPrepare(engine, null);
-        int changed = 0;
-        second.TEditorFixtureFold.CFoldChanged += () => changed++;
+        long water = TFoldEntrySave(engine, "water");
+        TEditorFixture editor = TEditor.TEditorPrepare(engine, "library");
+        editor.TEditorFixtureOpen(water);
+        editor.TEditorFixtureFold.CFoldFanqieSpread(true);
+        editor.TEditorFixtureFold.CFoldScriptSpread(true);
+
+        TEditorFixture fresh = TEditor.TEditorPrepare(engine, "library");
+        fresh.TEditorFixtureOpen(water);
+
+        Assert.True(fresh.TEditorFixtureFold.CFoldFanqieOpened);
+        Assert.True(fresh.TEditorFixtureFold.CFoldScriptOpened);
+    }
+
+    [Fact]
+    public void FoldSpread_SecondEditorOnTheSameEntry_RefreshesThatEditorFromTheStore()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        long water = TFoldEntrySave(engine, "water");
+        TEditorFixture editor = TEditor.TEditorPrepare(engine, "library");
+        editor.TEditorFixtureOpen(water);
+        TEditorFixture second = TEditor.TEditorPrepare(engine, "library");
+        second.TEditorFixtureOpen(water);
+        int shown = 0;
+        second.TEditorFixtureEntry.CEntryDraftChanged += _ => shown++;
+
+        editor.TEditorFixtureFold.CFoldFanqieSpread(true);
+        editor.TEditorFixtureFold.CFoldScriptSpread(true);
+
+        Assert.Equal(2, shown);
+        Assert.True(second.TEditorFixtureFold.CFoldFanqieOpened);
+        Assert.True(second.TEditorFixtureFold.CFoldScriptOpened);
+    }
+
+    [Fact]
+    public void FoldSpread_SecondEditorClosed_RefreshesNothingThere()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        long water = TFoldEntrySave(engine, "water");
+        TEditorFixture editor = TEditor.TEditorPrepare(engine, "library");
+        editor.TEditorFixtureOpen(water);
+        TEditorFixture second = TEditor.TEditorPrepare(engine, "library");
+        second.TEditorFixtureOpen(water);
+        int shown = 0;
+        second.TEditorFixtureEntry.CEntryDraftChanged += _ => shown++;
 
         second.TEditorFixtureClose();
-        toggled.CFoldFanqieToggle(true);
+        editor.TEditorFixtureFold.CFoldFanqieSpread(true);
 
-        Assert.Equal(0, changed);
+        Assert.Equal(0, shown);
+        Assert.False(second.TEditorFixtureFold.CFoldFanqieOpened);
     }
 
     [Fact]
-    public void FoldToggle_RefusedSave_ShowsTheSaveFailureAndKeepsTheState()
+    public void DisplayBoxOpened_AnotherEntryShown_ReadsEachShownEntrysOwnStoredState()
     {
-        List<string> notices = [];
-        LSettings opened = new("English", LSettingsFanqieOpened: true, LSettingsScriptOpened: true);
-        Dictionary<string, Func<object?[]?, object?>> answers = new()
-        {
-            ["LEngineSettingsRead"] = _ => opened,
-            ["LEngineFanqieSave"] = _ => throw new InvalidOperationException("The settings file is unreadable."),
-            ["LEngineScriptSave"] = _ => throw new InvalidOperationException("The settings file is unreadable."),
-            ["LEngineFailureRead"] = args => ((string)args![1]!, (string?)null, (string?)null),
-        };
-        LSettingsPort refusing = TEngineFake.TEngineCreate<LSettingsPort>(answers);
-        CFold fold = TInterfaceConductSound.TFoldCreate(refusing, TEnvoyFake.TEnvoyCreate(false, notices));
-        int changed = 0;
-        fold.CFoldChanged += () => changed++;
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        long water = TFoldEntrySave(engine, "water");
+        long salt = TFoldEntrySave(engine, "salt");
+        engine.TEngineBoxSpread(water, LFoldBox.LFoldBoxFanqie, true);
+        engine.TEngineBoxSpread(salt, LFoldBox.LFoldBoxScript, true);
+        CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), true);
 
-        fold.CFoldFanqieToggle(false);
-        fold.CFoldScriptToggle(false);
+        wing.CWingEntryOpen(water);
+        (bool TFanqie, bool TScript) first = (
+            wing.CWingDisplay.CDisplayFold.CFoldFanqieOpened,
+            wing.CWingDisplay.CDisplayFold.CFoldScriptOpened);
+        wing.CWingEntryOpen(salt);
 
-        Assert.Equal(["Settings.SaveFailed", "Settings.SaveFailed"], notices);
-        Assert.Equal(2, changed);
-        Assert.True(fold.CFoldFanqieOpened);
-        Assert.True(fold.CFoldScriptOpened);
+        Assert.Equal((true, false), first);
+        Assert.False(wing.CWingDisplay.CDisplayFold.CFoldFanqieOpened);
+        Assert.True(wing.CWingDisplay.CDisplayFold.CFoldScriptOpened);
     }
 
     [Fact]
-    public void FoldToggle_FaultingStore_ShowsTheSaveFailureKeepsTheStateAndRecordsTheFault()
+    public void DisplayBoxSpread_ShownEntry_StoresBothBoxesAnswersTrueAndRaisesTheDisplayFold()
     {
-        List<string> notices = [];
-        List<Exception> recorded = [];
-        Dictionary<string, Func<object?[]?, object?>> stored = new()
-        {
-            ["LSettingsRead"] = _ => TInterface.TSettingsCreate("en"),
-            ["LSettingsSave"] = _ => throw TInterface.TVaultFaultCreate("The disk is full."),
-        };
-        Dictionary<string, Func<object?[]?, object?>> audited = new()
-        {
-            ["LAuditRecord"] = args =>
-            {
-                recorded.Add((Exception)args![0]!);
-                return null;
-            },
-        };
-        LSettingsVault faulting = TEngineFake.TEngineCreate<LSettingsVault>(stored);
-        LAuditVault audit = TEngineFake.TEngineCreate<LAuditVault>(audited);
-        using LEngine engine = TRigFake.TRigFakeStart(
-            TRigFake.TRigFakeBuild() with { LRigSettings = faulting, LRigAudit = audit });
-        LSettings before = engine.TEngineSettingsRead();
-        CFold fold = new TEditorFixture(
-            TInterfaceEditor.TEditorCreate(engine, TEnvoyFake.TEnvoyCreate(false, notices))).TEditorFixtureFold;
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        long water = TFoldEntrySave(engine, "water");
+        CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), true);
+        wing.CWingEntryOpen(water);
+        List<long> heard = [];
+        wing.CWingDisplay.CDisplayFoldChanged += bulletin => heard.Add(bulletin.CBulletinId);
 
-        fold.CFoldFanqieToggle(!before.LSettingsFanqieOpened);
+        bool fanqie = wing.CWingDisplay.CDisplayFold.CFoldFanqieSpread(true);
+        bool script = wing.CWingDisplay.CDisplayFold.CFoldScriptSpread(true);
 
-        Assert.Equal(["Settings.SaveFailed"], notices);
-        Assert.Equal(before.LSettingsFanqieOpened, fold.CFoldFanqieOpened);
-        Assert.Equal(before, engine.TEngineSettingsRead());
-        Assert.IsType<LVaultFault>(Assert.Single(recorded));
+        Assert.True(fanqie);
+        Assert.True(script);
+        Assert.Equal([water, water], heard);
+        Assert.True(engine.TEngineBoxCheck(water, LFoldBox.LFoldBoxFanqie));
+        Assert.True(engine.TEngineBoxCheck(water, LFoldBox.LFoldBoxScript));
+        Assert.True(wing.CWingDisplay.CDisplayFold.CFoldFanqieOpened);
+        Assert.True(wing.CWingDisplay.CDisplayFold.CFoldScriptOpened);
     }
 
-    private static long TFoldEntrySave(LEngine engine)
+    [Fact]
+    public void DisplayBoxSpread_NoEntryShown_AnswersFalseAndStoresNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        long water = TFoldEntrySave(engine, "water");
+        CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), true);
+
+        bool fanqie = wing.CWingDisplay.CDisplayFold.CFoldFanqieSpread(true);
+        bool script = wing.CWingDisplay.CDisplayFold.CFoldScriptSpread(true);
+
+        Assert.False(fanqie);
+        Assert.False(script);
+        Assert.False(engine.TEngineBoxCheck(water, LFoldBox.LFoldBoxFanqie));
+        Assert.False(engine.TEngineBoxCheck(water, LFoldBox.LFoldBoxScript));
+        Assert.False(wing.CWingDisplay.CDisplayFold.CFoldFanqieOpened);
+        Assert.False(wing.CWingDisplay.CDisplayFold.CFoldScriptOpened);
+    }
+
+    [Fact]
+    public void DisplayBoxSpread_FailingPort_ShowsTheNoticeAndAnswersFalse()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        long water = TFoldEntrySave(engine, "water");
+        List<string> asked = [];
+        CDisplay display = TInterfaceConductSound.TDisplayChosenCreate(
+            engine,
+            TInterfaceConduct.TEntryBundleCreate(engine),
+            water,
+            TInterfaceConduct.TPhonologyBundleCreate(engine, "LReflexPort.LEngineBoxSpread", true),
+            asked);
+        display.LDisplayRule.LDisplaySound.TDisplaySoundShow(water, engine.TEngineEntryLoad(water)!);
+
+        bool fanqie = display.CDisplayFold.CFoldFanqieSpread(true);
+        bool script = display.CDisplayFold.CFoldScriptSpread(true);
+
+        Assert.False(fanqie);
+        Assert.False(script);
+        Assert.Equal(["Box.SpreadFailed", "Box.SpreadFailed"], asked);
+        Assert.False(engine.TEngineBoxCheck(water, LFoldBox.LFoldBoxFanqie));
+        Assert.False(engine.TEngineBoxCheck(water, LFoldBox.LFoldBoxScript));
+    }
+
+    [Fact]
+    public void DisplayBoxSpread_EditorOnTheSameEntry_RefreshesTheEditorAndReadsBackThere()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        long water = TFoldEntrySave(engine, "water");
+        TEditorFixture editor = TEditor.TEditorPrepare(engine, "library");
+        editor.TEditorFixtureOpen(water);
+        int shown = 0;
+        editor.TEditorFixtureEntry.CEntryDraftChanged += _ => shown++;
+        CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), true);
+        wing.CWingEntryOpen(water);
+
+        wing.CWingDisplay.CDisplayFold.CFoldFanqieSpread(true);
+        wing.CWingDisplay.CDisplayFold.CFoldScriptSpread(true);
+
+        Assert.Equal(2, shown);
+        Assert.True(editor.TEditorFixtureFold.CFoldFanqieOpened);
+        Assert.True(editor.TEditorFixtureFold.CFoldScriptOpened);
+    }
+
+    [Fact]
+    public void FoldSpread_DisplayOnTheSameEntry_RaisesTheDisplayFoldAndReadsBackThere()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        long water = TFoldEntrySave(engine, "water");
+        CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), true);
+        wing.CWingEntryOpen(water);
+        wing.CWingDisplay.CDisplayFold.CFoldFanqieSpread(true);
+        List<long> heard = [];
+        wing.CWingDisplay.CDisplayFoldChanged += bulletin => heard.Add(bulletin.CBulletinId);
+        TEditorFixture editor = TEditor.TEditorPrepare(engine, "library");
+        editor.TEditorFixtureOpen(water);
+
+        editor.TEditorFixtureFold.CFoldFanqieSpread(false);
+        editor.TEditorFixtureFold.CFoldScriptSpread(true);
+
+        Assert.Equal([water, water], heard);
+        Assert.False(wing.CWingDisplay.CDisplayFold.CFoldFanqieOpened);
+        Assert.True(wing.CWingDisplay.CDisplayFold.CFoldScriptOpened);
+    }
+
+    [Fact]
+    public void DisplayBoxSpread_TwoEntriesAndTwoBoxes_KeepsEachStateApart()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        long water = TFoldEntrySave(engine, "water");
+        long salt = TFoldEntrySave(engine, "salt");
+        CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), true);
+        wing.CWingEntryOpen(water);
+        wing.CWingDisplay.CDisplayFold.CFoldFanqieSpread(true);
+        wing.CWingEntryOpen(salt);
+
+        wing.CWingDisplay.CDisplayFold.CFoldScriptSpread(true);
+
+        Assert.True(engine.TEngineBoxCheck(water, LFoldBox.LFoldBoxFanqie));
+        Assert.False(engine.TEngineBoxCheck(water, LFoldBox.LFoldBoxScript));
+        Assert.False(engine.TEngineBoxCheck(salt, LFoldBox.LFoldBoxFanqie));
+        Assert.True(engine.TEngineBoxCheck(salt, LFoldBox.LFoldBoxScript));
+    }
+
+    private static long TFoldEntrySave(LEngine engine, string headword)
     {
         return engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
-            "water", "English", "ˈwɔːtə", string.Empty, [TInterface.TCardCreate("a liquid", 1)], [])).LEntryId;
-    }
-
-    private static TEditorFixture TFoldEditorPrepare(LEngine engine, long? entry)
-    {
-        TEditorFixture editor = new(TInterfaceEditor.TEditorCreate(engine));
-        editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
-        editor.TEditorFixtureOpen(entry);
-        return editor;
+            headword, "English", "ˈwɔːtə", string.Empty, [TInterface.TCardCreate("a liquid", 1)], [])).LEntryId;
     }
 }

@@ -80,7 +80,7 @@ public sealed class TXiesheng
         Assert.False(xiesheng.CXieshengDisplayShown);
         CStemPage page = xiesheng.CXieshengStemRead();
         Assert.Equal((language, "龍"), (page.CStemPageLanguage, page.CStemPageKey));
-        Assert.Equal(["龍"], page.CStemPageCharacters);
+        Assert.Equal(["龍"], page.CStemPageMembers.Select(static member => member.CStemMemberCharacter));
         Assert.Equal(entry.LEntryId, Assert.Single(xiesheng.CXieshengKindred.CEntryListRead()).CVistaRowId);
         Assert.False(xiesheng.CXieshengKindred.CEntryListPanel.CPanelAperture.CApertureEmpty);
         Assert.Equal("Xiesheng.KindredVacant", xiesheng.CXieshengKindredKey);

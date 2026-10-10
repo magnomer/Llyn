@@ -75,7 +75,7 @@ public sealed class LEngine : IDisposable
         LEngineScript = new LScriptFacade(LEngineHearth);
         LEngineLanguage = new LLanguageFacade(
             LEngineHearth, LEngineFanqie, LEngineReflex, LEngineScript, LEngineSettings, LEngineVocabulary);
-        LEngineStem = new LStemFacade(LEngineHearth, LEngineEntry, LEngineLanguage, LEngineVistaRow);
+        LEngineStem = new LStemFacade(LEngineHearth, LEngineEntry, LEngineLanguage, LEngineVistaRow, LEngineReflex);
         LEngineRequest = new LRequestFacade(LEngineHearth, LEngineDraft, LEngineEntry);
         LEngineLivery = new LLiveryFacade(
             LEngineHearth,

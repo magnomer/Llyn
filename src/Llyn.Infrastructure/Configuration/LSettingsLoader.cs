@@ -18,8 +18,6 @@ public sealed class LSettingsLoader : LSettingsVault
     private const string LSettingsLoaderEpithet = "epithet";
     private const string LSettingsLoaderTally = "tally";
     private const string LSettingsLoaderGloss = "gloss";
-    private const string LSettingsLoaderFanqie = "fanqie";
-    private const string LSettingsLoaderScript = "script";
     private const string LSettingsLoaderOutpost = "outpost";
     private const string LSettingsLoaderWarrant = "warrant";
     private const string LSettingsLoaderAnalysis = "analysis";
@@ -86,14 +84,6 @@ public sealed class LSettingsLoader : LSettingsVault
                 document.RootElement.TryGetProperty(LSettingsLoaderTally, out JsonElement set) &&
                 set.ValueKind == JsonValueKind.True;
 
-            bool fanqie =
-                document.RootElement.TryGetProperty(LSettingsLoaderFanqie, out JsonElement rime) &&
-                rime.ValueKind == JsonValueKind.True;
-
-            bool script =
-                document.RootElement.TryGetProperty(LSettingsLoaderScript, out JsonElement writing) &&
-                writing.ValueKind == JsonValueKind.True;
-
             int outpost =
                 document.RootElement.TryGetProperty(LSettingsLoaderOutpost, out JsonElement port) &&
                 port.ValueKind == JsonValueKind.Number &&
@@ -110,8 +100,6 @@ public sealed class LSettingsLoader : LSettingsVault
 
             LSettings read = new(localization, respelled, frequency, morphology, epithet, tally)
             {
-                LSettingsFanqieOpened = fanqie,
-                LSettingsScriptOpened = script,
                 LSettingsOutpost = outpost,
                 LSettingsWarrant = warrant,
                 LSettingsAnalysis = analysis,
@@ -169,8 +157,6 @@ public sealed class LSettingsLoader : LSettingsVault
             [LSettingsLoaderEpithet] = settings.LSettingsEpithet,
             [LSettingsLoaderTally] = settings.LSettingsTally,
             [LSettingsLoaderGloss] = settings.LSettingsGloss,
-            [LSettingsLoaderFanqie] = settings.LSettingsFanqieOpened,
-            [LSettingsLoaderScript] = settings.LSettingsScriptOpened,
             [LSettingsLoaderOutpost] = settings.LSettingsOutpost,
             [LSettingsLoaderWarrant] = settings.LSettingsWarrant,
             [LSettingsLoaderAnalysis] = settings.LSettingsAnalysis

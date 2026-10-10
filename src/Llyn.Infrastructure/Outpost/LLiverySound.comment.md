@@ -1,5 +1,5 @@
 # LLiverySound.cs
-Hash: `d67e88c612f83b6c`
+Hash: `b23192f3780be66b`
 
 ## `internal static class LLiverySound`
 
@@ -18,6 +18,7 @@ The joiner kept inside a tone run when a digit follows it, as in a sandhi contou
 
 Splits the draft's written reflexes into shown and folded rows in draft order.
 A reflex's guise decides whether it folds, and `LLiveryPageFolded` decides when no guise stands at its index.
+The guise at the reflex's index is read through `LReflexGuise.LReflexGuiseFind`.
 The shown rows form one table and the folded rows a second one.
 The second table sits inside one closed `<details>` whose summary is the `Reflex.More` text.
 The old sounds read every stored fanqie row of `LLiveryPageFanqie`.
@@ -34,15 +35,17 @@ The other transcriptions come from `LGlyph.LGlyphOtherRead`, labeled by scheme.
 The glyph row joins `LLiveryPageCell` under the glyph's name.
 Each table is left out when it has no row.
 
-## `private static void LLiveryReadingAppend(StringBuilder sheet, List<(LReflexDraft, LReflexGuise?)> readings, IReadOnlyList<LFanqieRow> rows, string headword)`
+## `internal static void LLiveryReadingAppend(StringBuilder sheet, IReadOnlyList<(LReflexDraft, LReflexGuise?)> readings, IReadOnlyList<LFanqieRow> rows, string headword)`
 
 Writes one five-column table of language, kind, reading, note and old sound, with an empty header row.
 The language is named on the first row of each run of the same language.
 A respelled guise shows the respelling when one is stored.
-A phonemic guise wraps the reading in slashes and marks its tone digits.
+A phonemic guise wraps the reading in slashes, unless it already starts with one, and marks its tone digits.
 A main reflex's reading carries `llyn-main`.
 The note cell holds `LReflexDraftNote` in a `llyn-note` span, and stays empty when no note is stored.
 The old sound is `LAnchor.LAnchorTextFormat` over the reflex's anchors and `rows`.
+No readings write nothing.
+`LLiveryXiesheng` writes each series member's reflex rows through it, with no fanqie rows, so the old sound stays empty there.
 
 ## `private static void LLiveryRowAppend(StringBuilder sheet, List<(string, string)> lines)`
 

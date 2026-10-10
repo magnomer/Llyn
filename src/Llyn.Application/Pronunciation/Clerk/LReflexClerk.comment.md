@@ -1,5 +1,5 @@
 # LReflexClerk.cs
-Hash: `5dcb3a28eea87aa2`
+Hash: `a792f584f32b011e`
 
 ## `public sealed class LReflexClerk`
 
@@ -44,7 +44,14 @@ Stored positions are left alone, since the order is applied on every read.
 
 The stored rows as drafts, every field and the stored id kept, in the order given.
 It lets stored rows pass `LReflexClerkSort`, which orders drafts.
-The fetch's copy into held drafts and the epithet both convert here, so the copy is written once.
+The fetch's copy into held drafts, the epithet and the series members in `LStemClerk` all convert here.
+So the copy is written once.
+
+## `public static IReadOnlyList<LReflexDraft> LReflexWrittenScan(IReadOnlyList<LReflexDraft> rows)`
+
+The rows that carry written text, in the order given.
+A row the reflex fetch left blank stays out of a reading view.
+The entry page and the series page both filter here, so the rule has one owner.
 
 ## `public IReadOnlyList<string> LReflexFoldedRead(string language)`
 

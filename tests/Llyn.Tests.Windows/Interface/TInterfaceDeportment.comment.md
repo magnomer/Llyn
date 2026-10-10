@@ -1,5 +1,5 @@
 # TInterfaceDeportment.cs
-Hash: `e196a195a9cf0f55`
+Hash: `97c0ea9afb5c428c`
 
 ## `[assembly: CollectionBehavior(DisableTestParallelization = true)]`
 
@@ -11,11 +11,11 @@ Two workspaces alive in parallel let one disposal close a connection the other i
 
 The relays for the deportment classes the Windows tests drive.
 It is a class of its own rather than a part of `TInterface`.
-The relay layer grows by owner and not by partial.
-Each relay is transparent and carries no test logic of its own.
+This relay class is not partial.
+Some relays construct bare WPF surfaces to expose production painters and handlers.
 The posture relay builds its deportment over a real workspace folder.
 The index item and caret key relays reach internal statics and make no WPF object.
-The lectern fold relays hand a WPF toggle through, so their caller runs them on an STA thread.
+The rime-book and script switch relays hand a WPF toggle through, so their caller runs them on an STA thread.
 The reflex type relay copies the held row with the typed text and hands it to the row's refine.
 The etymology relays reach the field's internal show and read its two faces by their place in the body.
 The card position attach hangs one card in a bare list with only the number box in its row.
@@ -32,8 +32,8 @@ Its surface holds a WPF toggle, so the caller runs the analysis relays on an STA
 
 ## `internal static QLecternReflex TLecternCreate(CDisplay display, FrameworkElement surface)`
 
-Builds the reflex section over the editor's `display`, pulling its list, loading line and fold toggle from `surface`.
-The section subscribes the toggle itself, so the test wires no observer.
+Builds the reading reflex section over `display`, pulling its list, loading line and hinge from `surface`.
+The section subscribes the hinge itself, so the test wires no observer.
 The surface holds WPF controls, so the caller runs it on an STA thread.
 
 ## `internal static (bool CDeskBackward, bool CDeskForward) TDeskChronicleRead(this CDesk desk)`
@@ -64,13 +64,34 @@ Reaches the internal edge rule of the caret keys and answers whether it handled 
 
 Reaches the internal step rule of the caret keys and answers whether it handled the key.
 
-## `internal static void TDisplayFoldSet(this CDisplay display, bool opened)`
+## `internal static void TDisplayEntryShow(this CDisplay display, long id, LEntryDraft draft)`
 
-Sets the reflex fold of the editor's display open or shut.
+Shows `draft` as entry `id` on the display's sound half, so its reflex reads answer for that entry.
 
-## `internal static bool TDisplayFoldRead(this CDisplay display)`
+## `internal static void TReflexCreate(FrameworkElement surface, CEditor editor)`
 
-Reads whether the reflex fold of the editor's display is open.
+Builds the editor's reflex block over `surface` with its own anchor menu, then wires it to `editor`.
+The surface holds WPF controls, so the caller runs it on an STA thread.
+
+## `internal static void TCadenceCreate(FrameworkElement surface, CEditor editor, CLedger ledger, CEnvoy envoy)`
+
+Builds `QCadence` over `surface` and introduces the editor's facets to it.
+The surface carries the rime-book and script boxes under their markup names.
+So a switch click reaches the real fold gate through the real driver.
+The boxes are WPF controls, so the caller runs it on an STA thread.
+
+## `internal static QLecternSound TLecternSoundCreate(CDisplay display, FrameworkElement surface, CLedger ledger, CEnvoy envoy)`
+
+Builds the reading view's sound section over the display's sound and fold areas and `surface`.
+So a reading-view box switch click reaches the display's real fold gate through the real driver.
+
+## `internal static ToggleButton TFanqieSwitchRead(this QFanqie box)`
+
+The rime-book box's open switch, as the box exposes it to its driver.
+
+## `internal static ToggleButton TScriptSwitchRead(this QScript box)`
+
+The script box's open switch, as the box exposes it to its driver.
 
 ## `internal static void TEtymologySourceShow(this QEtymology etymology, bool linked)`
 
@@ -79,10 +100,6 @@ Shows the field with no etymon and the source link on or off as given.
 ## `internal static (Visibility, Visibility) TEtymologyFaceRead(this QEtymology etymology)`
 
 Reads the visibility of the field's two faces by their place in the body.
-
-## `internal static void TReflexFoldRefine(ToggleButton fold, bool opened)`
-
-Builds an empty `QReflexList` over a bare list and the WPF toggle, then runs its fold refine.
 
 ## `internal static void TReflexTypeRefine(QReflexItem row, CReflexField field, string text)`
 
@@ -126,6 +143,44 @@ Hides the card's position box through the card's own hide.
 ## `internal static void TCardPositionSet(object card, int position)`
 
 Sets the card's position number.
+
+## `internal static object TCardFoldCreate(CCardDraft draft)`
+
+Builds a card over `draft`, which also names its id.
+Its peek is the definition, as a meaning list picks it.
+It shows the draft's fold on the card as the list does.
+The card is internal, so the relay hands it back as an object.
+
+## `internal static void TCardRowRefine(FrameworkElement container, object card)`
+
+Runs the card row painter on a laid out row with no changed property, as a full fill does.
+
+## `internal static void TCardHingeAttach(ItemsControl list, CEditor editor)`
+
+Builds a card driver and introduces the editor's field and list facets to it.
+The field drivers it never reaches are passed as null, since the row holds only a hinge.
+It attaches the real card fill to `list`, so a hinge click reaches the real fold gate.
+
+## `internal static object? TLookSettingRead(string style, string part, DependencyProperty property, bool folded)`
+
+Reads the fixed value the look sheet gives `property` on `part` of `style`.
+It picks the last row whose cues hold, as the look handler does.
+A folded hinge holds the checked cue, and an unfolded one holds only the base cue.
+It returns null when no row holds, or when the winner is no fixed `Freezable`.
+
+## `internal static object TLeafItemCreate(CLeaf leaf, CStateWording peek)`
+
+Builds the reading card item over a ready leaf and its peek.
+The item is internal, so the relay hands it back as an object.
+
+## `internal static void TLeafCardRefine(FrameworkElement container, object card)`
+
+Runs the reading card painter on a laid out row.
+
+## `internal static QLecternCard TLecternCardCreate(CDisplay display, FrameworkElement surface)`
+
+Builds the reading card section over the display's card, route and sound areas and the given surface.
+The surface holds WPF lists, so the caller runs it on an STA thread.
 
 ## `internal static void TCardRowShow(ObservableCollection<QTranscriptionItem> rows, IReadOnlyList<CTranscriptionDraft> drafts)`
 

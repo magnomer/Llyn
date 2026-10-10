@@ -1,5 +1,5 @@
 # CCatalog.cs
-Hash: `fd257a496368d332`
+Hash: `982fa7aa506508b2`
 
 ## `public sealed class CCatalog`
 
@@ -100,6 +100,7 @@ The Conduct copy of an engine filter, carrying its hidden languages.
 ## `internal static LSubject LCatalogSubjectRead(CSubject subject)`
 
 The engine subject a driver's subject names, mapped member by member by name like the ordering.
+The series fold subject maps to its own engine subject, never to the plain fold.
 
 ## `internal static CVistaRow LCatalogRowRead(LVistaRow row)`
 

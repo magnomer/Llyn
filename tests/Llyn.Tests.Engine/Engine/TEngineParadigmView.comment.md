@@ -1,5 +1,5 @@
 # TEngineParadigmView.cs
-Hash: `a55751ace42ade8e`
+Hash: `b0d30c06175ac036`
 
 ## `public sealed class TEngineParadigmView`
 
@@ -13,7 +13,14 @@ With custom analysis off, a Spanish verb answers both default views from the pac
 The collapsed view has nine lines and no headers.
 The expanded view has eleven lines under six header keys.
 Labels and headers come through as localization keys.
-A stored regular form shows unmarked text, while an existing slot without a form shows lost.
+A stored regular form shows unmarked text with no tip.
+An existing slot without a form has the lost tip.
+
+## `public void InflectionRead_LostCellWithHeld_AnswersHeldTip()`
+
+The held rule lives in Core, so the engine test keeps it covered.
+With held on, an existing slot without a form shows the ellipsis.
+That cell carries the held tip instead of the lost tip.
 
 ## `public void InflectionRead_Tener_MarksWholeRoot()`
 
@@ -25,8 +32,8 @@ The preterite line is found by its label, since custom analysis is on.
 
 ## `public void InflectionRead_UnfetchedCell_AnswersPendingStatus()`
 
-A cell with no form during a fetch shows the pending status and no text.
-The slotless first-singular imperative instead retains text status with empty text.
+A cell with no form during a fetch shows the ellipsis with the pending tip.
+The slotless first-singular imperative instead has empty text and no tip.
 
 ## `public void InflectionRead_AnalysisOn_UsesCustomOrderAndMarks()`
 

@@ -1,5 +1,5 @@
 # QLectern.cs
-Hash: `7100b4582e3d67f3`
+Hash: `9c9517f15a79364b`
 
 ## `public sealed class QLectern`
 
@@ -12,7 +12,7 @@ The veneer names only this class, so no veneer reaches Conduct.
 ## `public QLectern(FrameworkElement surface, CDisplay display, CAtelier atelier, CEnvoy envoy)`
 
 Builds the view over `display`, pulling every part it draws from `surface` by contract ID.
-The header, star row, frequency, entry, playback, accent, glyph, transcription, reflex, sound, card, incoming and etymology sections are built here.
+All header, sound and card sections are built here, followed by the compass.
 The header, frequency and entry sections take the display and subscribe their own events.
 Every other section takes only the parts it reads, and the lectern subscribes its redraws right after building it.
 So the open and close order matches the build order.
@@ -23,6 +23,9 @@ The envoy is the window's, which the header's flag load and the script box repor
 The header, the sections and the compass then redraw in subscription order.
 The compass is built and subscribed last, so it answers open and close once every section's visibility is set.
 The card section paints its ready card lists before the compass measures them.
+A fold written from either mode redraws the card section through the display's fold notice.
+The same notice repaints the rime-book and script box openings in the sound section.
+The same notice redraws the reflex hinge, so a reflex opening written in the editor shows here.
 The accent section draws its rows before it loads their flags, so the late flags land on drawn rows.
 The engine's notices arrive on its own thread, so each is marshalled onto `surface` through `QObserver`.
 The reflex section is built before the sound section, so a fanqie notice rewrites the anchors first.

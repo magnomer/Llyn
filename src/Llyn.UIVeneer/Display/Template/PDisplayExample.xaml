@@ -50,7 +50,7 @@
 
             <StackPanel Grid.Column="2">
                 <local:PMention x:Name="PExampleText" />
-                <ItemsControl x:Name="PExampleGloss" ItemTemplate="{StaticResource Display.Card.ExampleGloss}" Style="{DynamicResource Theme.Gloss.Line}" />
+                <ItemsControl x:Name="PExampleGloss" Margin="0,8,0,12" ItemTemplate="{StaticResource Display.Card.ExampleGloss}" Style="{DynamicResource Theme.Gloss.Line}" />
             </StackPanel>
 
             <Border Grid.Column="3" Margin="16,0,0,0">

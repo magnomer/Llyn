@@ -43,6 +43,8 @@ public sealed class QLecternCard
 
         _qLecternCardMeaning.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QLecternChipObserve));
         _qLecternCardCollocation.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QLecternChipObserve));
+        _qLecternCardMeaning.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QLecternHingeObserve));
+        _qLecternCardCollocation.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QLecternHingeObserve));
         _qLecternCardMeaning.AddHandler(
             PMention.PMentionClickEvent, new EventHandler<PMentionArgument>(QLecternMentionObserve));
         _qLecternCardCollocation.AddHandler(
@@ -76,9 +78,9 @@ public sealed class QLecternCard
         _qLecternCardMeaning.ItemsSource = null;
         _qLecternCardCollocation.ItemsSource = null;
         _qLecternCardMeaning.ItemsSource =
-            card.CLecternCardMeanings.Select(static leaf => new QLeafItem(leaf)).ToList();
+            card.CLecternCardMeanings.Select(static leaf => new QLeafItem(leaf, leaf.CLeafMeaning)).ToList();
         _qLecternCardCollocation.ItemsSource =
-            card.CLecternCardCollocations.Select(static leaf => new QLeafItem(leaf)).ToList();
+            card.CLecternCardCollocations.Select(static leaf => new QLeafItem(leaf, leaf.CLeafExpression)).ToList();
     }
 
     private void QLecternChipObserve(object sender, RoutedEventArgs e)
@@ -88,6 +90,16 @@ public sealed class QLecternCard
         e.Handled = _qLecternCardRoute.CDisplayChipOpen(
             QSender.QSenderSourceRead<QLeafChip>(e)?.QLeafChipOrigin,
             QSender.QSenderSourceRead<QLinkChip>(e)?.QLinkChipId);
+    }
+
+    private void QLecternHingeObserve(object sender, RoutedEventArgs e)
+    {
+        if (e.OriginalSource is ToggleButton { DataContext: QLeafItem card } hinge)
+        {
+            QLook.QLookCheckedRefine(
+                hinge,
+                _qLecternCardArea.CDisplayFoldToggle(card.QLeafItemId, QLook.QLookCheckedRead(hinge.IsChecked)));
+        }
     }
 
     private void QLecternMentionObserve(object? sender, PMentionArgument e)

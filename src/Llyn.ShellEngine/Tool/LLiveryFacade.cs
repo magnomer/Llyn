@@ -83,11 +83,14 @@ internal sealed class LLiveryFacade
                 accent,
                 _lLiveryFacadeReflex.LEngineGuiseRead(language, reflexes),
                 staff.LEngineStaffLanguage.LLanguageStaffReflex.LReflexFoldedRead(language),
+                staff.LEngineStaffEntry.LEntryStaffFold.LFoldClerkRead(entryId),
                 _lLiveryFacadeLanguage.LEngineTranscriptionRead(draft),
                 _lLiveryFacadeLanguage.LEngineGlyphRead(language),
                 _lLiveryFacadeLanguage.LEngineGlyphDivide(draft),
                 staff.LEngineStaffLanguage.LLanguageStaffFrequency.LFrequencyClerkRead(entryId, fetch: false),
                 _lLiveryFacadeVocabulary.LEngineParadigmScan(entryId),
+                _lLiveryFacadeVocabulary.LEngineInflectionRead(
+                    entryId, false, _lLiveryFacadeSettings.LEngineMorphologyCheck(), false),
                 _lLiveryFacadeFanqie.LEngineFanqieDivide(entryId),
                 _lLiveryFacadeScript.LEngineScriptDivide(entryId),
                 _lLiveryFacadeCard.LEngineTranslationRead(draft),
@@ -109,8 +112,6 @@ internal sealed class LLiveryFacade
             LEngineStaff staff = LLiveryFacadeStaff;
             return LLiveryClerk.LLiveryClerkBuild(
                 language,
-                staff.LEngineStaffLanguage.LLanguageStaffPronunciation.LPronunciationClerkFind(
-                    string.Empty, LCatalogOrder.LCatalogOrderName),
                 staff.LEngineStaffLanguage.LLanguageStaffShengfu.LShengfuRuleRead(language) is null
                     ? null
                     : staff.LEngineStaffLanguage.LLanguageStaffStem,

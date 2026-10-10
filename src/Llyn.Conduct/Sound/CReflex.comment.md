@@ -1,5 +1,5 @@
 # CReflex.cs
-Hash: `e0ea5afa86f3d38d`
+Hash: `96b4b23bb1dc93dd`
 
 ## `public sealed record CReflex(long CReflexId, string CReflexLanguage, string CReflexKind, string CReflexText, string CReflexRomanization, string CReflexMeaning, string CReflexNote, bool CReflexMain, string? CReflexRegion, IReadOnlyList<long> CReflexAnchors, CRespellingMark CReflexMark, bool CReflexFolded, bool CReflexLead)`
 
@@ -45,6 +45,12 @@ Whether the row is hidden, true for a folded row while the fold is closed.
 A copy of the row with the one cell `field` holding `text`.
 The lead and every other field stay as they were.
 `CKindred.CKindredSet` answers the copy, so the editor row holds no mirror of its own fields.
+
+## `internal static bool LReflexFoldCheck(IReadOnlyList<CReflex> rows)`
+
+Whether any of `rows` is folded, so the "More readings" toggle shows at all.
+It is the one owner of that verdict.
+The reading view, the editor and the series members all ask it over their own rows.
 
 ## `internal static IReadOnlyList<bool> LReflexLeadRead(IReadOnlyList<string> languages)`
 

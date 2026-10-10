@@ -5,7 +5,7 @@ Hash: `4559c9a91f4e504c`
 
 The relay a test holds instead of the editor composer itself.
 It hands each test the one facet the test reads, plus the few editor actions tests drive.
-A test thus names a facet or this fixture, so the composer's reach stays with its own tests.
+Tests can use individual facets without repeatedly reaching through the composer.
 
 ## `internal TEditorFixture(CEditor editor)`
 
@@ -18,7 +18,7 @@ Builds the editor the way production does, over the atelier's ports and wiring, 
 
 ## `internal CEditor TEditorFixtureEditor { get; }`
 
-The wrapped editor, read only by the sibling relays that need the whole composer.
+The wrapped editor, available when a test or sibling relay needs the whole composer.
 A vista restore, a draft read and a finish reach the editor itself, so no facet serves them.
 
 ## `internal CDesk TEditorFixtureDesk`
@@ -47,7 +47,7 @@ The sounding facet of the editor.
 
 ## `internal CFold TEditorFixtureFold`
 
-The fold facet, whose toggles reach every editor over the same settings.
+The box fold facet, whose gates store each box state for the held entry.
 
 ## `internal CEsteem TEditorFixtureEsteem`
 

@@ -1,9 +1,9 @@
 # LEntryStaff.cs
-Hash: `1f84597a0b428839`
+Hash: `1a9f50bd21fe012e`
 
-## `internal sealed record LEntryStaff(...)`
+## `internal sealed record LEntryStaff(LMeaningClerk LEntryStaffMeaning, LEntryClerk LEntryStaffEntry, LEntryQueryClerk LEntryStaffQuery, LGraspClerk LEntryStaffGrasp, LOutcomeClerk LEntryStaffOutcome, LCitationClerk LEntryStaffCitation, LFoldClerk LEntryStaffFold)`
 
-The group of clerks for the entry lifecycle, its search, its commit round and its citations.
+The entry lifecycle, search, commit, citation and fold clerks share this staff group.
 
 **Parameters**
 
@@ -13,6 +13,7 @@ The group of clerks for the entry lifecycle, its search, its commit round and it
 - `LEntryStaffGrasp` manages the user's grasp of an entry.
 - `LEntryStaffOutcome` runs the commit round of an entry draft.
 - `LEntryStaffCitation` manages citations.
+- `LEntryStaffFold` keeps card folds, per-entry "More readings" state and editor-box state.
 
 ## `internal static LEntryStaff LEntryStaffBuild(LRig rig, LIdentity identity, LLanguageCache cache, LRevisionClerk revision, LCatalogStaff catalog, LClaimStaff claim, LLanguageStaff language)`
 

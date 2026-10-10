@@ -88,6 +88,13 @@ public sealed class LReflexClerk
         return drafts;
     }
 
+    public static IReadOnlyList<LReflexDraft> LReflexWrittenScan(IReadOnlyList<LReflexDraft> rows)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+
+        return rows.Where(static reflex => reflex.LReflexDraftWritten).ToList();
+    }
+
     public IReadOnlyList<string> LReflexFoldedRead(string language)
     {
         return LReflexRuleRead(language)

@@ -1,5 +1,5 @@
 # LSubject.cs
-Hash: `e11d43e23df21dd1`
+Hash: `2b599722433caba7`
 
 ## `public enum LSubject`
 
@@ -8,7 +8,7 @@ A subscriber decides what to re-read from the kind alone.
 It never has to know which panel or which call made the change.
 
 The workspace value is the whole store changing at once.
-That is the folder itself moving, so every kind a subscriber holds is stale.
+A workspace replacement makes every stored kind a subscriber holds stale.
 
 ## `LSubjectEntry,`
 
@@ -98,5 +98,18 @@ The id is the draft the tenure holds, so the one panel holding it settles its bu
 
 ## `LSubjectVista,`
 
-The view state of one catalog tab moved: its order, filter, query or chosen row.
+The view state of one catalog tab changed, including its order, filter, query or chosen row.
 The id is the vista's own, so the one panel holding it re-lists or re-marks its rows.
+
+## `LSubjectFold,`
+
+A card fold, "More readings" state or editor-box state of one entry was written.
+The id is the entry's, so only surfaces showing that entry need refresh.
+The fold itself changes no lexical data.
+Subscribers may reshape a held draft, but no lexical reload is required by this subject.
+
+## `LSubjectStemFold,`
+
+The fold of one series member was written on the series page.
+The id is the member's entry, and only the series page redraws.
+It is apart from the plain fold, so entry and card folds leave the series page alone.

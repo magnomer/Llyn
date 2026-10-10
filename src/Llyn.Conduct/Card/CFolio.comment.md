@@ -1,5 +1,5 @@
 # CFolio.cs
-Hash: `f0f520a06bf38b25`
+Hash: `6c5424a25e34cac9`
 
 ## `internal static class CFolio`
 
@@ -10,11 +10,12 @@ It is split from `CCard` by role, since the gates and the maps change for differ
 
 The one map from link targets to their shape, shared with the editor and the lectern.
 
-## `internal static CEntryDraft CFolioEntryRead(LEntryDraft draft, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets, LMediaPort media)`
+## `internal static CEntryDraft CFolioEntryRead(LEntryDraft draft, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets, IReadOnlySet<long> folds, LMediaPort media)`
 
 Shapes the held entry for the editor view.
 The link targets come keyed by card from the tenure, so each card carries its links ready.
 The image addresses come through `media`, so each picture row carries its address ready.
+The folded card ids come from one store read for the entry, so each card carries its fold ready.
 
 ## `internal static CStateValue CFolioStateRead(LStateValue value)`
 
@@ -22,7 +23,7 @@ The one map from a written value to its shape.
 It carries the engine's plain text and verdicts, so no driver judges a state.
 The empty text for a value with nothing legible is the engine's own, so the map keeps no fallback.
 
-## `private static IReadOnlyList<CCardDraft> CFolioSheetRead(IReadOnlyList<LCardDraft> cards, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets, LMediaPort media, string meaning)`
+## `private static IReadOnlyList<CCardDraft> CFolioSheetRead(IReadOnlyList<LCardDraft> cards, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets, IReadOnlySet<long> folds, LMediaPort media, string meaning)`
 
 Shapes the meaning or collocation cards with everything the card parts read.
 A card's situation link carries no media, so its picture and video lists stay empty.
@@ -30,6 +31,7 @@ A card's links are its own entry of the tenure's target map, mapped by the one t
 The tenure answers an entry for every card, so a missing one is a fault and throws.
 The title, expression and meaning arrive worded, and `meaning` names the meaning field's hint for the sheet.
 The cards come in the order `CFolioOrderRead` sets, so a driver's list index is a Conduct place.
+Fold state comes from `folds`, while fold eligibility comes from the card draft's stored rule.
 
 ## `internal static int? CFolioPlaceRead(LEntryDraft content, long cardId, int place)`
 
@@ -49,7 +51,7 @@ So the badge number and the shown order agree even when the engine list is not i
 ## `internal static IReadOnlyList<LCardDraft> CFolioOrderRead(IReadOnlyList<LCardDraft> cards)`
 
 The one order of a card list, by the engine's position, with ties kept in the engine's order.
-Every Conduct path that numbers or finds a card reads it, so all of them agree.
+The sheet, place, reading-card and contents maps share it, so those paths agree.
 Those are the sheet map, the place map, the reading view's cards and the contents.
 It is internal so the display reads the same order rather than a copy of the sort.
 

@@ -1,5 +1,5 @@
 # TInterfaceEditor.cs
-Hash: `5199ebdf09021f35`
+Hash: `1d66f48c377dcb5a`
 
 ## `internal static class TInterfaceEditor`
 
@@ -39,7 +39,7 @@ Its marshal runs each notice at once.
 
 ## `internal static void TEditorVistaRestore(this CEditor editor, LVista vista)`
 
-Relays the restore of a saved vista into the editor, which only the navigation runs in production.
+Relays vista restoration without requiring a navigation driver.
 
 ## `internal static void TEditorVistaRestore(this TEditorFixture fixture, LVista vista)`
 
@@ -52,8 +52,9 @@ The held draft of the editor a fixture wraps, read as the plain overload reads i
 
 ## `internal static CEntryDraft? TEditorDraftRead(this CEditor editor)`
 
-The held draft of `editor` mapped through the folio, or null without one.
-No driver reads the whole draft back, so tests inspect it through this relay.
+The held draft of `editor` mapped through the entry area's own read, or null without one.
+So each card carries the fold the store holds, as `CEntryDraftChanged` hands it.
+Tests inspect the mapped draft without subscribing a driver.
 
 ## `internal static bool TEditorFinish(this CEditor editor, bool store)`
 

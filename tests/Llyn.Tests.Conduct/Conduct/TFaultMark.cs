@@ -38,6 +38,32 @@ public sealed partial class TFault
                 return (() => display.CDisplayFavoriteToggle(true), () => display.CDisplayFavoriteRead());
             }),
         new(
+            "CDisplayCard.CDisplayFoldToggle",
+            "LCardPort.LEngineFoldSave",
+            "Fold.SaveFailed",
+            static stage =>
+            {
+                CDisplayCard card = TFaultWingOpen(stage).CWingDisplay.CDisplayCard;
+                long id = card.CDisplayCardRead().CLecternCardMeanings[0].CLeafId;
+                bool taken = false;
+                return (
+                    () => taken = card.CDisplayFoldToggle(id, true),
+                    () => (card.CDisplayCardRead().CLecternCardMeanings[0].CLeafFolded, taken));
+            }),
+        new(
+            "CCardList.CCardFoldToggle",
+            "LCardPort.LEngineFoldSave",
+            "Fold.SaveFailed",
+            static stage =>
+            {
+                TEditorFixture editor = TFaultDeskOpen(stage);
+                long id = editor.TEditorDraftRead()!.CEntryDraftMeanings[0].CCardDraftId;
+                bool taken = false;
+                return (
+                    () => taken = editor.TEditorFixtureEditor.CEditorList.CCardFoldToggle(id, true),
+                    () => (editor.TEditorDraftRead()!.CEntryDraftMeanings[0].CCardDraftFolded, taken));
+            }),
+        new(
             "CDisplayGrasp.CDisplayGraspSet",
             "LGraspPort.LEngineGraspSave",
             "Grasp.MarkFailed",
@@ -129,34 +155,24 @@ public sealed partial class TFault
             "Display.ScriptRebuildFailed",
             static stage => (TFaultDeskOpen(stage).TEditorFixtureSounding.CSoundingScriptResolve, null)),
         new(
-            "CFold.CFoldFanqieToggle",
-            "LSettingsVault.LSettingsSave",
-            "Settings.SaveFailed",
+            "CFold.CFoldFanqieSpread",
+            "LReflexPort.LEngineBoxSpread",
+            "Box.SpreadFailed",
             static stage =>
             {
-                LEngine engine = TFaultVaultStart(stage);
-                CFold fold = TEditorFixture.TEditorFixtureCreate(
-                    TFaultAtelierCreate(stage, engine),
-                    TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard)).TEditorFixtureFold;
-                bool chosen = !engine.TEngineSettingsRead().LSettingsFanqieOpened;
-                return (
-                    () => fold.CFoldFanqieToggle(chosen),
-                    () => engine.TEngineSettingsRead().LSettingsFanqieOpened);
+                CFold fold = TFaultDeskOpen(stage).TEditorFixtureFold;
+                bool taken = false;
+                return (() => taken = fold.CFoldFanqieSpread(true), () => (fold.CFoldFanqieOpened, taken));
             }),
         new(
-            "CFold.CFoldScriptToggle",
-            "LSettingsVault.LSettingsSave",
-            "Settings.SaveFailed",
+            "CFold.CFoldScriptSpread",
+            "LReflexPort.LEngineBoxSpread",
+            "Box.SpreadFailed",
             static stage =>
             {
-                LEngine engine = TFaultVaultStart(stage);
-                CFold fold = TEditorFixture.TEditorFixtureCreate(
-                    TFaultAtelierCreate(stage, engine),
-                    TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard)).TEditorFixtureFold;
-                bool chosen = !engine.TEngineSettingsRead().LSettingsScriptOpened;
-                return (
-                    () => fold.CFoldScriptToggle(chosen),
-                    () => engine.TEngineSettingsRead().LSettingsScriptOpened);
+                CFold fold = TFaultDeskOpen(stage).TEditorFixtureFold;
+                bool taken = false;
+                return (() => taken = fold.CFoldScriptSpread(true), () => (fold.CFoldScriptOpened, taken));
             }),
         new(
             "CTaxonomy.CTaxonomyEntryCreate",

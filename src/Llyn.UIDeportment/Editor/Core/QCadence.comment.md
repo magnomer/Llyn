@@ -1,54 +1,68 @@
 # QCadence.cs
-Hash: `be08547155a85c98`
-Hash: `788974b77e69128d`
+Hash: `c49dba67646f341c`
 
 ## `internal sealed class QCadence`
 
-The editor's paradigm, fanqie, script and reading line use ready blocks from CSounding.
-Timbre events trigger redraws but do not supply those blocks.
-It finds its controls through `QContract.QContractFind` on the editor, keeping their `PEditor` markup names.
-Each panel paints one ready block its sounding read answers, font first, then its rows.
+The editor's sound panels consume ready sounding blocks, while box switches use the separate fold facet.
+Contract lookups remain within the retained editor surface.
+Panels expose switches but own no Conduct dependency.
 
-## `internal void QCadenceIntroduce(CDesk desk, CTimbre timbre, CSounding sounding, CFold fold, CLedger ledger, CEnvoy envoy)`
+## `internal void QCadenceIntroduce(CDesk desk, CEntry entry, CTimbre timbre, CSounding sounding, CFold fold, CLedger ledger, CEnvoy envoy)`
 
-Holds the sounding and fold facets for every read and gate.
-The desk and the timbre are only heard, so they are not held.
-The script panel's failure notice shows through `ledger` and `envoy` under `Display.ScriptFailed`.
-Each panel answers a desk tenure start and its own change event, one subscriber each.
-Both panels' renewal notices and the fanqie panel's diwei and representative notices are wired once, to their observers.
-Both panels' fold notices go straight to the fold's toggle gates, since each hands one raw value on.
-The fold paint answers a tenure start and the fold's change event.
+Sounding and fold facets remain available for reads and gates.
+Desk, entry and timbre supply redraw events rather than panel data.
+Script decode failures use `Display.ScriptFailed` through the supplied ledger and envoy.
+Renewal, navigation, representative and switch handlers are attached during introduction.
+Entry draft notifications repaint box states on draft preparation and entry-scoped fold bulletins.
 
-## `private void QCadenceFoldRefine()`
+## `private void QCadenceFoldRefine(CEntryDraft _)`
 
-Paints both panels' open switches and bodies from the open states the fold remembers.
+Both box states are read from the held entry's fold facet, not from the supplied draft.
+The panels paint those stored verdicts without writing them back.
+
+## `private void QCadenceSpellingObserve(object sender, RoutedEventArgs e)`
+
+The Fanqie switch sends its raw checked state to the rime-book fold gate.
+The returned verdict goes to `QLook.QLookCheckedRefine`, which restores a refused switch.
+Accepted writes repaint through entry draft notifications.
+
+## `private void QCadenceWritingObserve(object sender, RoutedEventArgs e)`
+
+The Script switch follows the same gate and recovery policy as Fanqie.
 
 ## `private void QCadenceParadigmRefine()`
 
-Paints the paradigm panel from the editor's paradigm block, font first.
-It maps the slot rows and the inflection view into Deportment items, as the reading view does.
-The sheet is null for a pack without a layout or a draft without an entry.
+One ready paradigm block supplies typography, slots and the sheet, keeping engine records outside the panels.
 
 ## `private void QCadenceScriptRefine()`
 
-Scans the rows with the panel's `QScriptFailureRefine`, so a picture that fails to decode raises the panel's failure notice.
-It also hands the block's verdict on whether the rows may be fetched again.
-The panel shows its refresh button from that flag, and `QCadenceFanqieRefine` does the same for the rime books.
+One ready script block supplies typography, rows and fetch verdicts.
+Image scanning reports decode failures through the panel's deferred notice.
 
 ## `private void QCadenceFanqieRefine()`
 
-It paints the rime-book font, the rows, the pending flag and the renewable flag from one ready block.
+One ready Fanqie block supplies typography, rows and fetch verdicts.
 
 ## `private void QCadenceDiweiObserve(bool initial, string key)`
 
-Hands the pressed rime cell's initial flag and key to the sounding, which opens it in the draft's language.
+Raw category identity reaches sounding, which owns navigation rather than the panel.
 
 ## `private void QCadenceRepresentativeObserve(long fanqieId, int rank, bool raise)`
 
-Hands the pressed row's id, its held rank and the raise flag to the sounding, which stores the new rank.
+The row's identity, held rank and raise verdict reach one sounding gate unchanged.
 
 ## `internal void QCadenceReadingRefine(string headword)`
 
-The representative reading of the headword, rewritten with each draft and each rime-book update.
-The headword box belongs to the editor, so its text arrives as a parameter.
-Its markup style hides the line on empty text, so nothing ranked leaves the header as it was.
+The editor supplies headword text, while sounding supplies the representative reading to display.
+
+## `internal QCadence(FrameworkElement surface)`
+
+Retaining one surface keeps later contract lookups in the editor's scope.
+
+## `private void QCadenceScriptObserve()`
+
+Script renewal reaches one sounding gate instead of manipulating displayed rows.
+
+## `private void QCadenceFanqieObserve()`
+
+Fanqie renewal follows the same sounding boundary.

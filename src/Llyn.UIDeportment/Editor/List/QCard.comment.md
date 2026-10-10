@@ -1,96 +1,78 @@
 # QCard.cs
-Hash: `35e20ab0db1f5af0`
+Hash: `905ec0f1679444bc`
 
 ## `internal sealed class QCard`
 
-The editor's driver for the meaning and collocation cards.
-It renders the draft's cards into a list, and wires each card's header, badge, eraser and inner lists.
-Adding, removing and reordering go to the card gates, never edits to the lists.
-The engine answers with a draft bulletin, and the render brings the lists into line with it.
-The numbering that keeps each list reading 1, 2, 3 is the engine's.
-Each card carries the id the engine minted for it.
-That is how a request names one card rather than a place in a list.
-A Meaning card and a Collocation card are the same card, so one pair of paths serves both lists.
-Nothing is read back from a card, because every edit reached the engine as a request.
+Meaning and collocation lists share one renderer and one set of card handlers.
+User gestures reach Conduct gates, while ready draft values drive presentation.
+Card identity is independent of list position.
 
 ## `internal QCard(QCardDrag drag, QContext context, QRegister register, QLink link, QLabel label, QSentence sentence, QCitation citation, QExample example, QImage image, QVideo video, ObservableCollection<PLanguageItem> languages, ObservableCollection<PCard> meanings, ObservableCollection<PCard> collocations)`
 
-Holds the drag driver for the header, and the field drivers each card's inner lists answer to.
-It also holds the shared language list a new card's Gloss picker shows.
-Both card lists go to the `QCardPosition` it builds, the only part that asks which list a card is in.
+Field drivers and sentence-menu collections are shared by both card kinds.
+The badge driver receives both lists so position requests can locate their card.
 
 ## `internal void QCardIntroduce(CCardField field, CCardList list)`
 
-Holds the field and list facets whose gates the fields and clicks reach.
-It hands the list facet to the badge driver, whose move gate it holds.
+Field edits and list gestures retain separate Conduct facets.
+The badge driver shares the same list facet.
 
 ## `internal void QCardApply(FrameworkElement container, object item, string? changed)`
 
-Fills one card and subscribes its drag, badge, removal, media and typed-field handlers.
-The changed property is passed on, so the card rewrites only that property's text.
-Both lists use this one fill, since both draw the same card.
+Only card items receive handlers and presentation.
+Handlers are removed before reattachment, avoiding duplicate subscriptions during refills.
+The changed-property name limits field text replacement.
 
 ## `internal static void QCardRowRefine(FrameworkElement container, PCard card, string? changed)`
 
-Writes a card's own parts from the card, where bindings and data triggers stood.
-The badge takes the accent ring and opens for typing while the position is open.
-The title, expression and meaning show their ready text and the placeholder Conduct chose.
-Each field's text is rewritten only on a full fill or when its own property changed.
-The badge's text is rewritten when the position moves or the badge opens or shuts.
-So a change to one property leaves the caret in another field alone.
-The placeholders and the badge's look follow every change.
-The three icons are set here, since an icon is drawn by code.
+Unrelated property changes leave field text alone, preserving another field's caret.
+Badge opening, closing and renumbering restore its position text.
+Hints, folded peeks and fold shape follow every refill.
+The title box remains visible when a folded untitled card shows its peek, preserving editing focus.
+`QCardFold` owns the shared writing and reading fold shape.
 
 ## `private void QCardFieldApply(FrameworkElement container, PCard card)`
 
-Hands every list inside a card its items and attaches each list's fill.
-Setting the same items again changes nothing, so a refill does not rebuild the lists.
-The sentence list's fill and hover reveal come from the `QExample` handed to the constructor.
+Each inner list receives the card's retained presentation collection and its own driver.
+Sentence rows share the supplied example filler and hover-reveal behavior.
+
+## `private void QCardHingeObserve(object sender, RoutedEventArgs e)`
+
+The hinge toggle sends card identity and checked state to `CCardFoldToggle`.
+Its verdict reaches `QLook.QLookCheckedRefine`, which restores refused clicks.
+Accepted folds repaint through ready draft notifications.
 
 ## `private void QCardTitleObserve(object sender, TextChangedEventArgs e)`
 
-Hands the typed title to the title gate.
-Each card field is hooked to its own observer, so no field name decides the gate.
-Only a field with the keyboard in it reports, since a write from the draft echoes through the same event.
-`QCardExpressionObserve` and `QCardDefinitionObserve` do the same for the expression and the meaning.
+Only keyboard-focused title fields report raw text to the title gate.
+Ordinary unfocused rendering echoes therefore do not become edits.
 
-## Inline notes
+## `private void QCardRemoveObserve(object sender, RoutedEventArgs e)`
 
-### `private void QCardRemoveObserve(object sender, RoutedEventArgs e)`
+Removal sends identity rather than editing the presentation collection.
+Conduct decides whether removal is allowed.
 
-Hands the pressed card's id to the gate.
-A list of one keeps its card, which the clerk decides, so the eraser sends every press.
+## `internal void QCardRefine(ObservableCollection<PCard> cards, string prefix, IReadOnlyList<CCardDraft> drafts, Func<PCard, CStateWording> peek)`
 
-### `internal void QCardRefine(ObservableCollection<PCard> cards, string prefix, IReadOnlyList<CCardDraft> drafts)`
+Each draft claims one existing card by id or receives a new presentation item.
+Repeated ids can produce separate items without sharing one claimed card.
+The supplied draft order is authoritative.
+Reconciliation keeps its longest leading sequence found in the existing order, removing other items and appending the remainder.
+Only that kept sequence retains controls and caret.
+Re-added items retain their objects but may lose focus when their controls rebuild.
+The caller chooses each new card's peek wording, which remains derived rather than copied.
 
-Brings one list into line with the draft's cards, so the list shows exactly those cards in their order.
-Each draft card claims the first unclaimed PCard with its id, else a new card is built.
-A claimed card is never claimed again, so two draft cards never share one PCard.
-Conduct does not promise unique ids, so a repeated id is shown twice and never throws.
-Removing repeats is behaviour, owned by Conduct or a layer below it, never by this list.
-The engine alone owns the order, so the list only removes by identity and appends, never inserting or moving.
-A card the form does not show yet is built, then painted like a kept one.
-Its sentence notice is subscribed as it is built, so a Gloss pick reaches the editor.
-Every card, new or kept, is painted, since any of its values may have changed.
-The kept cards are the longest head of the draft's order already standing in that sequence.
-They are compared by object identity, so a kept card is the same PCard, not an equal one.
-Kept cards need not be adjacent in the old list.
-Every other card is removed by identity, and the rest of the draft is appended in its order.
-A card the draft no longer names is therefore dropped, and any other removed card returns at its draft place.
-Only kept cards keep their controls and caret, since they never leave the list.
-A re-added card keeps its object but gets a rebuilt control, which loses focus and caret.
-Every card outside the kept head is re-added, even one the change never passed.
-Moving B to the front of A, B, C, D rebuilds A, C and D.
-An insert in the middle rebuilds every later card, and moving a card to the end rebuilds only it.
-That cost is the price of never inserting or moving.
+## `private void QCardDraftRefine(PCard card, CCardDraft draft)`
 
-### `private void QCardDraftRefine(PCard card, CCardDraft draft)`
+Every retained or new card receives ready values without a per-card Conduct lookup.
+Sentence rows share the sentence driver's current order.
+The supplied position is independent of loop position.
+Fold verdicts arrive last, allowing an in-place fold repaint after other fields are current.
 
-Paints one card from its ready draft card, and the card redraws only a value that changed.
-The sentence frame's order goes with the rows, as the last `CSentenceFrameRead` answered it.
-The frame is painted before the cards show, so a new row is built in its language's order.
-The links come ready on the draft card, so the paint asks Conduct nothing per card.
-Each chip field's own driver turns its drafts into chips, so the caret never sees a draft.
-The chip lines under the rows are painted by `QSentenceMentionRefine`, which answers the same draft change after the cards.
-A picture or film row is built from its draft row alone.
-Each card takes the number the draft carries, not its place in the loop.
+## `private void QCardExpressionObserve(object sender, TextChangedEventArgs e)`
+
+Only keyboard-focused expression fields report raw text to the expression gate.
+
+## `private void QCardDefinitionObserve(object sender, TextChangedEventArgs e)`
+
+Only keyboard-focused definition fields report raw text to the meaning gate.

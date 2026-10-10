@@ -32,12 +32,15 @@ internal static class TInterfaceInflection
         IReadOnlyList<string> headers, IReadOnlyList<LParadigmLine> lines) =>
         new(headers, lines);
 
+    internal static LParadigmView TParadigmViewCreate(LParadigmTable collapsed, LParadigmTable expanded) =>
+        new(collapsed, expanded);
+
     internal static LParadigmLine TParadigmLineCreate(string group, string label, IReadOnlyList<LParadigmForm> forms) =>
         new(group, label, forms);
 
     internal static LParadigmForm TParadigmFormCreate(
-        string text, IReadOnlyList<LInflectionMark> marks, LParadigmStatus status) =>
-        new(text, marks, status);
+        string text, IReadOnlyList<LInflectionMark> marks, string? tip, int split = 0) =>
+        new(text, marks, tip, split);
 
     internal static LInflectionMark TInflectionMarkCreate(int offset, int length) =>
         new(offset, length);

@@ -1,5 +1,5 @@
 # LLiverySheet.cs
-Hash: `3b0b0d7d237d7a29`
+Hash: `8668bec83c78091f`
 
 ## `public sealed class LLiverySheet : LLivery`
 
@@ -77,11 +77,6 @@ It checks its arguments first, so a null part throws before any text is written.
 
 Writes a rime-table category note through `LLiverySheetBuild` and `LLiveryYunjing.LLiveryYunjingAppend`.
 It checks its arguments first, so a null part throws before any text is written.
-
-## `public LLiveryNote LLiveryFormat(LLiveryLanguage language, string style, Func<long, string> note, Func<string, string> lookup)`
-
-Writes a language's sound note through `LLiverySheetBuild` and `LLiveryPhonology.LLiveryPhonologyAppend`.
-The sound note holds no label, so `lookup` is checked but never read.
 
 ## `public string LLiveryMarkFormat(string style)`
 

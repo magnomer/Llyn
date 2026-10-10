@@ -53,8 +53,8 @@ internal static class TInterfaceEngineLanguage
         engine.LEngineVocabulary.LEngineInflectionCheck(entryId);
 
     internal static LParadigmView? TEngineInflectionRead(
-        this LEngine engine, long entryId, bool pending, bool enabled) =>
-        engine.LEngineVocabulary.LEngineInflectionRead(entryId, pending, enabled);
+        this LEngine engine, long entryId, bool pending, bool enabled, bool held = false) =>
+        engine.LEngineVocabulary.LEngineInflectionRead(entryId, pending, enabled, held);
 
     internal static IReadOnlyList<LParadigmRow> TEngineParadigmScan(this LEngine engine, long entryId) =>
         engine.LEngineVocabulary.LEngineParadigmScan(entryId);
@@ -101,6 +101,11 @@ internal static class TInterfaceEngineLanguage
 
     internal static LStemPage TEngineStemResolve(this LEngine engine, long? id) =>
         engine.LEngineStem.LEngineStemResolve(id);
+
+    internal static void TEngineStemSpread(this LEngine engine, long? id, string character, bool opened)
+    {
+        engine.LEngineStem.LEngineStemSpread(id, character, opened);
+    }
 
     internal static IReadOnlyList<LVistaRow> TEngineKindredFind(
         this LEngine engine, string language, IReadOnlyList<long> stemIds, string query, LVista? vista = null) =>

@@ -1,10 +1,10 @@
 # TKindred.cs
-Hash: `1a01fb8bc067ff16`
+Hash: `d1b75d1196aef62b`
 
 ## `public sealed class TKindred`
 
 Covers the editor's reflex block read and its lookup start, over a real desk and ports a test may fake.
-The block carries every row, the anchor labels, the shared fold and the fetching line.
+The block carries every row, the anchor labels, the held entry's stored opening and the fetching line.
 An empty desk, a fresh draft or a refused anchor answers no anchor.
 Opening a stored entry without reflexes starts the lookup, and a reflected or fresh draft starts none.
 The rows show in the declared order the entry load gives them, here alphabetical since the language has no pack.
@@ -15,7 +15,7 @@ A typed text goes to the respelling when the row's language respells, and to the
 
 ## `public void KindredRead_StoredEntry_AnswersEveryRowWithItsAnchorAndTheFold()`
 
-A stored entry answers every row with its anchor label, and the fold the display shares.
+A stored entry answers every row with its anchor label, and the opening the engine stores for it.
 The anchor check is asked once for the whole block and the format once per row.
 
 ## `public void KindredRead_EmptyDesk_AnswersNoRowsAndNoAnchor()`

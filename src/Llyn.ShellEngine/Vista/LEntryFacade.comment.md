@@ -1,5 +1,5 @@
 # LEntryFacade.cs
-Hash: `d36db84c3a051927`
+Hash: `96955767edab0fda`
 
 ## `public sealed class LEntryFacade : LEntryPort, LGraspPort`
 
@@ -53,7 +53,7 @@ Returns the recorded revision.
 ## `public IReadOnlyList<LReflexDraft> LEngineReflexRead(LEntryDraft draft)`
 
 The reflex rows of the draft that carry written text, in draft order.
-A row the reflex fetch left blank stays out of a reading view.
+The filter is `LReflexClerk.LReflexWrittenScan`, which the series page's members share.
 
 ## `public LEntry LEngineGlyphResolve(string character, string language)`
 

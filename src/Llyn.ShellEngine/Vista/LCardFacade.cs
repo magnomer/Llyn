@@ -198,6 +198,34 @@ public sealed class LCardFacade : LCardPort
         }
     }
 
+    public IReadOnlySet<long> LEngineFoldRead(long entryId)
+    {
+        lock (_lCardFacadeGate)
+        {
+            return LCardFacadeStaff.LEngineStaffEntry.LEntryStaffFold.LFoldClerkRead(entryId);
+        }
+    }
+
+    public void LEngineFoldSave(long entryId, long cardId)
+    {
+        lock (_lCardFacadeGate)
+        {
+            LCardFacadeStaff.LEngineStaffEntry.LEntryStaffFold.LFoldClerkSave(cardId);
+        }
+
+        _lCardFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectFold, entryId);
+    }
+
+    public void LEngineFoldDelete(long entryId, long cardId)
+    {
+        lock (_lCardFacadeGate)
+        {
+            LCardFacadeStaff.LEngineStaffEntry.LEntryStaffFold.LFoldClerkDelete(cardId);
+        }
+
+        _lCardFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectFold, entryId);
+    }
+
     internal static ArgumentOutOfRangeException LEngineOwnerRaise(LOwner owner)
     {
         return new ArgumentOutOfRangeException(

@@ -1,12 +1,12 @@
 # CKindred.cs
-Hash: `78ceb564cfeb62e7`
+Hash: `c6d9cb02c89232bb`
 
 ## `public sealed class CKindred`
 
 The reflex block of the entry an editor holds, as the editor shows or edits it.
 It is split from `CTimbre` by concern, since the reflex rows have their own ports, quill and lookup.
 The editor builds it over its desk, its display, its reflex, draft and settings ports, and its envoy.
-So it keeps no copy.
+The held draft supplies its rows, while fold state is read separately from storage.
 
 ## `internal CKindred(CDesk desk, LReflexPort reflexes, LDisplay display, LDraftPort drafts, LSettingsPort settings, CEnvoy envoy)`
 
@@ -25,10 +25,11 @@ Whether the held entry's reflex lookup is still running, so the reflex block sho
 
 The held draft's reflex block, ready to paint, as the reading view reads its own.
 Every row shows, the blank ones included, each resolved by the shared reflex scan.
+The fold verdict is read from those rows by `CReflex.LReflexFoldCheck`.
 The anchor labels are read against the draft's headword through the shared anchor map.
 It hands the map this class's envoy and settings and the display's repaint memory.
 So a refused anchor read shows `Display.AnchorFailed` once until the user acts.
-The fold comes from the editor's display, which shares it with every reading view.
+The opened state is the one the engine stores for the held entry, read through the display's sound half.
 An empty desk answers no rows, no anchor and no fetching line.
 A refused scan is not caught here.
 
@@ -58,6 +59,15 @@ The user pressed the minus of reflex row `reflex`.
 
 The user pressed the star of reflex row `reflex`.
 The engine flips the main mark the draft holds, so a row it no longer holds sends nothing.
+
+## `public bool CKindredSpread(bool opened)`
+
+The gate for the editor's "More readings" hinge.
+It makes one engine call, which stores `opened` for the held entry.
+The engine then raises the fold bulletin, so the editor and a reading view on that entry repaint.
+True means the port returned without throwing, not that a stored row changed.
+A fresh draft or an empty desk answers false and writes nothing.
+A refusal shows `Reflex.SpreadFailed` every time and answers false, so the driver puts the hinge back.
 
 ## `public CReflexTyped CKindredSet(long reflex, CReflexField field, string text)`
 

@@ -1,15 +1,15 @@
 # TParadigmGrid.cs
-Hash: `83f07524c17c7143`
+Hash: `52b2fbf45d3c362b`
 
 ## `public sealed class TParadigmGrid`
 
 Covers the inflection tables of the paradigm box, their rules and the switch between them.
 Each box runs on its own STA thread, since it is a WPF control.
-Assertions depend on fixed child indices for the switch panel and both tables.
+Assertions depend on fixed child indices for the switch track and both tables.
 
 ## `public void ParadigmView_Set_ShowsCollapsedHidesExpanded()`
 
-A box handed a sheet shows itself, the full button and the collapsed table.
+A box handed a sheet shows itself, the switch track and the collapsed table.
 The expanded table stays hidden until the full button is checked.
 
 ## `public void ParadigmSwitch_FullChecked_ShowsExpanded()`
@@ -50,4 +50,4 @@ Every shown form uses `text`, `marks` and `split`, so one sheet serves the mark 
 ## `private static UIElementCollection TParadigmPartsRead(QParadigm box)`
 
 The four parts of the box's stack, in their fixed order.
-The second part is the switch panel, whose second button is the full button.
+The second part is the switch track, whose panel holds the full button second.

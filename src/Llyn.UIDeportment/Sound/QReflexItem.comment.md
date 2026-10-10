@@ -1,5 +1,5 @@
 # QReflexItem.cs
-Hash: `b80f70e3c6fed0da`
+Hash: `44f12a638273652f`
 
 ## `public sealed class QReflexItem : INotifyPropertyChanged`
 
@@ -9,27 +9,26 @@ It also knows whether it leads its language group, and whether it is folded away
 It holds the anchor label the row prints.
 It also knows whether the row may be anchored at all.
 The view only reads it, and the panel's cell editors write its editable properties.
-Every value comes ready from a `CReflex` or from the gate's answer to an edit.
+Reflex values arrive ready from Conduct.
+The list supplies separate lead, fold and anchor presentation.
 So the row holds no session and asks nothing.
 `PropertyChanged` only tells the view a value changed and never carries a request.
 
 ## `private CReflex _qReflexItemReflex;`
 
 The ready reflex the row last took, or its copy after a typed answer.
-Every value the row prints reads it, label keys included, so the row mirrors no field of it.
+Editable text and label keys read the held reflex.
+Lead, hidden state and anchor presentation remain separate.
 
 ## `public QReflexItem(CReflex reflex)`
 
 Builds the row from one ready reflex.
-The fold refine that follows every build decides whether it starts hidden.
+Construction copies the reflex and its lead.
+Hidden state is painted separately by `QReflexList.QReflexFoldRefine`.
 
 ## `public long QReflexItemId { get; }`
 
 The draft row's id, by which the panel's gates name it.
-
-## `public bool QReflexItemFolded`
-
-Whether the row belongs to a language the pack folds away.
 
 ## `public string QReflexItemOpener`
 
@@ -86,7 +85,7 @@ Conduct marks it on every read, and the panel asks Conduct again while a languag
 ## `public bool QReflexItemHidden`
 
 Whether the row is hidden in the stack, true for a folded row while the fold is closed.
-The panel's and the view's `QReflexList` set it from the shared fold state.
+The panel's and the view's `QReflexList` set it from their entry's stored opening.
 
 ## `public string QReflexItemAnchor`
 
@@ -142,13 +141,13 @@ Takes every value of a ready reflex in place, except its anchors.
 So a changed mark or fold needs no new row.
 The anchor labels arrive apart, through `QReflexList.QReflexAnchorRefine`.
 It keeps the reflex and copies its lead.
-Each field announces only a real change, and no announcement sends a request.
+Compared properties announce only real changes, and no announcement sends a request.
 
 ## `internal void QReflexTypeRefine(CReflex? reflex)`
 
 Keeps the row `CKindred.CKindredSet` answered, which Conduct copied through `CReflex.CReflexTypedApply`.
 A null answer names a row the draft lacks, so the row keeps what it holds.
-It is the edit path's only writer, so the row never keeps a typed copy of its own.
+It accepts the gate's answer rather than inventing a typed copy.
 The binding reads the cell back after the write, so the editor shows the answer.
 A typed language or kind keys its label from the copy, so the label and tag name the typed text.
 The lead is left alone, since the answer's heads reach it through `QReflexList.QReflexLeadRefine`.
@@ -156,12 +155,14 @@ The lead is left alone, since the answer's heads reach it through `QReflexList.Q
 ## `private static string QReflexLabelRefine(string key, string name)`
 
 A language or kind as the view prints it, looked up under the key Conduct chose.
-A missing translation prints the name as the pack spells it, and a blank name prints nothing.
+A null lookup falls back to `name`.
+A successful lookup is used even when `name` is blank.
 
 ## `private void QReflexValueRefine(CReflex reflex)`
 
-Keeps `reflex` and announces each property whose value differs from the held reflex.
-The respelled mark is compared before the text, so the text arrives under the mark it is shown with.
+Keeps `reflex` and compares text, labels, main mark and bracket presentation.
+The folded flag itself raises no property notification.
+Bracket changes are notified before text changes.
 A changed language announces the head and label, and a changed kind announces the kind and tag.
 
 ## `private void QReflexChangeRefine(string name)`

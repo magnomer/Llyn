@@ -273,7 +273,7 @@ public sealed class TEngineInflectionHeld
         LParadigmView view = Assert.IsType<LParadigmView>(engine.TEngineInflectionRead(entry.LEntryId, false, true));
         IReadOnlyList<LParadigmForm> forms =
             [.. view.LParadigmViewExpanded.LParadigmTableLines.SelectMany(line => line.LParadigmLineForms)];
-        Assert.All(forms, form => Assert.Equal(LParadigmStatus.LParadigmStatusText, form.LParadigmFormStatus));
+        Assert.All(forms, form => Assert.Null(form.LParadigmFormTip));
         Assert.Equal(64, forms.Count(form => form.LParadigmFormText.Length > 0));
         Assert.Equal(64, engine.TEntryInflectionRead(entry.LEntryId).Count);
         Assert.Equal(64, engine.TEngineDraftRead(held.LDraftId)?.LDraftContent.LEntryDraftInflections.Count);

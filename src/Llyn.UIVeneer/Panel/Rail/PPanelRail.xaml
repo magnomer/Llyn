@@ -44,6 +44,11 @@
                 </StackPanel>
                 <Rectangle Style="{StaticResource Theme.Command.Divider}" />
                 <Button
+                    x:Name="PPanelRailMarkup"
+                    Content="{DynamicResource List.Import}"
+                    Style="{StaticResource Theme.Command.Segment}"
+                    Visibility="Collapsed" />
+                <Button
                     x:Name="PPanelRailPortrait"
                     Content="{DynamicResource Scribe.Export}"
                     Style="{StaticResource Theme.Command.Segment}" />

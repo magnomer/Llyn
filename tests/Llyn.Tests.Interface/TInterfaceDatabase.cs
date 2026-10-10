@@ -338,6 +338,11 @@ internal static partial class TInterface
         this LFanqieArchive fanqieArchive, string language, string character) =>
         fanqieArchive.LFanqieRead(language, character);
 
+    internal static void TFanqieRepresentativeSet(this LFanqieArchive fanqieArchive, long fanqieId, int rank)
+    {
+        fanqieArchive.LFanqieRepresentativeSet(fanqieId, rank);
+    }
+
     internal static string TEntryEpithetRead(this LEntryVault entryVault, long entryId) =>
         entryVault.LEntryEpithetRead(entryId);
 

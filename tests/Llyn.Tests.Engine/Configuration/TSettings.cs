@@ -238,6 +238,24 @@ public sealed class TSettings
     }
 
     [Fact]
+    public void SettingsLoad_LegacyBoxKeys_LoadsTheOtherFieldsAndDropsThemOnSave()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        string path = Path.Combine(workspace.TWorkspaceFolder, "settings.json");
+        File.WriteAllText(
+            path, "{ \"localization\": \"ko\", \"tally\": true, \"fanqie\": true, \"script\": true }");
+
+        LSettings settings = TInterface.TSettingsLoad(workspace.TWorkspaceFolder);
+        TInterface.TSettingsSave(workspace.TWorkspaceFolder, settings);
+
+        Assert.Equal("ko", settings.LSettingsLocalization);
+        Assert.True(settings.LSettingsTally);
+        Assert.DoesNotContain("\"fanqie\"", File.ReadAllText(path));
+        Assert.DoesNotContain("\"script\"", File.ReadAllText(path));
+        Assert.Equal(settings, TInterface.TSettingsLoad(workspace.TWorkspaceFolder));
+    }
+
+    [Fact]
     public void LocalizationRead_UnlistedLanguageSaved_FallsToDefault()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

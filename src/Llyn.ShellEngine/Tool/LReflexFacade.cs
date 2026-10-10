@@ -96,6 +96,42 @@ public sealed class LReflexFacade : LReflexPort
             .LReflexClerkFetch.LReflexFetchCheck(entryId);
     }
 
+    public bool LEngineSpreadCheck(long entryId)
+    {
+        lock (_lReflexFacadeGate)
+        {
+            return LReflexFacadeStaff.LEngineStaffEntry.LEntryStaffFold.LFoldClerkLoad(entryId);
+        }
+    }
+
+    public void LEngineReflexSpread(long entryId, bool opened)
+    {
+        lock (_lReflexFacadeGate)
+        {
+            LReflexFacadeStaff.LEngineStaffEntry.LEntryStaffFold.LFoldClerkSpread(entryId, opened);
+        }
+
+        _lReflexFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectFold, entryId);
+    }
+
+    public bool LEngineBoxCheck(long entryId, LFoldBox box)
+    {
+        lock (_lReflexFacadeGate)
+        {
+            return LReflexFacadeStaff.LEngineStaffEntry.LEntryStaffFold.LFoldClerkLoad(entryId, box);
+        }
+    }
+
+    public void LEngineBoxSpread(long entryId, LFoldBox box, bool opened)
+    {
+        lock (_lReflexFacadeGate)
+        {
+            LReflexFacadeStaff.LEngineStaffEntry.LEntryStaffFold.LFoldClerkSpread(entryId, box, opened);
+        }
+
+        _lReflexFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectFold, entryId);
+    }
+
     public IReadOnlyList<LDescent> LEngineDescentRead(string language)
     {
         if (string.IsNullOrWhiteSpace(language))

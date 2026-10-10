@@ -83,14 +83,6 @@ internal static partial class TInterface
             note ?? (static id => id.ToString(CultureInfo.InvariantCulture)),
             lookup);
 
-    internal static LLiveryNote TLiveryFormat(
-        LLiveryLanguage language, Func<string, string> lookup, Func<long, string>? note = null) =>
-        new LLiverySheet(TThemeLoad()).LLiveryFormat(
-            language,
-            new string('a', 32),
-            note ?? (static id => id.ToString(CultureInfo.InvariantCulture)),
-            lookup);
-
     internal static Func<long, string> TCourierNoteBuild(string stamp, IReadOnlyList<LEntry> entries) =>
         LCourierNote.LCourierNoteBuild(new LLiverySheet(TThemeLoad()), stamp, entries);
 
@@ -100,17 +92,22 @@ internal static partial class TInterface
             page, language, static key => key, CancellationToken.None);
 
     internal static LLiveryLanguage TLiveryLanguageBuild(
-        string name,
-        IReadOnlyList<LCatalogPronunciation> pronunciation,
-        IReadOnlyList<LLiveryStem> stem,
-        IReadOnlyList<LLiveryDiwei> diwei) =>
-        new(name, pronunciation, stem, diwei);
+        string name, IReadOnlyList<LLiveryStem> stem, IReadOnlyList<LLiveryDiwei> diwei) =>
+        new(name, stem, diwei);
 
     internal static LLiveryStem TLiveryStemCreate(LStemPage page, IReadOnlyList<LEntry> entry) =>
         new(page, entry);
 
-    internal static LStemPage TStemPageCreate(string language, string key, IReadOnlyList<string> characters) =>
-        new(language, key, characters);
+    internal static LStemPage TStemPageCreate(
+        string language, string key, IReadOnlyList<string> characters, IReadOnlyList<LStemMember>? members = null) =>
+        new(language, key, characters, members);
+
+    internal static LStemMember TStemMemberCreate(
+        string character,
+        IReadOnlyList<string> readings,
+        IReadOnlyList<LReflexDraft> reflexes,
+        IReadOnlyList<LReflexGuise>? guises = null) =>
+        new(character, readings, reflexes, guises);
 
     internal static LLiveryDiwei TLiveryDiweiCreate(
         string kind, string language, string key, IReadOnlyList<LEntry> entry) =>

@@ -63,13 +63,61 @@ public sealed class CDisplayCard
         IReadOnlyDictionary<long, string> citations = LDisplayCitationRead(shown);
         IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets = LDisplayTranslationRead(shown);
         string mark = _cDisplaySettings.LEngineTextRead("Display.Unknown");
+        IReadOnlySet<long> folds = LDisplayFoldRead();
         LMediaPort media = _cDisplayRule.LDisplayMediaPort;
         return new CLecternCard(
-            CLeaf.LLeafRead(shown.LEntryDraftMeanings, order, mark, citations, targets, media, _cDisplayExamplePort),
             CLeaf.LLeafRead(
-                shown.LEntryDraftCollocations, order, mark, citations, targets, media, _cDisplayExamplePort),
+                shown.LEntryDraftMeanings, order, mark, citations, targets, folds, media, _cDisplayExamplePort),
+            CLeaf.LLeafRead(
+                shown.LEntryDraftCollocations, order, mark, citations, targets, folds, media, _cDisplayExamplePort),
             shown.LEntryDraftDefined,
             shown.LEntryDraftCollocated);
+    }
+
+    public bool CDisplayFoldToggle(long cardId, bool folded)
+    {
+        if (_cDisplayRule.LDisplayChosen is not long id)
+        {
+            return false;
+        }
+
+        try
+        {
+            if (folded)
+            {
+                _cDisplayCardPort.LEngineFoldSave(id, cardId);
+            }
+            else
+            {
+                _cDisplayCardPort.LEngineFoldDelete(id, cardId);
+            }
+
+            return true;
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(_cDisplayEnvoy, _cDisplaySettings, "Fold.SaveFailed", exception);
+        }
+
+        return false;
+    }
+
+    private IReadOnlySet<long> LDisplayFoldRead()
+    {
+        if (_cDisplayRule.LDisplayChosen is not long id)
+        {
+            return new HashSet<long>();
+        }
+
+        try
+        {
+            return _cDisplayCardPort.LEngineFoldRead(id);
+        }
+        catch (Exception exception)
+        {
+            LDisplayNoticed.LLedgerRepaintShow(_cDisplayEnvoy, _cDisplaySettings, "Fold.ReadFailed", exception);
+            return new HashSet<long>();
+        }
     }
 
     private IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> LDisplayTranslationRead(LEntryDraft shown)

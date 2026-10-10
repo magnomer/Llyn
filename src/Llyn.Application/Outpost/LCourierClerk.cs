@@ -15,8 +15,6 @@ public sealed class LCourierClerk
 
     private const string LCourierStyle = "Llyn style";
 
-    internal const string LCourierPhonology = "phonology";
-
     internal const int LCourierStall = 3;
 
     private readonly LOutpost _lCourierClerkOutpost;
@@ -126,10 +124,6 @@ public sealed class LCourierClerk
                     .Select(static diwei => (diwei.LLiveryDiweiKind, diwei.LLiveryDiweiPage.LDiweiPageKey)),
             ];
             held.RemoveAll(static row => row.LCourierLinkKey.Length == 0);
-            if (language.LLiveryLanguagePronunciation.Count > 0)
-            {
-                held.Add((LCourierPhonology, string.Empty));
-            }
 
             foreach ((string kind, string key) in held)
             {

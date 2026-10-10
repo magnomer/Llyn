@@ -48,6 +48,7 @@ internal sealed class QLibrary
 
         QInquiry.SetResourceReference(QField.QFieldHintProperty, "List.Search");
         QLibraryMarkup.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("import", 24));
+        QLibraryMarkup.Visibility = Visibility.Visible;
 
         QInquiry.TextChanged += QInquiryObserve;
         QLibraryMarkup.Click += QLibraryMarkupObserve;
@@ -61,7 +62,8 @@ internal sealed class QLibrary
 
     private TextBox QInquiry => QContract.QContractFind<TextBox>(_qLibrarySurface, "PInquiry");
 
-    private Button QLibraryMarkup => QContract.QContractFind<Button>(_qLibrarySurface, "PLibraryMarkup");
+    private Button QLibraryMarkup => QContract.QContractFind<Button>(
+        QContract.QContractFind<UserControl>(_qLibrarySurface, "PLibraryRail"), "PPanelRailMarkup");
 
     private Button QLibraryBin => QContract.QContractFind<Button>(_qLibrarySurface, "PLibraryBin");
 

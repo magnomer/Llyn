@@ -1,6 +1,7 @@
 {
   "generation": 1,
   "report": { "directory": "docs-analysis" },
+  "open": "Audit",
   "steps": [
     { "script": "Audit", "clear": ["Audit"] },
     { "script": "MapMethod" },

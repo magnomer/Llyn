@@ -286,8 +286,6 @@ public sealed class TSounding
                 TEngineFake.TEngineCreate<LSettingsPort>(new Dictionary<string, Func<object?[]?, object?>>
                 {
                     ["LEngineMorphologyCheck"] = _ => false,
-                    ["add_LEngineFoldChanged"] = _ => null,
-                    ["remove_LEngineFoldChanged"] = _ => null,
                 }),
                 TEngineFake.TEngineStubCreate<LMediaPort>()))
             .TEditorFixtureSounding;

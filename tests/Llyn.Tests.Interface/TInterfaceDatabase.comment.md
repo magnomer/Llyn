@@ -1,6 +1,5 @@
 # TInterfaceDatabase.cs
-Hash: `5906ceaf0f49c1d2`
-Hash: `03ccf24149a1bbab`
+Hash: `ca2c48221455bf3a`
 
 ## `internal static partial class TInterface`
 
@@ -9,6 +8,7 @@ They open a store and run one store operation.
 Entry-owned rows, forms, speeches, examples, media, notes, inflections, lacunae and readings are relayed here.
 The database session, the doctor, the realm, the revision log and the workspace root are relayed here too.
 A retirement of a part of speech is built and applied here, against the speech store.
+The fanqie store saves and reads a character's rows here, and sets a row's representative rank.
 The stores of what hangs on a meaning or collocation are relayed in `TInterfaceMeaning.cs`.
 Each relay is transparent and carries no test logic of its own.
 

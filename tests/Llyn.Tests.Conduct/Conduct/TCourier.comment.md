@@ -1,5 +1,5 @@
 # TCourier.cs
-Hash: `5810f6b222f065bd`
+Hash: `3e5eb47d1fab6129`
 
 ## `public sealed class TCourier`
 
@@ -17,9 +17,9 @@ A second push keeps the series note, and a series gone from the language read is
 The entry's stem chip links to the series note, while a stem with no note stays a plain chip.
 A language gone from both the entries and the scan loses its notebooks from the trash guard.
 Its series note is then asked for trash, refused by the guard, and stays in Joplin.
-The category fact checks where the initial, rime, tone and sound notes land.
+The category fact checks where the initial, rime and tone notes land.
 Rime table sits in the language notebook, and Onset and Rime sit in Rime table.
-Tone notes sit in Rime table itself, and the sound note sits in the language notebook.
+Tone notes sit in Rime table itself.
 The entry's initial, rime and tone chips each link to their category note.
 A series note whose save fails lands in the failed list, and its chip stays plain.
 A language whose read throws gets no reconstruction notes, while its entry notes still go.

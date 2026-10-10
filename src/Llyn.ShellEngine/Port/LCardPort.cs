@@ -10,4 +10,10 @@ public interface LCardPort
     IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> LEngineTranslationRead(LEntryDraft shown);
 
     LEtymologyResult LEngineEtymologyRead(LEntryDraft draft);
+
+    IReadOnlySet<long> LEngineFoldRead(long entryId);
+
+    void LEngineFoldSave(long entryId, long cardId);
+
+    void LEngineFoldDelete(long entryId, long cardId);
 }

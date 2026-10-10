@@ -1,5 +1,5 @@
 # CSounding.cs
-Hash: `825d46a0afbfd771`
+Hash: `e59be986f3b94b4f`
 Hash: `92f2278b2ae59a3f`
 
 ## `public sealed class CSounding`
@@ -11,15 +11,17 @@ Each smaller row's map stands on its own record, such as `CVariety` or `CReflexD
 Stored-entry reads and mark gates take their entry from the desk, so drivers pass no entry id.
 A fresh draft has no stored rows and cannot mark them.
 Rime-cell navigation instead uses the draft language and does not require a stored entry.
-The open state of its boxes belongs to the user, not the entry, so `CFold` keeps it apart.
-Every read answers empty on a refusal, since a box that cannot fetch still has to draw.
-The refusal still shows through the envoy under the read's own notice key, so none passes unseen.
+The open state of its boxes is a separate concern, so `CFold` reads and stores it.
+Ledger-backed reads have fallbacks, so a box can still draw after a fetch failure.
+Their refusals show through the envoy under each read's notice key.
+Mapping and font failures are not caught by those read wrappers.
 A read runs on every repaint, so it shows through the atelier's repaint memory, once until the user acts.
 Every mark gate announces the change, or shows the refusal under its own notice key.
 
 ## `internal void LSoundingObserverAttach(Action<Action> marshal)`
 
-Hears the tenure's fanqie subject and raises `CSoundingChanged` on the driver's thread.
+Hears fanqie bulletins through the tenure and raises `CSoundingChanged` on the driver's thread.
+The observer is not filtered to the held entry, since fanqie rows can be shared.
 A fanqie changed elsewhere refreshes the editor as a fanqie set here does.
 
 ## `internal CSounding(CDesk desk, LFanqiePort fanqies, LDiweiPort diweis, LScriptPort scripts, LParadigmPort paradigms, LSettingsPort settings, LDisplay display, CEnvoy envoy)`
@@ -32,7 +34,7 @@ Only the editor builds one, so the constructor is internal.
 
 ## `public event Action? CSoundingChanged;`
 
-A gate landed, so the boxes drawn from the sheet are read again.
+Raised after a successful mark gate or a marshalled fanqie bulletin, so subscribers can reread their blocks.
 
 ## `internal event Action<string, string, string>? LSoundingDiweiChosen;`
 
@@ -85,10 +87,10 @@ The user asked to drop the entry's script rows and fetch them again.
 
 The editor's whole paradigm block, in the reading view's own shape.
 The rows are joined by the engine, and the waiting check and the morphology verdict come from the voice.
-Both verdicts stand in each slot's ready status, so the driver never reads them.
+Both verdicts are folded into each slot's ready text and tip, so the driver never reads them.
 The headword font is that of the paradigm's own language, as the reading view picks it.
 Every block's font goes through the one font rule `CFont.CFontRead` holds.
-The inflection box is read through the ledger under `Display.ParadigmReadFailed` and mapped as held.
+The inflection box is read through the ledger under `Display.ParadigmReadFailed`, asked with `held` on.
 A refused box read shows that notice and answers a null view.
 A fresh draft has no entry, so its box is null.
 
@@ -127,12 +129,12 @@ Otherwise the epoch is empty, so a driver never looks up a key that has no text.
 ## `internal static IReadOnlyList<CParadigmSlot> CSoundingParadigmRead(LParadigmPort paradigms, IReadOnlyList<LParadigmRow> rows, bool pending, bool enabled, bool held)`
 
 Shapes each paradigm row the engine joined.
-The status of each row comes from `paradigms`, so the rule keeps its one owner in the engine.
+Each row's text and tip come from `paradigms` in one call, so the rule keeps one owner.
 The lectern calls it too, so no driver groups slots.
 The held flag is true for the editor, whose missing forms are held by the draft.
 
-## `private static CParadigmSlot LSoundingSlotRead(LParadigmRow row, LParadigmStatus status, bool held)`
+## `private static CParadigmSlot LSoundingSlotRead(LParadigmRow row, LParadigmShown shown)`
 
-Maps the row's status to the text shown and the key of its tip.
-The status rule is Core's, and the wording is `CParadigmForm.CParadigmFormResolve`'s.
-This method only lays the answer into a slot.
+Lays the row's part and name and the engine's ready text and tip into a slot.
+The status rule and its wording are Core's, applied below Conduct.
+It adds no rule.

@@ -1,5 +1,5 @@
 # CRespelling.cs
-Hash: `190720faba77d3b3`
+Hash: `4674341c1a77d9cd`
 
 ## `public static class CRespelling`
 
@@ -11,8 +11,14 @@ A found reading's mark and text come ready from the errand's search instead.
 
 The reflex rows of an entry in `language`, in order, each ready to show.
 One engine read answers every row's switch, phonemic mark and fold.
-Each row is marked when it leads its run of one language.
+The rows are then built by the overload below.
 The editor and the reading view's sound area both read their rows here, so the rule has one owner.
+
+## `internal static IReadOnlyList<CReflex> LRespellingReflexScan(IReadOnlyList<CReflexDraft> reflexes, IReadOnlyList<LReflexGuise> guises)`
+
+The reflex rows, in order, each ready to show under the guise at its position.
+Each row is marked when it leads its run of one language.
+A series member, whose guises the engine already read, builds its rows here, so they match the entry page's rows.
 
 ## `private static CReflex LRespellingReflexRead(CReflexDraft reflex, LReflexGuise guise, bool lead)`
 

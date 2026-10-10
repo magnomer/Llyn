@@ -12,24 +12,25 @@ internal sealed class QReflexList
 {
     private readonly ObservableCollection<QReflexItem> _qReflexListRow = [];
 
-    private readonly ToggleButton _qReflexListFold;
+    private readonly ToggleButton _qReflexListHinge;
 
-    internal QReflexList(ItemsControl list, ToggleButton fold)
+    internal QReflexList(ItemsControl list, ToggleButton hinge)
     {
         ArgumentNullException.ThrowIfNull(list);
-        ArgumentNullException.ThrowIfNull(fold);
+        ArgumentNullException.ThrowIfNull(hinge);
 
-        _qReflexListFold = fold;
+        _qReflexListHinge = hinge;
         list.ItemsSource = _qReflexListRow;
         QLookItem.QLookItemAttach(list, QReflexItem.QReflexItemRefine);
     }
 
     internal event Action<QReflexItem, CReflexField, string>? QReflexListTyped;
 
-    internal void QReflexListShow(IReadOnlyList<CReflex> rows)
+    internal void QReflexListShow(IReadOnlyList<CReflex> rows, bool foldable)
     {
         ArgumentNullException.ThrowIfNull(rows);
 
+        _qReflexListHinge.Visibility = QLook.QLookVisibleRead(foldable);
         QLookItem.QLookItemShow(
             _qReflexListRow,
             rows,
@@ -69,15 +70,18 @@ internal sealed class QReflexList
 
     internal void QReflexFoldRefine(bool opened)
     {
-        bool any = false;
-        foreach (QReflexItem row in _qReflexListRow)
+        QReflexHiddenRefine(_qReflexListRow, opened);
+        _qReflexListHinge.IsChecked = opened;
+    }
+
+    private static void QReflexHiddenRefine(IEnumerable<QReflexItem> rows, bool opened)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+
+        foreach (QReflexItem row in rows)
         {
-            any |= row.QReflexItemFolded;
             row.QReflexItemHidden = row.QReflexItemReflex.CReflexHiddenCheck(opened);
         }
-
-        _qReflexListFold.IsChecked = opened;
-        _qReflexListFold.Visibility = QLook.QLookVisibleRead(any);
     }
 
     private QReflexItem QReflexRowRefine(CReflex reflex)

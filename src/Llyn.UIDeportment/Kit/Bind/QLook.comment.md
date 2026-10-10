@@ -1,5 +1,5 @@
 # QLook.cs
-Hash: `59a1d420c6eedc68`
+Hash: `df5650773bd5b635`
 
 ## `internal static class QLook`
 
@@ -46,16 +46,31 @@ It only makes WPF raise both events on the element, so the class handlers run.
 Every style object behind each row's key, found once when the handlers attach.
 A dictionary merged twice yields two style objects under one key, and both map to it.
 
-## `private static readonly ConditionalWeakTable<`
+## `private static readonly ConditionalWeakTable<FrameworkElement, Dictionary<DependencyProperty, object>>`
 
-Per target, the local value each held property had before any row set it.
-The value is saved once, when a row first takes the property, and never overwritten.
-When no row holds the property any more, the saved value is put back and dropped.
+`QLookHeld` keeps, per target, the saved original of each property some row has set.
+The original is saved once, when a row first takes the property, and never overwritten.
+When the last claim on the property goes, the saved value is put back and dropped.
 So a view's own value survives a hover.
-An element listed here already carries its enable watcher.
+A part is listed here as another control's target, apart from any watcher of its own.
+
+## `private sealed record QLookClaim(FrameworkElement QLookClaimOwner, QLookSetter QLookClaimSetter);`
+
+One owner's claim on a target property: the control whose active row set it, and that row.
+
+## `private static readonly ConditionalWeakTable<FrameworkElement, Dictionary<DependencyProperty, List<QLookClaim>>>`
+
+`QLookClaimed` keeps, per target property, the claims of the owners whose active rows set it, latest last.
+A template part can be set both by its control's rows and by its own style's rows.
+The prompt of a reflex row's anchoring button is one.
+The button shows it, and its own minor style hides it when blank.
+One owner stepping back takes off only its own claim, and the latest remaining claim is set again.
+Only the last claim to go puts the original back.
+A renewed claim is removed and appended, so no claim is ever moved by position.
 
 ## `internal static void QLookStateAttach()`
 
+Maps the application's look styles through `QLookStyleScan` first.
 Registers class handlers for load, unload, hover, press, focus and check once, for the whole program.
 Press and focus are read after the input settles, since the control updates its flags in its own handlers.
 
@@ -63,6 +78,13 @@ Press and focus are read after the input settles, since the control updates its 
 
 The value-change descriptors hooked on each loaded element, so its unload can remove them.
 A descriptor's watch holds the element strongly, so an unremoved watch would keep it forever.
+
+## `private static readonly ConditionalWeakTable<FrameworkElement, DependencyPropertyChangedEventHandler>`
+
+`QLookWatch` keeps the one enable watcher of each element that carries rows of its own.
+The refine adds it on the element's first own pass, however the element was listed before.
+A part first held as another control's target still gets its watcher, so its own `Disabled` rows follow.
+It is kept apart from `QLookHeld`, so being a target never stands in for having a watcher.
 
 ## `internal static void QLookStyleAttach(FrameworkElement surface)`
 
@@ -83,14 +105,16 @@ The one handler every state change reaches.
 It gathers the rows of every style in the control's chain, base first, else of the control's type name.
 So a derived style's rows win over its base's rows, as its setters did.
 It reads the active cues and sets the last active row on each part and property.
-Every event sets the winning row again, which is harmless, so no row identity is kept per target.
+Every event sets the winning row again and renews this control's claim as the latest.
 A part missing from the template is looked up among the logical children, such as a menu's items.
 Failing that, it is looked up in the item template of the first presenter, such as a button's icon.
-A part and property with no active row is restored by that slot's value kind.
+A part and property with no active row drops this control's claim in the part's hold.
+Another owner's claim then stands, else the original is restored by that slot's value kind.
 Enable, text, content, highlight, drag, items, selection, source and dropdown changes are watched per element.
 A cue or icon change reaches the handler through its own property's change callback.
 No routed event reports them.
 The property watches are added only while the element is loaded, so its unload can take them off.
+The enable watcher is added once per element through `QLookWatch`, loaded or not.
 A combo box with no text is `Empty`, like a text block and a list with no items.
 An image with no source and a control with empty text content are `Empty` too.
 An open combo box is `Opened`, and a checked toggle is `Checked`.
@@ -135,6 +159,14 @@ A given `ink` colours the text, so a lead reading shows in the accent only while
 ## `internal static bool QLookCheckedRead(bool? shown)`
 
 A toggle's three-state check read as a plain yes or no, so a handler passes it down without comparing.
+
+## `internal static void QLookCheckedRefine(ToggleButton shown, bool stored)`
+
+A false gate verdict reverses the checked state, restoring a refused click without waiting for a fold refresh.
+True means normal gate completion, not proof that storage changed.
+A stored click is left alone, since the fold notice repaints it from the store.
+Every driver that puts back a refused toggle uses this one rule.
+The card hinges, both panes' box switches and the series page's member hinges share it.
 
 ## `private static QLookCue QLookCueRead(bool shown, QLookCue cue)`
 

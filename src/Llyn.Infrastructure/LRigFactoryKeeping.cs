@@ -11,5 +11,6 @@ public static class LRigFactoryKeeping
             new LWorkspaceArchive(database),
             new LTombstoneArchive(database),
             new LFavoriteArchive(database),
+            new LFoldArchive(database),
             new LNoteArchive(database));
 }

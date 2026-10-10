@@ -10,11 +10,13 @@ namespace Llyn.UIDeportment;
 internal sealed class PCard : INotifyPropertyChanged
 {
     private readonly string _pCardPrefix;
+    private readonly Func<PCard, CStateWording> _pCardPeek;
     private int _pCardPosition;
     private bool _pCardPositionActive;
     private CStateWording _pTitle;
     private CStateWording _pCardDefinition;
     private CStateWording _pCardExpression;
+    private bool _pCardFolded;
 
     internal PCard(
         string prefix,
@@ -22,14 +24,18 @@ internal sealed class PCard : INotifyPropertyChanged
         ObservableCollection<string> particles,
         ObservableCollection<string> dependences,
         ObservableCollection<PLanguageItem> languages,
+        Func<PCard, CStateWording> peek,
         CCardDraft draft)
     {
         ArgumentNullException.ThrowIfNull(draft);
 
         _pCardPrefix = prefix;
+        _pCardPeek = peek;
+        PCardId = draft.CCardDraftId;
         _pTitle = draft.CCardDraftTitle;
         _pCardDefinition = draft.CCardDraftMeaning;
         _pCardExpression = draft.CCardDraftExpression;
+        PCardStored = draft.CCardDraftStored;
         PCardSentence = new PCardSentence(catalog, particles, dependences, languages);
     }
 
@@ -64,7 +70,7 @@ internal sealed class PCard : INotifyPropertyChanged
         static chip => chip.PRegisterId,
         static (row, fresh) => fresh.PRegisterText == row.PRegisterText ? row : fresh);
 
-    public long PCardId { get; set; }
+    public long PCardId { get; }
 
     public int PCardPosition
     {
@@ -112,6 +118,12 @@ internal sealed class PCard : INotifyPropertyChanged
 
     public CStateWording PCardExpression => _pCardExpression;
 
+    public bool PCardFolded => _pCardFolded;
+
+    public bool PCardStored { get; }
+
+    public string PCardPeek => _pCardPeek(this).CStateWordingText;
+
     internal void PCardTitleShow(CStateWording value)
     {
         ArgumentNullException.ThrowIfNull(value);
@@ -149,6 +161,17 @@ internal sealed class PCard : INotifyPropertyChanged
 
         _pCardExpression = value;
         PCardRaise(nameof(PCardExpression));
+    }
+
+    internal void PCardFoldShow(bool folded)
+    {
+        if (_pCardFolded == folded)
+        {
+            return;
+        }
+
+        _pCardFolded = folded;
+        PCardRaise(nameof(PCardFolded));
     }
 
     internal void PCardImageShow(IReadOnlyList<CImageDraft> rows)

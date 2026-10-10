@@ -1,5 +1,5 @@
 # LSettingsLoader.cs
-Hash: `891e0b43424675b8`
+Hash: `b0e44ff1e0e7793e`
 
 ## `public sealed class LSettingsLoader : LSettingsVault`
 
@@ -7,10 +7,10 @@ Loads and saves the user's `LSettings` as `settings.json` inside a workspace fol
 The workspace folder is supplied by the caller, resolved through `LWorkspaceRoot`.
 This loader never decides where the workspace is.
 It decides only how the settings file within it is read and written.
-A missing or unknown file yields defaults so the program always starts.
-A key it does not know is passed over.
-So a file written before the window posture moved out still loads.
-An unparseable file is copied aside as `settings.broken.json` first, so the next save does not destroy it.
+A missing file yields defaults, while unknown keys are ignored.
+Removed window-posture keys therefore do not prevent loading recognized settings.
+Unparseable JSON triggers a copy to `settings.broken.json` before defaults are returned.
+A failed copy blocks later saves until another read clears the unread state.
 It is written under a pending name and moved into place, so a crash mid-write leaves the old file whole.
 
 ## `public LSettingsLoader(string root)`
@@ -41,6 +41,8 @@ After a read that failed to open the file, it raises `LVaultFault` without writi
 ### `Dictionary<string, object> payload = new(StringComparer.Ordinal)`
 
 Persisted keys are a data contract, so they stay lowercase and independent of member names.
+An older file's `fanqie` and `script` keys are ignored on read and dropped on the next save.
+The editor's box states now live per entry in the database.
 
 ### `flag.ValueKind == JsonValueKind.True;`
 
@@ -64,16 +66,6 @@ The epithet switch defaults on the same way, so an older workspace lists its Han
 ### `set.ValueKind == JsonValueKind.True;`
 
 The tally switch defaults off like the respelling switch, so an older workspace prints its tallies in IPA.
-
-### `rime.ValueKind == JsonValueKind.True;`
-
-The rime-book box state is read under the `fanqie` key, only as a JSON boolean.
-Anything else means closed, so an older workspace shows the box folded as before.
-
-### `writing.ValueKind == JsonValueKind.True;`
-
-The script box state is read under the `script` key the same way, closed unless the file says open.
-Both states are set after construction, so the positional fields keep their order.
 
 ### `&& speech.GetString() is { Length: > 0 } gloss`
 

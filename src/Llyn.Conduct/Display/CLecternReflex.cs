@@ -5,4 +5,5 @@ namespace Llyn.Conduct;
 public sealed record CLecternReflex(
     IReadOnlyList<CReflex> CLecternReflexRows,
     CLecternAnchor CLecternReflexAnchor,
-    bool CLecternReflexPending);
+    bool CLecternReflexPending,
+    bool CLecternReflexFoldable);

@@ -30,9 +30,27 @@ public sealed class TEngineParadigmView
         Assert.Equal("Inflection.Present", present.LParadigmLineLabel);
         Assert.Equal(6, present.LParadigmLineForms.Count);
         Assert.Equal("hablo", present.LParadigmLineForms[0].LParadigmFormText);
-        Assert.Equal(LParadigmStatus.LParadigmStatusText, present.LParadigmLineForms[0].LParadigmFormStatus);
+        Assert.Null(present.LParadigmLineForms[0].LParadigmFormTip);
         Assert.Empty(present.LParadigmLineForms[0].LParadigmFormMarks);
-        Assert.Equal(LParadigmStatus.LParadigmStatusLost, present.LParadigmLineForms[1].LParadigmFormStatus);
+        Assert.Equal("Paradigm.Lost", present.LParadigmLineForms[1].LParadigmFormTip);
+    }
+
+    [Fact]
+    public void InflectionRead_LostCellWithHeld_AnswersHeldTip()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineMorphologySave(false);
+        engine.TEngineAnalysisSave(false);
+        LEntry entry = TParadigmEntrySave(engine, "hablar", "Spanish", "Verb");
+        TParadigmFormSave(engine, entry, "9+12+17+20", "hablo");
+
+        LParadigmView view = Assert.IsType<LParadigmView>(
+            engine.TEngineInflectionRead(entry.LEntryId, false, true, held: true));
+
+        LParadigmForm lost = view.LParadigmViewExpanded.LParadigmTableLines[0].LParadigmLineForms[1];
+        Assert.Equal("Paradigm.Held", lost.LParadigmFormTip);
+        Assert.Equal("…", lost.LParadigmFormText);
     }
 
     [Fact]
@@ -55,7 +73,7 @@ public sealed class TEngineParadigmView
         Assert.Equal("tuve", form.LParadigmFormText);
         Assert.Equal([TInterfaceInflection.TInflectionMarkCreate(0, 4)], form.LParadigmFormMarks);
         Assert.Equal(0, form.LParadigmFormSplit);
-        Assert.Equal(LParadigmStatus.LParadigmStatusText, form.LParadigmFormStatus);
+        Assert.Null(form.LParadigmFormTip);
     }
 
     [Fact]
@@ -70,12 +88,12 @@ public sealed class TEngineParadigmView
 
         IReadOnlyList<LParadigmLine> lines =
             Assert.IsType<LParadigmView>(view).LParadigmViewExpanded.LParadigmTableLines;
-        Assert.Equal(LParadigmStatus.LParadigmStatusPending, lines[0].LParadigmLineForms[0].LParadigmFormStatus);
-        Assert.Equal(string.Empty, lines[0].LParadigmLineForms[0].LParadigmFormText);
+        Assert.Equal("Paradigm.Pending", lines[0].LParadigmLineForms[0].LParadigmFormTip);
+        Assert.Equal("…", lines[0].LParadigmLineForms[0].LParadigmFormText);
         LParadigmForm imperative = TParadigmLineFind(
             Assert.IsType<LParadigmView>(view).LParadigmViewExpanded, "Inflection.Affirmative").LParadigmLineForms[0];
         Assert.Equal(string.Empty, imperative.LParadigmFormText);
-        Assert.Equal(LParadigmStatus.LParadigmStatusText, imperative.LParadigmFormStatus);
+        Assert.Null(imperative.LParadigmFormTip);
     }
 
     [Fact]

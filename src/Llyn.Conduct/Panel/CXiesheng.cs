@@ -90,6 +90,8 @@ public sealed class CXiesheng
             CSubject.CSubjectWorkspace, _ => _cXieshengMarshal(LXieshengWorkspaceResonate));
         CXieshengGrove.CApertureObserverAttach(CSubject.CSubjectFanqie, rows);
         CXieshengGrove.CApertureObserverAttach(CSubject.CSubjectSettings, rows);
+        CXieshengGrove.CApertureObserverAttach(
+            CSubject.CSubjectStemFold, _ => _cXieshengMarshal(() => CXieshengChanged?.Invoke()));
         CXieshengKindred.LEntryListAttach();
     }
 
@@ -125,10 +127,29 @@ public sealed class CXiesheng
         return new CStemPage(
             page.LStemPageLanguage,
             page.LStemPageKey,
-            page.LStemPageCharacters,
+            CStemMember.LStemMemberRead(page.LStemPageMembers),
             page.LStemPageEmpty,
             CFont.CFontRead(_cXieshengSettingsPort, page.LStemPageLanguage, CFontRole.CFontRoleHeadword),
             CFont.CFontRead(_cXieshengSettingsPort, page.LStemPageLanguage, CFontRole.CFontRoleGlyph));
+    }
+
+    public bool CXieshengFoldToggle(string character, bool opened)
+    {
+        if (string.IsNullOrEmpty(character) || !CXieshengStemShown)
+        {
+            return false;
+        }
+
+        try
+        {
+            _cXieshengPort.LEngineStemSpread(CXieshengGrove.CApertureChosen, character, opened);
+            return true;
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(_cXieshengEnvoy, _cXieshengSettingsPort, "Reflex.SpreadFailed", exception);
+            return false;
+        }
     }
 
     private void LXieshengWorkspaceResonate()

@@ -28,8 +28,16 @@ internal static class PLeaf
 
         if (QLook.QLookPartFind<TextBlock>(container, "PCardCaption") is TextBlock caption)
         {
-            caption.Visibility = QLook.QLookVisibleRead(!card.QLeafItemTitled);
+            caption.Visibility = QLook.QLookVisibleRead(!card.QLeafItemTitled && !card.QLeafItemFolded);
         }
+
+        if (QLook.QLookPartFind<TextBlock>(container, "PCardPeek") is TextBlock peek)
+        {
+            peek.Text = card.QLeafItemPeek;
+            peek.Visibility = QLook.QLookVisibleRead(!card.QLeafItemTitled && card.QLeafItemFolded);
+        }
+
+        QCardFold.QCardFoldRefine(container, card.QLeafItemFolded, card.QLeafItemStored);
 
         if (QLook.QLookPartFind<TextBlock>(container, "PCardCollocation") is TextBlock expression)
         {

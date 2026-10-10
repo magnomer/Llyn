@@ -22,17 +22,21 @@ internal static class CFolio
     }
 
     internal static CEntryDraft CFolioEntryRead(
-        LEntryDraft draft, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets, LMediaPort media)
+        LEntryDraft draft,
+        IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets,
+        IReadOnlySet<long> folds,
+        LMediaPort media)
     {
         ArgumentNullException.ThrowIfNull(draft);
         ArgumentNullException.ThrowIfNull(targets);
+        ArgumentNullException.ThrowIfNull(folds);
         ArgumentNullException.ThrowIfNull(media);
 
         return new CEntryDraft(
             draft.LEntryDraftHeadword,
             draft.LEntryDraftNote,
-            CFolioSheetRead(draft.LEntryDraftMeanings, targets, media, "Card.DefinitionHint"),
-            CFolioSheetRead(draft.LEntryDraftCollocations, targets, media, "Card.MeaningHint"),
+            CFolioSheetRead(draft.LEntryDraftMeanings, targets, folds, media, "Card.DefinitionHint"),
+            CFolioSheetRead(draft.LEntryDraftCollocations, targets, folds, media, "Card.MeaningHint"),
             new CEtymologyDraft(draft.LEntryDraftEtymology.LEtymologyDraftText));
     }
 
@@ -44,6 +48,7 @@ internal static class CFolio
     private static IReadOnlyList<CCardDraft> CFolioSheetRead(
         IReadOnlyList<LCardDraft> cards,
         IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets,
+        IReadOnlySet<long> folds,
         LMediaPort media,
         string meaning)
     {
@@ -73,7 +78,9 @@ internal static class CFolio
                 CFolioTargetRead(targets[card.LCardDraftId]),
                 card.LCardDraftTag.Select(static row => new CTagDraft(row.LTagDraftId, row.LTagDraftText)).ToList(),
                 CFolioImageRead(card.LCardDraftImage, media),
-                CFolioVideoRead(card.LCardDraftVideo, media)))
+                CFolioVideoRead(card.LCardDraftVideo, media),
+                folds.Contains(card.LCardDraftId),
+                card.LCardDraftStored))
             .ToList();
     }
 

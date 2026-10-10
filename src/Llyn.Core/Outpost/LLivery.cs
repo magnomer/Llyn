@@ -20,9 +20,6 @@ public interface LLivery
     LLiveryNote LLiveryFormat(
         LLiveryDiwei diwei, string style, Func<long, string> note, Func<string, string> lookup);
 
-    LLiveryNote LLiveryFormat(
-        LLiveryLanguage language, string style, Func<long, string> note, Func<string, string> lookup);
-
     string LLiveryMarkFormat(string style);
 
     string LLiveryIdFormat(string seed);

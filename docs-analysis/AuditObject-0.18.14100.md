@@ -2,8 +2,8 @@
 
 - Generation: 21
 - Enforced: True
-- Types: 1150, declared in several parts: 0
-- Verdicts: (1) Hydra 0, (2) Kraken 0, (3) Spider 0, (4) Chameleon 0, (5) Octopus 0, (6) Centipede 0, (7) Serpent 0, (9) Colony 0, Hermit 1150
+- Types: 1160, declared in several parts: 0
+- Verdicts: (1) Hydra 0, (2) Kraken 0, (3) Spider 0, (4) Chameleon 0, (5) Octopus 0, (6) Centipede 0, (7) Serpent 0, (9) Colony 0, Hermit 1160
 - (1) Hydra: 0, ceiling 0
 - (2) Kraken: 0, ceiling 0
 - (3) Spider: 0, ceiling 0
@@ -22,7 +22,7 @@ A Hydra has Parts 5 and Lines 1000, and Fused 0.75 or Density 0.50. A Kraken is 
 | Type | Verdict | Flags | Hubs | Parts | Lines | Members | Mutable | Outgoing | Incoming |
 |---|---|---|---:|---:|---:|---:|---:|---:|---:|
 
-Every other type (1150) is a Hermit: one part, no flag and no hub.
+Every other type (1160) is a Hermit: one part, no flag and no hub.
 
 ## Split types
 

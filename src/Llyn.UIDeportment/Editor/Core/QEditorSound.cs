@@ -82,13 +82,12 @@ internal sealed class QEditorSound
         CEntry entry = editor.CEditorEntry;
         CTimbre timbre = editor.CEditorTimbre;
         CTranscription transcription = editor.CEditorTranscription;
-        _qCadence.QCadenceIntroduce(desk, timbre, editor.CEditorSounding, editor.CEditorFold, ledger, envoy);
+        _qCadence.QCadenceIntroduce(desk, entry, timbre, editor.CEditorSounding, editor.CEditorFold, ledger, envoy);
         _qNotation.QNotationIntroduce(errand);
         _qTranscription.QTranscriptionIntroduce(errand, entry, transcription);
         _qGlyph.QGlyphIntroduce(errand, entry, timbre, transcription);
         _qAccent.QAccentIntroduce(errand, entry, editor.CEditorPlayback, timbre);
-        _qReflex.QReflexIntroduce(
-            desk, editor.CEditorDisplay.CDisplaySound, entry, editor.CEditorKindred, editor.CEditorSounding);
+        _qReflex.QReflexIntroduce(desk, entry, editor.CEditorKindred, editor.CEditorSounding);
         _qAnchor.QAnchorIntroduce(CSoundingAnchor.CSoundingAnchorCreate(editor.CEditorKindred));
         _qClip.QClipIntroduce(errand);
         _qPlayback.QPlaybackIntroduce(entry, editor.CEditorPlayback);

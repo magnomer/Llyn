@@ -1,5 +1,5 @@
 # LParadigmSlot.cs
-Hash: `b923028e4bedc67e`
+Hash: `3190e0afb2c60883`
 Hash: `a7a400a5d798cc46`
 
 ## `public sealed record LParadigmSlot(LSpeechValue LParadigmSlotSpeech, LMorphology LParadigmSlotMorphology, LInflection? LParadigmSlotInflection, LState LParadigmSlotState, LParadigm LParadigmSlotParadigm, IReadOnlyList<LMorphology>? LParadigmSlotMorphologies = null)`
@@ -47,6 +47,12 @@ A written form wins, and an empty one counts as absent.
 An unknown slot follows, then a pending fetch.
 A form still missing after that is lost when the morphology setting is on and absent when it is off.
 The paradigm list and the inflection view both ask this one rule, so their cells never disagree.
+
+## `public LParadigmShown LParadigmSlotShow(bool pending, bool enabled, bool held)`
+
+Answers the text and tip key the slot shows in the paradigm list.
+It feeds `LParadigmSlotCheck` and the stored text, or empty, to `LParadigmShown.LParadigmShownResolve`.
+So the list reads the same wording as the inflection view, from Core.
 
 ## `public bool LParadigmSlotMatch(LParadigmSlot other)`
 

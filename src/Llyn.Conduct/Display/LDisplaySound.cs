@@ -27,8 +27,6 @@ internal sealed class LDisplaySound
 
     private long? _lDisplaySoundEntry;
 
-    private bool _lDisplaySoundOpened;
-
     private LEntryDraft? _lDisplaySoundReflex;
 
     internal LDisplaySound(
@@ -64,8 +62,6 @@ internal sealed class LDisplaySound
 
     internal long? LDisplayEntry => _lDisplaySoundEntry;
 
-    internal bool LDisplayFoldOpened => _lDisplaySoundOpened;
-
     internal int LDisplayTicket { get; set; }
 
     internal event Action<string, Exception>? LDisplaySoundFailed;
@@ -95,9 +91,22 @@ internal sealed class LDisplaySound
         _lMediaPort.LEngineRecordingStop(LDisplayTicket);
     }
 
-    internal void LDisplayFoldSet(bool opened)
+    internal bool LDisplaySpreadCheck(long? id)
     {
-        _lDisplaySoundOpened = opened;
+        if (id is not long shown)
+        {
+            return false;
+        }
+
+        try
+        {
+            return _lReflexPort.LEngineSpreadCheck(shown);
+        }
+        catch (Exception exception)
+        {
+            LDisplaySoundFailed?.Invoke("Reflex.SpreadReadFailed", exception);
+            return false;
+        }
     }
 
     internal void LDisplayReflexLoad()

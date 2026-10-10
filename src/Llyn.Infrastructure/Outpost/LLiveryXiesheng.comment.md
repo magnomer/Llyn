@@ -1,5 +1,5 @@
 # LLiveryXiesheng.cs
-Hash: `b31e5584d7e63150`
+Hash: `9b5008b72a7ed860`
 
 ## `internal static class LLiveryXiesheng`
 
@@ -10,10 +10,18 @@ It also holds the character chip and the entry list the category note shares.
 ## `public static void LLiveryXieshengAppend(StringBuilder sheet, LLiveryStem stem, Func<long, string> note, Func<string, string> lookup)`
 
 Writes a `llyn-series` chip read through `Xiesheng.Stem`, then the series key as the heading under it.
-The member characters follow in page order inside a `llyn-card` div, each through `LLiveryCharacterFormat`.
-The space after the last character is dropped only when one was written, so no other text is cut.
+The members of `LStemPageMembers` follow in page order, each in its own card through `LLiveryMemberAppend`.
 A series without characters writes `Xiesheng.StemEmpty` as a `llyn-vacant` span instead.
 `LLiveryEntryAppend` writes the entries of the series last, with `Xiesheng.KindredVacant` for none.
+
+## `private static void LLiveryMemberAppend(StringBuilder sheet, LStemMember member, IReadOnlyList<LEntry> entries, Func<long, string> note)`
+
+Writes one member as a `llyn-card` div, as the Series detail pane shows it.
+The first line is the character through `LLiveryCharacterFormat`, then the ready `LStemMemberReading` in a `llyn-accent` span.
+The reading span is left out when the member has no reading.
+The reflex rows of `LStemMemberRows` follow through `LLiverySound.LLiveryReadingAppend`, the entry page's reflex table.
+No fanqie rows are handed, so the old sound column stays empty, and a member without reflexes writes no table.
+Every text is escaped through `LLiveryHeader.LLiveryTextFormat`.
 
 ## `internal static string LLiveryCharacterFormat(string character, IReadOnlyList<LEntry> entries, Func<long, string> note)`
 

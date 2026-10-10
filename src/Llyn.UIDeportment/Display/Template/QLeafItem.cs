@@ -10,9 +10,10 @@ internal sealed class QLeafItem
 {
     private readonly CLeaf _qLeafItemCard;
 
-    internal QLeafItem(CLeaf card)
+    internal QLeafItem(CLeaf card, CStateWording peek)
     {
         ArgumentNullException.ThrowIfNull(card);
+        ArgumentNullException.ThrowIfNull(peek);
 
         _qLeafItemCard = card;
         QLeafItemTitle = card.CLeafTitle.CStateWordingKey is string title
@@ -24,6 +25,9 @@ internal sealed class QLeafItem
         QLeafItemMeaning = card.CLeafMeaning.CStateWordingKey is string meaning
             ? QLocalizationCatalog.QLocalizationTextRead(meaning)
             : card.CLeafMeaning.CStateWordingText;
+        QLeafItemPeek = peek.CStateWordingKey is string glance
+            ? QLocalizationCatalog.QLocalizationTextRead(glance)
+            : peek.CStateWordingText;
         QLeafItemSituation = card.CLeafSituation.Select(static chip => new QLeafChip(chip)).ToList();
         QLeafItemRegister = card.CLeafRegister.Select(static chip => new QLeafChip(chip)).ToList();
         QLeafItemTag = card.CLeafTag.Select(static chip => new QLeafChip(chip)).ToList();
@@ -34,6 +38,8 @@ internal sealed class QLeafItem
         QLeafItemImage = QLeafImage.QLeafImageCreate(card.CLeafImage);
         QLeafItemVideo = QLeafVideo.QLeafVideoCreate(card.CLeafVideo);
     }
+
+    internal long QLeafItemId => _qLeafItemCard.CLeafId;
 
     internal string QLeafItemRank => _qLeafItemCard.CLeafPosition.ToString(CultureInfo.CurrentCulture);
 
@@ -48,6 +54,12 @@ internal sealed class QLeafItem
     internal string QLeafItemMeaning { get; }
 
     internal bool QLeafItemDefined => !_qLeafItemCard.CLeafMeaning.CStateWordingMuted;
+
+    internal string QLeafItemPeek { get; }
+
+    internal bool QLeafItemFolded => _qLeafItemCard.CLeafFolded;
+
+    internal bool QLeafItemStored => _qLeafItemCard.CLeafStored;
 
     internal IReadOnlyList<QLeafChip> QLeafItemSituation { get; }
 

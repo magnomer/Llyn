@@ -6,4 +6,5 @@ public sealed record LRigKeeping(
     LWorkspaceVault LRigKeepingWorkspaces,
     LTombstoneVault LRigKeepingTombstones,
     LFavoriteVault LRigKeepingFavorites,
+    LFoldVault LRigKeepingFolds,
     LNoteVault LRigKeepingNotes);

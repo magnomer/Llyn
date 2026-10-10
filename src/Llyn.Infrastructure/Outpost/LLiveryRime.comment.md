@@ -1,9 +1,9 @@
 # LLiveryRime.cs
-Hash: `efb3a711379b780d`
+Hash: `4db006890840f32c`
 
 ## `internal static class LLiveryRime`
 
-Writes the paradigm box and the rime card of a Joplin entry body for `LLiverySheet.LLiveryFormat`.
+Writes the paradigm box, the inflection table and the rime card of a Joplin entry body for `LLiverySheet.LLiveryFormat`.
 It reads only `LLiveryPage` and the `link` and `lookup` it is handed.
 
 ## `private const int LLiveryRimeColumns = 12;`
@@ -12,7 +12,8 @@ The number of columns in every rime card row, from the book chip to the source b
 
 ## `public static void LLiveryRimeAppend(StringBuilder sheet, LLiveryPage page, Func<string, string, string, string> link, Func<string, string> lookup)`
 
-Writes `LLiveryParadigmAppend` first and `LLiveryFanqieAppend` second, as view mode orders them.
+Writes the paradigm rows, then `LLiveryInflection.LLiveryInflectionAppend`, then `LLiveryFanqieAppend`.
+That is the order view mode stacks the paradigm rows, the paradigm sheet and the rime card.
 It asks `link` under the entry draft's trimmed language, the name the courier keys its notes by.
 A chip with an id is wrapped whole as `[chip](:/id)`, so the chip keeps its look inside the link.
 An empty chip, an empty key or an empty id leaves the chip unchanged.
@@ -51,7 +52,7 @@ No groups write nothing.
 ## `internal static string LLiveryRowFormat(IReadOnlyList<string> cells)`
 
 Joins the cells into one Markdown table row ending in a line break.
-It is internal so `LLiveryYunjing` and `LLiveryPhonology` write their rows through it.
+It is internal so `LLiveryYunjing` writes its rows through it.
 
 ## `internal static string LLiveryChipFormat(string style, string text)`
 

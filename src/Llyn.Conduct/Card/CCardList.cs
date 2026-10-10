@@ -8,11 +8,23 @@ public sealed class CCardList
 {
     private readonly CDesk _cCardListDesk;
 
-    internal CCardList(CDesk desk)
+    private readonly LCardPort _cCardListPort;
+
+    private readonly LSettingsPort _cCardListSettings;
+
+    private readonly CEnvoy _cCardListEnvoy;
+
+    internal CCardList(CDesk desk, LCardPort cards, LSettingsPort settings, CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(desk);
+        ArgumentNullException.ThrowIfNull(cards);
+        ArgumentNullException.ThrowIfNull(settings);
+        ArgumentNullException.ThrowIfNull(envoy);
 
         _cCardListDesk = desk;
+        _cCardListPort = cards;
+        _cCardListSettings = settings;
+        _cCardListEnvoy = envoy;
     }
 
     private LQuillCard? CCardListQuill =>
@@ -33,6 +45,34 @@ public sealed class CCardList
     public void CCardRemove(long cardId)
     {
         CCardListQuill?.LQuillCardRemove(cardId);
+    }
+
+    public bool CCardFoldToggle(long cardId, bool folded)
+    {
+        if (_cCardListDesk.CDeskStoredRead() is not long id)
+        {
+            return false;
+        }
+
+        try
+        {
+            if (folded)
+            {
+                _cCardListPort.LEngineFoldSave(id, cardId);
+            }
+            else
+            {
+                _cCardListPort.LEngineFoldDelete(id, cardId);
+            }
+
+            return true;
+        }
+        catch (Exception exception)
+        {
+            CLedger.LLedgerFailureShow(_cCardListEnvoy, _cCardListSettings, "Fold.SaveFailed", exception);
+        }
+
+        return false;
     }
 
     public void CCardMove(long cardId, int place)

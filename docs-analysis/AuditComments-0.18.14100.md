@@ -1,6 +1,6 @@
 # Comment report - 0.18.14100
 
-- Generated: 2026-10-09 23:53:56 +09:00
+- Generated: 2026-10-10 21:40:23 +09:00
 - Source roots: D:\Programming\Llyn\languages; D:\Programming\Llyn\localization; D:\Programming\Llyn\src; D:\Programming\Llyn\tests; D:\Programming\Llyn\themes
 - Source files: D:\Programming\Llyn\Directory.Build.props; D:\Programming\Llyn\Llyn.slnx; D:\Programming\Llyn\version.json
 - Comment pattern: `*.comment.md`
@@ -13,16 +13,16 @@
 | Metric | Value |
 |--------|------:|
 | Folders | 48 |
-| Source files | 2,068 |
-| Comment files | 2,068 |
-| Comment lines | 86,645 |
+| Source files | 2,087 |
+| Comment files | 2,087 |
+| Comment lines | 88,944 |
 | Sources without a comment file | 0 |
 | Comment files without a source | 0 |
 | Lines breaking the line rules | 0 |
 | In-code comments | 0 |
 | Headings naming nothing in their source | 0 |
 | Comment files with a stale hash | 0 |
-| Comment files restamped unrevised (warning) | 24 |
+| Comment files restamped unrevised (warning) | 83 |
 | Comment files with no hash (warning) | 0 |
 | Ceiling for comment files with no hash | 0 |
 | Exempt comment files | 1 |
@@ -33,19 +33,19 @@ Density is the number of non-blank comment lines written per non-blank source li
 
 | Folder | Sources | Files | Lines | Non-blank | Share | Bytes | Average bytes | Density |
 |--------|--------:|------:|------:|----------:|------:|------:|--------------:|--------:|
-| Llyn.UIDeportment | 300 | 300 | 15,783 | 10,382 | 18.2 % | 735,837 | 2,453 | 0.39 |
-| Llyn.Conduct | 247 | 247 | 10,691 | 7,079 | 12.3 % | 499,784 | 2,023 | 0.55 |
-| Llyn.Core | 338 | 338 | 10,026 | 7,010 | 11.6 % | 499,316 | 1,477 | 0.76 |
-| Llyn.Infrastructure | 170 | 170 | 7,889 | 5,429 | 9.1 % | 382,994 | 2,253 | 0.28 |
-| Llyn.Application | 122 | 122 | 6,889 | 4,563 | 8.0 % | 346,591 | 2,841 | 0.29 |
-| Llyn.Tests.Engine | 211 | 211 | 6,691 | 4,386 | 7.7 % | 301,723 | 1,430 | 0.15 |
-| Llyn.Tests.Convention | 118 | 118 | 6,135 | 3,955 | 7.1 % | 280,241 | 2,375 | 0.25 |
-| Llyn.ShellEngine | 91 | 91 | 5,788 | 3,647 | 6.7 % | 259,395 | 2,850 | 0.47 |
-| Llyn.UIVeneer | 152 | 152 | 5,232 | 3,629 | 6.0 % | 244,537 | 1,609 | 0.37 |
-| Llyn.Tests.Interface | 89 | 89 | 3,619 | 2,176 | 4.2 % | 164,039 | 1,843 | 0.32 |
-| Llyn.Tests.Conduct | 141 | 141 | 3,530 | 2,478 | 4.1 % | 172,842 | 1,226 | 0.12 |
-| Llyn.Tests.Windows | 22 | 22 | 528 | 351 | 0.6 % | 24,107 | 1,096 | 0.28 |
-| (root) | 3 | 3 | 380 | 317 | 0.4 % | 18,050 | 6,017 | 8.57 |
+| Llyn.UIDeportment | 302 | 302 | 15,903 | 10,407 | 17.9 % | 735,663 | 2,436 | 0.39 |
+| Llyn.Conduct | 248 | 248 | 10,919 | 7,237 | 12.3 % | 511,522 | 2,063 | 0.55 |
+| Llyn.Core | 342 | 342 | 10,153 | 7,073 | 11.4 % | 503,551 | 1,472 | 0.76 |
+| Llyn.Infrastructure | 172 | 172 | 8,048 | 5,554 | 9.0 % | 392,482 | 2,282 | 0.28 |
+| Llyn.Tests.Engine | 214 | 214 | 7,023 | 4,592 | 7.9 % | 315,930 | 1,476 | 0.16 |
+| Llyn.Application | 123 | 123 | 6,976 | 4,622 | 7.8 % | 350,535 | 2,850 | 0.29 |
+| Llyn.Tests.Convention | 118 | 118 | 6,148 | 3,964 | 6.9 % | 280,902 | 2,381 | 0.26 |
+| Llyn.ShellEngine | 91 | 91 | 5,833 | 3,674 | 6.6 % | 261,757 | 2,876 | 0.47 |
+| Llyn.UIVeneer | 152 | 152 | 5,553 | 3,828 | 6.2 % | 258,128 | 1,698 | 0.39 |
+| Llyn.Tests.Conduct | 144 | 144 | 3,861 | 2,668 | 4.3 % | 186,452 | 1,295 | 0.12 |
+| Llyn.Tests.Interface | 89 | 89 | 3,834 | 2,292 | 4.3 % | 172,498 | 1,938 | 0.34 |
+| Llyn.Tests.Windows | 25 | 25 | 848 | 543 | 1.0 % | 38,478 | 1,539 | 0.27 |
+| (root) | 3 | 3 | 380 | 317 | 0.4 % | 18,067 | 6,022 | 8.57 |
 | Classical Chinese | 4 | 4 | 339 | 268 | 0.4 % | 18,012 | 4,503 | 0.26 |
 | English | 2 | 2 | 285 | 233 | 0.3 % | 15,227 | 7,614 | 0.32 |
 | Mandarin | 2 | 2 | 214 | 176 | 0.2 % | 11,061 | 5,530 | 0.35 |
@@ -54,7 +54,7 @@ Density is the number of non-blank comment lines written per non-blank source li
 | Cantonese | 2 | 2 | 161 | 127 | 0.2 % | 8,110 | 4,055 | 0.30 |
 | Llyn.Core.Windows | 5 | 5 | 158 | 104 | 0.2 % | 7,182 | 1,436 | 0.31 |
 | Japanese | 2 | 2 | 147 | 113 | 0.2 % | 6,985 | 3,492 | 0.23 |
-| Vietnamese | 2 | 2 | 132 | 106 | 0.2 % | 6,889 | 3,444 | 0.33 |
+| Vietnamese | 2 | 2 | 132 | 106 | 0.1 % | 6,889 | 3,444 | 0.33 |
 | Llyn.Host | 2 | 2 | 125 | 78 | 0.1 % | 8,378 | 4,189 | 0.71 |
 | Portuguese | 2 | 2 | 124 | 96 | 0.1 % | 6,496 | 3,248 | 0.21 |
 | Classical Latin | 2 | 2 | 123 | 99 | 0.1 % | 6,095 | 3,048 | 0.18 |
@@ -68,7 +68,7 @@ Density is the number of non-blank comment lines written per non-blank source li
 | Llyn.UIDeportment.Capsule | 5 | 5 | 86 | 57 | 0.1 % | 4,199 | 840 | 0.69 |
 | Hindi | 1 | 1 | 71 | 55 | 0.1 % | 3,805 | 3,805 | 0.45 |
 | Italian | 1 | 1 | 66 | 52 | 0.1 % | 3,511 | 3,511 | 0.50 |
-| localization | 2 | 2 | 58 | 44 | 0.1 % | 3,014 | 1,507 | 0.03 |
+| localization | 2 | 2 | 59 | 45 | 0.1 % | 3,103 | 1,552 | 0.03 |
 | Arabic | 1 | 1 | 48 | 36 | 0.1 % | 2,394 | 2,394 | 0.37 |
 | Indonesian | 1 | 1 | 48 | 38 | 0.1 % | 2,662 | 2,662 | 0.46 |
 | Sanskrit | 2 | 2 | 45 | 31 | 0.1 % | 1,257 | 628 | 0.38 |
@@ -113,29 +113,88 @@ None.
 
 | File | Problem |
 |------|---------|
-| localization/en.comment.md | restamped, prose unchanged |
-| localization/ko.comment.md | restamped, prose unchanged |
+| src/Llyn.Application/Outpost/LCourierClerk.comment.md | restamped, prose unchanged |
+| src/Llyn.Application/Outpost/LCourierLanguage.comment.md | restamped, prose unchanged |
 | src/Llyn.Application/Vocabulary/LParadigmClerk.comment.md | restamped, prose unchanged |
-| src/Llyn.Conduct/Configuration/CLedger.comment.md | restamped, prose unchanged |
-| src/Llyn.Conduct/Sound/CParadigmForm.comment.md | restamped, prose unchanged |
-| src/Llyn.Core/Lexicon/Entry/LParadigmForm.comment.md | restamped, prose unchanged |
+| src/Llyn.Conduct/Card/CCardList.comment.md | restamped, prose unchanged |
+| src/Llyn.Conduct/Card/CFolio.comment.md | restamped, prose unchanged |
+| src/Llyn.Conduct/Desk/CEditor.comment.md | restamped, prose unchanged |
+| src/Llyn.Conduct/Desk/CEntry.comment.md | restamped, prose unchanged |
+| src/Llyn.Conduct/Display/CDisplayCard.comment.md | restamped, prose unchanged |
+| src/Llyn.Conduct/Display/CLeaf.comment.md | restamped, prose unchanged |
+| src/Llyn.Conduct/Display/LDisplaySound.comment.md | restamped, prose unchanged |
+| src/Llyn.Conduct/Draft/CCardDraft.comment.md | restamped, prose unchanged |
+| src/Llyn.Conduct/Sound/CFold.comment.md | restamped, prose unchanged |
+| src/Llyn.Conduct/Sound/CParadigmLine.comment.md | restamped, prose unchanged |
+| src/Llyn.Conduct/Sound/CParadigmTable.comment.md | restamped, prose unchanged |
+| src/Llyn.Conduct/Sound/CParadigmView.comment.md | restamped, prose unchanged |
+| src/Llyn.Conduct/Sound/CStemPage.comment.md | restamped, prose unchanged |
+| src/Llyn.Core/Configuration/LSettings.comment.md | restamped, prose unchanged |
+| src/Llyn.Core/Lexicon/Card/LCardDraft.comment.md | restamped, prose unchanged |
+| src/Llyn.Core/Lexicon/Entry/LParadigmSlot.comment.md | restamped, prose unchanged |
 | src/Llyn.Core/Lexicon/Entry/LParadigmView.comment.md | restamped, prose unchanged |
-| src/Llyn.Core/Lexicon/Inflection/LInflectionDifference.comment.md | restamped, prose unchanged |
-| src/Llyn.Core/Lexicon/Inflection/LInflectionLayout.comment.md | restamped, prose unchanged |
+| src/Llyn.Core/Outpost/LLivery.comment.md | restamped, prose unchanged |
+| src/Llyn.Core/Outpost/LLiveryLanguage.comment.md | restamped, prose unchanged |
+| src/Llyn.Core/Pronunciation/Fanqie/LFanqieGroup.comment.md | restamped, prose unchanged |
+| src/Llyn.Core/Vault/Base/LRigKeeping.comment.md | restamped, prose unchanged |
 | src/Llyn.Infrastructure/Configuration/LSettingsLoader.comment.md | restamped, prose unchanged |
-| src/Llyn.UIDeportment/Sound/Reflex/QParadigmForm.comment.md | restamped, prose unchanged |
-| tests/Llyn.Tests.Conduct/Conduct/TLedger.comment.md | restamped, prose unchanged |
-| tests/Llyn.Tests.Conduct/Conduct/TLedgerNotice.comment.md | restamped, prose unchanged |
-| tests/Llyn.Tests.Convention/TAuditDemeanorSetting.comment.md | restamped, prose unchanged |
-| tests/Llyn.Tests.Convention/TAuditDeportmentSetting.comment.md | restamped, prose unchanged |
-| tests/Llyn.Tests.Engine/Engine/TEngineParadigmView.comment.md | restamped, prose unchanged |
-| tests/Llyn.Tests.Engine/Lexicon/TDraftCoverageSetting.comment.md | restamped, prose unchanged |
-| tests/Llyn.Tests.Engine/Lexicon/TInflectionBook.comment.md | restamped, prose unchanged |
-| tests/Llyn.Tests.Engine/Lexicon/TInflectionDifference.comment.md | restamped, prose unchanged |
-| tests/Llyn.Tests.Engine/Pronunciation/TInflectionLoader.comment.md | restamped, prose unchanged |
-| tests/Llyn.Tests.Interface/TInterfaceConduct.comment.md | restamped, prose unchanged |
-| tests/Llyn.Tests.Interface/TInterfaceEngine.comment.md | restamped, prose unchanged |
+| src/Llyn.Infrastructure/Database/Schema/Base/LSchema.comment.md | restamped, prose unchanged |
+| src/Llyn.Infrastructure/LRigFactoryKeeping.comment.md | restamped, prose unchanged |
+| src/Llyn.Infrastructure/Outpost/LLiveryRime.comment.md | restamped, prose unchanged |
+| src/Llyn.Infrastructure/Outpost/LLiverySheet.comment.md | restamped, prose unchanged |
+| src/Llyn.Infrastructure/Outpost/LLiverySound.comment.md | restamped, prose unchanged |
+| src/Llyn.Infrastructure/Outpost/LLiveryXiesheng.comment.md | restamped, prose unchanged |
+| src/Llyn.ShellEngine/Engine/LEntryStaff.comment.md | restamped, prose unchanged |
+| src/Llyn.ShellEngine/Engine/LSettingsFacade.comment.md | restamped, prose unchanged |
+| src/Llyn.ShellEngine/Port/LReflexPort.comment.md | restamped, prose unchanged |
+| src/Llyn.ShellEngine/Port/LSettingsOutlet.comment.md | restamped, prose unchanged |
+| src/Llyn.ShellEngine/Port/LSettingsPort.comment.md | restamped, prose unchanged |
+| src/Llyn.ShellEngine/Tool/LReflexFacade.comment.md | restamped, prose unchanged |
+| src/Llyn.ShellEngine/Vista/LEntryFacade.comment.md | restamped, prose unchanged |
+| src/Llyn.UIDeportment/Display/QLectern.comment.md | restamped, prose unchanged |
+| src/Llyn.UIDeportment/Display/QLecternReflex.comment.md | restamped, prose unchanged |
+| src/Llyn.UIDeportment/Display/QLecternSound.comment.md | restamped, prose unchanged |
+| src/Llyn.UIDeportment/Display/Template/QLeafItem.comment.md | restamped, prose unchanged |
+| src/Llyn.UIDeportment/Editor/Card/PCard.comment.md | restamped, prose unchanged |
+| src/Llyn.UIDeportment/Editor/List/QCard.comment.md | restamped, prose unchanged |
+| src/Llyn.UIDeportment/Editor/List/QCardFold.comment.md | restamped, prose unchanged |
+| src/Llyn.UIDeportment/Kit/Bind/QLookSheet.comment.md | restamped, prose unchanged |
+| src/Llyn.UIDeportment/Sound/Reflex/QParadigm.comment.md | restamped, prose unchanged |
+| src/Llyn.UIDeportment/Sound/Reflex/QReflex.comment.md | restamped, prose unchanged |
+| src/Llyn.UIVeneer/Display/Template/PDisplayCard.comment.md | restamped, prose unchanged |
+| src/Llyn.UIVeneer/Display/Template/PDisplayCollocation.comment.md | restamped, prose unchanged |
+| src/Llyn.UIVeneer/Display/Template/PDisplayExample.comment.md | restamped, prose unchanged |
+| src/Llyn.UIVeneer/Display/Template/PDisplayMeaning.comment.md | restamped, prose unchanged |
+| src/Llyn.UIVeneer/Editor/Core/PEditor.comment.md | restamped, prose unchanged |
+| src/Llyn.UIVeneer/Editor/Gloss/PMeaningTemplate.comment.md | restamped, prose unchanged |
+| src/Llyn.UIVeneer/Editor/Sentence/PCollocationTemplate.comment.md | restamped, prose unchanged |
+| src/Llyn.UIVeneer/Panel/Library/PLibrary.comment.md | restamped, prose unchanged |
+| src/Llyn.UIVeneer/Panel/Rail/PPanelRail.comment.md | restamped, prose unchanged |
+| src/Llyn.UIVeneer/Sound/Shengfu/PStem.comment.md | restamped, prose unchanged |
+| src/Llyn.UIVeneer/Theme/Control/PThemeParadigm.comment.md | restamped, prose unchanged |
+| tests/Llyn.Tests.Conduct/Conduct/TAtelier.comment.md | restamped, prose unchanged |
+| tests/Llyn.Tests.Conduct/Conduct/TCourier.comment.md | restamped, prose unchanged |
+| tests/Llyn.Tests.Conduct/Conduct/TDisplay.comment.md | restamped, prose unchanged |
+| tests/Llyn.Tests.Conduct/Conduct/TDisplayFailure.comment.md | restamped, prose unchanged |
+| tests/Llyn.Tests.Conduct/Conduct/TDisplaySound.comment.md | restamped, prose unchanged |
+| tests/Llyn.Tests.Conduct/Conduct/TEditorField.comment.md | restamped, prose unchanged |
+| tests/Llyn.Tests.Conduct/Conduct/TFaultMark.comment.md | restamped, prose unchanged |
+| tests/Llyn.Tests.Conduct/Conduct/TFold.comment.md | restamped, prose unchanged |
+| tests/Llyn.Tests.Conduct/Conduct/TKindred.comment.md | restamped, prose unchanged |
+| tests/Llyn.Tests.Conduct/Conduct/TPlayback.comment.md | restamped, prose unchanged |
+| tests/Llyn.Tests.Conduct/Conduct/TSounding.comment.md | restamped, prose unchanged |
+| tests/Llyn.Tests.Conduct/Conduct/TTimbre.comment.md | restamped, prose unchanged |
+| tests/Llyn.Tests.Engine/Configuration/TSettings.comment.md | restamped, prose unchanged |
+| tests/Llyn.Tests.Engine/Engine/TEngineLiveryCard.comment.md | restamped, prose unchanged |
+| tests/Llyn.Tests.Engine/Lexicon/TParadigm.comment.md | restamped, prose unchanged |
+| tests/Llyn.Tests.Interface/TInterfaceConductCard.comment.md | restamped, prose unchanged |
+| tests/Llyn.Tests.Interface/TInterfaceEditor.comment.md | restamped, prose unchanged |
+| tests/Llyn.Tests.Interface/TInterfaceFact.comment.md | restamped, prose unchanged |
+| tests/Llyn.Tests.Interface/TInterfaceInflection.comment.md | restamped, prose unchanged |
+| tests/Llyn.Tests.Windows/Deportment/TCardHinge.comment.md | restamped, prose unchanged |
+| tests/Llyn.Tests.Windows/Deportment/TFoldSwitch.comment.md | restamped, prose unchanged |
 | tests/Llyn.Tests.Windows/Deportment/TParadigmGrid.comment.md | restamped, prose unchanged |
+| tests/Llyn.Tests.Windows/Deportment/TReflexHinge.comment.md | restamped, prose unchanged |
 | tests/Llyn.Tests.Windows/Interface/TInterfaceDeportment.comment.md | restamped, prose unchanged |
 
 ## Comment files with no hash

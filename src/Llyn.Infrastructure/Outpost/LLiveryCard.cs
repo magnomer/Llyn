@@ -54,10 +54,23 @@ internal static class LLiveryCard
         string title = card.LCardDraftTitle.LStateValueShow();
         string expression = card.LCardDraftExpression.LStateValueShow();
         string head = title.Length > 0 ? title : expression;
-        sheet.Append("<div class=\"llyn-card\">\n\n<span class=\"llyn-number\">")
+        bool stored = card.LCardDraftId > 0;
+        if (stored)
+        {
+            sheet.Append("<details class=\"llyn-card\"")
+                .Append(page.LLiveryPageFold.Contains(card.LCardDraftId) ? string.Empty : " open")
+                .Append(">\n<summary>");
+        }
+        else
+        {
+            sheet.Append("<div class=\"llyn-card\">\n\n");
+        }
+
+        sheet.Append("<span class=\"llyn-number\">")
             .Append(LLiveryHeader.LLiveryTextFormat(number)).Append("</span> ")
             .Append(head.Length > 0 ? "<span class=\"llyn-title\">" : "<span class=\"llyn-title llyn-blank\">")
-            .Append(LLiveryHeader.LLiveryTextFormat(head.Length > 0 ? head : blank)).Append("</span>\n\n");
+            .Append(LLiveryHeader.LLiveryTextFormat(head.Length > 0 ? head : blank)).Append("</span>")
+            .Append(stored ? "</summary>\n\n" : "\n\n");
         if (title.Length > 0 && expression.Length > 0)
         {
             sheet.Append("<span class=\"llyn-expression\">").Append(LLiveryHeader.LLiveryTextFormat(expression))
@@ -110,7 +123,7 @@ internal static class LLiveryCard
 
         LLiveryBadgeAppend(sheet, "llyn-tag", tags);
         LLiveryMediaAppend(sheet, card);
-        sheet.Append("</div>\n\n");
+        sheet.Append(stored ? "</details>\n\n" : "</div>\n\n");
     }
 
     private static string LLiveryNumberFormat(LCardDraft card, int place)

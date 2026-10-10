@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using Llyn.Application;
 using Llyn.Core;
 
@@ -111,7 +110,7 @@ public sealed class LEntryFacade : LEntryPort, LGraspPort
     {
         ArgumentNullException.ThrowIfNull(draft);
 
-        return draft.LEntryDraftReflexes.Where(static reflex => reflex.LReflexDraftWritten).ToList();
+        return LReflexClerk.LReflexWrittenScan(draft.LEntryDraftReflexes);
     }
 
     public LEntry LEngineGlyphResolve(string character, string language)

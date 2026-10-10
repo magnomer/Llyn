@@ -1,5 +1,5 @@
 # CXiesheng.cs
-Hash: `964470f947356189`
+Hash: `082a17a504e62c8b`
 
 ## `public sealed class CXiesheng`
 
@@ -13,7 +13,7 @@ It restores its vistas itself, so no driver holds a port or a vista.
 Takes the atelier's ports and builds the series column's aperture and the entry list.
 The entry list builds the panel and its editor, and its change is raised as this session's change.
 It hands the list the series lookup, so the list never reads the column.
-It registers its vista restore with the workspace.
+It registers its vista restore with the workspace and its series arrival, `LXieshengStemOpen`, with the navigation.
 It restores its vistas last, so a built area already stands on started vistas.
 
 ## `public static CXiesheng CXieshengCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
@@ -84,6 +84,8 @@ The constructor runs it last, and a workspace change runs it again through `CWor
 Attaches the panel's answers to the fresh column, each carried through the marshal.
 A Vista, Fanqie or Settings notice on the column raises the column and the rows again.
 A Workspace notice on the column goes to `LXieshengWorkspaceResonate`.
+A StemFold notice raises `CXieshengChanged`, so the page redraws a member's fold.
+Plain Fold notices are not heard, since entry and card folds change nothing on the series page.
 The entry list then attaches its own answers to its vista.
 
 ## `public static IReadOnlyList<CCatalogOrder> CXieshengOrderRead()`
@@ -105,6 +107,15 @@ It answers no rows while the column has no vista.
 
 The page of the chosen series, or the blank page while the reader shows an entry.
 It carries the headword and glyph fonts of the series language, as `CYunjingDiweiRead` does.
+Its members are mapped by `CStemMember.LStemMemberRead`, from the one engine call that reads the page.
+
+## `public bool CXieshengFoldToggle(string character, bool opened)`
+
+The user's toggle of one member's "More readings" on the shown series page, stored apart from its entry page.
+The engine finds the member's entry and raises the StemFold notice the page redraws by.
+It answers false with no character, while no series page shows, or when the store refuses.
+A refusal shows `Reflex.SpreadFailed`, the failure the entry page's toggle shows.
+A bare member answers true, though the engine writes nothing for it.
 
 ## `private void LXieshengWorkspaceResonate()`
 

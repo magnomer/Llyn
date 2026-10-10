@@ -143,13 +143,13 @@ public sealed class CSounding
         bool enabled = _cSoundingVoice.LDisplayMorphologyRead();
         LParadigmView? view = LSoundingEntry is long entry
             ? _cSoundingNoticed.LLedgerRepaintRead<LParadigmView?>(_cSoundingEnvoy, _cSoundingSettingsPort,
-                () => _cSoundingParadigmPort.LEngineInflectionRead(entry, pending, enabled),
+                () => _cSoundingParadigmPort.LEngineInflectionRead(entry, pending, enabled, true),
                 null, "Display.ParadigmReadFailed")
             : null;
         return new CLecternParadigm(
             CSoundingParadigmRead(_cSoundingParadigmPort, rows, pending, enabled, true),
             CFont.CFontRead(_cSoundingSettingsPort, language, CFontRole.CFontRoleHeadword),
-            CParadigmView.CParadigmViewCreate(view, true));
+            CParadigmView.CParadigmViewCreate(view));
     }
 
     private IReadOnlyList<LSoundingItem> LSoundingListRead<LSoundingItem>(
@@ -247,15 +247,13 @@ public sealed class CSounding
         ArgumentNullException.ThrowIfNull(rows);
 
         return rows
-            .Select(row => LSoundingSlotRead(row, paradigms.LEngineParadigmCheck(row, pending, enabled), held))
+            .Select(row => LSoundingSlotRead(row, paradigms.LEngineParadigmCheck(row, pending, enabled, held)))
             .ToList();
     }
 
-    private static CParadigmSlot LSoundingSlotRead(LParadigmRow row, LParadigmStatus status, bool held)
+    private static CParadigmSlot LSoundingSlotRead(LParadigmRow row, LParadigmShown shown)
     {
-        string text = row.LParadigmRowFirst.LParadigmSlotInflection?.LInflectionText ?? string.Empty;
-        CParadigmForm shown = CParadigmForm.CParadigmFormResolve(status, text, held);
         return new CParadigmSlot(
-            row.LParadigmRowPart, row.LParadigmRowName, shown.CParadigmFormText, shown.CParadigmFormTip);
+            row.LParadigmRowPart, row.LParadigmRowName, shown.LParadigmShownText, shown.LParadigmShownTip);
     }
 }

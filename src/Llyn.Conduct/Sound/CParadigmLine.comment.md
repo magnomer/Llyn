@@ -1,5 +1,5 @@
 # CParadigmLine.cs
-Hash: `251a0c42893d5e50`
+Hash: `c11e8f1a3105a68a`
 
 ## `public sealed record CParadigmLine(string CParadigmLineGroup, string CParadigmLineLabel, IReadOnlyList<CParadigmForm> CParadigmLineForms)`
 
@@ -12,7 +12,7 @@ Group and label are localization keys, and Deportment looks them up.
 - `CParadigmLineLabel`: the key of the row label, or empty.
 - `CParadigmLineForms`: the cells of the row, in column order.
 
-## `internal static CParadigmLine CParadigmLineCreate(LParadigmLine line, bool held)`
+## `internal static CParadigmLine CParadigmLineCreate(LParadigmLine line)`
 
 Passes group and label through unchanged and maps each cell.
 It adds no rule.

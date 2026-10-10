@@ -23,7 +23,7 @@ public sealed class TParadigmGrid
             QParadigm box = new() { QParadigmSheet = TParadigmSheetCreate([]) };
             UIElementCollection parts = TParadigmPartsRead(box);
             shown.Add(box.Visibility);
-            shown.Add(((Panel)parts[1]).Children[1].Visibility);
+            shown.Add(parts[1].Visibility);
             shown.Add(parts[2].Visibility);
             shown.Add(parts[3].Visibility);
         });
@@ -40,7 +40,7 @@ public sealed class TParadigmGrid
         {
             QParadigm box = new() { QParadigmSheet = TParadigmSheetCreate([]) };
             UIElementCollection parts = TParadigmPartsRead(box);
-            RadioButton full = (RadioButton)((Panel)parts[1]).Children[1];
+            RadioButton full = (RadioButton)((Panel)((Border)parts[1]).Child).Children[1];
             full.IsChecked = true;
             shown.Add(parts[2].Visibility);
             shown.Add(parts[3].Visibility);

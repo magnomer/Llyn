@@ -206,27 +206,6 @@ public sealed class TAtelier
     }
 
     [Fact]
-    public void FoldToggle_ThrowingWrite_KeepsTheSettingsAndTellsNoOtherEditor()
-    {
-        Dictionary<string, Func<object?[]?, object?>> answers = new()
-        {
-            ["LSettingsRead"] = _ => TInterface.TSettingsCreate("en"),
-            ["LSettingsSave"] = _ => throw new InvalidOperationException("The settings file is unreadable."),
-        };
-        LSettingsVault throwing = TEngineFake.TEngineCreate<LSettingsVault>(answers);
-        using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild() with { LRigSettings = throwing });
-        LSettings before = engine.TEngineSettingsRead();
-        CFold second = new TEditorFixture(TInterfaceEditor.TEditorCreate(engine)).TEditorFixtureFold;
-        int changed = 0;
-        second.CFoldChanged += () => changed++;
-
-        new TEditorFixture(TInterfaceEditor.TEditorCreate(engine)).TEditorFixtureFold.CFoldFanqieToggle(true);
-
-        Assert.Equal(before, engine.TEngineSettingsRead());
-        Assert.Equal(0, changed);
-    }
-
-    [Fact]
     public void WorkspaceEstablishmentChanged_Opened_ShowsTheStatusAtOnceAndStopsOnDetach()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

@@ -155,7 +155,7 @@
                                 <ItemsControl x:Name="PReflex" ItemTemplate="{StaticResource Theme.Reflex.Row}" />
                             </local:QReflexFrame>
                             <TextBlock x:Name="PReflexLoading" Style="{StaticResource Theme.Reflex.Loading}" Visibility="Collapsed" />
-                            <ToggleButton x:Name="PReflexFold" Style="{StaticResource Theme.Reflex.Fold}" Visibility="Collapsed" />
+                            <ToggleButton x:Name="PReflexHinge" Style="{StaticResource Theme.Reflex.Fold}" Visibility="Collapsed" />
                         </StackPanel>
                         <Popup
                             x:Name="PAnchor"

@@ -1,5 +1,5 @@
 # LStemPort.cs
-Hash: `a38fe66e80a15880`
+Hash: `cc8daf850adaf2c5`
 
 ## `public interface LStemPort`
 
@@ -25,6 +25,11 @@ The page of the chosen series, or the blank page when nothing was chosen.
 ## `long LEngineStemResolve(long? id, string character);`
 
 The entry of a character in one phonetic series, in the language of the series, made first when none exists.
+
+## `void LEngineStemSpread(long? id, string character, bool opened);`
+
+Opens or closes the "More readings" fold of one member of the series, apart from its entry page.
+A bare member or no series writes nothing.
 
 ## `IReadOnlyList<LVistaRow> LEngineKindredFind(LVista grove, LVista vista);`
 

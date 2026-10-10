@@ -1,5 +1,5 @@
 # LFanqieGroup.cs
-Hash: `4606266e58eb483c`
+Hash: `70925acd222e5431`
 
 ## `public sealed record LFanqieGroup(string LFanqieGroupHeading, string LFanqieGroupLabel, string LFanqieGroupSource, IReadOnlyList<LFanqieRow> LFanqieGroupRows, IReadOnlyList<string>? LFanqieGroupStems = null)`
 
@@ -27,10 +27,20 @@ Handing no series over leaves every block without one, as a pack declaring none 
 ## `public static string LFanqieReadingFormat(IReadOnlyList<LFanqieGroup> groups, string headword)`
 
 The headword's representative readings, drawn under the headword itself, such as `/bhiaeng, bhien 'an/`.
-Each character gives every marked reading in rank order, separated by commas, in the order the headword writes the characters.
-A character with no marked row, or whose marked rows stored no readings, is left out.
+Each character gives its marked readings through `LFanqieMarkedScan`, in the order the headword writes the characters.
+The line itself is laid out by the overload below, so the headword and a series member print alike.
+
+## `public static string LFanqieReadingFormat(IReadOnlyList<IReadOnlyList<string>> characters)`
+
+The representative line of characters whose marked readings are already scanned, one list per character.
+Each character's readings are separated by commas, the characters by a space, and the whole stands between slashes.
+A character with no marked reading is left out.
 Nothing ranked at all gives an empty line, and the view then shows none.
+A series member hands its one list here, so the series page prints the line the entry page prints.
 
-## `private static string LFanqieMarkedFind(IReadOnlyList<LFanqieGroup> groups, string character)`
+## `public static IReadOnlyList<string> LFanqieMarkedScan(IReadOnlyList<LFanqieRow> rows, string character)`
 
-The readings of all the character's marked rows in rank order, comma-separated, or empty when no block holds one.
+The readings of the character's marked rows in rank order, rows of equal rank kept in the order given.
+A row the user never marked as representative, or that stored no reading, is left out.
+The mark is the user's per-row choice, stored as the `representative` rank of the row.
+

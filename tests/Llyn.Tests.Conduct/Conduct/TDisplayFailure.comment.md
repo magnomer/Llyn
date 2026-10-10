@@ -1,12 +1,12 @@
 # TDisplayFailure.cs
-Hash: `79830de55ef6fadd`
+Hash: `b20d14569923d6de`
 
 ## `public sealed class TDisplayFailure`
 
 Covers the failure routes of the reading view's reads, on a real workspace with fake ports.
 Every port answers only the entry load.
 So each read below meets a refusal and shows its key through the fake envoy.
-The fallback still draws, so no read throws.
+The tests call reads rather than drawing WPF controls.
 
 ## `public void DisplayEntryOpen_StampPortFails_ShowsTheStampFailure()`
 
@@ -19,12 +19,12 @@ A card read whose sentence order read fails shows `Display.OrderFailed`.
 ## `public void DisplayCardRead_CitationPortFails_ShowsTheCitationFailure()`
 
 A card read whose Source line read fails shows `Display.CitationFailed`.
-The cards still draw, though the target read fails too and answers an empty map.
+The test verifies the citation failure notice after reading the cards.
 
 ## `public void DisplayReflexRead_ReflexPortFails_ShowsTheReflexFailure()`
 
 A failed reflex scan shows `Display.ReflexFailed` and answers no rows.
-The anchor and waiting reads fail too and show their own keys.
+This case asserts the reflex notice and empty rows.
 
 ## `public void DisplayFanqieRead_ReadingPortFails_ShowsTheReadingFailure()`
 
@@ -33,7 +33,7 @@ A failed rime book reading shows `Display.ReadingFailed`.
 ## `public void DisplayParadigmRead_LanguagePortFails_ShowsTheLanguageFailure()`
 
 A failed paradigm language read shows `Display.LanguageFailed`.
-The row and waiting reads fail too and show their own keys.
+This case asserts the language notice.
 
 ## `public void DisplayEntryOpen_SoundStartFails_ShowsTheStartFailure()`
 
@@ -49,7 +49,8 @@ A failed waiting check shows `Sound.PendingFailed` through the voice's failure e
 
 ## `public void DisplayFanqieRead_AnchorPortFails_ShowsTheAnchorFailure()`
 
-The fanqie block draws no groups, and the reflex read that follows a fanqie notice shows `Display.AnchorFailed`.
+The fanqie read answers no groups.
+A subsequent direct reflex read shows `Display.AnchorFailed`.
 
 ## `public void DisplayFavoriteRead_PortFails_ShowsTheReadFailure()`
 
@@ -62,6 +63,11 @@ A favorite read that fails on two repaints shows `Favorite.ReadFailed` once.
 ## `public void DisplayCardRead_OrderPortFailsTwice_ShowsOneNotice()`
 
 Two card reads over a failing order port show `Display.OrderFailed` once.
+
+## `public void DisplayCardRead_FoldPortFails_ShowsTheFoldReadFailureOnce()`
+
+Two card reads over a fold port that answers nothing show `Fold.ReadFailed` once.
+The assertion covers notice deduplication, not the returned cards' fold values.
 
 ## `public void DisplayFavoriteToggle_PortFailsTwice_ShowsTwoNotices()`
 

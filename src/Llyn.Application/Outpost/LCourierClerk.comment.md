@@ -1,5 +1,5 @@
 # LCourierClerk.cs
-Hash: `15ec5107026d758c`
+Hash: `a253325081196cd6`
 
 ## `public sealed class LCourierClerk`
 
@@ -26,11 +26,6 @@ So the CSS never sits among the entries of any language.
 ## `private const string LCourierStyle = "Llyn style";`
 
 The title of the note whose CSS every entry note imports.
-
-## `internal const string LCourierPhonology = "phonology";`
-
-The kind in the id of a language's sound note, whose key is always empty.
-`LCourierLanguage` reads it too, so the link map and the sent note never name it differently.
 
 ## `internal const int LCourierStall = 3;`
 
@@ -61,7 +56,7 @@ So a failure leaves a trace beyond the receipt.
 ## `public async Task<LReceipt> LCourierClerkSend(Func<long, LLiveryPage?> page, Func<string, LLiveryLanguage> language, Func<string, string> lookup, CancellationToken cancellation)`
 
 `page` reads one entry's stored page, null when the entry is gone, which fails that entry.
-`language` reads one language's series, rime-table categories and sound rows for its reconstruction notes.
+`language` reads one language's series and rime-table categories for its reconstruction notes.
 `lookup` maps a localization key to text for the note bodies.
 Runs one push, refusing with `LRefusalCourier` while another push or connect still runs.
 The busy flag clears in a `finally`, so a failed push never blocks the next one.
@@ -84,7 +79,6 @@ A stored token Joplin no longer honours still reads true until a push meets the 
 The `link` map the livery uses to turn rime-card chips into links to reconstruction notes.
 It maps a language, a kind and a key to `LLivery.LLiveryIdFormat` over the kind, realm `stamp`, language and key.
 It holds every series and category of `languages` with a non-empty key.
-A language with sound rows also holds its sound note under `LCourierPhonology` and an empty key.
 Anything else maps to empty.
 `LCourierLanguage.LCourierLanguageSend` takes its note ids from this map alone, so the two never drift.
 `LCourierBatchSend` filters it afterwards by the notes Joplin answered, so a chip never links to a missing note.

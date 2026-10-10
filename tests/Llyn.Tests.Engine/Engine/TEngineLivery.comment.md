@@ -1,10 +1,11 @@
 # TEngineLivery.cs
-Hash: `edab8f2d4a0755a0`
+Hash: `a594696e3ff332c0`
 
 ## `public sealed class TEngineLivery`
 
 Writes stored and hand-built pages through the `TLiveryFormat` relay, one fact per rendered part.
 The page-read facts live in `TEngineLiveryPage`.
+The inflection-table facts live in `TEngineLiveryInflection`.
 
 ## `public void LiveryFormat_StoredEntry_OmitsExportMarkup()`
 
@@ -65,7 +66,23 @@ Checks that the entry's id maps to a 32-character note id and any other id maps 
 ## `public void LiveryStyleFormat_TokenTheme_ScopesRulesWithoutColour()`
 
 Builds a theme that maps every role `TLiveryStyleFormat` reads to a `var` token.
-The roles include the favorite, helper, raised surface and frequency band colours.
+The roles include the favorite, helper, raised surface, frequency band and warning colours.
 A role missing from the theme would fall back to a hex colour and fail the fact.
 Checks every selector of the CSS starts with `.llyn`.
-Checks the CSS holds no hex, `rgb`, `hsl` or named colour.
+Checks the CSS holds no hex, `rgb`, `hsl`, `white`, `black` or `transparent` colour.
+
+## `public void LiveryStyleFormat_CardSummary_DrawsFoldChevronAtRightEnd()`
+
+Builds the same `var` token theme and formats the style through `TLiveryStyleFormat`.
+Checks the CSS has a `summary::after` rule with an open rule and a folded rule.
+Checks the CSS has a rule for the native webkit details marker, which the style hides.
+The chevron mirrors the app's right-aligned hinge.
+The native marker would sit at the left.
+
+## `public void LiveryStyleFormat_OpenFullDetails_HidesShortTable()`
+
+Builds the same `var` token theme and formats the style through `TLiveryStyleFormat`.
+Checks the CSS hides the `llyn-inflection-short` table after an open `llyn-inflection-full` details.
+The note mirrors the app's Short/Full switch without script, so CSS alone swaps the sheets.
+Checks the summary rule pushes the pill right with an auto left margin and right text alignment.
+The note mirrors the app's right-aligned switch.

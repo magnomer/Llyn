@@ -202,6 +202,22 @@ public sealed class TDisplayFailure
     }
 
     [Fact]
+    public void DisplayCardRead_FoldPortFails_ShowsTheFoldReadFailureOnce()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TDisplayAtelierCreate(engine);
+        List<string> asked = [];
+        CWing wing = TDisplayWingOpen(engine, atelier, asked);
+        asked.Clear();
+
+        wing.CWingDisplay.CDisplayCard.CDisplayCardRead();
+        wing.CWingDisplay.CDisplayCard.CDisplayCardRead();
+
+        Assert.Single(asked, key => key == "Fold.ReadFailed");
+    }
+
+    [Fact]
     public void DisplayFavoriteToggle_PortFailsTwice_ShowsTwoNotices()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

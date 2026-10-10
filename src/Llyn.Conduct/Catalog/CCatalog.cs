@@ -218,6 +218,8 @@ public sealed class CCatalog
             CSubject.CSubjectSettings => LSubject.LSubjectSettings,
             CSubject.CSubjectTenure => LSubject.LSubjectTenure,
             CSubject.CSubjectVista => LSubject.LSubjectVista,
+            CSubject.CSubjectFold => LSubject.LSubjectFold,
+            CSubject.CSubjectStemFold => LSubject.LSubjectStemFold,
             _ => throw new ArgumentOutOfRangeException(nameof(subject), subject, null),
         };
     }

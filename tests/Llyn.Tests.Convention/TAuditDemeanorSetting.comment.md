@@ -1,5 +1,5 @@
 # TAuditDemeanorSetting.cs
-Hash: `3eefb8a588774997`
+Hash: `979b48266d0c3d52`
 
 ## `internal static class TAuditDemeanorSetting`
 
@@ -9,6 +9,7 @@ No script writes this file.
 `AuditStructure.json` holds its own copy, kept in step by hand as scripts/principles.md asks.
 The border facts read it together with the other offer settings.
 The offer now includes the courier, `CCourier` and `CCourierState`, beside the ledger.
+It also includes `CStemMember`, the series member the series page draws.
 
 ## `public static readonly IReadOnlyDictionary<string, string[]> TAuditDemeanorOffer`
 

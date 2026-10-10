@@ -7,6 +7,7 @@ using Llyn.ShellEngine;
 namespace Llyn.Conduct;
 
 public sealed record CLeaf(
+    long CLeafId,
     int CLeafPosition,
     CStateWording CLeafTitle,
     CStateWording CLeafExpression,
@@ -17,7 +18,9 @@ public sealed record CLeaf(
     IReadOnlyList<CTranslationTarget> CLeafTranslation,
     IReadOnlyList<CLeafLine> CLeafSentence,
     IReadOnlyList<CImageDraft> CLeafImage,
-    IReadOnlyList<CVideoDraft> CLeafVideo)
+    IReadOnlyList<CVideoDraft> CLeafVideo,
+    bool CLeafFolded,
+    bool CLeafStored)
 {
     internal static IReadOnlyList<CLeaf> LLeafRead(
         IReadOnlyList<LCardDraft> cards,
@@ -25,14 +28,17 @@ public sealed record CLeaf(
         string mark,
         IReadOnlyDictionary<long, string> citations,
         IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets,
+        IReadOnlySet<long> folds,
         LMediaPort media,
         LExamplePort examples)
     {
         ArgumentNullException.ThrowIfNull(cards);
         ArgumentNullException.ThrowIfNull(targets);
+        ArgumentNullException.ThrowIfNull(folds);
 
         return CFolio.CFolioOrderRead(cards)
             .Select(card => new CLeaf(
+                card.LCardDraftId,
                 card.LCardDraftPosition,
                 CStateWording.LStateWordingRead(CFolio.CFolioStateRead(card.LCardDraftTitle), null),
                 CStateWording.LStateWordingRead(CFolio.CFolioStateRead(card.LCardDraftExpression), null),
@@ -45,7 +51,9 @@ public sealed record CLeaf(
                     .Select(sentence => CLeafLine.LLeafLineRead(sentence, order, mark, citations, examples))
                     .ToList(),
                 CFolio.CFolioImageRead(card.LCardDraftImage, media),
-                CFolio.CFolioVideoRead(card.LCardDraftVideo, media)))
+                CFolio.CFolioVideoRead(card.LCardDraftVideo, media),
+                folds.Contains(card.LCardDraftId),
+                card.LCardDraftStored))
             .ToList();
     }
 }

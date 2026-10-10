@@ -1,7 +1,7 @@
 # Structure audit - Llyn 0.18.14100
 
 - Generation: 21
-- Files audited: 1305
+- Files audited: 1315
 - Files outside a declared ring: 1
 - Above ceiling: 0
 - Stale ceilings: 0
@@ -59,9 +59,9 @@ and never touches an eavesdropping member. The project files hold the ring table
 | `Hollowing` | Census | Ring holding fewer source files than its floor | none allowed | 0 |
 | `Rerouting` | Charter | Project edge differing from the ring table | none allowed | 0 |
 | `Backdooring` | Charter | Reference or source link bypassing the ring table | none allowed | 0 |
-| `Ferrying` | Border | Data carried from a deeper ring | reported only | 2327 |
-| `Commuting` | Border | Neighbour ring named | reported only | 13811 |
-| Total | | | | 16138 |
+| `Ferrying` | Border | Data carried from a deeper ring | reported only | 2352 |
+| `Commuting` | Border | Neighbour ring named | reported only | 13947 |
+| Total | | | | 16299 |
 
 ## Pairs
 

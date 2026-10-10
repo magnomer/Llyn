@@ -199,6 +199,6 @@ public sealed class TParadigm
         LMorphology plural = TInterfaceInflection.TMorphologyCreate(1, 1, "plural", 0);
         LParadigmRow row = Assert.Single(TInterface.TParadigmRowScan(
             [TInterface.TParadigmSlotCreate(noun, plural, inflection, state)]));
-        return TInterface.TParadigmClerkCheck(row, pending, enabled);
+        return TInterface.TParadigmSlotCheck(row, pending, enabled);
     }
 }

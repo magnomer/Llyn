@@ -1,6 +1,5 @@
 # LLanguageStaff.cs
-Hash: `32a580fa99e89572`
-Hash: `524c68b3f2df2224`
+Hash: `42af96b0f83a64f7`
 
 ## `internal sealed record LLanguageStaff(LVocabularyClerk LLanguageStaffVocabulary, LParadigmClerk LLanguageStaffParadigm, LPronunciationClerk LLanguageStaffPronunciation, LTrailClerk LLanguageStaffTrail, LLanguageClerk LLanguageStaffLanguage, LRecordingClerk LLanguageStaffRecording, LTranscriptionClerk LLanguageStaffTranscription, LReflexClerk LLanguageStaffReflex, LLacunaClerk LLanguageStaffLacuna, LFrequencyClerk LLanguageStaffFrequency, LFanqieClerk LLanguageStaffFanqie, LShengfuClerk LLanguageStaffShengfu, LStemClerk LLanguageStaffStem, LDiweiClerk LLanguageStaffDiwei, LScriptClerk LLanguageStaffScript, LEnsign LLanguageStaffEnsign)`
 
@@ -33,6 +32,7 @@ Fetch clerks receive the gate and the bulletin raiser supplied by the engine.
 The frequency and lacuna fetches also receive the settings reader.
 The paradigm clerk receives the language cache, so it reads the same rule books as the lacuna fetch.
 The recording, reflex and lacuna clerks read the claim clerk, so they see which drafts this engine holds.
+The stem clerk receives the reflex clerk, so a series member orders its reflex rows by the pack's rule.
 
 ## `internal void LLanguageStaffApply()`
 

@@ -20,6 +20,7 @@ internal static class LLiveryRime
 
         string language = page.LLiveryPageDraft.LEntryDraftLanguage.Trim();
         LLiveryParadigmAppend(sheet, page.LLiveryPageParadigm);
+        LLiveryInflection.LLiveryInflectionAppend(sheet, page.LLiveryPageInflection, lookup);
         LLiveryFanqieAppend(sheet, page.LLiveryPageFanqie, (chip, kind, key) =>
         {
             string id = chip.Length > 0 && key.Length > 0 ? link(language, kind, key) : string.Empty;

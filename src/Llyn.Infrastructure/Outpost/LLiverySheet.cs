@@ -90,16 +90,6 @@ public sealed class LLiverySheet : LLivery
         return LLiverySheetBuild(style, sheet => LLiveryYunjing.LLiveryYunjingAppend(sheet, diwei, note, lookup));
     }
 
-    public LLiveryNote LLiveryFormat(
-        LLiveryLanguage language, string style, Func<long, string> note, Func<string, string> lookup)
-    {
-        ArgumentNullException.ThrowIfNull(language);
-        ArgumentNullException.ThrowIfNull(note);
-        ArgumentNullException.ThrowIfNull(lookup);
-
-        return LLiverySheetBuild(style, sheet => LLiveryPhonology.LLiveryPhonologyAppend(sheet, language, note));
-    }
-
     public string LLiveryMarkFormat(string style)
     {
         LLiveryStyleCheck(style);
