@@ -1,5 +1,5 @@
 # source.json
-Hash: `0c59e97ddbffc677`
+Hash: `c541c3ef69665f2d`
 
 ## pack
 
@@ -7,7 +7,6 @@ Language pack for Korean.
 The pack format is documented in `languages/English/source.comment.md`.
 Section heading anchors allow attributes before `id`, which the REST rendering writes there.
 No varieties are declared, so every reading is the Seoul standard one.
-No respelling groups are declared, so every reading shows as its source wrote it.
 Segoe UI has no hangul glyphs, so the headword and example blocks name Malgun Gothic first.
 Malgun Gothic ships with every Windows install since 7.
 Georgia has no hangul either, so the example block does not name it.
@@ -25,6 +24,34 @@ Wiktionary prints two free variants in one IPA span as `[a] ~ [b]`.
 The built-in removal strips only the outer brackets, leaving the inner pair around the tilde.
 So the rule turns that inner `] ~ [` into a plain tilde.
 Pinned live, 맛있다 gave ma̠ɕʰit̚t͈a̠ ~ ma̠dit̚t͈a̠.
+
+## `respelling[0]` Seoul
+
+The transcription in the pack's preferred symbols.
+The first row drops five combining marks wherever they stand.
+They are the no-audible-release mark ̚, so p̚ becomes p.
+They are the rounding ̹, the retraction ̠ and the lowering ̞ marks.
+So ʌ̹ becomes ʌ, a̠ becomes a, o̞ becomes o and e̞ becomes e.
+They are the tie bar ͡, so t͡ɕ becomes tɕ and d͡ʑ becomes dʑ.
+The stress mark ˈ is dropped, since Korean has no lexical stress.
+
+The middle rows undo the allophones Wiktionary's ko-pron module writes.
+The module swallows a j in several of them, so a row not before i restores it.
+The ㅋ allophones cç and kx become kʰ.
+The ㅎ allophones ç, ʝ, ɸʷ, ɸ, x, ɣ, β and ɦ become h.
+The ㅅ and ㅆ allophones ɕʰ, ɕ͈ and ʃ become sʰ, s͈ and s.
+The lookbehind on t keeps the ɕ of ㅈ, ㅊ and ㅉ.
+The module writes ㅟ in the second half of a word as y, which becomes ɥi.
+The ㄴ before j written ɲ becomes nj, and the ɲ before ㅈ or ㅊ becomes n.
+The ㄹ allophones ɭ and ʎ become l, while the flap ɾ stays.
+The ㅚ vowel ø becomes we.
+Lenis voicing stays, so an intervocalic ɡ, b, d or dʑ is kept.
+
+Both mid central vowels ɘ and ə become ʌ.
+The open-mid ɛ becomes e.
+The optional length mark (ː) goes before the bare ː, so no parentheses are left behind.
+Worked through, 먹다 [mʌ̹k̚t͈a̠] gives mʌkt͈a and 한국어 [ˈha̠(ː)nɡuɡʌ̹] gives hanɡuɡʌ.
+Worked through, 맛있다 [ma̠ɕʰit̚t͈a̠] gives masʰitt͈a and 물 [muɭ] gives mul.
 
 ## `transcription[0]` Romanization
 

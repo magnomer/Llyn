@@ -1,6 +1,6 @@
 # Source line report - 0.19.14250
 
-- Generated: 2026-10-12 00:21:18 +09:00
+- Generated: 2026-10-12 01:14:09 +09:00
 - Source roots: D:\Programming\Llyn\src; D:\Programming\Llyn\tests
 - Counted extensions: .cs, .csproj, .xaml
 - Excluded directories: .git, .vs, artifacts, bin, node_modules, obj, packages, publish
@@ -15,11 +15,11 @@
 | Physical lines | 255,907 |
 | Non-blank lines | 217,524 |
 | Blank lines | 38,383 |
-| Total bytes | 9,921,704 |
+| Total bytes | 9,921,733 |
 | Files over 400 lines | 0 |
 | Files at 351-400 lines | 50 |
 | Lines over the width limit | 0 |
-| Lines within 5 columns of the width limit | 1,398 |
+| Lines within 5 columns of the width limit | 1,400 |
 | Enforced | yes |
 | Length above ceiling | 0 |
 | Width above ceiling | 0 |
@@ -1284,6 +1284,7 @@ None.
 | 116 | 120 | tests/Llyn.Tests.Engine/Lexicon/TReflexOrder.cs:103 |
 | 118 | 120 | tests/Llyn.Tests.Engine/Lexicon/TRespellingDraft.cs:82 |
 | 120 | 120 | tests/Llyn.Tests.Engine/Lexicon/TRespellingDraft.cs:85 |
+| 117 | 120 | tests/Llyn.Tests.Engine/Lexicon/TRespellingDraft.cs:147 |
 | 117 | 120 | tests/Llyn.Tests.Engine/Lexicon/TSentence.cs:94 |
 | 117 | 120 | tests/Llyn.Tests.Engine/Lexicon/TSituation.cs:49 |
 | 118 | 120 | tests/Llyn.Tests.Engine/Lexicon/TSituation.cs:305 |
@@ -1351,6 +1352,7 @@ None.
 | 117 | 120 | tests/Llyn.Tests.Engine/Pronunciation/TEngineReflex.cs:166 |
 | 118 | 120 | tests/Llyn.Tests.Engine/Pronunciation/TEngineReflexSource.cs:137 |
 | 120 | 120 | tests/Llyn.Tests.Engine/Pronunciation/TEngineReflexSource.cs:139 |
+| 117 | 120 | tests/Llyn.Tests.Engine/Pronunciation/TEngineReflexStore.cs:288 |
 | 120 | 120 | tests/Llyn.Tests.Engine/Pronunciation/TEngineScript.cs:322 |
 | 117 | 120 | tests/Llyn.Tests.Engine/Pronunciation/TEngineShengfu.cs:109 |
 | 117 | 120 | tests/Llyn.Tests.Engine/Pronunciation/TEngineStem.cs:76 |
@@ -1504,26 +1506,26 @@ None.
 | Added | Deleted | Net | File |
 |------:|--------:|----:|------|
 | 680 | 328 | 352 | src/Llyn.Infrastructure/Outpost/LOutpostHttp.cs |
-| 561 | 226 | 335 | src/Llyn.Application/Outpost/LCourierClerk.cs |
-| 543 | 206 | 337 | tests/Llyn.Tests.Engine/Engine/TEngineLivery.cs |
-| 533 | 141 | 392 | src/Llyn.UIDeportment/Editor/List/QCard.cs |
+| 589 | 206 | 383 | tests/Llyn.Tests.Engine/Engine/TEngineLivery.cs |
+| 562 | 229 | 333 | src/Llyn.Application/Outpost/LCourierClerk.cs |
 | 502 | 243 | 259 | tests/Llyn.Tests.Conduct/Conduct/TFault.cs |
-| 497 | 368 | 129 | tests/Llyn.Tests.Convention/TAuditOriginWalker.cs |
-| 496 | 225 | 271 | src/Llyn.UIDeportment/Editor/Sentence/QSentence.cs |
 | 489 | 114 | 375 | tests/Llyn.Tests.Conduct/Conduct/TFold.cs |
-| 476 | 425 | 51 | src/Llyn.UIDeportment/Display/View/QDisplay.cs |
-| 443 | 248 | 195 | tests/Llyn.Tests.Convention/TAssayContesting.cs |
-| 397 | 0 | 397 | tests/Llyn.Tests.Convention/TAssayRelay.cs |
-| 393 | 277 | 116 | src/Llyn.UIDeportment/Shell/Window/QWindow.cs |
-| 386 | 0 | 386 | tests/Llyn.Tests.Convention/TAssayTruth.cs |
-| 364 | 0 | 364 | tests/Llyn.Tests.Convention/TAssayMisfiring.cs |
-| 332 | 3 | 329 | src/Llyn.Infrastructure/Outpost/LLiveryCard.cs |
+| 381 | 42 | 339 | tests/Llyn.Tests.Engine/Engine/TEngineLiveryLanguage.cs |
+| 380 | 0 | 380 | tests/Llyn.Tests.Conduct/Conduct/TPressWindowPrinter.cs |
+| 378 | 0 | 378 | src/Llyn.UIDeportment/Panel/Dialog/QSGalley.cs |
+| 367 | 0 | 367 | tests/Llyn.Tests.Engine/Portrait/TSheetEntry.cs |
+| 359 | 0 | 359 | src/Llyn.UIVeneer/Panel/Dialog/PSPress.xaml |
+| 351 | 0 | 351 | src/Llyn.Infrastructure/Portrait/Sheet/LSheetSound.cs |
+| 347 | 0 | 347 | src/Llyn.Conduct/Dialog/CSPress.cs |
+| 345 | 7 | 338 | tests/Llyn.Tests.Conduct/Conduct/TCourier.cs |
+| 338 | 6 | 332 | src/Llyn.Infrastructure/Outpost/LLiveryCard.cs |
+| 330 | 25 | 305 | src/Llyn.Infrastructure/Outpost/LLiveryStyle.cs |
 
 ## Lines by source folder
 
 | Folder | Files | Lines | Non-blank | Share | Average lines | Bytes | Size share | Average bytes |
 |--------|------:|------:|----------:|------:|--------------:|------:|-----------:|--------------:|
-| tests / Tests.Engine | 220 | 35,848 | 30,279 | 14.0 % | 163 | 1,554,158 | 15.7 % | 7,064 |
+| tests / Tests.Engine | 220 | 35,848 | 30,279 | 14.0 % | 163 | 1,554,187 | 15.7 % | 7,064 |
 | scripts | 38 | 35,534 | 31,047 | 13.9 % | 935 | 1,516,061 | 15.3 % | 39,896 |
 | src / UIDeportment | 311 | 33,825 | 27,727 | 13.2 % | 109 | 1,170,234 | 11.8 % | 3,763 |
 | tests / Tests.Conduct | 153 | 27,323 | 23,377 | 10.7 % | 179 | 1,147,118 | 11.6 % | 7,498 |

@@ -142,9 +142,9 @@ public sealed class TRespellingDraft
             TInterface.TReflexRespellingCreate(started.LDraftId, rowId, "tʂəŋ"));
         Assert.Equal("tʂəŋ", Assert.Single(overwritten.LDraftContent.LEntryDraftReflexes).LReflexDraftRespelling);
 
-        LDraft korean = engine.TEngineRequestApply(
-            TInterface.TReflexLanguageCreate(started.LDraftId, rowId, "Korean"));
-        Assert.Equal(string.Empty, Assert.Single(korean.LDraftContent.LEntryDraftReflexes).LReflexDraftRespelling);
+        LDraft japanese = engine.TEngineRequestApply(
+            TInterface.TReflexLanguageCreate(started.LDraftId, rowId, "Japanese"));
+        Assert.Equal(string.Empty, Assert.Single(japanese.LDraftContent.LEntryDraftReflexes).LReflexDraftRespelling);
     }
 
     [Fact]
@@ -158,7 +158,7 @@ public sealed class TRespellingDraft
             LEntryDraftReflexes =
             [
                 TInterface.TReflexDraftCreate("Cantonese", "", "t͡sɪŋ³⁵"),
-                TInterface.TReflexDraftCreate("Korean", "", "중"),
+                TInterface.TReflexDraftCreate("Japanese", "", "ちゅう"),
             ],
         });
 

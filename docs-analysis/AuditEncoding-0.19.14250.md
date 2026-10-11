@@ -1,10 +1,10 @@
 # Encoding report - 0.19.14250
 
 - Project: Llyn
-- Generated: 2026-10-12 00:23:50 +09:00
+- Generated: 2026-10-12 01:15:49 +09:00
 - Generation: 21
 - Project root: `D:\Programming\Llyn`
-- Scanned: 4,452 text files, 16,386,129 bytes
+- Scanned: 4,455 text files, 17,285,453 bytes
 - Includes: `*.cs`, `*.xaml`, `*.md`, `*.json`, `*.csproj`, `*.props`, `*.slnx`, `*.ps1`
 - Excluded segments: `.git`, `bin`, `obj`, `out`, `publish`, `snapshots`, `TestResults`
 - Skipped names: `version.json`

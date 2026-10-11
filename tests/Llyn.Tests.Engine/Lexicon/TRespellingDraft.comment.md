@@ -1,5 +1,5 @@
 # TRespellingDraft.cs
-Hash: `c65270f8f475e005`
+Hash: `e2f4afa84345da9a`
 
 ## `public sealed class TRespellingDraft`
 

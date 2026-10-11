@@ -1,6 +1,6 @@
 # Comment report - 0.19.14250
 
-- Generated: 2026-10-12 00:21:48 +09:00
+- Generated: 2026-10-12 01:14:29 +09:00
 - Source roots: D:\Programming\Llyn\languages; D:\Programming\Llyn\localization; D:\Programming\Llyn\src; D:\Programming\Llyn\tests; D:\Programming\Llyn\themes
 - Source files: D:\Programming\Llyn\Directory.Build.props; D:\Programming\Llyn\Llyn.slnx; D:\Programming\Llyn\version.json
 - Comment pattern: `*.comment.md`
@@ -15,14 +15,14 @@
 | Folders | 48 |
 | Source files | 2,178 |
 | Comment files | 2,178 |
-| Comment lines | 94,061 |
+| Comment lines | 94,088 |
 | Sources without a comment file | 0 |
 | Comment files without a source | 0 |
 | Lines breaking the line rules | 0 |
 | In-code comments | 0 |
 | Headings naming nothing in their source | 0 |
 | Comment files with a stale hash | 0 |
-| Comment files restamped unrevised (warning) | 8 |
+| Comment files restamped unrevised (warning) | 0 |
 | Comment files with no hash (warning) | 0 |
 | Ceiling for comment files with no hash | 0 |
 | Exempt comment files | 1 |
@@ -54,13 +54,13 @@ Density is the number of non-blank comment lines written per non-blank source li
 | French | 2 | 2 | 174 | 140 | 0.2 % | 8,143 | 4,072 | 0.27 |
 | Cantonese | 2 | 2 | 161 | 127 | 0.2 % | 8,110 | 4,055 | 0.30 |
 | Japanese | 2 | 2 | 148 | 114 | 0.2 % | 7,078 | 3,539 | 0.24 |
+| Korean | 1 | 1 | 139 | 113 | 0.1 % | 7,882 | 7,882 | 0.48 |
 | Llyn.Host | 2 | 2 | 130 | 81 | 0.1 % | 8,627 | 4,314 | 0.73 |
 | Vietnamese | 2 | 2 | 130 | 104 | 0.1 % | 6,725 | 3,362 | 0.33 |
 | Portuguese | 2 | 2 | 125 | 97 | 0.1 % | 6,589 | 3,294 | 0.21 |
 | Classical Latin | 2 | 2 | 123 | 99 | 0.1 % | 6,095 | 3,048 | 0.18 |
 | German | 2 | 2 | 122 | 98 | 0.1 % | 5,793 | 2,896 | 0.19 |
 | Classical Greek | 2 | 2 | 119 | 95 | 0.1 % | 5,784 | 2,892 | 0.18 |
-| Korean | 1 | 1 | 112 | 90 | 0.1 % | 6,432 | 6,432 | 0.43 |
 | Thai | 2 | 2 | 108 | 80 | 0.1 % | 5,076 | 2,538 | 0.38 |
 | Llyn.UIDeportment.Capsule | 6 | 6 | 101 | 68 | 0.1 % | 5,017 | 836 | 0.76 |
 | Swahili | 2 | 2 | 96 | 74 | 0.1 % | 4,596 | 2,298 | 0.49 |
@@ -104,23 +104,7 @@ None.
 
 ## Comment files restamped unrevised
 
-**WARNING: HASH BUMPED, COMMENT NOT REVISED.**
-**THESE FILES WERE RESTAMPED, YET THEIR PROSE MATCHES THE TEXT THEY HELD WHILE STALE.**
-**DO NOT BUMP HASHES MINDLESSLY. A STAMP VOUCHES THAT THE PROSE WAS REREAD.**
-**DIFF EACH SOURCE, REREAD EVERY SECTION IT TOUCHES, REWRITE WHAT NO LONGER HOLDS.**
-**IF THE PROSE STILL HOLDS, STATE WHY FOR EACH FILE IN THE REPORT OF THIS CHANGE.**
-**THE WARNING CLEARS WHEN THE PROSE CHANGES OR A COMMIT CARRIES THE NEW STAMP.**
-
-| File | Problem |
-|------|---------|
-| src/Llyn.Conduct/Atelier/CEnvoy.comment.md | restamped, prose unchanged |
-| src/Llyn.Conduct/Display/CDisplayGrasp.comment.md | restamped, prose unchanged |
-| src/Llyn.Conduct/Display/LDisplay.comment.md | restamped, prose unchanged |
-| src/Llyn.Conduct/Sound/CParadigmForm.comment.md | restamped, prose unchanged |
-| src/Llyn.Core/Press/LPressImage.comment.md | restamped, prose unchanged |
-| src/Llyn.UIDeportment/Display/QLecternGrasp.comment.md | restamped, prose unchanged |
-| tests/Llyn.Tests.Conduct/Conduct/TParadigmView.comment.md | restamped, prose unchanged |
-| tests/Llyn.Tests.Engine/Lexicon/TParadigmPiece.comment.md | restamped, prose unchanged |
+None.
 
 ## Comment files with no hash
 

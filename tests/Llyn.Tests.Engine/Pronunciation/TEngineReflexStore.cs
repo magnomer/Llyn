@@ -285,7 +285,7 @@ public sealed class TEngineReflexStore
         using LEngine reopened = workspace.TWorkspaceEngineStart();
 
         Assert.Equal("악할 악", TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase).TEntryEpithetRead(id));
-        Assert.Equal(["", "tsiŋ³⁵"], reopened.TEntryReflexRead(id).Select(row => row.LReflexDraftRespelling));
+        Assert.Equal(["악할 악(악)", "tsiŋ³⁵"], reopened.TEntryReflexRead(id).Select(row => row.LReflexDraftRespelling));
     }
 
     private const string TReflexMeaningPack =
