@@ -1,5 +1,5 @@
 # QMarker.cs
-Hash: `0efa7979ab7d01af`
+Hash: `ea44857a68abf2d6`
 
 ## `internal sealed class QMarker`
 
@@ -19,10 +19,12 @@ Hands the chip list its chips and fill, and subscribes the marker field's keys a
 The chip list is held to the width of its row, where a binding followed that width.
 The switch icon is set here, where the markup held an icon lookup.
 
-## `internal void QMarkerIntroduce(CCardSpeech speech, CEntry entry, QCategory category, QUnit unit)`
+## `internal void QMarkerIntroduce(CCardSpeech speech, CEntry entry, QCategory category, QUnit unit, QFreedom freedom)`
 
-Holds the speech facet, the category driver and the unit driver, and subscribes the marker Refine to the entry draft.
-Each draft change hands the unit driver the units read with the field, so the row is read once.
+Holds the speech facet and the category, unit and freedom drivers.
+It subscribes the marker Refine to the entry draft.
+Each draft change hands the unit and freedom drivers their rows read with the field.
+So the row is read once.
 
 ## `private void QMarkerApply(FrameworkElement container, object item, string? _)`
 

@@ -1,7 +1,7 @@
 # CLectern.cs
-Hash: `d643171a2d243beb`
+Hash: `fed67f5c9720b3bf`
 
-## `public sealed record CLectern(string CLecternHeadword, string CLecternLanguage, IReadOnlyList<string> CLecternSpeeches, bool CLecternMarked, IReadOnlyList<CMarkdownBlock> CLecternNote, bool CLecternNoted, string CLecternAdded, string CLecternUpdated, bool CLecternStamped, string CLecternUnit)`
+## `public sealed record CLectern(string CLecternHeadword, string CLecternLanguage, IReadOnlyList<string> CLecternSpeeches, bool CLecternMarked, IReadOnlyList<CMarkdownBlock> CLecternNote, bool CLecternNoted, string CLecternAdded, string CLecternUpdated, bool CLecternStamped, string CLecternUnit, string CLecternFreedom)`
 
 The header of the reading view for the shown entry, ready to show.
 The display builds it once when an entry opens, so the driver only draws it.
@@ -18,3 +18,4 @@ The display builds it once when an entry opens, so the driver only draws it.
 - `CLecternUpdated`: the last update time in local short form.
 - `CLecternStamped`: whether the stored entry was read, which shows the stamp row.
 - `CLecternUnit`: the localization key of the entry's lexical unit, or empty when none is chosen.
+- `CLecternFreedom`: the localization key of the entry's freedom, or empty when none is chosen.

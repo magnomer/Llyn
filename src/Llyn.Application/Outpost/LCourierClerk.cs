@@ -9,8 +9,6 @@ namespace Llyn.Application;
 
 public sealed class LCourierClerk
 {
-    private const string LCourierNotebook = "Llyn";
-
     private const string LCourierSystem = "System";
 
     private const string LCourierStyle = "Llyn style";
@@ -223,7 +221,7 @@ public sealed class LCourierClerk
             try
             {
                 await _lCourierClerkOutpost
-                    .LOutpostFolderSave(port, token, notebook, string.Empty, LCourierNotebook, cancellation)
+                    .LOutpostFolderSave(port, token, notebook, string.Empty, settings.LSettingsNotebook, cancellation)
                     .ConfigureAwait(false);
                 await _lCourierClerkOutpost
                     .LOutpostFolderSave(port, token, system, notebook, LCourierSystem, cancellation)

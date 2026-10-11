@@ -33,10 +33,11 @@ internal static class CPortrait
         "Portrait.Register",
         "Portrait.Translation",
         "Portrait.Tag",
-        "Unit.Content",
-        "Unit.Function",
         "Unit.Morpheme",
         "Unit.Word",
+        "Unit.Expression",
+        "Freedom.Dependent",
+        "Freedom.Standalone",
     ];
 
     internal static IReadOnlyList<CPortraitChoice> LPortraitChoiceRead()
@@ -64,7 +65,7 @@ internal static class CPortrait
             .ToList();
     }
 
-    private static CPortraitChoice LPortraitChoiceCreate(LPortraitMedium medium, string suffix, bool chosen)
+    internal static CPortraitChoice LPortraitChoiceCreate(LPortraitMedium medium, string suffix, bool chosen)
     {
         return medium switch
         {
@@ -117,24 +118,34 @@ internal static class CPortrait
         }
     }
 
-    internal static async Task LPortraitTicketPrint(
-        CEnvoy envoy, LSettingsPort settings, Func<LPressTicket, Task> print)
+    internal static async Task LPortraitPrint(CEnvoy envoy, LSettingsPort settings, Func<Task<LGalleyRelay?>> open)
     {
         ArgumentNullException.ThrowIfNull(envoy);
-        ArgumentNullException.ThrowIfNull(print);
+        ArgumentNullException.ThrowIfNull(open);
 
+        LGalleyRelay? relay;
         try
         {
-            if (envoy.CEnvoyTicketRead() is not CPressTicket ticket)
-            {
-                return;
-            }
-
-            await print(LPortraitTicketRead(ticket));
+            relay = await open();
         }
         catch (Exception exception)
         {
             CLedger.LLedgerFailureShow(envoy, settings, "Print.Failed", exception);
+            return;
+        }
+
+        if (relay is null)
+        {
+            return;
+        }
+
+        await using (relay)
+        {
+            CSPress press = new(relay, envoy, settings);
+            using (press.CSPressGalley)
+            {
+                envoy.CEnvoyPressRead(press);
+            }
         }
     }
 
@@ -148,44 +159,6 @@ internal static class CPortrait
             CPortraitMedium.CPortraitMediumDocx => LPortraitMedium.LPortraitMediumDocx,
             CPortraitMedium.CPortraitMediumPdf => LPortraitMedium.LPortraitMediumPdf,
             _ => throw new ArgumentOutOfRangeException(nameof(medium), medium, null),
-        };
-    }
-
-    internal static LPressTicket LPortraitTicketRead(CPressTicket ticket)
-    {
-        ArgumentNullException.ThrowIfNull(ticket);
-
-        return LPortraitPort.LEngineTicketRead(
-            ticket.CPressTicketPrinter,
-            ticket.CPressTicketWidth,
-            ticket.CPressTicketHeight,
-            ticket.CPressTicketLandscape,
-            ticket.CPressTicketCopies,
-            ticket.CPressTicketCollated,
-            LPortraitSideRead(ticket.CPressTicketSide),
-            LPortraitInkRead(ticket.CPressTicketInk));
-    }
-
-    private static LPressSide LPortraitSideRead(CPressSide side)
-    {
-        return side switch
-        {
-            CPressSide.CPressSideDefault => LPressSide.LPressSideDefault,
-            CPressSide.CPressSideSingle => LPressSide.LPressSideSingle,
-            CPressSide.CPressSideLong => LPressSide.LPressSideLong,
-            CPressSide.CPressSideShort => LPressSide.LPressSideShort,
-            _ => throw new ArgumentOutOfRangeException(nameof(side), side, null),
-        };
-    }
-
-    private static LPressInk LPortraitInkRead(CPressInk ink)
-    {
-        return ink switch
-        {
-            CPressInk.CPressInkDefault => LPressInk.LPressInkDefault,
-            CPressInk.CPressInkColor => LPressInk.LPressInkColor,
-            CPressInk.CPressInkGray => LPressInk.LPressInkGray,
-            _ => throw new ArgumentOutOfRangeException(nameof(ink), ink, null),
         };
     }
 

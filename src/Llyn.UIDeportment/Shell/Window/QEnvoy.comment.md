@@ -1,19 +1,23 @@
 # QEnvoy.cs
-Hash: `986742fbcfa55234`
+Hash: `d1f3da6060d85254`
 
 ## `internal sealed class QEnvoy : CEnvoy`
 
 The GUI's answer to Conduct's user-question port.
-It puts up a message box over the main window, worded from the key Conduct chose.
+It puts up each box, dialog and window over `QEnvoyOwner`, worded from the key Conduct chose.
 
-## `private const double QEnvoyInch = 96.0;`
+## `internal QEnvoy(Window surface, QPosture posture)`
 
-The device-independent pixels in one inch, the unit the print dialog measures a sheet in.
-The conversion stays here, so Conduct and the engine only ever see inches.
+Takes the main window, which owns every box while no other window of the app is active.
+It also takes the window's posture, where the print window keeps its size.
+The print setting itself is kept by the engine's store.
 
-## `internal QEnvoy(Window surface)`
+## `private Window QEnvoyOwner`
 
-Takes the loaded window that owns every box, the customs window included.
+The one place that decides which window owns a box, a dialog or a file picker.
+It is the active window of the app on the calling thread, else the main window.
+A failure raised under the modal print window so sits above that window, not behind it.
+A call off the app's thread, or with no app, falls back to the main window.
 
 ## `public bool CEnvoyConfirm(string key)`
 
@@ -32,9 +36,10 @@ The dropped name comes first and the kept name second, joined by an arrow, becau
 
 ## `public void CEnvoyFailureShow(string key, CLedgerNotice notice)`
 
-Shows a failure under the localized headline `key` names, with the ready detail Conduct handed over.
-A refusal's reason, or the unexpected line with the label and path of its audit file, is worded as given.
-It asks Conduct nothing, so the detail is only placed on the lines of the box.
+Shows a failure under the localized headline `key` names, with the detail `notice` carries.
+The notice's key is localized into the detail line.
+A notice with a label and a path adds the localized label and the path on lines of their own.
+It asks Conduct nothing further, so the box only places what the notice holds.
 
 ## `public void CEnvoyFailureShow(string key)`
 
@@ -48,13 +53,18 @@ A leaving user often means to keep the word, so discarding is not the only exit.
 
 ## `public string? CEnvoyMarkupRead()`
 
-Opens the markup file dialog over the main window and answers the file picked.
+Opens the markup file dialog over the owner window and answers the file picked.
 A cancelled dialog answers null, which the gate reads as nothing to import.
 
 ## `public bool CEnvoyCustomsRead(CSCustoms customs)`
 
 Puts up the customs window over the gate Conduct handed it and answers whether the user accepted.
 The declared rows stay in the gate, so the window hands none back.
+
+## `public bool CEnvoyPressRead(CSPress press)`
+
+Opens the print window over the owner window and answers whether the reader printed or saved.
+Every Print command reaches it through the print gate, so every command shows the preview.
 
 ## `public void CEnvoyOmissionShow(IReadOnlyList<CMarkupOmission> omissions)`
 
@@ -64,17 +74,10 @@ Puts up the customs window's report of what an import could not place.
 
 Opens the save dialog with the formats the gate offers and the name it suggests.
 The dialog lists the rows in order and starts on the chosen one.
-It returns a one-based index into that same list, so the filter and the format cannot drift apart.
+The dialog's one-based filter index picks the medium from that same list.
+So the filter and the format cannot drift apart.
 A cancelled dialog answers no file, which the gate reads as nothing to export.
 The dialog's title stays here, since only a windowed chooser has one.
-
-## `public CPressTicket? CEnvoyTicketRead()`
-
-Opens the printer dialog and answers what the reader chose, or null when they cancelled.
-Everything the dialog offers is carried: printer, sheet, turn, copies, collation, sides and color.
-The sheet is carried in inches, turned from the pixels the dialog measured it in.
-A choice the dialog left unsaid maps to the default the printer applies on its own.
-A dialog that raises, as with the spooler down, is reported by the gate as `Print.Failed`.
 
 ## `public string? CEnvoyWorkspaceRead(string workspace)`
 
@@ -84,6 +87,6 @@ The dialog's title stays here, since only a windowed chooser has one.
 
 ## `public string? CEnvoyCoinageRead(string key)`
 
-Puts up the coinage dialog over the main window, saying the message `key` names.
+Puts up the coinage dialog over the owner window, saying the message `key` names.
 It answers the wording as typed, or null when the user retreats.
 The mint button stays dark on a blank wording, so a blank one never comes back.

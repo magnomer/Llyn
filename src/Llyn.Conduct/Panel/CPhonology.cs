@@ -162,13 +162,12 @@ public sealed class CPhonology
 
     public Task CPhonologyPortraitPrint()
     {
-        return CPortrait.LPortraitTicketPrint(
+        return CPortrait.LPortraitPrint(
             _cPhonologyEnvoy,
             _cPhonologySettingsPort,
-            chosen => _cPhonologyPortraitPort.LEnginePortraitPrint(
+            () => _cPhonologyPortraitPort.LEnginePressOpen(
                 CPhonologyPanel.CPanelAperture.CApertureVista,
-                CPortrait.LPortraitLabelRead(_cPhonologySettingsPort),
-                chosen));
+                CPortrait.LPortraitLabelRead(_cPhonologySettingsPort)));
     }
 
     public Task CPhonologyPortraitExport()

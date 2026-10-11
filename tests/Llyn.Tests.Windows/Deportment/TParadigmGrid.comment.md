@@ -1,5 +1,5 @@
 # TParadigmGrid.cs
-Hash: `52b2fbf45d3c362b`
+Hash: `2bf441a588307d49`
 
 ## `public sealed class TParadigmGrid`
 
@@ -19,13 +19,15 @@ Setting the check raises the checked event, so no click has to be faked.
 
 ## `public void ParadigmForm_Marked_PaintsMarkedRun()`
 
-A form marked at offset 1 for 2 letters splits into three runs around the mark.
+A form fed three pieces paints three runs, the marked middle one between two plain ones.
 The middle run uses `Theme.Paradigm.Marked`, and the first run does not.
+Where Core cuts the pieces is `TParadigmPiece`'s fact, so this one pins only the painting.
 The test lends the application that style and removes it once it ends.
 
 ## `public void ParadigmForm_Split_PaintsRootCutAndEnding()`
 
-A form split at 4 with its root marked paints the root, a hyphen and the ending.
+A form fed a marked root with a cut paints the root and a hyphen.
+A plain ending then follows, and the form paints it after the hyphen.
 The root takes `Theme.Paradigm.Marked`, and the hyphen takes `Theme.Paradigm.Cut`.
 The test lends the application both styles and removes them once it ends.
 
@@ -40,12 +42,12 @@ The last line of the table gets none, and no header row adds one.
 
 A box whose sheet returns to null while it has no rows collapses again.
 
-## `private static QParadigmSheet? TParadigmSheetCreate(IReadOnlyList<CParadigmMark> marks, string text = "tuve", int split = 0)`
+## `private static QParadigmSheet? TParadigmSheetCreate(IReadOnlyList<CParadigmPiece> pieces)`
 
 A sheet with one collapsed line and one expanded line under two person headers.
 It is mapped from a Conduct view by `QParadigmSheetCreate`, as the drivers map it.
 The expanded line also carries a pending form with its tip key.
-Every shown form uses `text`, `marks` and `split`, so one sheet serves the mark and split tests.
+Every other form uses `pieces`, so one sheet serves the mark and split tests.
 
 ## `private static UIElementCollection TParadigmPartsRead(QParadigm box)`
 

@@ -18,6 +18,12 @@ public sealed class TGrasp
     }
 
     [Fact]
+    public void GraspStarScan_StepThree_AnswersFullHalfAndEmptyStars()
+    {
+        Assert.Equal([2, 1, 0, 0, 0], TInterface.TGraspStarScan(3));
+    }
+
+    [Fact]
     public void GraspSave_RatedEntry_ReadsBackAndRaisesBulletin()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

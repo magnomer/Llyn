@@ -24,71 +24,10 @@ public sealed class TPortrait
     }
 
     [Fact]
-    public void PortraitTicketRead_EverySideAndInk_MapsToTheSameNamedEngineMember()
-    {
-        Assert.Equal(Enum.GetValues<CPressSide>().Length, Enum.GetValues<LPressSide>().Length);
-        Assert.Equal(Enum.GetValues<CPressInk>().Length, Enum.GetValues<LPressInk>().Length);
-        foreach (CPressSide side in Enum.GetValues<CPressSide>())
-        {
-            foreach (CPressInk ink in Enum.GetValues<CPressInk>())
-            {
-                LPressTicket ticket = TInterfaceConductPortrait.TPortraitTicketRead(
-                    new CPressTicket("Office", 8.27, 11.69, true, 2, false, side, ink));
-
-                Assert.Equal(side.ToString()[1..], ticket.LPressTicketSide.ToString()[1..]);
-                Assert.Equal(ink.ToString()[1..], ticket.LPressTicketInk.ToString()[1..]);
-            }
-        }
-    }
-
-    [Fact]
     public void PortraitMediumRead_UnknownFormat_Throws()
     {
         Assert.Throws<ArgumentOutOfRangeException>(
             static () => TInterfaceConductPortrait.TPortraitMediumRead((CPortraitMedium)99));
-    }
-
-    [Fact]
-    public void PortraitTicketRead_UnknownSideOrInk_Throws()
-    {
-        Assert.Throws<ArgumentOutOfRangeException>(static () =>
-            TInterfaceConductPortrait.TPortraitTicketRead(new CPressTicket(
-                "Office", null, null, false, 1, true, (CPressSide)99, CPressInk.CPressInkDefault)));
-        Assert.Throws<ArgumentOutOfRangeException>(static () =>
-            TInterfaceConductPortrait.TPortraitTicketRead(new CPressTicket(
-                "Office", null, null, false, 1, true, CPressSide.CPressSideDefault, (CPressInk)99)));
-    }
-
-    [Fact]
-    public void PortraitTicketRead_NamedSheet_CarriesTheDialogAnswer()
-    {
-        LPressTicket ticket = TInterfaceConductPortrait.TPortraitTicketRead(new CPressTicket(
-            "Office", 8.5, 11.0, true, 2, false, CPressSide.CPressSideLong, CPressInk.CPressInkGray));
-
-        Assert.Equal("Office", ticket.LPressTicketPrinter);
-        Assert.Equal(8.5, ticket.LPressTicketPaper.LPressPaperWidth);
-        Assert.Equal(11.0, ticket.LPressTicketPaper.LPressPaperHeight);
-        Assert.True(ticket.LPressTicketLandscape);
-        Assert.Equal(2, ticket.LPressTicketCopies);
-        Assert.False(ticket.LPressTicketCollated);
-    }
-
-    [Fact]
-    public void PortraitTicketRead_NoSheetNamed_TakesTheLocalSheet()
-    {
-        LPressTicket ticket = TInterfaceConductPortrait.TPortraitTicketRead(new CPressTicket(
-            "Office", null, 11.0, false, 1, true, CPressSide.CPressSideDefault, CPressInk.CPressInkDefault));
-
-        Assert.Equal(LPressPaper.LPressPaperLocal, ticket.LPressTicketPaper);
-    }
-
-    [Fact]
-    public void PortraitTicketRead_EmptySide_TakesTheLocalSheet()
-    {
-        LPressTicket ticket = TInterfaceConductPortrait.TPortraitTicketRead(new CPressTicket(
-            "Office", 0.0, 11.0, false, 1, true, CPressSide.CPressSideDefault, CPressInk.CPressInkDefault));
-
-        Assert.Equal(LPressPaper.LPressPaperLocal, ticket.LPressTicketPaper);
     }
 
     [Fact]
@@ -102,11 +41,13 @@ public sealed class TPortrait
         Assert.Equal("text:Reference.Title", label.LPortraitLabelSource);
         Assert.Equal("text:Portrait.Tag", label.LPortraitLabelTag);
         Assert.Equal("text:Unit.Morpheme", label.LPortraitLabelUnit[LUnit.LUnitMorpheme]);
+        Assert.Equal("text:Freedom.Standalone", label.LPortraitLabelFreedom[LFreedom.LFreedomStandalone]);
         Assert.All(
             typeof(LPortraitLabel).GetProperties()
                 .Where(static property => property.PropertyType == typeof(string))
                 .Select(property => (string)property.GetValue(label)!)
-                .Concat(label.LPortraitLabelUnit.Values),
+                .Concat(label.LPortraitLabelUnit.Values)
+                .Concat(label.LPortraitLabelFreedom.Values),
             static word => Assert.StartsWith("text:", word, StringComparison.Ordinal));
     }
 
@@ -274,39 +215,76 @@ public sealed class TPortrait
     }
 
     [Fact]
-    public async Task PortraitTicketPrint_DeclinedOrFailed_AsksThenPrintsNothingOrShowsTheFailure()
+    public async Task PortraitPrint_SucceededOrFailed_AsksNothingThenPrintsOrShowsTheFailure()
     {
         List<string> asked = [];
-        List<string> printed = [];
-        CPressTicket ticket = new(
-            "Office", null, null, false, 1, true, CPressSide.CPressSideDefault, CPressInk.CPressInkDefault);
+        int printed = 0;
 
-        await TInterfaceConductPortrait.TPortraitTicketPrint(
-            TEnvoyFake.TEnvoyTicketCreate(() => null, asked), chosen =>
+        await TInterfaceConductPortrait.TPortraitPrint(TEnvoyFake.TEnvoyCreate(null, asked), () =>
         {
-            printed.Add(chosen.LPressTicketPrinter);
-            return Task.CompletedTask;
+            printed++;
+            return Task.FromResult<LGalleyRelay?>(null);
         });
-        await TInterfaceConductPortrait.TPortraitTicketPrint(
-            TEnvoyFake.TEnvoyTicketCreate(() => ticket, asked), chosen =>
-        {
-            printed.Add(chosen.LPressTicketPrinter);
-            return Task.CompletedTask;
-        });
-        await TInterfaceConductPortrait.TPortraitTicketPrint(
-            TEnvoyFake.TEnvoyTicketCreate(() => ticket, asked),
-            static _ => throw new InvalidOperationException("The printer is gone."));
-        await TInterfaceConductPortrait.TPortraitTicketPrint(
-            TEnvoyFake.TEnvoyTicketCreate(
-                static () => throw new InvalidOperationException("The spooler is down."), asked),
-            chosen =>
+        await TInterfaceConductPortrait.TPortraitPrint(
+            TEnvoyFake.TEnvoyCreate(null, asked),
+            static () => throw new InvalidOperationException("The printer is gone."));
+
+        Assert.Equal(1, printed);
+        Assert.Equal(["Print.Failed"], asked);
+    }
+
+    [Fact]
+    public async Task PortraitPrint_ClosedWindow_DisposesBoard()
+    {
+        TPressBoard board = new();
+        List<string> asked = [];
+        int windows = 0;
+        CEnvoy envoy = TEnvoyFake.TEnvoyPressCreate(
+            _ =>
             {
-                printed.Add(chosen.LPressTicketPrinter);
-                return Task.CompletedTask;
-            });
+                windows++;
+                Assert.False(board.TPressBoardDisposed);
+                return true;
+            },
+            asked);
 
-        Assert.Equal(["Office"], printed);
-        Assert.Equal(["Ticket", "Ticket", "Ticket", "Print.Failed", "Ticket", "Print.Failed"], asked);
+        await TInterfaceConductPortrait.TPortraitPrint(envoy, board);
+
+        Assert.Equal(1, windows);
+        Assert.True(board.TPressBoardDisposed);
+        Assert.Empty(asked);
+    }
+
+    [Fact]
+    public async Task PortraitPrint_WindowThrows_StillDisposesBoard()
+    {
+        TPressBoard board = new();
+        CEnvoy envoy = TEnvoyFake.TEnvoyPressCreate(
+            static _ => throw new InvalidOperationException("The window broke."), []);
+
+        await Assert.ThrowsAsync<InvalidOperationException>(
+            () => TInterfaceConductPortrait.TPortraitPrint(envoy, board));
+
+        Assert.True(board.TPressBoardDisposed);
+    }
+
+    [Fact]
+    public async Task PortraitPrint_NullGalley_OpensNoWindow()
+    {
+        List<string> asked = [];
+        int windows = 0;
+        CEnvoy envoy = TEnvoyFake.TEnvoyPressCreate(
+            _ =>
+            {
+                windows++;
+                return true;
+            },
+            asked);
+
+        await TInterfaceConductPortrait.TPortraitPrint(envoy, static () => Task.FromResult<LGalleyRelay?>(null));
+
+        Assert.Equal(0, windows);
+        Assert.Empty(asked);
     }
 
     private static LSettingsPort TPortraitSettingsCreate()

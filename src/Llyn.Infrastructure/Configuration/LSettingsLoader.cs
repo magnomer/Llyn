@@ -21,6 +21,7 @@ public sealed class LSettingsLoader : LSettingsVault
     private const string LSettingsLoaderOutpost = "outpost";
     private const string LSettingsLoaderWarrant = "warrant";
     private const string LSettingsLoaderAnalysis = "analysis";
+    private const string LSettingsLoaderNotebook = "notebook";
     private const string LSettingsLoaderDefault = "en";
 
     private readonly string _lSettingsLoaderRoot;
@@ -98,11 +99,18 @@ public sealed class LSettingsLoader : LSettingsVault
                     ? token.GetString()!
                     : string.Empty;
 
+            string? notebook =
+                document.RootElement.TryGetProperty(LSettingsLoaderNotebook, out JsonElement title) &&
+                title.ValueKind == JsonValueKind.String
+                    ? title.GetString()
+                    : null;
+
             LSettings read = new(localization, respelled, frequency, morphology, epithet, tally)
             {
                 LSettingsOutpost = outpost,
                 LSettingsWarrant = warrant,
                 LSettingsAnalysis = analysis,
+                LSettingsNotebook = notebook ?? string.Empty,
             };
             return document.RootElement.TryGetProperty(LSettingsLoaderGloss, out JsonElement speech)
                 && speech.ValueKind == JsonValueKind.String
@@ -159,7 +167,8 @@ public sealed class LSettingsLoader : LSettingsVault
             [LSettingsLoaderGloss] = settings.LSettingsGloss,
             [LSettingsLoaderOutpost] = settings.LSettingsOutpost,
             [LSettingsLoaderWarrant] = settings.LSettingsWarrant,
-            [LSettingsLoaderAnalysis] = settings.LSettingsAnalysis
+            [LSettingsLoaderAnalysis] = settings.LSettingsAnalysis,
+            [LSettingsLoaderNotebook] = settings.LSettingsNotebook
         };
 
         string pending = Path.Combine(_lSettingsLoaderRoot, LSettingsLoaderPending);

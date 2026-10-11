@@ -1,5 +1,5 @@
 # Llyn.Infrastructure.csproj
-Hash: `b1994be0ee60132b`
+Hash: `73765e6a646c35fc`
 
 ## `<PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.13" />`
 
@@ -9,3 +9,9 @@ This reference overrides the transitive bundle with a patched version.
 ## `<WarningsAsErrors>CA1416</WarningsAsErrors>`
 
 A Windows-only call turns the build red, so the platform stays out of Infrastructure.
+
+## `<EmbeddedResource Include="..\..\assets\icons\favorite.svg" LogicalName="Llyn.Infrastructure.Icons.favorite.svg" />`
+
+The favorite, marked favorite, star and expand icons ride inside the assembly, as the theme does.
+`LPortraitIcon.LPortraitIconRead` reads them, so an exported page embeds them without a file beside the program.
+Each logical name is `LPortraitIcon.LPortraitIconPrefix` plus the file name.

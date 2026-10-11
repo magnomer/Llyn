@@ -238,40 +238,22 @@ public sealed class QParadigm : Decorator
     {
         ArgumentNullException.ThrowIfNull(form);
 
-        string text = form.QParadigmFormText;
-        int split = form.QParadigmFormSplit;
         block.Inlines.Clear();
-        bool[] marked = new bool[text.Length];
-        foreach (QParadigmMark mark in form.QParadigmFormMarks)
+        foreach (QParadigmPiece piece in form.QParadigmFormPiece)
         {
-            int offset = Math.Clamp(mark.QParadigmMarkOffset, 0, text.Length);
-            int end = Math.Clamp(mark.QParadigmMarkOffset + mark.QParadigmMarkLength, offset, text.Length);
-            Array.Fill(marked, true, offset, end - offset);
-        }
-
-        int start = 0;
-        for (int index = 1; index <= text.Length; index++)
-        {
-            if (index < text.Length && index != split && marked[index] == marked[start])
-            {
-                continue;
-            }
-
-            Run run = new(text[start..index]);
-            if (marked[start])
+            Run run = new(piece.QParadigmPieceText);
+            if (piece.QParadigmPieceMarked)
             {
                 run.SetResourceReference(FrameworkContentElement.StyleProperty, "Theme.Paradigm.Marked");
             }
 
             block.Inlines.Add(run);
-            if (index == split && split < text.Length)
+            if (piece.QParadigmPieceCut)
             {
                 Run cut = new("-");
                 cut.SetResourceReference(FrameworkContentElement.StyleProperty, "Theme.Paradigm.Cut");
                 block.Inlines.Add(cut);
             }
-
-            start = index;
         }
 
         if (form.QParadigmFormTip is not string tip)

@@ -16,11 +16,11 @@ public sealed class LPortraitOutlet : LPortraitPort
         _lPortraitOutletEngine = engine;
     }
 
-    public Task LEnginePortraitPrint(LVista? vista, LPortraitLabel label, LPressTicket ticket) =>
-        _lPortraitOutletEngine.LEnginePortrait.LEnginePortraitPrint(vista, label, ticket);
+    public Task<LGalleyRelay?> LEnginePressOpen(LVista? vista, LPortraitLabel label) =>
+        _lPortraitOutletEngine.LEnginePortrait.LEnginePressOpen(vista, label);
 
-    public Task LEnginePortraitPrint(LVista? vista, LPortraitLegend legend, LPressTicket ticket) =>
-        _lPortraitOutletEngine.LEnginePortrait.LEnginePortraitPrint(vista, legend, ticket);
+    public Task<LGalleyRelay?> LEnginePressOpen(LVista? vista, LPortraitLegend legend) =>
+        _lPortraitOutletEngine.LEnginePortrait.LEnginePressOpen(vista, legend);
 
     public Task LEnginePortraitExport(LVista? vista, string path, LPortraitMedium format, LPortraitLabel label) =>
         _lPortraitOutletEngine.LEnginePortrait.LEnginePortraitExport(vista, path, format, label);

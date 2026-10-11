@@ -1,5 +1,5 @@
 # TEngineLiveryPage.cs
-Hash: `0918e6a5f42a4ede`
+Hash: `499f61fa72887e05`
 
 ## `public sealed class TEngineLiveryPage`
 
@@ -50,6 +50,11 @@ Reads the page and checks that only the folded card's id is in `LLiveryPageFold`
 Saves one fanqie row through `TFanqieSave`, then reads the page.
 Checks the one group `LEngineFanqieDivide` answers.
 
+## `public void LiveryRead_OpenedFanqie_KeepsTheOpenedBox()`
+
+Reads a page with no opened box, opens the fanqie box through `TEngineBoxSpread`, and reads again.
+Checks only the fanqie box is in `LLiveryPageOpened`.
+
 ## `public async Task LiveryRead_StoredScript_KeepsStyleGroups()`
 
 Reads the page before any fetch and finds no script.
@@ -61,6 +66,13 @@ Checks the one style group `LEngineScriptDivide` answers.
 Turns morphology and analysis off, saves a Spanish verb and stores one present form.
 Reads the page and checks the expanded sheet's first line carries that form.
 Checks an unstored cell has the absent tip, so `enabled` follows the morphology setting.
+
+## `public void LiveryRead_EnglishVerbWithBreakRows_CarriesOneShownPerRow()`
+
+Turns morphology off and saves the English verb break with its past and past participle.
+Those are the forms the app's break entry holds.
+The English pack declares those two slots, so the page carries two break rows in that order.
+Checks each row has one shown cell carrying its stored form and no tip.
 
 ## `public void LiveryRead_CardWithStoredTarget_KeepsTarget()`
 

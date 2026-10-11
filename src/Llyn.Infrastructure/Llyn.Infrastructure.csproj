@@ -26,5 +26,9 @@
     <EmbeddedResource Include="..\..\localization\en.json" LogicalName="Llyn.Infrastructure.Localization.en.json" />
     <EmbeddedResource Include="..\..\localization\ko.json" LogicalName="Llyn.Infrastructure.Localization.ko.json" />
     <EmbeddedResource Include="..\..\themes\default.json" LogicalName="Llyn.Infrastructure.Themes.default.json" />
+    <EmbeddedResource Include="..\..\assets\icons\favorite.svg" LogicalName="Llyn.Infrastructure.Icons.favorite.svg" />
+    <EmbeddedResource Include="..\..\assets\icons\favorite-marked.svg" LogicalName="Llyn.Infrastructure.Icons.favorite-marked.svg" />
+    <EmbeddedResource Include="..\..\assets\icons\star.svg" LogicalName="Llyn.Infrastructure.Icons.star.svg" />
+    <EmbeddedResource Include="..\..\assets\icons\expand.svg" LogicalName="Llyn.Infrastructure.Icons.expand.svg" />
   </ItemGroup>
 </Project>

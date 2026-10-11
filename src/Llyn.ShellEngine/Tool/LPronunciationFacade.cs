@@ -32,8 +32,12 @@ public sealed class LPronunciationFacade : LPronunciationPort
     {
         lock (_lPronunciationFacadeGate)
         {
-            return LPronunciationFacadeStaff.LEngineStaffLanguage.LLanguageStaffPronunciation
-                .LPronunciationClerkFind(query, order);
+            LLanguageStaff language = LPronunciationFacadeStaff.LEngineStaffLanguage;
+            bool respelled = _lPronunciationFacadeHearth.LEngineSettingsHeld.LSettingsRespelled;
+            return language.LLanguageStaffPronunciation.LPronunciationClerkFind(
+                query,
+                order,
+                spoken => language.LLanguageStaffLanguage.LLanguageRespellingCheck(spoken, respelled));
         }
     }
 

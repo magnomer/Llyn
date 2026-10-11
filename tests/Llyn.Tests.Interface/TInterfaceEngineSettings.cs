@@ -25,6 +25,9 @@ internal static class TInterfaceEngineSettings
     internal static void TEngineEpithetSave(this LEngine engine, bool epithet) =>
         engine.LEngineSettings.LEngineEpithetSave(epithet);
 
+    internal static string TEngineNotebookSave(this LEngine engine, string notebook) =>
+        engine.LEngineSettings.LEngineNotebookSave(notebook);
+
     internal static void TEngineRespellingSave(this LEngine engine, bool respelled)
     {
         engine.LEngineSettings.LEngineRespellingSave(respelled);

@@ -97,7 +97,7 @@ public sealed class TXieshengFold
             "龍",
             [],
             [TInterface.TReflexDraftCreate("Korean", "", "룡")],
-            [TInterface.TReflexGuiseCreate(false, false, false)]);
+            [TInterface.TReflexGuiseCreate(false, false, false, "룡")]);
 
         IReadOnlyList<CStemMember> members = TInterfaceConductSound.TStemMemberRead(
             [written, TInterface.TStemMemberCreate("瀧", [], [])]);

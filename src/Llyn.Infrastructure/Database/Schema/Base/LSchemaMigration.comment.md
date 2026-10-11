@@ -1,5 +1,5 @@
 # LSchemaMigration.cs
-Hash: `911d4955cbc5cf89`
+Hash: `f674543facee4fd9`
 
 ## `public static class LSchemaMigration`
 
@@ -22,7 +22,7 @@ So a crash at any point leaves it whole, at one version or the other.
 A copy of the old file is kept beside it under its version, so nothing is lost to a rebuild.
 The same rebuild serves a file written by a newer build, since what this build cannot read it cannot keep.
 
-## `public const long LSchemaMigrationVersion = 79;`
+## `public const long LSchemaMigrationVersion = 80;`
 
 The schema version this build produces.
 A change to any table raises it.
@@ -67,7 +67,8 @@ Scratch cleanup also runs after commit, so a later failure does not undo a commi
 ## `private static string LSchemaFileApply(string file, string fresh)`
 
 Builds the fresh file, copies the old file aside, and attaches the fresh file to the old one.
-One transaction then carries each shared table across and settles old unknown citations and register marks.
+One transaction first clears the retired lexical units in the old file, so no entry is refused on the way.
+It then carries each shared table across and settles old unknown citations and register marks.
 It also dates the stored glyph pictures whose captions still carry their age in the source's own words.
 It also settles frequency and reflex rows an older version stored differently.
 It renumbers every Collocation whose id a Meaning also holds.
@@ -104,9 +105,10 @@ SQLite's own tables are left out, except the id counters.
 Writes a consistent copy of the old file beside it and returns the copy's path.
 SQLite makes the copy itself, so the file is never moved and no journal is left behind it.
 
-## `private static List<string> LSchemaColumnRead(SqliteConnection connection, string schema, string table)`
+## `internal static List<string> LSchemaColumnRead(SqliteConnection connection, string schema, string table)`
 
 The column names of one table in one attached schema.
+A settle step reads it to learn whether an old file has a column yet.
 
 ## `private static string LSchemaBackupResolve(string file, long stored)`
 

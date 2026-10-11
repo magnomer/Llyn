@@ -1,10 +1,11 @@
 # source.json
-Hash: `9b97252290739dab`
+Hash: `7e41521682c73c9b`
 
 ## pack
 
 Language pack for Tagalog.
 The pack format is documented in `languages/English/source.comment.md`.
+Section heading anchors allow attributes before `id`, which the REST rendering writes there.
 No varieties are declared, so every reading is the standard Manila one.
 No transcription schemes are listed, because Tagalog is written in Latin script.
 No respelling groups are declared, so every reading shows as its source wrote it.

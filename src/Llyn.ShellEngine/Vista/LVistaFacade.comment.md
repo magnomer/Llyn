@@ -1,5 +1,5 @@
 # LVistaFacade.cs
-Hash: `c3d5c4901896ca7f`
+Hash: `55e366ddf38ab66f`
 
 ## `public sealed class LVistaFacade : LVistaPort`
 
@@ -84,9 +84,10 @@ So a failed click leaves the panel where it stood, and no caller keeps the prior
 
 ## `public string LEngineFileRead(LVista? vista)`
 
-The file name an export of the vista's entry is offered under is the headword with barred characters replaced.
-The engine's settings facade says which characters are barred, so the vista reads no file rule itself.
-A missing vista, or a blank headword, is offered as `entry`.
+The file name an export of the vista's entry is offered under.
+It is the headword with barred characters replaced.
+The settings facade's `LEngineFileFormat` owns the barred characters and the `entry` fallback, so the vista reads no file rule itself.
+A missing vista hands it a blank headword.
 A failed load is not caught here.
 It travels up to the export gate.
 

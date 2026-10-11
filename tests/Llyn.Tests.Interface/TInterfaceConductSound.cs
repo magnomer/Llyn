@@ -115,11 +115,8 @@ internal static class TInterfaceConductSound
             new CLedgerNoticed());
 
     internal static IReadOnlyList<CReflex> TRespellingReflexScan(
-        LReflexPort port, string language, IReadOnlyList<CReflexDraft> reflexes) =>
+        LReflexPort port, string language, IReadOnlyList<LReflexDraft> reflexes) =>
         CRespelling.LRespellingReflexScan(port, language, reflexes);
-
-    internal static string TRespellingResolve(CRespellingMark mark, string phonetic, string? respelling) =>
-        CRespelling.LRespellingResolve(mark, phonetic, respelling);
 
     internal static CKindred TKindredCreate(
         TEditorFixture editor, CPhonologyBundle phonology, LDraftPort drafts, List<string>? asked = null) =>

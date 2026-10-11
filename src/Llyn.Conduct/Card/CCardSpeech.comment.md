@@ -1,5 +1,5 @@
 # CCardSpeech.cs
-Hash: `53243bda83cbe20e`
+Hash: `662538c4d0cc794c`
 
 ## `public sealed class CCardSpeech`
 
@@ -8,9 +8,10 @@ It is split from `CCard` by role, and its gates keep the `CCard` base, as `CDisp
 The chips live in the draft, below Conduct, and the desk's speech quill reads them off it for every edit.
 It holds only the raw text the user is typing, which the read overlays on the draft's chips.
 
-## `internal CCardSpeech(CDesk desk, LEntryPort entries)`
+## `internal CCardSpeech(CDesk desk)`
 
-Takes the editor's desk and the entry port the unit rows are worded through.
+Takes the editor's desk.
+The unit and freedom rows are worded through static port members, so no port is held.
 Only the editor builds one, so the constructor is internal.
 
 ## `private LTenure? CCardSpeechTenure`
@@ -49,7 +50,17 @@ A plain map of the engine's offer onto the menu, holding no rule.
 The unit a menu key names, for the editor's unit gate.
 A key the menu never offered is a programming error, so it throws.
 
-## `private IReadOnlyList<(string, bool)> LUnitRowScan(IReadOnlyList<LUnit> units, LUnit taken)`
+## `private static IReadOnlyList<(string, bool)> LUnitRowScan(IReadOnlyList<LUnit> units, LUnit taken)`
 
-One pair per offered unit, keyed through the entry port's `LEngineUnitFormat`, the held one marked.
+One pair per offered unit, keyed through the static `LEntryPort.LEngineUnitFormat`, the held one marked.
 The read hands it out with the field, since the unit dropper heads the field's row.
+
+## `internal static LFreedom LFreedomRowParse(string key)`
+
+The freedom a menu key names, for the editor's freedom gate.
+A key the menu never offered is a programming error, so it throws.
+
+## `private static IReadOnlyList<(string, bool)> LFreedomRowScan(IReadOnlyList<LFreedom> freedoms, LFreedom taken)`
+
+One pair per offered freedom, keyed through the static `LEntryPort.LEngineFreedomFormat`, the held one marked.
+The read hands it out with the field, since the freedom dropper follows the unit dropper.

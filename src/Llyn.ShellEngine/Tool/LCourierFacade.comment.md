@@ -1,5 +1,5 @@
 # LCourierFacade.cs
-Hash: `7c4bb51fd179b02e`
+Hash: `316cb119faa9202c`
 
 ## `internal sealed class LCourierFacade`
 
@@ -22,7 +22,8 @@ Whether the current workspace holds a Joplin token, asked of the courier clerk.
 ## `public async Task<LReceipt> LEngineCourierSend(Func<string, string> lookup, CancellationToken cancellation)`
 
 Forwards to the courier clerk, which guards its own gate.
-It hands over `LLiveryFacade.LEngineLiveryRead` as the page reader and `lookup` unchanged.
+It hands over `LLiveryFacade.LEngineLiveryRead` with `pending` false as the page reader, and `lookup` unchanged.
+A note is not rewritten when a fill ends, so it never shows a fill as pending.
 The language reader is the other `LEngineLiveryRead` overload over `LSettingsFacade.LEngineTextFind`.
 That source answers null for a missing key, as the rime-table page builder expects.
 The Rime table panel passes the same source, so a category reads the same in Llyn and Joplin.

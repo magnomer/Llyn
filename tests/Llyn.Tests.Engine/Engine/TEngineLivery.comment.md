@@ -1,5 +1,5 @@
 # TEngineLivery.cs
-Hash: `a594696e3ff332c0`
+Hash: `7bf63786da97489d`
 
 ## `public sealed class TEngineLivery`
 
@@ -17,6 +17,12 @@ Checks none of the export sheet's `portrait`, `crest` or `band` classes appears.
 
 Saves a favorite entry with a grasp, a pronunciation and a speech, then writes its body.
 Checks the headword, language chip, filled heart, half star, rating key, speech chip and pronunciation.
+
+## `public void LiveryFormat_MarkedWithoutChip_WritesNoChipLine()`
+
+Gives a stored page one speech with no name through `with`, so the draft is marked with no chip.
+Checks the draft is marked and the body equals the unmarked page's body.
+So the chip writer neither cuts earlier text nor adds a blank line.
 
 ## `public void LiveryFormat_TonedContour_DrawsChartPerSyllable()`
 
@@ -86,3 +92,10 @@ Checks the CSS hides the `llyn-inflection-short` table after an open `llyn-infle
 The note mirrors the app's Short/Full switch without script, so CSS alone swaps the sheets.
 Checks the summary rule pushes the pill right with an auto left margin and right text alignment.
 The note mirrors the app's right-aligned switch.
+
+## `public void LiveryStyleFormat_ReflexTableInCard_KeepsReadingSizes()`
+
+Builds the same `var` token theme and formats the style through `TLiveryStyleFormat`.
+Checks the seven-column readings table sizes its labels, readings and later columns.
+Checks no rule styles every cell or tone of a `llyn-card`.
+Checks the card cell rule skips the readings table, so a series member card matches the entry.

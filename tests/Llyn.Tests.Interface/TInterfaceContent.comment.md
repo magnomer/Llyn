@@ -1,10 +1,11 @@
 # TInterfaceContent.cs
-Hash: `b0de03c143c4e362`
+Hash: `2f1032ea1bb4d887`
 
 ## `internal static partial class TInterface`
 
 The relays for the engine operations over what an entry owns.
 That is meanings, examples, situations, tags, translations, and the rest.
+It also relays the language pack reads an entry draws with, its schemes, glyph and font.
 A relay without its own section is transparent and carries no test logic.
 
 ## `internal static IReadOnlyList<LPronunciationDraft> TEntryPronunciationRead(this LEngine engine, long entryId)`

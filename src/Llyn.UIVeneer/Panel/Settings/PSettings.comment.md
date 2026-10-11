@@ -1,5 +1,5 @@
 # PSettings.xaml
-Hash: `a3385087068e09a1`
+Hash: `e65cb88b1edbdfcc`
 
 ## `<Rectangle ... Style="{StaticResource Theme.Panel.SeamRow}" />`
 
@@ -10,7 +10,7 @@ The column seam sits in the gutter and reaches the foot of the window.
 ## `<TextBox x:Name="PWinnow" ...>`
 
 The search field over the catalog, a bare field with no ordering or filter button.
-Seven groups need no ordering, and the text alone decides which rows stay.
+Eight groups need no ordering, and the text alone decides which rows stay.
 
 ## `<ItemsControl x:Name="PLedger">`
 
@@ -54,6 +54,12 @@ The switch keeps the check box's handler and its checked reading, only the drawi
 
 The switch of the listing page decides whether every list prints an entry's epithet after its headword.
 The epithet is the reading the language pack names, so a Han character lists as `弄 [희롱할 롱]`.
+
+## `<TextBox x:Name="PSettingsNotebook" ...>`
+
+The title of the top Joplin notebook a sync writes, on the Sync page.
+It is a bare field the width of the language box, saved on Enter or when it loses focus.
+The page is named `PDialOutpost`, the engine's name for the Joplin side, because `Sync` is a verb.
 
 ## `<ToggleButton x:Name="PSettingsAnalysis" ...>`
 

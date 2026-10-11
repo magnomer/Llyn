@@ -59,18 +59,18 @@ public sealed class TPortraitEntry
     }
 
     [Fact]
-    public void PortraitRead_ChosenUnit_LeadsTheSpeechChips()
+    public void PortraitRead_ChosenUnitAndFreedom_LeadTheSpeechChips()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         engine.TEngineMorphologySave(false);
         LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
             "un", "English", string.Empty, string.Empty, [TInterface.TCardCreate("not", 1)], [], speeches: ["Adverb"])
-            with { LEntryDraftUnit = LUnit.LUnitMorpheme });
+            with { LEntryDraftUnit = LUnit.LUnitMorpheme, LEntryDraftFreedom = LFreedom.LFreedomDependent });
 
         LPortraitPage page = engine.TEnginePortraitRead(entry.LEntryId, TInterface.TPortraitLabelRead());
 
-        Assert.Equal(["Morpheme", "Adverb"], page.LPortraitPageChip);
+        Assert.Equal(["Morpheme", "Dependent", "Adverb"], page.LPortraitPageChip);
     }
 
     [Fact]

@@ -1,5 +1,5 @@
 # LMarkupReader.cs
-Hash: `5eb2472f713b46aa`
+Hash: `4b9b662131bd3ccb`
 
 ## `internal static class LMarkupReader`
 
@@ -32,6 +32,7 @@ A file of a million unknown attributes would otherwise be reported one row at a 
 Reads one `entry` element with all of its repeated children in file order.
 The line the element opens on travels with the record, so the import can place its own omissions.
 A `unit` element is read through `LUnitKeyParse`, so an unknown value leaves the unit unchosen.
+A `freedom` element is read through `LFreedomKeyParse` the same way.
 
 ## `private static LMarkupEtymon LMarkupEtymonParse(LMarkupNode element, List<LMarkupOmission> omissions)`
 

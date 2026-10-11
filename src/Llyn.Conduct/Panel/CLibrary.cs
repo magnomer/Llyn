@@ -148,13 +148,12 @@ public sealed class CLibrary
 
     public Task CLibraryPortraitPrint()
     {
-        return CPortrait.LPortraitTicketPrint(
+        return CPortrait.LPortraitPrint(
             _cLibraryEnvoy,
             _cLibrarySettingsPort,
-            chosen => _cLibraryPortraitPort.LEnginePortraitPrint(
+            () => _cLibraryPortraitPort.LEnginePressOpen(
                 CLibraryPanel.CPanelAperture.CApertureVista,
-                CPortrait.LPortraitLabelRead(_cLibrarySettingsPort),
-                chosen));
+                CPortrait.LPortraitLabelRead(_cLibrarySettingsPort)));
     }
 
     public Task CLibraryPortraitExport()

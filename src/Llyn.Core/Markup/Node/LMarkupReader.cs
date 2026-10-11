@@ -53,6 +53,7 @@ internal static class LMarkupReader
         List<LMarkupEtymon> etymons = [];
         LMarkupEtymology? etymology = null;
         LUnit unit = LUnit.LUnitEmpty;
+        LFreedom freedom = LFreedom.LFreedomEmpty;
 
         foreach (LMarkupNode child in element.LMarkupNodeChild)
         {
@@ -69,6 +70,9 @@ internal static class LMarkupReader
                     break;
                 case "unit":
                     unit = LUnitKey.LUnitKeyParse(LMarkup.LMarkupTextParse(child));
+                    break;
+                case "freedom":
+                    freedom = LFreedomKey.LFreedomKeyParse(LMarkup.LMarkupTextParse(child));
                     break;
                 case "form":
                     forms.Add(LMarkupFormParse(child, forms.Count, omissions));
@@ -121,7 +125,8 @@ internal static class LMarkupReader
             element.LMarkupNodeLine,
             etymology,
             etymons,
-            unit);
+            unit,
+            freedom);
     }
 
     private static LMarkupEtymon LMarkupEtymonParse(LMarkupNode element, List<LMarkupOmission> omissions)

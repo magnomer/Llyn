@@ -1,3 +1,4 @@
+using Llyn.Application;
 using Llyn.Core;
 using Llyn.Infrastructure;
 using Llyn.ShellEngine;
@@ -51,6 +52,36 @@ internal static partial class TInterface
     internal static void TPostureFileSave(this LPostureFile file, string name, LPostureState state)
     {
         file.LPostureSave(name, state);
+    }
+
+    internal static LPressFile TPressFileCreate(string root) => new(new LKeepFile(root));
+
+    internal static LPressSetting? TPressFileRead(this LPressFile file) => file.LPressVaultRead();
+
+    internal static void TPressFileSave(this LPressFile file, LPressSetting setting)
+    {
+        file.LPressVaultSave(setting);
+    }
+
+    internal static LPressSetting? TPressFileParse(string? text) => LPressFile.LPressFileParse(text);
+
+    internal static LPressSetting TPressSettingCreate(LPressPrinter? printer) =>
+        LPressSetting.LPressSettingCreate(printer);
+
+    internal static LPressRange TPressRangeCreate(string text) => new(text);
+
+    internal static IReadOnlyList<LPressPrinter> TPressPrinterRead() =>
+        new TPressQueue().LPressQueueRead().GetAwaiter().GetResult();
+
+    internal static LPressClerk TPressClerkCreate(LPressVault vault) =>
+        new(TRigFake.TRigFakeBuild() with { LRigPressVault = vault });
+
+    internal static LPressSetting? TPressClerkRestore(this LPressClerk clerk, IReadOnlyList<LPressPrinter> printers) =>
+        clerk.LPressClerkRestore(printers);
+
+    internal static void TPressClerkSave(this LPressClerk clerk, LPressSetting setting)
+    {
+        clerk.LPressClerkSave(setting);
     }
 
     internal static LTrail TTrailCreate() => new LTrailSystem();

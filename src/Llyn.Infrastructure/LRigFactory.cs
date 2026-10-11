@@ -10,12 +10,14 @@ public static class LRigFactory
     private const long LRigFactoryCeiling = 8L * 1024 * 1024;
 
     public static LRig LRigFactoryBuild(
-        string workspace, HttpClient client, LUsher usher, LPress press, LWarrant warrant, LPhonograph phonograph)
+        string workspace, HttpClient client, LUsher usher, LPress press, LPressQueue queue, LWarrant warrant,
+        LPhonograph phonograph)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(workspace);
         ArgumentNullException.ThrowIfNull(client);
         ArgumentNullException.ThrowIfNull(usher);
         ArgumentNullException.ThrowIfNull(press);
+        ArgumentNullException.ThrowIfNull(queue);
         ArgumentNullException.ThrowIfNull(warrant);
         ArgumentNullException.ThrowIfNull(phonograph);
         if (!Path.IsPathFullyQualified(workspace))
@@ -48,6 +50,8 @@ public static class LRigFactory
             new LOutpostHttp(),
             new LLanguageLoader(root, client),
             press,
+            queue,
+            new LPressFile(new LKeepFile(root)),
             warrant,
             usher,
             phonograph,

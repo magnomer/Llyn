@@ -90,6 +90,8 @@ internal static class TRigFake
             TRigStubCreate<LOutpost>(),
             languages,
             new TPress(),
+            new TPressQueue(),
+            new TPressVault(),
             new TWarrantFake(),
             usher,
             new TPhonographFake(),

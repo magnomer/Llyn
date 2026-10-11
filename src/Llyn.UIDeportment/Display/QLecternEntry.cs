@@ -23,6 +23,8 @@ public sealed class QLecternEntry
 
     private readonly TextBlock _qLecternUnit;
 
+    private readonly TextBlock _qLecternFreedom;
+
     private readonly StackPanel _qLecternNoteSection;
 
     private readonly StackPanel _qLecternNote;
@@ -41,6 +43,7 @@ public sealed class QLecternEntry
         _qLecternSpeechSection = QContract.QContractFind<StackPanel>(surface, "PDisplaySpeechSection");
         _qLecternSpeech = QContract.QContractFind<ItemsControl>(surface, "PDisplaySpeech");
         _qLecternUnit = QContract.QContractFind<TextBlock>(surface, "PDisplayUnit");
+        _qLecternFreedom = QContract.QContractFind<TextBlock>(surface, "PDisplayFreedom");
         _qLecternNoteSection = QContract.QContractFind<StackPanel>(surface, "PDisplayNoteSection");
         _qLecternNote = QContract.QContractFind<StackPanel>(surface, "PDisplayNote");
 
@@ -54,6 +57,7 @@ public sealed class QLecternEntry
         CLectern shown = _qLecternEntryArea.CDisplayShown;
         _qLecternSpeech.ItemsSource = shown.CLecternSpeeches;
         QLecternUnitRefine(shown.CLecternUnit);
+        QLecternFreedomRefine(shown.CLecternFreedom);
         _qLecternSpeechSection.Visibility = QLook.QLookVisibleRead(shown.CLecternMarked);
         _qLecternNoteSection.Visibility = QLook.QLookVisibleRead(shown.CLecternNoted);
         _qLecternAdded.Text = shown.CLecternAdded;
@@ -67,6 +71,15 @@ public sealed class QLecternEntry
         if (key.Length > 0)
         {
             _qLecternUnit.SetResourceReference(TextBlock.TextProperty, key);
+        }
+    }
+
+    private void QLecternFreedomRefine(string key)
+    {
+        _qLecternFreedom.Visibility = QLook.QLookVisibleRead(key.Length > 0);
+        if (key.Length > 0)
+        {
+            _qLecternFreedom.SetResourceReference(TextBlock.TextProperty, key);
         }
     }
 

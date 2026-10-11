@@ -1,5 +1,5 @@
 # LGraspClerk.cs
-Hash: `e5f79f75737ea851`
+Hash: `910cf0c01ca7378d`
 
 ## `public sealed class LGraspClerk`
 
@@ -14,6 +14,11 @@ Reads the entry port out of `rig`.
 ## `public static int LGraspClerkStep`
 
 The number of grasp steps, for the shell to draw.
+
+## `public static LGraspStar LGraspClerkScan(int limit)`
+
+The star answers of a control whose last step is `limit`.
+The shell reaches the fill rule only here, so no layer above Application calls Core.
 
 ## `public static string LGraspClerkFormat(int step)`
 

@@ -15,6 +15,11 @@ public sealed class LGraspClerk
 
     public static int LGraspClerkStep => LGrasp.LGraspStep;
 
+    public static LGraspStar LGraspClerkScan(int limit)
+    {
+        return LGraspStar.LGraspStarResolve(limit);
+    }
+
     public static string LGraspClerkFormat(int step)
     {
         return LLocalization.QLocalizationTextRead(LGrasp.LGraspKeyRead(step));

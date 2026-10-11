@@ -43,13 +43,13 @@
             {
               "variety": "Brazilian",
               "strategy": "span",
-              "match": "<h2 id=\"Portuguese\"(?:(?!<h2 )[\\s\\S])*?title=\"w:Brazilian Portuguese\"[^>]*>Brazil</a></span>(?:(?!<span class=\"IPA)[\\s\\S])*?<span class=\"IPA nowrap\"[^>]*>",
+              "match": "<h2[^>]* id=\"Portuguese\"(?:(?!<h2 )[\\s\\S])*?title=\"w:Brazilian Portuguese\"[^>]*>Brazil</a></span>(?:(?!<span class=\"IPA)[\\s\\S])*?<span class=\"IPA nowrap\"[^>]*>",
               "normalize": true
             },
             {
               "variety": "European",
               "strategy": "span",
-              "match": "<h2 id=\"Portuguese\"(?:(?!<h2 )[\\s\\S])*?title=\"w:European Portuguese\"[^>]*>Portugal</a></span>(?:(?!<span class=\"IPA)[\\s\\S])*?<span class=\"IPA nowrap\"[^>]*>",
+              "match": "<h2[^>]* id=\"Portuguese\"(?:(?!<h2 )[\\s\\S])*?title=\"w:European Portuguese\"[^>]*>Portugal</a></span>(?:(?!<span class=\"IPA)[\\s\\S])*?<span class=\"IPA nowrap\"[^>]*>",
               "normalize": true
             }
           ]
@@ -119,18 +119,18 @@
             {
               "variety": "Brazilian",
               "strategy": "regex",
-              "match": "<h2 id=\"Portuguese\"(?:(?!<h2 )[\\s\\S])*?<td>Audio(?:(?!</td>)[\\s\\S])*?Brazil(?:(?!</tr>)[\\s\\S])*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*\\.mp3)",
+              "match": "<h2[^>]* id=\"Portuguese\"(?:(?!<h2 )[\\s\\S])*?<td>Audio(?:(?!</td>)[\\s\\S])*?Brazil(?:(?!</tr>)[\\s\\S])*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*\\.mp3)",
               "group": 1
             },
             {
               "variety": "European",
               "strategy": "regex",
-              "match": "<h2 id=\"Portuguese\"(?:(?!<h2 )[\\s\\S])*?<td>Audio(?:(?!</td>)[\\s\\S])*?Portugal(?:(?!</tr>)[\\s\\S])*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*\\.mp3)",
+              "match": "<h2[^>]* id=\"Portuguese\"(?:(?!<h2 )[\\s\\S])*?<td>Audio(?:(?!</td>)[\\s\\S])*?Portugal(?:(?!</tr>)[\\s\\S])*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*\\.mp3)",
               "group": 1
             },
             {
               "strategy": "regex",
-              "match": "<h2 id=\"Portuguese\"(?:(?!<h2 )[\\s\\S])*?<td>Audio(?:(?!</td>|Brazil|Portugal)[\\s\\S])*?</td>(?:(?!</tr>)[\\s\\S])*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*\\.mp3)",
+              "match": "<h2[^>]* id=\"Portuguese\"(?:(?!<h2 )[\\s\\S])*?<td>Audio(?:(?!</td>|Brazil|Portugal)[\\s\\S])*?</td>(?:(?!</tr>)[\\s\\S])*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*\\.mp3)",
               "group": 1
             }
           ]

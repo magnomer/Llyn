@@ -1,5 +1,5 @@
 # TEnvoyFake.cs
-Hash: `34b14489609601be`
+Hash: `5afb6f4c63ea5fd7`
 
 ## `internal static class TEnvoyFake`
 
@@ -18,6 +18,18 @@ The union question records its key and both names joined by `>`, and answers lik
 A fake envoy whose file question answers `path` and `medium` and records `File:` plus the offered name.
 It records each failure key it is shown, so a fact reads the question and the failure in order.
 
+## `internal static CEnvoy TEnvoyPressCreate(Func<CSPress, bool> answer, List<string> asked)`
+
+A fake envoy whose print window question hands the gate to `answer` and returns its verdict.
+Its file question answers `press.pdf` as a PDF and records `File:` plus the offered name.
+It records each failure key it is shown.
+The window question itself goes unrecorded, so `asked` holds only file questions and failures.
+
+## `internal static CEnvoy TEnvoyPressCreate(string? path, Func<CSPress, bool> answer, List<string> asked)`
+
+The same fake, with the file question answering `path`.
+A null path stands for a reader who declines the Save as PDF file dialog.
+
 ## `internal static CEnvoy TEnvoyCoinageCreate(string? wording, bool? leave, List<string> asked)`
 
 A fake envoy whose wording question records `Coinage:` plus the message key and answers `wording`.
@@ -28,8 +40,3 @@ It records each failure key it is shown, so a fact reads the questions and the f
 
 A fake envoy whose markup file question answers `path` unrecorded.
 It records only each failure key it is shown, so a fact counts the notices alone.
-
-## `internal static CEnvoy TEnvoyTicketCreate(Func<CPressTicket?> answer, List<string> asked)`
-
-A fake envoy whose printer question records `Ticket` and answers from `answer`, which may throw as a failing dialog does.
-It records each failure key it is shown.

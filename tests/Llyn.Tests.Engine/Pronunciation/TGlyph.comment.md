@@ -1,5 +1,5 @@
 # TGlyph.cs
-Hash: `24eaa5472d458a89`
+Hash: `744fa63fe86f45ed`
 
 ## `public sealed class TGlyph`
 
@@ -18,3 +18,5 @@ The reading view lists only the filled rows outside the glyph scheme, and every 
 The character order sorts by code point, so an ideograph beyond the basic plane follows the compatibility block.
 UTF-16 ordinal order would put it first, as the test shows.
 A text sorts before a longer text it begins.
+A blank language answers the empty font without loading a pack, so the theme's own font stands.
+The fact reads the font's members rather than building a font, so it reaches product code only through the relay.

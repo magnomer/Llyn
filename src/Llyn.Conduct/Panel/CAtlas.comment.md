@@ -1,12 +1,12 @@
 # CAtlas.cs
-Hash: `bd61b70482851f4b`
+Hash: `aad04b9283512371`
 
 ## `public sealed class CAtlas`
 
-The repertoire panel's situation list: the panel over the situation vista.
+The repertoire panel's situation list, the panel over the situation vista.
 It finds the rows and their usage, while the panel's aperture takes the query, order and language filter.
 Its panel loads, edits and deletes the chosen Situation, worded under the Situation scope.
-It also prints the listed situations.
+It also prints the chosen Situation.
 
 ## `internal CAtlas(LSituationPort situations, LPortraitPort portraits, LSettingsPort settings, LVistaPort vistas, CDesk desk, Func<bool> shownSeam, CEnvoy envoy, Func<bool, bool> finishSeam)`
 
@@ -48,7 +48,8 @@ The workspace's languages, which the driver offers as the filter's choices.
 
 ## `internal Task LAtlasPortraitPrint(CEnvoy envoy, LSettingsPort settings)`
 
-Prints the vista's situations through `CPortrait`, with the Situation realm's legend.
+Opens the print window on the chosen Situation through `CPortrait`, with the Situation realm's legend.
+It opens nothing while no Situation is chosen.
 Only the repertoire's print gate calls it, which chooses the side that prints.
 
 ## `internal static CCatalogSituation LAtlasRowRead(LCatalogSituation row)`

@@ -119,13 +119,13 @@ internal static partial class TInterface
     internal static bool TEngineFlaggedCheck(this LEngine engine, LEntryDraft draft) =>
         engine.LEngineLanguage.LEngineFlaggedCheck(draft);
 
-    internal static Task TEnginePortraitPrint(
-        this LEngine engine, LVista vista, LPortraitLabel label, LPressTicket ticket) =>
-        engine.LEnginePortrait.LEnginePortraitPrint(vista, label, ticket);
+    internal static Task<LGalleyRelay?> TEnginePressOpen(
+        this LEngine engine, LVista vista, LPortraitLabel label) =>
+        engine.LEnginePortrait.LEnginePressOpen(vista, label);
 
-    internal static Task TEnginePortraitPrint(
-        this LEngine engine, LVista vista, LPortraitLegend legend, LPressTicket ticket) =>
-        engine.LEnginePortrait.LEnginePortraitPrint(vista, legend, ticket);
+    internal static Task<LGalleyRelay?> TEnginePressOpen(
+        this LEngine engine, LVista vista, LPortraitLegend legend) =>
+        engine.LEnginePortrait.LEnginePressOpen(vista, legend);
 
     internal static Task TEnginePortraitExport(this LEngine engine, LVista vista, string path,
         LPortraitMedium format, LPortraitLabel label) =>

@@ -87,7 +87,8 @@ public sealed class LMarkupClerkEntry
             0,
             LMarkupEtymologyCreate(draft.LEntryDraftEtymology),
             LMarkupEtymonCreate(draft.LEntryDraftEtymology),
-            draft.LEntryDraftUnit);
+            draft.LEntryDraftUnit,
+            draft.LEntryDraftFreedom);
     }
 
     private LMarkupEtymology? LMarkupEtymologyCreate(LEtymologyDraft etymology)

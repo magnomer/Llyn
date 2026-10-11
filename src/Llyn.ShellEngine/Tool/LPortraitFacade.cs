@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -7,12 +9,18 @@ namespace Llyn.ShellEngine;
 internal sealed class LPortraitFacade
 {
     private readonly LEngineHearth _lPortraitFacadeHearth;
+    private readonly LLiveryFacade _lPortraitFacadeLivery;
+    private readonly LSettingsFacade _lPortraitFacadeSettings;
     private readonly object _lPortraitFacadeGate;
 
-    public LPortraitFacade(LEngineHearth hearth)
+    public LPortraitFacade(LEngineHearth hearth, LLiveryFacade livery, LSettingsFacade settings)
     {
         ArgumentNullException.ThrowIfNull(hearth);
+        ArgumentNullException.ThrowIfNull(livery);
+        ArgumentNullException.ThrowIfNull(settings);
         _lPortraitFacadeHearth = hearth;
+        _lPortraitFacadeLivery = livery;
+        _lPortraitFacadeSettings = settings;
 
         _lPortraitFacadeGate = _lPortraitFacadeHearth.LEngineGate;
     }
@@ -65,18 +73,17 @@ internal sealed class LPortraitFacade
             return Task.CompletedTask;
         }
 
-        return LPortraitFacadeStaff.LEngineStaffWorkspace.LWorkspaceStaffPress.LPortraitClerkExport(
-            LEnginePortraitRead(entryId, label), path, format);
-    }
+        LPortraitPage portrait = LEnginePortraitRead(entryId, label);
+        LPortraitClerkPress press = LPortraitFacadeStaff.LEngineStaffWorkspace.LWorkspaceStaffPress;
+        if (format is not (LPortraitMedium.LPortraitMediumHtml or LPortraitMedium.LPortraitMediumPdf))
+        {
+            return press.LPortraitClerkExport(portrait, path, format);
+        }
 
-    internal Task LEnginePortraitPrint(long entryId, LPortraitLabel label, LPressTicket ticket)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
-        ArgumentNullException.ThrowIfNull(label);
-        ArgumentNullException.ThrowIfNull(ticket);
-
-        return LPortraitFacadeStaff.LEngineStaffWorkspace.LWorkspaceStaffPress
-            .LPortraitClerkPrint(LEnginePortraitRead(entryId, label), ticket);
+        LLiveryPage livery = _lPortraitFacadeLivery.LEngineLiveryRead(entryId, true)
+            ?? throw new InvalidOperationException("The page no longer stands in the workspace.");
+        return press.LPortraitClerkExport(
+            livery, portrait, label, _lPortraitFacadeSettings.LEngineTextRead, path, format);
     }
 
     public Task LEnginePortraitExport(
@@ -87,18 +94,34 @@ internal sealed class LPortraitFacade
             : Task.CompletedTask;
     }
 
-    public Task LEnginePortraitPrint(LVista? vista, LPortraitLabel label, LPressTicket ticket)
+    internal async Task<LGalleyRelay> LEnginePressOpen(long entryId, LPortraitLabel label)
     {
-        return vista?.LVistaSubject == LSubject.LSubjectEntry && vista.LVistaChosen is long id
-            ? LEnginePortraitPrint(id, label, ticket)
-            : Task.CompletedTask;
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
+        ArgumentNullException.ThrowIfNull(label);
+
+        LPortraitPage portrait = LEnginePortraitRead(entryId, label);
+        LLiveryPage livery = _lPortraitFacadeLivery.LEngineLiveryRead(entryId, true)
+            ?? throw new InvalidOperationException("The page no longer stands in the workspace.");
+        string file = _lPortraitFacadeSettings.LEngineFileFormat(portrait.LPortraitPageTitle);
+        LPortraitClerkPress clerk = LPortraitFacadeStaff.LEngineStaffWorkspace.LWorkspaceStaffPress;
+        LGalleyClerk galley = await clerk.LPortraitClerkOpen(
+            livery, portrait, label, _lPortraitFacadeSettings.LEngineTextRead);
+        return new LGalleyRelay(
+            galley, new LGalley(galley, clerk, LPortraitFacadeStaff.LEngineStaffWorkspace.LWorkspaceStaffGalley, file));
     }
 
-    public Task LEnginePortraitPrint(LVista? vista, LPortraitLegend legend, LPressTicket ticket)
+    public async Task<LGalleyRelay?> LEnginePressOpen(LVista? vista, LPortraitLabel label)
+    {
+        return vista?.LVistaSubject == LSubject.LSubjectEntry && vista.LVistaChosen is long id
+            ? await LEnginePressOpen(id, label)
+            : null;
+    }
+
+    public async Task<LGalleyRelay?> LEnginePressOpen(LVista? vista, LPortraitLegend legend)
     {
         if (vista?.LVistaChosen is not long id)
         {
-            return Task.CompletedTask;
+            return null;
         }
 
         LOwner owner = vista.LVistaSubject switch
@@ -108,15 +131,17 @@ internal sealed class LPortraitFacade
             LSubject.LSubjectReference => LOwner.LOwnerReference,
             _ => throw new ArgumentException("The vista does not hold a printable catalog subject.", nameof(vista)),
         };
-        return LEnginePortraitPrint(id, owner, legend, ticket);
+        return await LEnginePressOpen(id, owner, legend);
     }
 
-    internal Task LEnginePortraitPrint(long id, LOwner owner, LPortraitLegend legend, LPressTicket ticket)
+    internal async Task<LGalleyRelay> LEnginePressOpen(long id, LOwner owner, LPortraitLegend legend)
     {
-        ArgumentNullException.ThrowIfNull(ticket);
-
-        return LPortraitFacadeStaff.LEngineStaffWorkspace.LWorkspaceStaffPress
-            .LPortraitClerkPrint(LEnginePortraitRead(id, owner, legend), ticket);
+        LPortraitPage page = LEnginePortraitRead(id, owner, legend);
+        string file = _lPortraitFacadeSettings.LEngineFileFormat(page.LPortraitPageTitle);
+        LPortraitClerkPress clerk = LPortraitFacadeStaff.LEngineStaffWorkspace.LWorkspaceStaffPress;
+        LGalleyClerk galley = await clerk.LPortraitClerkOpen(page);
+        return new LGalleyRelay(
+            galley, new LGalley(galley, clerk, LPortraitFacadeStaff.LEngineStaffWorkspace.LWorkspaceStaffGalley, file));
     }
 
     private LEngineStaff LPortraitFacadeStaff => _lPortraitFacadeHearth.LEngineStaffHeld;

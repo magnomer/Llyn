@@ -20,18 +20,27 @@ public sealed class LPronunciationClerk
         _lPronunciationClerkWorkspace = rig.LRigWorkspace;
     }
 
-    public IReadOnlyList<LCatalogPronunciation> LPronunciationClerkFind(string query, LCatalogOrder order)
+    public IReadOnlyList<LCatalogPronunciation> LPronunciationClerkFind(
+        string query, LCatalogOrder order, Func<string, bool> respelled)
     {
         ArgumentNullException.ThrowIfNull(query);
+        ArgumentNullException.ThrowIfNull(respelled);
 
         LPronunciationVault pronunciations = _lPronunciationClerkPronunciations;
+        bool missing = order == LCatalogOrder.LCatalogOrderPending;
         List<LCatalogPronunciation> rows = [];
         foreach (LEntry entry in _lPronunciationClerkEntries.LEntryFind(query))
         {
             IReadOnlyList<LPronunciation> spoken = pronunciations.LPronunciationRead(entry.LEntryId);
-            rows.Add(LCatalogPronunciation.LCatalogPronunciationCreate(
-                entry,
-                spoken.Count == 0 ? null : spoken[0].LPronunciationIpa));
+            string? sound = spoken.Count == 0
+                ? null
+                : respelled(entry.LEntryLanguage) && !string.IsNullOrEmpty(spoken[0].LPronunciationRespelling)
+                    ? spoken[0].LPronunciationRespelling
+                    : spoken[0].LPronunciationIpa;
+            if (string.IsNullOrEmpty(sound) == missing)
+            {
+                rows.Add(LCatalogPronunciation.LCatalogPronunciationCreate(entry, sound));
+            }
         }
 
         return LCatalogPronunciation.LCatalogPronunciationSort(rows, order);

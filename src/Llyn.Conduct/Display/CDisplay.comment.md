@@ -1,5 +1,5 @@
 # CDisplay.cs
-Hash: `6c05014bb579e874`
+Hash: `a07c099e989a4fd0`
 
 ## `public sealed class CDisplay`
 
@@ -7,7 +7,7 @@ The reading view's header area.
 It owns the entry's life on the lectern, the favourite gate, and the change events its drivers answer.
 The editor and each wing build one, and it builds its rules and its other areas once.
 So every driver over it hears the same events.
-The lectern names the entry's lexical unit by the localization key `LEngineUnitFormat` gives.
+The lectern names the entry's lexical unit and freedom by the keys the static `LEntryPort` formats give.
 Its public areas expose Conduct records rather than engine rules.
 The sound half stands on [CDisplaySound](CDisplaySound.comment.md), which reads the header here.
 The rime-book and script box openings stand on [CFold](../Sound/CFold.comment.md), over the shown entry.
@@ -26,7 +26,7 @@ The header while nothing is shown, every field empty.
 
 ## `private readonly LEntryPort _cDisplayEntryPort;`
 
-The entry port the stamp and the unit wording go through.
+The entry port the stamp is read through.
 
 ## `private readonly LMarkdownPort _cDisplayMarkdownPort;`
 
@@ -183,6 +183,7 @@ Opens a draft in the view, or closes the view for a missing draft.
 A vista choosing nothing closes the view too, since the draft then stands on no entry.
 The note arrives parsed, so the driver draws its blocks and never parses.
 The stamp is read from the stored entry, and a refused read hides it.
+The unit and the freedom arrive as the localization keys `LEntryPort` names them by.
 
 ## `private (bool, string, string) LDisplayStampRead(long id)`
 

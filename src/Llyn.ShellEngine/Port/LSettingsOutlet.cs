@@ -67,6 +67,9 @@ public sealed class LSettingsOutlet : LSettingsPort
     public void LEngineAnalysisSave(bool analysis) =>
         _lSettingsOutletEngine.LEngineSettings.LEngineAnalysisSave(analysis);
 
+    public string LEngineNotebookSave(string notebook) =>
+        _lSettingsOutletEngine.LEngineSettings.LEngineNotebookSave(notebook);
+
     public void LEngineRespellingSave(bool respelled) =>
         _lSettingsOutletEngine.LEngineSettings.LEngineRespellingSave(respelled);
 

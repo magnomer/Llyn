@@ -1,5 +1,5 @@
 # LStemFacade.cs
-Hash: `7768740ca6bbd9e7`
+Hash: `8ea42b65c4f6631e`
 
 ## `public sealed class LStemFacade : LStemPort`
 
@@ -10,7 +10,7 @@ The links themselves are written where a series is stored, so nothing here write
 Its own write is a member's fold, through the fold clerk.
 The character resolve may make an entry, but through `LEntryFacade`.
 
-## `internal LStemFacade(LEngineHearth hearth, LEntryFacade entry, LLanguageFacade language, LVistaRowFacade row, LReflexFacade reflex)`
+## `internal LStemFacade(LEngineHearth hearth, LEntryFacade entry, LLanguageFacade language, LVistaRowFacade row)`
 
 Stores the hearth, its gate and the sibling facades it calls, all built by `LEngine` before this one.
 The gate, the staff and the shared state are read through the hearth.
@@ -43,8 +43,8 @@ A chosen series that the narrowing dropped is unchosen, so the column never poin
 ## `public LStemPage LEngineStemResolve(long? id)`
 
 The page of the chosen series, or the blank page when nothing was chosen.
-Its members come from `LStemClerk` with their own folds, and pass through given the guises of their rows.
-The guises come from `LReflexFacade.LEngineGuiseRead`, the read the entry page's reflex rows take.
+Its members come from `LStemClerk` with their own folds and the guises of their rows.
+The clerk reads the guises under the held respelling setting, as the entry page's reflex rows do.
 So the reader maps the whole page from this one call and asks the engine nothing more.
 
 ## `public long LEngineStemResolve(long? id, string character)`

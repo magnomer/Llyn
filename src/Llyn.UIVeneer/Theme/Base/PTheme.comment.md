@@ -1,5 +1,5 @@
 # PTheme.xaml
-Hash: `062fced7cae9f1ae`
+Hash: `1ab487e43adea26f`
 
 ## `<ResourceDictionary.MergedDictionaries>`
 
@@ -9,5 +9,6 @@ A part therefore resolves its own StaticResource and BasedOn references without 
 This file merges the parts in dependency order and holds no style of its own.
 It names only veneer parts, since the deportment holds no markup at all.
 App.xaml keeps merging this one file, so the theme has one address.
+The Press part follows the Command part and rests on the palette and the scroll part.
 The Mention, Etymology, Gloss and Paradigm parts are merged late, on the palette and at most the input part.
 The Script, Fanqie, Diwei and Xiesheng parts close the list, each on the palette and at most one more part.

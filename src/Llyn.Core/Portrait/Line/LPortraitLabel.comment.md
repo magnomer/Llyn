@@ -1,5 +1,5 @@
 # LPortraitLabel.cs
-Hash: `998ead6a443027df`
+Hash: `94dcf9075df7669e`
 
 ## `public sealed record LPortraitLabel`
 
@@ -32,3 +32,4 @@ Passing the words in keeps export out of the interface layer without moving tran
 - `LPortraitLabelTranslation` - the heading over translation links.
 - `LPortraitLabelTag` - the heading over tag chips.
 - `LPortraitLabelUnit` - the name of each lexical unit, which leads the speech chips.
+- `LPortraitLabelFreedom` - the name of each freedom, which follows the unit in the speech chips.

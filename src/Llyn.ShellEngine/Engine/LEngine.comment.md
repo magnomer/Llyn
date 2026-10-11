@@ -1,5 +1,5 @@
 # LEngine.cs
-Hash: `fd0f280efec8db70`
+Hash: `7784f7df746d2a06`
 
 ## `public sealed class LEngine : IDisposable`
 
@@ -45,7 +45,7 @@ The hearth comes first, building the clerks and reading the settings.
 The row facade follows it, so every facade that builds vista rows finds it.
 The facades come last, so none of them can ever see an engine without its staff.
 Each facade is built after the siblings it takes, so its constructor needs no engine.
-The stem facade follows the reflex facade, whose guise read gives the series members their reflex rows' guises.
+The stem and reflex facades take no settings facade, since the language clerk owns every row's guise.
 The tenure facade comes last and alone takes the engine, since its tenures reach every facade.
 The workspace opens at the very end, after the workspace facade has created the database.
 
@@ -85,7 +85,8 @@ It is public, since Host hands it to Conduct as the reflex port.
 
 ## `internal LPortraitFacade LEnginePortrait { get; }`
 
-The facade for printing and exporting portraits, built once with the others.
+The facade for printing and exporting portraits.
+It is built after the Livery facade, since an entry export reads the Livery page.
 
 ## `public LStemFacade LEngineStem { get; }`
 

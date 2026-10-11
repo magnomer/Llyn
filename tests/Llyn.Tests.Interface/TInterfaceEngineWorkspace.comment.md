@@ -1,5 +1,5 @@
 # TInterfaceEngineWorkspace.cs
-Hash: `dada680c6ab22495`
+Hash: `8db0e579695f9d19`
 
 ## `internal static class TInterfaceEngineWorkspace`
 
@@ -13,7 +13,7 @@ Each relay is transparent and carries no test logic of its own.
 ## `internal static void TEngineWorkspaceOpen(this LEngine engine, string path)`
 
 Builds a rig for `path` through the real factory, then applies it as the bootstrap does.
-Its sources, press, warrant and phonograph are all fakes.
+Its sources, press, printer queue, warrant and phonograph are all fakes.
 The clock is set to a `TClockFake`, which reads the real time until a test sets it.
 
 ## `internal static LBulletin TBulletinCreate(LSubject subject, long id)`

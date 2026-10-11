@@ -99,13 +99,12 @@ public sealed class CMembership
             return Task.CompletedTask;
         }
 
-        return CPortrait.LPortraitTicketPrint(
+        return CPortrait.LPortraitPrint(
             _cMembershipEnvoy,
             _cMembershipSettingsPort,
-            chosen => _cMembershipPortraitPort.LEnginePortraitPrint(
+            () => _cMembershipPortraitPort.LEnginePressOpen(
                 CMembershipPanel.CPanelAperture.CApertureVista,
-                CPortrait.LPortraitLabelRead(_cMembershipSettingsPort),
-                chosen));
+                CPortrait.LPortraitLabelRead(_cMembershipSettingsPort)));
     }
 
     public Task CMembershipPortraitExport()

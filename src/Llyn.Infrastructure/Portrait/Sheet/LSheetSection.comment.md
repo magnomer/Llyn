@@ -1,5 +1,5 @@
 # LSheetSection.cs
-Hash: `62f554a9877910a0`
+Hash: `ea1396539d800d1c`
 
 ## `public static class LSheetSection`
 
@@ -12,6 +12,11 @@ Dispatch follows the role.
 Card and kind, phrase, scene, tone, label, bridge, quote and usage each have a form.
 Any other role is a band.
 A bridge draws nothing of its own, since the shared body already draws links.
+
+## `internal static LPortraitSection? LSheetSectionFind(LPortraitPage page, string heading)`
+
+Finds the first top-level section under a heading, or null when the page has none.
+The entry sheet picks its bands by the label's heading, since the portrait carries no other key.
 
 ## `private static void LSheetBandAppend(StringBuilder sheet, LPortraitSection section)`
 
@@ -27,6 +32,11 @@ An arrow, the headword over the card title, the kind as a pill, the language mut
 ## `private static void LSheetCardAppend(StringBuilder sheet, LPortraitSection section)`
 
 The badge number and heading form the card header, the heading muted when it is only the card's kind.
+The body is `LSheetSenseAppend`, so the catalog card and the entry deck's card share it.
+
+## `internal static void LSheetSenseAppend(StringBuilder sheet, LPortraitSection section)`
+
+Writes a card's body without its frame.
 A phrase standing first among the children is drawn before the sense lines, as the panel shows the expression.
 Each line is a sense paragraph, with its label as a small tag when it has one.
 The rest of the shared body follows.

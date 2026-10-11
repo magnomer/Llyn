@@ -1,5 +1,5 @@
 # QGraspStar.cs
-Hash: `bd96316dbb7c2641`
+Hash: `dcd52f657675785d`
 
 ## `public sealed class QGraspStar`
 
@@ -13,27 +13,34 @@ Keeps the row, its step and limit properties, its two events and the star image.
 A missing star image throws here, so a broken asset fails before the row draws.
 A disabled row is dimmed rather than hidden, so the header keeps its shape on a form standing on nothing.
 
-## `public int? QGraspHover`
+## `public void QGraspStarRefine(IReadOnlyList<IReadOnlyList<int>> fill, IReadOnlyList<bool> unrated, IReadOnlyList<IReadOnlyList<int>> hit)`
+
+Keeps the ready fills, looks and hit steps the host's driver hands over, then remeasures and redraws.
+Until then the row holds no star, so it measures and draws none.
+Drawing and pointing only look these answers up, so the control requests no logic.
+
+## `public int? QGraspHover { get; private set; }`
 
 The half step under the pointer, or null while the pointer is off the row.
 
-## `public int QGraspPointed`
+## `public int QGraspPointed => QGraspHover ?? QGraspCurrent;`
 
 The half step to word beside the stars.
 It is the hovered one, else the set one.
 
 ## `public Size QGraspSizeDraw()`
 
-One star for every two steps of the limit, rounded up, and the gaps between them.
-An odd limit ends on a half star, so its last step still shows.
-A limit of zero measures no star and no gap.
+One star frame for every hit pair the row holds, and the gaps between them.
+Core counts the stars for the limit, so this sum adds only the view's own sizes.
+A row with no star measures no star and no gap.
 A slack border is added on every side.
 Each star has a fixed size.
 The slack lets a pointer near the row count as on it.
 
 ## `public void QGraspHoverRefine(Point point)`
 
-Tracks which half star the pointer covers and redraws when it moves to another.
+Records which half star the pointer covers, redraws and raises the hover on every move.
+It compares no step, since the step comes from the ready hit answers.
 
 ## `public void QGraspLeaveRefine()`
 
@@ -53,8 +60,12 @@ A key that lands on the standing step raises nothing, so the gate never reads it
 
 A transparent rectangle over the whole row is drawn first, so the pointer hits the row, not only the ink.
 The star image is only a mask, so the row's themed brushes give every star its colour.
-Draws every star in the empty brush, or the unrated one while no step stands.
-Then the fill brush is clipped to the whole or left half for each earned step.
+The shown step's fill list holds one entry per star, so it also sets how many stars draw.
+Draws every star faded in the empty brush, or the unrated one where the answers mark the shown step.
+An unrated row fades further, so it reads apart from a low rating.
+The shown step is the hovered one, else the set one.
+Then the fill brush is clipped to the whole or left half of each star, as its ready fill names.
+The fills are looked up by the shown step, so this class keeps no fill arithmetic.
 While the pointer hovers, the preview brush replaces the fill brush.
 
 ## `private void QGraspStarDraw(DrawingContext context, Brush ink, Rect frame)`
@@ -71,7 +82,7 @@ Sets the step and raises the change.
 
 ## `private int QGraspStepDraw(Point point)`
 
-Maps a point on the row to a half step from one to the limit, and never past it.
+Finds the star frame under a point and answers that half's step from the ready hit pairs.
 A row with no star maps every point to zero.
-The left half of a star is its odd step and the right half its even step.
 Gaps and slack fold into the nearest star, so no point near the row is dead.
+Which step a half picks, and the limit cap, are Core's answers.

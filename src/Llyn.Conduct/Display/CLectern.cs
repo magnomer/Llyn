@@ -12,4 +12,5 @@ public sealed record CLectern(
     string CLecternAdded,
     string CLecternUpdated,
     bool CLecternStamped,
-    string CLecternUnit);
+    string CLecternUnit,
+    string CLecternFreedom);

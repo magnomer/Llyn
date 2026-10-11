@@ -1,5 +1,5 @@
 # TInterfacePronunciation.cs
-Hash: `a06763301d118883`
+Hash: `1906fb6ccbfc5af2`
 
 ## `internal static partial class TInterface`
 
@@ -8,7 +8,8 @@ That is the reading, answer, candidate and variety records, the respelling rules
 The recording records, the harvest fan-out, the workspace download, and the engine discovery are relayed here too.
 The language pack loader, the glyph split and the engine's language reads are relayed here too.
 The anatomy, descent and tone contour reads are relayed here too.
-The reflex guise, the stem key scan and the shengfu record are relayed here too.
+The reflex guise with an optional shown text and the shown-form rule are relayed here too.
+The stem key scan and the shengfu record are relayed here too.
 The frequency records, the gauge, and the once and band resolves are relayed here too.
 The two short fanqie row builders sit here beside the full one in `TInterfaceFact`.
 Each relay is transparent and carries no test logic of its own.

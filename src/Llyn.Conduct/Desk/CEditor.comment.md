@@ -1,5 +1,5 @@
 # CEditor.cs
-Hash: `9ebd50b80b7ba6f1`
+Hash: `14515482c5769286`
 
 ## `public sealed class CEditor`
 
@@ -19,6 +19,7 @@ That distinction determines what reopens after storage.
 
 Every desk uses the `Input` notice scope, regardless of its tab.
 Each child receives only its required ports, while repaint-read failures share the supplied notice memory.
+The speech area needs no port, since its unit and freedom rows are worded statically.
 The desk's finish handler precedes the entry area's draft subscription.
 Listening areas receive the marshal, so engine notifications need not depend on driver-owned thread dispatch.
 Settings notifications resonate the held draft because its presentation depends on settings.

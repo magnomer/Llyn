@@ -39,7 +39,8 @@ public sealed class TEngineReflex
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        IReadOnlyList<LReflexGuise> guises = engine.TEngineGuiseRead(pack.TLanguageFixtureName, [" Jin ", "Wu", "Jin"]);
+        IReadOnlyList<LReflexGuise> guises = engine.TEngineGuiseRead(
+            pack.TLanguageFixtureName, TReflexRowScan([" Jin ", "Wu", "Jin"]));
 
         Assert.Equal([true, false, true], guises.Select(static guise => guise.LReflexGuiseFolded));
         Assert.Equal(guises[2], guises[0]);
@@ -54,7 +55,7 @@ public sealed class TEngineReflex
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         IReadOnlyList<LReflexGuise> guises = engine.TEngineGuiseRead(
-            "Chinese", [borrower.TLanguageFixtureName, plain.TLanguageFixtureName]);
+            "Chinese", TReflexRowScan([borrower.TLanguageFixtureName, plain.TLanguageFixtureName]));
 
         Assert.Equal([true, false], guises.Select(static guise => guise.LReflexGuisePhonemic));
     }
@@ -65,9 +66,33 @@ public sealed class TEngineReflex
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        Assert.False(Assert.Single(engine.TEngineGuiseRead(" ", ["Jin"])).LReflexGuiseFolded);
+        Assert.False(Assert.Single(engine.TEngineGuiseRead(" ", TReflexRowScan(["Jin"]))).LReflexGuiseFolded);
         Assert.Empty(engine.TEngineGuiseRead("Chinese", []));
     }
+
+    [Fact]
+    public void GuiseRead_RespellingPack_CarriesTheShownText()
+    {
+        using TLanguageFixture respelt = TLanguageFixture.TLanguageFixtureCreate(
+            """{ "respelling": [ { "name": "Plain", "rules": [["ʊ", "u"]] } ] }""");
+        using TLanguageFixture plain = TLanguageFixture.TLanguageFixtureCreate("""{ "respelling": [] }""");
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineRespellingSave(true);
+
+        IReadOnlyList<LReflexGuise> guises = engine.TEngineGuiseRead(
+            "Chinese",
+            [
+                TInterface.TReflexDraftCreate(respelt.TLanguageFixtureName, "", "lʊŋ", respelling: "luŋ"),
+                TInterface.TReflexDraftCreate(respelt.TLanguageFixtureName, "", "lʊŋ"),
+                TInterface.TReflexDraftCreate(plain.TLanguageFixtureName, "", "lʊŋ", respelling: "luŋ"),
+            ]);
+
+        Assert.Equal(["luŋ", "lʊŋ", "lʊŋ"], guises.Select(static guise => guise.LReflexGuiseShown));
+    }
+
+    private static IReadOnlyList<LReflexDraft> TReflexRowScan(IReadOnlyList<string> languages) =>
+        [.. languages.Select(static language => TInterface.TReflexDraftCreate(language, "", ""))];
 
     [Fact]
     public async Task ReflexStart_ThreeRules_StoresRowsRomanizationsAndMark()

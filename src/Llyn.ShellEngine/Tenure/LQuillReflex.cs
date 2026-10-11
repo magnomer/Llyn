@@ -155,7 +155,7 @@ public sealed class LQuillReflex
         return _lQuillReflexTenure.LTenureRead()?.LDraftContent is LEntryDraft content
             && LDraftClerkReflex.LReflexFind(content, reflex) is LReflexDraft row
             && _lQuillReflexPort
-                .LEngineGuiseRead(content.LEntryDraftLanguage, [row.LReflexDraftLanguage])[0]
+                .LEngineGuiseRead(content.LEntryDraftLanguage, [row])[0]
                 .LReflexGuiseRespelled;
     }
 }

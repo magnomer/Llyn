@@ -1,9 +1,9 @@
 # CCohort.cs
-Hash: `e54fe06dab57a550`
+Hash: `1840837f1e9f29bf`
 
 ## `public sealed class CCohort`
 
-The tenor's entry list: the entries carrying the chosen Register, and the one the reader stands on.
+The tenor's entry list, holding the entries that carry the chosen Register and the one the reader stands on.
 It is shaped like `CQuotation`, and the tenor owns it as `CCorpus` owns its quotation.
 
 ## `internal CCohort(LVistaPort vistas, LPortraitPort portraits, LSettingsPort settings, CEnvoy envoy, Func<bool> changeSeam, Func<bool, bool> finishSeam, Func<bool> shownSeam)`
@@ -14,7 +14,7 @@ The panel asks the editor's desk before it leaves an entry, and it finishes thro
 
 ## `public CPanel CCohortPanel { get; }`
 
-The shared panel state over the cohort vista: the chosen entry, the scribe mode, the bin and the leave guard.
+The shared panel state over the cohort vista, holding the chosen entry, scribe mode, bin and leave guard.
 
 ## `internal void LCohortVistaRestore(LVista roll, LVista vista)`
 
@@ -39,10 +39,10 @@ The file name the export offers for the shown entry, as `LVistaPort.LEngineFileR
 
 ## `public Task CCohortPortraitPrint()`
 
-Prints the chosen entry, and does nothing while none is chosen or the panel is editing.
+Opens the print window on the chosen entry, and does nothing while none is chosen or the panel is editing.
 `CCohortPortraitExport` exports it under the same condition.
-The reader is asked for the printer through the envoy, and a decline prints nothing.
-`CPortrait` words the page through the engine and shows `Print.Failed` through the envoy.
+The print window chooses the printer and layout, and a window closed unprinted prints nothing.
+`CPortrait` opens the session through the engine and shows `Print.Failed` through the envoy if it cannot.
 
 ## `public Task CCohortPortraitExport()`
 

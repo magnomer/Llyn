@@ -1,5 +1,5 @@
 # PThemePronunciation.xaml
-Hash: `8b552380da0c18e4`
+Hash: `786bf25f1d301c65`
 
 ## `<sys:Double x:Key="Theme.Pronunciation.Height">`
 
@@ -55,6 +55,9 @@ One pixel under it makes the slot even, so the flag's middle meets the bracket's
 The variety name before the brackets, in the small muted face.
 A `QLook` row collapses it while blank.
 It stands in where the pack draws no flags or none resolves.
+Its right margin of 24 reserves the slot an edit row's scheme chevron fills.
+That is the 8-pixel gap, a 4-pixel lead and the 12-pixel chevron.
+So every label and reading stands in the same place in view and edit mode.
 
 ## `<Style x:Key="Theme.Pronunciation.Text" TargetType="TextBlock">`
 

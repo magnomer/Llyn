@@ -57,9 +57,7 @@ internal static class LLiveryCard
         bool stored = card.LCardDraftId > 0;
         if (stored)
         {
-            sheet.Append("<details class=\"llyn-card\"")
-                .Append(page.LLiveryPageFold.Contains(card.LCardDraftId) ? string.Empty : " open")
-                .Append(">\n<summary>");
+            sheet.Append(LLiveryFoldFormat(!page.LLiveryPageFold.Contains(card.LCardDraftId)));
         }
         else
         {
@@ -124,6 +122,11 @@ internal static class LLiveryCard
         LLiveryBadgeAppend(sheet, "llyn-tag", tags);
         LLiveryMediaAppend(sheet, card);
         sheet.Append(stored ? "</details>\n\n" : "</div>\n\n");
+    }
+
+    internal static string LLiveryFoldFormat(bool opened)
+    {
+        return "<details class=\"llyn-card\"" + (opened ? " open" : string.Empty) + ">\n<summary>";
     }
 
     private static string LLiveryNumberFormat(LCardDraft card, int place)

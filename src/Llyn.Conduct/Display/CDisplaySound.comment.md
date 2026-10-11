@@ -1,5 +1,5 @@
 # CDisplaySound.cs
-Hash: `af27f78a6c6f0e76`
+Hash: `48f2ca458bdac787`
 
 ## `public sealed class CDisplaySound`
 
@@ -141,7 +141,7 @@ The box is asked with `held` off, so a lost cell reads as lost.
 
 ## `private IReadOnlyList<CReflex> LDisplayReflexScan()`
 
-The written reflex rows of the shown entry through the shared scan.
+The written reflex rows of the shown entry, handed as stored to the shared scan.
 A refused scan shows `Display.ReflexFailed` once and answers no rows.
 
 ## `private CLecternAnchor LDisplayAnchorRead(IReadOnlyList<CReflex> rows)`

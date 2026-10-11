@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Threading.Tasks;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -18,10 +19,54 @@ public sealed class TPortraitExporting
         long id = TExemplar.TExemplarSave(engine, TExemplar.TExemplarCreate(engine))[0];
 
         string path = Path.Combine(workspace.TWorkspaceFolder, "exemplar.html");
-        await engine.TEnginePortraitExport(
-            id, path, LPortraitMedium.LPortraitMediumHtml, TInterface.TPortraitLabelRead());
+        LPortraitLabel label = TInterface.TPortraitLabelRead();
+        await engine.TEnginePortraitExport(id, path, LPortraitMedium.LPortraitMediumHtml, label);
 
-        TPortraitExportMatch(engine, id, File.ReadAllText(path), TInterface.TSheetNormalize);
+        string[] unshown =
+        [
+            label.LPortraitLabelGlyph,
+            label.LPortraitLabelFrequency,
+            label.LPortraitLabelForm,
+            label.LPortraitLabelParadigm,
+            "Korean exemplar-kind exemplar-region ●",
+            "exemplar-reflex-reading exemplar-reflex-romanization exemplar-reflex-meaning exemplar-reflex-note",
+        ];
+        TPortraitExportMatch(engine, id, File.ReadAllText(path), TInterface.TSheetNormalize, unshown);
+    }
+
+    [Fact]
+    public async Task PortraitExport_ExemplarPdf_HandsTheEntrySheetToThePress()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        long id = TExemplar.TExemplarSave(engine, TExemplar.TExemplarCreate(engine))[0];
+        string path = Path.Combine(workspace.TWorkspaceFolder, "exemplar.pdf");
+
+        LPortraitMedium medium = LPortraitMedium.LPortraitMediumPdf;
+        await engine.TEnginePortraitExport(id, path, medium, TInterface.TPortraitLabelRead());
+
+        TPress press = workspace.TWorkspacePress;
+        Assert.Equal(path, press.TPressPath);
+        Assert.Contains("<main class=\"entry\">", press.TPressHtml, System.StringComparison.Ordinal);
+        Assert.DoesNotContain("<main class=\"portrait\">", press.TPressHtml, System.StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task PortraitPrint_StoredEntry_HandsTheEntrySheetToThePress()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LEntry water = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "water", "English", string.Empty, string.Empty, [TInterface.TCardCreate("a liquid", 1)], []));
+
+        await using LGalleyRelay? galley = await engine.TEnginePressOpen(
+            water.LEntryId, TInterface.TPortraitLabelRead());
+
+        TPress press = workspace.TWorkspacePress;
+        Assert.True(press.TPressOpened);
+        Assert.Contains("<main class=\"entry\">", press.TPressHtml, System.StringComparison.Ordinal);
+        Assert.Contains("<h1 class=\"headword\"", press.TPressHtml, System.StringComparison.Ordinal);
+        Assert.DoesNotContain("<main class=\"portrait\">", press.TPressHtml, System.StringComparison.Ordinal);
     }
 
     [Fact]
@@ -108,16 +153,28 @@ public sealed class TPortraitExporting
     }
 
     private static void TPortraitExportMatch(
-        LEngine engine, long id, string written, System.Func<string?, string> normalize)
+        LEngine engine,
+        long id,
+        string written,
+        System.Func<string?, string> normalize,
+        IReadOnlyList<string>? unshown = null)
     {
-        IReadOnlyList<string> shown = TInterface.TPortraitTextRead(
-            engine.TEnginePortraitRead(id, TInterface.TPortraitLabelRead()));
+        unshown ??= [];
+        LPortraitPage page = engine.TEnginePortraitRead(id, TInterface.TPortraitLabelRead());
+        page = page with
+        {
+            LPortraitPageSection =
+            [
+                .. page.LPortraitPageSection.Where(section => !unshown.Contains(section.LPortraitSectionHeading)),
+            ],
+        };
+        IReadOnlyList<string> shown = TInterface.TPortraitTextRead(page);
 
         Assert.Contains("exemplar-child-meaning", shown);
         List<string> missing = [];
         foreach (string text in shown)
         {
-            if (!written.Contains(normalize(text), System.StringComparison.Ordinal))
+            if (!unshown.Contains(text) && !written.Contains(normalize(text), System.StringComparison.Ordinal))
             {
                 missing.Add(text);
             }

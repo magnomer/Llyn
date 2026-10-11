@@ -10,11 +10,6 @@ public sealed record CFont(string? CFontFamily, double? CFontSize, CFontSlant CF
     {
         ArgumentNullException.ThrowIfNull(settings);
 
-        if (string.IsNullOrWhiteSpace(language))
-        {
-            return new CFont(null, null, CFontSlant.CFontSlantTheme);
-        }
-
         LFont font = settings.LEngineFontRead(language, CFontRoleRead(role));
         return new CFont(font.LFontFace, font.LFontSized, CFontSlantRead(font.LFontStyle));
     }

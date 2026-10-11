@@ -25,4 +25,8 @@ public sealed record LLiveryPage(
     IReadOnlyList<LUsage> LLiveryPageIncoming,
     IReadOnlyList<LTranslationTarget> LLiveryPageEtymon,
     IReadOnlyDictionary<string, string> LLiveryPageBanner,
-    IReadOnlyDictionary<string, string> LLiveryPageEnsign);
+    IReadOnlyDictionary<string, string> LLiveryPageEnsign,
+    IReadOnlyList<LParadigmShown> LLiveryPageShown,
+    IReadOnlyDictionary<LFontRole, LFont> LLiveryPageFont,
+    IReadOnlySet<LFoldBox> LLiveryPageOpened,
+    string LLiveryPageReading);

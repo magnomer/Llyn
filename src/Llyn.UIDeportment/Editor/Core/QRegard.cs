@@ -48,6 +48,8 @@ internal sealed class QRegard
         desk.CDeskStarted += QRegardGraspRefine;
         desk.CDeskStarted += QRegardFrequencyRefine;
         QRegardGrasp.PGraspLimit = esteem.CEsteemGraspStep;
+        QRegardGrasp.PGraspStar.QGraspStarRefine(
+            esteem.CEsteemGraspFill, esteem.CEsteemGraspUnrated, esteem.CEsteemGraspHit);
     }
 
     private void QRegardFavoriteRefine()

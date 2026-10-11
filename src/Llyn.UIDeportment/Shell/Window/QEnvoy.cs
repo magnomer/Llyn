@@ -2,30 +2,36 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Printing;
 using System.Windows;
-using System.Windows.Controls;
 using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
 
 internal sealed class QEnvoy : CEnvoy
 {
-    private const double QEnvoyInch = 96.0;
-
     private readonly Window _qEnvoySurface;
 
-    internal QEnvoy(Window surface)
+    private readonly QPosture _qEnvoyPosture;
+
+    internal QEnvoy(Window surface, QPosture posture)
     {
         ArgumentNullException.ThrowIfNull(surface);
+        ArgumentNullException.ThrowIfNull(posture);
 
         _qEnvoySurface = surface;
+        _qEnvoyPosture = posture;
     }
+
+    private Window QEnvoyOwner =>
+        System.Windows.Application.Current is { } application && application.CheckAccess()
+            ? application.Windows.OfType<Window>().FirstOrDefault(static window => window.IsActive)
+                ?? _qEnvoySurface
+            : _qEnvoySurface;
 
     public bool CEnvoyConfirm(string key)
     {
         return MessageBox.Show(
-            _qEnvoySurface,
+            QEnvoyOwner,
             QLocalizationCatalog.QLocalizationTextRead(key),
             QLocalizationCatalog.QLocalizationTextRead("Terms.Product"),
             MessageBoxButton.YesNo,
@@ -38,7 +44,7 @@ internal sealed class QEnvoy : CEnvoy
             QLocalizationCatalog.QLocalizationTextRead(tallyKey), " ", tally.ToString(CultureInfo.CurrentCulture));
 
         return MessageBox.Show(
-            _qEnvoySurface,
+            QEnvoyOwner,
             $"{QLocalizationCatalog.QLocalizationTextRead(key)}\n\n{count}",
             QLocalizationCatalog.QLocalizationTextRead("Terms.Product"),
             MessageBoxButton.YesNo,
@@ -51,7 +57,7 @@ internal sealed class QEnvoy : CEnvoy
         string question = $"{confirm}\n\n{dropped} \u2192 {kept}";
 
         return MessageBox.Show(
-            _qEnvoySurface,
+            QEnvoyOwner,
             question,
             QLocalizationCatalog.QLocalizationTextRead("Terms.Product"),
             MessageBoxButton.YesNo,
@@ -69,7 +75,7 @@ internal sealed class QEnvoy : CEnvoy
         }
 
         MessageBox.Show(
-            _qEnvoySurface,
+            QEnvoyOwner,
             $"{QLocalizationCatalog.QLocalizationTextRead(key)}\n\n{detail}",
             QLocalizationCatalog.QLocalizationTextRead("Terms.Product"),
             MessageBoxButton.OK,
@@ -79,7 +85,7 @@ internal sealed class QEnvoy : CEnvoy
     public void CEnvoyFailureShow(string key)
     {
         MessageBox.Show(
-            _qEnvoySurface,
+            QEnvoyOwner,
             QLocalizationCatalog.QLocalizationTextRead(key),
             QLocalizationCatalog.QLocalizationTextRead("Terms.Product"),
             MessageBoxButton.OK,
@@ -88,7 +94,7 @@ internal sealed class QEnvoy : CEnvoy
 
     public bool? CEnvoyLeaveConfirm()
     {
-        return QSLeave.QSLeaveShow(_qEnvoySurface) switch
+        return QSLeave.QSLeaveShow(QEnvoyOwner) switch
         {
             QSLeaveAnswer.QSLeaveAnswerStore => true,
             QSLeaveAnswer.QSLeaveAnswerDiscard => false,
@@ -98,17 +104,22 @@ internal sealed class QEnvoy : CEnvoy
 
     public string? CEnvoyMarkupRead()
     {
-        return QMarkup.QMarkupConsult(_qEnvoySurface);
+        return QMarkup.QMarkupConsult(QEnvoyOwner);
     }
 
     public bool CEnvoyCustomsRead(CSCustoms customs)
     {
-        return QSCustoms.QSCustomsConsult(_qEnvoySurface, customs);
+        return QSCustoms.QSCustomsConsult(QEnvoyOwner, customs);
+    }
+
+    public bool CEnvoyPressRead(CSPress press)
+    {
+        return QSPress.QSPressConsult(QEnvoyOwner, press, _qEnvoyPosture);
     }
 
     public void CEnvoyOmissionShow(IReadOnlyList<CMarkupOmission> omissions)
     {
-        QSCustoms.QSCustomsOmissionConsult(_qEnvoySurface, omissions);
+        QSCustoms.QSCustomsOmissionConsult(QEnvoyOwner, omissions);
     }
 
     public (string? CEnvoyFile, CPortraitMedium CEnvoyMedium) CEnvoyFileRead(
@@ -130,47 +141,11 @@ internal sealed class QEnvoy : CEnvoy
             FileName = file,
         };
 
-        bool chosen = dialog.ShowDialog(_qEnvoySurface) == true;
+        bool chosen = dialog.ShowDialog(QEnvoyOwner) == true;
         CPortraitMedium medium = choices[Math.Clamp(dialog.FilterIndex - 1, 0, choices.Count - 1)]
             .CPortraitChoiceMedium;
 
         return (chosen ? dialog.FileName : null, medium);
-    }
-
-    public CPressTicket? CEnvoyTicketRead()
-    {
-        PrintDialog dialog = new()
-        {
-            UserPageRangeEnabled = false,
-        };
-
-        if (dialog.ShowDialog() != true)
-        {
-            return null;
-        }
-
-        PrintTicket chosen = dialog.PrintTicket;
-
-        return new CPressTicket(
-            dialog.PrintQueue.FullName,
-            chosen.PageMediaSize?.Width / QEnvoyInch,
-            chosen.PageMediaSize?.Height / QEnvoyInch,
-            chosen.PageOrientation is PageOrientation.Landscape or PageOrientation.ReverseLandscape,
-            chosen.CopyCount ?? 1,
-            chosen.Collation != Collation.Uncollated,
-            chosen.Duplexing switch
-            {
-                Duplexing.OneSided => CPressSide.CPressSideSingle,
-                Duplexing.TwoSidedLongEdge => CPressSide.CPressSideLong,
-                Duplexing.TwoSidedShortEdge => CPressSide.CPressSideShort,
-                _ => CPressSide.CPressSideDefault,
-            },
-            chosen.OutputColor switch
-            {
-                OutputColor.Color => CPressInk.CPressInkColor,
-                OutputColor.Grayscale or OutputColor.Monochrome => CPressInk.CPressInkGray,
-                _ => CPressInk.CPressInkDefault,
-            });
     }
 
     public string? CEnvoyWorkspaceRead(string workspace)
@@ -181,11 +156,11 @@ internal sealed class QEnvoy : CEnvoy
             InitialDirectory = workspace,
         };
 
-        return dialog.ShowDialog(_qEnvoySurface) == true ? dialog.FolderName : null;
+        return dialog.ShowDialog(QEnvoyOwner) == true ? dialog.FolderName : null;
     }
 
     public string? CEnvoyCoinageRead(string key)
     {
-        return QSCoinage.QSCoinageShow(_qEnvoySurface, key);
+        return QSCoinage.QSCoinageShow(QEnvoyOwner, key);
     }
 }

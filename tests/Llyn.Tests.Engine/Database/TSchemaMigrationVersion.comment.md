@@ -1,5 +1,5 @@
 # TSchemaMigrationVersion.cs
-Hash: `55fbd9393e4297e0`
+Hash: `cebfbbb62728b5c4`
 
 ## `public sealed class TSchemaMigrationVersion`
 
@@ -9,6 +9,7 @@ A build without a table gets the table added empty, and every other row carries 
 A Collocation numbered apart from the Meanings is renumbered with its links.
 A register named twice per language keeps one row and every mark.
 An entry frequency moves into the frequency table.
+A retired lexical unit is cleared, and its entry carries across.
 It builds each workspace through `TWorkspace.TWorkspacePrepare`.
 
 ## `public void DatabaseCreate_BuildWithoutEtymology_RaisesTheTablesEmpty()`
@@ -38,3 +39,9 @@ A bare value with no source gains no row, and neither does an empty one.
 
 A version-47 workspace has no Situation media tables.
 The rebuild adds them empty and carries every Situation and Image across untouched.
+
+## `public void DatabaseCreate_RetiredUnits_ClearsThemAndKeepsTheEntries()`
+
+A version-79 workspace may hold the retired content and function units, numbered 1 and 2.
+The rebuild clears both to unchosen and keeps every entry, while morpheme and word keep their numbers.
+Every freedom comes across unchosen, since the column is new.

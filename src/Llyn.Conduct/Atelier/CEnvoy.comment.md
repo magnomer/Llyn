@@ -1,5 +1,5 @@
 # CEnvoy.cs
-Hash: `84918b6a5e79898e`
+Hash: `ba575c886117535b`
 
 ## `public interface CEnvoy`
 
@@ -46,6 +46,12 @@ Asks how each parsed entry of a markup file enters the workspace, one declared r
 The driver shows the rows `customs` holds and records each pick through its gates.
 It answers whether the user accepted, and a decline stores nothing.
 
+## `bool CEnvoyPressRead(CSPress press);`
+
+Puts up the print window over the gate `press` and returns when the window closes.
+The window prints or saves through the gate's own calls, so nothing is handed back.
+It answers whether the window printed or saved, and Conduct disposes the session either way.
+
 ## `void CEnvoyOmissionShow(IReadOnlyList<CMarkupOmission> omissions);`
 
 Tells the user what a markup import could not place, line by line.
@@ -56,12 +62,6 @@ The library asks it only when something was left behind.
 Asks where an export is written and in which of `choices`, offering `file` as the name.
 It answers no file when the user declines, and the gate then exports nothing.
 The gate chooses the offered name and the formats, so the question needs no read of its own.
-
-## `CPressTicket? CEnvoyTicketRead();`
-
-Asks which printer a print goes to and how, and answers the dialog's choice as a ticket.
-It answers null when the user declines, and the gate then prints nothing.
-The gate asks it inside its failure policy, so a dialog that fails is reported as `Print.Failed`.
 
 ## `string? CEnvoyWorkspaceRead(string workspace);`
 

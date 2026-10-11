@@ -1,9 +1,9 @@
 # LQuillEntry.cs
-Hash: `685b01330ce42394`
+Hash: `923cb6b552ca3f64`
 
 ## `public sealed class LQuillEntry`
 
-The edits of the held entry's own fields: headword, note, language and lexical unit.
+The edits of the held entry's own fields: headword, note, language, lexical unit and freedom.
 Each edit builds exactly one request for the tenure.
 
 ## `private readonly LTenure _lQuillEntryTenure;`
@@ -39,9 +39,23 @@ The lexical unit of the displayed draft, unchosen when no draft is held.
 
 ## `public IReadOnlyList<LUnit> LQuillUnitScan()`
 
-The units the draft's language offers, in dropdown order.
+The units every draft is offered, in dropdown order.
+The language plays no part, since the user alone decides which unit fits.
 
 ## `public void LQuillUnitSet(LUnit unit)`
 
 Applies the chosen unit to the draft at once.
 Choosing the unit already held clears it, so the dropdown both sets and unsets.
+
+## `public LFreedom LQuillFreedomRead()`
+
+The freedom of the displayed draft, unchosen when no draft is held.
+
+## `public IReadOnlyList<LFreedom> LQuillFreedomScan()`
+
+The freedoms every draft is offered, in dropdown order, whatever its unit or language.
+
+## `public void LQuillFreedomSet(LFreedom freedom)`
+
+Applies the chosen freedom to the draft at once.
+Choosing the freedom already held clears it, so the dropdown both sets and unsets.

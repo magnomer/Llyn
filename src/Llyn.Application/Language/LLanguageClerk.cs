@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Llyn.Core;
@@ -98,6 +99,28 @@ public sealed class LLanguageClerk
     {
         ArgumentNullException.ThrowIfNull(language);
         return language.Trim().Length > 0 && LLanguageClerkLoad(language).LLanguagePhonemic;
+    }
+
+    public IReadOnlyList<LReflexGuise> LLanguageGuiseScan(
+        IReadOnlyList<LReflexDraft> reflexes, IReadOnlyList<string> folded, bool respelled)
+    {
+        ArgumentNullException.ThrowIfNull(reflexes);
+        ArgumentNullException.ThrowIfNull(folded);
+
+        return reflexes
+            .Select(reflex =>
+            {
+                string language = reflex.LReflexDraftLanguage.Trim();
+                LReflexGuise guise = new(
+                    LLanguageRespellingCheck(language, respelled),
+                    LLanguagePhonemicCheck(language),
+                    folded.Contains(language, StringComparer.Ordinal));
+                return guise with
+                {
+                    LReflexGuiseShown = guise.LReflexGuiseRead(reflex.LReflexDraftText, reflex.LReflexDraftRespelling),
+                };
+            })
+            .ToList();
     }
 
     public IReadOnlyList<LContour> LLanguageContourRead(string language, string ipa)

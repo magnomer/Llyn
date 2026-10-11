@@ -25,7 +25,7 @@ public sealed class TFont
 
         CFont font = TInterfaceFont.TFontRead(settings, "Korean", CFontRole.CFontRoleGlyph);
 
-        Assert.Equal(new CFont("Noto Serif", 21, CFontSlant.CFontSlantTheme), font);
+        Assert.Equal(TInterfaceFont.TFontCreate("Noto Serif", 21, CFontSlant.CFontSlantTheme), font);
         Assert.Equal([("Korean", LFontRole.LFontRoleGlyph)], asked);
     }
 
@@ -44,7 +44,7 @@ public sealed class TFont
     }
 
     [Fact]
-    public void FontRead_BlankLanguage_AnswersNothingSetWithoutAsking()
+    public void FontRead_BlankLanguage_PassesItOnAndMapsTheEmptyFont()
     {
         List<string> asked = [];
         LSettingsPort settings = TEngineFake.TEngineCreate<LSettingsPort>(new()
@@ -52,14 +52,14 @@ public sealed class TFont
             ["LEngineFontRead"] = args =>
             {
                 asked.Add((string)args![0]!);
-                return TInterfaceFont.TFontCreate("Noto Serif", 21);
+                return TInterfaceFont.TFontEmptyCreate();
             },
         });
 
         CFont font = TInterfaceFont.TFontRead(settings, " ", CFontRole.CFontRoleHeadword);
 
-        Assert.Equal(new CFont(null, null, CFontSlant.CFontSlantTheme), font);
-        Assert.Empty(asked);
+        Assert.Equal(TInterfaceFont.TFontCreate(null, null, CFontSlant.CFontSlantTheme), font);
+        Assert.Equal([" "], asked);
     }
 
     [Fact]
@@ -103,7 +103,7 @@ public sealed class TFont
         Assert.Equal(roles.Length, Enum.GetValues<CFontRole>().Length);
         foreach (LFontRole role in roles)
         {
-            Assert.Equal(role.ToString()[1..], ((CFontRole)role).ToString()[1..]);
+            Assert.Equal(role.ToString()[1..], TInterfaceFont.TFontRoleRead(role).ToString()[1..]);
         }
     }
 }

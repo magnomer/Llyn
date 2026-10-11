@@ -24,7 +24,7 @@
             "https://en.wiktionary.org/wiki/{word}"
           ],
           "strategy": "span",
-          "match": "<h2 id=\"Indonesian\"(?:(?!class=\"IPA)[\\s\\S])*?<span class=\"IPA nowrap\"[^>]*>",
+          "match": "<h2[^>]* id=\"Indonesian\"(?:(?!class=\"IPA)[\\s\\S])*?<span class=\"IPA nowrap\"[^>]*>",
           "normalize": true
         }
       ]
@@ -62,7 +62,7 @@
             "https://en.wiktionary.org/wiki/{word}"
           ],
           "strategy": "regex",
-          "match": "<h2 id=\"Indonesian\"[\\s\\S]*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/Id-[^\"/]*\\.mp3)",
+          "match": "<h2[^>]* id=\"Indonesian\"[\\s\\S]*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/Id-[^\"/]*\\.mp3)",
           "group": 1,
           "prefix": "https:"
         },

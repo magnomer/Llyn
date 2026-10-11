@@ -50,3 +50,9 @@ public sealed record LRequestUnit(long LRequestDraftId, LUnit LRequestValue)
 {
     public override string LRequestKey => nameof(LRequestUnit);
 }
+
+public sealed record LRequestFreedom(long LRequestDraftId, LFreedom LRequestValue)
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => nameof(LRequestFreedom);
+}

@@ -1,5 +1,5 @@
 # TRigFake.cs
-Hash: `107acadf74bc9944`
+Hash: `828aa03a482c7f72`
 
 ## `internal static class TRigFake`
 
@@ -39,10 +39,12 @@ The one rig build the public forms reach, so each fake stays in one place.
 `entries` fills both entry slots, so a stored row is found by the same fake that stored it.
 The trail is the real system adapter, since path rules touch no disk, and the clock is a `TClockFake`.
 The press is a `TPress`, which records what it is handed and touches no printer.
+The printer queue is a `TPressQueue`, which answers two fixed printers.
+The print setting store is a `TPressVault`, which keeps the setting in memory.
 The warrant is a `TWarrantFake`, so no test touches the operating system store.
 The process id is one.
 The posture is a `TPostureFake` and the phonograph is a `TPhonographFake`.
-Every port not named above is a throwing stub, the livery and manifest ports among them.
+Every other port, besides the fakes below, is a throwing stub, the livery, manifest and outpost ports among them.
 
 ## `internal static LSourceFactory TRigSourceCreate()`
 
@@ -66,7 +68,7 @@ It is public because the runtime derives a type from it in a dynamic assembly.
 
 ## `private sealed class TRigFakeVault : LVault`
 
-The root port: a session that commits nothing and reports no migration.
+The root port, whose session commits nothing and which reports no migration.
 
 ## `private sealed class TRigFakeSession : LVaultSession, IDisposable`
 

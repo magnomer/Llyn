@@ -36,8 +36,8 @@ public sealed class LEntryArchive : LEntryVault
         {
             command.CommandText =
                 """
-                INSERT INTO entry (headword, language, added_utc, updated_utc, unit)
-                VALUES ($headword, $language, $added, $updated, $unit)
+                INSERT INTO entry (headword, language, added_utc, updated_utc, unit, freedom)
+                VALUES ($headword, $language, $added, $updated, $unit, $freedom)
                 RETURNING entry_id;
                 """;
             command.Parameters.AddWithValue("$headword", stored.LEntryHeadword);
@@ -45,6 +45,7 @@ public sealed class LEntryArchive : LEntryVault
             command.Parameters.AddWithValue("$added", (object?)stored.LEntryAddedUtc ?? DBNull.Value);
             command.Parameters.AddWithValue("$updated", (object?)stored.LEntryUpdatedUtc ?? DBNull.Value);
             command.Parameters.AddWithValue("$unit", (int)stored.LEntryUnit);
+            command.Parameters.AddWithValue("$freedom", (int)stored.LEntryFreedom);
             stored = stored with { LEntryId = (long)command.ExecuteScalar()! };
         }
 
@@ -63,7 +64,7 @@ public sealed class LEntryArchive : LEntryVault
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT entry_id, headword, language, grasp, added_utc, updated_utc, unit
+            SELECT entry_id, headword, language, grasp, added_utc, updated_utc, unit, freedom
             FROM entry WHERE entry_id = $id;
             """;
         command.Parameters.AddWithValue("$id", id);
@@ -143,12 +144,14 @@ public sealed class LEntryArchive : LEntryVault
             command.CommandText =
                 """
                 UPDATE entry
-                SET headword = $headword, language = $language, unit = $unit, updated_utc = $updated
+                SET headword = $headword, language = $language, unit = $unit, freedom = $freedom,
+                    updated_utc = $updated
                 WHERE entry_id = $id;
                 """;
             command.Parameters.AddWithValue("$headword", entry.LEntryHeadword);
             command.Parameters.AddWithValue("$language", entry.LEntryLanguage);
             command.Parameters.AddWithValue("$unit", (int)entry.LEntryUnit);
+            command.Parameters.AddWithValue("$freedom", (int)entry.LEntryFreedom);
             command.Parameters.AddWithValue("$updated", now);
             command.Parameters.AddWithValue("$id", entry.LEntryId);
             if (command.ExecuteNonQuery() == 0)
@@ -261,7 +264,8 @@ public sealed class LEntryArchive : LEntryVault
             reader.GetInt32(3),
             reader.IsDBNull(4) ? null : reader.GetString(4),
             reader.IsDBNull(5) ? null : reader.GetString(5),
-            (LUnit)reader.GetInt32(6));
+            (LUnit)reader.GetInt32(6),
+            (LFreedom)reader.GetInt32(7));
     }
 
     private static void LEntryFormInsert(SqliteConnection connection, long id, IReadOnlyList<LForm> forms)

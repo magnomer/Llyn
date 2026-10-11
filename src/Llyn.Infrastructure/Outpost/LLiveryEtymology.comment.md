@@ -1,5 +1,5 @@
 # LLiveryEtymology.cs
-Hash: `a176dc108be2be28`
+Hash: `8d8006b6037c31e0`
 
 ## `internal static class LLiveryEtymology`
 
@@ -18,9 +18,20 @@ An empty etymology or note writes nothing, not even its heading.
 
 ## `internal static string LLiveryLinkFormat(string text, long id, Func<long, string> note)`
 
-The escaped `text` as a `:/` link to the note id `note` gives for `id`.
-An id of zero or less, or an empty note id, keeps the text plain.
+The escaped `text` as a Markdown `:/` link to the note id `LLiveryTargetRead` gives for `id`.
+An empty note id keeps the text plain.
 So a target outside the workspace stays plain text.
+
+## `internal static string LLiveryAnchorFormat(string text, long id, Func<long, string> note)`
+
+The escaped `text` as an HTML `<a href=":/id">` anchor to the note id `LLiveryTargetRead` gives.
+It serves raw HTML lines such as a card `<summary>`, where Joplin parses no Markdown.
+An empty note id keeps the text plain, as `LLiveryLinkFormat` does.
+
+## `private static string LLiveryTargetRead(long id, Func<long, string> note)`
+
+The note id `note` gives for `id`, shared by both link shapes.
+An id of zero or less, or a missing note id, reads as empty.
 
 ## `internal static string LLiveryMentionFormat(string text, IReadOnlyList<LMentionDraft> mentions, Func<long, string> note)`
 

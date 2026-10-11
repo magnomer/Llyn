@@ -107,6 +107,11 @@ public sealed class LPortraitClerk
 
         bool respelled = _lPortraitClerkSettings().LSettingsRespelled;
         List<string> chips = [.. LVocabularyClerk.LSpeechShow(draft.LEntryDraftSpeeches)];
+        if (label.LPortraitLabelFreedom.TryGetValue(draft.LEntryDraftFreedom, out string? freedom))
+        {
+            chips.Insert(0, freedom);
+        }
+
         if (label.LPortraitLabelUnit.TryGetValue(draft.LEntryDraftUnit, out string? unit))
         {
             chips.Insert(0, unit);

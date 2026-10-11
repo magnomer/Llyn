@@ -1,9 +1,10 @@
 # CFootnote.cs
-Hash: `c6a3443e8e24aa1b`
+Hash: `55784fc460d27692`
 
 ## `public sealed class CFootnote`
 
-The sources panel's entry list: the entries citing the chosen Source, or every entry while none is chosen.
+The sources panel's entry list, holding the entries that cite the chosen Source.
+While no Source is chosen, it holds every entry.
 It holds the vista and portrait ports and the source vista as its parent.
 Its own vista sits in the panel's aperture.
 The engine narrows the rows by the parent's choice, so the list decides nothing about matching.
@@ -59,7 +60,8 @@ So the first draft shown carries the citation, as the corpus and repertoire twin
 
 ## `internal Task LFootnotePortraitPrint(CEnvoy envoy, LSettingsPort settings)`
 
-Prints the chosen entry through `CPortrait`, worded through `settings`, with failures shown through `envoy`.
+Opens the print window on the chosen entry through `CPortrait`.
+The page is worded through `settings`, and failures show through `envoy`.
 
 ## `internal Task LFootnotePortraitExport(CEnvoy envoy, LSettingsPort settings)`
 

@@ -1,5 +1,5 @@
 # LRequestEntry.cs
-Hash: `2d1dc91e138df96b`
+Hash: `1f35805b14c35770`
 
 The entry-level requests, one per field of the form that is not a card.
 Each carries the draft id and the new value, and nothing else.
@@ -48,3 +48,8 @@ A chip is added or removed whole, and the list is short, so a delta would save n
 
 Replaces the entry's lexical unit.
 `LUnitEmpty` clears the choice.
+
+## `public sealed record LRequestFreedom(long LRequestDraftId, LFreedom LRequestValue)`
+
+Replaces the entry's freedom.
+`LFreedomEmpty` clears the choice.

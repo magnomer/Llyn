@@ -1,5 +1,5 @@
 # TAuditDemeanorSetting.cs
-Hash: `979b48266d0c3d52`
+Hash: `d29a8057d748b1f0`
 
 ## `internal static class TAuditDemeanorSetting`
 
@@ -8,13 +8,11 @@ It holds the offer for `Llyn.UIDemeanor>Llyn.Conduct` alone.
 No script writes this file.
 `AuditStructure.json` holds its own copy, kept in step by hand as scripts/principles.md asks.
 The border facts read it together with the other offer settings.
-The offer now includes the courier, `CCourier` and `CCourierState`, beside the ledger.
-It also includes `CStemMember`, the series member the series page draws.
 
 ## `public static readonly IReadOnlyDictionary<string, string[]> TAuditDemeanorOffer`
 
 For the `ring>neighbour` pair, the neighbour types the ring may name at all.
-Demeanor is offered exactly the public `C` types of Conduct, and no other Conduct type.
+Demeanor is offered the public `C` types of Conduct, and no other Conduct type.
 `TAuditDeportmentOffer` holds the same list in the same order for the other driver.
 A change to the public `C` types of Conduct is made in both driver lists.
 Each name stands as a literal, so the ratchet can read every entry.

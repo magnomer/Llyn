@@ -347,10 +347,10 @@ public sealed class TTimbre
     [Fact]
     public void TimbreFontRead_EmptyDesk_AnswersNothingSet()
     {
-        CTimbre timbre = TTimbrePrepare([]);
+        CTimbre timbre = TTimbrePrepare(new() { ["LEngineFontRead"] = _ => TInterfaceFont.TFontEmptyCreate() });
 
         Assert.Equal(
-            new CFont(null, null, CFontSlant.CFontSlantTheme),
+            TInterfaceFont.TFontCreate(null, null, CFontSlant.CFontSlantTheme),
             timbre.CTimbreFontRead(CFontRole.CFontRoleGlyph));
     }
 

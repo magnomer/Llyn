@@ -1,5 +1,5 @@
 # LPortraitPort.cs
-Hash: `eb3189d082c968ad`
+Hash: `e9d21be77d9ef27b`
 
 ## `public interface LPortraitPort`
 
@@ -9,13 +9,15 @@ The Joplin check, push and attach each run as one call.
 The markup import runs as one call, which reads the cargo and stores it under declared intakes.
 `LPortraitOutlet` implements it today, and a portrait clerk takes it over when the parts are dismantled.
 
-## `Task LEnginePortraitPrint(LVista? vista, LPortraitLabel label, LPressTicket ticket);`
+## `Task<LGalleyRelay?> LEnginePressOpen(LVista? vista, LPortraitLabel label);`
 
-Prints the entry the vista has chosen, and does nothing when the vista holds no entry.
+Opens a print session on the entry the vista has chosen, and answers null when it holds no entry.
+The caller owns the relay and disposes it when the session ends.
 
-## `Task LEnginePortraitPrint(LVista? vista, LPortraitLegend legend, LPressTicket ticket);`
+## `Task<LGalleyRelay?> LEnginePressOpen(LVista? vista, LPortraitLegend legend);`
 
-Prints the Example, Situation or Source a catalog vista has chosen, and does nothing when none is chosen.
+Opens a print session on the Example, Situation or Source a catalog vista has chosen.
+It answers null when none is chosen.
 Any other subject is a caller mistake and throws.
 
 ## `Task LEnginePortraitExport(LVista? vista, string path, LPortraitMedium format, LPortraitLabel label);`
@@ -44,15 +46,10 @@ A token Joplin refuses is dropped from the settings before the refusal is thrown
 Asks Joplin to grant access and keeps the hidden token in the settings.
 The caller never sees the raw token, so it cannot leak into a view.
 
-## `static LPressTicket LEngineTicketRead(string printer, double? width, double? height, bool landscape, int copies, bool collated, LPressSide side, LPressInk ink)`
-
-The engine ticket a print dialog's answer stands for, with the local sheet when no size was named.
-The sheet size arrives in inches, since the driver converts the unit its dialog measures in.
-The statics build the records a print or export takes from plain values, so Conduct builds no engine record.
-
 ## `static LPortraitLabel LEngineLabelRead(IReadOnlyList<string> words)`
 
 The engine label an entry page is worded with, word by word in the record's order.
+The statics build the records a print or export takes from plain values, so Conduct builds no engine record.
 
 ## `static IReadOnlyList<(LPortraitMedium, string, bool)> LEngineMediumRead()`
 

@@ -48,6 +48,8 @@ public interface LSettingsPort
 
     void LEngineAnalysisSave(bool analysis);
 
+    string LEngineNotebookSave(string notebook);
+
     void LEngineRespellingSave(bool respelled);
 
     (string LEngineFailureNotice, string? LEngineFailureLabel, string? LEngineFailurePath) LEngineFailureRead(

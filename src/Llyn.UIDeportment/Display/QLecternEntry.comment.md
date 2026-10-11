@@ -1,5 +1,5 @@
 # QLecternEntry.cs
-Hash: `0599a91f1700e203`
+Hash: `d20c6b267a0dbe0d`
 
 ## `public sealed class QLecternEntry`
 
@@ -23,6 +23,11 @@ A closed area shows the blank entry, so every empty section collapses instead of
 
 Names the entry's lexical unit above its parts of speech through the key Conduct chose.
 An unchosen unit hides the line, so a bare entry shows no empty label.
+
+## `private void QLecternFreedomRefine(string key)`
+
+Names the entry's freedom right after its unit through the key Conduct chose.
+An unchosen freedom hides its text, so the unit stands alone.
 
 ## `private void QLecternNoteRefine()`
 

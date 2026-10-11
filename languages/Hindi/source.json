@@ -37,7 +37,7 @@
                 "https://en.wiktionary.org/wiki/{word}"
               ],
               "strategy": "regex",
-              "match": "<h2 id=\"Hindi\"(?:(?!headword-tr)[\\s\\S])*?class=\"headword-tr[^\"]*\"[^>]*>([^<]+)<",
+              "match": "<h2[^>]* id=\"Hindi\"(?:(?!headword-tr)[\\s\\S])*?class=\"headword-tr[^\"]*\"[^>]*>([^<]+)<",
               "group": 1,
               "normalize": false
             }
@@ -56,7 +56,7 @@
             "https://en.wiktionary.org/wiki/{word}"
           ],
           "strategy": "span",
-          "match": "<h2 id=\"Hindi\"(?:(?!class=\"IPA)[\\s\\S])*?<span class=\"IPA nowrap\"[^>]*>",
+          "match": "<h2[^>]* id=\"Hindi\"(?:(?!class=\"IPA)[\\s\\S])*?<span class=\"IPA nowrap\"[^>]*>",
           "normalize": true
         }
       ]
@@ -83,7 +83,7 @@
             "https://en.wiktionary.org/wiki/{word}"
           ],
           "strategy": "regex",
-          "match": "<h2 id=\"Hindi\"[\\s\\S]*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/Hi-[^\"/]*\\.mp3)",
+          "match": "<h2[^>]* id=\"Hindi\"[\\s\\S]*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/Hi-[^\"/]*\\.mp3)",
           "group": 1,
           "prefix": "https:"
         },

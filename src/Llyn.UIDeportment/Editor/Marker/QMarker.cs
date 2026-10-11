@@ -19,6 +19,8 @@ internal sealed class QMarker
 
     private QUnit _qMarkerUnit = null!;
 
+    private QFreedom _qMarkerFreedom = null!;
+
     internal QMarker(FrameworkElement surface)
     {
         _qMarkerSurface = surface;
@@ -42,11 +44,12 @@ internal sealed class QMarker
 
     private QIconImage QMarkerIcon => QContract.QContractFind<QIconImage>(_qMarkerSurface, "PMarkerIcon");
 
-    internal void QMarkerIntroduce(CCardSpeech speech, CEntry entry, QCategory category, QUnit unit)
+    internal void QMarkerIntroduce(CCardSpeech speech, CEntry entry, QCategory category, QUnit unit, QFreedom freedom)
     {
         _cCardSpeech = speech;
         _qMarkerCategory = category;
         _qMarkerUnit = unit;
+        _qMarkerFreedom = freedom;
         entry.CEntryDraftChanged += QMarkerRefine;
     }
 
@@ -132,5 +135,6 @@ internal sealed class QMarker
 
         _qMarkerCategory.QCategoryRefine(marker.CMarkerCategory);
         _qMarkerUnit.QUnitRefine(marker.CMarkerUnits);
+        _qMarkerFreedom.QFreedomRefine(marker.CMarkerFreedoms);
     }
 }

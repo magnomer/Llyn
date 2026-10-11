@@ -1,4 +1,5 @@
 using Llyn.Core;
+using TParadigmPieceRow = (string LParadigmPieceText, bool LParadigmPieceMarked, bool LParadigmPieceCut);
 
 namespace Llyn.Tests;
 
@@ -39,8 +40,15 @@ internal static class TInterfaceInflection
         new(group, label, forms);
 
     internal static LParadigmForm TParadigmFormCreate(
-        string text, IReadOnlyList<LInflectionMark> marks, string? tip, int split = 0) =>
-        new(text, marks, tip, split);
+        string text, IReadOnlyList<LInflectionMark> marks, string? tip, int split = 0)
+    {
+        LParadigmForm form = new(text, marks, tip, split);
+        return form with { LParadigmFormPiece = form.LParadigmFormScan() };
+    }
+
+    internal static IReadOnlyList<TParadigmPieceRow> TParadigmFormScan(LParadigmForm form) =>
+        [.. form.LParadigmFormScan().Select(piece =>
+            (piece.LParadigmPieceText, piece.LParadigmPieceMarked, piece.LParadigmPieceCut))];
 
     internal static LInflectionMark TInflectionMarkCreate(int offset, int length) =>
         new(offset, length);

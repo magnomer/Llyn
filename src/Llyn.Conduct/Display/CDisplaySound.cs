@@ -303,7 +303,7 @@ public sealed class CDisplaySound
             return CRespelling.LRespellingReflexScan(
                 _cDisplayReflex,
                 _cDisplayHeader.CDisplayShown.CLecternLanguage,
-                CReflexDraft.CReflexDraftRead(_cDisplayVoice.LDisplayReflexRead()));
+                _cDisplayVoice.LDisplayReflexRead());
         }
         catch (Exception exception)
         {

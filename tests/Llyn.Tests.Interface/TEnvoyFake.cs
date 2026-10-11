@@ -46,6 +46,25 @@ internal static class TEnvoyFake
             },
         });
 
+    internal static CEnvoy TEnvoyPressCreate(Func<CSPress, bool> answer, List<string> asked) =>
+        TEnvoyPressCreate("press.pdf", answer, asked);
+
+    internal static CEnvoy TEnvoyPressCreate(string? path, Func<CSPress, bool> answer, List<string> asked) =>
+        TEngineFake.TEngineCreate<CEnvoy>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["CEnvoyPressRead"] = args => answer((CSPress)args![0]!),
+            ["CEnvoyFileRead"] = args =>
+            {
+                asked.Add("File:" + (string)args![0]!);
+                return (path, CPortraitMedium.CPortraitMediumPdf);
+            },
+            ["CEnvoyFailureShow"] = args =>
+            {
+                asked.Add((string)args![0]!);
+                return null;
+            },
+        });
+
     internal static CEnvoy TEnvoyCoinageCreate(string? wording, bool? leave, List<string> asked) =>
         TEngineFake.TEngineCreate<CEnvoy>(new Dictionary<string, Func<object?[]?, object?>>
         {
@@ -70,21 +89,6 @@ internal static class TEnvoyFake
         TEngineFake.TEngineCreate<CEnvoy>(new Dictionary<string, Func<object?[]?, object?>>
         {
             ["CEnvoyMarkupRead"] = _ => path,
-            ["CEnvoyFailureShow"] = args =>
-            {
-                asked.Add((string)args![0]!);
-                return null;
-            },
-        });
-
-    internal static CEnvoy TEnvoyTicketCreate(Func<CPressTicket?> answer, List<string> asked) =>
-        TEngineFake.TEngineCreate<CEnvoy>(new Dictionary<string, Func<object?[]?, object?>>
-        {
-            ["CEnvoyTicketRead"] = _ =>
-            {
-                asked.Add("Ticket");
-                return answer();
-            },
             ["CEnvoyFailureShow"] = args =>
             {
                 asked.Add((string)args![0]!);

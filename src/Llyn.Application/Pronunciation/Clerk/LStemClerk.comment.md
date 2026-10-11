@@ -1,5 +1,5 @@
 # LStemClerk.cs
-Hash: `a24a6739e7f3a138`
+Hash: `492dc81c614a52d1`
 
 ## `public sealed class LStemClerk`
 
@@ -8,10 +8,11 @@ It writes nothing.
 The links are made where a series is stored, in `LShengfuClerk`.
 A member's fold is written by `LFoldClerk`, and only read here.
 
-## `public LStemClerk(LRig rig, LReflexClerk reflex)`
+## `public LStemClerk(LRig rig, LReflexClerk reflex, LLanguageClerk language)`
 
 Keeps the series, entry, fanqie and reflex stores it answers over.
 It takes the reflex clerk for the pack's reflex order, so members sort their rows as the entry page does.
+It takes the language clerk, the one owner of each row's guise.
 It keeps the fold store too, to read each member's own fold.
 
 ## `public IReadOnlyList<LStem> LStemClerkRead(string language)`
@@ -37,15 +38,16 @@ The entries the series reach, narrowed by the query the list was typed into.
 They come back in `order` through `LCatalogEntry.LCatalogEntrySort`, the owner every entry list shares.
 The archive reads in storage order, so no caller may show its rows unsorted.
 
-## `public LStemPage LStemPageRead(LStem stem, bool fold)`
+## `public LStemPage LStemPageRead(LStem stem, bool fold, bool respelled)`
 
 The page of one series, holding its language, its key and the characters linked to it.
 The characters follow `LGlyphOrder`, by code point, so every view lists them alike.
 The store hands them in the order their Shengfu rows were saved, which is only fetch order.
 Each character comes with its member, built by `LStemMemberScan`.
 `fold` says whether members read their own fold.
-The series page asks, the Outpost sheet does not.
 Without it no fold store is queried, and every member reads closed.
+Each member gets its guises from `LLanguageGuiseScan` over its reflex rows, under the `respelled` setting.
+So the series page and the Outpost series note show the rows the entry page shows.
 
 ## `public long? LStemEntryFind(LStem stem, string character)`
 

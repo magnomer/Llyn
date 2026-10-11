@@ -1,6 +1,5 @@
 # QParadigm.cs
-Hash: `3e26747dc81aaded`
-Hash: `64fcce5d82c31306`
+Hash: `e8f336bfd747b6b5`
 
 ## `public sealed class QParadigm : Decorator`
 
@@ -50,6 +49,7 @@ Hands the new rows to the list and shows the box while it has rows or a sheet.
 
 Rebuilds both tables from the new sheet and shows the switch only while a sheet exists.
 The buttons keep their state, so a repaint after a save does not fold the table back.
+It then reapplies the fold, so the shown table matches the checked button.
 The box shows while it has rows or a sheet.
 
 ## `private void QParadigmFoldRefine(object sender, RoutedEventArgs e)`
@@ -80,11 +80,9 @@ The span is at least one column, so a table without forms still draws a valid ru
 
 ## `private static void QParadigmFormRefine(TextBlock block, QParadigmForm form)`
 
-Splits the form text into runs at its marked ranges and at its split.
-A marked run takes `Theme.Paradigm.Marked`, leaving its colour to the theme.
-A split inside the text adds a hyphen run styled by `Theme.Paradigm.Cut`.
-The split is one more run boundary, so a mark crossing it still paints both sides.
-A range running past the text is cut at its end.
+Paints one run per piece Core cut, in order, so it counts no letters itself.
+A marked piece takes `Theme.Paradigm.Marked`, leaving its colour to the theme.
+A piece the split follows adds a hyphen run styled by `Theme.Paradigm.Cut`.
 A form with a tip key shows muted with that tooltip, as a listed row does.
 
 ## `public IReadOnlyList<QParadigmItem>? QParadigmItems`

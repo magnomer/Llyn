@@ -217,7 +217,8 @@ internal static class TExemplar
                     "exemplar-region"),
             ],
             LEntryDraftEtymology: new LEtymologyDraft("exemplar-etymology"),
-            LEntryDraftUnit: LUnit.LUnitContent);
+            LEntryDraftUnit: LUnit.LUnitWord,
+            LEntryDraftFreedom: LFreedom.LFreedomStandalone);
     }
 
     internal static IReadOnlyList<long> TExemplarSave(LEngine engine, LEntryDraft draft)

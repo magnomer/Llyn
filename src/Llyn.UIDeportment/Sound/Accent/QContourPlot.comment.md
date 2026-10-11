@@ -1,5 +1,5 @@
 # QContourPlot.cs
-Hash: `5ad3f823465cdf60`
+Hash: `1938a0f05ce90b5e`
 
 ## `internal sealed class QContourPlot`
 
@@ -13,6 +13,19 @@ The box builds one for each measure and each drawing, so a plot never outlives t
 The width of one syllable's cell.
 The box caps the syllable text at this width, so a long syllable is trimmed inside its own cell.
 
+## `private const double QContourPaddingTop`
+
+The room above the top guide line, wider than the side padding.
+The pitch dots and the axis digits rise above that line, so the box keeps clear room over them.
+It matches the chart `LLiverySound.LLiveryContourFormat` writes to Joplin, whose top line sits 17 pixels in.
+
+## `private const double QContourPaddingBottom`
+
+The room below the label row, narrower than the side padding.
+The label row is one 15-pixel text line tall, whose baseline sits about 4 pixels above its foot.
+So a label's baseline sits 14 pixels above the box's edge, as on the Joplin chart.
+The dots above and the text below then leave about the same clear room inside the frame.
+
 ## `internal QContourPlot(IReadOnlyList<int> scale, int count)`
 
 Holds the scale, highest level first, and the number of syllables the box draws.
@@ -20,7 +33,7 @@ Holds the scale, highest level first, and the number of syllables the box draws.
 ## `internal Size QContourPlotSize`
 
 The box's full size, one cell per syllable, with room for at least one cell.
-The height is the guide span plus the label row, inside the padding.
+The height is the guide span plus the label row, between the top and bottom padding.
 
 ## `internal double QContourLabelTop`
 

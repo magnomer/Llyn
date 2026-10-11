@@ -1,5 +1,5 @@
 # LLiveryStyle.cs
-Hash: `5f0a73fe26cb7562`
+Hash: `4b31fec36aee7aa1`
 
 ## `public static class LLiveryStyle`
 
@@ -23,12 +23,25 @@ That icon hides, so a link to another entry reads as in Llyn.
 A table whose header cells are all empty hides its header row.
 The writers give every table such a header, since Markdown needs one.
 The local `table` matches those tables, and drops Joplin's borders and fills on them.
-The local `reading` matches the five-column readings tables of `LLiverySound`.
+The local `reading` matches the seven-column readings tables of `LLiverySound`, through the `reflex` header test.
+Its labels and varieties are 14 pixels, its readings 20, and every later column 13.
+The local `card` matches card tables other than readings, so a series member card keeps the entry's sizes.
+Its `:where` keeps the card rules at their old weight against the local `table`.
 The local `sound` matches its two-column sound rows, outside the paradigm box.
-A `llyn-tone` span is superscript, except inside a `llyn-card`, where the rime card shows it as text.
+A `llyn-tone` span is superscript, except inside a `card` table, where the rime card shows it as text.
 The `llyn-more` summary loses its marker and shows only its text.
+The audio player sits 9 pixels below the baseline rather than at `middle`.
+`middle` centres it on the 15-pixel cell text, below the middle of the 18-pixel reading beside it.
+At 9 pixels down, its 32-pixel height centres 7 pixels above the baseline, level with the reading's middle.
+The contour box keeps a 10-pixel margin above it, so it never touches the player in the row above.
 The contour chart images scale up by half.
 Their colours sit inside each image, so no rule here paints them.
+The `llyn-regard` row centres the heart, the stars and the rating on one line, as view mode does.
+Its margins are set against the glyphs' own side bearings.
+So the visible gaps read 17 pixels after the heart, 7 between stars and 13 before the rating.
+The heart and star glyphs sit low in their boxes, so they rise 0.5 and 1.5 pixels.
+Their ink then centres within a tenth of a pixel of the rating's capital height.
+Those figures were measured in Chromium, which Joplin renders with, at the theme's Segoe UI.
 The heart that is on takes `favorite`.
 The stars follow view mode, which lays a faded star under a full `accent` star.
 A rated entry's empty star is `accent` at 55 percent over `surface`, through `color-mix`.
@@ -36,12 +49,13 @@ An unrated entry's star is `muted` at 35 percent over `surface`.
 A filled star is full `accent`.
 A half star overlays its left half in full `accent` through `::before`.
 The frequency chip and the paradigm box fill with `surfaceRaised`.
-The unit chip is outlined in `accentSoft` with `muted` text, so it reads apart from the filled speech chips.
+The unit and freedom chips are outlined in `accentSoft` with `muted` text.
+That sets them apart from the filled speech chips.
 Each frequency band class colours the chip text and its lit pips with that band's theme colour.
 The register chip takes `helper`, `helperSoft` and `helperEdge`, as the situation chip takes its own three.
 A role missing from the theme and the spare palette reads as black, which a literal-colour test would catch.
 A card whose first paragraph holds a `llyn-number` turns that paragraph into a ruled header.
-A `details` card does the same with its `summary`, which hides its native marker.
+Any `details` card does the same with its `summary`, which hides its native marker.
 A `muted` chevron at the right end replaces it, turned for the open and folded states.
 The chevron mirrors the app's right-aligned hinge, and the native marker would sit at the left.
 The chevron is the only fold affordance a card shows in Joplin.

@@ -1,5 +1,5 @@
 # PGrasp.cs
-Hash: `dc06ab6f3f11777e`
+Hash: `2bc702992982ff83`
 
 ## `public sealed class PGrasp : FrameworkElement`
 
@@ -12,7 +12,8 @@ The row only maps a click to a step and raises it, and never decides what the st
 ## `public static readonly DependencyProperty PGraspLimitProperty`
 
 The last step, set once by the host from its deportment before any step is shown.
-It measures the row, since the star count is half of it, rounded up.
+The keys' End and Right stop at it.
+The star count comes from the ready hit answers, not from this limit.
 
 ## `public static readonly DependencyProperty PGraspStepProperty`
 
@@ -32,7 +33,7 @@ The draw reads it, so a theme change recolours the stars.
 
 ## `public static readonly DependencyProperty PGraspUnratedProperty`
 
-A themed brush for the outlines while no step stands, set from the theme resource.
+A themed brush for the outlines where the answers mark the shown step unrated, set from the theme resource.
 The draw reads it, so a theme change recolours the stars.
 
 ## `public static readonly DependencyProperty PGraspPreviewProperty`
@@ -47,7 +48,7 @@ The listener reads `PGraspStep` and writes it through the engine.
 
 ## `public static readonly RoutedEvent PGraspHoveredEvent`
 
-Raised when the pointer moves onto another half star or leaves the row.
+Raised on every pointer move over the row, and when the pointer leaves it.
 The listener reads `PGraspPointed` and words the step beside the stars.
 
 ## `public PGrasp()`
@@ -55,9 +56,14 @@ The listener reads `PGraspPointed` and words the step beside the stars.
 Builds the `QGraspStar` that sizes, draws, hit-tests and steps the stars from this row's own properties, events and star image.
 Each draw hands it the themed brushes.
 
-## `public int PGraspPointed`
+## `public int PGraspPointed => _qGraspStar.QGraspPointed;`
 
 The half step to word beside the stars, read from `QGraspStar.QGraspPointed`.
+
+## `public QGraspStar PGraspStar => _qGraspStar;`
+
+The row's star driver, so the host's driver hands it the ready star answers.
+The row itself holds no Conduct type and requests no logic.
 
 ## `protected override Size MeasureOverride(Size availableSize)`
 

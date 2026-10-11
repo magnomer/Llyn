@@ -1,9 +1,11 @@
 # TSettings.cs
-Hash: `5e4d094d21d1bcb4`
+Hash: `34444d3b99812ac2`
 
 ## `public sealed class TSettings`
 
 Covers the engine's settings file, including interface language and its switches.
+The notebook title is saved trimmed, a blank one stores `Llyn`, and the save answers what it stored.
+A missing, blank or non-string `notebook` key loads as `Llyn`, so an older workspace keeps its notebook.
 The epithet switch round-trips under the `epithet` key and is written even when off.
 The tally switch loads as off unless the key is an explicit true, and the engine's save writes it.
 A language the catalog does not list is kept as saved but reads back as the default.

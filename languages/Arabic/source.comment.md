@@ -1,10 +1,11 @@
 # source.json
-Hash: `3cf445e34e889a42`
+Hash: `28920fbbf1533d8a`
 
 ## pack
 
 Language pack for Modern Standard Arabic.
 The pack format is documented in `languages/English/source.comment.md`.
+Section heading anchors allow attributes before `id`, which the REST rendering writes there.
 No varieties are declared, so every reading is the standard one.
 Wiktionary also prints regional readings after the standard one, and a later pack may tag them.
 Segoe UI carries the Arabic script on every Windows install, so no Naskh face is named.

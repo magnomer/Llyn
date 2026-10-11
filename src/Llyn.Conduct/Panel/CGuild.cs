@@ -297,13 +297,12 @@ public sealed class CGuild
             return Task.CompletedTask;
         }
 
-        return CPortrait.LPortraitTicketPrint(
+        return CPortrait.LPortraitPrint(
             _cGuildEnvoy,
             _cGuildSettingsPort,
-            chosen => _cGuildPortraitPort.LEnginePortraitPrint(
+            () => _cGuildPortraitPort.LEnginePressOpen(
                 CGuildOeuvre.COeuvrePanel.CPanelAperture.CApertureVista,
-                CPortrait.LPortraitLegendRead(_cGuildSettingsPort, "Source"),
-                chosen));
+                CPortrait.LPortraitLegendRead(_cGuildSettingsPort, "Source")));
     }
 
     public void CGuildNameSet(string name)

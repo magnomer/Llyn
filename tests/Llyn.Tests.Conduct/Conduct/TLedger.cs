@@ -20,7 +20,7 @@ public sealed class TLedger
         CLedgerShown shown = atelier.CAtelierLedger.CLedgerFind("  ");
 
         Assert.Equal(
-            ["Workspace", "Language", "Transcription", "Listing", "Inflection", "Web", "Layout"],
+            ["Workspace", "Language", "Transcription", "Listing", "Inflection", "Web", "Sync", "Layout"],
             shown.CLedgerShownChildren);
         Assert.False(shown.CLedgerShownEmpty);
     }
@@ -55,7 +55,7 @@ public sealed class TLedger
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         List<CLedgerState> shown = TInterfaceConduct.TLedgerShowRead(atelier);
-        Assert.Equal(7, shown[0].CLedgerStateShown.CLedgerShownChildren.Count);
+        Assert.Equal(8, shown[0].CLedgerStateShown.CLedgerShownChildren.Count);
 
         CLedgerShown found = atelier.CAtelierLedger.CLedgerFind(engine.TEngineTextRead("Epithet.Switch"));
         atelier.CAtelierLedger.CLedgerEpithetSave(
@@ -91,7 +91,7 @@ public sealed class TLedger
         CLedgerState state = TInterfaceConduct.TLedgerShowRead(atelier).Single();
 
         Assert.Equal(
-            ["Workspace", "Language", "Transcription", "Listing", "Inflection", "Web", "Layout"],
+            ["Workspace", "Language", "Transcription", "Listing", "Inflection", "Web", "Sync", "Layout"],
             state.CLedgerStatePages.Select(static page => page.CLedgerPageChild));
         Assert.Equal(engine.TEngineTextRead("Settings.Web"), state.CLedgerStatePages[5].CLedgerPageTitle);
         Assert.Equal(atelier.CAtelierPathRead(), state.CLedgerStatePath);
@@ -122,7 +122,7 @@ public sealed class TLedger
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
 
         Assert.Equal(
-            string.Empty, TInterfaceConduct.TLedgerShowRead(atelier).Single().CLedgerStatePages[6].CLedgerPageMeta);
+            string.Empty, TInterfaceConduct.TLedgerShowRead(atelier).Single().CLedgerStatePages[7].CLedgerPageMeta);
     }
 
     [Fact]
@@ -140,6 +140,22 @@ public sealed class TLedger
         Assert.True(shown.Count >= 2);
         Assert.True(last.CLedgerStateSettings.CSettingsEpithet);
         Assert.Equal(engine.TEngineTextRead("Settings.On"), last.CLedgerStatePages[3].CLedgerPageMeta);
+    }
+
+    [Fact]
+    public void LedgerNotebookSave_PaddedTitle_AnswersAndShowsTheTrimmedTitle()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        List<CLedgerState> shown = TInterfaceConduct.TLedgerShowRead(atelier);
+
+        string? stored = atelier.CAtelierLedger.CLedgerNotebookSave("  Lexicon  ", TEnvoyFake.TEnvoyCreate(false, []));
+
+        CLedgerState last = shown[^1];
+        Assert.Equal("Lexicon", stored);
+        Assert.Equal("Lexicon", last.CLedgerStateSettings.CSettingsNotebook);
+        Assert.Equal("Lexicon", last.CLedgerStatePages[6].CLedgerPageMeta);
     }
 
     [Fact]

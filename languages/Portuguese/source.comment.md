@@ -1,10 +1,11 @@
 # source.json
-Hash: `fd4aa7a32243d1eb`
+Hash: `5743e89728f410e1`
 
 ## pack
 
 Language pack for Portuguese.
 The pack format is documented in `languages/English/source.comment.md`.
+Section heading anchors allow attributes before `id`, which the REST rendering writes there.
 Two varieties are declared, Brazilian under the Brazilian flag and European under the Portuguese one.
 Every Wiktionary page is asked as the REST rendering before the article page.
 A Wiktionary page such as casa carries twenty other languages, so every pattern stays inside the Portuguese section.

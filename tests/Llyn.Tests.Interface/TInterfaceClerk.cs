@@ -333,8 +333,18 @@ internal static partial class TInterface
     internal static LPortraitPage TPortraitClerkRead(this LPortraitClerk clerk, long entryId, LPortraitLabel label) =>
         clerk.LPortraitClerkRead(entryId, label);
 
-    internal static Task TPortraitClerkPrint(this LPortraitClerkPress clerk, LPortraitPage page, LPressTicket ticket) =>
-        clerk.LPortraitClerkPrint(page, ticket);
+    internal static Task<LGalleyClerk> TPortraitClerkOpen(
+        this LPortraitClerkPress clerk, LPortraitPage page) =>
+        clerk.LPortraitClerkOpen(page);
+
+    internal static Task<bool> TGalleyClerkDraw(this LGalleyClerk clerk, LPressSetting setting) =>
+        clerk.LGalleyClerkDraw(setting);
+
+    internal static Task<LPressImage?> TGalleyClerkDraw(this LGalleyClerk clerk, int page, int? resolution) =>
+        clerk.LGalleyClerkDraw(page, resolution);
+
+    internal static LPressPaper? TGalleyClerkRead(this LGalleyClerk clerk, int page) =>
+        clerk.LGalleyClerkRead(page);
 
     internal static LEntry TEntryClerkSave(this LEntryClerk clerk, LEntryDraft draft) =>
         clerk.LEntryClerkSave(draft, []);

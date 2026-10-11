@@ -49,6 +49,22 @@ public static class LSheetSection
         }
     }
 
+    internal static LPortraitSection? LSheetSectionFind(LPortraitPage page, string heading)
+    {
+        ArgumentNullException.ThrowIfNull(page);
+        ArgumentNullException.ThrowIfNull(heading);
+
+        foreach (LPortraitSection section in page.LPortraitPageSection)
+        {
+            if (string.Equals(section.LPortraitSectionHeading, heading, StringComparison.Ordinal))
+            {
+                return section;
+            }
+        }
+
+        return null;
+    }
+
     private static void LSheetBandAppend(StringBuilder sheet, LPortraitSection section)
     {
         sheet.Append("<section class=\"band\">\n");
@@ -89,6 +105,14 @@ public static class LSheetSection
             .Append("\">")
             .Append(LSheet.LSheetNormalize(section.LPortraitSectionHeading))
             .Append("</span></header>\n<section>\n");
+        LSheetSenseAppend(sheet, section);
+        sheet.Append("</section>\n</article>\n");
+    }
+
+    internal static void LSheetSenseAppend(StringBuilder sheet, LPortraitSection section)
+    {
+        ArgumentNullException.ThrowIfNull(sheet);
+        ArgumentNullException.ThrowIfNull(section);
 
         int start = 0;
         if (section.LPortraitSectionChild.Count > 0
@@ -106,8 +130,6 @@ public static class LSheetSection
         }
 
         LSheetBodyAppend(sheet, section, start);
-
-        sheet.Append("</section>\n</article>\n");
     }
 
     private static void LSheetPhraseAppend(StringBuilder sheet, LPortraitSection section)

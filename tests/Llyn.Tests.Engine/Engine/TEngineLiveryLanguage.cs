@@ -142,38 +142,108 @@ public sealed class TEngineLiveryLanguage
         string body = TInterface.TLiveryFormat(stem, static key => key).LLiveryNoteBody;
 
         Assert.Contains(
-            "<span class=\"llyn-stem\">[龍](:/" + entry.LEntryId.ToString(CultureInfo.InvariantCulture) + ")</span>",
+            "<span class=\"llyn-stem\"><a href=\":/" + entry.LEntryId.ToString(CultureInfo.InvariantCulture)
+            + "\">龍</a></span>",
             body);
         Assert.Contains("<span class=\"llyn-stem\">瀧</span>", body);
         Assert.DoesNotContain("[瀧]", body);
+        Assert.DoesNotContain("[龍]", body);
     }
 
     [Fact]
-    public void LiveryFormat_SeriesNote_PrintsEachMemberReadingAndReflexRowsAndABareMemberAlone()
+    public void LiveryFormat_SeriesNote_FoldsEachMemberReflexRowsByItsOpenedStateAndLeavesABareMemberAlone()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        LEntry entry = engine.TEngineEntrySave(TLiveryLanguageCreate("龍", TLiveryLanguageBook));
+        LReflexDraft reflex = TInterface.TReflexDraftCreate("Korean", "", "룡", main: true);
+        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "龍",
+            TLiveryLanguageBook,
+            string.Empty,
+            string.Empty,
+            [TInterface.TCardDraftCreate(string.Empty, string.Empty, "a state", [], [], [], [], [], 1)],
+            [],
+            reflexes: [reflex]));
         LStemPage page = TInterface.TStemPageCreate(
             TLiveryLanguageBook,
             "龍",
-            ["龍", "瀧"],
+            ["龍", "瀧", "壟"],
             [
-                TInterface.TStemMemberCreate(
-                    "龍", ["lyowng", "<b>"], [TInterface.TReflexDraftCreate("Korean", "", "룡")]),
-                TInterface.TStemMemberCreate("瀧", [], []),
+                TInterface.TStemMemberCreate("龍", ["lyowng", "<b>"], [reflex]) with { LStemMemberOpened = true },
+                TInterface.TStemMemberCreate("瀧", [], [TInterface.TReflexDraftCreate("Korean", "", "롱")]),
+                TInterface.TStemMemberCreate("壟", [], []),
             ]);
 
         string body = TInterface.TLiveryFormat(TInterface.TLiveryStemCreate(page, [entry]), static key => key)
             .LLiveryNoteBody;
+        string sheet = TInterface.TLiveryFormat(
+            Assert.IsType<LLiveryPage>(engine.TLiveryRead(entry.LEntryId)), static key => key).LLiveryNoteBody;
+        string table =
+            "| | | | | | | |\n|---|---|---|---|---|---|---|\n"
+            + "| Korean |  | <span class=\"llyn-main\">룡</span> |  |  |  |  |\n\n";
 
+        Assert.Contains(table, sheet);
         Assert.Contains(
-            "<div class=\"llyn-card\">\n\n<span class=\"llyn-stem\">[龍](:/"
+            "<details class=\"llyn-card\" open>\n<summary><span class=\"llyn-stem\"><a href=\":/"
             + entry.LEntryId.ToString(CultureInfo.InvariantCulture)
-            + ")</span> <span class=\"llyn-accent\">/lyowng, &lt;b&gt;/</span>\n\n"
-            + "| | | | | |\n|---|---|---|---|---|\n| Korean |  | 룡 |  |  |\n\n</div>",
+            + "\">龍</a></span> <span class=\"llyn-accent\">/lyowng, &lt;b&gt;/</span></summary>\n\n"
+            + table + "</details>",
             body);
-        Assert.Contains("<div class=\"llyn-card\">\n\n<span class=\"llyn-stem\">瀧</span>\n\n</div>", body);
+        Assert.All(
+            body.Split("<summary>")[1..],
+            static summary => Assert.DoesNotContain(
+                "](", summary[..summary.IndexOf("</summary>", StringComparison.Ordinal)], StringComparison.Ordinal));
+        Assert.All(new[] { "龍</a>", ">瀧<", ">壟<" }, member => Assert.Single(body.Split(member)[1..]));
+        Assert.DoesNotContain("- [", body);
+        Assert.Contains(
+            "<details class=\"llyn-card\">\n<summary><span class=\"llyn-stem\">瀧</span></summary>\n\n"
+            + "| | | | | | | |\n|---|---|---|---|---|---|---|\n| Korean |  | 롱 |  |  |  |  |\n\n</details>",
+            body);
+        Assert.Contains("<div class=\"llyn-card\">\n\n<span class=\"llyn-stem\">壟</span>\n\n</div>", body);
+        Assert.DoesNotContain("llyn-more", body);
+        Assert.DoesNotContain("Xiesheng.ReadingsShow", body);
+    }
+
+    [Fact]
+    public void LiveryFormat_SeriesNoteRespelled_PrintsEachMemberRowAsTheEntryNotePrintsIt()
+    {
+        using TLanguageFixture borrower = TLanguageFixture.TLanguageFixtureCreate(
+            """{ "phonemic": true, "respelling": [ { "name": "Plain", "rules": [["ʊ", "u"], ["⁵¹", "4"]] } ] }""");
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TLiveryLanguagePack);
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        string language = pack.TLanguageFixtureName;
+        LEntry entry = engine.TEngineEntrySave(TLiveryLanguageCreate("龍", language) with
+        {
+            LEntryDraftReflexes =
+            [
+                TInterface.TReflexDraftCreate(
+                    borrower.TLanguageFixtureName,
+                    string.Empty,
+                    "lʊŋ⁵¹",
+                    main: true,
+                    romanization: "long",
+                    meaning: "dragon",
+                    note: "literary",
+                    respelling: "luŋ4"),
+            ],
+        });
+        TInterface.TShengfuArchiveCreate(workspace.TWorkspaceDatabase)
+            .TShengfuSave(language, TInterface.TShengfuCreate("龍", "龍"));
+        TInterface.TStemArchiveCreate(workspace.TWorkspaceDatabase).TStemApply(language, "龍", ["龍"]);
+        engine.TEngineRespellingSave(true);
+
+        string sheet = TInterface.TLiveryFormat(
+            Assert.IsType<LLiveryPage>(engine.TLiveryRead(entry.LEntryId)), static key => key).LLiveryNoteBody;
+        string body = TInterface.TLiveryFormat(
+            Assert.Single(engine.TLiveryRead(language).LLiveryLanguageStem), static key => key).LLiveryNoteBody;
+
+        string label = "| " + borrower.TLanguageFixtureName + " |";
+        string row = Assert.Single(sheet.Split('\n'), line => line.StartsWith(label, StringComparison.Ordinal));
+        Assert.StartsWith(label + "  | <span class=\"llyn-main\">/lu", row);
+        Assert.EndsWith("/</span> | long | dragon | <span class=\"llyn-note\">literary</span> |  |", row);
+        Assert.DoesNotContain("ʊ", row, StringComparison.Ordinal);
+        Assert.Contains(row + "\n", body, StringComparison.Ordinal);
     }
 
     [Fact]

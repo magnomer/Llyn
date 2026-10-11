@@ -1,7 +1,7 @@
 # LSettings.cs
-Hash: `7e9f1b34d7e479e4`
+Hash: `4179d400e6422dfb`
 
-## `public sealed record LSettings(string LSettingsLocalization, bool LSettingsRespelled = false, bool LSettingsFrequency = true, bool LSettingsMorphology = true, bool LSettingsEpithet = true, bool LSettingsTally = false, string LSettingsGloss = "English", int LSettingsOutpost = 41184, string LSettingsWarrant = "", bool LSettingsAnalysis = true)`
+## `public sealed record LSettings(string LSettingsLocalization, bool LSettingsRespelled = false, bool LSettingsFrequency = true, bool LSettingsMorphology = true, bool LSettingsEpithet = true, bool LSettingsTally = false, string LSettingsGloss = "English", int LSettingsOutpost = 41184, string LSettingsWarrant = "", bool LSettingsAnalysis = true, string LSettingsNotebook = LSettings.LSettingsNotebookFallback)`
 
 The user's persisted engine settings.
 These live as `settings.json` inside the user's workspace folder and nowhere else.
@@ -30,6 +30,28 @@ It is kept in a small fixed pointer outside the workspace.
 - `LSettingsAnalysis`: Whether the inflection box shows the pack's custom sheets and marked letters, on by default.
   Off shows the default sheets with plain forms.
   The analysis is stored on every write either way, so a flip needs no new analysis.
+- `LSettingsNotebook`: The title of the top Joplin notebook a sync writes, `Llyn` by default.
+  The notebook keeps one fixed id, so a new title renames the same notebook at the next sync.
+  Every workspace shares that id, so two workspaces with different titles rename it in turn.
+
+## `public const string LSettingsNotebookFallback = "Llyn";`
+
+The notebook title a workspace starts with, and the one a blank title falls back to.
+
+## `private readonly string _lSettingsNotebook`
+
+The stored notebook title, always already resolved.
+
+## `public string LSettingsNotebook`
+
+Redeclares the positional title so every way of setting it resolves it.
+The constructor and a `with` copy both pass through the `init` accessor's rule.
+So a padded or blank title never reaches a sync, whichever layer built the record.
+
+## `private static string LSettingsNotebookResolve(string? notebook)`
+
+The one rule for a notebook title.
+It trims the title, and a blank or missing one becomes `LSettingsNotebookFallback`.
 
 ## `public int LSettingsOnline`
 

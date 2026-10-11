@@ -1,10 +1,11 @@
 # source.json
-Hash: `0204f309ab5f80b0`
+Hash: `42f6a2d7b3137441`
 
 ## pack
 
 Language pack for Italian.
 The pack format is documented in `languages/English/source.comment.md`.
+Section heading anchors allow attributes before `id`, which the REST rendering writes there.
 No varieties are declared, so every reading is the standard one.
 No transcription schemes are listed, because Italian is written in Latin script.
 No respelling groups are declared, so every reading shows as its source wrote it.

@@ -17,8 +17,6 @@ public sealed class LPressBrowser : LPress
 
     private const int LPressBrowserHeight = 1754;
 
-    private const double LPressBrowserMargin = 12.0 / 25.4;
-
     private static readonly string LPressBrowserFolder = Path.Combine(Path.GetTempPath(), "Llyn", "Press");
 
     private static Task<CoreWebView2Environment>? _lPressSetting;
@@ -28,109 +26,66 @@ public sealed class LPressBrowser : LPress
         ArgumentException.ThrowIfNullOrWhiteSpace(html);
         ArgumentException.ThrowIfNullOrWhiteSpace(path);
 
-        await LPressBoardRun(html, async (setting, core) =>
-        {
-            CoreWebView2PrintSettings printing = LPressSettingCreate(setting, LPressPaper.LPressPaperLocal);
-
-            if (!await core.PrintToPdfAsync(path, printing))
-            {
-                throw new IOException("The document could not be printed to the chosen path.");
-            }
-        });
+        await using LPressBoard board = await LPressBoardOpen(html);
+        await board.LPressBoardExport(LPressSetting.LPressSettingCreate(null), path);
     }
 
-    public async Task LPressPrint(string html, LPressTicket ticket)
+    public async Task<LPressBoard> LPressBoardOpen(string html)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(html);
-        ArgumentNullException.ThrowIfNull(ticket);
 
-        await LPressBoardRun(html, async (setting, core) =>
-        {
-            CoreWebView2PrintSettings printing = LPressSettingCreate(setting, ticket.LPressTicketPaper);
-            printing.PrinterName = ticket.LPressTicketPrinter;
-            printing.Orientation = ticket.LPressTicketLandscape
-                ? CoreWebView2PrintOrientation.Landscape
-                : CoreWebView2PrintOrientation.Portrait;
-            printing.Copies = Math.Max(1, ticket.LPressTicketCopies);
-            printing.Collation = ticket.LPressTicketCollated
-                ? CoreWebView2PrintCollation.Collated
-                : CoreWebView2PrintCollation.Uncollated;
-            printing.Duplex = ticket.LPressTicketSide switch
-            {
-                LPressSide.LPressSideSingle => CoreWebView2PrintDuplex.OneSided,
-                LPressSide.LPressSideLong => CoreWebView2PrintDuplex.TwoSidedLongEdge,
-                LPressSide.LPressSideShort => CoreWebView2PrintDuplex.TwoSidedShortEdge,
-                _ => CoreWebView2PrintDuplex.Default,
-            };
-            printing.ColorMode = ticket.LPressTicketInk switch
-            {
-                LPressInk.LPressInkColor => CoreWebView2PrintColorMode.Color,
-                LPressInk.LPressInkGray => CoreWebView2PrintColorMode.Grayscale,
-                _ => CoreWebView2PrintColorMode.Default,
-            };
-
-            CoreWebView2PrintStatus status = await core.PrintAsync(printing);
-            if (status == CoreWebView2PrintStatus.PrinterUnavailable)
-            {
-                throw new IOException("The chosen printer could not be reached.");
-            }
-
-            if (status != CoreWebView2PrintStatus.Succeeded)
-            {
-                throw new IOException("The document could not be printed.");
-            }
-        });
-    }
-
-    private static CoreWebView2PrintSettings LPressSettingCreate(CoreWebView2Environment setting, LPressPaper paper)
-    {
-        CoreWebView2PrintSettings printing = setting.CreatePrintSettings();
-        printing.ShouldPrintBackgrounds = true;
-        printing.PageWidth = paper.LPressPaperWidth;
-        printing.PageHeight = paper.LPressPaperHeight;
-        printing.MarginTop = LPressBrowserMargin;
-        printing.MarginBottom = LPressBrowserMargin;
-        printing.MarginLeft = LPressBrowserMargin;
-        printing.MarginRight = LPressBrowserMargin;
-        return printing;
-    }
-
-    private static async Task LPressBoardRun(string html, Func<CoreWebView2Environment, CoreWebView2, Task> act)
-    {
-        string folder = Path.Combine(LPressBrowserFolder, "Page");
-        Directory.CreateDirectory(folder);
-
-        string page = Path.Combine(folder, Guid.NewGuid().ToString("N") + ".html");
-        File.WriteAllText(page, html, new UTF8Encoding(false));
-
+        string page = LPressPageCreate(html);
         IntPtr frame = IntPtr.Zero;
-        CoreWebView2Controller? board = null;
 
         try
         {
             CoreWebView2Environment setting = await LPressSettingRead();
 
             frame = LPressWindowCreate();
-            board = await setting.CreateCoreWebView2ControllerAsync(frame);
-            board.Bounds = new Rectangle(0, 0, LPressBrowserWidth, LPressBrowserHeight);
-
-            await LPressPageLoad(board.CoreWebView2, page);
-            await act(setting, board.CoreWebView2);
+            CoreWebView2Controller board = await LPressBoardLoad(setting, frame, page);
+            return new LPressController(frame, board, page);
         }
-        finally
+        catch (Exception)
         {
-            board?.Close();
-
             if (frame != IntPtr.Zero)
             {
                 LPressWindowDispose(frame);
             }
 
             LPressPageDelete(page);
+            throw;
         }
     }
 
-    private static async Task<CoreWebView2Environment> LPressSettingRead()
+    private static async Task<CoreWebView2Controller> LPressBoardLoad(
+        CoreWebView2Environment setting, IntPtr frame, string page)
+    {
+        CoreWebView2Controller board = await setting.CreateCoreWebView2ControllerAsync(frame);
+
+        try
+        {
+            board.Bounds = new Rectangle(0, 0, LPressBrowserWidth, LPressBrowserHeight);
+            await LPressPageLoad(board.CoreWebView2, page);
+            return board;
+        }
+        catch (Exception)
+        {
+            board.Close();
+            throw;
+        }
+    }
+
+    private static string LPressPageCreate(string html)
+    {
+        string folder = Path.Combine(LPressBrowserFolder, "Page");
+        Directory.CreateDirectory(folder);
+
+        string page = Path.Combine(folder, Guid.NewGuid().ToString("N") + ".html");
+        File.WriteAllText(page, html, new UTF8Encoding(false));
+        return page;
+    }
+
+    internal static async Task<CoreWebView2Environment> LPressSettingRead()
     {
         Task<CoreWebView2Environment> pending = _lPressSetting ??=
             CoreWebView2Environment.CreateAsync(null, Path.Combine(LPressBrowserFolder, "Profile"));
@@ -152,7 +107,7 @@ public sealed class LPressBrowser : LPress
         }
     }
 
-    private static void LPressPageDelete(string page)
+    internal static void LPressPageDelete(string page)
     {
         try
         {
@@ -168,7 +123,7 @@ public sealed class LPressBrowser : LPress
         }
     }
 
-    private static async Task LPressPageLoad(CoreWebView2 core, string page)
+    internal static async Task LPressPageLoad(CoreWebView2 core, string page)
     {
         TaskCompletionSource<bool> ready =
             new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -188,6 +143,12 @@ public sealed class LPressBrowser : LPress
             {
                 throw new IOException("The rendered page could not be opened for printing.");
             }
+
+            await core.CallDevToolsProtocolMethodAsync(
+                "Runtime.evaluate",
+                "{\"expression\":\"Promise.all(Array.from(document.images, image => { image.loading = 'eager'; "
+                + "return image.decode().catch(() => null); })).then(() => document.fonts.ready).then(() => true)\","
+                + "\"awaitPromise\":true}");
         }
         finally
         {
@@ -195,18 +156,27 @@ public sealed class LPressBrowser : LPress
         }
     }
 
-    private static IntPtr LPressWindowCreate()
+    internal static IntPtr LPressWindowCreate()
     {
+        IntPtr owner = GetForegroundWindow();
+        int[] place = new int[4];
+
+        if (owner == IntPtr.Zero || !GetWindowRect(owner, place))
+        {
+            owner = IntPtr.Zero;
+            place = new int[4];
+        }
+
         IntPtr frame = CreateWindowExW(
             0,
             "STATIC",
             null,
             LPressBrowserStyle,
-            -32000,
-            -32000,
+            place[0],
+            place[1],
             LPressBrowserWidth,
             LPressBrowserHeight,
-            IntPtr.Zero,
+            owner,
             IntPtr.Zero,
             IntPtr.Zero,
             IntPtr.Zero);
@@ -219,7 +189,7 @@ public sealed class LPressBrowser : LPress
         return frame;
     }
 
-    private static void LPressWindowDispose(IntPtr frame)
+    internal static void LPressWindowDispose(IntPtr frame)
     {
         DestroyWindow(frame);
     }
@@ -242,4 +212,11 @@ public sealed class LPressBrowser : LPress
     [DllImport("user32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool DestroyWindow(IntPtr window);
+
+    [DllImport("user32.dll")]
+    private static extern IntPtr GetForegroundWindow();
+
+    [DllImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool GetWindowRect(IntPtr window, [Out] int[] rect);
 }

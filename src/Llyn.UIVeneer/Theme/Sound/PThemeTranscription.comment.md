@@ -1,5 +1,5 @@
 # PThemeTranscription.xaml
-Hash: `e9b94d45f22c715b`
+Hash: `1ad3479f49cd16a8`
 
 The look of a transcription row, shared by the editor and the reading view.
 The pronunciation and accent styles are merged, so a row reads as a further pronunciation row does.
@@ -20,6 +20,9 @@ Its highlight, padding and greyed ink are `QLook` rows.
 
 The scheme dropdown of an editor row, standing where the reading view draws the scheme chip.
 Closed, it reads as the chip does, with a small chevron after the name and the accent on hover.
+The chevron keeps a 4-pixel gap after the name and claims its full width.
+With the dropdown's 8-pixel margin that fills the 24-pixel slot `Theme.Pronunciation.Label` reserves.
+So the name and the field stand where the reading view draws them.
 Open, it lists every scheme the pack declares.
 The dropdown shows at once, with no fade, so the pick never looks slow to answer.
 The toggle, popup, name ink and chevron are `QLook` rows.

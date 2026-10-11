@@ -111,7 +111,8 @@ public sealed class LEntryClerk
 
         string language = draft.LEntryDraftLanguage;
         LEntry entry = _lEntryClerkEntries.LEntryCreate(
-            new LEntry(0, draft.LEntryDraftHeadword, language, 0, null, null, draft.LEntryDraftUnit),
+            new LEntry(
+                0, draft.LEntryDraftHeadword, language, 0, null, null, draft.LEntryDraftUnit, draft.LEntryDraftFreedom),
             forms: [],
             speeches: []);
         List<LRevisionDelta> changes = [new LRevisionDelta(entry.LEntryId, "entry", "create", entry.LEntryHeadword)];
@@ -205,6 +206,7 @@ public sealed class LEntryClerk
                 LEntryHeadword = draft.LEntryDraftHeadword,
                 LEntryLanguage = language,
                 LEntryUnit = draft.LEntryDraftUnit,
+                LEntryFreedom = draft.LEntryDraftFreedom,
             });
         }
 

@@ -12,22 +12,18 @@ public sealed class LStemFacade : LStemPort
     private readonly LEntryFacade _lStemFacadeEntry;
     private readonly LLanguageFacade _lStemFacadeLanguage;
     private readonly LVistaRowFacade _lStemFacadeRow;
-    private readonly LReflexFacade _lStemFacadeReflex;
     private readonly object _lStemFacadeGate;
 
-    internal LStemFacade(
-        LEngineHearth hearth, LEntryFacade entry, LLanguageFacade language, LVistaRowFacade row, LReflexFacade reflex)
+    internal LStemFacade(LEngineHearth hearth, LEntryFacade entry, LLanguageFacade language, LVistaRowFacade row)
     {
         ArgumentNullException.ThrowIfNull(hearth);
         ArgumentNullException.ThrowIfNull(entry);
         ArgumentNullException.ThrowIfNull(language);
         ArgumentNullException.ThrowIfNull(row);
-        ArgumentNullException.ThrowIfNull(reflex);
         _lStemFacadeHearth = hearth;
         _lStemFacadeEntry = entry;
         _lStemFacadeLanguage = language;
         _lStemFacadeRow = row;
-        _lStemFacadeReflex = reflex;
         _lStemFacadeGate = _lStemFacadeHearth.LEngineGate;
     }
 
@@ -113,17 +109,8 @@ public sealed class LStemFacade : LStemPort
                 return LStemPage.LStemPageBlank;
             }
 
-            LStemPage page = LStemFacadeStaff.LEngineStaffLanguage.LLanguageStaffStem.LStemPageRead(stem, true);
-            return page with
-            {
-                LStemPageMembers = page.LStemPageMembers
-                    .Select(member => member with
-                    {
-                        LStemMemberGuises = _lStemFacadeReflex.LEngineGuiseRead(
-                            page.LStemPageLanguage, member.LStemMemberLanguages),
-                    })
-                    .ToList(),
-            };
+            return LStemFacadeStaff.LEngineStaffLanguage.LLanguageStaffStem.LStemPageRead(
+                stem, true, _lStemFacadeHearth.LEngineSettingsHeld.LSettingsRespelled);
         }
     }
 

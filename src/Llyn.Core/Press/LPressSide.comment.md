@@ -1,8 +1,11 @@
 # LPressSide.cs
-Hash: `e74512cddaf2f70c`
+Hash: `e75462b3396ac678`
 
 ## `public enum LPressSide`
 
-Which sides of the sheet a print lands on.
-Default leaves the choice to the printer, as a dialog that said nothing does.
-Long and Short name the edge a two-sided print turns on.
+Whether and how the printer prints on both sides of the sheet.
+
+- `LPressSideDefault`: whatever the printer does by default.
+- `LPressSideSingle`: print on one side only.
+- `LPressSideLong`: print on both sides, flipping on the long edge.
+- `LPressSideShort`: print on both sides, flipping on the short edge.

@@ -1,13 +1,13 @@
 # CQuotation.cs
-Hash: `f2cd6a0d7f4d92c1`
+Hash: `42aa5e1b796518f8`
 
 ## `public sealed class CQuotation`
 
-The corpus panel's quotation list: the entries quoting the chosen Example.
+The corpus panel's quotation list, holding the entries that quote the chosen Example.
 It holds the vista and portrait ports and the example vista as its roll.
 Its own vista sits in the panel's aperture.
 The corpus builds it and restores its vistas, so no driver holds a port or a vista.
-It is sealed, so its rows, labels, tickets and formats cross as Conduct shapes.
+Its rows, labels and formats cross to drivers as Conduct shapes.
 
 ## `internal CQuotation(LVistaPort vistas, LPortraitPort portraits, LSettingsPort settings, CEnvoy envoy, Func<bool> changeSeam, Func<bool, bool> finishSeam, Func<bool> shownSeam)`
 
@@ -57,7 +57,8 @@ The file name an export of the entry on display is offered under.
 
 ## `internal Task LQuotationPortraitPrint(CEnvoy envoy, LSettingsPort settings)`
 
-Prints the chosen entry through `CPortrait`, worded through `settings`, with failures shown through `envoy`.
+Opens a print session on the chosen entry, and `CPortrait` puts the print window up over it.
+The page is worded through `settings`, and a failed open shows through `envoy`.
 No driver calls it, since `CCorpusPortraitPrint` chooses which side prints.
 
 ## `public Task CQuotationPortraitExport()`

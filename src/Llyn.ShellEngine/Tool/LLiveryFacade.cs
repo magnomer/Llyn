@@ -59,7 +59,7 @@ internal sealed class LLiveryFacade
 
     private LEngineStaff LLiveryFacadeStaff => _lLiveryFacadeHearth.LEngineStaffHeld;
 
-    public LLiveryPage? LEngineLiveryRead(long entryId)
+    public LLiveryPage? LEngineLiveryRead(long entryId, bool pending)
     {
         lock (_lLiveryFacadeHearth.LEngineGate)
         {
@@ -70,10 +70,20 @@ internal sealed class LLiveryFacade
 
             LEngineStaff staff = LLiveryFacadeStaff;
             string language = draft.LEntryDraftLanguage;
-            IReadOnlyList<string> reflexes =
-                [.. draft.LEntryDraftReflexes.Select(static row => row.LReflexDraftLanguage)];
             (_, string created, string updated) = _lLiveryFacadeEntry.LEngineStampRead(entryId);
             LAccentSheet accent = _lLiveryFacadeLanguage.LEngineAccentRead(draft);
+            bool marked = pending && _lLiveryFacadeVocabulary.LEngineInflectionCheck(entryId);
+            bool enabled = _lLiveryFacadeSettings.LEngineMorphologyCheck();
+            Dictionary<LFontRole, LFont> font = new Dictionary<LFontRole, LFont>
+            {
+                [LFontRole.LFontRoleHeadword] = _lLiveryFacadeLanguage.LEngineFontRead(
+                    language, LFontRole.LFontRoleHeadword),
+                [LFontRole.LFontRoleGlyph] = _lLiveryFacadeLanguage.LEngineFontRead(
+                    language, LFontRole.LFontRoleGlyph),
+            };
+            HashSet<LFoldBox> opened = Enum.GetValues<LFoldBox>()
+                .Where(box => _lLiveryFacadeReflex.LEngineBoxCheck(entryId, box))
+                .ToHashSet();
             return LLiveryClerk.LLiveryClerkBuild(
                 draft,
                 _lLiveryFacadeCatalog.LEngineFavoriteCheck(entryId),
@@ -81,7 +91,7 @@ internal sealed class LLiveryFacade
                 created,
                 updated,
                 accent,
-                _lLiveryFacadeReflex.LEngineGuiseRead(language, reflexes),
+                _lLiveryFacadeReflex.LEngineGuiseRead(language, draft.LEntryDraftReflexes),
                 staff.LEngineStaffLanguage.LLanguageStaffReflex.LReflexFoldedRead(language),
                 staff.LEngineStaffEntry.LEntryStaffFold.LFoldClerkRead(entryId),
                 _lLiveryFacadeLanguage.LEngineTranscriptionRead(draft),
@@ -89,8 +99,9 @@ internal sealed class LLiveryFacade
                 _lLiveryFacadeLanguage.LEngineGlyphDivide(draft),
                 staff.LEngineStaffLanguage.LLanguageStaffFrequency.LFrequencyClerkRead(entryId, fetch: false),
                 _lLiveryFacadeVocabulary.LEngineParadigmScan(entryId),
-                _lLiveryFacadeVocabulary.LEngineInflectionRead(
-                    entryId, false, _lLiveryFacadeSettings.LEngineMorphologyCheck(), false),
+                marked,
+                enabled,
+                _lLiveryFacadeVocabulary.LEngineInflectionRead(entryId, marked, enabled, false),
                 _lLiveryFacadeFanqie.LEngineFanqieDivide(entryId),
                 _lLiveryFacadeScript.LEngineScriptDivide(entryId),
                 _lLiveryFacadeCard.LEngineTranslationRead(draft),
@@ -98,7 +109,11 @@ internal sealed class LLiveryFacade
                 _lLiveryFacadeCard.LEngineIncomingRead(entryId),
                 _lLiveryFacadeCard.LEngineEtymonRead(draft),
                 staff.LEngineStaffLanguage.LLanguageStaffLanguage.LLanguageFlagFind,
-                staff.LEngineStaffLanguage.LLanguageStaffLanguage.LVarietyFlagScan(accent));
+                staff.LEngineStaffLanguage.LLanguageStaffLanguage.LVarietyFlagScan(accent),
+                font,
+                opened,
+                staff.LEngineStaffLanguage.LLanguageStaffFanqie.LFanqieClerkFormat(
+                    entryId, draft.LEntryDraftHeadword));
         }
     }
 
@@ -117,6 +132,7 @@ internal sealed class LLiveryFacade
                     : staff.LEngineStaffLanguage.LLanguageStaffStem,
                 _lLiveryFacadeFanqie.LEngineBookCheck(language) ? staff.LEngineStaffLanguage.LLanguageStaffDiwei : null,
                 _lLiveryFacadeSettings.LEngineRespellingCheck(language),
+                _lLiveryFacadeHearth.LEngineSettingsHeld.LSettingsRespelled,
                 _lLiveryFacadeHearth.LEngineSettingsHeld.LSettingsTally,
                 localize);
         }

@@ -117,7 +117,7 @@ public sealed class LParadigmClerk
             return null;
         }
 
-        return LParadigmView.LParadigmViewScan(
+        LParadigmView? view = LParadigmView.LParadigmViewScan(
             layout,
             LParadigmClerkRead(entry),
             pending,
@@ -126,6 +126,25 @@ public sealed class LParadigmClerk
             custom,
             language.LLanguageInflection,
             entry.LEntryHeadword);
+        return view is null
+            ? null
+            : new LParadigmView(
+                LParadigmClerkScan(view.LParadigmViewCollapsed),
+                LParadigmClerkScan(view.LParadigmViewExpanded));
+    }
+
+    private static LParadigmTable LParadigmClerkScan(LParadigmTable table)
+    {
+        return table with
+        {
+            LParadigmTableLines = [.. table.LParadigmTableLines.Select(line => line with
+            {
+                LParadigmLineForms = [.. line.LParadigmLineForms.Select(form => form with
+                {
+                    LParadigmFormPiece = form.LParadigmFormScan(),
+                })],
+            })],
+        };
     }
 
     private LLanguage? LParadigmClerkFind(LEntry entry)

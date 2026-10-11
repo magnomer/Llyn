@@ -1,5 +1,5 @@
 # LDisplay.cs
-Hash: `044f063134de4a8d`
+Hash: `b24c48447e0db118`
 
 ## `internal sealed class LDisplay`
 
@@ -91,6 +91,15 @@ Hands `observer` every bulletin about `subject` the display vista hears, in Cond
 
 The last grasp step, which the display's star control takes as its limit.
 A negative engine limit is raised to zero, since a star row cannot count below none.
+
+## `private LGraspStar? _lDisplayGraspStar;`
+
+The star answers once read, since the limit never changes while the app runs.
+
+## `internal LGraspStar LDisplayGraspStar`
+
+The star answers for `LDisplayGraspStep`, as the engine port passes them from Application.
+It passes them on unread and computes no fill, count or hit itself.
 
 ## `internal string LDisplayGraspFormat(long? entry, int step)`
 

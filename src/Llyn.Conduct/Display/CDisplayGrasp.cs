@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Llyn.Conduct;
 
@@ -16,6 +17,12 @@ public sealed class CDisplayGrasp
     public event Action<CBulletin>? CDisplayGraspChanged;
 
     public int CDisplayGraspStep => _cDisplayGraspRule.LDisplayGraspStep;
+
+    public IReadOnlyList<IReadOnlyList<int>> CDisplayGraspFill => _cDisplayGraspRule.LDisplayGraspStar.LGraspStarFill;
+
+    public IReadOnlyList<bool> CDisplayGraspUnrated => _cDisplayGraspRule.LDisplayGraspStar.LGraspStarUnrated;
+
+    public IReadOnlyList<IReadOnlyList<int>> CDisplayGraspHit => _cDisplayGraspRule.LDisplayGraspStar.LGraspStarHit;
 
     internal void LDisplayGraspAttach()
     {

@@ -1,7 +1,7 @@
 # LRig.cs
-Hash: `4e35c7434bc0c4c8`
+Hash: `149bdd27cff6dd93`
 
-## `public sealed record LRig(LVault LRigVault, LRigKeeping LRigKeeping, LSettingsVault LRigSettings, LAuditVault LRigAudit, LPostureVault LRigPosture, LRigAsset LRigAsset, LEntryVault LRigEntries, LEntryQueryVault LRigEntryQuery, LRigLexicon LRigLexicon, LRigDraft LRigDraft, LRigCitation LRigCitation, LRigSound LRigSound, LRigSentence LRigSentence, LRigContext LRigContext, LRigSource LRigSource, LOutpost LRigOutpost, LLanguageVault LRigLanguages, LPress LRigPress, LWarrant LRigWarrant, LUsher LRigUsher, LPhonograph LRigPhonograph, LTrail LRigTrail, LClock LRigClock, int LRigProcess, string LRigWorkspace)`
+## `public sealed record LRig(LVault LRigVault, LRigKeeping LRigKeeping, LSettingsVault LRigSettings, LAuditVault LRigAudit, LPostureVault LRigPosture, LRigAsset LRigAsset, LEntryVault LRigEntries, LEntryQueryVault LRigEntryQuery, LRigLexicon LRigLexicon, LRigDraft LRigDraft, LRigCitation LRigCitation, LRigSound LRigSound, LRigSentence LRigSentence, LRigContext LRigContext, LRigSource LRigSource, LOutpost LRigOutpost, LLanguageVault LRigLanguages, LPress LRigPress, LPressQueue LRigQueue, LPressVault LRigPressVault, LWarrant LRigWarrant, LUsher LRigUsher, LPhonograph LRigPhonograph, LTrail LRigTrail, LClock LRigClock, int LRigProcess, string LRigWorkspace)`
 
 The bundle of ports the engine is built over.
 It is one record and one constructor argument.
@@ -12,6 +12,8 @@ There is no identity port.
 The engine builds `LIdentity` over `LRigKeeping.LRigKeepingWorkspaces` itself, since it is a use case.
 `LEnsign` is likewise built engine-side over `LRigUsher`, since it is a cache and not an adapter.
 `LRigPress` is the printing surface, handed in by the root beside the usher since both are media.
+`LRigQueue` is the printer list, handed in by the root beside `LRigPress` since both serve printing.
+`LRigPressVault` keeps the print setting, built from the workspace root beside the posture file.
 `LRigWarrant` is the token protector, handed in by the root since protection depends on the operating system.
 `LRigPhonograph` is the player, handed in by the root beside them for the same reason.
 Every property is named `LRig{Base}`, the base being the port's own, so a port and its slot read alike.

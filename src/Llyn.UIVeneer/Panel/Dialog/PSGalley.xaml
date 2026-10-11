@@ -1,0 +1,173 @@
+<UserControl
+    x:Class="Llyn.UIVeneer.PSGalley"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Llyn.UIDeportment;assembly=Llyn.UIDeportment">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <ScrollViewer
+            x:Name="PSGalleyCanvas"
+            Grid.Row="0"
+            AutomationProperties.Name="{DynamicResource Print.Pages}"
+            Style="{StaticResource Theme.Press.Canvas}">
+            <ItemsControl
+                x:Name="PSGalleyList"
+                Margin="24,24,24,0"
+                HorizontalAlignment="Center"
+                Focusable="False"
+                VirtualizingPanel.IsVirtualizing="True"
+                VirtualizingPanel.ScrollUnit="Pixel"
+                VirtualizingPanel.VirtualizationMode="Recycling">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border x:Name="PSGalleyPaper" Style="{StaticResource Theme.Press.Paper}">
+                            <Grid>
+                                <Image x:Name="PSGalleyPicture" Stretch="Fill" />
+                                <Border x:Name="PSGalleyShade" Style="{StaticResource Theme.Press.Shade}" Visibility="Collapsed" />
+                                <Border x:Name="PSGalleyBadge" Style="{StaticResource Theme.Press.Badge}" Visibility="Collapsed">
+                                    <TextBlock FontSize="12" FontWeight="SemiBold" Text="{DynamicResource Print.Excluded}" />
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <Grid x:Name="PSPressBusy" Grid.Row="0" Visibility="Collapsed">
+            <Border Style="{StaticResource Theme.Press.Veil}" />
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Border Width="268" Style="{StaticResource Theme.Popup.Progress}">
+                    <Border Style="{StaticResource Theme.Popup.ProgressBar}" />
+                </Border>
+                <TextBlock HorizontalAlignment="Center" Style="{StaticResource Theme.Popup.Notice}" Text="{DynamicResource Print.Rendering}" />
+            </StackPanel>
+        </Grid>
+
+        <Grid x:Name="PSPressFailure" Grid.Row="0" Visibility="Collapsed">
+            <Border Style="{StaticResource Theme.Press.Veil}" />
+            <StackPanel MaxWidth="360" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock
+                    x:Name="PSPressMessage"
+                    FontSize="14"
+                    Text="{DynamicResource Print.RenderFailed}"
+                    TextAlignment="Center"
+                    TextWrapping="Wrap" />
+                <Button
+                    x:Name="PSPressRetry"
+                    MinWidth="88"
+                    Margin="0,16,0,0"
+                    HorizontalAlignment="Center"
+                    AutomationProperties.Name="{DynamicResource Print.Retry}"
+                    Content="{DynamicResource Print.Retry}"
+                    Style="{StaticResource Theme.Command.Segment}" />
+            </StackPanel>
+        </Grid>
+
+        <Border Grid.Row="1" Style="{StaticResource Theme.Press.Bar}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <Button
+                        x:Name="PSGalleyEarlier"
+                        VerticalAlignment="Center"
+                        AutomationProperties.Name="{DynamicResource Print.Earlier}"
+                        Style="{StaticResource Theme.Command.Icon}"
+                        ToolTip="{DynamicResource Print.Earlier}">
+                        <local:QIconImage x:Name="PSGalleyEarlierIcon" Width="24" Height="24" />
+                    </Button>
+                    <TextBox
+                        x:Name="PSGalleyNumber"
+                        Width="48"
+                        Margin="4,0,0,0"
+                        VerticalAlignment="Center"
+                        HorizontalContentAlignment="Center"
+                        AutomationProperties.Name="{DynamicResource Print.Page}"
+                        Style="{StaticResource Theme.Input.Field}" />
+                    <TextBlock
+                        x:Name="PSGalleyTotal"
+                        Margin="8,0,4,0"
+                        VerticalAlignment="Center"
+                        FontSize="13"
+                        Foreground="{StaticResource Theme.Muted}" />
+                    <Button
+                        x:Name="PSGalleyLater"
+                        VerticalAlignment="Center"
+                        AutomationProperties.Name="{DynamicResource Print.Later}"
+                        Style="{StaticResource Theme.Command.Icon}"
+                        ToolTip="{DynamicResource Print.Later}">
+                        <local:QIconImage x:Name="PSGalleyLaterIcon" Width="24" Height="24" />
+                    </Button>
+                </StackPanel>
+
+                <TextBlock
+                    x:Name="PSGalleyCount"
+                    Grid.Column="1"
+                    Margin="12,0"
+                    VerticalAlignment="Center"
+                    FontSize="12"
+                    Foreground="{StaticResource Theme.Muted}"
+                    TextTrimming="CharacterEllipsis" />
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <Border VerticalAlignment="Center" Style="{StaticResource Theme.Command.Group}">
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton
+                                x:Name="PSGalleyWidth"
+                                MinWidth="0"
+                                AutomationProperties.Name="{DynamicResource Print.ZoomFitWidth}"
+                                Content="{DynamicResource Print.ZoomFitWidth}"
+                                Style="{StaticResource Theme.Command.Mode}" />
+                            <RadioButton
+                                x:Name="PSGalleyPage"
+                                MinWidth="0"
+                                AutomationProperties.Name="{DynamicResource Print.ZoomFitPage}"
+                                Content="{DynamicResource Print.ZoomFitPage}"
+                                Style="{StaticResource Theme.Command.Mode}" />
+                        </StackPanel>
+                    </Border>
+                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
+                    <Button
+                        x:Name="PSGalleyMinus"
+                        VerticalAlignment="Center"
+                        AutomationProperties.Name="{DynamicResource Print.ZoomOut}"
+                        Style="{StaticResource Theme.Command.Icon}"
+                        ToolTip="{DynamicResource Print.ZoomOut}">
+                        <local:QIconImage x:Name="PSGalleyMinusIcon" Width="24" Height="24" />
+                    </Button>
+                    <TextBox
+                        x:Name="PSGalleyPercent"
+                        Width="60"
+                        Margin="4,0"
+                        VerticalAlignment="Center"
+                        HorizontalContentAlignment="Center"
+                        AutomationProperties.Name="{DynamicResource Print.Zoom}"
+                        Style="{StaticResource Theme.Input.Field}" />
+                    <Button
+                        x:Name="PSGalleyPlus"
+                        VerticalAlignment="Center"
+                        AutomationProperties.Name="{DynamicResource Print.ZoomIn}"
+                        Style="{StaticResource Theme.Command.Icon}"
+                        ToolTip="{DynamicResource Print.ZoomIn}">
+                        <local:QIconImage x:Name="PSGalleyPlusIcon" Width="24" Height="24" />
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

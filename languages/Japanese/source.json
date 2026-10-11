@@ -61,7 +61,7 @@
                 "normalize": false
               },
               "strategy": "regex",
-              "match": "<h2 id=\"Japanese\"(?:(?!headword-tr)[\\s\\S])*?class=\"headword-tr[^\"]*\"[^>]*>(?:<span class=\"Latn\" lang=\"ja\">)?(?:<a[^>]*>)?([^<]+)<",
+              "match": "<h2[^>]* id=\"Japanese\"(?:(?!headword-tr)[\\s\\S])*?class=\"headword-tr[^\"]*\"[^>]*>(?:<span class=\"Latn\" lang=\"ja\">)?(?:<a[^>]*>)?([^<]+)<",
               "group": 1,
               "normalize": false
             }
@@ -87,7 +87,7 @@
                 "normalize": false
               },
               "strategy": "regex",
-              "match": "<h2 id=\"Japanese\"(?:(?!<samp>)[\\s\\S])*?<samp>(\\[[^<\\]]+\\])</samp>",
+              "match": "<h2[^>]* id=\"Japanese\"(?:(?!<samp>)[\\s\\S])*?<samp>(\\[[^<\\]]+\\])</samp>",
               "group": 1,
               "normalize": false
             }
@@ -153,7 +153,7 @@
             "normalize": false
           },
           "strategy": "regex",
-          "match": "<h2 id=\"Japanese\"[\\s\\S]*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/Ja-[^\"/]*\\.mp3)",
+          "match": "<h2[^>]* id=\"Japanese\"[\\s\\S]*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/Ja-[^\"/]*\\.mp3)",
           "group": 1,
           "prefix": "https:"
         },

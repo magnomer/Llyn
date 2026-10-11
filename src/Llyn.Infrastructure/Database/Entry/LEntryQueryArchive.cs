@@ -25,7 +25,7 @@ public sealed class LEntryQueryArchive : LEntryQueryVault
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT entry_id, headword, language, grasp, added_utc, updated_utc, unit
+            SELECT entry_id, headword, language, grasp, added_utc, updated_utc, unit, freedom
             FROM entry
             WHERE lmatch(headword, $query)
             ORDER BY headword, language, entry_id;
@@ -51,7 +51,7 @@ public sealed class LEntryQueryArchive : LEntryQueryVault
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT entry_id, headword, language, grasp, added_utc, updated_utc, unit
+            SELECT entry_id, headword, language, grasp, added_utc, updated_utc, unit, freedom
             FROM entry
             WHERE lfold(language) = lfold($language) AND lfold(headword) = lfold($headword)
             ORDER BY headword, language, entry_id;
@@ -71,7 +71,7 @@ public sealed class LEntryQueryArchive : LEntryQueryVault
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT entry_id, headword, language, grasp, added_utc, updated_utc, unit
+            SELECT entry_id, headword, language, grasp, added_utc, updated_utc, unit, freedom
             FROM entry
             WHERE language = $language AND headword <> '' AND instr(lfold($text), lfold(headword)) > 0
             ORDER BY length(headword) DESC, headword, entry_id;
@@ -100,7 +100,7 @@ public sealed class LEntryQueryArchive : LEntryQueryVault
             using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
             command.CommandText =
                 $"""
-                SELECT entry_id, headword, language, grasp, added_utc, updated_utc, unit
+                SELECT entry_id, headword, language, grasp, added_utc, updated_utc, unit, freedom
                 FROM entry
                 WHERE entry_id IN ({LEntryListFormat(command, batch)}) AND lmatch(headword, $query)
                 ORDER BY entry_id;
@@ -188,7 +188,7 @@ public sealed class LEntryQueryArchive : LEntryQueryVault
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT entry_id, headword, language, grasp, added_utc, updated_utc, unit
+            SELECT entry_id, headword, language, grasp, added_utc, updated_utc, unit, freedom
             FROM entry
             WHERE $tag = 0
                OR entry_id IN (
@@ -223,7 +223,7 @@ public sealed class LEntryQueryArchive : LEntryQueryVault
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT entry_id, headword, language, grasp, added_utc, updated_utc, unit
+            SELECT entry_id, headword, language, grasp, added_utc, updated_utc, unit, freedom
             FROM entry
             WHERE $register = 0
                OR entry_id IN (
@@ -257,7 +257,7 @@ public sealed class LEntryQueryArchive : LEntryQueryVault
         return LEntryOwnerFind(
             situationId,
             """
-            SELECT entry_id, headword, language, grasp, added_utc, updated_utc, unit
+            SELECT entry_id, headword, language, grasp, added_utc, updated_utc, unit, freedom
             FROM entry
             WHERE $owner = 0
                OR entry_id IN (
@@ -281,7 +281,7 @@ public sealed class LEntryQueryArchive : LEntryQueryVault
         return LEntryOwnerFind(
             exampleId,
             """
-            SELECT entry_id, headword, language, grasp, added_utc, updated_utc, unit
+            SELECT entry_id, headword, language, grasp, added_utc, updated_utc, unit, freedom
             FROM entry
             WHERE $owner = 0
                OR entry_id IN (
@@ -305,7 +305,7 @@ public sealed class LEntryQueryArchive : LEntryQueryVault
         return LEntryOwnerFind(
             referenceId,
             """
-            SELECT entry_id, headword, language, grasp, added_utc, updated_utc, unit
+            SELECT entry_id, headword, language, grasp, added_utc, updated_utc, unit, freedom
             FROM entry
             WHERE $owner = 0
                OR entry_id IN (

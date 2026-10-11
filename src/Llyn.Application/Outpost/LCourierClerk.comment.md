@@ -1,5 +1,5 @@
 # LCourierClerk.cs
-Hash: `a253325081196cd6`
+Hash: `eef468b0b538d2a2`
 
 ## `public sealed class LCourierClerk`
 
@@ -11,12 +11,6 @@ Overwriting a note Llyn created is accepted policy, since the push is one way.
 Attachments a user pastes into a Llyn note lose their reference when the note is rewritten.
 Joplin's own cleanup may later delete such attachments.
 Llyn never acts on a Joplin item it did not create.
-
-## `private const string LCourierNotebook = "Llyn";`
-
-The title of the top notebook that holds every Llyn notebook.
-Each language gets a notebook under it, titled with the language's name.
-An entry without a language stays in the top notebook itself.
 
 ## `private const string LCourierSystem = "System";`
 
@@ -87,6 +81,10 @@ Anything else maps to empty.
 
 Pushes the notebooks, the style note, the reconstruction notes and every entry, then trashes gone notes.
 It saves the top notebook, the system notebook and one notebook per language among the entries.
+The top notebook holds every other one and takes its title from `LSettingsNotebook`, read at each push.
+Its id never follows that title, so a changed title renames the same notebook and moves nothing.
+Each language gets a notebook under it, titled with the language's name.
+An entry without a language stays in the top notebook itself.
 Each notebook id comes from `LLivery.LLiveryIdFormat`, a language's over its trimmed name.
 So a notebook keeps its id across pushes, and a renamed one gets its title back.
 A language with no entry gets no notebook, so packs never leave empty notebooks.

@@ -29,7 +29,7 @@ public sealed class QWindow
         QWindowVolume = new QVolume(atelier);
 
         _qWindowSurface = QContract.QContractSheetFind<Window>("PWindow");
-        QWindowEnvoy = new QEnvoy(_qWindowSurface);
+        QWindowEnvoy = new QEnvoy(_qWindowSurface, QWindowPosture);
         _qEstablishment = new QEstablishment(
             QContract.QContractFind<FrameworkElement>(_qWindowSurface, "PEstablishment"));
         _qPanelRoster = new QPanelRoster(_qWindowSurface, QWindowPosture);

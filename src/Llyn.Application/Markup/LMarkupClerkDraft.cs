@@ -70,7 +70,8 @@ public sealed class LMarkupClerkDraft
             entry.LMarkupEntryTranscription,
             entry.LMarkupEntryReflex,
             _lMarkupDraftLink.LMarkupEtymologyResolve(entry, prepared, omissions),
-            entry.LMarkupEntryUnit);
+            entry.LMarkupEntryUnit,
+            entry.LMarkupEntryFreedom);
     }
 
     private LSpeechValue? LMarkupSpeechResolve(string language, string name, List<LMarkupOmission> omissions)

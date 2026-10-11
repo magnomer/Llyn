@@ -312,13 +312,12 @@ public sealed class CShelf
 
         if (LShelfSourcePrintable)
         {
-            return CPortrait.LPortraitTicketPrint(
+            return CPortrait.LPortraitPrint(
                 _cShelfEnvoy,
                 _cShelfSettingsPort,
-                chosen => _cShelfPortraitPort.LEnginePortraitPrint(
+                () => _cShelfPortraitPort.LEnginePressOpen(
                     CShelfPanel.CPanelAperture.CApertureVista,
-                    CPortrait.LPortraitLegendRead(_cShelfSettingsPort, "Source"),
-                    chosen));
+                    CPortrait.LPortraitLegendRead(_cShelfSettingsPort, "Source")));
         }
 
         return Task.CompletedTask;

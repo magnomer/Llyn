@@ -23,7 +23,8 @@ public static class LSchemaEntry
                 added_utc TEXT,
                 updated_utc TEXT,
                 epithet TEXT NOT NULL DEFAULT '',
-                unit INTEGER NOT NULL DEFAULT 0 CHECK (unit BETWEEN 0 AND 4),
+                unit INTEGER NOT NULL DEFAULT 0 CHECK (unit IN (0, 3, 4, 5)),
+                freedom INTEGER NOT NULL DEFAULT 0 CHECK (freedom BETWEEN 0 AND 2),
                 CHECK (length(origin_realm) = 16 OR origin_id = 0)
             );
 
@@ -57,6 +58,21 @@ public static class LSchemaEntry
                 FOREIGN KEY (speech_value_ref) REFERENCES speech_value (speech_value_id)
             );
             """;
+        command.ExecuteNonQuery();
+    }
+
+    public static void LSchemaEntrySettle(SqliteConnection connection, string schema)
+    {
+        ArgumentNullException.ThrowIfNull(connection);
+        ArgumentException.ThrowIfNullOrWhiteSpace(schema);
+
+        if (!LSchemaMigration.LSchemaColumnRead(connection, schema, "entry").Contains("unit"))
+        {
+            return;
+        }
+
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText = $"UPDATE {schema}.entry SET unit = 0 WHERE unit NOT IN (0, 3, 4, 5);";
         command.ExecuteNonQuery();
     }
 }

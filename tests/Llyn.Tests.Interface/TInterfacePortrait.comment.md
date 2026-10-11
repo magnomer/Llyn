@@ -1,5 +1,5 @@
 # TInterfacePortrait.cs
-Hash: `1f1747d74bb4922f`
+Hash: `1718959fb253af50`
 
 ## `internal static partial class TInterface`
 
@@ -9,7 +9,7 @@ Tests call production operations only through here, so a renamed operation break
 ## `internal static LPortraitLabel TPortraitLabelRead()`
 
 A fixed English label set, so a test asserts on known words without the localization files.
-Its unit names are English too.
+Its unit and freedom names are English too.
 
 ## `internal static LPortraitLink TPortraitLinkCreate(string headword, string language)`
 
@@ -30,6 +30,14 @@ Relays `LTheme.LThemeRead`, so a test compares a colour with the role it should 
 ## `internal static string TSheetFormat(LPortraitPage page, LTheme theme)`
 
 Relays `LSheet.LSheetFormat`.
+
+## `internal static string TSheetEntryFormat(LLiveryPage livery, LPortraitPage portrait, Func<string, string> lookup)`
+
+Relays `LSheetEntry.LSheetEntryFormat` with the test label and the loaded theme.
+
+## `internal static LParadigmShown TParadigmShownCreate(string text, string? tip)`
+
+Builds the shown cell of one break row, so a test can pair a hand-built row with its cell.
 
 ## `internal static string TOutlineFormat(LPortraitPage page)`
 
@@ -204,11 +212,6 @@ Builds a page, leaving the favorite flag and the lines at their defaults.
 ## `internal static LPortraitPage TPortraitPageCreate(string title, string language, bool favorite, IReadOnlyList<LPortraitLine> line, IReadOnlyList<string> chip, IReadOnlyList<LPortraitSection> section)`
 
 Builds a page with its favorite flag and lines as well.
-
-## `internal static LPressTicket TPressTicketCreate(string printer, bool landscape, int copies)`
-
-Builds a press ticket on metric paper, collated, long-edge, in gray ink.
-Only the printer, the orientation and the copies vary between tests.
 
 ## `internal static string TMarkdownNormalize(string? text)`
 

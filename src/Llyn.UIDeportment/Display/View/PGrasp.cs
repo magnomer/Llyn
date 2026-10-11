@@ -90,6 +90,8 @@ public sealed class PGrasp : FrameworkElement
         remove => RemoveHandler(PGraspHoveredEvent, value);
     }
 
+    public QGraspStar PGraspStar => _qGraspStar;
+
     public int PGraspPointed => _qGraspStar.QGraspPointed;
 
     public int PGraspLimit

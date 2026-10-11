@@ -1,5 +1,5 @@
 # LPronunciationFacade.cs
-Hash: `821a2499b3f85930`
+Hash: `665456dd10052ea4`
 
 ## `public sealed class LPronunciationFacade : LPronunciationPort`
 
@@ -30,6 +30,7 @@ The engine's held staff, read at each call.
 ## `public IReadOnlyList<LCatalogPronunciation> LEnginePronunciationFind(string query, LCatalogOrder order)`
 
 The pronunciation catalog rows matching `query`, sorted.
+The respelling setting and the language pack decide, per entry language, whether a row shows its respelling.
 
 ## `public IReadOnlyList<LCatalogPronunciation> LEnginePronunciationFind(string query, LCatalogOrder order, LCatalogFilter filter)`
 

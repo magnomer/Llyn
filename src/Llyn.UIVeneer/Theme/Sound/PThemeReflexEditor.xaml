@@ -109,7 +109,7 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <StackPanel Style="{StaticResource Theme.Pronunciation.Lead}">
-                    <Grid Margin="0,0,8,0" MinWidth="12" Background="Transparent">
+                    <Grid Margin="0,0,24,0" MinWidth="12" Background="Transparent">
                         <TextBlock x:Name="PReflexLabel" Margin="0" Style="{StaticResource Theme.Reflex.Label}" />
                     </Grid>
                 </StackPanel>

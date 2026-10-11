@@ -102,6 +102,9 @@ internal static partial class TInterface
     internal static LGlyph? TEngineGlyphRead(this LEngine engine, string language) =>
         engine.LEngineLanguage.LEngineGlyphRead(language);
 
+    internal static LFont TEngineFontRead(this LEngine engine, string language, LFontRole role) =>
+        engine.LEngineLanguage.LEngineFontRead(language, role);
+
     internal static LEntry TEngineGlyphResolve(this LEngine engine, string character, string language) =>
         engine.LEngineEntry.LEngineGlyphResolve(character, language);
 

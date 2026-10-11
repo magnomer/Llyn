@@ -25,4 +25,5 @@ public sealed record LPortraitLabel(
     string LPortraitLabelRegister,
     string LPortraitLabelTranslation,
     string LPortraitLabelTag,
-    IReadOnlyDictionary<LUnit, string> LPortraitLabelUnit);
+    IReadOnlyDictionary<LUnit, string> LPortraitLabelUnit,
+    IReadOnlyDictionary<LFreedom, string> LPortraitLabelFreedom);

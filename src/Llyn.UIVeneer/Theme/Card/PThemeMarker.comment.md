@@ -1,5 +1,5 @@
 # PThemeMarker.xaml
-Hash: `3c84c1074a2d6ff2`
+Hash: `9d4e0f67fd3de81e`
 
 ## `<Style x:Key="Theme.Marker.Surface" TargetType="Border">`
 
@@ -42,3 +42,11 @@ The outline tells a choice of one apart from the filled chips of the parts of sp
 ## `<Style x:Key="Theme.Unit.Label" TargetType="TextBlock" BasedOn="{StaticResource Theme.Speech.Name}" />`
 
 The unit's name inside the chooser, written as a chip's name is.
+
+## `<Style x:Key="Theme.Freedom.Dropper" TargetType="ToggleButton" BasedOn="{StaticResource Theme.Unit.Dropper}" />`
+
+The freedom chooser, outlined as the unit chooser is, since it too is a choice of one.
+
+## `<Style x:Key="Theme.Freedom.Label" TargetType="TextBlock" BasedOn="{StaticResource Theme.Speech.Name}" />`
+
+The freedom's name inside the chooser, written as a chip's name is.

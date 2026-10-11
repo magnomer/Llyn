@@ -1,5 +1,5 @@
 # LPortraitFile.cs
-Hash: `b08f1ec1eb883c8d`
+Hash: `527bf6a2a0892d0c`
 
 ## `public sealed class LPortraitFile : LPortraitVault`
 
@@ -19,3 +19,13 @@ Markup and PDF are refused, since the engine formats the one and the press print
 ## `public string LPortraitSheetFormat(LPortraitPage page)`
 
 The HTML sheet of `page` wearing the current theme, which the press prints or saves as PDF.
+
+## `public void LPortraitSave(LLiveryPage livery, LPortraitPage portrait, LPortraitLabel label, Func<string, string> lookup, string path)`
+
+Writes the entry sheet to `path` as an HTML file.
+Only HTML takes this road, since PDF goes through the press and the other formats keep the portrait alone.
+
+## `public string LPortraitSheetFormat(LLiveryPage livery, LPortraitPage portrait, LPortraitLabel label, Func<string, string> lookup)`
+
+The entry sheet of `LSheetEntry.LSheetEntryFormat` wearing the current theme.
+The HTML file, the PDF and the print all read this one page.

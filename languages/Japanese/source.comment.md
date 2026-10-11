@@ -1,10 +1,11 @@
 # source.json
-Hash: `ff2ada6889564a86`
+Hash: `50d04de79fd65ac9`
 
 ## pack
 
 Language pack for Japanese.
 The pack format is documented in `languages/English/source.comment.md`.
+Section heading anchors allow attributes before `id`, which the REST rendering writes there.
 No varieties are declared, so every reading is the standard Tokyo one.
 No respelling groups are declared, so every reading shows as its source wrote it.
 Segoe UI has no kana or kanji glyphs, so the headword and example blocks name the Yu fonts instead.

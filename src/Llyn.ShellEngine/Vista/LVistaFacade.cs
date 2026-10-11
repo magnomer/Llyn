@@ -213,10 +213,7 @@ public sealed class LVistaFacade : LVistaPort
         string headword = vista is null
             ? string.Empty
             : LEngineVistaLoad(vista)?.LDraftContent.LEntryDraftHeadword ?? string.Empty;
-        string trimmed = headword.Trim();
-        return trimmed.Length == 0 || vista is null
-            ? "entry"
-            : _lVistaFacadeSettings.LEngineTrailNormalize(trimmed);
+        return _lVistaFacadeSettings.LEngineFileFormat(headword);
     }
 
     public void LEngineSideSave(LVista vista)

@@ -1,5 +1,5 @@
 # PMarkerTemplate.xaml
-Hash: `4f14546c7e5ebde4`
+Hash: `c329adf8082f603e`
 
 The speech marker chip of the editor, as markup alone.
 The Deportment class of the same name loads it and forwards the chip's click to the editor.
@@ -13,3 +13,8 @@ The fill writes the name and sets the close icon.
 
 One lexical unit in the unit menu, drawn as a category row is, with a check on the held one.
 The fill names the unit through its key and wires the click.
+
+## `Theme.Freedom.Row`
+
+One freedom in the freedom menu, drawn as the unit row is, with a check on the held one.
+The fill names the freedom through its key and wires the click.

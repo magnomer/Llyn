@@ -164,13 +164,12 @@ public sealed class CAnthology
 
     internal Task LAnthologyPortraitPrint(CEnvoy envoy, LSettingsPort settings)
     {
-        return CPortrait.LPortraitTicketPrint(
+        return CPortrait.LPortraitPrint(
             envoy,
             settings,
-            chosen => _cAnthologyPortraitPort.LEnginePortraitPrint(
+            () => _cAnthologyPortraitPort.LEnginePressOpen(
                 CAnthologyPanel.CPanelAperture.CApertureVista,
-                CPortrait.LPortraitLegendRead(settings, "Example"),
-                chosen));
+                CPortrait.LPortraitLegendRead(settings, "Example")));
     }
 
     public CProffer CAnthologyCitationRead(string word)

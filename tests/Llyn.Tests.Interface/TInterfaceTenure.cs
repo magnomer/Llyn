@@ -110,6 +110,16 @@ internal static partial class TInterface
         new LQuillEntry(tenure).LQuillUnitSet(unit);
     }
 
+    internal static LFreedom TTenureFreedomRead(this LTenure tenure) => new LQuillEntry(tenure).LQuillFreedomRead();
+
+    internal static IReadOnlyList<LFreedom> TTenureFreedomScan(this LTenure tenure) =>
+        new LQuillEntry(tenure).LQuillFreedomScan();
+
+    internal static void TTenureFreedomSet(this LTenure tenure, LFreedom freedom)
+    {
+        new LQuillEntry(tenure).LQuillFreedomSet(freedom);
+    }
+
     internal static void TTenureIpaSet(this LTenure tenure, string text)
     {
         new LQuillPronunciation(tenure).LQuillIpaSet(text);

@@ -1,5 +1,5 @@
 # CKindred.cs
-Hash: `c6d9cb02c89232bb`
+Hash: `4bce30ea5c1ff94a`
 
 ## `public sealed class CKindred`
 
@@ -90,7 +90,7 @@ It scans the rows alone, so a keystroke reads no anchor.
 
 ## `private IReadOnlyList<CReflex> LKindredRowRead(LEntryDraft content)`
 
-The rows of `content`, each resolved by the shared reflex scan.
+The stored rows of `content`, each resolved by the shared reflex scan.
 `CKindredRead` and `LKindredFind` both read their rows here.
 
 ## `private static IReadOnlyList<CReflexHead> LKindredLeadRead(IReadOnlyList<LReflexDraft> typed)`

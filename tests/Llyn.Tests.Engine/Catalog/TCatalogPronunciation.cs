@@ -37,7 +37,7 @@ public sealed class TCatalogPronunciation
     }
 
     [Fact]
-    public void PronunciationFind_SoundOrder_ReturnsWrittenSoundsFirst()
+    public void PronunciationFind_SoundOrder_ReturnsOnlyWrittenSounds()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -47,13 +47,13 @@ public sealed class TCatalogPronunciation
         TCatalogPronunciationSave(engine, "cloud", "a");
 
         Assert.Equal(
-            ["cloud", "stone", "apple"],
+            ["cloud", "stone"],
             engine.TEnginePronunciationFind(string.Empty, LCatalogOrder.LCatalogOrderSound)
                 .Select(row => row.LCatalogPronunciationEntry.LEntryHeadword));
     }
 
     [Fact]
-    public void PronunciationFind_PendingOrder_ReturnsUnwrittenSoundsFirst()
+    public void PronunciationFind_PendingOrder_ReturnsOnlyUnwrittenSounds()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -63,7 +63,7 @@ public sealed class TCatalogPronunciation
         TCatalogPronunciationSave(engine, "apple", null);
 
         Assert.Equal(
-            ["apple", "cloud", "stone"],
+            ["apple", "cloud"],
             engine.TEnginePronunciationFind(string.Empty, LCatalogOrder.LCatalogOrderPending)
                 .Select(row => row.LCatalogPronunciationEntry.LEntryHeadword));
     }
@@ -104,9 +104,39 @@ public sealed class TCatalogPronunciation
         TCatalogPronunciationSave(engine, "water", null);
 
         LCatalogPronunciation row = Assert.Single(
-            engine.TEnginePronunciationFind("water", LCatalogOrder.LCatalogOrderHeadword));
+            engine.TEnginePronunciationFind("water", LCatalogOrder.LCatalogOrderPending));
 
         Assert.Equal("[ ]", row.LCatalogPronunciationText);
+    }
+
+    [Fact]
+    public void PronunciationFind_HeadwordOrder_LeavesOutUnwrittenSounds()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        TCatalogPronunciationSave(engine, "water", null);
+
+        Assert.Empty(engine.TEnginePronunciationFind("water", LCatalogOrder.LCatalogOrderHeadword));
+    }
+
+    [Fact]
+    public void PronunciationFind_RespellingShown_ReturnsTheRespellingInsteadOfTheIpa()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineEntrySave(
+            TInterface.TEntryDraftCreate(
+                "weight", "English", string.Empty, string.Empty, [TInterface.TCardCreate("a thing", 1)], []) with
+            {
+                LEntryDraftPronunciations = [TInterface.TPronunciationDraftCreate("ˈweɪtə", "British")],
+            });
+        engine.TEngineRespellingSave(true);
+
+        LCatalogPronunciation row = Assert.Single(
+            engine.TEnginePronunciationFind("weight", LCatalogOrder.LCatalogOrderHeadword));
+
+        Assert.NotEmpty(row.LCatalogPronunciationSound);
+        Assert.NotEqual("ˈweɪtə", row.LCatalogPronunciationSound);
     }
 
 

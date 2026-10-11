@@ -34,7 +34,7 @@ internal sealed class LCourierFacade
         try
         {
             return await LCourierFacadeStaff.LEngineStaffWorkspace.LWorkspaceStaffCourier.LCourierClerkSend(
-                _lCourierFacadeLivery.LEngineLiveryRead,
+                entryId => _lCourierFacadeLivery.LEngineLiveryRead(entryId, false),
                 language => _lCourierFacadeLivery.LEngineLiveryRead(language, _lCourierFacadeSettings.LEngineTextFind),
                 lookup,
                 cancellation)

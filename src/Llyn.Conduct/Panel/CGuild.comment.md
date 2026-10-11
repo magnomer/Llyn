@@ -1,5 +1,5 @@
 # CGuild.cs
-Hash: `8fc0e9d9ee973930`
+Hash: `87a9802e8f9a358e`
 
 ## `public sealed class CGuild`
 
@@ -179,10 +179,11 @@ Whether the held draft may be stored, telling the user `Guild.NameBlank` when th
 
 ## `public Task CGuildPortraitPrint()`
 
-Prints the Source read in the colophon, since an Author has no page to print.
+Opens the print window on the Source read in the colophon, since an Author has no page to print.
+It opens nothing while the author side is in front.
 The page is worded with the Source realm's legend.
-The reader is asked for the printer through the panel's envoy, and a decline prints nothing.
-`CPortrait` words the page through the engine and shows `Print.Failed` through the panel's envoy.
+The print window chooses the printer and layout, and a window closed unprinted prints nothing.
+`CPortrait` opens the session through the engine and shows `Print.Failed` through the panel's envoy if it cannot.
 
 ## `public void CGuildNameSet(string name)`
 

@@ -8,7 +8,7 @@ namespace Llyn.Infrastructure;
 
 public static class LSchemaMigration
 {
-    public const long LSchemaMigrationVersion = 79;
+    public const long LSchemaMigrationVersion = 80;
 
     private const string LSchemaMigrationFresh = "fresh";
 
@@ -88,6 +88,7 @@ public static class LSchemaMigration
 
         using (SqliteTransaction transaction = source.BeginTransaction())
         {
+            LSchemaEntry.LSchemaEntrySettle(source, LSchemaMigrationMain);
             foreach (string table in LSchemaTableRead(source, LSchemaMigrationFresh, LSchemaMigrationMain))
             {
                 LSchemaTableApply(source, LSchemaMigrationMain, LSchemaMigrationFresh, table);
@@ -241,7 +242,7 @@ public static class LSchemaMigration
         return tables;
     }
 
-    private static List<string> LSchemaColumnRead(SqliteConnection connection, string schema, string table)
+    internal static List<string> LSchemaColumnRead(SqliteConnection connection, string schema, string table)
     {
         List<string> columns = [];
         using SqliteCommand command = connection.CreateCommand();

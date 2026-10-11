@@ -1,5 +1,5 @@
 # QEditor.cs
-Hash: `acc94345d7e05196`
+Hash: `a07f19805ea5f505`
 
 ## `internal sealed class QEditor : QChronicleHost`
 
@@ -7,7 +7,7 @@ The driver of the shared editable entry view, over the Veneer `PEditor` every ed
 It holds the plain scope the panel pulled by contract ID, so no Deportment control stands between.
 It builds the card half `QEditorCard`, the sound half `QEditorSound`, the typefaces `QEditorFont` and the tab strip `QStack`.
 The esteem strip lives in `QRegard`, the part-of-speech chips and field in `QMarker` and its menu in `QCategory`.
-The lexical unit dropper lives in `QUnit`.
+The lexical unit dropper lives in `QUnit`, and the freedom dropper beside it in `QFreedom`.
 It keeps the headword, the note, the command rail and the chronicle, and routes the editor's notices.
 It follows `QDisplay`, the display's driver over its Veneer scope.
 

@@ -102,6 +102,16 @@ public sealed class QPosture : IDisposable
         return true;
     }
 
+    public void QPosturePressSave(LCapsulePress press)
+    {
+        ArgumentNullException.ThrowIfNull(press);
+
+        lock (_qPostureGate)
+        {
+            QPostureSave(_qPostureContent with { LCapsuleContentPress = press });
+        }
+    }
+
     public void QPostureLayoutSave(IEnumerable<LCapsuleColumn> layout)
     {
         ArgumentNullException.ThrowIfNull(layout);

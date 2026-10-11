@@ -11,6 +11,10 @@ internal sealed class QContourPlot
 
     private const double QContourPadding = 14;
 
+    private const double QContourPaddingTop = 17;
+
+    private const double QContourPaddingBottom = 10;
+
     private const double QContourAxisWidth = 18;
 
     private const double QContourCellGap = 10;
@@ -21,7 +25,7 @@ internal sealed class QContourPlot
 
     private const double QContourLabelGap = 8;
 
-    private const double QContourLabelHeight = 24;
+    private const double QContourLabelHeight = 20;
 
     private readonly IReadOnlyList<int> _qContourPlotScale;
 
@@ -40,12 +44,13 @@ internal sealed class QContourPlot
             int count = Math.Max(1, _qContourPlotCount);
             double width = 2 * QContourPadding + QContourAxisWidth
                 + count * QContourCellWidth + (count - 1) * QContourCellGap;
-            double height = 2 * QContourPadding + QContourPlotHeight + QContourLabelGap + QContourLabelHeight;
+            double height = QContourPaddingTop + QContourPlotHeight + QContourLabelGap + QContourLabelHeight
+                + QContourPaddingBottom;
             return new Size(width, height);
         }
     }
 
-    internal double QContourLabelTop => QContourPadding + QContourPlotHeight + QContourLabelGap;
+    internal double QContourLabelTop => QContourPaddingTop + QContourPlotHeight + QContourLabelGap;
 
     private double QContourPlotHeight => Math.Max(0, _qContourPlotScale.Count - 1) * QContourLevelGap;
 
@@ -61,7 +66,7 @@ internal sealed class QContourPlot
 
     internal double QContourLevelResolve(int level)
     {
-        return QContourPadding + QContourDepthRead(level) * QContourLevelGap;
+        return QContourPaddingTop + QContourDepthRead(level) * QContourLevelGap;
     }
 
     internal IReadOnlyList<Point> QContourPointResolve(IReadOnlyList<int> levels, int index)

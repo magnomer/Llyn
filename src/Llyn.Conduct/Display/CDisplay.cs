@@ -8,7 +8,17 @@ namespace Llyn.Conduct;
 public sealed class CDisplay
 {
     private static readonly CLectern _cDisplayBlank = new(
-        string.Empty, string.Empty, [], false, [], false, string.Empty, string.Empty, false, string.Empty);
+        string.Empty,
+        string.Empty,
+        [],
+        false,
+        [],
+        false,
+        string.Empty,
+        string.Empty,
+        false,
+        string.Empty,
+        string.Empty);
 
     private readonly LEntryPort _cDisplayEntryPort;
 
@@ -209,7 +219,8 @@ public sealed class CDisplay
             stamp.Item2,
             stamp.Item3,
             stamp.Item1,
-            _cDisplayEntryPort.LEngineUnitFormat(draft.LEntryDraftUnit));
+            LEntryPort.LEngineUnitFormat(draft.LEntryDraftUnit),
+            LEntryPort.LEngineFreedomFormat(draft.LEntryDraftFreedom));
         CDisplayOpened?.Invoke();
     }
 

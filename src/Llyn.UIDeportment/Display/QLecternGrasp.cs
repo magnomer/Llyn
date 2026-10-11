@@ -22,6 +22,10 @@ public sealed class QLecternGrasp
         _qLecternGrasp = QContract.QContractFind<PGrasp>(surface, "PDisplayGrasp");
         _qLecternGraspLabel = QContract.QContractFind<TextBlock>(surface, "PDisplayGraspLabel");
         _qLecternGrasp.PGraspLimit = _qLecternGraspArea.CDisplayGraspStep;
+        _qLecternGrasp.PGraspStar.QGraspStarRefine(
+            _qLecternGraspArea.CDisplayGraspFill,
+            _qLecternGraspArea.CDisplayGraspUnrated,
+            _qLecternGraspArea.CDisplayGraspHit);
 
         _qLecternGrasp.PGraspChanged += QLecternGraspObserve;
         _qLecternGrasp.PGraspHovered += QLecternHoverRefine;

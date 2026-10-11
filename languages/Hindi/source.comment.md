@@ -1,10 +1,11 @@
 # source.json
-Hash: `61a027921ec54ce0`
+Hash: `55f99013bc187d73`
 
 ## pack
 
 Language pack for Hindi.
 The pack format is documented in `languages/English/source.comment.md`.
+Section heading anchors allow attributes before `id`, which the REST rendering writes there.
 No varieties are declared, so every reading is the standard one.
 No respelling groups are declared, so every reading shows as its source wrote it.
 Segoe UI has no Devanagari glyphs, so the headword and example blocks name Nirmala UI first.

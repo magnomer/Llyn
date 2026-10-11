@@ -35,10 +35,14 @@ internal static partial class TInterface
         "Tags",
         new Dictionary<LUnit, string>
         {
-            [LUnit.LUnitContent] = "Content word",
-            [LUnit.LUnitFunction] = "Function word",
             [LUnit.LUnitMorpheme] = "Morpheme",
             [LUnit.LUnitWord] = "Word",
+            [LUnit.LUnitExpression] = "Expression",
+        },
+        new Dictionary<LFreedom, string>
+        {
+            [LFreedom.LFreedomDependent] = "Dependent",
+            [LFreedom.LFreedomStandalone] = "Standalone",
         });
 
     internal static LPortraitLink TPortraitLinkCreate(string headword, string language) =>
@@ -52,6 +56,12 @@ internal static partial class TInterface
     internal static string TThemeRead(this LTheme theme, string name) => theme.LThemeRead(name);
 
     internal static string TSheetFormat(LPortraitPage page, LTheme theme) => LSheet.LSheetFormat(page, theme);
+
+    internal static string TSheetEntryFormat(
+        LLiveryPage livery, LPortraitPage portrait, Func<string, string> lookup) =>
+        LSheetEntry.LSheetEntryFormat(livery, portrait, TPortraitLabelRead(), TThemeLoad(), lookup);
+
+    internal static LParadigmShown TParadigmShownCreate(string text, string? tip) => new(text, tip);
 
     internal static string TOutlineFormat(LPortraitPage page) => LOutline.LOutlineFormat(page);
 
@@ -297,16 +307,6 @@ internal static partial class TInterface
         IReadOnlyList<string> chip,
         IReadOnlyList<LPortraitSection> section) =>
         new(title, language, chip, section, favorite, line);
-
-    internal static LPressTicket TPressTicketCreate(string printer, bool landscape, int copies) =>
-        new(
-            printer,
-            LPressPaper.LPressPaperMetric,
-            landscape,
-            copies,
-            true,
-            LPressSide.LPressSideLong,
-            LPressInk.LPressInkGray);
 
     internal static string TMarkdownNormalize(string? text) => LMarkdown.LMarkdownNormalize(text);
 

@@ -1,5 +1,5 @@
 # LSettingsFacade.cs
-Hash: `b4fa5ce04b1463d9`
+Hash: `f39a358bfdd92e75`
 
 ## `internal sealed class LSettingsFacade`
 
@@ -36,7 +36,14 @@ The moment now, through the workspace clerk's clock, for a blank draft's stamp.
 
 ## `internal string LEngineTrailNormalize(string name)`
 
-A file name made safe for the file system, through the trail clerk, for a vista's export name.
+A file name made safe for the file system, through the trail clerk.
+`LEngineFileFormat` is its one caller, so every offered file name passes through it.
+
+## `internal string LEngineFileFormat(string headword)`
+
+The file name a headword is offered under, made safe through `LEngineTrailNormalize`.
+A blank or missing headword is offered as `entry`.
+The vista's export name and the galley's PDF name share it, so both offer the same name.
 
 ## `internal IReadOnlyDictionary<string, string> LEngineLocalizationLoad(string language)`
 
@@ -129,6 +136,14 @@ Turns custom analysis on or off.
 It changes only what the inflection box shows, so nothing is analysed again.
 A settings bulletin is raised when the switch changed, so the settings panel rewrites its summaries.
 An inflection bulletin for every entry follows, so the reading view and the editor repaint their box.
+
+## `internal string LEngineNotebookSave(string notebook)`
+
+Persists the title of the top Joplin notebook and answers the title it stored.
+The settings record trims it as it is set, and a blank title stores `Llyn`.
+So the settings field shows what the next sync will write, not what was typed.
+A settings bulletin is raised when the title changed, so the settings panel rewrites its summaries.
+Nothing is sent to Joplin here, since the next push reads the title afresh.
 
 ## `internal bool LEngineSettingsChange(Func<LSettings, LSettings> change)`
 

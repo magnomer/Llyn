@@ -20,13 +20,13 @@ public sealed class LDraftClerkEntry
         return request switch
         {
             LRequestHeadword sent => content with { LEntryDraftHeadword = sent.LRequestText ?? string.Empty },
-            LRequestLanguage sent => _lDraftClerkLanguages.LLanguageUnitRebuild(
-                _lDraftClerkLanguages.LLanguageAnatomyRebuild(
-                    _lDraftClerkLanguages.LLanguageRespellingRebuild(
-                        content with { LEntryDraftLanguage = sent.LRequestText ?? string.Empty }))),
+            LRequestLanguage sent => _lDraftClerkLanguages.LLanguageAnatomyRebuild(
+                _lDraftClerkLanguages.LLanguageRespellingRebuild(
+                    content with { LEntryDraftLanguage = sent.LRequestText ?? string.Empty })),
             LRequestNote sent => content with { LEntryDraftNote = sent.LRequestText ?? string.Empty },
             LRequestSpeech sent => content with { LEntryDraftSpeeches = sent.LRequestSpeeches ?? [] },
             LRequestUnit sent => content with { LEntryDraftUnit = sent.LRequestValue },
+            LRequestFreedom sent => content with { LEntryDraftFreedom = sent.LRequestValue },
             _ => null,
         };
     }

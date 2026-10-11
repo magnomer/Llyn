@@ -1,5 +1,5 @@
 # LEntryQueryArchive.cs
-Hash: `8967ce9a0418887e`
+Hash: `ed0a6c5e048971e1`
 
 ## `public sealed class LEntryQueryArchive : LEntryQueryVault`
 
@@ -10,7 +10,7 @@ Each list comes back ordered by headword so a panel can show it as read.
 Equal headwords go by language, then entry id, the keys `LCatalogEntry` breaks entry ties by.
 The id comes last, so storage order only parts rows equal on every declared key.
 SQLite compares headwords by code point, while the catalog sort folds case by culture.
-Every reader selects the lexical unit with the row, so a found entry carries it.
+Every reader selects the lexical unit and freedom with the row, so a found entry carries both.
 Rows are read through `LEntryArchive.LEntryRowRead`, so a find and a single read share one row shape.
 
 ## `public LEntryQueryArchive(LDatabase database)`

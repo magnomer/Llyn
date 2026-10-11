@@ -1,9 +1,10 @@
 # QPosture.cs
-Hash: `4d99f1798d335115`
+Hash: `9516255b716aecbb`
 
 ## `public sealed class QPosture : IDisposable`
 
-The GUI-only state of the main window: its geometry, the panel widths and whether the widths are linked.
+The GUI-only state of the main window and its print window.
+It holds the geometry, the panel widths, whether the widths are linked and the print window's size.
 A console has none of it, so it lives in Deportment and never reaches Conduct.
 It keeps the state through Deportment's Capsule, in a file under the workspace root.
 It holds one state record and swaps it whole on every change.
@@ -44,6 +45,11 @@ A minimized window stores nothing, so the maximized flag it had survives a close
 Stores whether dragging a panel in one tab sets the same width in every tab, and says whether that changed.
 A change then raises `QPostureLinkedChanged`, outside the gate.
 The widths themselves are stored per tab either way, so a flip neither moves nor loses any panel.
+
+## `public void QPosturePressSave(LCapsulePress press)`
+
+Stores the print window's size when the window closes.
+The setting itself is kept by the engine's store, so the GUI keeps geometry only.
 
 ## `public void QPostureLayoutSave(IEnumerable<LCapsuleColumn> layout)`
 

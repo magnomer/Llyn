@@ -47,7 +47,7 @@ public sealed class CEditor
         CEditorKindred = new CKindred(
             CEditorDesk, phonology.CPhonologyBundleReflex, CEditorDisplay.LDisplayRule, drafts, settings, envoy);
         CEditorPlayback = new CPlayback(CEditorDesk, media);
-        CEditorSpeech = new CCardSpeech(CEditorDesk, entries.CEntryBundleEntry);
+        CEditorSpeech = new CCardSpeech(CEditorDesk);
         CEditorDesk.CDeskFinished += CEditorStoredShow;
         CEditorEntry = new CEntry(
             CEditorDesk, drafts, entries.CEntryBundleCard, media, settings, envoy, noticed);

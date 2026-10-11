@@ -1,5 +1,5 @@
 # CPortrait.cs
-Hash: `4a198a9919f2bbd8`
+Hash: `a3e604583d953baa`
 
 ## `internal static class CPortrait`
 
@@ -7,12 +7,12 @@ What every panel's export and print gate shares: the formats offered, the words,
 Each map copies or maps by name, and the engine builds every record it takes.
 Only the offered formats carry a rule of their own.
 An enum member a map does not know throws, so a reordered enum cannot shift a meaning.
-Only the panel gates call it, so every member is an `L` helper.
+Only the panel gates and `CSPress` call it, so every member is an `L` helper.
 
 ## `private static readonly string[] LPortraitLabelKeys`
 
 The wording keys of an entry page, in the order of the engine label's words.
-The four unit keys close the list, in the order the label maps them.
+The three unit keys and the two freedom keys close the list, in the order the label maps them.
 
 ## `internal static IReadOnlyList<CPortraitChoice> LPortraitChoiceRead()`
 
@@ -31,9 +31,10 @@ An unknown engine format is a programming mismatch, so the read throws rather th
 An empty engine list still offers one format, so the reader can always export.
 That one is the program's own markup, under no suffix, so its filter shows every file.
 
-## `private static CPortraitChoice LPortraitChoiceCreate(LPortraitMedium medium, string suffix, bool chosen)`
+## `internal static CPortraitChoice LPortraitChoiceCreate(LPortraitMedium medium, string suffix, bool chosen)`
 
 One engine format as a ready row, mapped by name, with the key its name is worded by.
+`CSPress` builds its PDF-only save choice through it, so each format key has one owner.
 
 ## `internal static async Task LPortraitFileExport(CEnvoy envoy, LSettingsPort settings, Func<string> fileRead, Func<string, LPortraitMedium, Task> export)`
 
@@ -44,33 +45,22 @@ Then it runs the panel's export.
 The question needs the gate's offered name and formats, so the envoy asks it rather than the driver beforehand.
 No path means the reader cancelled, which exports nothing and is no failure.
 A failed export shows `Export.Failed` through the panel's envoy, with the notice `settings` reads.
-The format read and the question run inside that same try, as the print path does.
+The format read and the question run inside that same try.
 So an engine throw or an unknown format is shown, and the export stops cleanly.
 The task never faults, since its drivers await it from event handlers.
 
-## `internal static async Task LPortraitTicketPrint(CEnvoy envoy, LSettingsPort settings, Func<LPressTicket, Task> print)`
+## `internal static async Task LPortraitPrint(CEnvoy envoy, LSettingsPort settings, Func<Task<LGalleyRelay?>> open)`
 
-Asks the reader through `envoy` for a printer, then runs the panel's print with the engine's ticket.
-No ticket means the reader cancelled, which prints nothing and is no failure.
-The question stands inside the guard, because a print dialog raises when the spooler is down.
-A failed dialog or print shows `Print.Failed` through the panel's envoy, with the notice `settings` reads.
+Opens a print session, puts the print window up over its gate, and disposes the session on close.
+The window's galley is disposed first, so a pending wait is cancelled before the session goes.
+A null relay means nothing is printable, so no window opens and no failure shows.
+A failed open shows `Print.Failed` through the panel's envoy, with the notice `settings` reads.
+Failures inside the window answer wording keys to the window instead, since it stays open.
+The window gets `settings` too, so a printer listing failure shows through the ledger.
 
 ## `internal static LPortraitMedium LPortraitMediumRead(CPortraitMedium medium)`
 
 The engine format a driver's export choice stands for, mapped member for member by name.
-
-## `internal static LPressTicket LPortraitTicketRead(CPressTicket ticket)`
-
-The engine ticket a driver's print dialog answer stands for.
-Side and ink map member for member by name, and the engine picks the sheet when the dialog named none.
-
-## `private static LPressSide LPortraitSideRead(CPressSide side)`
-
-The engine print side a dialog's side names, member by member by name.
-
-## `private static LPressInk LPortraitInkRead(CPressInk ink)`
-
-The engine ink a dialog's ink names, member by member by name.
 
 ## `internal static LPortraitLabel LPortraitLabelRead(LSettingsPort settings)`
 

@@ -1,6 +1,5 @@
 {
   "language": "Thai",
-  "spaced": false,
   "flag": "th",
   "tonal": true,
   "font": {
@@ -29,7 +28,7 @@
                 "https://en.wiktionary.org/wiki/{word}"
               ],
               "strategy": "regex",
-              "match": "<h2 id=\"Thai\"(?:(?!<h2 )[\\s\\S])*?Paiboon</a></i></th><td[^>]*><span class=\"tr\">([^<]+)<",
+              "match": "<h2[^>]* id=\"Thai\"(?:(?!<h2 )[\\s\\S])*?Paiboon</a></i></th><td[^>]*><span class=\"tr\">([^<]+)<",
               "group": 1,
               "normalize": false
             }
@@ -49,7 +48,7 @@
                 "https://en.wiktionary.org/wiki/{word}"
               ],
               "strategy": "regex",
-              "match": "<h2 id=\"Thai\"(?:(?!<h2 )[\\s\\S])*?Royal Institute</a></i></th><td[^>]*><span class=\"tr\">([^<]+)<",
+              "match": "<h2[^>]* id=\"Thai\"(?:(?!<h2 )[\\s\\S])*?Royal Institute</a></i></th><td[^>]*><span class=\"tr\">([^<]+)<",
               "group": 1,
               "normalize": false
             }
@@ -68,7 +67,7 @@
             "https://en.wiktionary.org/wiki/{word}"
           ],
           "strategy": "span",
-          "match": "<h2 id=\"Thai\"(?:(?!class=\"IPA)(?!<h2 )[\\s\\S])*?<span class=\"IPA[^\"]*\"[^>]*>",
+          "match": "<h2[^>]* id=\"Thai\"(?:(?!class=\"IPA)(?!<h2 )[\\s\\S])*?<span class=\"IPA[^\"]*\"[^>]*>",
           "normalize": true
         }
       ]
@@ -95,7 +94,7 @@
             "https://en.wiktionary.org/wiki/{word}"
           ],
           "strategy": "regex",
-          "match": "<h2 id=\"Thai\"(?:(?!<h2 )[\\s\\S])*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/Th-[^\"/]*\\.mp3)",
+          "match": "<h2[^>]* id=\"Thai\"(?:(?!<h2 )[\\s\\S])*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/Th-[^\"/]*\\.mp3)",
           "group": 1,
           "prefix": "https:"
         },

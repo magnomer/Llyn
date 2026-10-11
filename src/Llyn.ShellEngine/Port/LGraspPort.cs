@@ -1,3 +1,6 @@
+using Llyn.Application;
+using Llyn.Core;
+
 namespace Llyn.ShellEngine;
 
 public interface LGraspPort
@@ -9,4 +12,9 @@ public interface LGraspPort
     int LEngineGraspRead(long entryId);
 
     void LEngineGraspSave(long entryId, int grasp);
+
+    static LGraspStar LEngineStarScan(int limit)
+    {
+        return LGraspClerk.LGraspClerkScan(limit);
+    }
 }

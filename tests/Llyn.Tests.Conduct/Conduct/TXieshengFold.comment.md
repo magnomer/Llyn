@@ -1,5 +1,5 @@
 # TXieshengFold.cs
-Hash: `d6c47197ce6d5ae6`
+Hash: `e5f06714d68bdbd0`
 
 ## `public sealed class TXieshengFold`
 
@@ -28,4 +28,4 @@ A refusing port shows `Reflex.SpreadFailed` once, answers false and writes no ma
 
 A member whose rows are all in unfolded languages still folds on the series page.
 A bare member has no reflex row and so no toggle.
-Its member carries one unfolded guise per reflex row, as the engine hands them.
+Its member carries one unfolded guise per reflex row, with its shown text, as the engine hands them.

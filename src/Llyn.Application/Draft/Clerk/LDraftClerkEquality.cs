@@ -55,6 +55,7 @@ public static class LDraftClerkEquality
                 StringComparison.Ordinal)
             && LSpeechMatch(one.LEntryDraftSpeeches, other.LEntryDraftSpeeches)
             && one.LEntryDraftUnit == other.LEntryDraftUnit
+            && one.LEntryDraftFreedom == other.LEntryDraftFreedom
             && LEntryClerkField.LFormMatch(one.LEntryDraftForms, other.LEntryDraftForms)
             && LInflectionClerk.LInflectionClerkMatch(one.LEntryDraftInflections, other.LEntryDraftInflections)
             && LCardEquality.LCardEqualityMatch(one.LEntryDraftMeanings, other.LEntryDraftMeanings)

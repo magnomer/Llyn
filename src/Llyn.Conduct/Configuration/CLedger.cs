@@ -22,6 +22,7 @@ public sealed class CLedger
         [
             "Frequency.Switch", "Frequency.Helper", "Morphology.Switch", "Morphology.Helper"
         ]),
+        ("Sync", ["Notebook.Name", "Notebook.Helper"]),
         ("Layout", ["Layout.Linked", "Layout.LinkedHelper"]),
     ];
 
@@ -156,6 +157,23 @@ public sealed class CLedger
         }
     }
 
+    public string? CLedgerNotebookSave(string notebook, CEnvoy envoy)
+    {
+        ArgumentNullException.ThrowIfNull(envoy);
+
+        LSettingsPort port = _cLedgerAtelier.CAtelierSettingsPort;
+        try
+        {
+            return port.LEngineNotebookSave(notebook);
+        }
+        catch (Exception exception)
+        {
+            LLedgerFailureShow(envoy, port, "Settings.SaveFailed", exception);
+            LLedgerRaise();
+            return null;
+        }
+    }
+
     public void CLedgerFailureShow(CEnvoy envoy, string key, Exception exception)
     {
         LLedgerFailureShow(envoy, _cLedgerAtelier.CAtelierSettingsPort, key, exception);
@@ -253,7 +271,8 @@ public sealed class CLedger
             settings.LSettingsFrequency,
             settings.LSettingsMorphology,
             settings.LSettingsEpithet,
-            settings.LSettingsOnline);
+            settings.LSettingsOnline,
+            settings.LSettingsNotebook);
     }
 
     private string CLedgerMetaRead(string child, CSettings settings)
@@ -282,6 +301,9 @@ public sealed class CLedger
                     port.LEngineTextRead("Settings.Tally"),
                     settings.CSettingsOnline,
                     CLedgerWeb);
+
+            case "Sync":
+                return settings.CSettingsNotebook;
 
             default:
                 return string.Empty;

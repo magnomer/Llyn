@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Llyn.Conduct;
+using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
 
@@ -19,7 +20,7 @@ public sealed class TAtelierRespelling
         LReflexPort phonology = TEngineFake.TEngineCreate<LReflexPort>(
             new Dictionary<string, Func<object?[]?, object?>>
             {
-                ["LEngineGuiseRead"] = _ => new[] { TInterface.TReflexGuiseCreate(respelled, phonemic, false) },
+                ["LEngineGuiseRead"] = _ => new[] { TInterface.TReflexGuiseCreate(respelled, phonemic, false, "ipa") },
             });
 
         CReflex reflex = Assert.Single(
@@ -41,8 +42,8 @@ public sealed class TAtelierRespelling
                     asked.Add(args);
                     return new[]
                     {
-                        TInterface.TReflexGuiseCreate(true, false, false),
-                        TInterface.TReflexGuiseCreate(true, false, true),
+                        TInterface.TReflexGuiseCreate(true, false, false, "respelt"),
+                        TInterface.TReflexGuiseCreate(true, false, true, "ipa"),
                     };
                 },
             });
@@ -53,7 +54,9 @@ public sealed class TAtelierRespelling
             [TAtelierReflexCreate(4, " Wu", "ipa", "respelt"), TAtelierReflexCreate(5, "Jin", "ipa", "")]);
 
         Assert.Equal("Chinese", asked.Single()![0]);
-        Assert.Equal([" Wu", "Jin"], (IReadOnlyList<string>)asked.Single()![1]!);
+        Assert.Equal(
+            [" Wu", "Jin"],
+            ((IReadOnlyList<LReflexDraft>)asked.Single()![1]!).Select(static reflex => reflex.LReflexDraftLanguage));
         Assert.Equal([4L, 5L], reflexes.Select(static reflex => reflex.CReflexId));
         Assert.Equal(["respelt", "ipa"], reflexes.Select(static reflex => reflex.CReflexText));
         Assert.Equal([false, true], reflexes.Select(static reflex => reflex.CReflexFolded));
@@ -62,22 +65,9 @@ public sealed class TAtelierRespelling
         Assert.Equal([7L], reflexes[0].CReflexAnchors);
     }
 
-    [Theory]
-    [InlineData(true, "respelt", "respelt")]
-    [InlineData(true, "", "ipa")]
-    [InlineData(true, null, "ipa")]
-    [InlineData(false, "respelt", "ipa")]
-    public void RespellingResolve_Mark_PicksShownText(bool shown, string? respelling, string expected)
+    private static LReflexDraft TAtelierReflexCreate(long id, string language, string text, string respelling)
     {
-        CRespellingMark mark = new(shown, "[", "]");
-
-        Assert.Equal(expected, TInterfaceConductSound.TRespellingResolve(mark, "ipa", respelling));
-    }
-
-    private static CReflexDraft TAtelierReflexCreate(long id, string language, string text, string respelling)
-    {
-        return new CReflexDraft(
-            id, language, string.Empty, text, respelling, string.Empty, string.Empty, string.Empty, false, string.Empty,
-            [7]);
+        return TInterface.TReflexDraftCreate(
+            language, string.Empty, text, id: id, respelling: respelling, anchors: [7]);
     }
 }

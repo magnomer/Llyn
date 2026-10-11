@@ -1,9 +1,10 @@
 # TRespelling.cs
-Hash: `9b028c6a6eb94ab3`
+Hash: `75ffcbe41bb3b86c`
 
 ## `public sealed class TRespelling`
 
 Covers the built-in reading cleanup and the pack-declared respelling groups.
+A reflex guise shows the respelling only while respelled and filled, and the phonetic otherwise.
 The cleanup drops syllable dots and every whitespace while stress marks and tie bars survive.
 Rules run in written order, so a later rule sees the earlier rule's output.
 A scoped group skips an untagged reading and one of another variety, and an unscoped group takes both.

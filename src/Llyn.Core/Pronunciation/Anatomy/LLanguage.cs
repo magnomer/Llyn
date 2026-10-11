@@ -28,7 +28,6 @@ public sealed record LLanguage(
     IReadOnlyList<LAnatomyRule>? LLanguageAnatomies = null,
     IReadOnlyList<LDescent>? LLanguageDescents = null,
     LShengfuRule? LLanguageShengfu = null,
-    bool LLanguageSpaced = true,
     LReflexOrder? LLanguageReflexOrder = null,
     LInflectionBook? LLanguageInflection = null)
 {

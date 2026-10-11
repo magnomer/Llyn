@@ -174,7 +174,7 @@ public sealed class CKindred
         return CRespelling.LRespellingReflexScan(
             _cKindredReflexPort,
             content.LEntryDraftLanguage,
-            CReflexDraft.CReflexDraftRead(content.LEntryDraftReflexes));
+            content.LEntryDraftReflexes);
     }
 
     private static IReadOnlyList<CReflexHead> LKindredLeadRead(IReadOnlyList<LReflexDraft> typed)

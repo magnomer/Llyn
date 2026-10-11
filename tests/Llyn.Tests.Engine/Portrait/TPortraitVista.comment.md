@@ -1,24 +1,24 @@
 # TPortraitVista.cs
-Hash: `3533e61ef4ef0090`
+Hash: `22284381645c0ddc`
 
 ## `public sealed class TPortraitVista`
 
-Portrait export and printing resolve content from the view's selection.
-An empty Entry selection produces no file or print job.
+Portrait export and the print press resolve content from the view's selection.
+An empty Entry selection writes no file and opens no press.
 A catalog selection resolves the catalog's own subject.
 
 ## `public async Task Export_Vista_UsesChosenEntryAndDoesNotCreateAFileForEmptySelection()`
 
 Exporting without a chosen Entry leaves no output file.
-Choosing one writes its content to the portrait.
+Choosing one writes a file holding its headword.
 
 ## `public async Task Print_Vista_UsesChosenEntryAndIgnoresClearedSelection()`
 
-Printing after another Entry was chosen and then cleared submits nothing.
-A selected Entry then prints its content with the requested ticket.
-The printed text holds no trace of the cleared one.
+Opening the press after another Entry was chosen and then cleared hands it nothing.
+A selected Entry then opens the press over its content.
+The opened sheet holds no trace of the cleared one.
 
 ## `public async Task Print_CatalogVista_ResolvesItsSubject()`
 
-A selected Example in the corpus view prints the Example text.
+A selected Example in the corpus view opens the press over the Example text.
 Portrait resolution therefore works for catalog subjects too.

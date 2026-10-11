@@ -20,6 +20,18 @@ public sealed class TRespelling
         Assert.Equal(expected, TInterface.TReadingNormalize(phonetic));
     }
 
+    [Theory]
+    [InlineData(true, "respelt", "respelt")]
+    [InlineData(true, "", "ipa")]
+    [InlineData(true, null, "ipa")]
+    [InlineData(false, "respelt", "ipa")]
+    public void ReflexGuiseRead_RespelledSwitch_PicksShownText(bool respelled, string? respelling, string expected)
+    {
+        LReflexGuise guise = TInterface.TReflexGuiseCreate(respelled, false, false);
+
+        Assert.Equal(expected, guise.TReflexGuiseRead("ipa", respelling));
+    }
+
     [Fact]
     public void RespellingRuleCreate_SamePatternAndReplacement_AreEqual()
     {

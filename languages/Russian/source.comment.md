@@ -1,10 +1,11 @@
 # source.json
-Hash: `fc465b653a78d258`
+Hash: `2be274be0753c9e2`
 
 ## pack
 
 Language pack for Russian.
 The pack format is documented in `languages/English/source.comment.md`.
+Section heading anchors allow attributes before `id`, which the REST rendering writes there.
 No varieties are declared, so every reading is the standard Moscow one.
 No respelling groups are declared, so every reading shows as its source wrote it.
 Segoe UI and Georgia both carry Cyrillic, so the typography blocks stay as the other packs write them.

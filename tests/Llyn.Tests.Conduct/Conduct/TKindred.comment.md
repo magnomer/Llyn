@@ -1,5 +1,5 @@
 # TKindred.cs
-Hash: `d1b75d1196aef62b`
+Hash: `bb5d0d3788c3884f`
 
 ## `public sealed class TKindred`
 
@@ -104,3 +104,8 @@ Saves an entry with the reflex rows the test names.
 ### `private static CPhonologyBundle TKindredGuisePrepare(bool respelled = false)`
 
 Fakes the guise answer so every row is respelled or plain as the test needs.
+
+### `private static LReflexGuise TKindredGuiseCreate(bool respelled, LReflexDraft row)`
+
+Builds one folded guise whose shown text follows the guise rule over the row's text and respelling.
+So the fake answers what the engine would.

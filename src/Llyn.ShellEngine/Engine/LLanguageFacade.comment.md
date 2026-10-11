@@ -1,5 +1,5 @@
 # LLanguageFacade.cs
-Hash: `000e9cdaca456dc7`
+Hash: `22bf9bcec6db6495`
 
 ## `public sealed class LLanguageFacade : LGlyphPort, LLanguagePort`
 
@@ -43,6 +43,8 @@ A settings file names a language the workspace may lack, so the pick checks the 
 
 The typography the pack declares for one role: the headword, an example line, a gloss, or a glyph chip.
 The glyph role falls back to the example typography when the section names no font.
+A blank language answers `LFont(null, 0)` without loading a pack, so the theme's font stands.
+This is the one owner of that guard, shared by the view and the Livery page.
 
 ## `public Task<string?> LEngineFlagRead(string language, CancellationToken cancellation)`
 
@@ -81,11 +83,6 @@ It reads the pack from the engine's cache, so a menu reopened does not reparse t
 
 Reports whether the pack asks the UI to label a reading's variety by flag rather than by name.
 It reads the cached pack as `LEngineVarietyRead` does.
-
-## `internal bool LEngineSpacedCheck(string language)`
-
-Reports whether the pack spaces its words, which picks the lexical units an entry is offered.
-An empty language reads as spaced, the default of every pack.
 
 ## `public bool LEngineFlaggedCheck(LEntryDraft draft)`
 
@@ -145,6 +142,12 @@ The gate is taken only to read the clerk field, which a rig apply replaces.
 
 The draft's transcription rows split by its glyph section, as an editor lists them, through the language clerk.
 The gate is taken only to read the clerk field, as for the transcription rows.
+
+## `LGlyph? LGlyphPort.LEngineGlyphRead(LEntryDraft draft)`
+
+The glyph port's read, answering the glyph section of the draft's language.
+It is explicit because the public read of that name answers the split rows instead.
+It forwards to the read by language, so both answer the same section.
 
 ## `public LGlyph? LEngineGlyphRead(string language)`
 

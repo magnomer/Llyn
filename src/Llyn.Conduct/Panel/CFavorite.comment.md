@@ -1,9 +1,9 @@
 # CFavorite.cs
-Hash: `cbae86831e4a3dd1`
+Hash: `54ea336508512b06`
 
 ## `public sealed class CFavorite`
 
-The favorites panel: the marked entries and the panel over their vista.
+The favorites panel, holding the marked entries and the panel over their vista.
 It finds the rows, while the panel's aperture takes the query, order and language filter.
 Its panel loads, edits and deletes the chosen entry, and its own editor edits it.
 It also prints and exports the chosen entry.
@@ -16,7 +16,7 @@ It registers its vista restore and its close with the workspace.
 The panel asks the editor's desk before it leaves an entry, and finishes through the editor.
 A cleared panel empties the editor, and an edited row opens in it.
 The editor's display follows the panel, so each draft it loads opens the reading view.
-It restores its vistas last, so a built area already stands on started vistas.
+It restores its vista last, so a built panel already stands on a started vista.
 
 ## `public static CFavorite CFavoriteCreate(CAtelier atelier, Func<bool> shownSeam, CEnvoy envoy, Action<Action> marshal)`
 
@@ -92,9 +92,9 @@ The file name an export of the chosen entry is offered under.
 
 ## `public Task CFavoritePortraitPrint()`
 
-Prints the chosen entry.
-The reader is asked for the printer through the panel's envoy, and a decline prints nothing.
-`CPortrait` words the page through the engine and shows `Print.Failed` through the panel's envoy.
+Opens the print window on the chosen entry.
+The print window chooses the printer and layout, and a window closed unprinted prints nothing.
+`CPortrait` opens the session through the engine and shows `Print.Failed` through the panel's envoy if it cannot.
 
 ## `public Task CFavoritePortraitExport()`
 

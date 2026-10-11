@@ -1,5 +1,5 @@
 # LEntryPort.cs
-Hash: `c26f5d2b58d9b842`
+Hash: `f364cbbcc156a244`
 
 ## `public interface LEntryPort`
 
@@ -31,9 +31,15 @@ The written reflex rows of the draft, which a reading view lists.
 
 The id of the entry a glyph cell opens, made when none exists yet.
 
-## `string LEngineUnitFormat(LUnit unit);`
+## `static string LEngineUnitFormat(LUnit unit)`
 
 The localization key that names a lexical unit, empty when none is chosen.
+It is static, since the key depends on no workspace, and the unit clerk owns the wording.
+
+## `static string LEngineFreedomFormat(LFreedom freedom)`
+
+The localization key that names a freedom, empty when none is chosen.
+It is static for the same reason, and the freedom clerk owns the wording.
 
 ## `(LOwner, int)? LEngineCardFind(LEntryDraft draft, long id);`
 

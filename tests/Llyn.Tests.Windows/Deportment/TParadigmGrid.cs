@@ -64,7 +64,11 @@ public sealed class TParadigmGrid
             application.Resources["Theme.Paradigm.Marked"] = marked;
             try
             {
-                QParadigm box = new() { QParadigmSheet = TParadigmSheetCreate([new CParadigmMark(1, 2)]) };
+                QParadigm box = new() { QParadigmSheet = TParadigmSheetCreate([
+                    new CParadigmPiece("t", false, false),
+                    new CParadigmPiece("uv", true, false),
+                    new CParadigmPiece("e", false, false),
+                ]) };
                 Grid collapsed = (Grid)TParadigmPartsRead(box)[2];
                 TextBlock form = collapsed.Children.OfType<TextBlock>().Single(block => block.Inlines.Count > 0);
                 List<Run> runs = form.Inlines.OfType<Run>().ToList();
@@ -99,7 +103,8 @@ public sealed class TParadigmGrid
             application.Resources["Theme.Paradigm.Cut"] = cut;
             try
             {
-                QParadigm box = new() { QParadigmSheet = TParadigmSheetCreate([new CParadigmMark(0, 4)], "tengo", 4) };
+                QParadigm box = new() { QParadigmSheet = TParadigmSheetCreate(
+                    [new CParadigmPiece("teng", true, true), new CParadigmPiece("o", false, false)]) };
                 Grid collapsed = (Grid)TParadigmPartsRead(box)[2];
                 TextBlock form = collapsed.Children.OfType<TextBlock>().Single(block => block.Inlines.Count > 0);
                 List<Run> runs = form.Inlines.OfType<Run>().ToList();
@@ -131,10 +136,17 @@ public sealed class TParadigmGrid
                 [],
                 [
                     new CParadigmLine(
-                        "Inflection.Indicative", "Inflection.Present", [new CParadigmForm("tengo", [], null)]),
-                    new CParadigmLine("", "Inflection.Preterite", [new CParadigmForm("tuve", [], null)]),
+                        "Inflection.Indicative",
+                        "Inflection.Present",
+                        [new CParadigmForm([new CParadigmPiece("tengo", false, false)], null)]),
                     new CParadigmLine(
-                        "Inflection.Subjunctive", "Inflection.Present", [new CParadigmForm("tenga", [], null)]),
+                        "",
+                        "Inflection.Preterite",
+                        [new CParadigmForm([new CParadigmPiece("tuve", false, false)], null)]),
+                    new CParadigmLine(
+                        "Inflection.Subjunctive",
+                        "Inflection.Present",
+                        [new CParadigmForm([new CParadigmPiece("tenga", false, false)], null)]),
                 ]);
             QParadigm box = new()
             {
@@ -164,18 +176,21 @@ public sealed class TParadigmGrid
     }
 
     private static QParadigmSheet? TParadigmSheetCreate(
-        IReadOnlyList<CParadigmMark> marks, string text = "tuve", int split = 0)
+        IReadOnlyList<CParadigmPiece> pieces)
     {
         CParadigmTable collapsed = new(
             [],
             [new CParadigmLine(
-                "Inflection.Indicative", "Inflection.Preterite", [new CParadigmForm(text, marks, null, split)])]);
+                "Inflection.Indicative", "Inflection.Preterite", [new CParadigmForm(pieces, null)])]);
         CParadigmTable expanded = new(
             ["Inflection.FirstSingular", "Inflection.SecondSingular"],
             [new CParadigmLine(
                 "Inflection.Indicative",
                 "Inflection.Preterite",
-                [new CParadigmForm(text, marks, null, split), new CParadigmForm("…", [], "Paradigm.Pending")])]);
+                [
+                    new CParadigmForm(pieces, null),
+                    new CParadigmForm([new CParadigmPiece("…", false, false)], "Paradigm.Pending"),
+                ])]);
         return QParadigmSheet.QParadigmSheetCreate(new CParadigmView(collapsed, expanded));
     }
 

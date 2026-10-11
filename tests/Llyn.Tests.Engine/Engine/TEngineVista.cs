@@ -177,12 +177,12 @@ public sealed class TEngineVista
             engine.TEngineEntryFind(vista).Where(row => row.LVistaRowChosen).Select(row => row.LVistaRowId));
     }
 
-    internal static LEntry TVistaEntryCreate(LEngine engine, string headword, string language)
+    internal static LEntry TVistaEntryCreate(LEngine engine, string headword, string language, string sound = "")
     {
         return engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
             headword,
             language,
-            string.Empty,
+            sound,
             string.Empty,
             [TInterface.TCardDraftCreate(
                 string.Empty,

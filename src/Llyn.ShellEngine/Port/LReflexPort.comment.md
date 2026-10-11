@@ -1,5 +1,5 @@
 # LReflexPort.cs
-Hash: `e2eb9636b1fea203`
+Hash: `6ad575ab8075b1ee`
 
 ## `public interface LReflexPort`
 
@@ -18,9 +18,10 @@ Whether the entry's reflex readings are still being fetched.
 
 Fetches the entry's reflex readings again.
 
-## `IReadOnlyList<LReflexGuise> LEngineGuiseRead(string language, IReadOnlyList<string> reflexes);`
+## `IReadOnlyList<LReflexGuise> LEngineGuiseRead(string language, IReadOnlyList<LReflexDraft> reflexes);`
 
-How each reflex row prints, one answer per language in `reflexes`, in order.
+How each reflex row prints, one answer per row in `reflexes`, in order.
+Each answer carries the row's ready shown text, so no caller applies the respelling rule.
 The fold set is the one the pack of the entry's `language` declares.
 
 ## `bool LEngineSpreadCheck(long entryId);`

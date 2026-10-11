@@ -1,5 +1,5 @@
 # QDial.cs
-Hash: `7d743e8172ccbbba`
+Hash: `7d06c7dba2fb4048`
 
 ## `internal sealed class QDial`
 
@@ -23,3 +23,4 @@ A name the table lacks collapses every page.
 ## `private (string QDialChild, StackPanel QDialPage)[] QDialTableRead()`
 
 Pairs each group's name with the page the markup draws for it, in the catalog's order.
+The Sync group draws the page named `PDialOutpost`, since `Sync` is a verb and names no page.

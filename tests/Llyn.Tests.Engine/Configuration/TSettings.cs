@@ -291,6 +291,33 @@ public sealed class TSettings
         Assert.Equal(0, count);
     }
 
+    [Theory]
+    [InlineData("  Lexicon  ", "Lexicon")]
+    [InlineData("   ", "Llyn")]
+    public void NotebookSave_TypedTitle_StoresTheResolvedTitle(string typed, string stored)
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        string answered = engine.TEngineNotebookSave(typed);
+
+        Assert.Equal(stored, answered);
+        Assert.Equal(stored, engine.TEngineSettingsRead().LSettingsNotebook);
+        Assert.Equal(stored, TInterface.TSettingsLoad(workspace.TWorkspaceFolder).LSettingsNotebook);
+    }
+
+    [Theory]
+    [InlineData("{ \"localization\": \"en\" }")]
+    [InlineData("{ \"localization\": \"en\", \"notebook\": \" \" }")]
+    [InlineData("{ \"localization\": \"en\", \"notebook\": 7 }")]
+    public void SettingsLoad_NotebookAbsentOrBlank_LoadsLlyn(string json)
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        File.WriteAllText(Path.Combine(workspace.TWorkspaceFolder, "settings.json"), json);
+
+        Assert.Equal("Llyn", TInterface.TSettingsLoad(workspace.TWorkspaceFolder).LSettingsNotebook);
+    }
+
     [Fact]
     public void SettingsChange_Changed_RaisesBulletinOnce()
     {

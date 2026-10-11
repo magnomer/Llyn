@@ -1,5 +1,5 @@
 # LGraspPort.cs
-Hash: `462550ecc6136ead`
+Hash: `9099a47b67179e94`
 
 ## `public interface LGraspPort`
 
@@ -22,3 +22,8 @@ A missing entry reads zero, the same as one never rated.
 ## `void LEngineGraspSave(long entryId, int grasp);`
 
 Writes the grasp, then raises a Grasp bulletin for the entry.
+
+## `static LGraspStar LEngineStarScan(int limit)`
+
+Passes `LGraspClerk.LGraspClerkScan` on unchanged.
+Application builds the star answers, so the port calls no Core method.

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -15,7 +16,15 @@ public interface LEntryPort
 
     long LEngineGlyphResolve(string character, string language);
 
-    string LEngineUnitFormat(LUnit unit);
-
     (LOwner, int)? LEngineCardFind(LEntryDraft draft, long id);
+
+    static string LEngineUnitFormat(LUnit unit)
+    {
+        return LUnitClerk.LUnitFormat(unit);
+    }
+
+    static string LEngineFreedomFormat(LFreedom freedom)
+    {
+        return LFreedomClerk.LFreedomFormat(freedom);
+    }
 }

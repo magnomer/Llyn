@@ -1,5 +1,5 @@
 # TEngineReflex.cs
-Hash: `c3375cfd41eb4e18`
+Hash: `a2e632174bd7534c`
 
 ## `public sealed class TEngineReflex`
 
@@ -9,6 +9,8 @@ The guise of each reflex row folds its trimmed language when the entry's pack fo
 A padded language reads the same guise as the bare one.
 A guise flags a language phonemic only when its pack says so, so its respelling takes slashes.
 A blank entry language folds nothing.
+With the respelling switch on, a guise shows the respelling only where the pack respells and one is filled.
+The guise reads build their bare rows by language through `TReflexRowScan`.
 A find fetches each rule's page for the character and reads one row per match.
 Found rows list by the pack's declared order rule, the one a stored read follows.
 The format fills its slots from the named groups, and a double-bracketed piece is dropped when its group is empty.

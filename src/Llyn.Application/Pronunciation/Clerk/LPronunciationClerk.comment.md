@@ -1,5 +1,5 @@
 # LPronunciationClerk.cs
-Hash: `8397c38b19ddc0b8`
+Hash: `e2299bcbc0df24e1`
 
 ## `public sealed class LPronunciationClerk`
 
@@ -12,9 +12,12 @@ It runs over the pronunciation port of one rig and the trail and workspace root 
 
 Reads the entry and pronunciation ports, the trail and the workspace root out of `rig`.
 
-## `public IReadOnlyList<LCatalogPronunciation> LPronunciationClerkFind(string query, LCatalogOrder order)`
+## `public IReadOnlyList<LCatalogPronunciation> LPronunciationClerkFind(string query, LCatalogOrder order, Func<string, bool> respelled)`
 
 The pronunciation catalog: every entry matching `query` with its first reading, sorted.
+The reading is the stored respelling where `respelled` answers true for the entry's language and one is stored.
+The pending ordering keeps only entries with no reading, and every other ordering keeps only those with one.
+The phonology list thus never mixes the two kinds.
 
 ## `public static IReadOnlyList<LCatalogPronunciation> LPronunciationClerkFind(IReadOnlyList<LCatalogPronunciation> rows, LCatalogFilter filter)`
 

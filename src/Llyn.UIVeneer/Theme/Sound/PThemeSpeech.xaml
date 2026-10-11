@@ -25,10 +25,12 @@
     </Style>
 
     <Style x:Key="Theme.Unit.Name" TargetType="TextBlock">
-        <Setter Property="Margin" Value="0,0,0,7" />
+        <Setter Property="Margin" Value="0,0,6,7" />
         <Setter Property="FontSize" Value="12" />
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
     </Style>
+
+    <Style x:Key="Theme.Freedom.Name" TargetType="TextBlock" BasedOn="{StaticResource Theme.Unit.Name}" />
 
 </ResourceDictionary>

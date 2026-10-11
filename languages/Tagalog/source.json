@@ -24,7 +24,7 @@
             "https://en.wiktionary.org/wiki/{word}"
           ],
           "strategy": "span",
-          "match": "<h2 id=\"Tagalog\"(?:(?!<span class=\"IPA nowrap\">)(?!<h2 )[\\s\\S])*?<span class=\"IPA nowrap\">",
+          "match": "<h2[^>]* id=\"Tagalog\"(?:(?!<span class=\"IPA nowrap\">)(?!<h2 )[\\s\\S])*?<span class=\"IPA nowrap\">",
           "normalize": true
         }
       ]
@@ -40,7 +40,7 @@
             "https://en.wiktionary.org/wiki/{word}"
           ],
           "strategy": "regex",
-          "match": "<h2 id=\"Tagalog\"(?:(?!<h2 )[\\s\\S])*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/Tl-[^\"/]*\\.mp3)",
+          "match": "<h2[^>]* id=\"Tagalog\"(?:(?!<h2 )[\\s\\S])*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/Tl-[^\"/]*\\.mp3)",
           "group": 1,
           "prefix": "https:"
         },

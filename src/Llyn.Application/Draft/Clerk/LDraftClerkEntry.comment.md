@@ -1,21 +1,21 @@
 # LDraftClerkEntry.cs
-Hash: `982b38632e000d4e`
+Hash: `162ea5dbe85d7507`
 
 ## `public sealed class LDraftClerkEntry`
 
-The entry-level fields of a draft: headword, language, note, parts of speech and lexical unit.
+The entry-level fields of a draft: headword, language, note, parts of speech, lexical unit and freedom.
 Each is held by the entry itself and replaced whole by its request, outside any card or row list.
 
 ## `public LDraftClerkEntry(LLanguageCache languages)`
 
-Holds the pack cache a language change rebuilds respellings, anatomy and unit through.
+Holds the pack cache a language change rebuilds respellings and anatomy through.
 
 ## `public LEntryDraft? LEntryApply(LEntryDraft content, LRequest request)`
 
 Routes every entry-field request to its field, and answers null for any other request.
 The clerk then tries the other row clerks on that request.
 A language change derives every pronunciation respelling again and recuts every reflex row's anatomy under the new pack.
-It also settles the lexical unit to one the new language offers.
+A language change leaves the unit and the freedom as they are, since the user alone chooses them.
 A null text is read as empty, so a request can never leave a null where the draft holds text.
 A headword or language change drops no recording here.
 The engine does that after the apply, since only it can read the stored entry the draft edits.

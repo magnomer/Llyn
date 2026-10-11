@@ -1,5 +1,5 @@
 # LPortraitClerk.cs
-Hash: `a540ae07c3d4080b`
+Hash: `fb313b27df89267b`
 
 ## `public sealed class LPortraitClerk`
 
@@ -17,7 +17,7 @@ Keeps the clerks each section reads through.
 
 The page of one entry, refused when the entry no longer stands.
 Sections come in display order, then the readings with respelling and phonemic marks decided per language.
-The speech chips open with the name of the entry's lexical unit when one is chosen.
+The speech chips open with the name of the entry's lexical unit, then its freedom, each when chosen.
 A failing favorite check throws rather than showing the entry as no favorite.
 A false `fetch` reads stored frequencies only, so a push over every entry starts no network fetch.
 

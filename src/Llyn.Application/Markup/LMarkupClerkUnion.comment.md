@@ -1,5 +1,5 @@
 # LMarkupClerkUnion.cs
-Hash: `36a053e2205930c0`
+Hash: `d42aa146529428a9`
 
 ## `public static class LMarkupClerkUnion`
 
@@ -11,7 +11,7 @@ Rows are matched on normalized text, so a retyped row with the same words is one
 
 The loaded draft with every parsed list appended and the cards re-placed.
 The stored etymology stands, and the file's is taken only when the entry has none.
-The stored lexical unit stands the same way.
+The stored lexical unit and freedom each stand the same way.
 
 ## `private static IReadOnlyList<LMarkupRow> LMarkupRowAppend<LMarkupRow>(IReadOnlyList<LMarkupRow> loaded, IReadOnlyList<LMarkupRow> parsed, Func<LMarkupRow, string> key)`
 

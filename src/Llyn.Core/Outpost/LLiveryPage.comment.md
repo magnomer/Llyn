@@ -1,7 +1,7 @@
 # LLiveryPage.cs
-Hash: `42ba306be5ca3197`
+Hash: `634bf57597a8ae9f`
 
-## `public sealed record LLiveryPage(LEntryDraft LLiveryPageDraft, bool LLiveryPageFavorite, int LLiveryPageGrasp, string LLiveryPageCreated, string LLiveryPageUpdated, LAccentSheet LLiveryPageAccent, IReadOnlyList<LReflexGuise> LLiveryPageGuise, IReadOnlyList<string> LLiveryPageFolded, IReadOnlySet<long> LLiveryPageFold, IReadOnlyList<LTranscriptionDraft> LLiveryPageTranscription, LGlyph? LLiveryPageGlyph, IReadOnlyList<LGlyphCell> LLiveryPageCell, IReadOnlyList<LFrequency> LLiveryPageFrequency, IReadOnlyList<LParadigmRow> LLiveryPageParadigm, LParadigmView? LLiveryPageInflection, IReadOnlyList<LFanqieGroup> LLiveryPageFanqie, IReadOnlyList<LScriptGroup> LLiveryPageScript, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> LLiveryPageTarget, IReadOnlyDictionary<long, string> LLiveryPageSource, IReadOnlyList<LUsage> LLiveryPageIncoming, IReadOnlyList<LTranslationTarget> LLiveryPageEtymon, IReadOnlyDictionary<string, string> LLiveryPageBanner, IReadOnlyDictionary<string, string> LLiveryPageEnsign)`
+## `public sealed record LLiveryPage(LEntryDraft LLiveryPageDraft, bool LLiveryPageFavorite, int LLiveryPageGrasp, string LLiveryPageCreated, string LLiveryPageUpdated, LAccentSheet LLiveryPageAccent, IReadOnlyList<LReflexGuise> LLiveryPageGuise, IReadOnlyList<string> LLiveryPageFolded, IReadOnlySet<long> LLiveryPageFold, IReadOnlyList<LTranscriptionDraft> LLiveryPageTranscription, LGlyph? LLiveryPageGlyph, IReadOnlyList<LGlyphCell> LLiveryPageCell, IReadOnlyList<LFrequency> LLiveryPageFrequency, IReadOnlyList<LParadigmRow> LLiveryPageParadigm, LParadigmView? LLiveryPageInflection, IReadOnlyList<LFanqieGroup> LLiveryPageFanqie, IReadOnlyList<LScriptGroup> LLiveryPageScript, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> LLiveryPageTarget, IReadOnlyDictionary<long, string> LLiveryPageSource, IReadOnlyList<LUsage> LLiveryPageIncoming, IReadOnlyList<LTranslationTarget> LLiveryPageEtymon, IReadOnlyDictionary<string, string> LLiveryPageBanner, IReadOnlyDictionary<string, string> LLiveryPageEnsign, IReadOnlyList<LParadigmShown> LLiveryPageShown, IReadOnlyDictionary<LFontRole, LFont> LLiveryPageFont, IReadOnlySet<LFoldBox> LLiveryPageOpened, string LLiveryPageReading)`
 
 `LLiveryClerk.LLiveryClerkBuild` constructs it from the answers `LLiveryFacade.LEngineLiveryRead` gathers.
 `LCourierClerk.LCourierClerkSend` passes the read on, and `LCourierNote.LCourierEntrySend` hands one per entry to `LLivery.LLiveryFormat`.
@@ -35,3 +35,8 @@ Hash: `42ba306be5ca3197`
 - `LLiveryPageBanner` maps each language the page names to its stored flag file path from `LLanguageFlagFind`.
   A language with no stored flag file has no entry in it.
 - `LLiveryPageEnsign` maps each flagged variety to its stored flag file path from `LVarietyFlagScan`.
+- `LLiveryPageShown` holds one `LParadigmShown` per `LLiveryPageParadigm` row, in the same order.
+  Each is the shown text and tip the view paints for that row, never held.
+- `LLiveryPageFont` maps the headword and glyph roles to the draft language's fonts from `LEngineFontRead`.
+- `LLiveryPageOpened` holds each `LFoldBox` that `LEngineBoxCheck` finds open for the entry.
+- `LLiveryPageReading` is the fanqie reading line `LFanqieClerkFormat` makes for the draft's headword.

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -25,6 +27,12 @@ public sealed class QGraspStar
 
     private readonly ImageSource _qGraspStarImage;
 
+    private IReadOnlyList<IReadOnlyList<int>> _qGraspFill = [];
+
+    private IReadOnlyList<bool> _qGraspUnrated = [];
+
+    private IReadOnlyList<IReadOnlyList<int>> _qGraspHit = [];
+
     public QGraspStar(
         FrameworkElement grasp,
         DependencyProperty step,
@@ -50,22 +58,34 @@ public sealed class QGraspStar
 
     private int QGraspLast => (int)_qGraspElement.GetValue(_qGraspLimit);
 
-    private int QGraspStarCount => (QGraspLast + 1) / 2;
+    public void QGraspStarRefine(
+        IReadOnlyList<IReadOnlyList<int>> fill,
+        IReadOnlyList<bool> unrated,
+        IReadOnlyList<IReadOnlyList<int>> hit)
+    {
+        _qGraspFill = fill;
+        _qGraspUnrated = unrated;
+        _qGraspHit = hit;
+        _qGraspElement.InvalidateMeasure();
+        _qGraspElement.InvalidateVisual();
+    }
 
     public Size QGraspSizeDraw()
     {
-        return new Size(
-            QGraspStarCount * QGraspStarSize + Math.Max(0, QGraspStarCount - 1) * QGraspStarGap + 2 * QGraspHitSlack,
-            QGraspStarSize + 2 * QGraspHitSlack);
+        double width = 2 * QGraspHitSlack;
+        double gap = 0;
+        foreach (IReadOnlyList<int> _ in _qGraspHit)
+        {
+            width += gap + QGraspStarSize;
+            gap = QGraspStarGap;
+        }
+
+        return new Size(width, QGraspStarSize + 2 * QGraspHitSlack);
     }
 
     public void QGraspHoverRefine(Point point)
     {
-        int hovered = QGraspStepDraw(point);
-        if (QGraspHover != hovered)
-        {
-            QGraspPreviewRefine(hovered);
-        }
+        QGraspPreviewRefine(QGraspStepDraw(point));
     }
 
     public void QGraspLeaveRefine()
@@ -109,31 +129,45 @@ public sealed class QGraspStar
     public void QGraspDraw(DrawingContext context, Brush fill, Brush empty, Brush unrated, Brush preview)
     {
         int shown = QGraspPointed;
-        Brush back = shown == 0 ? unrated : empty;
+        IReadOnlyList<int> fills = _qGraspFill.ElementAtOrDefault(shown) ?? [];
+        Brush back = empty;
+        double faded = 0.55;
+        if (_qGraspUnrated.ElementAtOrDefault(shown))
+        {
+            back = unrated;
+            faded = 0.35;
+        }
+
         Brush front = QGraspHover is null ? fill : preview;
 
         context.DrawRectangle(Brushes.Transparent, null, new Rect(_qGraspElement.RenderSize));
         context.PushTransform(new TranslateTransform(QGraspHitSlack, QGraspHitSlack));
         double pitch = QGraspStarSize + QGraspStarGap;
         Rect frame = new(0, 0, QGraspStarSize, QGraspStarSize);
+        double left = 0;
 
-        for (int star = 0; star < QGraspStarCount; star++)
+        foreach (int filled in fills)
         {
-            int filled = Math.Clamp(shown - star * 2, 0, 2);
-            context.PushTransform(new TranslateTransform(star * pitch, 0));
-            context.PushOpacity(shown == 0 ? 0.35 : 0.55);
+            double? clip = filled switch
+            {
+                2 => QGraspStarSize,
+                1 => QGraspStarSize / 2,
+                _ => null,
+            };
+            context.PushTransform(new TranslateTransform(left, 0));
+            context.PushOpacity(faded);
             QGraspStarDraw(context, back, frame);
             context.Pop();
 
-            if (filled > 0)
+            if (clip is double width)
             {
-                context.PushClip(new RectangleGeometry(
-                    new Rect(0, 0, filled == 2 ? QGraspStarSize : QGraspStarSize / 2, QGraspStarSize)));
+                context.PushClip(new RectangleGeometry(new Rect(0, 0, width, QGraspStarSize)));
                 QGraspStarDraw(context, front, frame);
                 context.Pop();
             }
 
             context.Pop();
+            left += pitch;
         }
 
         context.Pop();
@@ -163,9 +197,19 @@ public sealed class QGraspStar
     {
         double pitch = QGraspStarSize + QGraspStarGap;
         double x = point.X - QGraspHitSlack + QGraspStarGap / 2;
-        int star = (int)Math.Floor(x / pitch);
-        star = Math.Clamp(star, 0, Math.Max(0, QGraspStarCount - 1));
-        double within = x - star * pitch;
-        return Math.Min(QGraspLast, star * 2 + (within < pitch / 2 ? 1 : 2));
+        double left = 0;
+        int step = 0;
+        foreach (IReadOnlyList<int> hit in _qGraspHit)
+        {
+            step = x - left < pitch / 2 ? hit[0] : hit[1];
+            if (x < left + pitch)
+            {
+                break;
+            }
+
+            left += pitch;
+        }
+
+        return step;
     }
 }

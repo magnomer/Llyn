@@ -27,6 +27,11 @@ The `span` strategy is a tolerant nested-span IPA reader.
 A search answer can so be narrowed to the file that carries exactly it.
 `normalize` strips IPA delimiters and entities.
 `prefix` makes a captured site-relative address absolute.
+An attempt's `urls` are asked in order, and only the first page that answers is read.
+A pattern that misses on that page never falls through to the next URL.
+So every pattern must fit each rendering its attempt lists.
+Wiktionary's REST rendering writes other attributes before `id` on a section heading.
+So a section anchor reads `<h2[^>]* id="Name"` and never `<h2 id="Name"`.
 The `link` strategy reads nothing and answers the address the attempt fetched, once the fetch succeeded.
 It serves a speech service whose address is itself the recording.
 `{headword}` inside a URL is the headword as typed, before any `spelling` rule ran.

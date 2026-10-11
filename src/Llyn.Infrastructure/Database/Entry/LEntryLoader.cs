@@ -56,7 +56,8 @@ public sealed class LEntryLoader
             transcriptions,
             reflexes,
             etymology,
-            entry.LEntryUnit);
+            entry.LEntryUnit,
+            entry.LEntryFreedom);
     }
 
     private LEtymologyDraft LEntryEtymologyRead(long id)

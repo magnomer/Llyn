@@ -1,5 +1,5 @@
 # LSettingsLoader.cs
-Hash: `b0e44ff1e0e7793e`
+Hash: `5c625f95d9fb5447`
 
 ## `public sealed class LSettingsLoader : LSettingsVault`
 
@@ -81,3 +81,9 @@ Anything else means the default Joplin port, so a hand-edited file never aims th
 
 The Joplin token is read under the `warrant` key, only as a string.
 Anything else means empty, so an older workspace starts with no token set.
+
+### `title.ValueKind == JsonValueKind.String`
+
+The Joplin notebook title is read under the `notebook` key, only as a string.
+The record trims it, and a blank or missing one becomes `Llyn`.
+So an older workspace keeps syncing into the notebook it always had.

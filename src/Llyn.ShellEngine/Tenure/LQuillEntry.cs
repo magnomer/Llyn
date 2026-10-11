@@ -53,14 +53,28 @@ public sealed class LQuillEntry
 
     public IReadOnlyList<LUnit> LQuillUnitScan()
     {
-        return LUnitClerk.LUnitScan(
-            _lQuillEntryTenure.LTenureEngine.LEngineLanguage.LEngineSpacedCheck(
-                _lQuillEntryTenure.LTenureLanguageRead()));
+        return LUnitClerk.LUnitScan();
     }
 
     public void LQuillUnitSet(LUnit unit)
     {
         _lQuillEntryTenure.LTenureRequestApply(new LRequestUnit(
             _lQuillEntryTenure.LTenureId, unit == LQuillUnitRead() ? LUnit.LUnitEmpty : unit));
+    }
+
+    public LFreedom LQuillFreedomRead()
+    {
+        return _lQuillEntryTenure.LTenureRead()?.LDraftContent.LEntryDraftFreedom ?? LFreedom.LFreedomEmpty;
+    }
+
+    public IReadOnlyList<LFreedom> LQuillFreedomScan()
+    {
+        return LFreedomClerk.LFreedomScan();
+    }
+
+    public void LQuillFreedomSet(LFreedom freedom)
+    {
+        _lQuillEntryTenure.LTenureRequestApply(new LRequestFreedom(
+            _lQuillEntryTenure.LTenureId, freedom == LQuillFreedomRead() ? LFreedom.LFreedomEmpty : freedom));
     }
 }

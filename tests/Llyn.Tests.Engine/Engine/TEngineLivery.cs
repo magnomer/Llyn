@@ -53,6 +53,28 @@ public sealed class TEngineLivery
     }
 
     [Fact]
+    public void LiveryFormat_MarkedWithoutChip_WritesNoChipLine()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "break", "English", "brejk", string.Empty, [TInterface.TCardCreate("to come apart", 1)], []));
+        LLiveryPage page = Assert.IsType<LLiveryPage>(engine.TLiveryRead(entry.LEntryId));
+        LLiveryPage marked = page with
+        {
+            LLiveryPageDraft = page.LLiveryPageDraft with
+            {
+                LEntryDraftSpeeches = [TInterface.TSpeechDraftCreate(1, string.Empty)],
+            },
+        };
+
+        string body = TInterface.TLiveryFormat(marked, static key => key).LLiveryNoteBody;
+
+        Assert.True(marked.LLiveryPageDraft.LEntryDraftMarked);
+        Assert.Equal(TInterface.TLiveryFormat(page, static key => key).LLiveryNoteBody, body);
+    }
+
+    [Fact]
     public void LiveryFormat_TonedContour_DrawsChartPerSyllable()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -333,5 +355,29 @@ public sealed class TEngineLivery
         Assert.Matches(
             new Regex(@"\.llyn \.llyn-inflection-full > summary \{[^}]*margin: 0 0 10px auto;[^}]*text-align: right;"),
             css);
+    }
+
+    [Fact]
+    public void LiveryStyleFormat_ReflexTableInCard_KeepsReadingSizes()
+    {
+        string[] roles =
+        [
+            "ink", "muted", "line", "canvas", "surface", "accent", "accentSoft",
+            "situation", "situationSoft", "situationEdge", "surfaceRaised", "favorite",
+            "helper", "helperSoft", "helperEdge", "frequencyCore", "frequencyEveryday", "frequencyAdvanced",
+            "frequencyRare", "warning",
+        ];
+        LTheme theme = TInterface.TThemeCreate(
+            roles.ToDictionary(static role => role, static role => "var(--" + role + ")"));
+        const string reflex = ":has(> thead > tr > th:nth-child(7):last-child:empty)";
+
+        string css = TInterface.TLiveryStyleFormat(theme);
+
+        Assert.Contains(".llyn table" + reflex + " td:nth-child(-n+2) {", css, StringComparison.Ordinal);
+        Assert.Contains(".llyn table" + reflex + " td:nth-child(3) { font-size: 20px;", css, StringComparison.Ordinal);
+        Assert.Contains(".llyn table" + reflex + " td:nth-child(n+4) {", css, StringComparison.Ordinal);
+        Assert.DoesNotMatch(new Regex(@"\.llyn \.llyn-card (td|\.llyn-tone)"), css);
+        string card = Regex.Escape(".llyn .llyn-card table:where(:not(" + reflex + "))");
+        Assert.Matches(new Regex(card + @" td \{[^}]*font-size: 14px;"), css);
     }
 }

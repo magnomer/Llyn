@@ -1,5 +1,5 @@
 # LPortraitClerkLabel.cs
-Hash: `0d9717d181b0714e`
+Hash: `4613d16c9ca1a08e`
 
 ## `public static class LPortraitClerkLabel`
 
@@ -14,7 +14,8 @@ A legend is worded per kind by these words, so no caller names the kinds.
 ## `public static LPortraitLabel LPortraitLabelCreate(IReadOnlyList<string> words)`
 
 The label an entry page is worded with, taken word by word in the record's order.
-The last four words name the units Content, Function, Morpheme and Word, in that order.
+The next three words name the units Morpheme, Word and Expression, in that order.
+The last two name the freedoms Dependent and Standalone, in that order.
 It throws unless every one of the label's words is given.
 
 ## `public static LPortraitLegend LPortraitLegendCreate(IReadOnlyList<string> words, IReadOnlyDictionary<string, string> kinds)`

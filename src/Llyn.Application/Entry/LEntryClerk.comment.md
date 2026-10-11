@@ -1,5 +1,5 @@
 # LEntryClerk.cs
-Hash: `eda97c4e86297a83`
+Hash: `8ccf658f940e5999`
 
 ## `public sealed class LEntryClerk`
 
@@ -54,7 +54,7 @@ That is history that no longer describes the file.
 ## `public LEntry LEntryClerkSave(LEntryDraft draft, Dictionary<long, long> identity)`
 
 Saves the whole input form as one new entry.
-That is the headword row with its lexical unit, and its meanings and collocations in card order.
+That is the headword row with its lexical unit and freedom, and its meanings and collocations in card order.
 It is also its note, its inflections and its pronunciations when they carry anything.
 It is also its etymology, written in whichever of the two shapes the draft ended in.
 The note is stored as Markdown normalized by `LMarkdown`.
@@ -92,7 +92,7 @@ Applies `draft` to the entry identified by `id` and returns the stored entry as 
 A blank headword is refused before any session opens, and the headword is trimmed.
 The entry keeps its opaque id and its `added_utc`.
 Only `updated_utc` moves, and only when the draft differs from the entry as loaded with its recordings resolved.
-The headword, language and lexical unit are written together, only when the draft differs.
+The headword, language, lexical unit and freedom are written together, only when the draft differs.
 A changed headword or language clears stored frequencies through the clerk.
 No stale figure then appears under the new headword.
 An id no entry carries is refused before anything is written.

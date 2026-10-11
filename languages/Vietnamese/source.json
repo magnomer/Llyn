@@ -1,6 +1,5 @@
 {
   "language": "Vietnamese",
-  "spaced": false,
   "flag": "vn",
   "tonal": true,
   "font": {
@@ -37,19 +36,19 @@
             {
               "variety": "Northern",
               "strategy": "span",
-              "match": "<h2 id=\"Vietnamese\"(?:(?!<h2 )[\\s\\S])*?title=\"w:Hanoi\"[^>]*>[^<]*</a></span></span><span class=\"ib-brac qualifier-brac\">\\)</span> <a [^>]*>IPA</a>(?:(?!<span class=\"IPA)[\\s\\S])*?<span class=\"IPA nowrap\"[^>]*>",
+              "match": "<h2[^>]* id=\"Vietnamese\"(?:(?!<h2 )[\\s\\S])*?title=\"w:Hanoi\"[^>]*>[^<]*</a></span></span><span class=\"ib-brac qualifier-brac\">\\)</span> <a [^>]*>IPA</a>(?:(?!<span class=\"IPA)[\\s\\S])*?<span class=\"IPA nowrap\"[^>]*>",
               "normalize": true
             },
             {
               "variety": "Central",
               "strategy": "span",
-              "match": "<h2 id=\"Vietnamese\"(?:(?!<h2 )[\\s\\S])*?title=\"w:Huế\"[^>]*>[^<]*</a></span></span><span class=\"ib-brac qualifier-brac\">\\)</span> <a [^>]*>IPA</a>(?:(?!<span class=\"IPA)[\\s\\S])*?<span class=\"IPA nowrap\"[^>]*>",
+              "match": "<h2[^>]* id=\"Vietnamese\"(?:(?!<h2 )[\\s\\S])*?title=\"w:Huế\"[^>]*>[^<]*</a></span></span><span class=\"ib-brac qualifier-brac\">\\)</span> <a [^>]*>IPA</a>(?:(?!<span class=\"IPA)[\\s\\S])*?<span class=\"IPA nowrap\"[^>]*>",
               "normalize": true
             },
             {
               "variety": "Southern",
               "strategy": "span",
-              "match": "<h2 id=\"Vietnamese\"(?:(?!<h2 )[\\s\\S])*?title=\"w:Saigon\"[^>]*>[^<]*</a></span></span><span class=\"ib-brac qualifier-brac\">\\)</span> <a [^>]*>IPA</a>(?:(?!<span class=\"IPA)[\\s\\S])*?<span class=\"IPA nowrap\"[^>]*>",
+              "match": "<h2[^>]* id=\"Vietnamese\"(?:(?!<h2 )[\\s\\S])*?title=\"w:Saigon\"[^>]*>[^<]*</a></span></span><span class=\"ib-brac qualifier-brac\">\\)</span> <a [^>]*>IPA</a>(?:(?!<span class=\"IPA)[\\s\\S])*?<span class=\"IPA nowrap\"[^>]*>",
               "normalize": true
             }
           ]
@@ -93,24 +92,24 @@
             {
               "variety": "Northern",
               "strategy": "regex",
-              "match": "<h2 id=\"Vietnamese\"(?:(?!<h2 )[\\s\\S])*?<td>Audio(?:(?!</td>)[\\s\\S])*?title=\"w:Hanoi\"(?:(?!</tr>)[\\s\\S])*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*\\.mp3)",
+              "match": "<h2[^>]* id=\"Vietnamese\"(?:(?!<h2 )[\\s\\S])*?<td>Audio(?:(?!</td>)[\\s\\S])*?title=\"w:Hanoi\"(?:(?!</tr>)[\\s\\S])*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*\\.mp3)",
               "group": 1
             },
             {
               "variety": "Central",
               "strategy": "regex",
-              "match": "<h2 id=\"Vietnamese\"(?:(?!<h2 )[\\s\\S])*?<td>Audio(?:(?!</td>)[\\s\\S])*?title=\"w:Huế\"(?:(?!</tr>)[\\s\\S])*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*\\.mp3)",
+              "match": "<h2[^>]* id=\"Vietnamese\"(?:(?!<h2 )[\\s\\S])*?<td>Audio(?:(?!</td>)[\\s\\S])*?title=\"w:Huế\"(?:(?!</tr>)[\\s\\S])*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*\\.mp3)",
               "group": 1
             },
             {
               "variety": "Southern",
               "strategy": "regex",
-              "match": "<h2 id=\"Vietnamese\"(?:(?!<h2 )[\\s\\S])*?<td>Audio(?:(?!</td>)[\\s\\S])*?title=\"w:Saigon\"(?:(?!</tr>)[\\s\\S])*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*\\.mp3)",
+              "match": "<h2[^>]* id=\"Vietnamese\"(?:(?!<h2 )[\\s\\S])*?<td>Audio(?:(?!</td>)[\\s\\S])*?title=\"w:Saigon\"(?:(?!</tr>)[\\s\\S])*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*\\.mp3)",
               "group": 1
             },
             {
               "strategy": "regex",
-              "match": "<h2 id=\"Vietnamese\"(?:(?!<h2 )[\\s\\S])*?<td>Audio(?:(?!</td>|title=\"w:)[\\s\\S])*?</td>(?:(?!</tr>)[\\s\\S])*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*\\.mp3)",
+              "match": "<h2[^>]* id=\"Vietnamese\"(?:(?!<h2 )[\\s\\S])*?<td>Audio(?:(?!</td>|title=\"w:)[\\s\\S])*?</td>(?:(?!</tr>)[\\s\\S])*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*\\.mp3)",
               "group": 1
             }
           ]

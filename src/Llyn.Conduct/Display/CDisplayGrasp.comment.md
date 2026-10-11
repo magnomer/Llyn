@@ -1,5 +1,5 @@
 # CDisplayGrasp.cs
-Hash: `73c703c3cad06bed`
+Hash: `89f4790148ec0d3c`
 
 ## `public sealed class CDisplayGrasp`
 
@@ -22,6 +22,20 @@ A driver marshals it onto its own thread before it reads.
 
 The last grasp step, which the star control takes as its limit so it names no engine constant.
 It is never negative, since `LDisplay` raises a negative engine limit to zero.
+
+## `public IReadOnlyList<IReadOnlyList<int>> CDisplayGraspFill`
+
+Per step from zero to the limit, the ready fill of each star of the display's control.
+The driver hands it to the control once, so drawing requests no logic.
+
+## `public IReadOnlyList<bool> CDisplayGraspUnrated`
+
+Per step, whether the display's stars show the unrated look.
+
+## `public IReadOnlyList<IReadOnlyList<int>> CDisplayGraspHit`
+
+Per drawn star, the step its left half picks and the step its right half picks.
+The driver hands it to the control once, so pointing requests no logic.
 
 ## `internal void LDisplayGraspAttach()`
 

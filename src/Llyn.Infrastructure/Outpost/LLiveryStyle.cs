@@ -30,7 +30,9 @@ public static class LLiveryStyle
         string rare = theme.LThemeRead("frequencyRare");
         string warning = theme.LThemeRead("warning");
         string table = ".llyn table:has(> thead > tr > th:empty)";
-        string reading = ".llyn table:has(> thead > tr > th:nth-child(5):last-child:empty)";
+        string reflex = ":has(> thead > tr > th:nth-child(7):last-child:empty)";
+        string reading = ".llyn table" + reflex;
+        string card = ".llyn .llyn-card table:where(:not(" + reflex + "))";
         string sound = ".llyn table:not(.llyn-paradigm table)"
             + ":has(> thead > tr > th:nth-child(2):last-child:empty)";
 
@@ -48,17 +50,17 @@ public static class LLiveryStyle
             .llyn video { max-width: 100%; border-radius: 8px; }
             .llyn a[data-resource-id]:has(+ .media-player) { display: none; }
             .llyn .resource-icon { display: none; }
-            .llyn .media-audio { height: 32px; width: 220px; margin: 0 0 0 6px; vertical-align: middle; }
+            .llyn .media-audio { height: 32px; width: 220px; margin: 0 0 0 6px; vertical-align: -9px; }
             .llyn thead:not(:has(th:not(:empty))) { display: none; }
             {{table}} { width: auto; margin: 0 0 8px; border: 0; border-collapse: collapse; background: none; }
             {{table}} tr { border: 0; background: none; }
             {{table}} td { padding: 0 5px; border: 0; background: none; vertical-align: middle; }
             {{reading}} td { height: 31px; }
-            {{reading}} td:nth-child(1) { color: {{muted}}; font-size: 11px; text-align: right; white-space: nowrap; }
-            {{reading}} td:nth-child(2) { color: {{muted}}; font-size: 11px; text-align: right; white-space: nowrap; }
+            {{reading}} td:nth-child(-n+2) {
+                color: {{muted}}; font-size: 14px; text-align: right; white-space: nowrap;
+            }
             {{reading}} td:nth-child(3) { font-size: 20px; padding-right: 24px; }
-            {{reading}} td:nth-child(4) { color: {{muted}}; font-size: 13px; padding-right: 24px; }
-            {{reading}} td:nth-child(5) { color: {{muted}}; font-size: 13px; }
+            {{reading}} td:nth-child(n+4) { color: {{muted}}; font-size: 13px; padding-right: 24px; }
             {{sound}} td { height: 37px; }
             {{sound}} td:first-child { color: {{muted}}; font-size: 11px; text-align: right; white-space: nowrap; }
             .llyn .llyn-more { margin: 0 0 14px; }
@@ -72,7 +74,7 @@ public static class LLiveryStyle
             .llyn span.llyn-glyph { font-size: 22px; }
             .llyn img.llyn-flag { height: 14px; margin-right: 4px; vertical-align: -1px; border-radius: 2px; }
             .llyn .llyn-contour {
-                display: inline-block; padding: 8px; border: 1px solid {{line}}; border-radius: 8px;
+                display: inline-block; margin-top: 10px; padding: 8px; border: 1px solid {{line}}; border-radius: 8px;
                 background: {{surface}};
             }
             .llyn .llyn-contour-chart { width: 108px; height: 114px; vertical-align: top; }
@@ -81,27 +83,29 @@ public static class LLiveryStyle
                 background: {{soft}}; color: {{accent}}; font-size: 12px; font-weight: 400; line-height: 25px;
                 vertical-align: middle;
             }
+            .llyn .llyn-regard {
+                display: inline-flex; align-items: center; margin-left: 16px; line-height: 1; vertical-align: middle;
+            }
             .llyn .llyn-heart {
-                margin-left: 16px; color: {{line}}; font-size: 20px; font-weight: 400; vertical-align: middle;
+                position: relative; top: -0.5px; color: {{line}}; font-size: 20px; font-weight: 400;
             }
             .llyn .llyn-heart.llyn-on { color: {{favorite}}; }
             .llyn .llyn-star {
-                position: relative; font-size: 17px; font-weight: 400; vertical-align: middle;
+                position: relative; top: -1.5px; margin-left: 3.5px; font-size: 17px; font-weight: 400;
                 color: color-mix(in srgb, {{accent}} 55%, {{surface}});
             }
+            .llyn .llyn-heart + .llyn-star { margin-left: 14px; }
             .llyn .llyn-star.llyn-unrated { color: color-mix(in srgb, {{muted}} 35%, {{surface}}); }
             .llyn .llyn-star.llyn-on { color: {{accent}}; }
             .llyn .llyn-star.llyn-half::before {
                 content: "★"; position: absolute; left: 0; top: 0; width: 50%; overflow: hidden; color: {{accent}};
             }
-            .llyn .llyn-rating {
-                margin-left: 4px; color: {{muted}}; font-size: 12px; font-weight: 400; vertical-align: middle;
-            }
+            .llyn .llyn-rating { margin-left: 10px; color: {{muted}}; font-size: 12px; font-weight: 400; }
             .llyn .llyn-speech {
                 display: inline-block; height: 21px; margin-right: 6px; padding: 0 12px; border-radius: 11px;
                 background: {{soft}}; color: {{accent}}; font-size: 12px; line-height: 21px;
             }
-            .llyn .llyn-unit {
+            .llyn .llyn-unit, .llyn .llyn-freedom {
                 display: inline-block; height: 21px; margin-right: 6px; padding: 0 12px; border-radius: 11px;
                 border: 1px solid {{soft}}; color: {{muted}}; font-size: 12px; line-height: 19px;
             }
@@ -167,12 +171,12 @@ public static class LLiveryStyle
                 background: {{surface}};
             }
             .llyn .llyn-card > :last-child { margin-bottom: 0; }
-            .llyn .llyn-card table { width: 100%; margin: 0; }
-            .llyn .llyn-card td { height: 24px; padding: 0 6px; font-size: 14px; white-space: nowrap; }
-            .llyn .llyn-card td:first-child { width: 92px; padding-left: 0; }
-            .llyn .llyn-card td:nth-child(2) { font-size: 16px; }
-            .llyn .llyn-card td:last-child { width: 100%; padding-right: 0; text-align: right; }
-            .llyn .llyn-card .llyn-tone {
+            {{card}} { width: 100%; margin: 0; }
+            {{card}} td { height: 24px; padding: 0 6px; font-size: 14px; white-space: nowrap; }
+            {{card}} td:first-child { width: 92px; padding-left: 0; }
+            {{card}} td:nth-child(2) { font-size: 16px; }
+            {{card}} td:last-child { width: 100%; padding-right: 0; text-align: right; }
+            {{card}} .llyn-tone {
                 color: {{accent}}; font-size: 13px; line-height: inherit; vertical-align: baseline;
             }
             .llyn .llyn-heading {
@@ -215,7 +219,7 @@ public static class LLiveryStyle
             .llyn .llyn-caption { display: block; color: {{muted}}; font-size: 10px; line-height: 14px; }
             .llyn .llyn-epoch { display: block; }
             .llyn .llyn-quote { display: block; margin-left: 64px; font-size: 12px; }
-            .llyn .llyn-card:has(> p > .llyn-number), .llyn .llyn-card:has(> summary > .llyn-number) {
+            .llyn .llyn-card:has(> p > .llyn-number), .llyn .llyn-card:has(> summary) {
                 padding: 14px 30px 20px;
             }
             .llyn .llyn-card > p:has(> .llyn-number) {

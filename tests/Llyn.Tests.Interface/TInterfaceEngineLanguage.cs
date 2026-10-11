@@ -78,7 +78,7 @@ internal static class TInterfaceEngineLanguage
         engine.LEngineReflex.LEngineReflexRead(language);
 
     internal static IReadOnlyList<LReflexGuise> TEngineGuiseRead(
-        this LEngine engine, string language, IReadOnlyList<string> reflexes) =>
+        this LEngine engine, string language, IReadOnlyList<LReflexDraft> reflexes) =>
         engine.LEngineReflex.LEngineGuiseRead(language, reflexes);
 
     internal static bool TEngineReflexCheck(this LEngine engine, long entryId) =>

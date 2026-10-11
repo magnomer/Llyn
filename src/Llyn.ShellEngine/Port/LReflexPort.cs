@@ -18,5 +18,5 @@ public interface LReflexPort
 
     void LEngineBoxSpread(long entryId, LFoldBox box, bool opened);
 
-    IReadOnlyList<LReflexGuise> LEngineGuiseRead(string language, IReadOnlyList<string> reflexes);
+    IReadOnlyList<LReflexGuise> LEngineGuiseRead(string language, IReadOnlyList<LReflexDraft> reflexes);
 }

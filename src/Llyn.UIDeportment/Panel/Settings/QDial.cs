@@ -28,6 +28,8 @@ internal sealed class QDial
 
     private StackPanel QDialWeb => QContract.QContractFind<StackPanel>(_qDialSettings, "PDialWeb");
 
+    private StackPanel QDialOutpost => QContract.QContractFind<StackPanel>(_qDialSettings, "PDialOutpost");
+
     private StackPanel QDialLayout => QContract.QContractFind<StackPanel>(_qDialSettings, "PDialLayout");
 
     internal void QDialRefine(string child)
@@ -50,6 +52,7 @@ internal sealed class QDial
             ("Listing", QDialListing),
             ("Inflection", QDialInflection),
             ("Web", QDialWeb),
+            ("Sync", QDialOutpost),
             ("Layout", QDialLayout)
         ];
     }

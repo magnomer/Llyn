@@ -22,16 +22,16 @@ internal static class TInterfaceEnginePortrait
         this LEngine engine, long id, LOwner owner, LPortraitLegend legend) =>
         engine.LEnginePortrait.LEnginePortraitRead(id, owner, legend);
 
-    internal static Task TEnginePortraitPrint(
-        this LEngine engine, long entryId, LPortraitLabel label, LPressTicket ticket) =>
-        engine.LEnginePortrait.LEnginePortraitPrint(entryId, label, ticket);
+    internal static Task<LGalleyRelay?> TEnginePressOpen(
+        this LEngine engine, long entryId, LPortraitLabel label) =>
+        engine.LEnginePortrait.LEnginePressOpen(entryId, label)!;
 
-    internal static Task TEnginePortraitPrint(
-        this LEngine engine, long id, LOwner owner, LPortraitLegend legend, LPressTicket ticket) =>
-        engine.LEnginePortrait.LEnginePortraitPrint(id, owner, legend, ticket);
+    internal static Task<LGalleyRelay?> TEnginePressOpen(
+        this LEngine engine, long id, LOwner owner, LPortraitLegend legend) =>
+        engine.LEnginePortrait.LEnginePressOpen(id, owner, legend)!;
 
     internal static LLiveryPage? TLiveryRead(this LEngine engine, long entryId) =>
-        engine.LEngineLivery.LEngineLiveryRead(entryId);
+        engine.LEngineLivery.LEngineLiveryRead(entryId, false);
 
     internal static LLiveryLanguage TLiveryRead(this LEngine engine, string language) =>
         engine.LEngineLivery.LEngineLiveryRead(language, static key => key);

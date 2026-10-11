@@ -1,5 +1,5 @@
 # source.json
-Hash: `07206dca5fb19ae8`
+Hash: `a9ee16d26ba37961`
 
 ## pack
 
@@ -11,6 +11,7 @@ The pronunciation sources take the headword's own transcription, never a regiona
 The audio sources take only recordings tagged France or Paris, or carrying no region at all.
 Naver's own recordings are untagged.
 No transcription schemes are listed, because French keeps no romanization beside its IPA.
+Section heading anchors allow attributes before `id`, which the REST rendering writes there.
 
 ## `respelling[0]` Parisian
 

@@ -59,6 +59,12 @@ internal sealed class LSettingsFacade
         }
     }
 
+    internal string LEngineFileFormat(string headword)
+    {
+        string trimmed = headword?.Trim() ?? string.Empty;
+        return trimmed.Length == 0 ? "entry" : LEngineTrailNormalize(trimmed);
+    }
+
     internal IReadOnlyDictionary<string, string> LEngineLocalizationLoad(string language)
     {
         lock (_lSettingsFacadeGate)
@@ -186,6 +192,16 @@ internal sealed class LSettingsFacade
             _lSettingsFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectSettings, 0);
             _lSettingsFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectInflection, 0);
         }
+    }
+
+    internal string LEngineNotebookSave(string notebook)
+    {
+        if (LEngineSettingsChange(settings => settings with { LSettingsNotebook = notebook }))
+        {
+            _lSettingsFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectSettings, 0);
+        }
+
+        return LEngineSettingsRead().LSettingsNotebook;
     }
 
     internal bool LEngineSettingsChange(Func<LSettings, LSettings> change)

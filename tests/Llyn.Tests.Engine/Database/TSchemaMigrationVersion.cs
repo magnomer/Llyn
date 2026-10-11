@@ -136,4 +136,27 @@ public sealed class TSchemaMigrationVersion
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM situation_video;"));
         Assert.Single(Directory.GetFiles(workspace.TWorkspaceFolder, "*.v47.db"));
     }
+
+    [Fact]
+    public void DatabaseCreate_RetiredUnits_ClearsThemAndKeepsTheEntries()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+
+        workspace.TWorkspaceScriptRun(
+            "DROP TABLE entry; " +
+            "CREATE TABLE entry (entry_id INTEGER PRIMARY KEY AUTOINCREMENT, headword TEXT NOT NULL, " +
+            "language TEXT NOT NULL, added_utc TEXT, updated_utc TEXT, " +
+            "unit INTEGER NOT NULL DEFAULT 0 CHECK (unit BETWEEN 0 AND 4)); " +
+            "INSERT INTO entry (entry_id, headword, language, unit) " +
+            "VALUES (1, 'run', 'English', 1), (2, 'the', 'English', 2), " +
+            "       (3, 'un', 'English', 3), (4, 'cat', 'English', 4); " +
+            "UPDATE schema_version SET version = 79;");
+
+        workspace.TWorkspaceDatabase.TDatabaseCreate();
+
+        Assert.Equal(
+            [0L, 0L, 3L, 4L],
+            workspace.TWorkspaceColumnRead("SELECT unit FROM entry ORDER BY entry_id;"));
+        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM entry WHERE freedom <> 0;"));
+    }
 }

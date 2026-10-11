@@ -107,13 +107,12 @@ public sealed class CAtlas
 
     internal Task LAtlasPortraitPrint(CEnvoy envoy, LSettingsPort settings)
     {
-        return CPortrait.LPortraitTicketPrint(
+        return CPortrait.LPortraitPrint(
             envoy,
             settings,
-            chosen => _cAtlasPortraitPort.LEnginePortraitPrint(
+            () => _cAtlasPortraitPort.LEnginePressOpen(
                 CAtlasPanel.CPanelAperture.CApertureVista,
-                CPortrait.LPortraitLegendRead(settings, "Situation"),
-                chosen));
+                CPortrait.LPortraitLegendRead(settings, "Situation")));
     }
 
     internal static CCatalogSituation LAtlasRowRead(LCatalogSituation row)

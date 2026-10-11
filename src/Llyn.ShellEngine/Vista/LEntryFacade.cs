@@ -139,11 +139,6 @@ public sealed class LEntryFacade : LEntryPort, LGraspPort
         return LEngineGlyphResolve(character, language).LEntryId;
     }
 
-    public string LEngineUnitFormat(LUnit unit)
-    {
-        return LUnitClerk.LUnitFormat(unit);
-    }
-
     public (LOwner, int)? LEngineCardFind(LEntryDraft draft, long id)
     {
         return LDraftClerkCard.LCardOwnerFind(draft, id);

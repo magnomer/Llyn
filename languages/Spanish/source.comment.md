@@ -1,5 +1,5 @@
 # source.json
-Hash: `43989068fd6c1e68`
+Hash: `e934d07b2e32cf6a`
 
 ## `language`
 
@@ -17,13 +17,31 @@ Headwords use Segoe UI at size 40.
 
 Examples prefer Georgia, falling back to Segoe UI, at size 15.
 
-## `pronunciation`
+## `pronunciation[0]` Wiktionary
 
-No pronunciation source is configured here.
+The IPA is derived from the spelling by the es-pr template, so the wikitext carries none.
+The rendered HTML is therefore read.
+The match anchors on the Spanish section heading, so a Galician or Asturian section before it is skipped.
+The first IPA span after the heading is the phonemic reading between slashes.
+The phonetic reading in brackets, the rhyme and the regional readings that follow are left alone.
+A word that splits by region, such as ciudad, so gives the distinción reading first.
+Pinned live, agua gave /ˈaɡwa/, casa /ˈkasa/, hablar /aˈblaɾ/, perro /ˈpero/ and ciudad /θjuˈdad/.
 
-## `audio`
+## `audio[0]` Naver
 
-No audio source is configured here.
+Naver's Spanish dictionary text-to-speech, one mp3 per request.
+The address is the recording, so the `link` strategy answers it once the fetch succeeded.
+The speaker is `es_es` and the service `esdic`.
+Every headword answers, since a synthesizer has no missing entries.
+
+## `audio[1]` Wiktionary
+
+Wiktionary embeds Commons recordings as protocol-relative addresses, so `prefix` supplies the scheme.
+Only the transcoded mp3 rendition is taken, because the original is Ogg, Oga or WAV.
+The first attempt takes an `Es-` filename after the Spanish section heading.
+The filename carries a region code, as Es-am-lat-agua.ogg or Es-bo-casa.oga.
+The second takes a Lingua Libre `LL-Q1321_%28spa%29-` one, Q1321 being Spanish.
+Pinned live, agua and casa gave an `Es-` recording and hablar, perro and ciudad a Lingua Libre one.
 
 ## `inflection`
 

@@ -1,5 +1,5 @@
 # TAuditDeportmentSetting.cs
-Hash: `924d26467d6c1d93`
+Hash: `9f2b310c69a00e16`
 
 ## `internal static class TAuditDeportmentSetting`
 
@@ -8,14 +8,11 @@ It holds the offer for `Llyn.UIDeportment>Llyn.Conduct` alone.
 No script writes this file.
 `AuditStructure.json` holds its own copy, kept in step by hand as scripts/principles.md asks.
 The border facts read it together with the other offer settings.
-The offer now includes the courier, `CCourier` and `CCourierState`, beside the ledger.
-It also includes `CStemMember`, the series member the series page draws.
 
 ## `public static readonly IReadOnlyDictionary<string, string[]> TAuditDeportmentOffer`
 
 For the `ring>neighbour` pair, the neighbour types the ring may name at all.
-Deportment is offered exactly the public `C` types of Conduct, and no other Conduct type.
-It ends with `CCompass`, `CDisplayCard` and `CDisplayRoute`, the display types Deportment names.
+Deportment is offered the public `C` types of Conduct, and no other Conduct type.
 `TAuditDemeanorOffer` holds the same list in the same order for the other driver.
 A change to the public `C` types of Conduct is made in both driver lists.
 Each name stands as a literal, so the ratchet can read every entry.

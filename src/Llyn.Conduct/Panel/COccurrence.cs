@@ -101,11 +101,11 @@ public sealed class COccurrence
 
     internal Task LOccurrencePortraitPrint(CEnvoy envoy, LSettingsPort settings)
     {
-        return CPortrait.LPortraitTicketPrint(
+        return CPortrait.LPortraitPrint(
             envoy,
             settings,
-            chosen => _cOccurrencePortraitPort.LEnginePortraitPrint(
-                COccurrencePanel.CPanelAperture.CApertureVista, CPortrait.LPortraitLabelRead(settings), chosen));
+            () => _cOccurrencePortraitPort.LEnginePressOpen(
+                COccurrencePanel.CPanelAperture.CApertureVista, CPortrait.LPortraitLabelRead(settings)));
     }
 
     internal Task LOccurrencePortraitExport(CEnvoy envoy, LSettingsPort settings)

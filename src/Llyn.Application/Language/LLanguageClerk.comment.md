@@ -1,5 +1,5 @@
 # LLanguageClerk.cs
-Hash: `291f9818b82a4b64`
+Hash: `9b2b5e191d8385d2`
 
 ## `public sealed class LLanguageClerk`
 
@@ -63,6 +63,12 @@ It is the one glyph loader, shared by the draft readers here and the engine.
 ## `public bool LLanguagePhonemicCheck(string language)`
 
 Whether the pack of `language` is phonemic.
+
+## `public IReadOnlyList<LReflexGuise> LLanguageGuiseScan(IReadOnlyList<LReflexDraft> reflexes, IReadOnlyList<string> folded, bool respelled)`
+
+One guise per reflex row, read by its trimmed language, the one owner of respelling, slashes and folding.
+Each guise carries the row's shown text, applied once through `LReflexGuise.LReflexGuiseRead`.
+The entry page, the series page and both Outpost notes all read their guises here.
 
 ## `public IReadOnlyList<LContour> LLanguageContourRead(string language, string ipa)`
 

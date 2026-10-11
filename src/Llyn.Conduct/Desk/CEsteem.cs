@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Llyn.Conduct;
 
@@ -28,6 +29,12 @@ public sealed class CEsteem
     public int CEsteemGrasp => _cEsteemDisplay.LDisplayGraspRead(LEsteemEntry);
 
     public int CEsteemGraspStep => _cEsteemDisplay.LDisplayGraspStep;
+
+    public IReadOnlyList<IReadOnlyList<int>> CEsteemGraspFill => _cEsteemDisplay.LDisplayGraspStar.LGraspStarFill;
+
+    public IReadOnlyList<bool> CEsteemGraspUnrated => _cEsteemDisplay.LDisplayGraspStar.LGraspStarUnrated;
+
+    public IReadOnlyList<IReadOnlyList<int>> CEsteemGraspHit => _cEsteemDisplay.LDisplayGraspStar.LGraspStarHit;
 
     private long? LEsteemEntry => _cEsteemDesk.CDeskStoredRead();
 

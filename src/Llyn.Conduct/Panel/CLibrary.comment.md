@@ -1,9 +1,9 @@
 # CLibrary.cs
-Hash: `a3b95d579c260cd2`
+Hash: `ede46618cd86a457`
 
 ## `public sealed class CLibrary`
 
-The library panel: every entry and the panel over their vista.
+The library panel, holding every entry and the panel over their vista.
 It finds the rows, while the panel's aperture takes the query, order and language filter.
 Its panel loads, edits and deletes the chosen entry, and its own editor edits it.
 It prints and exports the chosen entry, and imports a markup file into the workspace.
@@ -31,6 +31,10 @@ Raised once the workspace notice has closed the chosen entry, so the driver relo
 
 The entry editor the panel opens its chosen entry in.
 The driver wraps it for the editor view and the lectern.
+
+## `public CPanel CLibraryPanel { get; }`
+
+The panel over the library vista, worded under the `Scribe` scope and finishing through the editor.
 
 ## `internal void LLibraryVistaRestore()`
 
@@ -63,7 +67,7 @@ The wings share them, so no driver names an engine ordering.
 
 The rows the engine returns for the vista, none before a vista arrives.
 They come already filtered, sorted, twinned and marked, so the list decides nothing about them.
-The count goes to the aperture's `CApertureEmpty`, so the empty notice follows the rows shown.
+The count goes to the aperture through `CApertureCountSet`, so the empty notice follows the rows shown.
 A failed read shows `List.LoadFailed` through the envoy and answers no rows, so the count reads zero.
 The load task runs this read after the flag fill, so a throw here would fault the driver.
 
@@ -81,9 +85,9 @@ The file name an export of the chosen entry is offered under.
 
 ## `public Task CLibraryPortraitPrint()`
 
-Prints the chosen entry.
-The reader is asked for the printer through the panel's envoy, and a decline prints nothing.
-`CPortrait` words the page through the engine and shows `Print.Failed` through the panel's envoy.
+Prints the chosen entry through the print window.
+The engine opens a print session on the vista's chosen entry, and no chosen entry opens no window.
+`CPortrait` puts the window up over the session and shows a failed open as `Print.Failed`.
 
 ## `public Task CLibraryPortraitExport()`
 

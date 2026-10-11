@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 using Llyn.Core;
 
@@ -57,11 +58,23 @@ internal static class LLiveryEtymology
 
     internal static string LLiveryLinkFormat(string text, long id, Func<long, string> note)
     {
+        string shown = LLiveryHeader.LLiveryTextFormat(text);
+        string target = LLiveryTargetRead(id, note);
+        return target.Length == 0 ? shown : "[" + shown + "](:/" + target + ")";
+    }
+
+    internal static string LLiveryAnchorFormat(string text, long id, Func<long, string> note)
+    {
+        string shown = LLiveryHeader.LLiveryTextFormat(text);
+        string target = LLiveryTargetRead(id, note);
+        return target.Length == 0 ? shown : "<a href=\":/" + WebUtility.HtmlEncode(target) + "\">" + shown + "</a>";
+    }
+
+    private static string LLiveryTargetRead(long id, Func<long, string> note)
+    {
         ArgumentNullException.ThrowIfNull(note);
 
-        string shown = LLiveryHeader.LLiveryTextFormat(text);
-        string target = id > 0 ? note(id) : string.Empty;
-        return string.IsNullOrEmpty(target) ? shown : "[" + shown + "](:/" + target + ")";
+        return id > 0 ? note(id) ?? string.Empty : string.Empty;
     }
 
     internal static string LLiveryMentionFormat(

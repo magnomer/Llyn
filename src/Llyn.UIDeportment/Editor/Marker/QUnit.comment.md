@@ -5,7 +5,7 @@ Hash: `65408138208702ba`
 
 Drives the lexical unit dropper at the head of the part-of-speech row.
 The dropper names the held unit, or the field's title while none is held.
-Its menu lists the units the draft's language offers, the held one checked.
+Its menu lists the units every draft is offered, the held one checked.
 Every name is a key Conduct chose, so the driver only looks it up.
 Each menu row is a `QUnitItem`.
 
@@ -21,7 +21,6 @@ Takes the entry facet, whose unit gate a pick goes to.
 
 Rebuilds the menu rows and names the dropper after the held row.
 `QMarker` calls it on every draft change with the units read beside the field.
-A language change repaints too, since the offered units follow the language.
 
 ## `private void QUnitApply(FrameworkElement container, object item, string? _)`
 

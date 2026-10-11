@@ -1,5 +1,5 @@
 # LReflexFacade.cs
-Hash: `554705cb31ff39c1`
+Hash: `95d3d3fbd6345d56`
 
 ## `public sealed class LReflexFacade : LReflexPort`
 
@@ -7,7 +7,7 @@ The engine's facade for reflex, wrapping the clerk's anchors and rules, the fetc
 It implements the reflex port itself, so Host hands it to Conduct with no outlet between.
 It also keeps each entry's "More readings" state and editor box state, through the fold clerk.
 
-## `internal LReflexFacade(LEngineHearth hearth, LFanqieFacade fanqie, LSettingsFacade settings)`
+## `internal LReflexFacade(LEngineHearth hearth, LFanqieFacade fanqie)`
 
 Stores the hearth, its gate and the sibling facades it calls, all built by `LEngine` before this one.
 The gate, the staff and the shared state are read through the hearth.
@@ -42,15 +42,12 @@ The readings of the anchored rows joined with `separator`, or empty when the row
 
 The reflex rules of a language.
 
-## `public IReadOnlyList<LReflexGuise> LEngineGuiseRead(string language, IReadOnlyList<string> reflexes)`
+## `public IReadOnlyList<LReflexGuise> LEngineGuiseRead(string language, IReadOnlyList<LReflexDraft> reflexes)`
 
-How each reflex row prints, one answer per language in `reflexes`, in order.
-Each row language is trimmed before the settings are asked and the fold set is searched.
+How each reflex row prints, one answer per row in `reflexes`, in order.
+Each answer carries the row's ready shown text, so no caller applies the respelling rule.
 The fold set is the one the pack of the entry's `language` declares.
-
-## `private LReflexGuise LEngineGuiseBuild(string reflex, IReadOnlyList<string> folded)`
-
-The respelling switch, the phonemic mark and the fold of one trimmed row language.
+The guises come from `LLanguageGuiseScan`, their one owner, under the held respelling setting.
 
 ## `public void LEngineReflexStart(long entryId)`
 

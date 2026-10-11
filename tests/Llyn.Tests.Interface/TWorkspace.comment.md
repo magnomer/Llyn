@@ -1,5 +1,5 @@
 # TWorkspace.cs
-Hash: `778b29b114301b75`
+Hash: `2cc686a2ca627691`
 
 ## `[assembly: CollectionBehavior(DisableTestParallelization = true)]`
 
@@ -13,7 +13,7 @@ Disposing removes the folder.
 The connection pool is cleared first.
 A pooled connection would otherwise keep the file open and the delete would fail on Windows.
 
-## `private readonly string _tWorkspaceRoot;`
+## `private readonly string _tWorkspaceRoot`
 
 The folder under the temporary path that this workspace owns.
 
@@ -22,7 +22,7 @@ The folder under the temporary path that this workspace owns.
 Stores the folder and binds a database to it.
 Only `TWorkspaceCreate` calls it, and `TWorkspacePrepare` reaches it through that.
 
-## `public LDatabase TWorkspaceDatabase { get; }`
+## `public LDatabase TWorkspaceDatabase`
 
 The database bound to this workspace folder.
 
@@ -30,15 +30,26 @@ The database bound to this workspace folder.
 
 The folder itself, for a test that has to reach the file directly.
 
-## `public TClockFake TWorkspaceClock { get; }`
+## `public TClockFake TWorkspaceClock`
 
 The fake clock every rig of this workspace carries.
 
-## `public TPress TWorkspacePress { get; }`
+## `public TPress TWorkspacePress`
 
 The fake press every rig of this workspace carries, so a print test reads what reached it.
 
-## `public TPhonographFake TWorkspacePhonograph { get; }`
+## `public TPressQueue TWorkspaceQueue`
+
+The fake printer queue every rig of this workspace carries.
+A print test sets its failure to see how a broken spooler reaches the user.
+
+## `public TPressVault TWorkspacePressVault`
+
+The fake print setting store every rig of this workspace carries.
+A print test hands two workspaces one store, so a second window reads what the first kept.
+Set it before the engine starts, since the rig takes it then.
+
+## `public TPhonographFake TWorkspacePhonograph`
 
 The fake phonograph every rig of this workspace carries.
 
@@ -71,7 +82,8 @@ Binds an engine whose sources fetch through `client`, so a discovery test runs a
 The rig is built through the real factory, so the suite starts its engines the way the bootstrap does.
 A workspace change builds its rig the same way, and no test ever writes the user's workspace pointer.
 The clock is swapped for the workspace's `TClockFake`, so a test can set time through `TWorkspaceClockSet`.
-The rig carries the workspace's `TPress`, a `TWarrantFake` and the `TPhonographFake`, so a test reads what reached them.
+The rig carries the workspace's `TPress`, `TPressQueue`, `TPressVault` and `TPhonographFake`, and a `TWarrantFake`.
+So a test reads what reached them.
 An engine over fakes instead starts from `TRigFake`.
 
 ## `public LEngine TWorkspaceEngineStart(LSourceFactory sources)`
@@ -93,7 +105,8 @@ A rig over the workspace with a client that answers 404, for a clerk test.
 
 ## `public LRig TWorkspaceRigCreate(HttpClient client)`
 
-A rig over the workspace with `client` as its web, the workspace's clock, press, a `TWarrantFake` and phonograph in place.
+A rig over the workspace with `client` as its web.
+The workspace's clock, press, printer queue, setting store and phonograph stand in place, with a `TWarrantFake`.
 
 ## `public SqliteConnection TWorkspaceConnectionRead()`
 
@@ -113,7 +126,7 @@ An association's position is one such column.
 
 Runs one statement and returns every row as one comparable string.
 It is for a test that must see whole rows rather than one column or a count.
-A null is written as a value of its own, so an empty field never reads as an empty string.
+A null is written as a value of its own, so a null field never reads as an empty string.
 The fields are joined by a separator no stored text carries.
 
 ## `public void TWorkspaceScriptRun(string sql)`

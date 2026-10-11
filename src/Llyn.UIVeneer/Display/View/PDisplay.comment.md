@@ -1,5 +1,5 @@
 # PDisplay.xaml
-Hash: `e213378a5160f1d3`
+Hash: `62ecdda020d8daf8`
 
 ## `<UserControl.Resources>`
 
@@ -122,6 +122,7 @@ A recording is played the same way where it is read and where it is chosen.
 
 The parts of speech stand on a row of their own, as they do in the editor.
 `PDisplayUnit` names the entry's lexical unit above them, collapsed until a unit is chosen.
+`PDisplayFreedom` follows it on the same line, collapsed until a freedom is chosen.
 Sharing the pronunciation row put them beside a chip that the editor puts a button beside.
 
 ## `<StackPanel x:Name="PDisplayFrequencySection" Margin="12,14,0,0" ...>`

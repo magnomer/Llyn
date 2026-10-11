@@ -1,5 +1,5 @@
 # CEntry.cs
-Hash: `1103d0016f738c87`
+Hash: `21c16f01e1232d46`
 
 ## `public sealed class CEntry`
 
@@ -121,4 +121,11 @@ A desk that holds no tenure or fills its view takes no edit.
 The user picked a unit from the menu.
 Picking the unit already held clears it, a rule the entry quill keeps.
 The menu itself is read with the part-of-speech field, through `CMarkerUnits`.
+A desk that holds no tenure or fills its view takes no edit.
+
+## `public void CEntryFreedomSet(string key)`
+
+The user picked a freedom from the menu.
+Picking the freedom already held clears it, a rule the entry quill keeps.
+The menu itself is read with the part-of-speech field, through `CMarkerFreedoms`.
 A desk that holds no tenure or fills its view takes no edit.

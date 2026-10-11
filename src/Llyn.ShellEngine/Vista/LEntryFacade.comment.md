@@ -1,5 +1,5 @@
 # LEntryFacade.cs
-Hash: `96955767edab0fda`
+Hash: `4a9aa0f176bb76e2`
 
 ## `public sealed class LEntryFacade : LEntryPort, LGraspPort`
 
@@ -101,11 +101,6 @@ The usage clerk's citation line for one Source, Example or Situation under the g
 ## `public IReadOnlyList<LUsage> LEngineUsageRead(long id, LOwner owner)`
 
 The usage clerk's itemized rows under the gate, with the epithet the settings ask for.
-
-## `public string LEngineUnitFormat(LUnit unit)`
-
-The localization key that names a lexical unit, empty when none is chosen.
-The unit clerk owns the wording.
 
 ## `public (LOwner, int)? LEngineCardFind(LEntryDraft draft, long id)`
 

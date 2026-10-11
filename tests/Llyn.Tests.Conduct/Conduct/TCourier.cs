@@ -149,6 +149,26 @@ public sealed class TCourier
     }
 
     [Fact]
+    public async Task CourierSend_NotebookRenamed_RenamesTheSameTopNotebook()
+    {
+        TOutpostFake outpost = new();
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = TCourierEngineStart(workspace, outpost);
+        engine.TEngineNotebookSave("Lexicon");
+        await TCourierSeriesSend(engine, true);
+        string notebook = TCourierFolderFind(outpost, "Lexicon", string.Empty);
+        int folders = outpost.TOutpostFakeFolder.Count;
+
+        engine.TEngineNotebookSave("Words");
+        await TCourierSeriesSend(engine, true);
+
+        Assert.Equal((string.Empty, "Words"), outpost.TOutpostFakeFolder[notebook]);
+        Assert.Equal(folders, outpost.TOutpostFakeFolder.Count);
+        Assert.Equal(
+            notebook, outpost.TOutpostFakeFolder[TCourierFolderFind(outpost, TCourierLanguage)].TOutpostFakeParent);
+    }
+
+    [Fact]
     public async Task CourierSend_LanguageGoneFromEntriesAndScan_GuardRefusesToTrashItsSeriesNote()
     {
         TOutpostFake outpost = new();

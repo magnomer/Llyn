@@ -133,8 +133,9 @@ internal static partial class TInterface
         string meaning = "",
         string note = "",
         string respelling = "",
-        string region = "") =>
-        new(language, kind, text, main, id, romanization, meaning, false, note, respelling, region);
+        string region = "",
+        IReadOnlyList<long>? anchors = null) =>
+        new(language, kind, text, main, id, romanization, meaning, false, note, respelling, region, null, anchors);
 
     internal static LReflexDraft? TReflexFind(LEntryDraft content, long id) =>
         LDraftClerkReflex.LReflexFind(content, id);
@@ -273,4 +274,7 @@ internal static partial class TInterface
 
     internal static bool TGraspCheck(int grasp) =>
         LGrasp.LGraspCheck(grasp);
+
+    internal static IReadOnlyList<int> TGraspStarScan(int grasp) =>
+        LGrasp.LGraspStarScan(grasp);
 }

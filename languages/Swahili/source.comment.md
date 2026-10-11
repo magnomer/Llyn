@@ -1,10 +1,11 @@
 # source.json
-Hash: `780e839f958c8924`
+Hash: `867cf0ce2725206e`
 
 ## pack
 
 Language pack for Swahili.
 The pack format is documented in `languages/English/source.comment.md`.
+Section heading anchors allow attributes before `id`, which the REST rendering writes there.
 No varieties are declared, so every reading is the standard one.
 No transcription schemes are listed, because Swahili is written in Latin script.
 No respelling groups are declared, so every reading shows as its source wrote it.

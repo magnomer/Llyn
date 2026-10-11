@@ -1,5 +1,5 @@
 # LQuillReflex.cs
-Hash: `a9fff8a4c16834c1`
+Hash: `0a80a427f2224a5c`
 
 ## `public sealed class LQuillReflex`
 
@@ -83,5 +83,5 @@ Any other failure of the scan reaches the caller.
 
 ## `private bool LQuillRespellingCheck(long reflex)`
 
-Whether row `reflex` prints its respelling, by the guise the reflex port answers for its language.
+Whether row `reflex` prints its respelling, by the guise the reflex port answers for that row.
 A row the draft no longer holds reads false.

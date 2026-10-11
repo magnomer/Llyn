@@ -1,10 +1,11 @@
 # source.json
-Hash: `e6dc84566f0031ed`
+Hash: `530896c8c389c111`
 
 ## pack
 
 Language pack for German.
 The pack format is documented in `languages/English/source.comment.md`.
+Section heading anchors allow attributes before `id`, which the REST rendering writes there.
 No varieties are declared, so every reading stands for the German of Germany.
 The first Wiktionary audio attempt passes over recordings tagged Austrian or Swiss.
 No transcription schemes are listed, because German keeps no romanization beside its IPA.

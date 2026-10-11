@@ -1,5 +1,5 @@
 # LMarkupClerkEntry.cs
-Hash: `9c98b3e99f388c18`
+Hash: `7abb58cf0904771a`
 
 ## `public sealed class LMarkupClerkEntry`
 
@@ -18,7 +18,7 @@ Loads the entry draft for `id` and translates every id-bearing field into names.
 Null means no entry has that id.
 Draft ids and positions are dropped, because list order carries the positions.
 Reflex rows are written in the order the pack declares, through `LReflexClerkSort`, never in storage order.
-The lexical unit is carried as the draft holds it.
+The lexical unit and freedom are carried as the draft holds them.
 Grasp, frequency, favorite and timestamps are never read.
 Forms pass whole, since they hold no id worth hiding.
 A reflex also drops its anatomy and anchors, since the receiving engine derives the one and owns the other.

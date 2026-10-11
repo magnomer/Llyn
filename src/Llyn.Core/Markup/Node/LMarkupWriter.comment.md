@@ -1,5 +1,5 @@
 # LMarkupWriter.cs
-Hash: `fc1661fa5770c908`
+Hash: `fd2234f30a75c478`
 
 ## `internal static class LMarkupWriter`
 
@@ -13,6 +13,7 @@ Each writer fills a child list and closes it into one `LMarkupNode`, which `LMar
 
 Writes one `entry` element with every row the record holds.
 The `unit` element is left out when no unit is chosen.
+The `freedom` element follows it, left out the same way.
 
 ## `private static LMarkupNode LMarkupEtymonFormat(LMarkupEtymon etymon)`
 

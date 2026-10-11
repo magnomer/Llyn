@@ -139,4 +139,17 @@ public sealed class TGlyph
         Assert.Equal("Traditional", engine.TEngineGlyphRead("Cantonese")?.LGlyphName);
         Assert.Null(engine.TEngineGlyphRead("English"));
     }
+
+    [Fact]
+    public void FontRead_BlankLanguage_AnswersTheEmptyFont()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LFont font = engine.TEngineFontRead(" ", LFontRole.LFontRoleHeadword);
+
+        Assert.Null(font.LFontFamily);
+        Assert.Equal(0, font.LFontSize);
+        Assert.Null(font.LFontStyle);
+    }
 }

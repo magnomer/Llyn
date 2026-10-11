@@ -8,7 +8,9 @@ internal sealed class TPress : LPress
 
     internal string? TPressPath { get; private set; }
 
-    internal LPressTicket? TPressTicket { get; private set; }
+    internal bool TPressOpened { get; private set; }
+
+    internal LPressBoard TPressBoard { get; set; } = new TPressBoard();
 
     public Task LPressSave(string html, string path)
     {
@@ -17,10 +19,10 @@ internal sealed class TPress : LPress
         return Task.CompletedTask;
     }
 
-    public Task LPressPrint(string html, LPressTicket ticket)
+    public Task<LPressBoard> LPressBoardOpen(string html)
     {
         TPressHtml = html;
-        TPressTicket = ticket;
-        return Task.CompletedTask;
+        TPressOpened = true;
+        return Task.FromResult<LPressBoard>(TPressBoard);
     }
 }

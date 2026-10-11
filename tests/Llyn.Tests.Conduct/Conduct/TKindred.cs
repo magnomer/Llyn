@@ -382,9 +382,16 @@ public sealed class TKindred
     {
         return TInterfaceConduct.TPhonologyBundleCreate(new Dictionary<string, Func<object?[]?, object?>>
         {
-            ["LEngineGuiseRead"] = args => ((IReadOnlyList<string>)args![1]!)
-                .Select(_ => TInterface.TReflexGuiseCreate(respelled, false, true))
+            ["LEngineGuiseRead"] = args => ((IReadOnlyList<LReflexDraft>)args![1]!)
+                .Select(row => TKindredGuiseCreate(respelled, row))
                 .ToList(),
         });
+    }
+
+    private static LReflexGuise TKindredGuiseCreate(bool respelled, LReflexDraft row)
+    {
+        string shown = TInterface.TReflexGuiseCreate(respelled, false, true)
+            .TReflexGuiseRead(row.LReflexDraftText, row.LReflexDraftRespelling);
+        return TInterface.TReflexGuiseCreate(respelled, false, true, shown);
     }
 }

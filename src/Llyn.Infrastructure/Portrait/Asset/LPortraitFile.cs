@@ -42,4 +42,18 @@ public sealed class LPortraitFile : LPortraitVault
 
         return LSheet.LSheetFormat(page, _lPortraitFileTheme);
     }
+
+    public void LPortraitSave(
+        LLiveryPage livery, LPortraitPage portrait, LPortraitLabel label, Func<string, string> lookup, string path)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+
+        File.WriteAllText(path, LPortraitSheetFormat(livery, portrait, label, lookup), new UTF8Encoding(false));
+    }
+
+    public string LPortraitSheetFormat(
+        LLiveryPage livery, LPortraitPage portrait, LPortraitLabel label, Func<string, string> lookup)
+    {
+        return LSheetEntry.LSheetEntryFormat(livery, portrait, label, _lPortraitFileTheme, lookup);
+    }
 }

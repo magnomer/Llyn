@@ -7,4 +7,5 @@ public sealed record LEntry(
     int LEntryGrasp,
     string? LEntryAddedUtc,
     string? LEntryUpdatedUtc,
-    LUnit LEntryUnit = LUnit.LUnitEmpty);
+    LUnit LEntryUnit = LUnit.LUnitEmpty,
+    LFreedom LEntryFreedom = LFreedom.LFreedomEmpty);

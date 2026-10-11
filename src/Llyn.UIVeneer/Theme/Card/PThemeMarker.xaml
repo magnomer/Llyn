@@ -46,6 +46,10 @@
 
     <Style x:Key="Theme.Unit.Label" TargetType="TextBlock" BasedOn="{StaticResource Theme.Speech.Name}" />
 
+    <Style x:Key="Theme.Freedom.Dropper" TargetType="ToggleButton" BasedOn="{StaticResource Theme.Unit.Dropper}" />
+
+    <Style x:Key="Theme.Freedom.Label" TargetType="TextBlock" BasedOn="{StaticResource Theme.Speech.Name}" />
+
     <Style x:Key="Theme.Marker.Remove" TargetType="Button">
         <Setter Property="Width" Value="19" />
         <Setter Property="Height" Value="19" />

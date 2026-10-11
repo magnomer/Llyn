@@ -17,6 +17,7 @@ internal static class LMarkupWriter
         }
 
         LMarkup.LMarkupTextFormat(element, "unit", LUnitKey.LUnitKeyFormat(entry.LMarkupEntryUnit));
+        LMarkup.LMarkupTextFormat(element, "freedom", LFreedomKey.LFreedomKeyFormat(entry.LMarkupEntryFreedom));
 
         foreach (LForm form in entry.LMarkupEntryForm)
         {

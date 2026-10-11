@@ -20,51 +20,75 @@ public sealed class TUnit
     }
 
     [Fact]
-    public void MarkupFormat_ChosenUnit_ParsesUnit()
+    public void EntrySave_ChosenFreedom_ReloadsFreedom()
     {
-        LMarkupEntry entry = TInterface.TMarkupEntryCreate("cat", "English", unit: LUnit.LUnitFunction);
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        string text = TInterface.TMarkupFormat([entry]);
+        LEntry entry = engine.TEngineEntrySave(
+            TUnitDraftCreate() with { LEntryDraftFreedom = LFreedom.LFreedomStandalone });
 
-        Assert.Contains("unit", text);
-        Assert.Equal(LUnit.LUnitFunction, Assert.Single(TInterface.TMarkupParse(text)).LMarkupEntryUnit);
+        Assert.Equal(LFreedom.LFreedomStandalone, engine.TEngineEntryRead(entry.LEntryId)!.LEntryFreedom);
+        Assert.Equal(LFreedom.LFreedomStandalone, engine.TEngineEntryLoad(entry.LEntryId)!.LEntryDraftFreedom);
     }
 
     [Fact]
-    public void MarkupFormat_EmptyUnit_WritesNoUnit()
+    public void MarkupFormat_ChosenUnit_ParsesUnit()
+    {
+        LMarkupEntry entry = TInterface.TMarkupEntryCreate("run away", "English", unit: LUnit.LUnitExpression);
+
+        string text = TInterface.TMarkupFormat([entry]);
+
+        Assert.Contains("<unit>expression</unit>", text, StringComparison.Ordinal);
+        Assert.Equal(LUnit.LUnitExpression, Assert.Single(TInterface.TMarkupParse(text)).LMarkupEntryUnit);
+    }
+
+    [Fact]
+    public void MarkupFormat_ChosenFreedom_ParsesFreedom()
+    {
+        LMarkupEntry entry = TInterface.TMarkupEntryCreate("un", "English", freedom: LFreedom.LFreedomDependent);
+
+        string text = TInterface.TMarkupFormat([entry]);
+
+        Assert.Contains("<freedom>dependent</freedom>", text, StringComparison.Ordinal);
+        Assert.Equal(LFreedom.LFreedomDependent, Assert.Single(TInterface.TMarkupParse(text)).LMarkupEntryFreedom);
+    }
+
+    [Fact]
+    public void MarkupFormat_EmptyUnitAndFreedom_WritesNeither()
     {
         string text = TInterface.TMarkupFormat([TInterface.TMarkupEntryCreate("cat", "English")]);
 
-        Assert.DoesNotContain("unit", text);
+        Assert.DoesNotContain("unit", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("freedom", text, StringComparison.Ordinal);
+        LMarkupEntry parsed = Assert.Single(TInterface.TMarkupParse(text));
+        Assert.Equal(LUnit.LUnitEmpty, parsed.LMarkupEntryUnit);
+        Assert.Equal(LFreedom.LFreedomEmpty, parsed.LMarkupEntryFreedom);
+    }
+
+    [Fact]
+    public void MarkupParse_RetiredUnit_LeavesUnitEmpty()
+    {
+        string text = TInterface.TMarkupFormat([TInterface.TMarkupEntryCreate("the", "English", unit: LUnit.LUnitWord)])
+            .Replace("<unit>word</unit>", "<unit>function</unit>", StringComparison.Ordinal);
+
         Assert.Equal(LUnit.LUnitEmpty, Assert.Single(TInterface.TMarkupParse(text)).LMarkupEntryUnit);
     }
 
     [Fact]
-    public void LanguageSet_UnspacedLanguage_TurnsContentIntoWord()
+    public void LanguageSet_OtherLanguage_KeepsUnitAndFreedom()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LTenure tenure = TUnitTenureStart(engine);
         tenure.TTenureLanguageSet("English");
-        tenure.TTenureUnitSet(LUnit.LUnitContent);
+        tenure.TTenureUnitSet(LUnit.LUnitWord);
+        tenure.TTenureFreedomSet(LFreedom.LFreedomDependent);
 
-        tenure.TTenureLanguageSet("Mandarin");
+        tenure.TTenureLanguageSet("Thai");
 
         Assert.Equal(LUnit.LUnitWord, tenure.TTenureUnitRead());
-    }
-
-    [Fact]
-    public void LanguageSet_SpacedLanguage_ClearsWord()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        LTenure tenure = TUnitTenureStart(engine);
-        tenure.TTenureLanguageSet("Thai");
-        tenure.TTenureUnitSet(LUnit.LUnitWord);
-
-        tenure.TTenureLanguageSet("English");
-
-        Assert.Equal(LUnit.LUnitEmpty, tenure.TTenureUnitRead());
+        Assert.Equal(LFreedom.LFreedomDependent, tenure.TTenureFreedomRead());
     }
 
     [Fact]
@@ -82,33 +106,47 @@ public sealed class TUnit
     }
 
     [Fact]
-    public void UnitScan_Language_FollowsSpacing()
+    public void FreedomSet_HeldFreedom_ClearsFreedom()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LTenure tenure = TUnitTenureStart(engine);
+        tenure.TTenureLanguageSet("English");
+        tenure.TTenureFreedomSet(LFreedom.LFreedomStandalone);
+
+        tenure.TTenureFreedomSet(LFreedom.LFreedomStandalone);
+
+        Assert.Equal(LFreedom.LFreedomEmpty, tenure.TTenureFreedomRead());
+    }
+
+    [Fact]
+    public void UnitScan_AnyLanguage_OffersMorphemeWordAndExpression()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LTenure tenure = TUnitTenureStart(engine);
 
         tenure.TTenureLanguageSet("English");
-        Assert.Equal([LUnit.LUnitContent, LUnit.LUnitFunction, LUnit.LUnitMorpheme], tenure.TTenureUnitScan());
+        Assert.Equal([LUnit.LUnitMorpheme, LUnit.LUnitWord, LUnit.LUnitExpression], tenure.TTenureUnitScan());
 
         tenure.TTenureLanguageSet("Thai");
-        Assert.Equal([LUnit.LUnitWord, LUnit.LUnitMorpheme], tenure.TTenureUnitScan());
+        Assert.Equal([LUnit.LUnitMorpheme, LUnit.LUnitWord, LUnit.LUnitExpression], tenure.TTenureUnitScan());
     }
 
     [Fact]
-    public void LanguageRead_ShippedPacks_ReadSpacing()
+    public void FreedomScan_AnyLanguage_OffersDependentAndStandalone()
     {
-        LLanguageVault languages = TInterface.TLanguageVaultCreate();
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LTenure tenure = TUnitTenureStart(engine);
 
-        Assert.True(languages.TLanguageRead("English").LLanguageSpaced);
-        Assert.False(languages.TLanguageRead("Thai").LLanguageSpaced);
-        Assert.False(languages.TLanguageRead("Vietnamese").LLanguageSpaced);
-        Assert.True(languages.TLanguageRead("Vietnamese").LLanguageSeparated);
-        Assert.False(languages.TLanguageRead("Mandarin").LLanguageSpaced);
+        tenure.TTenureLanguageSet("Mandarin");
+
+        Assert.Equal([LFreedom.LFreedomDependent, LFreedom.LFreedomStandalone], tenure.TTenureFreedomScan());
     }
 
     [Fact]
-    public void LiveryFormat_ChosenUnit_LeadsTheSpeechChips()
+    public void LiveryFormat_ChosenUnitAndFreedom_LeadTheSpeechChips()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -119,13 +157,18 @@ public sealed class TUnit
             string.Empty,
             [TInterface.TCardCreate("definite article", 1)],
             [],
-            speeches: ["Determiner"]) with { LEntryDraftUnit = LUnit.LUnitFunction });
+            speeches: ["Determiner"]) with
+        {
+            LEntryDraftUnit = LUnit.LUnitWord,
+            LEntryDraftFreedom = LFreedom.LFreedomDependent,
+        });
         LLiveryPage page = Assert.IsType<LLiveryPage>(engine.TLiveryRead(entry.LEntryId));
 
         string body = TInterface.TLiveryFormat(page, static key => key).LLiveryNoteBody;
 
         Assert.Contains(
-            "<span class=\"llyn-unit\">Unit.Function</span> <span class=\"llyn-speech\">Determiner</span>",
+            "<span class=\"llyn-unit\">Unit.Word</span> <span class=\"llyn-freedom\">Freedom.Dependent</span> " +
+            "<span class=\"llyn-speech\">Determiner</span>",
             body,
             StringComparison.Ordinal);
     }

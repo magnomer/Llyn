@@ -1,22 +1,21 @@
 # CParadigmForm.cs
-Hash: `8f54fcdf81586f39`
+Hash: `fd48d5b7ad4fcb36`
 
-## `public sealed record CParadigmForm(string CParadigmFormText, IReadOnlyList<CParadigmMark> CParadigmFormMarks, string? CParadigmFormTip, int CParadigmFormSplit = 0)`
+## `public sealed record CParadigmForm(IReadOnlyList<CParadigmPiece> CParadigmFormPiece, string? CParadigmFormTip)`
 
 One cell of the inflection box, ready to show.
-The text is the form or the mark standing in for a missing one.
+Its pieces join to the form or the mark standing in for a missing one.
 
 **Parameters**
 
-- `CParadigmFormText`: the inflected form, or the mark that stands in for a missing one.
-- `CParadigmFormMarks`: the ranges to paint, empty unless the form is shown.
+- `CParadigmFormPiece`: the runs of the form or mark to paint, in order, cut before the engine answers.
 - `CParadigmFormTip`: the localization key of the tip, or null when the cell shows its form.
-- `CParadigmFormSplit`: where the ending starts, or 0 when the form is not divided.
 
 ## `internal static CParadigmForm CParadigmFormCreate(LParadigmForm form)`
 
-Maps one ready cell of the box, its text and tip key as the engine answered them.
+Maps one ready cell of the box, its pieces and tip key as the engine answered them.
 The wording stays in Core, so the box, the plain slot list and the Joplin note agree.
-It copies the marked ranges and the split as Core gave them, whatever the status.
-Core leaves both empty for a cell that shows a status, so no check is needed here.
-The ranges are copied into an array, so an empty source keeps the shared empty value.
+It maps each piece the engine answered in `LParadigmForm.LParadigmFormPiece`, whatever the status.
+It calls no Core method, since the paradigm clerk already cut the pieces.
+Core leaves marks and split empty for a cell that shows a status, so its one piece is plain.
+No check is needed here.

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Llyn.Core;
 
@@ -30,13 +31,19 @@ internal static class LLiveryXiesheng
             }
         }
 
-        LLiveryEntryAppend(sheet, stem.LLiveryStemEntry, note, lookup("Xiesheng.KindredVacant"));
+        IReadOnlyList<LEntry> kindred = [.. stem.LLiveryStemEntry.Where(entry => !page.LStemPageMembers.Any(
+            member => string.Equals(member.LStemMemberCharacter, entry.LEntryHeadword, StringComparison.Ordinal)))];
+        LLiveryEntryAppend(
+            sheet, kindred, note, stem.LLiveryStemEntry.Count == 0 ? lookup("Xiesheng.KindredVacant") : string.Empty);
     }
 
     private static void LLiveryMemberAppend(
         StringBuilder sheet, LStemMember member, IReadOnlyList<LEntry> entries, Func<long, string> note)
     {
-        sheet.Append("<div class=\"llyn-card\">\n\n")
+        IReadOnlyList<(LReflexDraft, LReflexGuise?)> rows = member.LStemMemberRows;
+        bool folding = rows.Count > 0;
+        sheet.Append(
+                folding ? LLiveryCard.LLiveryFoldFormat(member.LStemMemberOpened) : "<div class=\"llyn-card\">\n\n")
             .Append(LLiveryCharacterFormat(member.LStemMemberCharacter, entries, note));
         string reading = member.LStemMemberReading;
         if (reading.Length > 0)
@@ -45,9 +52,9 @@ internal static class LLiveryXiesheng
                 .Append("</span>");
         }
 
-        sheet.Append("\n\n");
-        LLiverySound.LLiveryReadingAppend(sheet, member.LStemMemberRows, [], member.LStemMemberCharacter);
-        sheet.Append("</div>\n\n");
+        sheet.Append(folding ? "</summary>\n\n" : "\n\n");
+        LLiverySound.LLiveryReadingAppend(sheet, rows, [], member.LStemMemberCharacter);
+        sheet.Append(folding ? "</details>\n\n" : "</div>\n\n");
     }
 
     internal static string LLiveryCharacterFormat(
@@ -66,7 +73,7 @@ internal static class LLiveryXiesheng
             }
         }
 
-        return "<span class=\"llyn-stem\">" + LLiveryEtymology.LLiveryLinkFormat(character, id, note) + "</span>";
+        return "<span class=\"llyn-stem\">" + LLiveryEtymology.LLiveryAnchorFormat(character, id, note) + "</span>";
     }
 
     internal static void LLiveryEntryAppend(

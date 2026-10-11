@@ -1,9 +1,10 @@
 # LSheetStyle.cs
-Hash: `391f57a964630e82`
+Hash: `df627556f554795a`
 
 ## `public static class LSheetStyle`
 
-The exported page's whole appearance, built from the display's theme.
+The appearance of a catalog sheet, built from the display's theme.
+An entry sheet takes `LSheetCascade` instead.
 
 ## `public static string LSheetStyleRead(LTheme theme)`
 
@@ -12,9 +13,17 @@ Sizes, margins and radii are the display's own values in device-independent pixe
 Backgrounds are forced to print, because a card without its ground is not the card seen.
 Cards are kept off page breaks, which the panel never has to think about.
 
+## `internal static string LSheetVariableFormat(LTheme theme)`
+
+Answers the `:root` rule that names each theme font stack and each colour in `LTheme`'s spare set.
+Each becomes a custom property.
+The contour colours stay out, since each chart image carries its own.
+The catalog style and `LSheetCascade` both open with it, so the two sheets share one palette.
+Each property keeps the theme file's key in kebab case, so `surfaceRaised` becomes `--surface-raised`.
+
 ## `private static string LSheetStyleBuild(LTheme theme)`
 
-Writes the custom properties on `:root`, then every shared rule, then `LSheetStylePaper`.
+Writes the custom properties from `LSheetVariableFormat`, then every shared rule, then `LSheetStylePaper`.
 
 ## `private static void LSheetVariableAppend(StringBuilder sheet, string name, string value)`
 
@@ -26,6 +35,7 @@ Writes one custom property with the theme text untouched.
 
 Each rule as a selector and its declarations, in the order the page has always written them.
 Order matters in CSS, so a later rule still wins over an earlier one.
+The paradigm rule hides the table its checked radio does not name, so Short/Full switches without script.
 
 ### `private const string LSheetStylePaper =`
 

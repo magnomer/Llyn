@@ -12,17 +12,14 @@ public sealed class LReflexFacade : LReflexPort
 {
     private readonly LEngineHearth _lReflexFacadeHearth;
     private readonly LFanqieFacade _lReflexFacadeFanqie;
-    private readonly LSettingsFacade _lReflexFacadeSettings;
     private readonly object _lReflexFacadeGate;
 
-    internal LReflexFacade(LEngineHearth hearth, LFanqieFacade fanqie, LSettingsFacade settings)
+    internal LReflexFacade(LEngineHearth hearth, LFanqieFacade fanqie)
     {
         ArgumentNullException.ThrowIfNull(hearth);
         ArgumentNullException.ThrowIfNull(fanqie);
-        ArgumentNullException.ThrowIfNull(settings);
         _lReflexFacadeHearth = hearth;
         _lReflexFacadeFanqie = fanqie;
-        _lReflexFacadeSettings = settings;
         _lReflexFacadeGate = _lReflexFacadeHearth.LEngineGate;
     }
 
@@ -67,17 +64,18 @@ public sealed class LReflexFacade : LReflexPort
         }
     }
 
-    public IReadOnlyList<LReflexGuise> LEngineGuiseRead(string language, IReadOnlyList<string> reflexes)
+    public IReadOnlyList<LReflexGuise> LEngineGuiseRead(string language, IReadOnlyList<LReflexDraft> reflexes)
     {
         ArgumentNullException.ThrowIfNull(reflexes);
 
-        IReadOnlyList<string> folded;
         lock (_lReflexFacadeGate)
         {
-            folded = LReflexFacadeStaff.LEngineStaffLanguage.LLanguageStaffReflex.LReflexFoldedRead(language);
+            LLanguageStaff staff = LReflexFacadeStaff.LEngineStaffLanguage;
+            return staff.LLanguageStaffLanguage.LLanguageGuiseScan(
+                reflexes,
+                staff.LLanguageStaffReflex.LReflexFoldedRead(language),
+                _lReflexFacadeHearth.LEngineSettingsHeld.LSettingsRespelled);
         }
-
-        return reflexes.Select(reflex => LEngineGuiseBuild(reflex.Trim(), folded)).ToList();
     }
 
     public void LEngineReflexStart(long entryId)
@@ -146,14 +144,6 @@ public sealed class LReflexFacade : LReflexPort
         }
 
         return languages.LLanguageClerkLoad(language).LLanguageDescents;
-    }
-
-    private LReflexGuise LEngineGuiseBuild(string reflex, IReadOnlyList<string> folded)
-    {
-        return new LReflexGuise(
-            _lReflexFacadeSettings.LEngineRespellingCheck(reflex),
-            _lReflexFacadeSettings.LEnginePhonemicCheck(reflex),
-            folded.Contains(reflex, StringComparer.Ordinal));
     }
 
     private IReadOnlyList<LFanqieRow> LEngineAnchorRead(long entryId)

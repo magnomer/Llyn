@@ -9,14 +9,13 @@ namespace Llyn.Conduct;
 public static class CRespelling
 {
     internal static IReadOnlyList<CReflex> LRespellingReflexScan(
-        LReflexPort port, string language, IReadOnlyList<CReflexDraft> reflexes)
+        LReflexPort port, string language, IReadOnlyList<LReflexDraft> reflexes)
     {
         ArgumentNullException.ThrowIfNull(port);
         ArgumentNullException.ThrowIfNull(reflexes);
 
-        IReadOnlyList<string> languages = reflexes.Select(static reflex => reflex.CReflexDraftLanguage).ToList();
-        IReadOnlyList<LReflexGuise> guises = port.LEngineGuiseRead(language, languages);
-        return LRespellingReflexScan(reflexes, guises);
+        IReadOnlyList<LReflexGuise> guises = port.LEngineGuiseRead(language, reflexes);
+        return LRespellingReflexScan(CReflexDraft.CReflexDraftRead(reflexes), guises);
     }
 
     internal static IReadOnlyList<CReflex> LRespellingReflexScan(
@@ -38,7 +37,7 @@ public static class CRespelling
             reflex.CReflexDraftId,
             reflex.CReflexDraftLanguage,
             reflex.CReflexDraftKind,
-            LRespellingResolve(mark, reflex.CReflexDraftText, reflex.CReflexDraftRespelling),
+            guise.LReflexGuiseShown,
             reflex.CReflexDraftRomanization,
             reflex.CReflexDraftMeaning,
             reflex.CReflexDraftNote,
@@ -48,12 +47,5 @@ public static class CRespelling
             mark,
             guise.LReflexGuiseFolded,
             lead);
-    }
-
-    internal static string LRespellingResolve(CRespellingMark mark, string phonetic, string? respelling)
-    {
-        ArgumentNullException.ThrowIfNull(mark);
-
-        return mark.CRespellingMarkShown && !string.IsNullOrEmpty(respelling) ? respelling : phonetic;
     }
 }

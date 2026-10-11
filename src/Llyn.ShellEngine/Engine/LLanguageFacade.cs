@@ -64,6 +64,11 @@ public sealed class LLanguageFacade : LGlyphPort, LLanguagePort
 
     public LFont LEngineFontRead(string language, LFontRole role)
     {
+        if (string.IsNullOrWhiteSpace(language))
+        {
+            return new LFont(null, 0);
+        }
+
         LLanguage pack = LEngineLanguageLoad(language);
 
         return role switch
@@ -155,11 +160,6 @@ public sealed class LLanguageFacade : LGlyphPort, LLanguagePort
     internal bool LEngineFlaggedCheck(string language)
     {
         return LEngineLanguageLoad(language).LLanguageVarietyFlagged;
-    }
-
-    internal bool LEngineSpacedCheck(string language)
-    {
-        return language.Length == 0 || LEngineLanguageLoad(language).LLanguageSpaced;
     }
 
     public bool LEngineFlaggedCheck(LEntryDraft draft)

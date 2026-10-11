@@ -1,6 +1,5 @@
 # TInterfaceInflection.cs
-Hash: `2917b71e5a0d84ca`
-Hash: `7ce4ad409c79448e`
+Hash: `c64a5c850d40f157`
 
 ## `internal static class TInterfaceInflection`
 
@@ -10,6 +9,7 @@ It also builds the view tables, lines, forms and marks, and a rule book with its
 The paradigm rule resolve and the mark text are relayed here too.
 So are the book's prediction and division, and the difference scan and division.
 Each relay is transparent and carries no test logic of its own.
+The form relay calls Core's own piece cut, so it adds no rule either.
 
 ## `internal static LForm TFormCreate(long entryId, int position, string text, string? local, string role)`
 
@@ -38,9 +38,15 @@ Tests build an expected view line through this relay rather than its constructor
 ## `internal static LParadigmForm TParadigmFormCreate(string text, IReadOnlyList<LInflectionMark> marks, string? tip, int split = 0)`
 
 A test passes the ready text and tip a cell shows, as the Core view build answers them.
-
+The pieces are cut here by `LParadigmFormScan`, as the paradigm clerk cuts them before the engine answers.
 The split defaults to 0, so a cell built without one stands for an undivided form.
 A test of a divided form passes where its ending starts.
+
+## `internal static IReadOnlyList<TParadigmPieceRow> TParadigmFormScan(LParadigmForm form)`
+
+Cuts a form into its pieces and answers each piece as text, marked flag and cut flag.
+`TParadigmPieceRow` is a file alias for that tuple, so the signature stays short.
+The tuples let a test write the expected pieces as plain literals.
 
 ## `internal static LInflectionMark TInflectionMarkCreate(int offset, int length)`
 

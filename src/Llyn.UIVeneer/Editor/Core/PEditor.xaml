@@ -238,6 +238,23 @@
                             </Popup>
                         </Grid>
 
+                        <Grid VerticalAlignment="Top">
+                            <ToggleButton x:Name="PFreedomDropper" Style="{StaticResource Theme.Freedom.Dropper}">
+                                <TextBlock x:Name="PFreedomName" Style="{StaticResource Theme.Freedom.Label}" />
+                            </ToggleButton>
+                            <Popup
+                                x:Name="PFreedomDropdown"
+                                AllowsTransparency="True"
+                                HorizontalOffset="-8"
+                                Placement="Bottom"
+                                StaysOpen="False"
+                                VerticalOffset="-4">
+                                <Border MinWidth="160" Margin="8" Style="{StaticResource Theme.Marker.Menu}">
+                                    <ItemsControl x:Name="PFreedomList" ItemContainerStyle="{StaticResource Editor.Popup.Stretch}" ItemTemplate="{DynamicResource Theme.Freedom.Row}" />
+                                </Border>
+                            </Popup>
+                        </Grid>
+
                         <ItemsControl x:Name="PMarkerList" VerticalAlignment="Top" ItemTemplate="{DynamicResource Theme.Marker.Chip}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>

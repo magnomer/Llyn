@@ -163,4 +163,14 @@ public sealed class CEntry
             new LQuillEntry(held).LQuillUnitSet(CCardSpeech.LUnitRowParse(key));
         }
     }
+
+    public void CEntryFreedomSet(string key)
+    {
+        ArgumentNullException.ThrowIfNull(key);
+
+        if (CEntryTenure is LTenure held)
+        {
+            new LQuillEntry(held).LQuillFreedomSet(CCardSpeech.LFreedomRowParse(key));
+        }
+    }
 }

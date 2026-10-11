@@ -6,5 +6,5 @@ public interface LPress
 {
     Task LPressSave(string html, string path);
 
-    Task LPressPrint(string html, LPressTicket ticket);
+    Task<LPressBoard> LPressBoardOpen(string html);
 }

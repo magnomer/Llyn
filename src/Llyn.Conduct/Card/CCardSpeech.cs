@@ -10,17 +10,13 @@ public sealed class CCardSpeech
 {
     private readonly CDesk _cCardSpeechDesk;
 
-    private readonly LEntryPort _cCardSpeechPort;
-
     private string _cCardSpeechTyped = string.Empty;
 
-    internal CCardSpeech(CDesk desk, LEntryPort entries)
+    internal CCardSpeech(CDesk desk)
     {
         ArgumentNullException.ThrowIfNull(desk);
-        ArgumentNullException.ThrowIfNull(entries);
 
         _cCardSpeechDesk = desk;
-        _cCardSpeechPort = entries;
     }
 
     private LTenure? CCardSpeechTenure =>
@@ -67,7 +63,7 @@ public sealed class CCardSpeech
         if (_cCardSpeechDesk.CDeskDraft.CDeskDraftTenure is not LTenure held
             || _cCardSpeechDesk.CDeskDraft.CDeskDraftSpeech is not LQuillSpeech speech)
         {
-            return new CMarker([], _cCardSpeechTyped, new CCategory([], false, false, false), []);
+            return new CMarker([], _cCardSpeechTyped, new CCategory([], false, false, false), [], []);
         }
 
         (var names, _cCardSpeechTyped, LSpeechOffer found) = speech.LQuillSpeechRead(_cCardSpeechTyped);
@@ -76,24 +72,41 @@ public sealed class CCardSpeech
             names,
             _cCardSpeechTyped,
             LCategoryRead(found),
-            LUnitRowScan(entry.LQuillUnitScan(), entry.LQuillUnitRead()));
+            LUnitRowScan(entry.LQuillUnitScan(), entry.LQuillUnitRead()),
+            LFreedomRowScan(entry.LQuillFreedomScan(), entry.LQuillFreedomRead()));
     }
 
     internal static LUnit LUnitRowParse(string key)
     {
         return key switch
         {
-            "Unit.Content" => LUnit.LUnitContent,
-            "Unit.Function" => LUnit.LUnitFunction,
             "Unit.Morpheme" => LUnit.LUnitMorpheme,
             "Unit.Word" => LUnit.LUnitWord,
+            "Unit.Expression" => LUnit.LUnitExpression,
             _ => throw new ArgumentOutOfRangeException(nameof(key), key, null),
         };
     }
 
-    private IReadOnlyList<(string, bool)> LUnitRowScan(IReadOnlyList<LUnit> units, LUnit taken)
+    internal static LFreedom LFreedomRowParse(string key)
     {
-        return units.Select(unit => (_cCardSpeechPort.LEngineUnitFormat(unit), unit == taken)).ToList();
+        return key switch
+        {
+            "Freedom.Dependent" => LFreedom.LFreedomDependent,
+            "Freedom.Standalone" => LFreedom.LFreedomStandalone,
+            _ => throw new ArgumentOutOfRangeException(nameof(key), key, null),
+        };
+    }
+
+    private static IReadOnlyList<(string, bool)> LUnitRowScan(IReadOnlyList<LUnit> units, LUnit taken)
+    {
+        return units.Select(unit => (LEntryPort.LEngineUnitFormat(unit), unit == taken)).ToList();
+    }
+
+    private static IReadOnlyList<(string, bool)> LFreedomRowScan(IReadOnlyList<LFreedom> freedoms, LFreedom taken)
+    {
+        return freedoms
+            .Select(freedom => (LEntryPort.LEngineFreedomFormat(freedom), freedom == taken))
+            .ToList();
     }
 
     private static CCategory LCategoryRead(LSpeechOffer offer)

@@ -1,5 +1,5 @@
 # CShelf.cs
-Hash: `830c910a5faa8c34`
+Hash: `83077db25d32b075`
 
 ## `public sealed class CShelf`
 
@@ -80,7 +80,11 @@ Whether the desk in front, the entry editor or the Source imprint, reports its d
 ## `public bool CShelfPressAllowed`
 
 True while an entry or a Source is shown outside edit mode, so there is something to print.
-`CShelfPortraitAllowed` holds only for a shown entry, since only an entry exports.
+A Source counts only while the Source side is in front.
+
+## `public bool CShelfPortraitAllowed`
+
+True while an entry is shown outside edit mode, since only an entry exports.
 
 ## `internal void LShelfVistaRestore()`
 
@@ -144,9 +148,10 @@ An entry side that closes falls back to the chosen Source.
 
 ## `public Task CShelfPortraitPrint()`
 
-Prints the shown entry, or else the shown Source with the Source realm's legend, and nothing while neither is shown.
-The reader is asked for the printer through the panel's envoy, and a decline prints nothing.
-`CPortrait` words the page through the engine and shows `Print.Failed` through the panel's envoy.
+Prints the shown entry, or else the shown Source with the Source realm's legend.
+It does nothing while neither is shown.
+The engine opens a print session on the chosen row, and `CPortrait` puts the print window up.
+A failed open shows `Print.Failed` through the panel's envoy.
 
 ## `public Task CShelfPortraitExport()`
 

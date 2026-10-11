@@ -29,6 +29,10 @@ internal sealed class TWorkspace : IDisposable
 
     public TPress TWorkspacePress { get; } = new();
 
+    public TPressQueue TWorkspaceQueue { get; } = new();
+
+    public TPressVault TWorkspacePressVault { get; set; } = new();
+
     public TPhonographFake TWorkspacePhonograph { get; } = new();
 
     public void TWorkspaceClockSet(Func<DateTimeOffset> clock)
@@ -82,8 +86,15 @@ internal sealed class TWorkspace : IDisposable
         return new LEngine(
             TWorkspaceSourcesApply(TWorkspaceRigCreate(client)),
             workspace => TWorkspaceSourcesApply(LRigFactory.LRigFactoryBuild(
-                workspace, client, new LUsherFile(), TWorkspacePress, new TWarrantFake(), TWorkspacePhonograph) with
+                workspace,
+                client,
+                new LUsherFile(),
+                TWorkspacePress,
+                TWorkspaceQueue,
+                new TWarrantFake(),
+                TWorkspacePhonograph) with
             {
+                LRigPressVault = TWorkspacePressVault,
                 LRigClock = TWorkspaceClock,
             }),
             _ => { });
@@ -97,8 +108,14 @@ internal sealed class TWorkspace : IDisposable
     public LRig TWorkspaceRigCreate(HttpClient client)
     {
         LRig rig = LRigFactory.LRigFactoryBuild(
-            _tWorkspaceRoot, client, new LUsherFile(), TWorkspacePress, new TWarrantFake(), TWorkspacePhonograph);
-        return rig with { LRigClock = TWorkspaceClock };
+            _tWorkspaceRoot,
+            client,
+            new LUsherFile(),
+            TWorkspacePress,
+            TWorkspaceQueue,
+            new TWarrantFake(),
+            TWorkspacePhonograph);
+        return rig with { LRigPressVault = TWorkspacePressVault, LRigClock = TWorkspaceClock };
     }
 
     public SqliteConnection TWorkspaceConnectionRead()

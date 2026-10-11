@@ -118,7 +118,7 @@ public sealed class TPortraitPage
     }
 
     [Fact]
-    public async Task PortraitPrint_ExampleOnFakePress_HandsThePageAndTheTicketToThePress()
+    public async Task PortraitPrint_ExampleOnFakePress_HandsThePageToThePressToPrint()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -127,19 +127,13 @@ public sealed class TPortraitPage
         LExample example = engine.TEngineExampleCreate(TInterfaceExample.TExampleCreate(
             0, "English", "The fire kindled.", null, TInterfaceState.TStateAnchorRead(null)));
 
-        await engine.TEnginePortraitPrint(
+        await using LGalleyRelay? galley = await engine.TEnginePressOpen(
             example.LExampleId,
             LOwner.LOwnerExample,
-            TInterface.TPortraitLegendRead(),
-            TInterface.TPressTicketCreate("Paper Printer", true, 2));
+            TInterface.TPortraitLegendRead());
 
         Assert.Contains("The fire kindled.", press.TPressHtml);
-        Assert.Equal("Paper Printer", press.TPressTicket?.LPressTicketPrinter);
-        Assert.True(press.TPressTicket?.LPressTicketLandscape);
-        Assert.Equal(2, press.TPressTicket?.LPressTicketCopies);
-        Assert.Equal(LPressPaper.LPressPaperMetric, press.TPressTicket?.LPressTicketPaper);
-        Assert.Equal(LPressSide.LPressSideLong, press.TPressTicket?.LPressTicketSide);
-        Assert.Equal(LPressInk.LPressInkGray, press.TPressTicket?.LPressTicketInk);
+        Assert.True(press.TPressOpened);
     }
 
     private static LReference TPortraitSourceCreate(LEngine engine, string title)

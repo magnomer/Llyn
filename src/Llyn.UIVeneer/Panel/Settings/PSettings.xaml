@@ -236,6 +236,30 @@
                         </Grid>
                     </StackPanel>
 
+                    <StackPanel x:Name="PDialOutpost" Visibility="Collapsed">
+                        <TextBlock Style="{StaticResource Theme.Page.Title}" Text="{DynamicResource Settings.Sync}" />
+                        <TextBlock MaxWidth="560" HorizontalAlignment="Left" Style="{StaticResource Theme.Page.Helper}" Text="{DynamicResource Settings.SyncHelper}" />
+                        <Rectangle Style="{StaticResource Theme.Page.Rule}" />
+                        <Grid Margin="0,22,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" MaxWidth="560" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                <TextBlock Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Notebook.Name}" />
+                                <TextBlock Style="{StaticResource Theme.Page.Note}" Text="{DynamicResource Notebook.Helper}" />
+                            </StackPanel>
+                            <TextBox
+                                x:Name="PSettingsNotebook"
+                                Grid.Column="1"
+                                Width="200"
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                Style="{StaticResource Theme.Input.Field}" />
+                        </Grid>
+                    </StackPanel>
+
                     <StackPanel x:Name="PDialLayout" Visibility="Collapsed">
                         <TextBlock Style="{StaticResource Theme.Page.Title}" Text="{DynamicResource Settings.Layout}" />
                         <TextBlock MaxWidth="560" HorizontalAlignment="Left" Style="{StaticResource Theme.Page.Helper}" Text="{DynamicResource Settings.LayoutHelper}" />

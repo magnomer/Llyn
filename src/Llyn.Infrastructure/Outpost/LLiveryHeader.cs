@@ -1,6 +1,4 @@
 using System;
-using System.Globalization;
-using System.IO;
 using System.Net;
 using System.Text;
 using Llyn.Core;
@@ -9,10 +7,6 @@ namespace Llyn.Infrastructure;
 
 internal static class LLiveryHeader
 {
-    private const int LLiveryStarCount = 5;
-
-    private const int LLiveryGraspCeiling = 10;
-
     private const string LLiveryEscaped = "\\\u0060*_[]|~#!";
 
     public static void LLiveryHeaderAppend(StringBuilder sheet, LLiveryPage page, Func<string, string> lookup)
@@ -31,13 +25,13 @@ internal static class LLiveryHeader
                 .Append(LLiveryTextFormat(draft.LEntryDraftLanguage)).Append("</span>");
         }
 
-        sheet.Append(page.LLiveryPageFavorite
-            ? " <span class=\"llyn-heart llyn-on\">♥</span>"
-            : " <span class=\"llyn-heart\">♡</span>");
-        int grasp = Math.Clamp(page.LLiveryPageGrasp, 0, LLiveryGraspCeiling);
+        sheet.Append(" <span class=\"llyn-regard\">").Append(page.LLiveryPageFavorite
+            ? "<span class=\"llyn-heart llyn-on\">♥</span>"
+            : "<span class=\"llyn-heart\">♡</span>");
+        int grasp = LGrasp.LGraspNormalize(page.LLiveryPageGrasp);
         LLiveryStarAppend(sheet, grasp);
-        string rating = lookup("Grasp.Level" + grasp.ToString(CultureInfo.InvariantCulture));
-        sheet.Append(" <span class=\"llyn-rating\">").Append(LLiveryTextFormat(rating)).Append("</span>\n\n");
+        string rating = lookup(LGrasp.LGraspKeyRead(grasp));
+        sheet.Append(" <span class=\"llyn-rating\">").Append(LLiveryTextFormat(rating)).Append("</span></span>\n\n");
     }
 
     public static void LLiveryChipAppend(StringBuilder sheet, LLiveryPage page, Func<string, string> lookup)
@@ -47,6 +41,8 @@ internal static class LLiveryHeader
         ArgumentNullException.ThrowIfNull(lookup);
 
         string unit = LUnitKey.LUnitKeyRead(page.LLiveryPageDraft.LEntryDraftUnit);
+        string freedom = LFreedomKey.LFreedomKeyRead(page.LLiveryPageDraft.LEntryDraftFreedom);
+        int start = sheet.Length;
         if (page.LLiveryPageDraft.LEntryDraftMarked)
         {
             if (unit.Length > 0)
@@ -54,13 +50,22 @@ internal static class LLiveryHeader
                 sheet.Append("<span class=\"llyn-unit\">").Append(LLiveryTextFormat(lookup(unit))).Append("</span> ");
             }
 
+            if (freedom.Length > 0)
+            {
+                sheet.Append("<span class=\"llyn-freedom\">").Append(LLiveryTextFormat(lookup(freedom)))
+                    .Append("</span> ");
+            }
+
             foreach (string name in page.LLiveryPageDraft.LEntryDraftNames)
             {
                 sheet.Append("<span class=\"llyn-speech\">").Append(LLiveryTextFormat(name)).Append("</span> ");
             }
 
-            sheet.Length--;
-            sheet.Append("\n\n");
+            if (sheet.Length > start)
+            {
+                sheet.Length--;
+                sheet.Append("\n\n");
+            }
         }
 
         if (LFrequencyGauge.LFrequencyGaugeResolve(page.LLiveryPageFrequency, lookup("Frequency.Once"))
@@ -123,39 +128,16 @@ internal static class LLiveryHeader
 
     internal static string LLiveryPictureFormat(string? path, string style)
     {
-        string? media = Path.GetExtension(path ?? string.Empty).ToLowerInvariant() switch
-        {
-            ".svg" => "image/svg+xml",
-            ".png" => "image/png",
-            ".jpg" or ".jpeg" => "image/jpeg",
-            ".gif" => "image/gif",
-            ".webp" => "image/webp",
-            _ => null,
-        };
-        if (path is null || media is null)
-        {
-            return string.Empty;
-        }
-
-        byte[] data;
-        try
-        {
-            data = File.ReadAllBytes(path);
-        }
-        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
-        {
-            return string.Empty;
-        }
-
-        return "<img src=\"data:" + media + ";base64," + Convert.ToBase64String(data) + "\" class=\"" + style + "\">";
+        return LPortraitAsset.LPortraitAssetLoad(path ?? string.Empty) is LPortraitAsset asset
+            ? "<img src=\"" + asset.LPortraitAssetAddress + "\" class=\"" + style + "\">"
+            : string.Empty;
     }
 
     private static void LLiveryStarAppend(StringBuilder sheet, int grasp)
     {
-        for (int star = 0; star < LLiveryStarCount; star++)
+        foreach (int filled in LGrasp.LGraspStarScan(grasp))
         {
-            int filled = grasp - (star * 2);
-            sheet.Append(filled >= 2
+            sheet.Append(filled == 2
                 ? " <span class=\"llyn-star llyn-on\">★</span>"
                 : filled == 1
                     ? " <span class=\"llyn-star llyn-half\">★</span>"

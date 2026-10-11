@@ -1,5 +1,5 @@
 # LDraftClerkEquality.cs
-Hash: `0b9b08e549d4ca65`
+Hash: `f7ecfcf9bc4abcb4`
 
 ## `public static class LDraftClerkEquality`
 
@@ -22,7 +22,7 @@ An entry draft is compared through its content, so blank scaffolding is ignored 
 
 Field by field, whether two forms of an entry say the same thing.
 Language sits beside the headword, because changing only the tongue is still an edit.
-The lexical unit is compared too, so choosing one alone is an edit.
+The lexical unit and freedom are compared too, so choosing either alone is an edit.
 The headword is compared trimmed and the note canonical, since the commit stores both that way.
 A form that differs only there would otherwise report itself changed forever.
 The lists inside are compared by their contents, since records compare them by reference.

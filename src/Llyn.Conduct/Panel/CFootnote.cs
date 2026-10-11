@@ -112,11 +112,11 @@ public sealed class CFootnote
 
     internal Task LFootnotePortraitPrint(CEnvoy envoy, LSettingsPort settings)
     {
-        return CPortrait.LPortraitTicketPrint(
+        return CPortrait.LPortraitPrint(
             envoy,
             settings,
-            chosen => _cFootnotePortraitPort.LEnginePortraitPrint(
-                CFootnotePanel.CPanelAperture.CApertureVista, CPortrait.LPortraitLabelRead(settings), chosen));
+            () => _cFootnotePortraitPort.LEnginePressOpen(
+                CFootnotePanel.CPanelAperture.CApertureVista, CPortrait.LPortraitLabelRead(settings)));
     }
 
     internal Task LFootnotePortraitExport(CEnvoy envoy, LSettingsPort settings)

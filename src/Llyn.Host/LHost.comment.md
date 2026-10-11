@@ -1,5 +1,5 @@
 # LHost.cs
-Hash: `8133aed429fed138`
+Hash: `13c381471b8801ca`
 
 ## `int code = 1;`
 
@@ -13,7 +13,7 @@ So the whole run happens on one STA thread the entry point starts and joins.
 
 ## `HttpClient client = LRigFactory.LRigClientCreate();`
 
-This file is the composition root: the one place that builds a rig and names every project.
+This file is the composition root, the one place that builds a rig and names every project.
 The client is built once and handed to every rig of the session, and disposed after the run.
 
 ## `LUsher usher = new LUsherShell(new LUsherFile());`
@@ -23,6 +23,11 @@ The file usher answers path facts and the shell usher adds the launch of a folde
 ## `LPress press = new LPressBrowser();`
 
 The rig carries the press, so the engine prints through it and the host applies none later.
+
+## `LPressQueue queue = new LPressSpooler();`
+
+The Windows spooler lists the printers, so no layer above sees System.Printing.
+The rig carries it as `LRigQueue`, and the host is the one place that names the twin.
 
 ## `LWarrant warrant = new LWarrantShield();`
 
@@ -44,7 +49,7 @@ Creating it makes it `Application.Current`, which is how the deportment reaches 
 `QBootstrap` applies resources, raises every dialog of the start, and shows the window.
 It pulls the application from `Application.Current`, so the host hands it no application.
 
-## `bootstrap.QBootstrapIntroduce(() => LThemeLoader.LThemeLoaderLoad().LThemeColorRead, () => LLocalization.LLocalizationLoad(new LLocalizationLoader(), LLocalization.LLocalizationDefault), LWorkspaceRoot.LWorkspaceRootRead, workspace => new LEngine(LRigFactory.LRigFactoryBuild(workspace, client, usher, press, warrant, phonograph), path => LRigFactory.LRigFactoryBuild(path, client, usher, press, warrant, phonograph), LWorkspaceRoot.LWorkspaceRootChange), LDoctor.LDoctorBusyCheck, engine => { bootstrap.QBootstrapFaultIntroduce(engine.LEngineWorkspace.LEngineAuditRecord); LSettingsOutlet settings = new(engine); bootstrap.QBootstrapCatalogApply(() => LLocalization.LLocalizationDefaultCheck(settings.LEngineSettingsRead().LSettingsLocalization), () => settings.LEngineLocalizationLoad(LLocalization.LLocalizationNormalize(settings.LEngineSettingsRead().LSettingsLocalization))); LDoctorRescue rescue = engine.LEngineWorkspace.LEngineRescueRead(); bootstrap.QBootstrapRescueConsult(rescue.LDoctorRescueDone, rescue.LDoctorRescueBackup, rescue.LDoctorRescueReason); bootstrap.QBootstrapWindowShow(new QWindow(new CAtelier(new LPosture(engine), new LDraftOutlet(engine), new CEntryBundle(engine.LEngineEntry, engine.LEngineEntry, engine.LEngineCatalog, engine.LEngineVista, engine.LEngineCard, engine.LEngineCatalog, engine.LEngineCatalog, engine.LEngineMention, engine.LEngineLanguage, engine.LEngineSituation, engine.LEngineExample, engine.LEngineReference, engine.LEngineAuthor, engine.LEngineDraft, engine.LEnginePronunciation), settings, new CPhonologyBundle(engine.LEngineFanqie, engine.LEngineFanqie, engine.LEngineScript, engine.LEngineLanguage, engine.LEngineReflex, engine.LEngineVocabulary, engine.LEngineVocabulary, engine.LEngineStem), new LMediaOutlet(engine), new LPortraitOutlet(engine), QObserver.QObserverCreate<Action>(static run => run())))); code = application.Run(); engine.Dispose(); })`
+## `bootstrap.QBootstrapIntroduce(() => LThemeLoader.LThemeLoaderLoad().LThemeColorRead, () => LLocalization.LLocalizationLoad(new LLocalizationLoader(), LLocalization.LLocalizationDefault), LWorkspaceRoot.LWorkspaceRootRead, workspace => new LEngine(LRigFactory.LRigFactoryBuild(workspace, client, usher, press, queue, warrant, phonograph), path => LRigFactory.LRigFactoryBuild(path, client, usher, press, queue, warrant, phonograph), LWorkspaceRoot.LWorkspaceRootChange), LDoctor.LDoctorBusyCheck, engine => { bootstrap.QBootstrapFaultIntroduce(engine.LEngineWorkspace.LEngineAuditRecord); LSettingsOutlet settings = new(engine); bootstrap.QBootstrapCatalogApply(() => LLocalization.LLocalizationDefaultCheck(settings.LEngineSettingsRead().LSettingsLocalization), () => settings.LEngineLocalizationLoad(LLocalization.LLocalizationNormalize(settings.LEngineSettingsRead().LSettingsLocalization))); LDoctorRescue rescue = engine.LEngineWorkspace.LEngineRescueRead(); bootstrap.QBootstrapRescueConsult(rescue.LDoctorRescueDone, rescue.LDoctorRescueBackup, rescue.LDoctorRescueReason); bootstrap.QBootstrapWindowShow(new QWindow(new CAtelier(new LPosture(engine), new LDraftOutlet(engine), new CEntryBundle(engine.LEngineEntry, engine.LEngineEntry, engine.LEngineCatalog, engine.LEngineVista, engine.LEngineCard, engine.LEngineCatalog, engine.LEngineCatalog, engine.LEngineMention, engine.LEngineLanguage, engine.LEngineSituation, engine.LEngineExample, engine.LEngineReference, engine.LEngineAuthor, engine.LEngineDraft, engine.LEnginePronunciation), settings, new CPhonologyBundle(engine.LEngineFanqie, engine.LEngineFanqie, engine.LEngineScript, engine.LEngineLanguage, engine.LEngineReflex, engine.LEngineVocabulary, engine.LEngineVocabulary, engine.LEngineStem), new LMediaOutlet(engine), new LPortraitOutlet(engine), QObserver.QObserverCreate<Action>(static run => run())))); code = application.Run(); engine.Dispose(); })`
 
 The host hands over the theme, the engine factory and the rest of the run as seams.
 `QBootstrap` decides whether the start continues, so the host holds no branch.
@@ -55,12 +60,12 @@ A theme or an engine that fails leaves the rest unrun, and the exit code stays 1
 The default catalog is applied before any engine exists, so the host opens it through the port itself.
 That load lists the embedded languages first, so a stored language the build lacks falls back to the default.
 
-## `workspace => new LEngine(LRigFactory.LRigFactoryBuild(workspace, client, usher, press, warrant, phonograph), path => LRigFactory.LRigFactoryBuild(path, client, usher, press, warrant, phonograph), LWorkspaceRoot.LWorkspaceRootChange)`
+## `workspace => new LEngine(LRigFactory.LRigFactoryBuild(workspace, client, usher, press, queue, warrant, phonograph), path => LRigFactory.LRigFactoryBuild(path, client, usher, press, queue, warrant, phonograph), LWorkspaceRoot.LWorkspaceRootChange)`
 
 The engine reads the settings the rig holds and imports the languages when it opens.
 The engine receives every adapter through the rig and references Infrastructure nowhere.
 
-## `path => LRigFactory.LRigFactoryBuild(path, client, usher, press, warrant, phonograph),`
+## `path => LRigFactory.LRigFactoryBuild(path, client, usher, press, queue, warrant, phonograph),`
 
 The rig factory the engine keeps for a workspace change.
 The engine takes the new rig whole and refuses it whole.

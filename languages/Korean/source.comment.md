@@ -1,10 +1,11 @@
 # source.json
-Hash: `f317c6afce091d67`
+Hash: `0c59e97ddbffc677`
 
 ## pack
 
 Language pack for Korean.
 The pack format is documented in `languages/English/source.comment.md`.
+Section heading anchors allow attributes before `id`, which the REST rendering writes there.
 No varieties are declared, so every reading is the Seoul standard one.
 No respelling groups are declared, so every reading shows as its source wrote it.
 Segoe UI has no hangul glyphs, so the headword and example blocks name Malgun Gothic first.

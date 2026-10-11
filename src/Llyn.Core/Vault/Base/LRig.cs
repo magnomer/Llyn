@@ -19,6 +19,8 @@ public sealed record LRig(
     LOutpost LRigOutpost,
     LLanguageVault LRigLanguages,
     LPress LRigPress,
+    LPressQueue LRigQueue,
+    LPressVault LRigPressVault,
     LWarrant LRigWarrant,
     LUsher LRigUsher,
     LPhonograph LRigPhonograph,

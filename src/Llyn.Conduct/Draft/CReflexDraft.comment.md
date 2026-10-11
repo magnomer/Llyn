@@ -1,17 +1,16 @@
 # CReflexDraft.cs
-Hash: `4716820364a453aa`
+Hash: `6d3c5be31f5d104d`
 
-## `public sealed record CReflexDraft(long CReflexDraftId, string CReflexDraftLanguage, string CReflexDraftKind, string CReflexDraftText, string CReflexDraftRespelling, string CReflexDraftRomanization, string CReflexDraftMeaning, string CReflexDraftNote, bool CReflexDraftMain, string CReflexDraftRegion, IReadOnlyList<long> CReflexDraftAnchors)`
+## `public sealed record CReflexDraft(long CReflexDraftId, string CReflexDraftLanguage, string CReflexDraftKind, string CReflexDraftRomanization, string CReflexDraftMeaning, string CReflexDraftNote, bool CReflexDraftMain, string CReflexDraftRegion, IReadOnlyList<long> CReflexDraftAnchors)`
 
 One reflex of an entry, as the reflex rows show it.
+Its shown reading comes from the row's guise, not from this shape.
 
 **Parameters**
 
 - `CReflexDraftId`: the stored reflex, zero for a fresh one.
 - `CReflexDraftLanguage`: the language the reflex belongs to.
 - `CReflexDraftKind`: the kind of reflex.
-- `CReflexDraftText`: the reflex's phonetic text.
-- `CReflexDraftRespelling`: the reflex respelled, empty when the language has none.
 - `CReflexDraftRomanization`: the romanization.
 - `CReflexDraftMeaning`: the meaning in that language.
 - `CReflexDraftNote`: the note.
@@ -25,4 +24,4 @@ The reflexes of a draft, shaped for the reflex rows and the lectern.
 
 ## `private static CReflexDraft CReflexDraftRead(LReflexDraft reflex)`
 
-Copies every field of one engine reflex draft into its shape.
+Copies the fields the rows read from one engine reflex draft into its shape.

@@ -1,5 +1,5 @@
 # TTimbre.cs
-Hash: `0c322f23ad1ca1cc`
+Hash: `1fb3116aba4185a5`
 
 ## `public sealed class TTimbre`
 
@@ -16,7 +16,8 @@ A typed accent answers the text the row now holds, and an empty desk takes nothi
 A desk filling its view takes nothing and answers the text its sheet holds for the row.
 Adding a pronunciation places the blank row below its accent row, or first for the primary or a gone row.
 Removing a pronunciation drops that accent row or the primary.
-The font read answers the held draft's pack typography role by role, and an empty desk the blank font.
+The font read answers the held draft's pack typography role by role.
+An empty desk still reaches the port, so its fake answers the empty font, which maps to nothing set.
 The flag read is covered by `TTimbreEnsign`, and the reflex block by `TKindred`.
 The playback reads are covered by `TPlayback`.
 

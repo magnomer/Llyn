@@ -47,7 +47,6 @@ public sealed class LEngine : IDisposable
         LEngineVocabulary = new LVocabularyFacade(LEngineHearth);
         LEngineMention = new LMentionFacade(LEngineHearth);
         LEngineMarkup = new LMarkupFacade(LEngineHearth);
-        LEnginePortrait = new LPortraitFacade(LEngineHearth);
         LEngineDraft = new LDraftFacade(LEngineHearth, LEngineVocabulary);
         LEnginePronunciation = new LPronunciationFacade(LEngineHearth, LEngineDraft, LEngineVistaRow);
         LEngineCard = new LCardFacade(LEngineHearth, LEnginePronunciation, LEngineSettings, LEngineVistaRow);
@@ -71,11 +70,11 @@ public sealed class LEngine : IDisposable
             LEngineWorkspace,
             LEngineVistaRow);
         LEngineFanqie = new LFanqieFacade(LEngineHearth, LEngineEntry, LEngineSettings, LEngineVistaRow);
-        LEngineReflex = new LReflexFacade(LEngineHearth, LEngineFanqie, LEngineSettings);
+        LEngineReflex = new LReflexFacade(LEngineHearth, LEngineFanqie);
         LEngineScript = new LScriptFacade(LEngineHearth);
         LEngineLanguage = new LLanguageFacade(
             LEngineHearth, LEngineFanqie, LEngineReflex, LEngineScript, LEngineSettings, LEngineVocabulary);
-        LEngineStem = new LStemFacade(LEngineHearth, LEngineEntry, LEngineLanguage, LEngineVistaRow, LEngineReflex);
+        LEngineStem = new LStemFacade(LEngineHearth, LEngineEntry, LEngineLanguage, LEngineVistaRow);
         LEngineRequest = new LRequestFacade(LEngineHearth, LEngineDraft, LEngineEntry);
         LEngineLivery = new LLiveryFacade(
             LEngineHearth,
@@ -89,6 +88,7 @@ public sealed class LEngine : IDisposable
             LEngineScript,
             LEngineSettings,
             LEngineVocabulary);
+        LEnginePortrait = new LPortraitFacade(LEngineHearth, LEngineLivery, LEngineSettings);
         LEngineCourier = new LCourierFacade(LEngineHearth, LEngineLivery, LEngineSettings);
         LEngineTenure = new LTenureFacade(this);
         LEngineHearth.LEngineWorkspaceOpen();

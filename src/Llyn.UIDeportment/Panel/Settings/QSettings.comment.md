@@ -1,5 +1,5 @@
 # QSettings.cs
-Hash: `4b7951f3eaac56cf`
+Hash: `435bae241852f481`
 
 ## `internal sealed class QSettings`
 
@@ -49,6 +49,21 @@ So a painted switch writes nothing back at all.
 
 The listing switch was ticked, so the ledger saves the raw switch.
 The window's envoy goes with it, so a failed save is shown.
+
+## `private void QSettingsCommitObserve(object sender, KeyEventArgs e)`
+
+Enter in the notebook field hands the typed title to the ledger and shows the title it stored.
+Every other key is left to the field.
+
+## `private void QSettingsNotebookObserve(object sender, KeyboardFocusChangedEventArgs e)`
+
+Leaving the notebook field saves the typed title the same way Enter does.
+A title that did not change raises no bulletin, so leaving an untouched field costs nothing.
+
+## `private void QSettingsNotebookRefine(string? notebook)`
+
+Shows the stored notebook title in the field, trimmed and with a blank one already turned into `Llyn`.
+A failed save answers null and leaves the field alone, since the ledger has already repainted it.
 
 ## `private void QSettingsDialRefine(string child)`
 

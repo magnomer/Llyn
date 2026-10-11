@@ -1,5 +1,5 @@
 # LParadigmClerk.cs
-Hash: `c5d0b5bf0537b70b`
+Hash: `b0cc836f2362ab02`
 
 ## `public sealed class LParadigmClerk`
 
@@ -48,11 +48,17 @@ So an entry whose forms are all regular still names its language for the view's 
 Builds the entry's inflection view from its slots and the layout of the pack's rule book.
 It answers null for a missing entry, a blank language, or a pack without a layout.
 It also answers null when no slot lies on the layout's part.
-Custom cells carry the stored marks, widened to the root or ending when the cell is divided.
 It hands the view the language's rule book and the headword, so custom cells can split root from ending.
 `pending` and `enabled` feed each cell's status, as they do for the list.
 `held` passes on unread to the view, which picks each lost cell's tip by it.
 `custom` picks the custom sheets with their marks, or the default sheets without marks.
+Custom cells carry the stored marks, widened to the root or ending when the cell is divided.
+Every cell of both tables also carries its painted pieces from `LParadigmClerkScan`.
+
+## `private static LParadigmTable LParadigmClerkScan(LParadigmTable table)`
+
+Copies a table with each cell's pieces cut by `LParadigmForm.LParadigmFormScan`.
+The clerk owns this call, so Conduct maps pieces as data and never reaches Core.
 
 ## `private LLanguage? LParadigmClerkFind(LEntry entry)`
 

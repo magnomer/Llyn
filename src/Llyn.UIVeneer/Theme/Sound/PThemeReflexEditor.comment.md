@@ -1,5 +1,5 @@
 # PThemeReflexEditor.xaml
-Hash: `8ba4f280917aff74`
+Hash: `333a5f1f2fc34d4a`
 
 The editor's side of a reflex row: the bare fields, the hover controls, the rebuild button and the row template.
 It merges the shared row styles, so a field stands where the reading view prints its text.
@@ -67,6 +67,7 @@ The anchor button, hover star, plus and minus follow them.
 Every field is bare and stands where the reading view prints its text.
 The side cells are the same grids in both templates.
 So an empty cell measures alike in both modes.
+The language cell's right margin of 24 is the margin `Theme.Pronunciation.Label` gives the view label.
 The region is no field, only the hover the view has on the language.
 The reading field of a phonemic language stands between two slashes it does not hold.
 `QReflexItem.QReflexItemRefine` fills every named part and picks the reading field's style.

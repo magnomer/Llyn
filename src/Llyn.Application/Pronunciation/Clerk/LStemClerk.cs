@@ -12,17 +12,20 @@ public sealed class LStemClerk
     private readonly LFanqieVault _lStemClerkFanqie;
     private readonly LReflexVault _lStemClerkReflexes;
     private readonly LReflexClerk _lStemClerkReflex;
+    private readonly LLanguageClerk _lStemClerkLanguage;
     private readonly LFoldVault _lStemClerkFolds;
 
-    public LStemClerk(LRig rig, LReflexClerk reflex)
+    public LStemClerk(LRig rig, LReflexClerk reflex, LLanguageClerk language)
     {
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(reflex);
+        ArgumentNullException.ThrowIfNull(language);
         _lStemClerkStems = rig.LRigSound.LRigSoundStems;
         _lStemClerkEntries = rig.LRigEntryQuery;
         _lStemClerkFanqie = rig.LRigSound.LRigSoundFanqie;
         _lStemClerkReflexes = rig.LRigSound.LRigSoundReflexes;
         _lStemClerkReflex = reflex;
+        _lStemClerkLanguage = language;
         _lStemClerkFolds = rig.LRigKeeping.LRigKeepingFolds;
     }
 
@@ -61,13 +64,20 @@ public sealed class LStemClerk
             : LCatalogEntry.LCatalogEntrySort(_lStemClerkEntries.LEntryScan(ids, query), order);
     }
 
-    public LStemPage LStemPageRead(LStem stem, bool fold)
+    public LStemPage LStemPageRead(LStem stem, bool fold, bool respelled)
     {
         ArgumentNullException.ThrowIfNull(stem);
 
         IReadOnlyList<string> characters =
             LGlyphOrder.LGlyphOrderSort(_lStemClerkStems.LStemCharacterRead(stem.LStemId));
-        return new LStemPage(stem.LStemLanguage, stem.LStemKey, characters, LStemMemberScan(stem, characters, fold));
+        IReadOnlyList<string> folded = _lStemClerkReflex.LReflexFoldedRead(stem.LStemLanguage);
+        IReadOnlyList<LStemMember> members = [.. LStemMemberScan(stem, characters, fold)
+            .Select(member => member with
+            {
+                LStemMemberGuises = _lStemClerkLanguage.LLanguageGuiseScan(
+                    member.LStemMemberReflexes, folded, respelled),
+            })];
+        return new LStemPage(stem.LStemLanguage, stem.LStemKey, characters, members);
     }
 
     public long? LStemEntryFind(LStem stem, string character)

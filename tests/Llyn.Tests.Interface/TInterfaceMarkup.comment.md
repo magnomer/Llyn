@@ -1,5 +1,5 @@
 # TInterfaceMarkup.cs
-Hash: `dbf8232225f69feb`
+Hash: `3ad89a2420a7c58e`
 
 ## `internal static partial class TInterface`
 
@@ -9,7 +9,7 @@ Text becomes the node tree through `LMarkupFile`, the same adapter the engine's 
 An intake for the import is built here too.
 A test names an index and a mode, and a target only when one is replaced.
 An entry is built here as well, for a writer test that starts from a record rather than text.
-It may carry a lexical unit, for a test of the unit element.
+It may carry a lexical unit and a freedom, for a test of the unit and freedom elements.
 A target is counted here from a stored draft, for a test of what a replacement drops.
 
 ## `internal static LMarkupNode TMarkupNodeCreate(string name, string text)`

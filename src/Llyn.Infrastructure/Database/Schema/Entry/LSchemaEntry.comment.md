@@ -1,5 +1,5 @@
 # LSchemaEntry.cs
-Hash: `4af81f3599507ef6`
+Hash: `869d40d6d41025eb`
 
 ## `public static class LSchemaEntry`
 
@@ -30,3 +30,14 @@ A database from before the column comes across with it blank and the engine fill
 unit is the lexical unit the entry stands for, the number of an `LUnit` member.
 Zero means not chosen, and the CHECK keeps it within the members.
 A database from before the column comes across with every unit unchosen.
+
+freedom is whether that unit stands alone, the number of an `LFreedom` member.
+Zero means not chosen, and the CHECK keeps it within the members.
+A database from before the column comes across with every freedom unchosen.
+
+## `public static void LSchemaEntrySettle(SqliteConnection connection, string schema)`
+
+Clears every unit number the current shape refuses, in the old file before its rows are carried.
+Numbers 1 and 2 held the retired content and function units.
+Without this step the CHECK would refuse those rows, and their entries would be lost.
+A file from before the unit column has nothing to clear.

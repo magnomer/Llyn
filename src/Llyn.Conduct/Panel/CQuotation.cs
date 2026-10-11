@@ -102,11 +102,11 @@ public sealed class CQuotation
 
     internal Task LQuotationPortraitPrint(CEnvoy envoy, LSettingsPort settings)
     {
-        return CPortrait.LPortraitTicketPrint(
+        return CPortrait.LPortraitPrint(
             envoy,
             settings,
-            chosen => _cQuotationPortraitPort.LEnginePortraitPrint(
-                CQuotationPanel.CPanelAperture.CApertureVista, CPortrait.LPortraitLabelRead(settings), chosen));
+            () => _cQuotationPortraitPort.LEnginePressOpen(
+                CQuotationPanel.CPanelAperture.CApertureVista, CPortrait.LPortraitLabelRead(settings)));
     }
 
     public Task CQuotationPortraitExport()

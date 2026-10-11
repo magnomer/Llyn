@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -10,7 +11,7 @@ namespace Llyn.Tests;
 public sealed class TParadigmView
 {
     [Fact]
-    public void DisplayParadigmRead_ViewAnswered_MapsMarksAndHeaders()
+    public void DisplayParadigmRead_ViewAnswered_MapsPiecesAndHeaders()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -34,9 +35,15 @@ public sealed class TParadigmView
         Assert.Equal("Inflection.Indicative", collapsed.CParadigmLineGroup);
         Assert.Equal("Inflection.Present", collapsed.CParadigmLineLabel);
         CParadigmForm form = Assert.Single(collapsed.CParadigmLineForms);
-        Assert.Equal("tuve", form.CParadigmFormText);
+        Assert.Equal("tuve", string.Concat(form.CParadigmFormPiece.Select(static piece => piece.CParadigmPieceText)));
         Assert.Null(form.CParadigmFormTip);
-        Assert.Equal([new CParadigmMark(1, 2)], form.CParadigmFormMarks);
+        Assert.Equal(
+            [
+                new CParadigmPiece("t", false, false),
+                new CParadigmPiece("uv", true, false),
+                new CParadigmPiece("e", false, false),
+            ],
+            form.CParadigmFormPiece);
         Assert.Equal(["Inflection.FirstSingular"], shown.CParadigmViewExpanded.CParadigmTableHeaders);
         Assert.DoesNotContain("Display.ParadigmReadFailed", asked);
     }
@@ -73,7 +80,9 @@ public sealed class TParadigmView
         Assert.NotNull(shown);
         CParadigmForm form = Assert.Single(
             Assert.Single(shown.CParadigmViewCollapsed.CParadigmTableLines).CParadigmLineForms);
-        Assert.Equal(new CParadigmForm("…", [], "Paradigm.Held"), form);
+        Assert.Equal("…", string.Concat(form.CParadigmFormPiece.Select(static piece => piece.CParadigmPieceText)));
+        Assert.Equal("Paradigm.Held", form.CParadigmFormTip);
+        Assert.Equal([new CParadigmPiece("…", false, false)], form.CParadigmFormPiece);
     }
 
     [Fact]
@@ -94,7 +103,7 @@ public sealed class TParadigmView
     }
 
     private static LParadigmForm TParadigmFormCreate(string text, int offset, int length) =>
-        new(
+        TInterfaceInflection.TParadigmFormCreate(
             text,
             length == 0 ? [] : [TInterfaceInflection.TInflectionMarkCreate(offset, length)],
             null);

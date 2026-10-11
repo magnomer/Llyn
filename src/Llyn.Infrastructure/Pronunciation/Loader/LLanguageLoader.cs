@@ -17,7 +17,6 @@ public sealed class LLanguageLoader : LLanguageVault
     private const string LLanguageLoaderLookup = "pronunciation";
     private const string LLanguageLoaderHarvest = "audio";
     private const string LLanguageLoaderSeparator = "separator";
-    private const string LLanguageLoaderSpaced = "spaced";
     private const string LLanguageLoaderVarieties = "varieties";
     private const string LLanguageLoaderFrequency = "frequency";
     private const string LLanguageLoaderMorphology = "morphology";
@@ -193,7 +192,6 @@ public sealed class LLanguageLoader : LLanguageVault
             LAnatomyLoader.LAnatomyPackRead(language, root),
             LDescentLoader.LDescentPackRead(language, root),
             LShengfuLoader.LShengfuPackRead(root),
-            LLanguageSpacedRead(root),
             LReflexLoader.LReflexOrderRead(root),
             LInflectionLoader.LInflectionPackRead(language, root));
     }
@@ -257,18 +255,6 @@ public sealed class LLanguageLoader : LLanguageVault
 
         string? flag = LPack.LPackTextRead(row, "flag")?.Trim();
         return new LVariety(name, string.IsNullOrEmpty(flag) ? null : flag);
-    }
-
-    private static bool LLanguageSpacedRead(JsonElement root)
-    {
-        if (root.ValueKind == JsonValueKind.Object
-            && root.TryGetProperty(LLanguageLoaderSpaced, out JsonElement spaced)
-            && spaced.ValueKind is JsonValueKind.True or JsonValueKind.False)
-        {
-            return spaced.ValueKind == JsonValueKind.True;
-        }
-
-        return LLanguageSeparatorRead(root);
     }
 
     private static bool LLanguageSeparatorRead(JsonElement root)

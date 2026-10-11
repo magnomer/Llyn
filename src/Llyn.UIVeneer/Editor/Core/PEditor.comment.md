@@ -1,5 +1,5 @@
 # PEditor.xaml
-Hash: `57a6e3de77dc4eea`
+Hash: `2a001383efaf64be`
 
 ## `UserControl`
 
@@ -49,8 +49,13 @@ Each one written becomes a chip in the list before the field.
 ## `<ToggleButton x:Name="PUnitDropper" Style="{StaticResource Theme.Unit.Dropper}">`
 
 The lexical unit leads the part-of-speech row, since it says what kind of piece carries the roles after it.
-It is a chooser, not a field, because a language offers only two or three units.
+It is a chooser, not a field, because every language offers only three units.
 Its dropdown and the category dropdown show at once, with no fade, so a pick never looks slow to answer.
+
+## `<ToggleButton x:Name="PFreedomDropper" Style="{StaticResource Theme.Freedom.Dropper}">`
+
+The freedom follows the unit, so the row reads as unit, freedom, then the parts of speech.
+It is a chooser of two, drawn and timed as the unit chooser is.
 
 ## `<StackPanel x:Name="PEditorSound"`
 

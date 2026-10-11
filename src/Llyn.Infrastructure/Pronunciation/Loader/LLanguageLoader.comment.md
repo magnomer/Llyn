@@ -1,5 +1,5 @@
 # LLanguageLoader.cs
-Hash: `798af075d7d945d6`
+Hash: `226c6f471d0c1b65`
 Hash: `a44fbda5640ba9f3`
 
 ## `public sealed class LLanguageLoader : LLanguageVault`
@@ -94,11 +94,6 @@ The top-level `anatomy` key is read by `LAnatomyPackRead` in `LAnatomyLoader`.
 The top-level `tone` key is read by `LDescentPackRead` in `LDescentLoader`.
 The top-level `order` key is read by `LReflexOrderRead` in `LReflexLoader`.
 The top-level `inflection` key is read by `LInflectionPackRead` in `LInflectionLoader`.
-
-## `private static bool LLanguageSpacedRead(JsonElement root)`
-
-The `spaced` boolean, which falls back to the `separator` value when absent or not a boolean.
-It decides the lexical units only, and never the reading separator or mention spans.
 
 ## `private static bool LLanguageSeparatorRead(JsonElement root)`
 

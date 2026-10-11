@@ -1,5 +1,5 @@
 # TInterfaceEngineLanguage.cs
-Hash: `b5fce1b3a7374ccb`
+Hash: `60527ff66ae06733`
 
 ## `internal static class TInterfaceEngineLanguage`
 
@@ -10,6 +10,7 @@ Each fill is relayed with its read, its pending check, its start and its rebuild
 The sound start relays the reading view's start, which starts every fill of the entry at once.
 The frequency also relays its gauge, the answer the entry view's chip and tooltip show.
 Each relay is transparent and carries no test logic of its own.
+The guise relay takes the reflex rows, so a test can check each row's shown text.
 The kindred relay takes an optional vista, so a test can pin the order the panel sets.
 
 ## `internal static async Task<IReadOnlyList<LEnsignRow>> TEngineEnsignLoad(this LEngine engine)`

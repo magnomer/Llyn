@@ -157,13 +157,12 @@ public sealed class CFavorite
 
     public Task CFavoritePortraitPrint()
     {
-        return CPortrait.LPortraitTicketPrint(
+        return CPortrait.LPortraitPrint(
             _cFavoriteEnvoy,
             _cFavoriteSettingsPort,
-            chosen => _cFavoritePortraitPort.LEnginePortraitPrint(
+            () => _cFavoritePortraitPort.LEnginePressOpen(
                 CFavoritePanel.CPanelAperture.CApertureVista,
-                CPortrait.LPortraitLabelRead(_cFavoriteSettingsPort),
-                chosen));
+                CPortrait.LPortraitLabelRead(_cFavoriteSettingsPort)));
     }
 
     public Task CFavoritePortraitExport()

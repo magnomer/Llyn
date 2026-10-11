@@ -1,5 +1,5 @@
 # LStemMember.cs
-Hash: `0749b81d830fc52b`
+Hash: `0abe15132025970d`
 
 ## `public sealed record LStemMember(string LStemMemberCharacter, IReadOnlyList<string> LStemMemberReadings, IReadOnlyList<LReflexDraft> LStemMemberReflexes, IReadOnlyList<LReflexGuise>? LStemMemberGuises = null)`
 
@@ -16,7 +16,7 @@ A member with no entry carries no reflexes, and shows as the bare character with
 
 ## `public IReadOnlyList<LReflexGuise> LStemMemberGuises`
 
-The guises of the reflex rows, never null.
+The guises of the reflex rows, never null, each carrying its row's shown text.
 Application builds the member without them, since the respelling switch is a setting only the engine reads.
 
 ## `public bool LStemMemberOpened`
@@ -34,10 +34,6 @@ It is laid out by `LFanqieGroup.LFanqieReadingFormat`, the owner the entry page'
 Each reflex row paired with its guise, in row order, ready for a reflex table.
 The guise at the row's position is read through `LReflexGuise.LReflexGuiseFind`, so a row without one pairs with null.
 The Outpost series sheet writes these rows, where the guises are empty since only the engine reads them.
-
-## `public IReadOnlyList<string> LStemMemberLanguages`
-
-The language of each reflex row, in row order, which the engine reads the guises by.
 
 ## `public static IReadOnlyList<LStemMember> LStemBareScan(IReadOnlyList<string> characters)`
 

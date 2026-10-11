@@ -34,6 +34,8 @@ public static class LSheetStyle
             + "border-radius:14px;background:var(--accent-soft);"
             + "font-size:12px;font-weight:600;color:var(--accent);"),
 
+        ("#paradigm-short:checked~.inflection-full,#paradigm-full:checked~.inflection-short", "display:none;"),
+
         (".band", "margin:39px 0 0 0;"),
         (".band+.band", "margin-top:28px;"),
         (".band>h2", "font-size:19px;font-weight:600;margin:0 2px 12px 2px;padding:5px 0 0 0;"
@@ -143,24 +145,41 @@ public static class LSheetStyle
         return LSheetStyleBuild(theme);
     }
 
-    private static string LSheetStyleBuild(LTheme theme)
+    internal static string LSheetVariableFormat(LTheme theme)
     {
-        StringBuilder sheet = new StringBuilder();
+        ArgumentNullException.ThrowIfNull(theme);
 
+        StringBuilder sheet = new StringBuilder();
         sheet.Append(":root").Append('{');
         LSheetVariableAppend(sheet, "ink", theme.LThemeRead("ink"));
         LSheetVariableAppend(sheet, "muted", theme.LThemeRead("muted"));
         LSheetVariableAppend(sheet, "canvas", theme.LThemeRead("canvas"));
         LSheetVariableAppend(sheet, "surface", theme.LThemeRead("surface"));
+        LSheetVariableAppend(sheet, "surface-raised", theme.LThemeRead("surfaceRaised"));
         LSheetVariableAppend(sheet, "line", theme.LThemeRead("line"));
+        LSheetVariableAppend(sheet, "line-strong", theme.LThemeRead("lineStrong"));
         LSheetVariableAppend(sheet, "accent", theme.LThemeRead("accent"));
         LSheetVariableAppend(sheet, "accent-soft", theme.LThemeRead("accentSoft"));
         LSheetVariableAppend(sheet, "situation", theme.LThemeRead("situation"));
         LSheetVariableAppend(sheet, "situation-soft", theme.LThemeRead("situationSoft"));
         LSheetVariableAppend(sheet, "situation-edge", theme.LThemeRead("situationEdge"));
+        LSheetVariableAppend(sheet, "warning", theme.LThemeRead("warning"));
+        LSheetVariableAppend(sheet, "favorite", theme.LThemeRead("favorite"));
+        LSheetVariableAppend(sheet, "frequency-core", theme.LThemeRead("frequencyCore"));
+        LSheetVariableAppend(sheet, "frequency-everyday", theme.LThemeRead("frequencyEveryday"));
+        LSheetVariableAppend(sheet, "frequency-advanced", theme.LThemeRead("frequencyAdvanced"));
+        LSheetVariableAppend(sheet, "frequency-rare", theme.LThemeRead("frequencyRare"));
         LSheetVariableAppend(sheet, "family", theme.LThemeFamily);
         LSheetVariableAppend(sheet, "serif", theme.LThemeSerif);
+        LSheetVariableAppend(sheet, "phonetic", theme.LThemePhonetic);
         sheet.Append('}');
+
+        return sheet.ToString();
+    }
+
+    private static string LSheetStyleBuild(LTheme theme)
+    {
+        StringBuilder sheet = new StringBuilder(LSheetVariableFormat(theme));
 
         foreach ((string selector, string body) in _lSheetStyleRules)
         {

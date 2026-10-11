@@ -98,13 +98,12 @@ public sealed class CCohort
             return Task.CompletedTask;
         }
 
-        return CPortrait.LPortraitTicketPrint(
+        return CPortrait.LPortraitPrint(
             _cCohortEnvoy,
             _cCohortSettingsPort,
-            chosen => _cCohortPortraitPort.LEnginePortraitPrint(
+            () => _cCohortPortraitPort.LEnginePressOpen(
                 CCohortPanel.CPanelAperture.CApertureVista,
-                CPortrait.LPortraitLabelRead(_cCohortSettingsPort),
-                chosen));
+                CPortrait.LPortraitLabelRead(_cCohortSettingsPort)));
     }
 
     public Task CCohortPortraitExport()

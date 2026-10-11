@@ -1,5 +1,5 @@
 # TCourier.cs
-Hash: `3e5eb47d1fab6129`
+Hash: `c99609864ae5e284`
 
 ## `public sealed class TCourier`
 
@@ -12,6 +12,7 @@ A push whose token cannot be restored shows `Courier.SendFailed` and drops the t
 The courier then reads unconnected while the push still runs, and ends idle with no line.
 The push facts run the clerk against `TOutpostFake`, so every saved notebook and note can be read back.
 The receipt counts every entry note and every reconstruction note, but never the style note.
+A renamed notebook keeps its id, so the next push renames the same top notebook and adds no folder.
 A first push saves the series notebook and the series note, but no empty rime-table notebook.
 A second push keeps the series note, and a series gone from the language read is trashed.
 The entry's stem chip links to the series note, while a stem with no note stays a plain chip.

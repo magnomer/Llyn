@@ -1,0 +1,65 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Base/PThemePalette.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Base/PThemeScroll.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <Style x:Key="Theme.Press.Column" TargetType="Border">
+        <Setter Property="Width" Value="370" />
+        <Setter Property="Margin" Value="0,0,20,0" />
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+
+    <Style x:Key="Theme.Press.Canvas" TargetType="ScrollViewer" BasedOn="{StaticResource {x:Type ScrollViewer}}">
+        <Setter Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
+        <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
+        <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+    </Style>
+
+    <Style x:Key="Theme.Press.Paper" TargetType="Border">
+        <Setter Property="Margin" Value="0,0,0,24" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="Background" Value="White" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect BlurRadius="10" Direction="270" Opacity="0.18" ShadowDepth="4" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Theme.Press.Shade" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
+        <Setter Property="Opacity" Value="0.6" />
+        <Setter Property="IsHitTestVisible" Value="False" />
+    </Style>
+
+    <Style x:Key="Theme.Press.Badge" TargetType="Border">
+        <Setter Property="Margin" Value="0,16,0,0" />
+        <Setter Property="Padding" Value="10,3" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Background" Value="{StaticResource Theme.Surface}" />
+        <Setter Property="BorderBrush" Value="{StaticResource Theme.LineStrong}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="11" />
+        <Setter Property="IsHitTestVisible" Value="False" />
+    </Style>
+
+    <Style x:Key="Theme.Press.Veil" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
+        <Setter Property="Opacity" Value="0.72" />
+    </Style>
+
+    <Style x:Key="Theme.Press.Bar" TargetType="Border">
+        <Setter Property="Padding" Value="10,6" />
+        <Setter Property="Background" Value="{StaticResource Theme.Surface}" />
+        <Setter Property="BorderBrush" Value="{StaticResource Theme.Line}" />
+        <Setter Property="BorderThickness" Value="0,1,0,0" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+    </Style>
+
+</ResourceDictionary>

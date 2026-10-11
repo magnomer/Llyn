@@ -29,8 +29,8 @@ public sealed class TEngineVistaList
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        LEntry older = TEngineVista.TVistaEntryCreate(engine, "water", "English");
-        LEntry newer = TEngineVista.TVistaEntryCreate(engine, "water", "English");
+        LEntry older = TEngineVista.TVistaEntryCreate(engine, "water", "English", "x");
+        LEntry newer = TEngineVista.TVistaEntryCreate(engine, "water", "English", "x");
 
         LVista vista = engine.TEngineVistaStart("phonology", LCatalogOrder.LCatalogOrderHeadword);
         IReadOnlyList<LCatalogPronunciation> rows = engine.TEnginePronunciationFind(vista);
@@ -48,7 +48,7 @@ public sealed class TEngineVistaList
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        TEngineVista.TVistaEntryCreate(engine, "water", "English");
+        TEngineVista.TVistaEntryCreate(engine, "water", "English", "x");
 
         LVista vista = engine.TEngineVistaStart("phonology", LCatalogOrder.LCatalogOrderHeadword);
 
@@ -60,8 +60,8 @@ public sealed class TEngineVistaList
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        TEngineVista.TVistaEntryCreate(engine, "stone", "English");
-        TEngineVista.TVistaEntryCreate(engine, "water", "English");
+        TEngineVista.TVistaEntryCreate(engine, "stone", "English", "x");
+        TEngineVista.TVistaEntryCreate(engine, "water", "English", "x");
 
         LVista vista = engine.TEngineVistaStart("phonology", LCatalogOrder.LCatalogOrderReverse);
 

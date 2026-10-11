@@ -22,6 +22,8 @@ public static class LLiveryClerk
         IReadOnlyList<LGlyphCell> cell,
         IReadOnlyList<LFrequency> frequency,
         IReadOnlyList<LParadigmRow> paradigm,
+        bool pending,
+        bool enabled,
         LParadigmView? inflection,
         IReadOnlyList<LFanqieGroup> fanqie,
         IReadOnlyList<LScriptGroup> script,
@@ -30,13 +32,17 @@ public static class LLiveryClerk
         IReadOnlyList<LUsage> incoming,
         IReadOnlyList<LTranslationTarget> etymon,
         Func<string, string?> flag,
-        IReadOnlyDictionary<string, string> ensign)
+        IReadOnlyDictionary<string, string> ensign,
+        IReadOnlyDictionary<LFontRole, LFont> font,
+        IReadOnlySet<LFoldBox> opened,
+        string reading)
     {
         ArgumentNullException.ThrowIfNull(draft);
         ArgumentNullException.ThrowIfNull(target);
         ArgumentNullException.ThrowIfNull(incoming);
         ArgumentNullException.ThrowIfNull(etymon);
         ArgumentNullException.ThrowIfNull(flag);
+        ArgumentNullException.ThrowIfNull(paradigm);
 
         List<string> named = [draft.LEntryDraftLanguage];
         named.AddRange(draft.LEntryDraftReflexes.Select(static reflex => reflex.LReflexDraftLanguage));
@@ -65,9 +71,14 @@ public static class LLiveryClerk
             }
         }
 
+        LParadigmShown[] shown = paradigm
+            .Select(row => LParadigmClerk.LParadigmClerkCheck(row, pending, enabled, false))
+            .ToArray();
+
         return new LLiveryPage(
             draft, favorite, grasp, created, updated, accent, guise, folded, fold, transcription, glyph, cell,
-            frequency, paradigm, inflection, fanqie, script, target, source, incoming, etymon, banner, ensign);
+            frequency, paradigm, inflection, fanqie, script, target, source, incoming, etymon, banner, ensign,
+            shown, font, opened, reading);
     }
 
     public static LLiveryLanguage LLiveryClerkBuild(
@@ -75,6 +86,7 @@ public static class LLiveryClerk
         LStemClerk? stem,
         LDiweiClerk? diwei,
         bool switched,
+        bool respelled,
         bool tallied,
         Func<string, string?> localize)
     {
@@ -87,7 +99,7 @@ public static class LLiveryClerk
             foreach (LStem row in stem.LStemClerkFind(language, string.Empty, LCatalogOrder.LCatalogOrderName))
             {
                 series.Add(new LLiveryStem(
-                    stem.LStemPageRead(row, false),
+                    stem.LStemPageRead(row, true, respelled),
                     stem.LStemEntryScan(language, [row.LStemId], string.Empty, LCatalogOrder.LCatalogOrderHeadword)));
             }
         }

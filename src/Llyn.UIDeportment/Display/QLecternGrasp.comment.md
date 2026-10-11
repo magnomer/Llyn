@@ -1,5 +1,5 @@
 # QLecternGrasp.cs
-Hash: `0a6c93bcd741a9d4`
+Hash: `110ca96b350aa6bd`
 
 ## `public sealed class QLecternGrasp`
 
@@ -10,6 +10,7 @@ It pulls its own parts by contract ID, and the lectern subscribes its redraw to 
 ## `public QLecternGrasp(FrameworkElement surface, CDisplayGrasp area)`
 
 Pulls the star row and its label from `surface`, and sets the row's limit once from the engine's last step.
+It hands the row's star driver the ready star answers once, so the row draws without asking.
 `area` is the display's grasp area, the only part it reads.
 The row's step and hover events come straight here, so the view holds no adapter for them.
 The row redraws on the grasp notice marshalled through `QObserver`.

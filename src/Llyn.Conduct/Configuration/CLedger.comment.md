@@ -1,5 +1,5 @@
 # CLedger.cs
-Hash: `d163eb014cfb35a9`
+Hash: `9b3c7cf256f66396`
 
 ## `public sealed class CLedger`
 
@@ -86,6 +86,13 @@ Stores whether transcriptions show respelled.
 A failed save is shown through `envoy` as `Settings.SaveFailed`.
 The ledger is then raised again, so the driver repaints from the saved settings.
 
+## `public string? CLedgerNotebookSave(string notebook, CEnvoy envoy)`
+
+Stores the title of the top Joplin notebook and answers the title the engine stored.
+The engine trims it and turns a blank one into `Llyn`, so the driver shows the stored title back.
+A failed save is shown through `envoy` as `Settings.SaveFailed` and answers null.
+The ledger is then raised again, so the driver repaints from the saved settings rather than the typed title.
+
 ## `public void CLedgerFailureShow(CEnvoy envoy, string key, Exception exception)`
 
 Shows a failure a driver's own medium raised, under the headline `key` names.
@@ -145,6 +152,7 @@ Copies the engine's settings, with its count of online lookups, into the Conduct
 
 The summary of one settings-backed page, from `settings` already read.
 The Inflection page reads custom analysis from the engine, since `settings` does not carry it.
+The Sync page reads the notebook title itself, so the catalog row names the notebook a sync writes.
 An unknown page reads empty.
 
 ## `private string CLedgerLanguageRead(string localization)`

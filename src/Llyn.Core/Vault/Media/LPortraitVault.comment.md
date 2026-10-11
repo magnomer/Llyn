@@ -1,5 +1,5 @@
 # LPortraitVault.cs
-Hash: `08e36764f5ed58fa`
+Hash: `cdf6145db9d1726f`
 
 ## `public interface LPortraitVault`
 
@@ -15,3 +15,14 @@ Markup and PDF are not written here, since the engine formats the one and the pr
 ## `string LPortraitSheetFormat(LPortraitPage page);`
 
 The HTML page of `page` wearing the current theme, which the press prints or saves as PDF.
+
+## `void LPortraitSave(LLiveryPage livery, LPortraitPage portrait, LPortraitLabel label, Func<string, string> lookup, string path);`
+
+Writes an entry's HTML export to `path` through the entry sheet writer.
+It takes the Livery page beside the portrait page, so the file can show the entry as view mode does.
+`lookup` words the labels the Livery page carries as keys.
+
+## `string LPortraitSheetFormat(LLiveryPage livery, LPortraitPage portrait, LPortraitLabel label, Func<string, string> lookup);`
+
+The entry sheet wearing the current theme, which the press prints or saves as PDF.
+It is the same page the HTML export writes.

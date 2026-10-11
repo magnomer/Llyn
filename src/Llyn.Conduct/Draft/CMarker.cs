@@ -6,4 +6,5 @@ public sealed record CMarker(
     IReadOnlyList<string> CMarkerSpeeches,
     string CMarkerTyped,
     CCategory CMarkerCategory,
-    IReadOnlyList<(string, bool)> CMarkerUnits);
+    IReadOnlyList<(string, bool)> CMarkerUnits,
+    IReadOnlyList<(string, bool)> CMarkerFreedoms);

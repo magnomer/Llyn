@@ -1,9 +1,9 @@
 # CPhonology.cs
-Hash: `fbf04be95f75b5f2`
+Hash: `631e15a40aae7054`
 
 ## `public sealed class CPhonology`
 
-The phonology panel's session: every entry with its primary pronunciation, the panel and the entry editor.
+The phonology panel's session, holding every entry with its primary pronunciation, the panel and the entry editor.
 It finds the rows, while the panel's aperture takes the query, order and language filter.
 Its panel loads, edits and deletes the chosen entry, and its own editor edits it.
 It restores its vista itself, so no driver holds a port or a vista.
@@ -33,6 +33,10 @@ The driver answers it by drawing the flags of the languages again.
 
 The entry editor the panel opens its chosen entry in.
 The driver wraps it for the editor view and the lectern.
+
+## `public CPanel CPhonologyPanel { get; }`
+
+The panel over the phonology vista, worded under the `Scribe` scope and finishing through the editor.
 
 ## `internal void LPhonologyVistaRestore()`
 
@@ -66,10 +70,10 @@ It needs no session, so the driver builds the menu once.
 ## `public IReadOnlyList<CCatalogPronunciation> CPhonologyRowsRead()`
 
 The rows the engine returns for the vista, already filtered, sorted, twinned and marked.
-Each maps plainly to its shape: the entry as a `CVistaRow` and the sound beside it.
+Each maps plainly to its shape, with the entry as a `CVistaRow` and the sound beside it.
 The engine fills every epithet, so the map copies it as it stands.
 It answers nothing before the vista is restored.
-The count goes to the aperture's `CApertureEmpty`, so no driver counts rows.
+The count goes to the aperture through `CApertureCountSet`, so no driver counts rows.
 A failed read shows `Sound.LoadFailed` through the envoy and answers no rows, so the count reads zero.
 The load task runs this read after the flag fill, so a throw here would fault the driver.
 
@@ -86,9 +90,9 @@ The file name an export of the chosen entry is offered under, read from the phon
 
 ## `public Task CPhonologyPortraitPrint()`
 
-Prints the chosen entry as the engine portrays it.
-The reader is asked for the printer through the panel's envoy, and a decline prints nothing.
-`CPortrait` words the page through the engine and shows `Print.Failed` through the panel's envoy.
+Prints the chosen entry through the print window.
+The engine opens a print session on the vista's chosen entry, and no chosen entry opens no window.
+`CPortrait` puts the window up over the session and shows a failed open as `Print.Failed`.
 `CPhonologyPortraitExport` exports it to a file the same way.
 
 ## `public Task CPhonologyPortraitExport()`

@@ -19,7 +19,8 @@ public sealed record LMarkupEntry(
     int LMarkupEntryLine = 0,
     LMarkupEtymology? LMarkupEntryEtymology = null,
     IReadOnlyList<LMarkupEtymon>? LMarkupEntryEtymon = null,
-    LUnit LMarkupEntryUnit = LUnit.LUnitEmpty) : IEquatable<LMarkupEntry>
+    LUnit LMarkupEntryUnit = LUnit.LUnitEmpty,
+    LFreedom LMarkupEntryFreedom = LFreedom.LFreedomEmpty) : IEquatable<LMarkupEntry>
 {
     public string LMarkupEntryName { get; init; } = LMarkupEntryHeadword;
 
@@ -58,6 +59,7 @@ public sealed record LMarkupEntry(
             && LMarkupEntryLanguage == other.LMarkupEntryLanguage
             && LMarkupEntrySpeech.SequenceEqual(other.LMarkupEntrySpeech)
             && LMarkupEntryUnit == other.LMarkupEntryUnit
+            && LMarkupEntryFreedom == other.LMarkupEntryFreedom
             && LMarkupEntryForm.SequenceEqual(other.LMarkupEntryForm)
             && LMarkupEntryInflection.SequenceEqual(other.LMarkupEntryInflection)
             && LMarkupEntryPronunciation.Count == other.LMarkupEntryPronunciation.Count

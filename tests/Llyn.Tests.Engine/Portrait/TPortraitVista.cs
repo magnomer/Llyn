@@ -32,16 +32,15 @@ public sealed class TPortraitVista
         LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate("water", "English", "", "", [], []));
         LEntry cleared = engine.TEngineEntrySave(TInterface.TEntryDraftCreate("fire", "English", "", "", [], []));
         LVista vista = engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderName);
-        LPressTicket ticket = TInterface.TPressTicketCreate("Printer", false, 1);
         vista.TVistaSelect(cleared.LEntryId);
         vista.TVistaSelect(null);
-        await engine.TEnginePortraitPrint(vista, TInterface.TPortraitLabelRead(), ticket);
+        await using LGalleyRelay? none = await engine.TEnginePressOpen(vista, TInterface.TPortraitLabelRead());
         Assert.Null(press.TPressHtml);
         vista.TVistaSelect(entry.LEntryId);
-        await engine.TEnginePortraitPrint(vista, TInterface.TPortraitLabelRead(), ticket);
+        await using LGalleyRelay? galley = await engine.TEnginePressOpen(vista, TInterface.TPortraitLabelRead());
         Assert.Contains("water", press.TPressHtml);
         Assert.DoesNotContain("fire", press.TPressHtml);
-        Assert.Same(ticket, press.TPressTicket);
+        Assert.True(press.TPressOpened);
     }
 
     [Fact]
@@ -54,8 +53,8 @@ public sealed class TPortraitVista
             TInterfaceExample.TExampleCreate(0, "English", "Water flows.", null, LStateAnchor.LStateAnchorUnspecified));
         LVista vista = engine.TEngineVistaStart("corpus", LCatalogOrder.LCatalogOrderText);
         vista.TVistaSelect(example.LExampleId);
-        await engine.TEnginePortraitPrint(
-            vista, TInterface.TPortraitLegendRead(), TInterface.TPressTicketCreate("Printer", false, 1));
+        await using LGalleyRelay? galley = await engine.TEnginePressOpen(
+            vista, TInterface.TPortraitLegendRead());
         Assert.Contains("Water flows.", press.TPressHtml);
     }
 }

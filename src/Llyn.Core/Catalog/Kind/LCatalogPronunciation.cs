@@ -35,14 +35,7 @@ public sealed record LCatalogPronunciation(
                     StringComparer.CurrentCultureIgnoreCase),
                 static row => row.LCatalogPronunciationEntry)],
             LCatalogOrder.LCatalogOrderSound => [.. LCatalogEntry.LCatalogEntrySort(
-                rows.OrderBy(row => row.LCatalogPronunciationSound.Length == 0)
-                    .ThenBy(row => row.LCatalogPronunciationSound, StringComparer.Ordinal),
-                static row => row.LCatalogPronunciationEntry)],
-            LCatalogOrder.LCatalogOrderPending => [.. LCatalogEntry.LCatalogEntrySort(
-                rows.OrderByDescending(row => row.LCatalogPronunciationSound.Length == 0)
-                    .ThenBy(
-                        row => row.LCatalogPronunciationEntry.LEntryHeadword,
-                        StringComparer.CurrentCultureIgnoreCase),
+                rows.OrderBy(row => row.LCatalogPronunciationSound, StringComparer.Ordinal),
                 static row => row.LCatalogPronunciationEntry)],
             _ => [.. LCatalogEntry.LCatalogEntrySort(
                 rows.OrderBy(

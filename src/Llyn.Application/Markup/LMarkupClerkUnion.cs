@@ -55,6 +55,9 @@ public static class LMarkupClerkUnion
             LEntryDraftUnit = loaded.LEntryDraftUnit == LUnit.LUnitEmpty
                 ? parsed.LEntryDraftUnit
                 : loaded.LEntryDraftUnit,
+            LEntryDraftFreedom = loaded.LEntryDraftFreedom == LFreedom.LFreedomEmpty
+                ? parsed.LEntryDraftFreedom
+                : loaded.LEntryDraftFreedom,
         };
     }
 

@@ -1,5 +1,5 @@
 # QWindow.cs
-Hash: `fbf784839ec95bcc`
+Hash: `2a23b08f87db77ad`
 
 ## `public sealed class QWindow`
 
@@ -18,6 +18,7 @@ The host builds the engine and the root, and hands the root over.
 The window keeps the root, and builds the GUI-only posture beside it with no handle on it.
 The window disposes its posture and closes the root when it closes, and the host disposes the engine on exit.
 The envoy is built over the loaded window, so that window owns every question.
+It also takes the posture, where the print window keeps its size and last setting.
 It builds the mention menu, introduces every part, builds the tab navigation, then makes its one gate call, `CAtelierOpen`.
 The menu comes first, so its preview key runs ahead of the chronicle's.
 The navigation is built after the panels exist, so its tabs find every panel.
@@ -77,7 +78,7 @@ The static veneer helpers take it, so no panel needs an engine to call them.
 
 ## `internal QPosture QWindowPosture { get; }`
 
-The GUI-only posture: the layout, the linked flag and the window bounds.
+The GUI-only posture: the layout, the linked flag, the window bounds and the print window's state.
 It is read under the workspace path the window hands it, so a workspace change moves it too.
 It holds no Conduct handle, since GUI-only state never reaches Conduct.
 

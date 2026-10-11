@@ -164,13 +164,12 @@ public sealed class CEntryList
             return Task.CompletedTask;
         }
 
-        return CPortrait.LPortraitTicketPrint(
+        return CPortrait.LPortraitPrint(
             _cEntryListEnvoy,
             _cEntryListSettings,
-            chosen => _cEntryListPortrait.LEnginePortraitPrint(
+            () => _cEntryListPortrait.LEnginePressOpen(
                 CEntryListPanel.CPanelAperture.CApertureVista,
-                CPortrait.LPortraitLabelRead(_cEntryListSettings),
-                chosen));
+                CPortrait.LPortraitLabelRead(_cEntryListSettings)));
     }
 
     public Task CEntryListExport()

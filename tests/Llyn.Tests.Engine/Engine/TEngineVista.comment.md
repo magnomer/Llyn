@@ -1,5 +1,5 @@
 # TEngineVista.cs
-Hash: `321596f29cf81887`
+Hash: `e9cb70f4eea963de`
 
 ## `public sealed class TEngineVista`
 
@@ -58,7 +58,8 @@ Twins number only within one language.
 
 The row of the selected entry is the one row marked chosen.
 
-## `internal static LEntry TVistaEntryCreate(LEngine engine, string headword, string language)`
+## `internal static LEntry TVistaEntryCreate(LEngine engine, string headword, string language, string sound = "")`
 
 Stores one entry with one meaning in the given language, the least an entry needs to be listed.
+A phonology test passes a `sound`, since only the pending ordering lists an entry without one.
 The sibling classes build their entries through it.

@@ -1,5 +1,5 @@
 # TEngineLiveryLanguage.cs
-Hash: `5ff89c9c9ea35ec8`
+Hash: `93be9c93139a750d`
 
 ## `public sealed class TEngineLiveryLanguage`
 
@@ -8,7 +8,7 @@ The `LiveryFormat` facts write those reads as notes through the `TLiveryFormat` 
 
 ## `private const string TLiveryLanguagePack`
 
-The pack `LiveryRead_FetchedSeries_CarriesItsPageAndEntries` loads, naming one fanqie book and a series rule.
+The pack the fetched and respelled series facts load, naming one fanqie book and a series rule.
 
 ## `private const string TLiveryLanguageBooks`
 
@@ -55,14 +55,31 @@ Reads that language and finds no series and no categories.
 ## `public void LiveryFormat_SeriesNote_LinksTheStoredEntryAndLeavesAnUnstoredCharacterPlain()`
 
 Saves one entry and builds a series holding its character and one unstored character.
-Writes the series note through `TLiveryFormat` and finds the stored character linked and the other plain.
+Writes the series note through `TLiveryFormat` and finds the stored character as an HTML anchor.
+The unstored character stays plain, and neither shows Markdown link syntax.
 
-## `public void LiveryFormat_SeriesNote_PrintsEachMemberReadingAndReflexRowsAndABareMemberAlone()`
+## `public void LiveryFormat_SeriesNote_FoldsEachMemberReflexRowsByItsOpenedStateAndLeavesABareMemberAlone()`
 
-Builds a series page with a stored member carrying two readings and one Korean reflex, and one bare member.
-The members are built without an entry, since a member carries only readings and reflex rows.
-The stored member's card holds its linked chip, its escaped reading line and its reflex table.
-The bare member's card holds only its plain chip.
+Builds a series page with an opened stored member, a folded member and a bare member.
+The opened member carries two readings and one Korean reflex, and the folded member one Korean reflex.
+The stored entry carries the same main Korean reflex, so its entry note supplies the reference reflex table.
+The series table must equal that entry table, header row and `llyn-main` cell alike.
+The opened member is an open `llyn-card` details block, its anchored chip and escaped reading in the summary.
+No summary holds Markdown link syntax.
+The folded member is a closed `llyn-card` details block, its plain chip in the summary.
+Each block holds the member's reflex table after its summary.
+The bare member stays a `llyn-card` div holding only its plain chip.
+No `llyn-more` block and no `Xiesheng.ReadingsShow` label remain.
+Each member character appears exactly once, and no Markdown entry list repeats a member.
+
+## `public void LiveryFormat_SeriesNoteRespelled_PrintsEachMemberRowAsTheEntryNotePrintsIt()`
+
+Saves one entry whose main reflex is in a phonemic pack that respells, then stores its series.
+Turns respelling on and writes the entry note and the series note from engine reads.
+The entry row is picked by its language label, the one line it alone starts with.
+It shows the slashed respelling, romanization, gloss and note, and no raw IPA.
+The romanization is plain ASCII, since the escaper writes accented Latin letters as numeric entities.
+The series note must hold that same row.
 
 ## `public void LiveryFormat_RimeNote_PrintsSectionsInPageOrderWithReadingsAndTallies()`
 

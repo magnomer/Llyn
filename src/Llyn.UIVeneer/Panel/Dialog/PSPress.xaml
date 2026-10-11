@@ -1,0 +1,359 @@
+<Window
+    x:Class="Llyn.UIVeneer.PSPress"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:veneer="clr-namespace:Llyn.UIVeneer"
+    Title="{DynamicResource Print.Title}"
+    Width="1120"
+    Height="780"
+    MinWidth="900"
+    MinHeight="600"
+    Icon="pack://application:,,,/Llyn.UIVeneer;component/brand/icon.ico"
+    ResizeMode="CanResize"
+    ShowInTaskbar="False"
+    Style="{StaticResource {x:Type Window}}"
+    WindowStartupLocation="CenterOwner">
+
+    <Grid Margin="28,24,28,20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Style="{StaticResource Theme.Press.Column}">
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="0,0,16,0">
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="232" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Print.Destination}" TextWrapping="Wrap" />
+                            <ComboBox
+                                x:Name="PSPressDestination"
+                                Grid.Column="1"
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                AutomationProperties.Name="{DynamicResource Print.Destination}"
+                                Style="{StaticResource Theme.Input.Choice}" />
+                        </Grid>
+                        <TextBlock
+                            x:Name="PSPressNotice"
+                            Margin="0,-6,0,12"
+                            Style="{StaticResource Theme.Page.Note}"
+                            Text="{DynamicResource Print.CapabilityUnknown}"
+                            Visibility="Collapsed" />
+
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="232" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Print.Copies}" TextWrapping="Wrap" />
+                            <TextBox
+                                x:Name="PSPressCopies"
+                                Grid.Column="1"
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                AutomationProperties.Name="{DynamicResource Print.Copies}"
+                                Style="{StaticResource Theme.Input.Field}" />
+                        </Grid>
+
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="232" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Print.Collate}" TextWrapping="Wrap" />
+                            <ToggleButton
+                                x:Name="PSPressCollation"
+                                Grid.Column="1"
+                                Margin="16,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                AutomationProperties.Name="{DynamicResource Print.Collate}"
+                                Focusable="True"
+                                Style="{StaticResource Theme.Choice.Switch}" />
+                        </Grid>
+
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="232" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Print.Pages}" TextWrapping="Wrap" />
+                            <ComboBox
+                                x:Name="PSPressRange"
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                AutomationProperties.Name="{DynamicResource Print.Pages}"
+                                Style="{StaticResource Theme.Input.Choice}" />
+                            <TextBox
+                                x:Name="PSPressPages"
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Margin="16,8,0,0"
+                                AutomationProperties.Name="{DynamicResource Print.PagesCustom}"
+                                Style="{StaticResource Theme.Input.Field}" />
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Margin="16,4,0,0"
+                                Style="{StaticResource Theme.Page.Note}"
+                                Text="{DynamicResource Print.PagesHint}" />
+                            <TextBlock
+                                x:Name="PSPressWarning"
+                                Grid.Row="3"
+                                Grid.Column="1"
+                                Margin="16,4,0,0"
+                                FontSize="12"
+                                Foreground="{StaticResource Theme.Warning}"
+                                TextWrapping="Wrap"
+                                Visibility="Collapsed" />
+                        </Grid>
+
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="232" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Print.Orientation}" TextWrapping="Wrap" />
+                            <Border
+                                Grid.Column="1"
+                                Margin="13,0,-3,0"
+                                VerticalAlignment="Center"
+                                Style="{StaticResource Theme.Command.Group}">
+                                <StackPanel Orientation="Horizontal">
+                                    <RadioButton
+                                        x:Name="PSPressUpright"
+                                        AutomationProperties.Name="{DynamicResource Print.Portrait}"
+                                        Content="{DynamicResource Print.Portrait}"
+                                        Style="{StaticResource Theme.Command.Mode}" />
+                                    <RadioButton
+                                        x:Name="PSPressLandscape"
+                                        AutomationProperties.Name="{DynamicResource Print.Landscape}"
+                                        Content="{DynamicResource Print.Landscape}"
+                                        Style="{StaticResource Theme.Command.Mode}" />
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="232" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Print.Paper}" TextWrapping="Wrap" />
+                            <ComboBox
+                                x:Name="PSPressPaper"
+                                Grid.Column="1"
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                AutomationProperties.Name="{DynamicResource Print.Paper}"
+                                Style="{StaticResource Theme.Input.Choice}" />
+                        </Grid>
+
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="232" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Print.Margins}" TextWrapping="Wrap" />
+                            <ComboBox
+                                x:Name="PSPressMargin"
+                                Grid.Column="1"
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                AutomationProperties.Name="{DynamicResource Print.Margins}"
+                                Style="{StaticResource Theme.Input.Choice}" />
+                        </Grid>
+
+                        <Grid x:Name="PSPressInset" Margin="0,0,0,12" Visibility="Collapsed">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Margin="0,0,0,4" Style="{StaticResource Theme.Page.Note}" Text="{DynamicResource Print.MarginTop}" />
+                            <TextBlock Grid.Row="0" Grid.Column="1" Margin="8,0,0,4" Style="{StaticResource Theme.Page.Note}" Text="{DynamicResource Print.MarginBottom}" />
+                            <TextBlock Grid.Row="0" Grid.Column="2" Margin="8,0,0,4" Style="{StaticResource Theme.Page.Note}" Text="{DynamicResource Print.MarginLeft}" />
+                            <TextBlock Grid.Row="0" Grid.Column="3" Margin="8,0,0,4" Style="{StaticResource Theme.Page.Note}" Text="{DynamicResource Print.MarginRight}" />
+                            <TextBox
+                                x:Name="PSPressMarginTop"
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                AutomationProperties.Name="{DynamicResource Print.MarginTop}"
+                                Style="{StaticResource Theme.Input.Field}" />
+                            <TextBox
+                                x:Name="PSPressMarginBottom"
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Margin="8,0,0,0"
+                                AutomationProperties.Name="{DynamicResource Print.MarginBottom}"
+                                Style="{StaticResource Theme.Input.Field}" />
+                            <TextBox
+                                x:Name="PSPressMarginLeft"
+                                Grid.Row="1"
+                                Grid.Column="2"
+                                Margin="8,0,0,0"
+                                AutomationProperties.Name="{DynamicResource Print.MarginLeft}"
+                                Style="{StaticResource Theme.Input.Field}" />
+                            <TextBox
+                                x:Name="PSPressMarginRight"
+                                Grid.Row="1"
+                                Grid.Column="3"
+                                Margin="8,0,0,0"
+                                AutomationProperties.Name="{DynamicResource Print.MarginRight}"
+                                Style="{StaticResource Theme.Input.Field}" />
+                            <TextBlock
+                                x:Name="PSPressMeasure"
+                                Grid.Row="1"
+                                Grid.Column="4"
+                                Margin="8,0,0,0"
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                Foreground="{StaticResource Theme.Muted}" />
+                        </Grid>
+
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="232" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Print.Scale}" TextWrapping="Wrap" />
+                            <TextBox
+                                x:Name="PSPressScale"
+                                Grid.Column="1"
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                AutomationProperties.Name="{DynamicResource Print.Scale}"
+                                Style="{StaticResource Theme.Input.Field}" />
+                        </Grid>
+
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="232" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Print.Color}" TextWrapping="Wrap" />
+                            <Border
+                                Grid.Column="1"
+                                Margin="13,0,-3,0"
+                                VerticalAlignment="Center"
+                                Style="{StaticResource Theme.Command.Group}">
+                                <StackPanel Orientation="Horizontal">
+                                    <RadioButton
+                                        x:Name="PSPressFull"
+                                        AutomationProperties.Name="{DynamicResource Print.ColorFull}"
+                                        Content="{DynamicResource Print.ColorFull}"
+                                        Style="{StaticResource Theme.Command.Mode}" />
+                                    <RadioButton
+                                        x:Name="PSPressGray"
+                                        AutomationProperties.Name="{DynamicResource Print.ColorGray}"
+                                        Content="{DynamicResource Print.ColorGray}"
+                                        Style="{StaticResource Theme.Command.Mode}" />
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="232" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Print.Side}" TextWrapping="Wrap" />
+                            <ComboBox
+                                x:Name="PSPressSide"
+                                Grid.Column="1"
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                AutomationProperties.Name="{DynamicResource Print.Side}"
+                                Style="{StaticResource Theme.Input.Choice}" />
+                        </Grid>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="232" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Print.Backgrounds}" TextWrapping="Wrap" />
+                            <ToggleButton
+                                x:Name="PSPressBackground"
+                                Grid.Column="1"
+                                Margin="16,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                AutomationProperties.Name="{DynamicResource Print.Backgrounds}"
+                                Focusable="True"
+                                Style="{StaticResource Theme.Choice.Switch}" />
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+            <Border Grid.Column="1" BorderBrush="{StaticResource Theme.Line}" BorderThickness="1" SnapsToDevicePixels="True">
+                <veneer:PSGalley />
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="1" Margin="0,20,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Button
+                x:Name="PSPressSystem"
+                Grid.Column="0"
+                Margin="-13,0,0,0"
+                AutomationProperties.Name="{DynamicResource Print.SystemDialog}"
+                Content="{DynamicResource Print.SystemDialog}"
+                Style="{StaticResource Theme.Command.Segment}" />
+            <TextBlock
+                x:Name="PSPressAlert"
+                Grid.Column="1"
+                Margin="12,0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Foreground="{StaticResource Theme.Muted}"
+                TextTrimming="CharacterEllipsis" />
+            <StackPanel Grid.Column="2" HorizontalAlignment="Right" Orientation="Horizontal">
+                <Button
+                    x:Name="PSPressAdmit"
+                    MinWidth="88"
+                    AutomationProperties.Name="{DynamicResource Print.Print}"
+                    Content="{DynamicResource Print.Print}"
+                    IsDefault="True"
+                    Style="{StaticResource Theme.Command.Primary}" />
+                <Button
+                    x:Name="PSPressQuit"
+                    MinWidth="88"
+                    Margin="6,0,0,0"
+                    AutomationProperties.Name="{DynamicResource Print.Cancel}"
+                    Content="{DynamicResource Print.Cancel}"
+                    IsCancel="True"
+                    Style="{StaticResource Theme.Command.Segment}" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

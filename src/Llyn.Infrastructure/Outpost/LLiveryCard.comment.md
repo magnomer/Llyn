@@ -1,5 +1,5 @@
 # LLiveryCard.cs
-Hash: `f6203f12577e0837`
+Hash: `d2754bd0190f6fc0`
 
 ## `internal static class LLiveryCard`
 
@@ -22,7 +22,7 @@ No cards write nothing, not even the heading.
 ## `private static void LLiveryFaceAppend(StringBuilder sheet, LLiveryPage page, LCardDraft card, string number, string blank, Func<long, string> note)`
 
 Writes one card as a `llyn-card` block, followed by a blank line.
-A stored card is a `details` block, open unless `LLiveryPageFold` holds its id.
+A stored card opens through `LLiveryFoldFormat`, open unless `LLiveryPageFold` holds its id.
 Its head sits inside a `summary`, so a folded card keeps its number and title.
 A blank line follows the head, so Markdown parses the body inside the HTML block.
 A card with no stored id stays a plain div, since it has nothing to fold.
@@ -38,6 +38,13 @@ Children follow, each as a nested card numbered after its parent.
 Examples follow through `LLiverySentenceAppend`.
 Tags follow through `LLiveryBadgeAppend`.
 Images and videos come last through `LLiveryMediaAppend`.
+
+## `internal static string LLiveryFoldFormat(bool opened)`
+
+The opening of a foldable `llyn-card` `details` block, up to its open `summary` tag.
+It carries `open` when `opened` is set.
+The card style draws its fold chevron at the top right of the summary.
+`LLiveryXiesheng` reuses it for each series member with reflex rows.
 
 ## `private static string LLiveryNumberFormat(LCardDraft card, int place)`
 

@@ -9,28 +9,41 @@ namespace Llyn.Tests;
 public sealed class TEditorUnit
 {
     [Fact]
-    public void CardSpeechRead_SpacedLanguage_OffersContentFunctionAndMorpheme()
+    public void CardSpeechRead_SpacedLanguage_OffersMorphemeWordAndExpression()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CCardSpeech speech = TEditorUnitPrepare(engine, "English").TEditorFixtureSpeech;
 
         Assert.Equal(
-            ["Unit.Content", "Unit.Function", "Unit.Morpheme"],
+            ["Unit.Morpheme", "Unit.Word", "Unit.Expression"],
             speech.CCardSpeechRead().CMarkerUnits.Select(static row => row.Item1));
         Assert.DoesNotContain(speech.CCardSpeechRead().CMarkerUnits, static row => row.Item2);
     }
 
     [Fact]
-    public void CardSpeechRead_UnspacedLanguage_OffersWordAndMorpheme()
+    public void CardSpeechRead_UnspacedLanguage_OffersMorphemeWordAndExpression()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CCardSpeech speech = TEditorUnitPrepare(engine, "Thai").TEditorFixtureSpeech;
 
         Assert.Equal(
-            ["Unit.Word", "Unit.Morpheme"],
+            ["Unit.Morpheme", "Unit.Word", "Unit.Expression"],
             speech.CCardSpeechRead().CMarkerUnits.Select(static row => row.Item1));
+    }
+
+    [Fact]
+    public void CardSpeechRead_AnyLanguage_OffersDependentAndStandalone()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CCardSpeech speech = TEditorUnitPrepare(engine, "Thai").TEditorFixtureSpeech;
+
+        Assert.Equal(
+            ["Freedom.Dependent", "Freedom.Standalone"],
+            speech.CCardSpeechRead().CMarkerFreedoms.Select(static row => row.Item1));
+        Assert.DoesNotContain(speech.CCardSpeechRead().CMarkerFreedoms, static row => row.Item2);
     }
 
     [Fact]
@@ -40,12 +53,12 @@ public sealed class TEditorUnit
         using LEngine engine = workspace.TWorkspaceEngineStart();
         TEditorFixture editor = TEditorUnitPrepare(engine, "English");
 
-        editor.TEditorFixtureEntry.CEntryUnitSet("Unit.Function");
+        editor.TEditorFixtureEntry.CEntryUnitSet("Unit.Expression");
 
         Assert.Equal(
-            ("Unit.Function", true),
+            ("Unit.Expression", true),
             Assert.Single(editor.TEditorFixtureSpeech.CCardSpeechRead().CMarkerUnits, static row => row.Item2));
-        Assert.Equal(LUnit.LUnitFunction, editor.TEditorFixtureDesk.TDeskRead()!.LDraftContent.LEntryDraftUnit);
+        Assert.Equal(LUnit.LUnitExpression, editor.TEditorFixtureDesk.TDeskRead()!.LDraftContent.LEntryDraftUnit);
     }
 
     [Fact]
@@ -59,6 +72,36 @@ public sealed class TEditorUnit
         editor.TEditorFixtureEntry.CEntryUnitSet("Unit.Morpheme");
 
         Assert.DoesNotContain(editor.TEditorFixtureSpeech.CCardSpeechRead().CMarkerUnits, static row => row.Item2);
+    }
+
+    [Fact]
+    public void EditorFreedomSet_OfferedKey_MarksTheRowAndStoresTheFreedom()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        TEditorFixture editor = TEditorUnitPrepare(engine, "English");
+
+        editor.TEditorFixtureEntry.CEntryFreedomSet("Freedom.Standalone");
+
+        Assert.Equal(
+            ("Freedom.Standalone", true),
+            Assert.Single(editor.TEditorFixtureSpeech.CCardSpeechRead().CMarkerFreedoms, static row => row.Item2));
+        Assert.Equal(
+            LFreedom.LFreedomStandalone,
+            editor.TEditorFixtureDesk.TDeskRead()!.LDraftContent.LEntryDraftFreedom);
+    }
+
+    [Fact]
+    public void EditorFreedomSet_TakenKey_ClearsTheFreedom()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        TEditorFixture editor = TEditorUnitPrepare(engine, "English");
+        editor.TEditorFixtureEntry.CEntryFreedomSet("Freedom.Dependent");
+
+        editor.TEditorFixtureEntry.CEntryFreedomSet("Freedom.Dependent");
+
+        Assert.DoesNotContain(editor.TEditorFixtureSpeech.CCardSpeechRead().CMarkerFreedoms, static row => row.Item2);
     }
 
     private static TEditorFixture TEditorUnitPrepare(LEngine engine, string language)

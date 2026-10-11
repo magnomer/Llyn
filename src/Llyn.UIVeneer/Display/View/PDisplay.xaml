@@ -137,7 +137,10 @@
                     </StackPanel>
 
                     <StackPanel x:Name="PDisplaySpeechSection" Margin="12,14,0,-4" Visibility="Collapsed">
-                        <TextBlock x:Name="PDisplayUnit" Style="{StaticResource Theme.Unit.Name}" Visibility="Collapsed" />
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock x:Name="PDisplayUnit" Style="{StaticResource Theme.Unit.Name}" Visibility="Collapsed" />
+                            <TextBlock x:Name="PDisplayFreedom" Style="{StaticResource Theme.Freedom.Name}" Visibility="Collapsed" />
+                        </StackPanel>
                         <ItemsControl x:Name="PDisplaySpeech">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>

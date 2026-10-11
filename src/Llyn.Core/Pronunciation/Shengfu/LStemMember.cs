@@ -21,9 +21,6 @@ public sealed record LStemMember(
             .Select((reflex, index) => (reflex, LReflexGuise.LReflexGuiseFind(LStemMemberGuises, index)))
             .ToList();
 
-    public IReadOnlyList<string> LStemMemberLanguages =>
-        LStemMemberReflexes.Select(static reflex => reflex.LReflexDraftLanguage).ToList();
-
     public static IReadOnlyList<LStemMember> LStemBareScan(IReadOnlyList<string> characters)
     {
         ArgumentNullException.ThrowIfNull(characters);

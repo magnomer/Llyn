@@ -19,12 +19,12 @@ public sealed partial class TFault
             static stage => Task.FromResult<Func<Task>>(TFaultTenorStart(stage).CTenorCohort.CCohortPortraitExport)),
         new(
             "CCohort.CCohortPortraitPrint",
-            "LPortraitPort.LEnginePortraitPrint",
+            "LPortraitPort.LEnginePressOpen",
             "Print.Failed",
             static stage => Task.FromResult<Func<Task>>(TFaultTenorStart(stage).CTenorCohort.CCohortPortraitPrint)),
         new(
             "CCorpus.CCorpusPortraitPrint",
-            "LPortraitPort.LEnginePortraitPrint",
+            "LPortraitPort.LEnginePressOpen",
             "Print.Failed",
             static stage => Task.FromResult<Func<Task>>(TFaultCorpusStart(stage).CCorpusPortraitPrint)),
         new(
@@ -36,14 +36,14 @@ public sealed partial class TFault
                 .CFavoritePortraitExport)),
         new(
             "CFavorite.CFavoritePortraitPrint",
-            "LPortraitPort.LEnginePortraitPrint",
+            "LPortraitPort.LEnginePressOpen",
             "Print.Failed",
             static stage => Task.FromResult<Func<Task>>(CFavorite.CFavoriteCreate(
                 TFaultAtelierStart(stage), static () => true, TFaultEnvoyCreate(stage), static run => run())
                 .CFavoritePortraitPrint)),
         new(
             "CGuild.CGuildPortraitPrint",
-            "LPortraitPort.LEnginePortraitPrint",
+            "LPortraitPort.LEnginePressOpen",
             "Print.Failed",
             static stage =>
             {
@@ -64,7 +64,7 @@ public sealed partial class TFault
                 TLibrary.TLibraryPrepare(TFaultAtelierStart(stage), TFaultEnvoyCreate(stage)).CLibraryPortraitExport)),
         new(
             "CLibrary.CLibraryPortraitPrint",
-            "LPortraitPort.LEnginePortraitPrint",
+            "LPortraitPort.LEnginePressOpen",
             "Print.Failed",
             static stage => Task.FromResult<Func<Task>>(
                 TLibrary.TLibraryPrepare(TFaultAtelierStart(stage), TFaultEnvoyCreate(stage)).CLibraryPortraitPrint)),
@@ -76,7 +76,7 @@ public sealed partial class TFault
                 TFaultTaxonomyStart(stage).CTaxonomyMembership.CMembershipPortraitExport)),
         new(
             "CMembership.CMembershipPortraitPrint",
-            "LPortraitPort.LEnginePortraitPrint",
+            "LPortraitPort.LEnginePressOpen",
             "Print.Failed",
             static stage => Task.FromResult<Func<Task>>(
                 TFaultTaxonomyStart(stage).CTaxonomyMembership.CMembershipPortraitPrint)),
@@ -89,7 +89,7 @@ public sealed partial class TFault
                 .CPhonologyPortraitExport)),
         new(
             "CPhonology.CPhonologyPortraitPrint",
-            "LPortraitPort.LEnginePortraitPrint",
+            "LPortraitPort.LEnginePressOpen",
             "Print.Failed",
             static stage => Task.FromResult<Func<Task>>(CPhonology.CPhonologyCreate(
                 TFaultAtelierStart(stage), static () => true, TFaultEnvoyCreate(stage), static run => run())
@@ -107,7 +107,7 @@ public sealed partial class TFault
             static stage => Task.FromResult<Func<Task>>(TFaultRepertoireStart(stage).CRepertoirePortraitExport)),
         new(
             "CRepertoire.CRepertoirePortraitPrint",
-            "LPortraitPort.LEnginePortraitPrint",
+            "LPortraitPort.LEnginePressOpen",
             "Print.Failed",
             static stage => Task.FromResult<Func<Task>>(TFaultRepertoireStart(stage).CRepertoirePortraitPrint)),
         new(
@@ -117,7 +117,7 @@ public sealed partial class TFault
             static stage => Task.FromResult<Func<Task>>(TFaultShelfStart(stage).CShelfPortraitExport)),
         new(
             "CShelf.CShelfPortraitPrint",
-            "LPortraitPort.LEnginePortraitPrint",
+            "LPortraitPort.LEnginePressOpen",
             "Print.Failed",
             static stage => Task.FromResult<Func<Task>>(TFaultShelfStart(stage).CShelfPortraitPrint)),
         new(
@@ -129,7 +129,7 @@ public sealed partial class TFault
                 .CXieshengKindred.CEntryListExport)),
         new(
             "CEntryList.CEntryListPrint",
-            "LPortraitPort.LEnginePortraitPrint",
+            "LPortraitPort.LEnginePressOpen",
             "Print.Failed",
             static async stage =>
             {
@@ -154,7 +154,7 @@ public sealed partial class TFault
                     .CYunjingXiaoyun.CEntryListExport)),
         new(
             "CYunjing.CYunjingXiaoyun.CEntryListPrint",
-            "LPortraitPort.LEnginePortraitPrint",
+            "LPortraitPort.LEnginePressOpen",
             "Print.Failed",
             static stage =>
             {
@@ -170,7 +170,54 @@ public sealed partial class TFault
                 xiaoyun.CEntryListPanel.CPanelRowSelect(Assert.Single(xiaoyun.CEntryListRead()).CVistaRowId);
                 return Task.FromResult<Func<Task>>(xiaoyun.CEntryListPrint);
             }),
+        new(
+            "CSPress.CSPressRestore",
+            "LPressQueue.LPressQueueRead",
+            "Print.Failed",
+            static stage => Task.FromResult<Func<Task>>(() => TInterfaceConductPortrait.TPressWindowOpen(
+                new TPressBoard(),
+                static _ => Task.CompletedTask,
+                asked: stage.TFaultStageHeard,
+                failure: new InvalidOperationException("The fake queue faults LPressQueue.LPressQueueRead.")))),
+        new(
+            "CSPress.CSPressSystemShow",
+            "LPressBoard.LPressBoardShow",
+            "Print.Failed",
+            static stage => TFaultPressOpen(stage, static press => press.CSPressSystemShow())),
+        new(
+            "CSPress.CSPressPrint",
+            "LPressBoard.LPressBoardPrint",
+            "Print.Failed",
+            static stage => TFaultPressOpen(stage, static press => press.CSPressPrint())),
+        new(
+            "CSGalley.CSGalleyDraw",
+            "LPressBoard.LPressBoardDraw",
+            "Print.RenderFailed",
+            static stage => TFaultPressOpen(stage, static press => press.CSPressGalley.CSGalleyDraw())),
+        new(
+            "CSGalley.CSGalleySightSet",
+            "LPressProof.LPressProofDraw",
+            "Print.RenderFailed",
+            static stage => TFaultPressOpen(stage, static async press =>
+            {
+                await press.CSPressGalley.CSGalleyDraw();
+                press.TPressDelaySet(0);
+                await press.CSPressGalley.CSGalleySightSet(0, 0, 0, 1.0);
+            })),
     ];
+
+    private static Task<Func<Task>> TFaultPressOpen(TFaultStage stage, Func<CSPress, Task> gate)
+    {
+        TPressBoard board = new()
+        {
+            TPressBoardCover = proof => TEngineFault.TEngineFaultCreate(
+                proof, stage.TFaultStageMember, stage.TFaultStageThrown),
+        };
+        LPressBoard faulted = TEngineFault.TEngineFaultCreate<LPressBoard>(
+            board, stage.TFaultStageMember, stage.TFaultStageThrown);
+        return Task.FromResult<Func<Task>>(
+            () => TInterfaceConductPortrait.TPressWindowOpen(faulted, gate, asked: stage.TFaultStageHeard));
+    }
 
     private static CAtelier TFaultAtelierCreate(TFaultStage stage, LEngine engine) =>
         stage.TFaultStageAdd(TInterfaceConduct.TAtelierFaultCreate(
@@ -180,8 +227,6 @@ public sealed partial class TFault
         TEngineFake.TEngineCreate<CEnvoy>(new Dictionary<string, Func<object?[]?, object?>>
         {
             ["CEnvoyFileRead"] = static _ => ((string?)"fault.md", CPortraitMedium.CPortraitMediumMarkdown),
-            ["CEnvoyTicketRead"] = static _ => new CPressTicket(
-                "Office", null, null, false, 1, true, CPressSide.CPressSideDefault, CPressInk.CPressInkDefault),
             ["CEnvoyFailureShow"] = args =>
             {
                 stage.TFaultStageHeard.Add((string)args![0]!);

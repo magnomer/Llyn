@@ -1,5 +1,5 @@
 # LSettingsPort.cs
-Hash: `ad3cdf4009495acb`
+Hash: `96ab98b7a2a6a4f5`
 
 ## `public interface LSettingsPort`
 
@@ -99,6 +99,11 @@ Whether custom analysis is on, so the settings switch shows its state.
 Turns custom analysis on or off.
 On shows the pack's custom sheets with marked letters split at the root, and off shows the default sheets plain.
 The inflection box of the reading view and the editor repaints after a change.
+
+## `string LEngineNotebookSave(string notebook);`
+
+Persists the title of the top Joplin notebook and answers the trimmed title it stored.
+A blank title stores `Llyn`, and the next sync renames the same notebook to the stored title.
 
 ## `void LEngineRespellingSave(bool respelled);`
 

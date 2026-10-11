@@ -1,5 +1,5 @@
 # CFont.cs
-Hash: `d79a42a0b11de6a5`
+Hash: `505e7e889f713f67`
 
 ## `public sealed record CFont(string? CFontFamily, double? CFontSize, CFontSlant CFontStyle)`
 
@@ -15,7 +15,7 @@ The font a language's pack sets for one role.
 
 The one font rule, shared by every area that reads a pack's typography in its own language.
 The engine record drops a blank family and an unusable size, so a driver sets only usable values.
-A blank language answers the font with nothing set, so the surface keeps its theme.
+A blank language passes on unread, since the engine answers it a font with nothing set.
 A refused read is not caught here and reaches the caller.
 
 ## `private static CFontSlant CFontSlantRead(string? style)`

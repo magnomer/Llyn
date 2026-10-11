@@ -15,7 +15,7 @@ public static class LPortraitClerkLabel
     public static LPortraitLabel LPortraitLabelCreate(IReadOnlyList<string> words)
     {
         ArgumentNullException.ThrowIfNull(words);
-        ArgumentOutOfRangeException.ThrowIfNotEqual(words.Count, 26);
+        ArgumentOutOfRangeException.ThrowIfNotEqual(words.Count, 27);
 
         return new LPortraitLabel(
             words[0], words[1], words[2], words[3], words[4], words[5], words[6], words[7], words[8], words[9],
@@ -23,10 +23,14 @@ public static class LPortraitClerkLabel
             words[19], words[20], words[21],
             new Dictionary<LUnit, string>
             {
-                [LUnit.LUnitContent] = words[22],
-                [LUnit.LUnitFunction] = words[23],
-                [LUnit.LUnitMorpheme] = words[24],
-                [LUnit.LUnitWord] = words[25],
+                [LUnit.LUnitMorpheme] = words[22],
+                [LUnit.LUnitWord] = words[23],
+                [LUnit.LUnitExpression] = words[24],
+            },
+            new Dictionary<LFreedom, string>
+            {
+                [LFreedom.LFreedomDependent] = words[25],
+                [LFreedom.LFreedomStandalone] = words[26],
             });
     }
 

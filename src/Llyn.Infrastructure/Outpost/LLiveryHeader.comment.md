@@ -1,19 +1,10 @@
 # LLiveryHeader.cs
-Hash: `4d248ea5befb7c6c`
+Hash: `fe042a92f569e64a`
 
 ## `internal static class LLiveryHeader`
 
 Writes the head and the chips of a Joplin entry body for `LLiverySheet.LLiveryFormat`.
 It reads only `LLiveryPage` and the `lookup` it is handed.
-
-## `private const int LLiveryStarCount = 5;`
-
-The number of stars the rating row draws.
-
-## `private const int LLiveryGraspCeiling = 10;`
-
-The highest grasp, which fills every star.
-A grasp is clamped to it before the stars and the rating key are read.
 
 ## `private const string LLiveryEscaped = "\\\u0060*_[]|~#!";`
 
@@ -23,15 +14,24 @@ The characters `LLiveryTextFormat` escapes with a backslash, so stored text neve
 
 Writes one level-one heading holding the headword, the language chip, the heart, the stars and the rating.
 The language chip is left out when the draft names no language.
+The heart, the stars and the rating sit in one `llyn-regard` span.
+The style note lays that span out as a flex row, which drops the spaces between them.
+So no 40-pixel heading space widens a gap between two stars.
 The heart carries `llyn-on` when the entry is a favorite.
-The rating text comes from the `Grasp.Level` key of the clamped grasp.
+The grasp is clamped through `LGrasp.LGraspNormalize` before the stars and the rating key are read.
+The rating text comes from `LGrasp.LGraspKeyRead` of the clamped grasp.
 The language chip opens with the flag from `LLiveryBannerFormat` for the draft's language, when one reads.
 
 ## `public static void LLiveryChipAppend(StringBuilder sheet, LLiveryPage page, Func<string, string> lookup)`
 
 Writes the speech chips as one paragraph, then the frequency chip as another.
+The speech paragraph is written only when the draft is marked.
 The lexical unit leads the speech paragraph as a `llyn-unit` chip, named through `lookup`.
+The freedom follows it as a `llyn-freedom` chip, named the same way.
 Each part is left out when the page holds no data for it.
+The trailing space is trimmed only when this method wrote a chip.
+A marked draft with no unit, freedom or named speech writes nothing at all.
+So text written before this method is never cut.
 `LFrequencyGauge.LFrequencyGaugeResolve` reads the stored rows with the `Frequency.Once` text.
 The chip names its band through the `Frequency.` key of the gauge rank.
 A ranked gauge adds a band class such as `llyn-frequency-core`, so the style note colours each band.
@@ -61,12 +61,14 @@ A language with no entry answers empty.
 
 An `<img>` with class `style` whose source is the stored file at `path` as a base64 data address.
 `LLiverySheet.LLiveryImageApply` later turns that address into a Joplin resource.
-The media type follows the file suffix, and an unknown suffix answers empty.
-A null path, or a file that throws `IOException` or `UnauthorizedAccessException`, answers empty.
+The file is read through `LPortraitAsset.LPortraitAssetLoad`, the loader the export uses.
+So the media type rule and the size ceiling are one copy shared with the export.
+A null path, or a file that loader refuses, answers empty.
 `LLiveryCard` uses it for the stored image files of a card.
 
 ## `private static void LLiveryStarAppend(StringBuilder sheet, int grasp)`
 
-Writes five star spans, each worth two grasp steps.
-A full star carries `llyn-on` and a star worth one step carries `llyn-half`.
+Writes one star span per fill `LGrasp.LGraspStarScan` answers.
+Core owns the fill rule, so the view's stars and these agree.
+A full star carries `llyn-on` and a half star carries `llyn-half`.
 At grasp zero every star carries `llyn-unrated`, so the style note tells unrated from rated.

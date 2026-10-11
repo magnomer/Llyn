@@ -1,5 +1,5 @@
 # TGrasp.cs
-Hash: `661b6c84f164ae8b`
+Hash: `fc971b3834a60e34`
 
 ## `public sealed class TGrasp`
 
@@ -11,3 +11,4 @@ An entry edit must never drop the rating the user gave.
 It covers a bad value reaching neither the store nor a subscriber.
 It covers a rating for a missing entry throwing.
 It covers the favorite catalog carrying the rating, which a later ordering may sort by.
+It covers the star scan, which turns a rating into full, half and empty stars for the sheet.

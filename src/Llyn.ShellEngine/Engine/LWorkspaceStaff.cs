@@ -10,6 +10,7 @@ internal sealed record LWorkspaceStaff(
     LMarkupClerkIntake LWorkspaceStaffIntake,
     LPortraitClerk LWorkspaceStaffPortrait,
     LPortraitClerkPress LWorkspaceStaffPress,
+    LPressClerk LWorkspaceStaffGalley,
     LCourierClerk LWorkspaceStaffCourier)
 {
     internal static LWorkspaceStaff LWorkspaceStaffBuild(
@@ -41,9 +42,10 @@ internal sealed record LWorkspaceStaff(
             language.LLanguageStaffFanqie, language.LLanguageStaffFrequency, language.LLanguageStaffParadigm,
             language.LLanguageStaffScript, settings);
         LPortraitClerkPress press = new(rig);
+        LPressClerk galley = new(rig);
         LCourierClerk courier = new(
             rig, entry.LEntryStaffQuery, gate, settings, exception => workspace.LWorkspaceAuditRecord(exception));
 
-        return new LWorkspaceStaff(workspace, markup, intake, portrait, press, courier);
+        return new LWorkspaceStaff(workspace, markup, intake, portrait, press, galley, courier);
     }
 }

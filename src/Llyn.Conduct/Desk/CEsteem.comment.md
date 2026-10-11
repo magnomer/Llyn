@@ -1,5 +1,5 @@
 # CEsteem.cs
-Hash: `5f3d6e7977baa120`
+Hash: `e5972618617736ba`
 
 ## `public sealed class CEsteem`
 
@@ -12,6 +12,10 @@ It only supplies the stored id, and a refusal reaches the window through the dis
 
 The stored entry the held draft stands on, or null for a fresh draft or an empty desk.
 
+## `public bool CEsteemFavorite`
+
+Whether the stored entry is a favourite, false for a fresh draft or a failed read.
+
 ## `public int CEsteemGrasp`
 
 The stored entry's grasp step, zero for a fresh draft or a failed read.
@@ -22,10 +26,29 @@ It is never negative and never above `CEsteemGraspStep`, since the stars draw on
 The last grasp step, which the star control takes as its limit so it names no engine constant.
 It is never negative, since `LDisplay` raises a negative engine limit to zero.
 
+## `public IReadOnlyList<IReadOnlyList<int>> CEsteemGraspFill`
+
+Per step from zero to the limit, the ready fill of each star of the editor's control.
+The driver hands it to the control once, so drawing requests no logic.
+
+## `public IReadOnlyList<bool> CEsteemGraspUnrated`
+
+Per step, whether the editor's stars show the unrated look.
+
+## `public IReadOnlyList<IReadOnlyList<int>> CEsteemGraspHit`
+
+Per drawn star, the step its left half picks and the step its right half picks.
+The driver hands it to the control once, so pointing requests no logic.
+
 ## `public event Action? CEsteemFavoriteChanged;`
 
 Raised only by `CEsteemFavoriteSet`, refused or not, so the star reads the store again.
 No bulletin raises it, unlike `CEsteemGraspChanged`.
+
+## `public event Action? CEsteemGraspChanged;`
+
+Raised by `CEsteemGraspSet`, refused or not, so the stars read the store again.
+A grasp bulletin about the held entry raises it too, marshalled onto the driver's thread.
 
 ## `public event Action? CEsteemFrequencyChanged;`
 

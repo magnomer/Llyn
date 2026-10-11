@@ -1,9 +1,9 @@
 # CAnthology.cs
-Hash: `eeb2c7add293d53e`
+Hash: `aa126d79d151118e`
 
 ## `public sealed class CAnthology`
 
-The corpus panel's example list: the panel over the example vista.
+The corpus panel's example list, the panel over the example vista.
 It finds the rows, while the panel's aperture holds the vista and takes the query, order and language filter.
 Its panel loads, edits and deletes the chosen Example, worded under the Example scope.
 It also answers the transcript's citation field and prints the chosen Example.
@@ -40,7 +40,7 @@ A workspace notice runs `workspace`, the corpus's own answer.
 
 ## `public static IReadOnlyList<CCatalogOrder> CAnthologyOrderRead()`
 
-The orderings the example list offers, in menu order: text, language, Source and usage.
+The orderings the example list offers, in menu order, by text, language, Source and usage.
 
 ## `internal IReadOnlyList<CCatalogExample>? LAnthologyRowsRead()`
 
@@ -62,7 +62,8 @@ No driver calls it, since `CCorpusMentionFind` asks the leave question first.
 
 ## `internal Task LAnthologyPortraitPrint(CEnvoy envoy, LSettingsPort settings)`
 
-Prints the chosen Example through `CPortrait`, with the Example realm's legend.
+Opens the print window on the chosen Example through `CPortrait`, with the Example realm's legend.
+It opens nothing while no Example is chosen.
 No driver calls it, since `CCorpusPortraitPrint` chooses which side prints.
 
 ## `public CProffer CAnthologyCitationRead(string word)`

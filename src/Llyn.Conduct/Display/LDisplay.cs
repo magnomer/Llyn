@@ -24,6 +24,8 @@ internal sealed class LDisplay
 
     private (long, int)? _lDisplayGrasp;
 
+    private LGraspStar? _lDisplayGraspStar;
+
     internal LDisplay(
         LDraftPort drafts,
         LEntryPort entries,
@@ -163,6 +165,8 @@ internal sealed class LDisplay
     }
 
     internal int LDisplayGraspStep => Math.Max(0, _lDisplayGraspPort.LEngineGraspStep);
+
+    internal LGraspStar LDisplayGraspStar => _lDisplayGraspStar ??= LGraspPort.LEngineStarScan(LDisplayGraspStep);
 
     internal string LDisplayGraspFormat(long? entry, int step)
     {

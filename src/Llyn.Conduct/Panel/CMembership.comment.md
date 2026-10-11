@@ -1,9 +1,9 @@
 # CMembership.cs
-Hash: `cbad96e2279b9428`
+Hash: `97db9e3d9eec0c23`
 
 ## `public sealed class CMembership`
 
-The taxonomy's entry list: the entries carrying the chosen Tag, and the one the reader stands on.
+The taxonomy's entry list, holding the entries that carry the chosen Tag and the one the reader stands on.
 It is shaped like `CQuotation`, and the taxonomy owns it as `CCorpus` owns its quotation.
 
 ## `internal CMembership(LVistaPort vistas, LPortraitPort portraits, LSettingsPort settings, CEnvoy envoy, Func<bool> changeSeam, Func<bool, bool> finishSeam, Func<bool> shownSeam)`
@@ -14,7 +14,7 @@ The panel asks the editor's desk before it leaves an entry, and it finishes thro
 
 ## `public CPanel CMembershipPanel { get; }`
 
-The shared panel state over the membership vista: the chosen entry, the scribe mode, the bin and the leave guard.
+The shared panel state over the membership vista, holding the chosen entry, scribe mode, bin and leave guard.
 
 ## `internal void LMembershipVistaRestore(LVista roll, LVista vista)`
 
@@ -39,10 +39,10 @@ The file name an export of the shown entry is offered under, read from the membe
 
 ## `public Task CMembershipPortraitPrint()`
 
-Prints the shown entry, and does nothing while none is shown outside edit mode.
+Prints the chosen entry, and does nothing while none is chosen or the panel is editing.
 `CMembershipPortraitExport` exports it under the same condition.
-The reader is asked for the printer through the envoy, and a decline prints nothing.
-`CPortrait` words the page through the engine and shows `Print.Failed` through the envoy.
+The engine opens a print session on the vista's chosen entry, and `CPortrait` puts the print window up.
+A failed open shows `Print.Failed` through the envoy.
 
 ## `public Task CMembershipPortraitExport()`
 

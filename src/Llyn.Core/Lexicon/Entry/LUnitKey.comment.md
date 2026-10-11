@@ -1,5 +1,5 @@
 # LUnitKey.cs
-Hash: `5d44a8e2049ffcb0`
+Hash: `82b5114c87f826cb`
 
 ## `public static class LUnitKey`
 
@@ -10,6 +10,7 @@ One map keeps a unit written by an export readable by the import and by a pack.
 
 Reads a key regardless of case and surrounding space.
 An unknown or missing key reads as `LUnitEmpty`, so a foreign file never fails on it.
+The retired keys `content` and `function` read as unknown, so an older file leaves the unit unchosen.
 
 ## `public static string LUnitKeyRead(LUnit unit)`
 

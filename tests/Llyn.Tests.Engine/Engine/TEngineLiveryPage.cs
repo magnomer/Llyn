@@ -134,6 +134,21 @@ public sealed class TEngineLiveryPage
     }
 
     [Fact]
+    public void LiveryRead_OpenedFanqie_KeepsTheOpenedBox()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "water", "English", string.Empty, string.Empty, [TInterface.TCardCreate("a liquid", 1)], []));
+        Assert.Empty(Assert.IsType<LLiveryPage>(engine.TLiveryRead(entry.LEntryId)).LLiveryPageOpened);
+        engine.TEngineBoxSpread(entry.LEntryId, LFoldBox.LFoldBoxFanqie, true);
+
+        LLiveryPage page = Assert.IsType<LLiveryPage>(engine.TLiveryRead(entry.LEntryId));
+
+        Assert.Equal([LFoldBox.LFoldBoxFanqie], page.LLiveryPageOpened);
+    }
+
+    [Fact]
     public async Task LiveryRead_StoredScript_KeepsStyleGroups()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineLiveryScript);
@@ -195,6 +210,37 @@ public sealed class TEngineLiveryPage
         Assert.Equal("Inflection.Present", present.LParadigmLineLabel);
         Assert.Equal("hablo", present.LParadigmLineForms[0].LParadigmFormText);
         Assert.Equal("Paradigm.Absent", present.LParadigmLineForms[1].LParadigmFormTip);
+    }
+
+    [Fact]
+    public void LiveryRead_EnglishVerbWithBreakRows_CarriesOneShownPerRow()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineMorphologySave(false);
+        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "break",
+            "English",
+            string.Empty,
+            string.Empty,
+            [TInterface.TCardDraftCreate(string.Empty, string.Empty, "to come apart", [], [], [], [], [], 1)],
+            [],
+            string.Empty,
+            null,
+            ["Verb"]));
+        IReadOnlyList<LParadigmSlot> slots = engine.TEngineParadigmShow(entry.LEntryId);
+        engine.TEntryInflectionSave(entry.LEntryId, [
+            TInterfaceInflection.TInflectionCreate(
+                entry.LEntryId, 0, "broke", null, null, [slots[0].LParadigmSlotMorphology.LMorphologyId]),
+            TInterfaceInflection.TInflectionCreate(
+                entry.LEntryId, 0, "broken", null, null, [slots[1].LParadigmSlotMorphology.LMorphologyId]),
+        ]);
+
+        LLiveryPage page = Assert.IsType<LLiveryPage>(engine.TLiveryRead(entry.LEntryId));
+
+        Assert.Equal(["past", "past participle"], page.LLiveryPageParadigm.Select(static row => row.LParadigmRowName));
+        Assert.Equal(["broke", "broken"], page.LLiveryPageShown.Select(static shown => shown.LParadigmShownText));
+        Assert.All(page.LLiveryPageShown, static shown => Assert.Null(shown.LParadigmShownTip));
     }
 
     [Fact]

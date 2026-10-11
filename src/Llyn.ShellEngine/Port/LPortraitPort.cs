@@ -9,9 +9,9 @@ namespace Llyn.ShellEngine;
 
 public interface LPortraitPort
 {
-    Task LEnginePortraitPrint(LVista? vista, LPortraitLabel label, LPressTicket ticket);
+    Task<LGalleyRelay?> LEnginePressOpen(LVista? vista, LPortraitLabel label);
 
-    Task LEnginePortraitPrint(LVista? vista, LPortraitLegend legend, LPressTicket ticket);
+    Task<LGalleyRelay?> LEnginePressOpen(LVista? vista, LPortraitLegend legend);
 
     Task LEnginePortraitExport(LVista? vista, string path, LPortraitMedium format, LPortraitLabel label);
 
@@ -27,20 +27,6 @@ public interface LPortraitPort
     Task<LReceipt> LEngineCourierSend(Func<string, string> lookup, CancellationToken cancellation);
 
     Task LEngineCourierAttach(CancellationToken cancellation);
-
-    static LPressTicket LEngineTicketRead(
-        string printer,
-        double? width,
-        double? height,
-        bool landscape,
-        int copies,
-        bool collated,
-        LPressSide side,
-        LPressInk ink)
-    {
-        return LPortraitClerkPress.LPortraitTicketCreate(
-            printer, width, height, landscape, copies, collated, side, ink);
-    }
 
     static LPortraitLabel LEngineLabelRead(IReadOnlyList<string> words)
     {

@@ -1,13 +1,13 @@
 # COccurrence.cs
-Hash: `1681ee24647b97b8`
+Hash: `63d0cc7626e361d3`
 
 ## `public sealed class COccurrence`
 
-The repertoire panel's occurrence list: the entries referencing the chosen Situation.
+The repertoire panel's occurrence list, holding the entries that reference the chosen Situation.
 It holds the vista and portrait ports and the situation vista as its roll.
 Its own vista sits in the panel's aperture.
 The occurrence side never deletes, so its panel has no delete scope.
-It is sealed, so its rows, labels, tickets and formats cross as Conduct shapes.
+Its rows, labels and formats cross to drivers as Conduct shapes.
 
 ## `internal COccurrence(LVistaPort vistas, LPortraitPort portraits, LSettingsPort settings, CEnvoy envoy, Func<bool> changeSeam, Func<bool, bool> finishSeam, Func<bool> shownSeam)`
 
@@ -29,14 +29,15 @@ The aperture carries the former query into the fresh vista, so a switched worksp
 ## `internal void LOccurrenceObserverAttach(Action<Action> marshal, Action roll, Action chosen)`
 
 Attaches the subjects that refill the entry column on the fresh vista, each answer run through the marshal.
-An entry notice selects a stored entry, refills the situation rows, and hands the chosen entry to the area.
+An entry notice selects a stored entry and runs `roll`, which refills the situation rows.
+A notice on the chosen entry runs `chosen`, so the area rereads it.
 A vista notice raises the column's own rows.
 
 ## `public IReadOnlyList<CVistaRow> COccurrenceRowsRead()`
 
 Reads the entries referencing the roll's chosen Situation, or every entry while none is chosen.
 The engine matches the query and drops the hidden languages, so the list decides nothing about matching.
-A failed read shows the `Situation.LoadFailed` notice once through the ledger and answers no rows.
+A failed read shows `Situation.LoadFailed` through the envoy and answers no rows.
 
 ## `public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> COccurrenceRowsLoad(Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store)`
 
@@ -52,7 +53,8 @@ The file name an export of the entry on display is offered under.
 
 ## `internal Task LOccurrencePortraitPrint(CEnvoy envoy, LSettingsPort settings)`
 
-Prints the chosen entry through `CPortrait`, worded through `settings`, with failures shown through `envoy`.
+Opens a print session on the chosen entry, and `CPortrait` puts the print window up over it.
+The page is worded through `settings`, and a failed open shows through `envoy`.
 Only the repertoire's print gate calls it, which chooses the side that prints.
 
 ## `internal Task LOccurrencePortraitExport(CEnvoy envoy, LSettingsPort settings)`

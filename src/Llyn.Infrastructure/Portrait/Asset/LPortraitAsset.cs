@@ -46,7 +46,7 @@ public sealed record LPortraitAsset(
             }
 
             string suffix = file.Extension.ToLowerInvariant();
-            string media = suffix switch
+            string? media = suffix switch
             {
                 ".png" => "image/png",
                 ".gif" => "image/gif",
@@ -54,10 +54,11 @@ public sealed record LPortraitAsset(
                 ".webp" => "image/webp",
                 ".tif" or ".tiff" => "image/tiff",
                 ".svg" => "image/svg+xml",
-                _ => "image/jpeg",
+                ".jpg" or ".jpeg" => "image/jpeg",
+                _ => null,
             };
 
-            return new LPortraitAsset(File.ReadAllBytes(file.FullName), media, suffix);
+            return media is null ? null : new LPortraitAsset(File.ReadAllBytes(file.FullName), media, suffix);
         }
         catch (IOException)
         {

@@ -15,6 +15,7 @@
             <veneer:PSCoinage x:Key="PSCoinage" x:Shared="False" />
             <veneer:PSLeave x:Key="PSLeave" x:Shared="False" />
             <veneer:PSCustoms x:Key="PSCustoms" x:Shared="False" />
+            <veneer:PSPress x:Key="PSPress" x:Shared="False" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

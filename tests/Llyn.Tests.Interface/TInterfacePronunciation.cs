@@ -10,8 +10,11 @@ namespace Llyn.Tests;
 
 internal static partial class TInterface
 {
-    internal static LReflexGuise TReflexGuiseCreate(bool respelled, bool phonemic, bool folded) =>
-        new(respelled, phonemic, folded);
+    internal static LReflexGuise TReflexGuiseCreate(bool respelled, bool phonemic, bool folded, string shown = "") =>
+        new(respelled, phonemic, folded, shown);
+
+    internal static string TReflexGuiseRead(this LReflexGuise guise, string phonetic, string? respelling) =>
+        guise.LReflexGuiseRead(phonetic, respelling);
 
     internal static LReading TReadingCreate(string variety, string phonetic) =>
         new LReading(variety, phonetic);

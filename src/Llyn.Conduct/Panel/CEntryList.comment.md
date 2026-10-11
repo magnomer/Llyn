@@ -1,5 +1,5 @@
 # CEntryList.cs
-Hash: `be24945b45154530`
+Hash: `4e3ce97f8049b525`
 
 ## `public sealed class CEntryList`
 
@@ -78,9 +78,9 @@ The file name an export of the read entry is offered under.
 
 ## `public Task CEntryListPrint()`
 
-Prints the entry the reader holds, doing nothing while there is none.
-The reader is asked for the printer through the list's envoy, and a decline prints nothing.
-`CPortrait` words the page through the engine and shows `Print.Failed` through the list's envoy.
+Opens the print window on the held entry, doing nothing while there is none or the panel is editing.
+The print window chooses the printer and layout, and a window closed unprinted prints nothing.
+`CPortrait` opens the session through the engine and shows `Print.Failed` through the list's envoy if it cannot.
 
 ## `public Task CEntryListExport()`
 

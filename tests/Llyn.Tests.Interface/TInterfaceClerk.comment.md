@@ -1,6 +1,5 @@
 # TInterfaceClerk.cs
-Hash: `d9f96d43306c3359`
-Hash: `cc703108e09c2bf4`
+Hash: `e2da247d5e7a02d9`
 
 ## `internal static partial class TInterface`
 
@@ -112,6 +111,11 @@ The claim clerk over `rig`, with its issuer, chronicle and court built over the 
 
 The court clerk over `rig`, with its own issuer and chronicle over the same rig.
 
+## `private static LCourtClerk TCourtClerkCreate(LRig rig, LIdentity identity, LChronicleClerk chronicle)`
+
+The court clerk over a given issuer and chronicle, so a claim clerk shares them with its court.
+Its translation clerk stamps through a revision clerk over the same rig.
+
 ## `internal static LDraft TClaimClerkStart(this LClaimClerk clerk, string origin, long entryId)`
 
 Starts a blank entry draft through the clerk and holds it.
@@ -204,8 +208,8 @@ The one request kind the production code never declares.
 
 An entry clerk over `rig` with every clerk it composes, the transcription, reflex and recording clerks included.
 Its translation and entry clerks each stamp through their own revision clerk over the same rig.
-The reflex clerk gets a throwaway gate and a bulletin that goes nowhere.
-The entry clerk's paradigm and pronunciation helpers share the language cache built for this composition.
+The reflex and frequency clerks get a throwaway gate and a bulletin that goes nowhere.
+The paradigm, transcription, reflex, recording and frequency clerks share one language cache.
 
 ## `internal static LRecordingClerk TRecordingClerkCreate(LRig rig)`
 
@@ -222,11 +226,11 @@ The portrait clerk with every clerk a page composes from, built over `rig`.
 
 ## `internal static LPortraitClerkPress TPortraitPressCreate(LRig rig)`
 
-The press clerk over `rig`, which saves and prints a composed page.
+The press clerk over `rig`, which exports a composed page or opens a print session on it.
 
 ## `private static LSettings TSettingsRead()`
 
-The default settings a clerk built here reads at fetch time.
+The default settings, in English, that every clerk built here reads.
 
 ## `internal static Task<IReadOnlyList<LRecording>> TRecordingClerkFind(this LRecordingClerk clerk, string word, string language, string variety, LListener listener, CancellationToken cancellation)`
 
@@ -251,6 +255,7 @@ Relays the stop of the recording clerk for `ticket`.
 ## `internal static string TRecordingFormat(LRig rig, string path)`
 
 A recording path made workspace-relative through the trail of `rig`.
+A path the trail cannot make relative comes back unchanged.
 
 ## `internal static LPronunciation TPronunciationSave(LRig rig, LPronunciation pronunciation)`
 
@@ -258,7 +263,7 @@ One pronunciation row written straight into the rig's pronunciation port.
 
 ## `internal static void TAudioSave(LRig rig, long pronunciationId, string file, string? source)`
 
-One recording written straight into the rig's pronunciation port.
+The audio file and source of one pronunciation, written straight into the rig's pronunciation port.
 
 ## `internal static LDoctorRescue TWorkspaceRescueCreate(LRig rig)`
 
@@ -306,9 +311,21 @@ Relays the import of the markup intake.
 
 Relays the entry page of the portrait clerk.
 
-## `internal static Task TPortraitClerkPrint(this LPortraitClerkPress clerk, LPortraitPage page, LPressTicket ticket)`
+## `internal static Task<LGalleyClerk> TPortraitClerkOpen(this LPortraitClerkPress clerk, LPortraitPage page)`
 
-Relays the print of the press clerk.
+Relays the press clerk's opening of a print session on a composed page.
+
+## `internal static Task<bool> TGalleyClerkDraw(this LGalleyClerk clerk, LPressSetting setting)`
+
+Relays the session clerk's latest-wins draw of a proof.
+
+## `internal static Task<LPressImage?> TGalleyClerkDraw(this LGalleyClerk clerk, int page, int? resolution)`
+
+Relays the session clerk's page draw of the held proof.
+
+## `internal static LPressPaper? TGalleyClerkRead(this LGalleyClerk clerk, int page)`
+
+Relays the session clerk's read of one page size of the held proof.
 
 ## `internal static LEntry TEntryClerkSave(this LEntryClerk clerk, LEntryDraft draft)`
 

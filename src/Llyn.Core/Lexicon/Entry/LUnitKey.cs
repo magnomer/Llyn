@@ -8,10 +8,9 @@ public static class LUnitKey
     {
         return key?.Trim().ToLowerInvariant() switch
         {
-            "content" => LUnit.LUnitContent,
-            "function" => LUnit.LUnitFunction,
             "morpheme" => LUnit.LUnitMorpheme,
             "word" => LUnit.LUnitWord,
+            "expression" => LUnit.LUnitExpression,
             _ => LUnit.LUnitEmpty,
         };
     }
@@ -21,10 +20,9 @@ public static class LUnitKey
         return unit switch
         {
             LUnit.LUnitEmpty => string.Empty,
-            LUnit.LUnitContent => "Unit.Content",
-            LUnit.LUnitFunction => "Unit.Function",
             LUnit.LUnitMorpheme => "Unit.Morpheme",
             LUnit.LUnitWord => "Unit.Word",
+            LUnit.LUnitExpression => "Unit.Expression",
             _ => throw new ArgumentOutOfRangeException(nameof(unit), unit, null),
         };
     }
@@ -34,10 +32,9 @@ public static class LUnitKey
         return unit switch
         {
             LUnit.LUnitEmpty => string.Empty,
-            LUnit.LUnitContent => "content",
-            LUnit.LUnitFunction => "function",
             LUnit.LUnitMorpheme => "morpheme",
             LUnit.LUnitWord => "word",
+            LUnit.LUnitExpression => "expression",
             _ => throw new ArgumentOutOfRangeException(nameof(unit), unit, null),
         };
     }

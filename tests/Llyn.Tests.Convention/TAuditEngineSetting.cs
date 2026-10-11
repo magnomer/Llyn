@@ -55,6 +55,12 @@ internal static class TAuditEngineSetting
                 "LQuillEntry",
                 "LQuillPronunciation",
                 "LQuillSpeech",
+                "LGalley",
+                "LGalleyView",
+                "LGalleyDestination",
+                "LGalleyStock",
+                "LGalleyProof",
+                "LGalleyRelay",
             ],
         };
 }

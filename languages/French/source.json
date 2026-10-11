@@ -50,7 +50,7 @@
             "https://en.wiktionary.org/wiki/{word}"
           ],
           "strategy": "span",
-          "match": "<h2 id=\"French\">[\\s\\S]*?<span class=\"IPA[^\"]*\"[^>]*>",
+          "match": "<h2[^>]* id=\"French\">[\\s\\S]*?<span class=\"IPA[^\"]*\"[^>]*>",
           "normalize": true
         }
       ]

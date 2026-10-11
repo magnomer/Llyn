@@ -1,5 +1,5 @@
 # LTheme.cs
-Hash: `0ee30bb244a26c7e`
+Hash: `287bd1b58804b690`
 
 ## `public sealed class LTheme`
 
@@ -20,6 +20,10 @@ The page font stack, matching the shell's own family with web fallbacks appended
 
 The example font stack, matching the serif the display uses for sentences.
 
+## `public string LThemePhonetic`
+
+The reading font stack, matching `Theme.Phonetic` in `PThemePalette.xaml`.
+
 ## `public string LThemeColorRead(string name)`
 
 The colour the theme file names, refused when the file lacks it.
@@ -29,3 +33,10 @@ The shell fills its resources through this, since a panel drawn from a spare col
 
 The name is the theme file's own key, not a resource key.
 An unknown name yields the spare value, and black when even that is absent.
+
+## Inline notes
+
+### `private static readonly IReadOnlyDictionary<string, string> LThemeSpare =`
+
+Each spare colour copies the key and value of `themes/default.json`.
+It covers every key an exported sheet reads, so a thin theme file still paints the sheet as the panel.

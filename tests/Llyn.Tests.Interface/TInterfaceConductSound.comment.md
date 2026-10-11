@@ -1,5 +1,5 @@
 # TInterfaceConductSound.cs
-Hash: `2217399691392ca6`
+Hash: `1f1a6e448d7f4289`
 
 ## `internal static class TInterfaceConductSound`
 
@@ -86,13 +86,9 @@ A fault bundle whose box write throws lets a test watch the failure reach the en
 The envoy notes every failure in `asked`.
 It holds its own repaint memory, so a refused read shows once per fold.
 
-## `internal static IReadOnlyList<CReflex> TRespellingReflexScan(LReflexPort port, string language, IReadOnlyList<CReflexDraft> reflexes)`
+## `internal static IReadOnlyList<CReflex> TRespellingReflexScan(LReflexPort port, string language, IReadOnlyList<LReflexDraft> reflexes)`
 
-Relays the shared reflex scan's rows, so a fact can hand it a fake reflex port and ready rows.
-
-## `internal static string TRespellingResolve(CRespellingMark mark, string phonetic, string? respelling)`
-
-Relays the respelling rule, so a fact can read which form a mark shows.
+Relays the shared reflex scan's rows, so a fact can hand it a fake reflex port and stored rows.
 
 ## `internal static CKindred TKindredCreate(TEditorFixture editor, CPhonologyBundle phonology, LDraftPort drafts, List<string>? asked = null)`
 

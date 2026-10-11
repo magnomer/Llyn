@@ -35,7 +35,7 @@
                 "https://en.wiktionary.org/wiki/{word}"
               ],
               "strategy": "regex",
-              "match": "<h2 id=\"Korean\"(?:(?!headword-tr)[\\s\\S])*?class=\"headword-tr[^\"]*\"[^>]*>([^<]+)<",
+              "match": "<h2[^>]* id=\"Korean\"(?:(?!headword-tr)[\\s\\S])*?class=\"headword-tr[^\"]*\"[^>]*>([^<]+)<",
               "group": 1,
               "normalize": false
             }
@@ -69,7 +69,7 @@
                 "https://en.wiktionary.org/wiki/{word}"
               ],
               "strategy": "span",
-              "match": "<h2 id=\"Korean\"[\\s\\S]*?<li class=\"ko-pron(?:__|&#95;&#95;)ph\">Phonetic hangul: <span class=\"Kore\" lang=\"ko\">",
+              "match": "<h2[^>]* id=\"Korean\"[\\s\\S]*?<li class=\"ko-pron(?:__|&#95;&#95;)ph\">Phonetic hangul: <span class=\"Kore\" lang=\"ko\">",
               "normalize": true
             }
           ]
@@ -128,7 +128,7 @@
             "https://en.wiktionary.org/wiki/{word}"
           ],
           "strategy": "span",
-          "match": "<h2 id=\"Korean\"[\\s\\S]*?title=\"Appendix:Korean pronunciation\">key</a>\\)</sup>:(?:(?!<span class=\"IPA)[\\s\\S]){0,80}<span class=\"IPA[^\"]*\"[^>]*>",
+          "match": "<h2[^>]* id=\"Korean\"[\\s\\S]*?title=\"Appendix:Korean pronunciation\">key</a>\\)</sup>:(?:(?!<span class=\"IPA)[\\s\\S]){0,80}<span class=\"IPA[^\"]*\"[^>]*>",
           "normalize": true
         }
       ]
@@ -168,7 +168,7 @@
             "https://en.wiktionary.org/wiki/{word}"
           ],
           "strategy": "regex",
-          "match": "<h2 id=\"Korean\"[\\s\\S]*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/Ko-[^\"/]*\\.mp3)",
+          "match": "<h2[^>]* id=\"Korean\"[\\s\\S]*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/Ko-[^\"/]*\\.mp3)",
           "group": 1,
           "prefix": "https:"
         },

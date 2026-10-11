@@ -1,5 +1,5 @@
 # TSounding.cs
-Hash: `08160a2c08319e0c`
+Hash: `a0996c09a994c1b5`
 
 ## `public sealed class TSounding`
 
@@ -67,6 +67,7 @@ The pack checks and the glyph fonts are asked in the draft's language.
 
 A desk with no stored entry offers no rebuild and waits for nothing, whatever the pack says.
 Its settings port answers the morphology verdict, so the paradigm read meets no refusal.
+It also answers the empty font, since every font read reaches the port, even for a blank language.
 
 ## `public void SoundingDiweiOpen_HeldDraft_OpensTheCellInTheDraftLanguage()`
 

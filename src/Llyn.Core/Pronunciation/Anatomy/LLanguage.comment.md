@@ -1,9 +1,9 @@
 # LLanguage.cs
-Hash: `8c855adc62584335`
+Hash: `e8ecf4b137a508ad`
 Hash: `8c855adc62584335`
 Hash: `9377d43acf44794b`
 
-## `public sealed record LLanguage(string? LLanguageFlag, LFont LLanguageFont, LFont LLanguageExample, IReadOnlyList<LSourceSpec> LLanguageLookupSources, IReadOnlyList<LSourceSpec> LLanguageHarvestSources, IReadOnlyList<LScheme>? LLanguageSchemes = null, bool LLanguageSeparated = true, IReadOnlyList<LVariety>? LLanguageVarieties = null, bool LLanguageVarietyFlagged = true, LFont? LLanguageGloss = null, IReadOnlyList<LRespelling>? LLanguageCleanups = null, IReadOnlyList<LRespelling>? LLanguageRespellings = null, IReadOnlyList<LSourceSpec>? LLanguageFrequencies = null, IReadOnlyList<LSourceSpec>? LLanguageMorphologies = null, bool LLanguageTonal = false, LGlyph? LLanguageGlyph = null, IReadOnlyList<LScriptStyle>? LLanguageScripts = null, IReadOnlyList<LFanqieBook>? LLanguageFanqieBooks = null, LHypothesis? LLanguageHypothesis = null, bool LLanguageSilent = false, IReadOnlyList<LReflexRule>? LLanguageReflexRules = null, bool LLanguagePhonemic = false, IReadOnlyList<LAnatomyRule>? LLanguageAnatomies = null, IReadOnlyList<LDescent>? LLanguageDescents = null, LShengfuRule? LLanguageShengfu = null, bool LLanguageSpaced = true, LReflexOrder? LLanguageReflexOrder = null, LInflectionBook? LLanguageInflection = null)`
+## `public sealed record LLanguage(string? LLanguageFlag, LFont LLanguageFont, LFont LLanguageExample, IReadOnlyList<LSourceSpec> LLanguageLookupSources, IReadOnlyList<LSourceSpec> LLanguageHarvestSources, IReadOnlyList<LScheme>? LLanguageSchemes = null, bool LLanguageSeparated = true, IReadOnlyList<LVariety>? LLanguageVarieties = null, bool LLanguageVarietyFlagged = true, LFont? LLanguageGloss = null, IReadOnlyList<LRespelling>? LLanguageCleanups = null, IReadOnlyList<LRespelling>? LLanguageRespellings = null, IReadOnlyList<LSourceSpec>? LLanguageFrequencies = null, IReadOnlyList<LSourceSpec>? LLanguageMorphologies = null, bool LLanguageTonal = false, LGlyph? LLanguageGlyph = null, IReadOnlyList<LScriptStyle>? LLanguageScripts = null, IReadOnlyList<LFanqieBook>? LLanguageFanqieBooks = null, LHypothesis? LLanguageHypothesis = null, bool LLanguageSilent = false, IReadOnlyList<LReflexRule>? LLanguageReflexRules = null, bool LLanguagePhonemic = false, IReadOnlyList<LAnatomyRule>? LLanguageAnatomies = null, IReadOnlyList<LDescent>? LLanguageDescents = null, LShengfuRule? LLanguageShengfu = null, LReflexOrder? LLanguageReflexOrder = null, LInflectionBook? LLanguageInflection = null)`
 
 A loaded language pack.
 Separate source lists support transcription lookup, audio harvesting, frequencies and morphology.
@@ -76,10 +76,6 @@ Everything language-specific arrives through this record.
   A book holding a ranked row moves ahead, as `LFanqieRow.LFanqieRowSort` declares.
   A pack that lists none carries an empty list, and no fanqie box is shown.
 - `LLanguageShengfu`: The phonetic-series rule the pack declares under `shengfu`, or null when it declares none.
-- `LLanguageSpaced`: Whether the language spaces its words, which decides the lexical units an entry is offered.
-  The pack states it with the top-level boolean `spaced`.
-  A pack that omits it follows `LLanguageSeparated`.
-  Vietnamese spaces syllables, not words, so it states `false` while keeping its separator.
 - `LLanguageHypothesis`: The reconstruction the pack names under `hypothesis`, held as an [LHypothesis](../Hypothesis/LHypothesis.comment.md) record.
   The fanqie box then prints each placement's reading before the placement.
   A pack that declares none carries `null`, and the box prints the placement alone.

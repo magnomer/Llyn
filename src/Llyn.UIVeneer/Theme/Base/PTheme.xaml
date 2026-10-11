@@ -31,6 +31,7 @@
         <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Card/PThemeGrasp.xaml" />
         <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Base/PThemePanel.xaml" />
         <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Control/PThemeCommand.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Control/PThemePress.xaml" />
         <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Base/PThemeSearch.xaml" />
         <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Control/PThemeCatalog.xaml" />
         <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Card/PThemeMention.xaml" />

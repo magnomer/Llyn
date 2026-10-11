@@ -44,8 +44,15 @@ internal static partial class TInterface
         string language,
         IReadOnlyList<LForm>? forms = null,
         string note = "",
-        LUnit unit = LUnit.LUnitEmpty) =>
-        new(headword, language, LMarkupEntryForm: forms, LMarkupEntryNote: note, LMarkupEntryUnit: unit);
+        LUnit unit = LUnit.LUnitEmpty,
+        LFreedom freedom = LFreedom.LFreedomEmpty) =>
+        new(
+            headword,
+            language,
+            LMarkupEntryForm: forms,
+            LMarkupEntryNote: note,
+            LMarkupEntryUnit: unit,
+            LMarkupEntryFreedom: freedom);
 
     internal const string TMarkupPair = """
         <llyn>

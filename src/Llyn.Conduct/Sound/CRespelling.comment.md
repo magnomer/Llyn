@@ -1,16 +1,16 @@
 # CRespelling.cs
-Hash: `4674341c1a77d9cd`
+Hash: `ece0c93bdb9fa88a`
 
 ## `public static class CRespelling`
 
-The respelling rules of the reflex rows: which form of a reading a driver prints, and what stands around it.
+The reflex rows as a driver prints them, each mapped from its engine guise.
 It holds no state, so it is static and the atelier builds nothing for it.
 A found reading's mark and text come ready from the errand's search instead.
 
-## `internal static IReadOnlyList<CReflex> LRespellingReflexScan(LReflexPort port, string language, IReadOnlyList<CReflexDraft> reflexes)`
+## `internal static IReadOnlyList<CReflex> LRespellingReflexScan(LReflexPort port, string language, IReadOnlyList<LReflexDraft> reflexes)`
 
 The reflex rows of an entry in `language`, in order, each ready to show.
-One engine read answers every row's switch, phonemic mark and fold.
+One engine read over the rows answers every row's switch, phonemic mark, fold and shown text.
 The rows are then built by the overload below.
 The editor and the reading view's sound area both read their rows here, so the rule has one owner.
 
@@ -25,8 +25,4 @@ A series member, whose guises the engine already read, builds its rows here, so 
 One reflex row under the mark its guise picks.
 A phonemic language stands between slashes whatever the switch shows, and any other reading stands bare.
 A blank region becomes null, so a driver binds the region tooltip as it stands.
-The text is resolved by `LRespellingResolve`.
-
-## `internal static string LRespellingResolve(CRespellingMark mark, string phonetic, string? respelling)`
-
-The respelling while the mark shows it and it is filled, and the phonetic otherwise.
+The text is the guise's `LReflexGuiseShown`, mapped as the engine answers it, so no respelling rule lives here.

@@ -1,5 +1,5 @@
 # TInterfaceEnginePortrait.cs
-Hash: `b9302bb369c7ae87`
+Hash: `0b846a638698dde8`
 
 ## `internal static class TInterfaceEnginePortrait`
 
@@ -19,17 +19,23 @@ Relays the entry read to `LEnginePortrait.LEnginePortraitRead`.
 
 Relays the page read of the owner's row `id` to `LEnginePortrait.LEnginePortraitRead`.
 
-## `internal static Task TEnginePortraitPrint(this LEngine engine, long entryId, LPortraitLabel label, LPressTicket ticket)`
+## `internal static Task<LGalleyRelay?> TEnginePressOpen(this LEngine engine, long entryId, LPortraitLabel label)`
 
-Relays the entry print with its press hand-in to `LEnginePortrait.LEnginePortraitPrint`.
+Relays the entry print session to `LEnginePortrait.LEnginePressOpen`, which loads the sheet into the rig's press.
+The caller disposes the answered relay.
+The engine never answers null here.
+The relay widens the type, so a fact holds it like the relay a vista print answers.
 
-## `internal static Task TEnginePortraitPrint(this LEngine engine, long id, LOwner owner, LPortraitLegend legend, LPressTicket ticket)`
+## `internal static Task<LGalleyRelay?> TEnginePressOpen(this LEngine engine, long id, LOwner owner, LPortraitLegend legend)`
 
-Relays the page print with its press hand-in to `LEnginePortrait.LEnginePortraitPrint`.
+Relays the page print session to `LEnginePortrait.LEnginePressOpen`, which loads the page into the rig's press.
+The caller disposes the answered relay.
+The engine never answers null here, and the relay widens the type the same way.
 
 ## `internal static LLiveryPage? TLiveryRead(this LEngine engine, long entryId)`
 
 Relays `LEngineLivery.LEngineLiveryRead`, the Joplin page read of one entry.
+It passes `pending` false, as the Joplin push does.
 
 ## `internal static LLiveryLanguage TLiveryRead(this LEngine engine, string language)`
 

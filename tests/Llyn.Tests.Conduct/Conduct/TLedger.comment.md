@@ -1,5 +1,5 @@
 # TLedger.cs
-Hash: `6cfb71dbdcbc09a1`
+Hash: `1118c38284deaad8`
 
 ## `public sealed class TLedger`
 
@@ -9,6 +9,7 @@ A search nothing reads answers empty, and a later state keeps the narrowing the 
 The Layout read words the page for the linked flag handed in.
 An attached view is shown every page at once, with its titles.
 The Web summary counts out of two, and the Layout summary is left to the driver.
+A saved notebook title answers trimmed, and the Sync page's summary names it.
 A saved epithet shows the view again with Listing on, and a detached view is shown nothing more.
 The fake port's normalised language and online count reach the state unchanged.
 A scanned language reads its native name, an unscanned one its code, and the epithet saves reach the port.

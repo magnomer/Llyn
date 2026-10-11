@@ -1,5 +1,5 @@
 # PBootstrap.xaml
-Hash: `4a398625bee8ddca`
+Hash: `c242f215cd17bba8`
 
 The application the host creates and runs, with the resources every window shares.
 The deportment reaches it through `Application.Current` and never names it.
@@ -34,3 +34,7 @@ The dialog that asks what to do with unsaved work, fresh on every pull.
 ## `<veneer:PSCustoms x:Key="PSCustoms" x:Shared="False" />`
 
 The dialog that declares imported entries and reports skipped lines, fresh on every pull.
+
+## `<veneer:PSPress x:Key="PSPress" x:Shared="False" />`
+
+The print preview window, fresh on every pull.
