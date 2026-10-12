@@ -1,5 +1,5 @@
 # TAssaySink.cs
-Hash: `cf2cd066fe22bd29`
+Hash: `3bfb09db25c8f6f2`
 
 ## `public sealed class TAssaySink`
 
@@ -56,3 +56,13 @@ The hit sits on the parameter read in the callee's branch, reported through the 
 ## `public void AuditTruth_ValueParameter_AllowsRequest()`
 
 A field passed by value is not followed, so the callee's branch reads no field.
+
+## `public void AuditTruth_OwnerAlias_ReportsGatekeeping()`
+
+A sibling that gates on its owner's non-private alias of a field is gatekeeping on that field.
+The hit sits on the sibling's branch, reported against the owner's field.
+
+## `public void AuditTruth_OwnerPrivate_AllowsRequest()`
+
+An owner that keeps the field private and exposes only a method gives the sibling nothing to read.
+The sibling gates on that method, so no hit is reported.

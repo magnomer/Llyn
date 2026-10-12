@@ -39,8 +39,8 @@ internal sealed record LWorkspaceStaff(
         LPortraitClerk portrait = new(
             language.LLanguageStaffLanguage, entry.LEntryStaffEntry, language.LLanguageStaffVocabulary,
             catalog.LCatalogStaffTranslation, catalog.LCatalogStaffReference, catalog.LCatalogStaffFavorite,
-            language.LLanguageStaffFanqie, language.LLanguageStaffFrequency, language.LLanguageStaffParadigm,
-            language.LLanguageStaffScript, settings);
+            entry.LEntryStaffFold, language.LLanguageStaffFanqie, language.LLanguageStaffFrequency,
+            language.LLanguageStaffParadigm, language.LLanguageStaffScript, settings);
         LPortraitClerkPress press = new(rig);
         LPressClerk galley = new(rig);
         LCourierClerk courier = new(

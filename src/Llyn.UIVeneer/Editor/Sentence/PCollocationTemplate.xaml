@@ -47,6 +47,107 @@
 
                         <TextBox x:Name="PCardDefinition" Style="{DynamicResource Theme.Card.Meaning}" />
 
+                        <ItemsControl x:Name="PCardBond" Margin="{DynamicResource Theme.Card.ChipTightMargin}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.Template>
+                                <ControlTemplate TargetType="ItemsControl">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock
+                                            Margin="0,0,10,7"
+                                            Padding="0,5"
+                                            VerticalAlignment="Top"
+                                            FontSize="{DynamicResource Theme.Card.SituationSize}"
+                                            Foreground="{DynamicResource Theme.Muted}"
+                                            Text="{DynamicResource Card.SenseCaption}" />
+                                        <WrapPanel Grid.Column="1">
+                                            <ItemsPresenter />
+                                            <Button x:Name="PBondChooser" Margin="0,0,0,7" VerticalAlignment="Top" Cursor="Hand">
+                                                <Button.Template>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border Padding="6,5" Background="Transparent">
+                                                            <TextBlock
+                                                                FontSize="{DynamicResource Theme.Card.SituationSize}"
+                                                                Foreground="{DynamicResource Theme.Accent}"
+                                                                Text="{DynamicResource Card.SenseAdd}" />
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </Button.Template>
+                                            </Button>
+                                        </WrapPanel>
+                                        <Popup
+                                            x:Name="PBondMenu"
+                                            Grid.Column="1"
+                                            Width="320"
+                                            AllowsTransparency="True"
+                                            Placement="Bottom"
+                                            StaysOpen="False">
+                                            <Border Margin="10" Style="{DynamicResource Theme.Popup.Surface}">
+                                                <ScrollViewer MaxHeight="264" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                                                    <ItemsControl x:Name="PBondList">
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <Border Cursor="Hand" Style="{DynamicResource Theme.Popup.RowSurface}">
+                                                                    <Grid VerticalAlignment="Center">
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="Auto" />
+                                                                            <ColumnDefinition Width="*" />
+                                                                        </Grid.ColumnDefinitions>
+                                                                        <TextBlock x:Name="PBondNumber" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource Theme.Muted}" />
+                                                                        <TextBlock
+                                                                            x:Name="PBondText"
+                                                                            Grid.Column="1"
+                                                                            Margin="8,0,0,0"
+                                                                            VerticalAlignment="Center"
+                                                                            FontSize="14"
+                                                                            FontWeight="SemiBold"
+                                                                            Foreground="{DynamicResource Theme.Ink}"
+                                                                            TextTrimming="CharacterEllipsis" />
+                                                                    </Grid>
+                                                                </Border>
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
+                                                </ScrollViewer>
+                                            </Border>
+                                        </Popup>
+                                    </Grid>
+                                </ControlTemplate>
+                            </ItemsControl.Template>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Padding="10,5,5,5" Cursor="Arrow" Style="{DynamicResource Theme.Card.Pellet}">
+                                        <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                            <TextBlock x:Name="PBondNumber" VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource Theme.Muted}" />
+                                            <TextBlock Margin="5,0" VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource Theme.Muted}" Text="·" />
+                                            <TextBlock x:Name="PBondText" VerticalAlignment="Center" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource Theme.Accent}" />
+                                            <Button x:Name="PBondEraser" Width="16" Height="16" Margin="7,0,0,0" Padding="0" Cursor="Hand">
+                                                <Button.Template>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Grid Background="Transparent">
+                                                            <local:QIconImage
+                                                                x:Name="PBondIcon"
+                                                                Width="12"
+                                                                Height="12"
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center" />
+                                                        </Grid>
+                                                    </ControlTemplate>
+                                                </Button.Template>
+                                            </Button>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
                         <ItemsControl x:Name="PCardContext" Style="{DynamicResource Theme.Context.Field}" />
 
                         <ItemsControl x:Name="PCardRegister" Style="{DynamicResource Theme.Register.Field}" />

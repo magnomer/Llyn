@@ -1,5 +1,5 @@
 # TInterfaceEngine.cs
-Hash: `433b19c83a83ab40`
+Hash: `c7b8e4962b114404`
 
 ## `internal static partial class TInterface`
 
@@ -8,35 +8,12 @@ That is saving, loading, updating, and deleting one, and the drafts and revision
 The court relays and the chronicle undo and redo with their two checks are relayed here too.
 The author draft start is relayed here beside the entry draft start.
 The draft save writes a held draft's content through the claim clerk, as an editor's edit does.
-Grasp, favorite, card fold, reflex opening and box opening relays also live here.
+Grasp, favorite, card fold, collocation layout, reflex opening and box opening relays also live here.
 Mention lookup is relayed here too.
 The leftover read and sweep and the request apply are relayed here too.
 The engine start over a hand-built rig sits here as well.
 Most relays are transparent and carry no test logic of their own.
 A few rebuild a read or a write the engine no longer offers from the clerks it keeps.
-
-## `private static LEntry TEngineEntryCommit(this LEngine engine, long? id, LEntryDraft draft)`
-
-Writes a whole draft the way the editor does.
-The draft is started, its content normalized and saved, and then committed.
-The commit starts the fetches a real save starts.
-A test that must not fetch turns the setting off first.
-
-## `internal static IReadOnlyList<LDraft> TEngineLeftoverRead(this LEngine engine)`
-
-The drafts a leftover sweep leaves for the user.
-Each is saveable, held by no one here, and claimed by no other process.
-The relay filters claim-clerk drafts by held state, saveability and foreign ownership.
-
-## `internal static (string, IReadOnlyList<LMentionPiece>, string) TEngineLineRead(LSentenceDraft sentence, LSentenceOrder order, string mark, IReadOnlyDictionary<long, string> citations)`
-
-Relays the example line read.
-It answers the frame, the sentence pieces and the Source line.
-
-## `internal static LEngine TEngineCreate(LRig rig)`
-
-Starts an engine over `rig` that answers the same rig for any workspace and keeps no workspace pointer.
-A fault fact thus runs the engine over a rig whose vaults it has replaced.
 
 ## `internal static LCourt? TEngineCourtFind(this LEngine engine, long ownerId, long targetId)`
 
@@ -72,7 +49,7 @@ Cancellation stays behind the draft facade.
 
 ## `internal static bool TEngineDraftCheck(this LEngine engine, long id)`
 
-Saveability comes from the draft facade, including refusal wording when requested.
+Saveability comes from the draft facade, without the refusal wording.
 
 ## `internal static bool TEngineDraftCheck(this LEngine engine, long id, out string? refusal)`
 
@@ -153,6 +130,11 @@ Stamp reads retain the entry facade's presence verdict and two strings.
 
 Stamp formatting uses the entry facade's shared formatter.
 
+## `internal static (string, IReadOnlyList<LMentionPiece>, string) TEngineLineRead(LSentenceDraft sentence, LSentenceOrder order, string mark, IReadOnlyDictionary<long, string> citations)`
+
+Relays the example line read.
+It answers the frame, the sentence pieces and the Source line.
+
 ## `internal static LEntry TEngineEntrySave(this LEngine engine, LEntryDraft draft)`
 
 A new entry follows the shared start, normalize, save and commit path.
@@ -160,6 +142,13 @@ A new entry follows the shared start, normalize, save and commit path.
 ## `internal static LEntry TEngineEntryUpdate(this LEngine engine, long id, LEntryDraft draft)`
 
 An existing entry follows the same commit path with its id.
+
+## `private static LEntry TEngineEntryCommit(this LEngine engine, long? id, LEntryDraft draft)`
+
+Writes a whole draft the way the editor does.
+The draft is started, its content normalized and saved, and then committed.
+The commit starts the fetches a real save starts.
+A test that must not fetch turns the setting off first.
 
 ## `internal static bool TEngineFavoriteCheck(this LEngine engine, long entryId)`
 
@@ -184,6 +173,11 @@ The card facade receives both entry and card ids for a fold write.
 ## `internal static void TEngineFoldDelete(this LEngine engine, long entryId, long cardId)`
 
 The card facade receives both ids when removing a card fold.
+
+## `internal static LCollocationLayout TEngineCollocationRead(this LEngine engine, LEntryDraft shown, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets)`
+
+The card facade places the supplied draft's collocations, with `targets` as the link targets the row flags come from.
+A fake card port answers through it, so a display read with failing ports still places collocations.
 
 ## `internal static bool TEngineSpreadCheck(this LEngine engine, long entryId)`
 
@@ -219,6 +213,11 @@ Explicit text and mention lists instead use the held staff's mention clerk.
 Stored example lookup uses the mention facade.
 Explicit text and mention lists instead use the held staff's mention clerk.
 
+## `internal static IReadOnlyList<LDraft> TEngineLeftoverRead(this LEngine engine)`
+
+The drafts a leftover sweep leaves for the user.
+Each is saveable, held by no one here, and claimed by no other process.
+
 ## `internal static void TEngineLeftoverSweep(this LEngine engine)`
 
 Recovery sweeping uses the draft facade.
@@ -226,3 +225,8 @@ Recovery sweeping uses the draft facade.
 ## `internal static LDraft TEngineRequestApply(this LEngine engine, LRequest request)`
 
 Applying a request returns the request facade's draft.
+
+## `internal static LEngine TEngineCreate(LRig rig)`
+
+Starts an engine over `rig` that answers the same rig for any workspace and keeps no workspace pointer.
+A fault fact thus runs the engine over a rig whose vaults it has replaced.

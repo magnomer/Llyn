@@ -1,5 +1,5 @@
 # TPortraitPage.cs
-Hash: `548fe500a7c8f50f`
+Hash: `6bb628aabbfd96d7`
 
 ## `public sealed class TPortraitPage`
 
@@ -26,6 +26,11 @@ The description arrives as Markdown, so the sheet draws it as blocks rather than
 ## `public void PortraitRead_MissingRow_Throws()`
 
 A page for a row that does not exist throws, rather than reading as an empty page.
+
+## `public void PortraitPageOpen_FoldedRow_ClearsTheFold()`
+
+Opening a page for print clears a row fold nested under a band, a card and a list.
+The row keeps its heading and its fields, so only the fold changes.
 
 ## `public void SheetPageFormat_FullPage_CarriesTitleChipsAndSections()`
 

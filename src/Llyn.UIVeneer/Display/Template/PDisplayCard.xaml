@@ -36,11 +36,6 @@
         <Setter Property="TextWrapping" Value="Wrap" />
     </Style>
 
-    <Style x:Key="Display.Card.Expression" TargetType="TextBlock" BasedOn="{StaticResource Display.Card.Definition}">
-        <Setter Property="Margin" Value="{DynamicResource Theme.Card.ExpressionMargin}" />
-        <Setter Property="FontWeight" Value="SemiBold" />
-    </Style>
-
     <DataTemplate x:Key="Display.Card.Body">
         <StackPanel>
             <ItemsControl x:Name="PCardSituation" ItemTemplate="{StaticResource Display.Card.SituationChip}" Style="{StaticResource Display.Card.Situation}" />

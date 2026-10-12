@@ -43,6 +43,16 @@ public static class LSheetSection
             case LPortraitRole.LPortraitRoleUsage:
                 LSheetUsageAppend(sheet, section);
                 break;
+            case LPortraitRole.LPortraitRoleList:
+                sheet.Append("<div class=\"collocations\">\n<h3>")
+                    .Append(LSheet.LSheetNormalize(section.LPortraitSectionHeading))
+                    .Append("</h3>\n");
+                LSheetBodyAppend(sheet, section);
+                sheet.Append("</div>\n");
+                break;
+            case LPortraitRole.LPortraitRoleRow:
+                LSheetRowAppend(sheet, section);
+                break;
             default:
                 LSheetBandAppend(sheet, section);
                 break;
@@ -77,16 +87,22 @@ public static class LSheetSection
         LSheetChipAppend(sheet, section.LPortraitSectionChip, "speech");
         LSheetLineAppend(sheet, section.LPortraitSectionLine, 0);
 
-        bool rows = section.LPortraitSectionChild.Count > 0
-            && section.LPortraitSectionChild[0].LPortraitSectionRole == LPortraitRole.LPortraitRoleUsage;
-        if (rows)
+        string box = section.LPortraitSectionChild.Count == 0
+            ? string.Empty
+            : section.LPortraitSectionChild[0].LPortraitSectionRole switch
+            {
+                LPortraitRole.LPortraitRoleUsage => "rows",
+                LPortraitRole.LPortraitRoleRow => "collocations",
+                _ => string.Empty,
+            };
+        if (box.Length > 0)
         {
-            sheet.Append("<div class=\"rows\">\n");
+            sheet.Append("<div class=\"").Append(box).Append("\">\n");
         }
 
         LSheetBodyAppend(sheet, section);
 
-        if (rows)
+        if (box.Length > 0)
         {
             sheet.Append("</div>\n");
         }
@@ -142,6 +158,25 @@ public static class LSheetSection
         }
 
         LSheetBodyAppend(sheet, section);
+    }
+
+    private static void LSheetRowAppend(StringBuilder sheet, LPortraitSection section)
+    {
+        sheet.Append("<details class=\"collocation\"")
+            .Append(section.LPortraitSectionFold ? string.Empty : " open")
+            .Append(">\n<summary><span class=\"phrase\">")
+            .Append(LSheet.LSheetNormalize(section.LPortraitSectionHeading))
+            .Append("</span>");
+
+        foreach (LPortraitLine line in section.LPortraitSectionLine)
+        {
+            sheet.Append("<span class=\"sense\">").Append(LSheet.LSheetNormalize(line.LPortraitLineText))
+                .Append("</span>");
+        }
+
+        sheet.Append("</summary>\n<section>\n");
+        LSheetBodyAppend(sheet, section);
+        sheet.Append("</section>\n</details>\n");
     }
 
     private static void LSheetQuoteAppend(StringBuilder sheet, LPortraitSection section)

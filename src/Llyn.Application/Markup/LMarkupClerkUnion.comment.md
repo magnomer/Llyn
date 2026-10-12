@@ -1,5 +1,5 @@
 # LMarkupClerkUnion.cs
-Hash: `efae95958ebf2bc7`
+Hash: `663125810b61179a`
 
 ## `public static class LMarkupClerkUnion`
 
@@ -16,6 +16,8 @@ Transcriptions are matched on their scheme, because the save allows one row per 
 The stored row of a scheme wins, since a merge never removes.
 A pronunciation without ipa is matched on its audio location, so a re-merged recording is one row.
 With neither ipa nor audio there is nothing to match, so such a row is always appended.
+A parsed collocation's links are first rewritten to the loaded meanings that absorbed their meanings.
+So a link follows its meaning when the meaning merged into a stored one.
 
 ## `private static IReadOnlyList<LMarkupRow> LMarkupRowAppend<LMarkupRow>(IReadOnlyList<LMarkupRow> loaded, IReadOnlyList<LMarkupRow> parsed, Func<LMarkupRow, string> key)`
 
@@ -49,9 +51,10 @@ Only whole blocks count, so a sentence inside a longer paragraph is no match.
 The blocks of a note, normalized as the save does, split at blank lines.
 Normalizing both sides means trailing spaces and line ends never make a note look new.
 
-## `private static IReadOnlyList<LCardDraft> LMarkupCardAppend(IReadOnlyList<LCardDraft> loaded, IReadOnlyList<LCardDraft> parsed)`
+## `private static IReadOnlyList<LCardDraft> LMarkupCardAppend(IReadOnlyList<LCardDraft> loaded, IReadOnlyList<LCardDraft> parsed, Dictionary<long, long> absorbed)`
 
 A parsed card that matches a loaded one by title, expression and meaning merges into it, else it is appended.
+A merged parsed card with an id is recorded in `absorbed` against the loaded id it joined.
 
 ## `private static int LMarkupCardFind(IReadOnlyList<LCardDraft> cards, LCardDraft card)`
 
@@ -62,9 +65,10 @@ A card with no text never matches.
 
 The match key of a card, empty when it has no text.
 
-## `private static LCardDraft LMarkupCardAppend(LCardDraft loaded, LCardDraft parsed)`
+## `private static LCardDraft LMarkupCardAppend(LCardDraft loaded, LCardDraft parsed, Dictionary<long, long> absorbed)`
 
 Every list of the card appended, children merged in turn.
+Meaning links are appended as ids, so a link already held is not repeated.
 
 ## `private static IReadOnlyList<LCardDraft> LMarkupCardPlace(IReadOnlyList<LCardDraft> cards)`
 

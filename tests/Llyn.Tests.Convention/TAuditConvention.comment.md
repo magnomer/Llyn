@@ -1,5 +1,5 @@
 # TAuditConvention.cs
-Hash: `cd8e33bb02d9bdea`
+Hash: `4ce41b6a7e696b56`
 
 ## `public sealed class TAuditConvention`
 
@@ -20,6 +20,6 @@ Raise it only when a check is added, removed, or changed in what it reports.
 
 ## `public void AuditConvention_SettingGenerations_MatchTheTooling()`
 
-Reads the generation the generated registry and each hand-written setting carry and compares it with this one.
+Reads the generation the generated registry and each hand-written setting that numbers one carry and compares it with this one.
 A mismatch means the tooling moved on while a file did not.
 The registry is fixed by regenerating it, and a setting file is fixed by editing it.

@@ -58,6 +58,18 @@ public sealed class LMeaningClerk
         return rows;
     }
 
+    public static IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth, string LMeaningPath)>
+        LMeaningClerkScan(long entryId, IReadOnlyList<LCardDraft> meanings, string unknown)
+    {
+        return LMeaningClerkSort(LMeaning.LMeaningDraftRead(entryId, meanings), unknown)
+            .Select(row => (
+                row.LMeaningId,
+                row.LMeaningName,
+                row.LMeaningDepth,
+                LMeaning.LMeaningPathRead(meanings, row.LMeaningId) ?? string.Empty))
+            .ToList();
+    }
+
     public void LMeaningClerkSave(
         long entryId,
         IReadOnlyList<LCardDraft> cards,

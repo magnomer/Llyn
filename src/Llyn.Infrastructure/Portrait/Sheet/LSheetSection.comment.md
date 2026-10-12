@@ -1,5 +1,5 @@
 # LSheetSection.cs
-Hash: `ea1396539d800d1c`
+Hash: `01d55bde8e3f7b27`
 
 ## `public static class LSheetSection`
 
@@ -9,7 +9,8 @@ The role of the node decides its dress, so a situation, a register and a tag kee
 ## `public static void LSheetSectionAppend(StringBuilder sheet, LPortraitSection section)`
 
 Dispatch follows the role.
-Card and kind, phrase, scene, tone, label, bridge, quote and usage each have a form.
+Card and kind, phrase, scene, tone, label, bridge, quote, usage, list and row each have a form.
+A collocation list is a bordered `collocations` block headed by its count, holding its rows.
 Any other role is a band.
 A bridge draws nothing of its own, since the shared body already draws links.
 
@@ -23,11 +24,7 @@ The entry sheet picks its bands by the label's heading, since the portrait carri
 One headed band.
 Its chips come as a speech row, then its lines, then the shared body.
 A band of usage rows wraps them in one rows block, so the row style stacks them.
-
-## `private static void LSheetUsageAppend(StringBuilder sheet, LPortraitSection section)`
-
-One entry that links here, drawn as the display does.
-An arrow, the headword over the card title, the kind as a pill, the language muted.
+A band of collocation rows wraps them in one collocations box, the box a homed list draws.
 
 ## `private static void LSheetCardAppend(StringBuilder sheet, LPortraitSection section)`
 
@@ -45,12 +42,24 @@ The rest of the shared body follows.
 
 Each line as a phrase paragraph, then the shared body.
 
+## `private static void LSheetRowAppend(StringBuilder sheet, LPortraitSection section)`
+
+One collocation row as a `collocation` disclosure.
+Its summary holds the phrase and the meaning, and the shared body follows inside.
+The row is open unless `LPortraitSectionFold` closes it, so an HTML export keeps the stored fold.
+PDF and print hand in a page opened by `LPortraitPage.LPortraitPageOpen`, so paper shows every row.
+
 ## `private static void LSheetQuoteAppend(StringBuilder sheet, LPortraitSection section)`
 
 A bulleted row whose first line is the quote.
 Its label is the frame and its text is what was said.
 The further lines follow as tagged lines, the chips as labels, then the shared body.
 The enclosing quotes block is opened by the parent, so neighbouring quotes share one.
+
+## `private static void LSheetUsageAppend(StringBuilder sheet, LPortraitSection section)`
+
+One entry that links here, drawn as the display does.
+An arrow, the headword over the card title, the kind as a pill, the language muted.
 
 ## `private static void LSheetBodyAppend(StringBuilder sheet, LPortraitSection section, int start = 0)`
 

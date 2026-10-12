@@ -1,5 +1,5 @@
 # LSheetCascade.cs
-Hash: `2ddd4a6f0853000a`
+Hash: `5d9066015c0e4e88`
 
 ## `public static class LSheetCascade`
 
@@ -15,6 +15,7 @@ Each embedded icon is written once per sheet, whatever the count of stars, cards
 The stars mask `star` over their colour, as `QGraspStar` draws it as an opacity mask.
 The heart paints `favorite` or `favorite-marked`, the images `Theme.Favorite.Mark` swaps.
 The card hinge, the box switch and the reflex fold paint `expand` with its own colour, as `QIcon` does.
+The collocation row chevron paints it the same way.
 Colours are always theme keys, so the sheet follows whichever theme the display shows.
 
 ## Inline notes
@@ -78,6 +79,11 @@ Title, caption and peek keep the 62 pixel title margin.
 An open card shows the caption, a closed one the peek, as `PLeaf` swaps them.
 The hinge is a 26 pixel overlay at the crown's right, as the view spans it over both columns.
 It is turned half a turn while the card is open, as `Theme.Card.Hinge` turns it when unchecked.
+
+A collocation list is a bordered box, its `h3` count a muted 13 pixel head ruled off from the rows.
+Each row is ruled from the one above and never splits across pages.
+A collocation row's summary sets the phrase and the meaning on one baseline after an `expand` chevron.
+The chevron points right while the row is closed and down while it is open.
 
 The stamp copies `PDisplay.xaml:242-258` and `Theme.Stamp.Label` and `Theme.Stamp.Time`.
 

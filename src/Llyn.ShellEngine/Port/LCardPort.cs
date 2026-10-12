@@ -11,6 +11,9 @@ public interface LCardPort
 
     LEtymologyResult LEngineEtymologyRead(LEntryDraft draft);
 
+    LCollocationLayout LEngineCollocationRead(
+        LEntryDraft shown, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets);
+
     IReadOnlySet<long> LEngineFoldRead(long entryId);
 
     void LEngineFoldSave(long entryId, long cardId);

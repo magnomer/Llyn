@@ -15,7 +15,9 @@ internal static partial class TInterface
         "Meaning",
         "Meanings",
         "Collocation",
-        "Collocations",
+        "Other collocations",
+        "→ {0} see {1}",
+        "Collocations · {0}",
         "Links here",
         "Note",
         "Forms",
@@ -56,6 +58,8 @@ internal static partial class TInterface
     internal static string TThemeRead(this LTheme theme, string name) => theme.LThemeRead(name);
 
     internal static string TSheetFormat(LPortraitPage page, LTheme theme) => LSheet.LSheetFormat(page, theme);
+
+    internal static LPortraitPage TPortraitPageOpen(LPortraitPage page) => LPortraitPage.LPortraitPageOpen(page);
 
     internal static string TSheetEntryFormat(
         LLiveryPage livery, LPortraitPage portrait, Func<string, string> lookup) =>
@@ -214,7 +218,8 @@ internal static partial class TInterface
     {
         List<string> shown = [];
         if (section.LPortraitSectionRole
-            is LPortraitRole.LPortraitRoleBand or LPortraitRole.LPortraitRoleCard or LPortraitRole.LPortraitRoleKind)
+            is LPortraitRole.LPortraitRoleBand or LPortraitRole.LPortraitRoleCard or LPortraitRole.LPortraitRoleKind
+            or LPortraitRole.LPortraitRoleList or LPortraitRole.LPortraitRoleRow)
         {
             TPortraitTextAdd(shown, section.LPortraitSectionHeading);
         }

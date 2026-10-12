@@ -94,6 +94,19 @@ public sealed class TPortraitPage
     }
 
     [Fact]
+    public void PortraitPageOpen_FoldedRow_ClearsTheFold()
+    {
+        LPortraitPage opened = TInterface.TPortraitPageOpen(TPortraitSample.TPortraitRowCreate());
+
+        LPortraitSection list = opened.LPortraitPageSection[0].LPortraitSectionChild[0].LPortraitSectionChild[0];
+        LPortraitSection row = Assert.Single(list.LPortraitSectionChild);
+        Assert.Equal(LPortraitRole.LPortraitRoleRow, row.LPortraitSectionRole);
+        Assert.False(row.LPortraitSectionFold);
+        Assert.Equal("set off", row.LPortraitSectionHeading);
+        Assert.Single(row.LPortraitSectionChild);
+    }
+
+    [Fact]
     public void SheetPageFormat_FullPage_CarriesTitleChipsAndSections()
     {
         LPortraitPage page = TInterface.TPortraitPageCreate(

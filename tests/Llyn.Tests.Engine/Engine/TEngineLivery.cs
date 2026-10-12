@@ -287,17 +287,7 @@ public sealed class TEngineLivery
     [Fact]
     public void LiveryStyleFormat_TokenTheme_ScopesRulesWithoutColour()
     {
-        string[] roles =
-        [
-            "ink", "muted", "line", "canvas", "surface", "accent", "accentSoft",
-            "situation", "situationSoft", "situationEdge", "surfaceRaised", "favorite",
-            "helper", "helperSoft", "helperEdge", "frequencyCore", "frequencyEveryday", "frequencyAdvanced",
-            "frequencyRare", "warning",
-        ];
-        LTheme theme = TInterface.TThemeCreate(
-            roles.ToDictionary(static role => role, static role => "var(--" + role + ")"));
-
-        string css = TInterface.TLiveryStyleFormat(theme);
+        string css = TThemeStyleFormat();
 
         string[] selectors =
         [
@@ -315,17 +305,7 @@ public sealed class TEngineLivery
     [Fact]
     public void LiveryStyleFormat_CardSummary_DrawsFoldChevronAtRightEnd()
     {
-        string[] roles =
-        [
-            "ink", "muted", "line", "canvas", "surface", "accent", "accentSoft",
-            "situation", "situationSoft", "situationEdge", "surfaceRaised", "favorite",
-            "helper", "helperSoft", "helperEdge", "frequencyCore", "frequencyEveryday", "frequencyAdvanced",
-            "frequencyRare", "warning",
-        ];
-        LTheme theme = TInterface.TThemeCreate(
-            roles.ToDictionary(static role => role, static role => "var(--" + role + ")"));
-
-        string css = TInterface.TLiveryStyleFormat(theme);
+        string css = TThemeStyleFormat();
 
         Assert.Contains(".llyn-card > summary::after", css, StringComparison.Ordinal);
         Assert.Contains(".llyn-card[open] > summary::after", css, StringComparison.Ordinal);
@@ -336,17 +316,7 @@ public sealed class TEngineLivery
     [Fact]
     public void LiveryStyleFormat_OpenFullDetails_HidesShortTable()
     {
-        string[] roles =
-        [
-            "ink", "muted", "line", "canvas", "surface", "accent", "accentSoft",
-            "situation", "situationSoft", "situationEdge", "surfaceRaised", "favorite",
-            "helper", "helperSoft", "helperEdge", "frequencyCore", "frequencyEveryday", "frequencyAdvanced",
-            "frequencyRare", "warning",
-        ];
-        LTheme theme = TInterface.TThemeCreate(
-            roles.ToDictionary(static role => role, static role => "var(--" + role + ")"));
-
-        string css = TInterface.TLiveryStyleFormat(theme);
+        string css = TThemeStyleFormat();
 
         Assert.Contains(
             ".llyn .llyn-inflection-full[open] + .llyn-inflection-short { display: none; }",
@@ -360,6 +330,39 @@ public sealed class TEngineLivery
     [Fact]
     public void LiveryStyleFormat_ReflexTableInCard_KeepsReadingSizes()
     {
+        const string reflex = ":has(> thead > tr > th:nth-child(7):last-child:empty)";
+
+        string css = TThemeStyleFormat();
+
+        Assert.Contains(".llyn table" + reflex + " td:nth-child(-n+2) {", css, StringComparison.Ordinal);
+        Assert.Contains(".llyn table" + reflex + " td:nth-child(3) { font-size: 20px;", css, StringComparison.Ordinal);
+        Assert.Contains(".llyn table" + reflex + " td:nth-child(n+4) {", css, StringComparison.Ordinal);
+        Assert.DoesNotMatch(new Regex(@"\.llyn \.llyn-card (td|\.llyn-tone)"), css);
+        string card = Regex.Escape(".llyn .llyn-card table:where(:not(" + reflex + "))");
+        Assert.Matches(new Regex(card + @" td \{[^}]*font-size: 14px;"), css);
+    }
+
+    [Fact]
+    public void LiveryStyleFormat_CollocationHeading_LeavesHeadingPillAlone()
+    {
+        string css = TThemeStyleFormat();
+
+        string[] pills =
+        [
+            .. css.Split('}').Where(static rule => rule.Contains('{', StringComparison.Ordinal))
+                .Where(static rule =>
+                    rule[..rule.IndexOf('{', StringComparison.Ordinal)].Trim() == ".llyn .llyn-heading"),
+        ];
+        string pill = Assert.Single(pills);
+        Assert.Contains("background: var(--accentSoft);", pill, StringComparison.Ordinal);
+        Assert.Contains("color: var(--accent);", pill, StringComparison.Ordinal);
+        Assert.Matches(
+            new Regex(@"\.llyn \.llyn-collocations \.llyn-heading \{[^}]*background: none;[^}]*color: var\(--muted\);"),
+            css);
+    }
+
+    private static string TThemeStyleFormat()
+    {
         string[] roles =
         [
             "ink", "muted", "line", "canvas", "surface", "accent", "accentSoft",
@@ -369,15 +372,6 @@ public sealed class TEngineLivery
         ];
         LTheme theme = TInterface.TThemeCreate(
             roles.ToDictionary(static role => role, static role => "var(--" + role + ")"));
-        const string reflex = ":has(> thead > tr > th:nth-child(7):last-child:empty)";
-
-        string css = TInterface.TLiveryStyleFormat(theme);
-
-        Assert.Contains(".llyn table" + reflex + " td:nth-child(-n+2) {", css, StringComparison.Ordinal);
-        Assert.Contains(".llyn table" + reflex + " td:nth-child(3) { font-size: 20px;", css, StringComparison.Ordinal);
-        Assert.Contains(".llyn table" + reflex + " td:nth-child(n+4) {", css, StringComparison.Ordinal);
-        Assert.DoesNotMatch(new Regex(@"\.llyn \.llyn-card (td|\.llyn-tone)"), css);
-        string card = Regex.Escape(".llyn .llyn-card table:where(:not(" + reflex + "))");
-        Assert.Matches(new Regex(card + @" td \{[^}]*font-size: 14px;"), css);
+        return TInterface.TLiveryStyleFormat(theme);
     }
 }

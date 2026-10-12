@@ -1,11 +1,11 @@
 # CCardField.cs
-Hash: `55ab0b474eefd738`
+Hash: `1c45a2b59a846aaf`
 
 ## `public sealed class CCardField`
 
-The typed fields of the held draft's cards: title, expression and definition.
+The fields of the held draft's cards: title, expression, definition and meaning links.
 It is split from `CCard` by role, and its members keep the `CCard` base.
-It keeps no state, so the editor builds it fresh over its desk.
+It keeps no draft state, only its desk, two ports and the envoy.
 
 ## `private LQuillCard? CCardFieldQuill`
 
@@ -24,3 +24,25 @@ The user typed a card's expression.
 ## `public void CCardMeaningSet(long cardId, string text)`
 
 The user typed a card's definition.
+
+## `internal CCardField(CDesk desk, LDraftPort drafts, LSettingsPort settings, CEnvoy envoy)`
+
+Only the editor builds it, over its own desk.
+The ports and the envoy serve only the sense list read, which shows its failure notice through them.
+
+## `public void CCardSenseAttach(long cardId, long senseId)`
+
+The user linked a collocation card to a meaning of the entry.
+A desk filling its controls or holding no draft takes no edit.
+
+## `public void CCardSenseDetach(long cardId, long senseId)`
+
+The user removed one link chip from a collocation card.
+A desk filling its controls or holding no draft takes no edit.
+
+## `public IReadOnlyList<CMeaning> CCardSenseRead()`
+
+The meanings of the held entry at any depth, as the link picker lists them.
+A desk holding no tenure answers an empty list.
+The scan words an unnamed meaning as `Display.Unknown`.
+A refused scan shows `Input.LoadFailed` and answers an empty list, so the picker still opens.

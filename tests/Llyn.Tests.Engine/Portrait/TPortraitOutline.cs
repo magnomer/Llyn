@@ -5,6 +5,14 @@ namespace Llyn.Tests;
 public sealed class TPortraitOutline
 {
     [Fact]
+    public void OutlineFormat_FoldedRow_PrintsTheRowOpen()
+    {
+        string page = TInterface.TOutlineFormat(TPortraitSample.TPortraitRowCreate());
+
+        Assert.Contains("#### Collocations · 1\n\n**set off**\n\nto start a journey\n\n`informal`\n\n", page);
+    }
+
+    [Fact]
     public void OutlineFormat_FullPortrait_KeepsTheDisplayReadingOrder()
     {
         string page = TInterface.TOutlineFormat(TPortraitSample.TPortraitSampleCreate());

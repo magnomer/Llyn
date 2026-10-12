@@ -46,16 +46,26 @@ internal static partial class TInterface
             held = engine.LEngineRequest.LEngineRequestApply(new LRequestCardRemoval(draftId, card.LCardDraftId));
         }
 
+        Dictionary<long, long> senses = [];
+
         for (int index = 0; index < content.LEntryDraftMeanings.Count; index++)
         {
             held = TRequestCardApply(
-                engine, draftId, LCardKind.LCardKindMeaning, 0, index, content.LEntryDraftMeanings[index]);
+                engine, draftId, LCardKind.LCardKindMeaning, 0, index, content.LEntryDraftMeanings[index], senses);
         }
+
+        TRequestSenseAdd(content.LEntryDraftMeanings, held.LDraftContent.LEntryDraftMeanings, senses);
 
         for (int index = 0; index < content.LEntryDraftCollocations.Count; index++)
         {
             held = TRequestCardApply(
-                engine, draftId, LCardKind.LCardKindCollocation, 0, index, content.LEntryDraftCollocations[index]);
+                engine,
+                draftId,
+                LCardKind.LCardKindCollocation,
+                0,
+                index,
+                content.LEntryDraftCollocations[index],
+                senses);
         }
 
         return held;
@@ -103,7 +113,13 @@ internal static partial class TInterface
     }
 
     private static LDraft TRequestCardApply(
-        LEngine engine, long draftId, LCardKind kind, long parentId, int position, LCardDraft card)
+        LEngine engine,
+        long draftId,
+        LCardKind kind,
+        long parentId,
+        int position,
+        LCardDraft card,
+        IReadOnlyDictionary<long, long> senses)
     {
         LDraft held = engine.LEngineRequest.LEngineRequestApply(
             new LRequestCardAddition(draftId, kind, parentId, position));
@@ -196,12 +212,28 @@ internal static partial class TInterface
                 new LRequestVideoSpan(draftId, videoId, video.LVideoDraftSpan.TStateWrittenRead()));
         }
 
+        foreach (long senseId in card.LCardDraftSense)
+        {
+            held = engine.LEngineRequest.LEngineRequestApply(
+                new LRequestSenseAddition(draftId, cardId, senses.GetValueOrDefault(senseId, senseId)));
+        }
+
         for (int index = 0; index < card.LCardDraftChild.Count; index++)
         {
-            held = TRequestCardApply(engine, draftId, kind, cardId, index, card.LCardDraftChild[index]);
+            held = TRequestCardApply(engine, draftId, kind, cardId, index, card.LCardDraftChild[index], senses);
         }
 
         return held;
+    }
+
+    private static void TRequestSenseAdd(
+        IReadOnlyList<LCardDraft> given, IReadOnlyList<LCardDraft> minted, Dictionary<long, long> senses)
+    {
+        for (int index = 0; index < given.Count; index++)
+        {
+            senses[given[index].LCardDraftId] = minted[index].LCardDraftId;
+            TRequestSenseAdd(given[index].LCardDraftChild, minted[index].LCardDraftChild, senses);
+        }
     }
 
     private static LDraft TRequestSentenceApply(
@@ -267,6 +299,12 @@ internal static partial class TInterface
         engine.LEngineRequest.LEngineRequestApply(request(started));
         return engine.LEngineDraft.LEngineDraftCommit(started.LDraftId).LOutcomeEntry;
     }
+
+    internal static LDraft TCardSenseAttach(this LEngine engine, long draftId, long cardId, long senseId) =>
+        engine.LEngineRequest.LEngineRequestApply(new LRequestSenseAddition(draftId, cardId, senseId));
+
+    internal static LDraft TCardSenseDetach(this LEngine engine, long draftId, long cardId, long senseId) =>
+        engine.LEngineRequest.LEngineRequestApply(new LRequestSenseRemoval(draftId, cardId, senseId));
 
     internal static LCardDraft TRequestCardFind(LEntryDraft content, long cardId)
 

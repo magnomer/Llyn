@@ -8,11 +8,13 @@ namespace Llyn.Infrastructure;
 public sealed class LCollocationArchive : LCollocationVault
 {
     private readonly LDatabase _lCollocationArchiveDatabase;
+    private readonly LDatabaseLink _lCollocationSenseLink;
 
     public LCollocationArchive(LDatabase database)
     {
         ArgumentNullException.ThrowIfNull(database);
         _lCollocationArchiveDatabase = database;
+        _lCollocationSenseLink = new LDatabaseLink(database, "collocation_sense", "collocation_parent", "sense_ref");
     }
 
     public LCollocation LCollocationCreate(LCollocation collocation)
@@ -153,6 +155,29 @@ public sealed class LCollocationArchive : LCollocationVault
         }
 
         session.LDatabaseSessionCommit();
+    }
+
+    public IReadOnlyList<long> LCollocationSenseRead(long collocationId)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(collocationId);
+
+        using LDatabaseSession session = _lCollocationArchiveDatabase.LDatabaseSessionStart();
+        return LDatabaseOrder.LDatabaseOrderRead(
+            session.LDatabaseSessionConnection,
+            "collocation_sense",
+            "collocation_parent = $owner",
+            collocationId,
+            "sense_ref");
+    }
+
+    public void LCollocationSenseAttach(long collocationId, long senseId, int position)
+    {
+        _lCollocationSenseLink.LDatabaseLinkAttach(collocationId, senseId, position);
+    }
+
+    public void LCollocationSenseDetach(long collocationId, long senseId)
+    {
+        _lCollocationSenseLink.LDatabaseLinkDetach(collocationId, senseId);
     }
 
     private static long? LCollocationHolderRead(SqliteConnection connection, long id)

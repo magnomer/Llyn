@@ -1,5 +1,5 @@
 # LMarkupClerkDraft.cs
-Hash: `729e0446a5ce83a9`
+Hash: `0ed89ae6e3f331ae`
 
 ## `public sealed class LMarkupClerkDraft`
 
@@ -18,6 +18,9 @@ An inflection's unknown speech is omitted.
 A recording whose location cannot stand loses the recording.
 The etymology is resolved beside the rest, both shapes at once.
 The lexical unit and freedom pass through as the file names them.
+When a collocation names meaning paths, the meanings are first given temporary negative ids.
+Each path is then looked up in the meaning tree, and the collocation links the ids found.
+A path that finds no meaning is omitted, and a repeated one links once.
 
 ## `private LSpeechValue? LMarkupSpeechResolve(string language, string name, List<LMarkupOmission> omissions)`
 
@@ -34,3 +37,8 @@ Each morphology name is trimmed for the lookup, and an omission shows it as writ
 
 The card drafts, their examples, translations and media resolved through the link, children in turn.
 A translation whose target is not found is omitted.
+
+## `private static IReadOnlyList<LCardDraft> LMarkupCardPrepare(IReadOnlyList<LCardDraft> cards, ref long next)`
+
+Gives every meaning and its children a fresh negative id, counting down from `next`.
+The ids cannot clash with the held mentions and cited references, which count down from minus one.

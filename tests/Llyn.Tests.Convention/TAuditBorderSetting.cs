@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static class TAuditBorderSetting
 {
-    public const int TAuditGeneration = 21;
+    public const int TAuditGeneration = 23;
     public const string TAuditBorderHost = "Llyn.Host";
 
     public static readonly IReadOnlyDictionary<string, string[]> TAuditBorderNeighbour =
@@ -42,11 +42,7 @@ internal static class TAuditBorderSetting
             ["Llyn.ShellEngine"] = ["L"],
         };
 
-    public static readonly IReadOnlyDictionary<string, string[]> TAuditUnsealingPrefix =
-        new Dictionary<string, string[]>
-        {
-            ["Llyn.UIDeportment"] = ["L"],
-        };
+    public static readonly IReadOnlyList<string> TAuditUnsealingRing = ["Llyn.UIDeportment"];
 
     public static readonly IReadOnlyDictionary<string, int> TAuditBorderCeiling = new Dictionary<string, int>
     {

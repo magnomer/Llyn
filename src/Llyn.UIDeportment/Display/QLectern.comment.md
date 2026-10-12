@@ -1,5 +1,5 @@
 # QLectern.cs
-Hash: `9c9517f15a79364b`
+Hash: `e7123a00cc9fe93e`
 
 ## `public sealed class QLectern`
 
@@ -13,6 +13,7 @@ The veneer names only this class, so no veneer reaches Conduct.
 
 Builds the view over `display`, pulling every part it draws from `surface` by contract ID.
 All header, sound and card sections are built here, followed by the compass.
+The card section's "see" notice goes to the compass spotlight, which scrolls the page to the row's home.
 The header, frequency and entry sections take the display and subscribe their own events.
 Every other section takes only the parts it reads, and the lectern subscribes its redraws right after building it.
 So the open and close order matches the build order.

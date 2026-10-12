@@ -12,6 +12,7 @@ public sealed class LPortraitClerk
     private readonly LTranslationClerk _lPortraitClerkTranslations;
     private readonly LReferenceClerk _lPortraitClerkReferences;
     private readonly LFavoriteClerk _lPortraitClerkFavorites;
+    private readonly LFoldClerk _lPortraitClerkFolds;
     private readonly LFanqieClerk _lPortraitClerkFanqie;
     private readonly LFrequencyClerk _lPortraitClerkFrequencies;
     private readonly LParadigmClerk _lPortraitClerkParadigms;
@@ -25,6 +26,7 @@ public sealed class LPortraitClerk
         LTranslationClerk translations,
         LReferenceClerk references,
         LFavoriteClerk favorites,
+        LFoldClerk folds,
         LFanqieClerk fanqie,
         LFrequencyClerk frequencies,
         LParadigmClerk paradigms,
@@ -37,6 +39,7 @@ public sealed class LPortraitClerk
         ArgumentNullException.ThrowIfNull(translations);
         ArgumentNullException.ThrowIfNull(references);
         ArgumentNullException.ThrowIfNull(favorites);
+        ArgumentNullException.ThrowIfNull(folds);
         ArgumentNullException.ThrowIfNull(fanqie);
         ArgumentNullException.ThrowIfNull(frequencies);
         ArgumentNullException.ThrowIfNull(paradigms);
@@ -48,6 +51,7 @@ public sealed class LPortraitClerk
         _lPortraitClerkTranslations = translations;
         _lPortraitClerkReferences = references;
         _lPortraitClerkFavorites = favorites;
+        _lPortraitClerkFolds = folds;
         _lPortraitClerkFanqie = fanqie;
         _lPortraitClerkFrequencies = frequencies;
         _lPortraitClerkParadigms = paradigms;
@@ -75,6 +79,7 @@ public sealed class LPortraitClerk
         IReadOnlyDictionary<long, string> sources = LPortraitSourceScan();
 
         bool favorite = _lPortraitClerkFavorites.LFavoriteClerkCheck(entryId);
+        IReadOnlySet<long> folds = _lPortraitClerkFolds.LFoldClerkRead(entryId);
 
         IReadOnlyList<LFanqieRow> fanqie = LPortraitFanqieScan(entryId, language);
 
@@ -88,18 +93,27 @@ public sealed class LPortraitClerk
             sections,
             label.LPortraitLabelMeanings,
             LPortraitCard.LPortraitCardCreate(
-                draft.LEntryDraftMeanings, label.LPortraitLabelMeaning, order, language, label, targets, sources));
-        LPortraitClerkCard.LPortraitBandAdd(
-            sections,
-            label.LPortraitLabelCollocations,
-            LPortraitCard.LPortraitCardCreate(
-                draft.LEntryDraftCollocations,
-                label.LPortraitLabelCollocation,
+                draft.LEntryDraftMeanings,
+                label.LPortraitLabelMeaning,
                 order,
                 language,
                 label,
                 targets,
-                sources));
+                sources,
+                draft.LEntryDraftMeanings,
+                draft.LEntryDraftCollocations,
+                folds));
+        LPortraitClerkCard.LPortraitBandAdd(
+            sections,
+            label.LPortraitLabelOther,
+            LPortraitCard.LPortraitRowsCreate(
+                LCollocation.LCollocationOtherRead(draft.LEntryDraftMeanings, draft.LEntryDraftCollocations),
+                order,
+                language,
+                label,
+                targets,
+                sources,
+                folds));
         LPortraitClerkCard.LPortraitEtymologyAdd(sections, draft, targets, label);
         LPortraitClerkCard.LPortraitIncomingAdd(sections, LPortraitIncomingScan(entryId), label);
         LPortraitClerkCard.LPortraitNoteAdd(sections, draft, label);

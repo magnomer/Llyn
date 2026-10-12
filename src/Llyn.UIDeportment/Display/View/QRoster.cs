@@ -21,7 +21,7 @@ internal sealed class QRoster
         QLookItem.QLookItemAttach(
             QContract.QContractFind<ItemsControl>(surface, "PDisplayMeaning"), PLeaf.PLeafCardRefine);
         QLookItem.QLookItemAttach(
-            QContract.QContractFind<ItemsControl>(surface, "PDisplayCollocation"), PLeaf.PLeafCardRefine);
+            QContract.QContractFind<ItemsControl>(surface, "PDisplayCollocation"), PLeaf.PLeafRowRefine);
         QLookItem.QLookItemAttach(
             QContract.QContractFind<ItemsControl>(surface, "PDisplayIncoming"), QRosterUsageRefine);
         QLookItem.QLookItemAttach(
@@ -114,6 +114,14 @@ internal sealed class QRoster
         if (QLook.QLookPartFind<TextBlock>(container, "PCompassName") is TextBlock name)
         {
             name.Text = compass.QCompassItemName;
+            if (compass.QCompassItemMuted)
+            {
+                name.SetResourceReference(TextBlock.ForegroundProperty, "Theme.Muted");
+            }
+            else
+            {
+                name.ClearValue(TextBlock.ForegroundProperty);
+            }
         }
     }
 

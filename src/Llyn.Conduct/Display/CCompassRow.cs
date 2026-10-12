@@ -5,4 +5,5 @@ public sealed record CCompassRow(
     int? CCompassRowCard,
     string CCompassRowName,
     string CCompassRowNumber,
-    int CCompassRowDepth);
+    int CCompassRowDepth,
+    bool CCompassRowMuted);

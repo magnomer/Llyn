@@ -153,6 +153,12 @@ internal static partial class TInterface
         engine.LEngineCard.LEngineFoldDelete(entryId, cardId);
     }
 
+    internal static LCollocationLayout TEngineCollocationRead(
+        this LEngine engine,
+        LEntryDraft shown,
+        IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets) =>
+        engine.LEngineCard.LEngineCollocationRead(shown, targets);
+
     internal static bool TEngineSpreadCheck(this LEngine engine, long entryId) =>
         engine.LEngineReflex.LEngineSpreadCheck(entryId);
 

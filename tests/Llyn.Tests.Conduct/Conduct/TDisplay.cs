@@ -91,7 +91,7 @@ public sealed class TDisplay
                 "to light",
                 "Display.MeaningSingle (1)",
                 "Display.Unknown",
-                "Display.Collocation",
+                "Display.CollocationOther",
                 "Display.MeaningSingle (2)",
             ],
             rows.Select(static row => row.CCompassRowName));

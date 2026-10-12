@@ -1,10 +1,11 @@
 # TSheetEntry.cs
-Hash: `fd3282271e610353`
+Hash: `1b22334d2e3275b0`
 
 ## `public sealed class TSheetEntry`
 
 Covers the entry sheet that HTML, PDF and print share, one fact per rule.
-Each page is read from a stored entry and changed with `with`, so every other member stays real.
+Each page is read from a stored entry and changed with `with` only where a fact needs it.
+So every other member stays real.
 The lookup answers each key as itself, so a label reads as its key.
 Each fact asserts the fragment that carries the rule, never the whole document.
 
@@ -40,12 +41,12 @@ A grasp of twelve clamps to ten and shows the key of the top level.
 
 ## `public void SheetEntryFormat_Unrated_ShowsNotRatedLabel()`
 
-A grasp of zero fills no star and shows the key of the lowest level.
+An entry never rated fills no star and shows the key of level zero.
 
 ## `public void SheetEntryFormat_RankedFrequency_WritesOnePillWithSourceTitle()`
 
 A ranked frequency writes one pill whose title lists the source and the figure.
-The pill lights as many pips as the rank and leaves the rest dim.
+The Everyday tier lights three of the four pips and leaves the last one dim.
 
 ## `public void SheetEntryFormat_BreakRows_WritesPartNameTextGrid()`
 
@@ -60,6 +61,13 @@ An irregular run of a form is wrapped in the marked span.
 ## `public void SheetEntryFormat_FoldedCard_WritesClosedDetails()`
 
 A folded stored card writes closed details and an unfolded one writes open details.
+
+## `public void SheetEntryFormat_UnlinkedCollocation_WritesOtherRow()`
+
+A collocation linked to no meaning writes a row under the Other collocations heading.
+The row sits in the collocations box and opens, since nothing folded it.
+Its summary shows the phrase and then the sense.
+The Other band is a plain band, never a deck of numbered cards.
 
 ## `public void SheetEntryFormat_OpenedFanqie_WritesOpenDetails()`
 

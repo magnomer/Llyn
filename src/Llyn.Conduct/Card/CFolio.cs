@@ -25,18 +25,20 @@ internal static class CFolio
         LEntryDraft draft,
         IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets,
         IReadOnlySet<long> folds,
-        LMediaPort media)
+        LMediaPort media,
+        IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth, string LMeaningPath)> senses)
     {
         ArgumentNullException.ThrowIfNull(draft);
         ArgumentNullException.ThrowIfNull(targets);
         ArgumentNullException.ThrowIfNull(folds);
         ArgumentNullException.ThrowIfNull(media);
+        ArgumentNullException.ThrowIfNull(senses);
 
         return new CEntryDraft(
             draft.LEntryDraftHeadword,
             draft.LEntryDraftNote,
-            CFolioSheetRead(draft.LEntryDraftMeanings, targets, folds, media, "Card.DefinitionHint"),
-            CFolioSheetRead(draft.LEntryDraftCollocations, targets, folds, media, "Card.MeaningHint"),
+            CFolioSheetRead(draft.LEntryDraftMeanings, targets, folds, media, "Card.DefinitionHint", false, senses),
+            CFolioSheetRead(draft.LEntryDraftCollocations, targets, folds, media, "Card.MeaningHint", true, senses),
             new CEtymologyDraft(draft.LEntryDraftEtymology.LEtymologyDraftText));
     }
 
@@ -50,7 +52,9 @@ internal static class CFolio
         IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets,
         IReadOnlySet<long> folds,
         LMediaPort media,
-        string meaning)
+        string meaning,
+        bool expressed,
+        IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth, string LMeaningPath)> senses)
     {
         return CFolioOrderRead(cards)
             .Select(card => new CCardDraft(
@@ -58,7 +62,9 @@ internal static class CFolio
                 card.LCardDraftPosition,
                 CStateWording.LStateWordingRead(CFolioStateRead(card.LCardDraftTitle), null),
                 CStateWording.LStateWordingRead(
-                    CFolioStateRead(card.LCardDraftExpression), null, "Card.ExpressionHint"),
+                    CFolioStateRead(expressed ? card.LCardDraftExpression : LStateValue.LStateValueUnspecified),
+                    null,
+                    "Card.ExpressionHint"),
                 CStateWording.LStateWordingRead(CFolioStateRead(card.LCardDraftMeaning), null, meaning),
                 card.LCardDraftSentence.Select(CFolioSentenceRead).ToList(),
                 card.LCardDraftSituation
@@ -80,7 +86,14 @@ internal static class CFolio
                 CFolioImageRead(card.LCardDraftImage, media),
                 CFolioVideoRead(card.LCardDraftVideo, media),
                 folds.Contains(card.LCardDraftId),
-                card.LCardDraftStored))
+                card.LCardDraftStored,
+                card.LCardDraftSense
+                    .Join(
+                        senses,
+                        static id => id,
+                        static row => row.LMeaningId,
+                        static (_, row) => new CMeaning(row.LMeaningId, row.LMeaningName, 0, row.LMeaningPath))
+                    .ToList()))
             .ToList();
     }
 

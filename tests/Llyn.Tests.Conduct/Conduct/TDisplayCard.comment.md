@@ -1,5 +1,5 @@
 # TDisplayCard.cs
-Hash: `18a27561dcfb2303`
+Hash: `c58f8af1cd2d89f5`
 
 ## `public sealed class TDisplayCard`
 
@@ -9,8 +9,9 @@ The media cases call the card reads directly with a real or fake media port.
 
 ## `public void DisplayCardRead_ShownEntry_AnswersReadyCardsAndSections()`
 
-A Meaning card arrives ready, and only the Meaning section shows.
-An unknown title carries the unknown mark's key, and a never-written expression arrives muted.
+A Meaning card arrives ready, and the Meaning section shows.
+No other collocation is listed, so the Other collocations section stays hidden.
+An unknown title carries the unknown mark's key, and the phrase a Meaning has none of arrives blank and muted.
 Its link arrives named, and its stored tag arrives worded and ready to open.
 
 ## `public void DisplayCardRead_SentenceRow_AnswersTheReadyLine()`
@@ -21,7 +22,7 @@ A sentence with no citation or gloss answers an empty citation and no gloss.
 
 ## `public void DisplayCardRead_NothingShown_AnswersNoCardsAndNoSections()`
 
-With nothing open, no card or section is answered.
+With nothing open, no meaning or other collocation is answered, and neither section shows.
 
 ## `public void FolioImageRead_RowNobodyLocated_CarriesTheEmptyVerdict()`
 
@@ -44,7 +45,7 @@ A row with no span starts at zero and has no end.
 
 ## `public void FolioVideoRead_HostedOrOtherLocation_CarriesAddressAndEngineFilmId()`
 
-Over the real media outlet, a hosted location carries its film id, and a trimmed one still resolves.
+Over the real media outlet, a hosted location padded with spaces still resolves and carries its film id.
 A plain web file carries no film id, and a workspace path that reaches no file carries no screen.
 A blank location carries no screen.
 

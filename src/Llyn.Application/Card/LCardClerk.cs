@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Llyn.Core;
 
 namespace Llyn.Application;
@@ -7,6 +8,7 @@ namespace Llyn.Application;
 public sealed class LCardClerk
 {
     private readonly LCollocationVault _lCardClerkCollocations;
+    private readonly LMeaningVault _lCardClerkMeanings;
     private readonly LImageVault _lCardClerkImages;
     private readonly LVideoVault _lCardClerkVideos;
     private readonly LSentenceVault _lCardClerkSentences;
@@ -29,6 +31,7 @@ public sealed class LCardClerk
         ArgumentNullException.ThrowIfNull(translations);
         ArgumentNullException.ThrowIfNull(examples);
         _lCardClerkCollocations = rig.LRigLexicon.LRigLexiconCollocations;
+        _lCardClerkMeanings = rig.LRigLexicon.LRigLexiconMeanings;
         _lCardClerkImages = rig.LRigCitation.LRigCitationImages;
         _lCardClerkVideos = rig.LRigCitation.LRigCitationVideos;
         _lCardClerkSentences = rig.LRigSentence.LRigSentenceSentences;
@@ -89,6 +92,7 @@ public sealed class LCardClerk
             collocations.LCollocationDelete(dropped);
         }
 
+        HashSet<long> meanings = [.. _lCardClerkMeanings.LMeaningRead(entryId).Select(static row => row.LMeaningId)];
         HashSet<long> applied = [];
         List<long> order = [];
         foreach (LCardDraft card in kept)
@@ -98,7 +102,9 @@ public sealed class LCardClerk
             if (reuse)
             {
                 LCollocation row = stored[card.LCardDraftId];
-                if (row.LCollocationTitle != card.LCardDraftTitle
+                bool relinked = LCollocationSenseSync(row.LCollocationId, card, identity, meanings);
+                if (relinked
+                    || row.LCollocationTitle != card.LCardDraftTitle
                     || row.LCollocationExpression != card.LCardDraftExpression
                     || row.LCollocationMeaning != card.LCardDraftMeaning
                     || row.LCollocationPosition != order.Count
@@ -129,6 +135,7 @@ public sealed class LCardClerk
                     "collocation",
                     "create",
                     card.LCardDraftExpression.LStateValueShow()));
+                LCollocationSenseSync(rowId, card, identity, meanings);
             }
 
             order.Add(rowId);
@@ -152,6 +159,32 @@ public sealed class LCardClerk
 
         LIdentity.LIdentityRecord(identity, card.LCardDraftId, row.LCollocationId);
         return row.LCollocationId;
+    }
+
+    private bool LCollocationSenseSync(
+        long rowId, LCardDraft card, Dictionary<long, long> identity, IReadOnlySet<long> meanings)
+    {
+        List<long> linked = [];
+        foreach (long sense in card.LCardDraftSense)
+        {
+            long settled = sense < 0 && identity.TryGetValue(sense, out long saved) ? saved : sense;
+            if (meanings.Contains(settled) && !linked.Contains(settled))
+            {
+                linked.Add(settled);
+            }
+        }
+
+        LCollocationVault collocations = _lCardClerkCollocations;
+        IReadOnlyList<long> attached = collocations.LCollocationSenseRead(rowId);
+        LCardClerkField.LCardFieldSync(
+            linked,
+            attached,
+            senseId => senseId,
+            senseId => senseId,
+            senseId => collocations.LCollocationSenseDetach(rowId, senseId),
+            (senseId, position) => collocations.LCollocationSenseAttach(rowId, senseId, position));
+
+        return !attached.SequenceEqual(linked);
     }
 
     public void LCardClerkSync(

@@ -15,22 +15,22 @@ public static class LPortraitClerkLabel
     public static LPortraitLabel LPortraitLabelCreate(IReadOnlyList<string> words)
     {
         ArgumentNullException.ThrowIfNull(words);
-        ArgumentOutOfRangeException.ThrowIfNotEqual(words.Count, 27);
+        ArgumentOutOfRangeException.ThrowIfNotEqual(words.Count, 29);
 
         return new LPortraitLabel(
             words[0], words[1], words[2], words[3], words[4], words[5], words[6], words[7], words[8], words[9],
             words[10], words[11], words[12], words[13], words[14], words[15], words[16], words[17], words[18],
-            words[19], words[20], words[21],
+            words[19], words[20], words[21], words[22], words[23],
             new Dictionary<LUnit, string>
             {
-                [LUnit.LUnitMorpheme] = words[22],
-                [LUnit.LUnitWord] = words[23],
-                [LUnit.LUnitExpression] = words[24],
+                [LUnit.LUnitMorpheme] = words[24],
+                [LUnit.LUnitWord] = words[25],
+                [LUnit.LUnitExpression] = words[26],
             },
             new Dictionary<LFreedom, string>
             {
-                [LFreedom.LFreedomDependent] = words[25],
-                [LFreedom.LFreedomStandalone] = words[26],
+                [LFreedom.LFreedomDependent] = words[27],
+                [LFreedom.LFreedomStandalone] = words[28],
             });
     }
 

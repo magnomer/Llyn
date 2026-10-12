@@ -1,5 +1,5 @@
 # LPortraitClerkPress.cs
-Hash: `fdf397463713192a`
+Hash: `f9f3944e31e417f1`
 
 ## `public sealed class LPortraitClerkPress`
 
@@ -12,12 +12,13 @@ Reads the portrait port, the press and the printer queue out of `rig`.
 
 ## `public async Task LPortraitClerkExport(LPortraitPage portrait, string path, LPortraitMedium format)`
 
-A PDF goes through the press as rendered sheet HTML.
+A PDF goes through the press as rendered sheet HTML, with every collocation row open.
 Every other format is saved through the portrait port.
 
 ## `public Task<LGalleyClerk> LPortraitClerkOpen(LPortraitPage page)`
 
 A catalog page rendered as sheet HTML and loaded into a kept press board.
+Every collocation row is open, as on any print.
 The board stays open for the whole print session, so each setting change redraws without reloading the sheet.
 The answer is the session clerk that holds the board, so the session never names the board.
 The caller owns the clerk and disposes it when the session ends.
@@ -26,11 +27,14 @@ The caller owns the clerk and disposes it when the session ends.
 
 An entry's export, which reads the Livery page beside the portrait page.
 HTML is saved through the portrait port's entry sheet, and PDF prints that same sheet through the press.
+The HTML keeps the stored row folds.
+The PDF opens every row first through `LPortraitPage.LPortraitPageOpen`, since paper cannot unfold one.
 Markup, Markdown and Word keep the portrait page alone, through the other overload.
 
 ## `public Task<LGalleyClerk> LPortraitClerkOpen(LLiveryPage livery, LPortraitPage portrait, LPortraitLabel label, Func<string, string> lookup)`
 
 An entry's sheet, the same one its print and HTML export write, loaded into a kept press board.
+Its collocation rows are all open, as in the PDF.
 
 ## `private async Task<LGalleyClerk> LPortraitClerkOpen(string html)`
 

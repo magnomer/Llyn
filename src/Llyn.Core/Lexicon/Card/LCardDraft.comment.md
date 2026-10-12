@@ -1,7 +1,7 @@
 # LCardDraft.cs
-Hash: `4575bde59cbc571c`
+Hash: `f129077a016df2cf`
 
-## `public sealed record LCardDraft(LStateValue LCardDraftTitle, LStateValue LCardDraftExpression, LStateValue LCardDraftMeaning, IReadOnlyList<LSentenceDraft> LCardDraftSentence, IReadOnlyList<LSituationDraft> LCardDraftSituation, IReadOnlyList<LRegisterDraft> LCardDraftRegister, IReadOnlyList<long> LCardDraftTranslation, IReadOnlyList<LTagDraft> LCardDraftTag, IReadOnlyList<LImageDraft> LCardDraftImage, IReadOnlyList<LVideoDraft> LCardDraftVideo, int LCardDraftPosition, long LCardDraftId = 0, IReadOnlyList<LCardDraft>? LCardDraftChild = null)`
+## `public sealed record LCardDraft(LStateValue LCardDraftTitle, LStateValue LCardDraftExpression, LStateValue LCardDraftMeaning, IReadOnlyList<LSentenceDraft> LCardDraftSentence, IReadOnlyList<LSituationDraft> LCardDraftSituation, IReadOnlyList<LRegisterDraft> LCardDraftRegister, IReadOnlyList<long> LCardDraftTranslation, IReadOnlyList<LTagDraft> LCardDraftTag, IReadOnlyList<LImageDraft> LCardDraftImage, IReadOnlyList<LVideoDraft> LCardDraftVideo, int LCardDraftPosition, long LCardDraftId = 0, IReadOnlyList<LCardDraft>? LCardDraftChild = null, IReadOnlyList<long>? LCardDraftSense = null)`
 
 Meanings and collocations share one immutable card shape, so their common fields have one definition.
 The record carries lexical content and row identity, but no fold state.
@@ -24,10 +24,16 @@ Generated equality compares collection references, so equal row contents alone d
 - `LCardDraftId`: the stored row identity, zero by default.
   Negative editor ids and zero both remain unsaved according to `LCardDraftStored`.
 - `LCardDraftChild`: nested cards, empty when the constructor receives null.
+- `LCardDraftSense`: ordered ids of the meanings a collocation links, empty when the constructor receives null.
+  The first link present in the meaning tree is the home, and a meaning card carries none.
 
 ## `public IReadOnlyList<LCardDraft> LCardDraftChild { get; init; }`
 
 Constructor null becomes an empty child list, so ordinary readers need no constructor-null check.
+
+## `public IReadOnlyList<long> LCardDraftSense { get; init; }`
+
+Constructor null becomes an empty link list, like the child list.
 
 ## `public LStateValue LCardDraftTitle { get; init; }`
 
@@ -63,5 +69,6 @@ Counts this card and all descendants, so nested cards contribute at every depth.
 
 Emptiness covers the scalar fields, supporting rows and translations, but not identity or position.
 Any child prevents emptiness, even when that child's own fields are empty.
+Any meaning link prevents it too.
 Situation and register rows contribute their title and name respectively.
 Only zero translation ids are empty, and blank tag text contributes nothing.

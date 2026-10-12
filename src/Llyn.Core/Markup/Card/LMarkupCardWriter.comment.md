@@ -1,5 +1,5 @@
 # LMarkupCardWriter.cs
-Hash: `c75ea8440b523bed`
+Hash: `a95a3eaaa5a1915e`
 
 ## `internal static class LMarkupCardWriter`
 
@@ -10,6 +10,7 @@ Stated values follow the state rule, so unspecified writes nothing and unknown w
 
 Writes one card under the element `name`, either `meaning` or `collocation`.
 Children are always written as `meaning`, since only a meaning nests.
+Each link path follows them as a `sense` element, in link order.
 
 ## `private static LMarkupNode LMarkupSentenceFormat(LMarkupSentence sentence)`
 

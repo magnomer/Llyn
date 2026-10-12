@@ -7,6 +7,35 @@ namespace Llyn.Tests;
 public sealed class TPortraitSheet
 {
     [Fact]
+    public void SheetFormat_OpenedPage_PrintsTheFoldedRowOpen()
+    {
+        LPortraitPage opened = TInterface.TPortraitPageOpen(TPortraitSample.TPortraitRowCreate());
+
+        string page = TInterface.TSheetFormat(opened, TInterface.TThemeLoad());
+
+        Assert.Contains("<div class=\"collocations\">\n<h3>Collocations · 1</h3>", page);
+        Assert.Contains(
+            "<details class=\"collocation\" open>\n<summary><span class=\"phrase\">set off</span>"
+            + "<span class=\"sense\">to start a journey</span></summary>",
+            page);
+        Assert.Contains("<div class=\"tone\"><span>informal</span></div>", page);
+        Assert.DoesNotContain("<details class=\"collocation\">", page);
+    }
+
+    [Fact]
+    public void SheetFormat_FoldedRow_WritesClosedDetails()
+    {
+        string page = TInterface.TSheetFormat(TPortraitSample.TPortraitRowCreate(), TInterface.TThemeLoad());
+
+        Assert.Contains(
+            "<details class=\"collocation\">\n<summary><span class=\"phrase\">set off</span>"
+            + "<span class=\"sense\">to start a journey</span></summary>\n<section>\n",
+            page);
+        Assert.Contains("<div class=\"tone\"><span>informal</span></div>\n</section>\n</details>", page);
+        Assert.DoesNotContain("<details class=\"collocation\" open>", page);
+    }
+
+    [Fact]
     public void SheetFormat_FullPortrait_CarriesEveryFieldTheDisplayShows()
     {
         string page = TInterface.TSheetFormat(

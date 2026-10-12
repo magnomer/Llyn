@@ -1,45 +1,58 @@
 # PDisplayCollocation.xaml
-Hash: `5fcad40040b19c5e`
+Hash: `3319fa918b8df9eb`
 
 ## `ResourceDictionary`
 
-The collocation card as the reading view draws it.
-Its body opens with the expression and then the meaning, where a meaning card carries the meaning alone.
-Everything else it shares with the meaning card, down to the reserved gutter.
+The collocation row as the reading view draws it, under its home meaning and in the Other list.
+It also holds the "see" line a meaning shows for a collocation homed under another meaning.
+A closed row is one line: hinge, phrase, the meaning cut at the line end, then the filled markers.
+An open row adds the reading card's own body beneath, so every filled field shows as on a card.
+All values and visibilities are set by [PLeaf](../../../Llyn.UIDeportment/Display/Template/PLeaf.comment.md).
 
 ## Inline notes
 
-### `<DataTemplate x:Key="Display.Collocation.Card">`
+### `<Style x:Key="Display.Collocation.Marker" TargetType="TextBlock">`
 
-The header row is fixed at the height the writing card's header takes.
-So the body starts at the same depth in both modes.
+The muted look the example and "also" markers share, collapsed until the row fill shows a filled one.
 
-### `<Border Style="{StaticResource Theme.Card.Position}">`
+### `<DataTemplate x:Key="Display.Collocation.Row">`
 
-The badge is the plain theme badge, since the reading view never opens a position.
+The header line and the body are two rows of one grid, so the body starts under the phrase.
 
-### `<TextBlock x:Name="PCardTitle" Grid.Column="1" Style="{DynamicResource Display.Card.Title}" />`
+### `<ToggleButton x:Name="PCardHinge" Margin="0,0,6,0" HorizontalAlignment="Left" VerticalAlignment="Top" Style="{DynamicResource Theme.Card.Hinge}" />`
 
-The title, badge number and body texts are filled by [PLeaf](../../../Llyn.UIDeportment/Display/Template/PLeaf.comment.md).
-An unfolded card without a title shows its kind in `PCardCaption` instead.
+The row's chevron is the card hinge, moved to the left edge.
+The reading driver hears its click as it bubbles from the list, the same as a card's hinge.
+It is named like a card's so one fold painter checks it and hides it on an unstored row.
 
-### `<Border x:Name="PCardHeader" Style="{DynamicResource Theme.Card.Header}">`
+### `<TextBlock x:Name="PCardMeaning" Grid.Column="2" Margin="10,3,0,0" VerticalAlignment="Top" Style="{DynamicResource Display.Card.Definition}" TextTrimming="CharacterEllipsis" />`
 
-The header is named so the card painter can close its corners while the card is folded.
-The writing card's header carries the same name, so one painter serves both modes.
+The meaning takes the room left between the phrase and the markers.
+The row fill turns wrapping off while the row is closed, so the trimming cuts it at the line end.
 
-### `<TextBlock x:Name="PCardPeek" Grid.Column="1" Style="{DynamicResource Theme.Card.Peek}" />`
+### `<ItemsControl x:Name="PCardFlag" Grid.Column="3" VerticalAlignment="Center" Visibility="Collapsed">`
 
-The card's expression, shown in the title's place while the card is folded and untitled.
-The kind caption gives way to it then.
+One ensign per translation language, in a single horizontal line.
 
-### `<ToggleButton x:Name="PCardHinge" Grid.Column="0" Grid.ColumnSpan="2" Style="{DynamicResource Theme.Card.Hinge}" />`
+### `<Image x:Name="PCardEnsign" Width="18" Height="13" Margin="8,0,0,0" VerticalAlignment="Center" Stretch="Uniform" />`
 
-The hinge spans both columns and sits at the right edge, vertically centred.
-It stands where the writing card's hinge stands, with no eraser to its left.
-The reading driver hears its click as it bubbles from the card list.
-The reading driver finds it as the only toggle carrying a reading card.
+Sized like the translation chip's flag, so a row's ensigns match the open body's chips.
 
-### `<Grid x:Name="PCardBody" Grid.Row="1" Style="{DynamicResource Theme.Card.Body}">`
+### `<Grid x:Name="PCardBody" Grid.Row="1" Margin="32,6,0,4">`
 
-The body is named so the card painter can collapse it while the card is folded.
+The body is named so the fold painter collapses it while the row is closed.
+Its left margin lines the fields up under the phrase rather than under the hinge.
+
+### `<ContentControl x:Name="PCardContents" ContentTemplate="{DynamicResource Display.Card.Body}" Focusable="False" />`
+
+The reading card's own body template, filled by the same body fill, so no field is drawn twice.
+
+### `<DataTemplate x:Key="Display.Collocation.See">`
+
+One "see" line, a bare button so the reading driver hears its click as it bubbles from the meaning list.
+The button carries the line's item, which names the collocation whose row the click opens.
+
+### `<TextBlock x:Name="PCardSeeLabel" Background="Transparent" FontSize="{DynamicResource Theme.Card.DefinitionSize}" Foreground="{DynamicResource Theme.Muted}" />`
+
+The line stays muted at the definition's size, and the hand cursor marks it as a link.
+Its background is transparent rather than empty, so the whole line takes the pointer, not only the glyphs.

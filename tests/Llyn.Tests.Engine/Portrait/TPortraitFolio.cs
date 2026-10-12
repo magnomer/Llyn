@@ -9,6 +9,35 @@ namespace Llyn.Tests;
 public sealed class TPortraitFolio
 {
     [Fact]
+    public void FolioSave_FoldedRow_PrintsTheRowOpen()
+    {
+        string path = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".docx");
+
+        try
+        {
+            TInterface.TFolioSave(TPortraitSample.TPortraitRowCreate(), TInterface.TThemeLoad(), path);
+
+            using ZipArchive package = ZipFile.OpenRead(path);
+            using Stream stream = package.GetEntry("word/document.xml")!.Open();
+            using StreamReader reader = new StreamReader(stream);
+            string document = reader.ReadToEnd();
+
+            int caption = document.IndexOf("Collocations · 1", System.StringComparison.Ordinal);
+            int phrase = document.IndexOf("set off", System.StringComparison.Ordinal);
+            int meaning = document.IndexOf("to start a journey", System.StringComparison.Ordinal);
+            int tone = document.IndexOf("informal", System.StringComparison.Ordinal);
+            Assert.True(caption >= 0);
+            Assert.True(caption < phrase);
+            Assert.True(phrase < meaning);
+            Assert.True(meaning < tone);
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    [Fact]
     public void FolioSave_FullPortrait_WritesAReadablePackage()
     {
         string path = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".docx");

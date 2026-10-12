@@ -1,6 +1,6 @@
 // Generated file. Do not edit by hand: every line is overwritten when it is rebuilt.
 //
-// AUDITNAMES GENERATION 21 - name registry for Llyn.
+// AUDITNAMES GENERATION 23 - name registry for Llyn.
 // One of the three generated files in the convention-test project. Together they carry the
 // registered bases, verbs and exemptions and nothing else; every audit setting is hand-written
 // tracked test code and must never be added here.

@@ -1,5 +1,5 @@
 # TAuditBoundarySetting.cs
-Hash: `163492586168a88a`
+Hash: `f20d84b683945994`
 
 ## `internal static class TAuditBoundarySetting`
 
@@ -37,7 +37,7 @@ The walkers parse without symbols, so a branch would be skipped, and reflection 
 
 ## `public static readonly string[] TAuditBoundaryLoader`
 
-The one file that reads embedded resources through the assembly, and so may name reflection.
+The one file that reads the program version through the assembly, and so may name reflection.
 
 ## `public const string TAuditBoundaryReflection`
 

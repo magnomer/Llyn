@@ -1,5 +1,5 @@
 # LLiveryXiesheng.cs
-Hash: `947573769a393ecb`
+Hash: `d2a4e7de51e3aac9`
 
 ## `internal static class LLiveryXiesheng`
 
@@ -12,7 +12,7 @@ It also holds the character chip and the entry list the category note shares.
 Writes a `llyn-series` chip read through `Xiesheng.Stem`, then the series key as the heading under it.
 The members of `LStemPageMembers` follow in page order, each in its own card through `LLiveryMemberAppend`.
 A series without characters writes `Xiesheng.StemEmpty` as a `llyn-vacant` span instead.
-`LLiveryEntryAppend` writes the entries of the series last, leaving out any entry a member card already links.
+`LLiveryEntryAppend` writes the entries of the series last, leaving out any entry whose headword is a member's character.
 So every member appears exactly once in the note.
 `Xiesheng.KindredVacant` is written only when the series holds no entries at all.
 

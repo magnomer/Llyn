@@ -1,5 +1,5 @@
 # PCard.cs
-Hash: `9b0fcb9fe2596caa`
+Hash: `7357f03389c2c351`
 
 ## `internal sealed class PCard : INotifyPropertyChanged`
 
@@ -47,6 +47,12 @@ Register chips preserve unchanged wording and replace changed presentation value
 ## `public PCaret<QLinkChip> PCardLink { get; }`
 
 Translation chips preserve existing items only while both headword and language agree.
+
+## `public ObservableCollection<QBondItem> PCardBond { get; }`
+
+The chips of the meanings a collocation card links to, in link order, with the first as its home.
+It starts empty and `QBond` reconciles it by meaning id.
+Each chip is a `QBondItem`, so the surface never holds a Conduct meaning.
 
 ## `public PCaret<PLabelChip> PCardLabel { get; }`
 

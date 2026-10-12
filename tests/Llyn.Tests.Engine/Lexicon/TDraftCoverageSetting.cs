@@ -61,6 +61,7 @@ internal static class TDraftCoverageSetting
     public static readonly string[] TDraftPortrait =
     [
         "src/Llyn.Core/Portrait/*.cs",
+        "src/Llyn.Core/Lexicon/Card/LCollocation.cs",
         "src/Llyn.Application/Portrait/*.cs",
         "src/Llyn.ShellEngine/Tool/LPortraitFacade.cs",
     ];

@@ -13,4 +13,10 @@ public interface LCollocationVault
     void LCollocationDelete(long id);
 
     void LCollocationOrderSet(long entryId, IReadOnlyList<long> order);
+
+    IReadOnlyList<long> LCollocationSenseRead(long collocationId);
+
+    void LCollocationSenseAttach(long collocationId, long senseId, int position);
+
+    void LCollocationSenseDetach(long collocationId, long senseId);
 }

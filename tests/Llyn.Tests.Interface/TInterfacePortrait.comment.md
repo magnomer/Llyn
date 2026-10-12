@@ -1,5 +1,5 @@
 # TInterfacePortrait.cs
-Hash: `1718959fb253af50`
+Hash: `d793566624cd5036`
 
 ## `internal static partial class TInterface`
 
@@ -10,6 +10,8 @@ Tests call production operations only through here, so a renamed operation break
 
 A fixed English label set, so a test asserts on known words without the localization files.
 Its unit and freedom names are English too.
+It words the unlinked collocation heading as "Other collocations" and the stub as "→ {0} see {1}".
+It words the caption over a meaning's homed collocations as "Collocations · {0}".
 
 ## `internal static LPortraitLink TPortraitLinkCreate(string headword, string language)`
 
@@ -30,6 +32,10 @@ Relays `LTheme.LThemeRead`, so a test compares a colour with the role it should 
 ## `internal static string TSheetFormat(LPortraitPage page, LTheme theme)`
 
 Relays `LSheet.LSheetFormat`.
+
+## `internal static LPortraitPage TPortraitPageOpen(LPortraitPage page)`
+
+Relays `LPortraitPage.LPortraitPageOpen`.
 
 ## `internal static string TSheetEntryFormat(LLiveryPage livery, LPortraitPage portrait, Func<string, string> lookup)`
 
@@ -177,9 +183,9 @@ So a coverage test reads its expectations here and never from the draft.
 ## `private static List<string> TPortraitTextRead(LPortraitSection section)`
 
 Lists one section's strings, then its children's.
-A band, card or kind prints its heading, so only those roles list it.
-An image is a picture and not text, so its address and caption are not listed.
-A video is a link drawn as text, so its address and span are.
+A band, card, kind, list or row prints its heading, so only those roles list it.
+An image is a picture and not text, so its location and span are not listed.
+A video is a link drawn as text, so its location and span are.
 
 ## `private static void TPortraitTextAdd(List<string> shown, string text)`
 

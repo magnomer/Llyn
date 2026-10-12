@@ -75,6 +75,9 @@ public interface LDraftPort
     IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)>? LEngineSenseRead(
         LTenure held, long card, long sentence, string text, int start, int length, string key);
 
+    IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth, string LMeaningPath)>
+        LEngineMeaningScan(LTenure held, string key);
+
     int LEngineOffsetRead(string text, int unit);
 
     bool LEngineAnchorCheck(long entryId, string headword);

@@ -1,5 +1,5 @@
 # LCardFacade.cs
-Hash: `a1a9b4e2d8b0a8f3`
+Hash: `d3420af8bd7430c2`
 
 ## `public sealed class LCardFacade : LCardPort`
 
@@ -25,6 +25,18 @@ The caller supplies the fallback localization key, while the settings facade sup
 
 A sense menu requires a linked Mention under the selection.
 Without one, null prevents a menu from opening.
+
+## `public IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth, string LMeaningPath)> LEngineMeaningScan(LTenure held, string key)`
+
+It reads the Meanings of the held draft, not of the store, so unsaved Meanings are offered.
+`LMeaningClerkScan` owns reading order, fallback naming and paths, with the wording of `key`.
+A tenure holding no draft answers an empty list.
+The path of each row is its outline number under its parents, such as `2.1`.
+
+## `public LCollocationLayout LEngineCollocationRead(LEntryDraft shown, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets)`
+
+Forwards to `LDraftClerkSense.LCollocationLayoutRead`, which applies the link rules to the draft.
+It reads only the draft and the handed `targets`, so it takes no lock and reaches no store.
 
 ## `public LTranslationOffer LEngineTranslationFind(LTenure held, string text, string word, bool chosen)`
 
@@ -52,16 +64,6 @@ The bulletin leaves the shared gate before notifying readers.
 This overload reads stored targets without any draft's court links.
 Tentative targets therefore require the owner overload.
 
-## `public IReadOnlyList<LTranslationTarget> LEngineEtymonRead(LEntryDraft draft)`
-
-Etymons retain the draft's link order.
-Missing stored targets are omitted, preventing blank chips.
-
-## `public LEtymologyResult LEngineEtymologyRead(LEntryDraft draft)`
-
-Source links and the draft's narrative verdict form one answer.
-Link-read failures propagate to the caller's failure boundary.
-
 ## `public IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> LEngineTranslationRead(LEntryDraft draft)`
 
 Every top-level meaning and collocation receives a key, even without translation targets.
@@ -73,6 +75,16 @@ Storage failures propagate to the caller's failure boundary.
 Each card retains its link order, omitting targets absent from the supplied read.
 The supplied cards receive dictionary keys even when no links resolve.
 
+## `public IReadOnlyList<LTranslationTarget> LEngineEtymonRead(LEntryDraft draft)`
+
+Etymons retain the draft's link order.
+Missing stored targets are omitted, preventing blank chips.
+
+## `public LEtymologyResult LEngineEtymologyRead(LEntryDraft draft)`
+
+Source links and the draft's narrative verdict form one answer.
+Link-read failures propagate to the caller's failure boundary.
+
 ## `public IReadOnlyList<LTranslationTarget> LEngineTargetRead(long ownerId, IReadOnlyList<long> ids)`
 
 The owner's court links supplement stored targets, allowing tentative targets to be named.
@@ -80,11 +92,6 @@ The owner's court links supplement stored targets, allowing tentative targets to
 ## `public IReadOnlyList<LUsage> LEngineIncomingRead(long entryId)`
 
 Both incoming card kinds use the hearth's current epithet setting.
-
-## `internal static ArgumentOutOfRangeException LEngineOwnerRaise(LOwner owner)`
-
-Unsupported owners share one exception shape.
-Returning the exception lets switch arms throw it directly.
 
 ## `public IReadOnlySet<long> LEngineFoldRead(long entryId)`
 
@@ -101,3 +108,8 @@ Other views of the same entry can re-read their folds.
 
 Unfolding uses the same entry-scoped bulletin and leaves the held draft untouched.
 Normal clerk completion announces it after releasing the gate, even when a nonpositive card id was ignored.
+
+## `internal static ArgumentOutOfRangeException LEngineOwnerRaise(LOwner owner)`
+
+Unsupported owners share one exception shape.
+Returning the exception lets switch arms throw it directly.

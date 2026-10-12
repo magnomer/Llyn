@@ -1,9 +1,10 @@
 # LSchemaCollocation.cs
-Hash: `86c796f37e3bf539`
+Hash: `e90e598319da5101`
 
 ## `public static class LSchemaCollocation`
 
 Creates the collocations an Entry owns and the single Note it owns.
+It also creates the links from a collocation to the Meanings it explains.
 
 ## `public const string LSchemaCollocationSequence =`
 
@@ -23,6 +24,10 @@ A reused number would point the history at a living row.
 It carries both an expression and the meaning that explains it, and the card has a field for each.
 A meaning carries a definition instead.
 Reordering rewrites position only.
+The collocation_sense table links a collocation to the Meanings it explains, ordered per collocation.
+Its first link is the collocation's home.
+Either side deleted removes the link by cascade.
+A collocation with no link rows is real and shows as unlinked.
 The note table has no id and no position.
 entry_parent is its primary key.
 That makes at-most-one Note per entry a schema fact.

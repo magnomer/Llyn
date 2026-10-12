@@ -242,6 +242,7 @@ internal static partial class TInterface
             new LTranslationClerk(rig, new LRevisionClerk(rig)),
             new LReferenceClerk(rig),
             new LFavoriteClerk(rig),
+            new LFoldClerk(rig),
             new LFanqieClerk(rig, languages, gate, static (_, _) => { }),
             new LFrequencyClerk(rig, languages, gate, TSettingsRead, static (_, _) => { }),
             new LParadigmClerk(rig, languages),

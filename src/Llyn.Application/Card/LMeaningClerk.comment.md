@@ -1,5 +1,5 @@
 # LMeaningClerk.cs
-Hash: `4bd5d050c00a081b`
+Hash: `598fe8f393d8d254`
 
 ## `public sealed class LMeaningClerk`
 
@@ -28,6 +28,13 @@ The walk keeps its own path, so a deep tree never grows the call stack.
 A Meaning is named by its title, or by its definition when it has no title.
 One with neither takes `unknown`, the worded fallback the caller hands in.
 A row naming itself as its parent is skipped rather than followed, so it cannot loop the walk.
+
+## `public static IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth, string LMeaningPath)> LMeaningClerkScan(long entryId, IReadOnlyList<LCardDraft> meanings, string unknown)`
+
+The Meanings of a draft in reading order, each with its depth, its ready name and its path.
+The draft tree is flattened into rows first, so the store's sort serves an unsaved draft too.
+A path is the dotted rank such as "1.2", as `LMeaning` numbers it.
+`entryId` is 0 for a draft never stored.
 
 ## `public void LMeaningClerkSave(long entryId, IReadOnlyList<LCardDraft> cards, string language, List<LRevisionDelta> changes, Dictionary<long, long> identity)`
 

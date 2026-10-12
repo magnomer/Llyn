@@ -70,4 +70,16 @@ public sealed class LQuillCard
         _lQuillCardTenure.LTenureRequestDefer(
             new LRequestCardMeaning(_lQuillCardTenure.LTenureId, card, new LStateWritten(text)));
     }
+
+    public void LCardSenseAttach(long card, long sense)
+    {
+        _lQuillCardTenure.LTenureRequestApply(
+            new LRequestSenseAddition(_lQuillCardTenure.LTenureId, card, sense));
+    }
+
+    public void LCardSenseDetach(long card, long sense)
+    {
+        _lQuillCardTenure.LTenureRequestApply(
+            new LRequestSenseRemoval(_lQuillCardTenure.LTenureId, card, sense));
+    }
 }

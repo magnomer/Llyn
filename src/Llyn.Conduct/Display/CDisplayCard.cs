@@ -63,15 +63,24 @@ public sealed class CDisplayCard
         IReadOnlyDictionary<long, string> citations = LDisplayCitationRead(shown);
         IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets = LDisplayTranslationRead(shown);
         string mark = _cDisplaySettings.LEngineTextRead("Display.Unknown");
+        string stub = _cDisplaySettings.LEngineTextRead("Display.CollocationStub");
+        string example = _cDisplaySettings.LEngineTextRead("Display.CollocationExample");
+        string exampleOne = _cDisplaySettings.LEngineTextRead("Display.CollocationExampleOne");
+        string also = _cDisplaySettings.LEngineTextRead("Display.CollocationAlso");
+        string heading = _cDisplaySettings.LEngineTextRead("Display.CollocationHeading");
         IReadOnlySet<long> folds = LDisplayFoldRead();
         LMediaPort media = _cDisplayRule.LDisplayMediaPort;
+        LCollocationLayout layout = _cDisplayCardPort.LEngineCollocationRead(shown, targets);
+        IReadOnlyList<CLeaf> others = CLeaf.LLeafRead(
+            layout.LCollocationLayoutOther, layout, order, mark, stub, example, exampleOne, also, heading, citations,
+            targets, folds, media, _cDisplayExamplePort);
         return new CLecternCard(
             CLeaf.LLeafRead(
-                shown.LEntryDraftMeanings, order, mark, citations, targets, folds, media, _cDisplayExamplePort),
-            CLeaf.LLeafRead(
-                shown.LEntryDraftCollocations, order, mark, citations, targets, folds, media, _cDisplayExamplePort),
+                shown.LEntryDraftMeanings, layout, order, mark, stub, example, exampleOne, also, heading, citations,
+                targets, folds, media, _cDisplayExamplePort),
+            others,
             shown.LEntryDraftDefined,
-            shown.LEntryDraftCollocated);
+            others.Count > 0);
     }
 
     public bool CDisplayFoldToggle(long cardId, bool folded)

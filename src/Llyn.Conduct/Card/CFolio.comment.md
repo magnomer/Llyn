@@ -1,5 +1,5 @@
 # CFolio.cs
-Hash: `6c5424a25e34cac9`
+Hash: `f01e3dd62cd8856c`
 
 ## `internal static class CFolio`
 
@@ -8,14 +8,15 @@ It is split from `CCard` by role, since the gates and the maps change for differ
 
 ## `internal static IReadOnlyList<CTranslationTarget> CFolioTargetRead(IReadOnlyList<LTranslationTarget> targets)`
 
-The one map from link targets to their shape, shared with the editor and the lectern.
+The one map from link targets to their shape, shared with the editor, the lectern and the mention results.
 
-## `internal static CEntryDraft CFolioEntryRead(LEntryDraft draft, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets, IReadOnlySet<long> folds, LMediaPort media)`
+## `internal static CEntryDraft CFolioEntryRead(LEntryDraft draft, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets, IReadOnlySet<long> folds, LMediaPort media, IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth, string LMeaningPath)> senses)`
 
 Shapes the held entry for the editor view.
 The link targets come keyed by card from the tenure, so each card carries its links ready.
 The image addresses come through `media`, so each picture row carries its address ready.
 The folded card ids come from one store read for the entry, so each card carries its fold ready.
+The meaning scan comes in `senses`, so each collocation card carries the meanings it links to.
 
 ## `internal static CStateValue CFolioStateRead(LStateValue value)`
 
@@ -23,7 +24,7 @@ The one map from a written value to its shape.
 It carries the engine's plain text and verdicts, so no driver judges a state.
 The empty text for a value with nothing legible is the engine's own, so the map keeps no fallback.
 
-## `private static IReadOnlyList<CCardDraft> CFolioSheetRead(IReadOnlyList<LCardDraft> cards, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets, IReadOnlySet<long> folds, LMediaPort media, string meaning)`
+## `private static IReadOnlyList<CCardDraft> CFolioSheetRead(IReadOnlyList<LCardDraft> cards, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets, IReadOnlySet<long> folds, LMediaPort media, string meaning, bool expressed, IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth, string LMeaningPath)> senses)`
 
 Shapes the meaning or collocation cards with everything the card parts read.
 A card's situation link carries no media, so its picture and video lists stay empty.
@@ -31,6 +32,9 @@ A card's links are its own entry of the tenure's target map, mapped by the one t
 The tenure answers an entry for every card, so a missing one is a fault and throws.
 The title, expression and meaning arrive worded, and `meaning` names the meaning field's hint for the sheet.
 The cards come in the order `CFolioOrderRead` sets, so a driver's list index is a Conduct place.
+Only the collocation sheet passes `expressed` as true, so a meaning card shows its expression as unspecified.
+Each card's links join its linked sense ids to `senses`, so a link to a vanished meaning is dropped.
+A linked meaning carries depth zero, since the chip shows only its name and path.
 Fold state comes from `folds`, while fold eligibility comes from the card draft's stored rule.
 
 ## `internal static int? CFolioPlaceRead(LEntryDraft content, long cardId, int place)`
@@ -51,8 +55,7 @@ So the badge number and the shown order agree even when the engine list is not i
 ## `internal static IReadOnlyList<LCardDraft> CFolioOrderRead(IReadOnlyList<LCardDraft> cards)`
 
 The one order of a card list, by the engine's position, with ties kept in the engine's order.
-The sheet, place, reading-card and contents maps share it, so those paths agree.
-Those are the sheet map, the place map, the reading view's cards and the contents.
+The sheet map, the place map, the reading view's cards and the contents share it, so those paths agree.
 It is internal so the display reads the same order rather than a copy of the sort.
 
 ## `private static IReadOnlyList<LCardDraft> CFolioListRead(LEntryDraft content, long cardId)`

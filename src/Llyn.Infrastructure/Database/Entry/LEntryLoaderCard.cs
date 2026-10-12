@@ -35,7 +35,8 @@ public sealed class LEntryLoaderCard
     public IReadOnlyList<LCardDraft> LEntryCollocationRead(long id)
     {
         List<LCardDraft> collocationCards = [];
-        foreach (LCollocation collocation in new LCollocationArchive(_lEntryCardDatabase).LCollocationRead(id))
+        LCollocationArchive collocations = new(_lEntryCardDatabase);
+        foreach (LCollocation collocation in collocations.LCollocationRead(id))
         {
             collocationCards.Add(LEntryCardRead(
                 collocation.LCollocationId,
@@ -43,7 +44,10 @@ public sealed class LEntryLoaderCard
                 collocation.LCollocationPosition + 1,
                 collocation.LCollocationTitle,
                 collocation.LCollocationExpression,
-                collocation.LCollocationMeaning));
+                collocation.LCollocationMeaning) with
+            {
+                LCardDraftSense = collocations.LCollocationSenseRead(collocation.LCollocationId),
+            });
         }
 
         return collocationCards;

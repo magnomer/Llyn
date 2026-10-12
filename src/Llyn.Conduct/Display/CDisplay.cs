@@ -94,7 +94,12 @@ public sealed class CDisplay
             envoy);
         CDisplayRoute = new CDisplayRoute(LDisplayRule, entries.CEntryBundleMention, settings, envoy);
         CDisplayCompass = new CCompass(
-            LDisplayRule, entries.CEntryBundleEntry, entries.CEntryBundleVista, settings, envoy);
+            LDisplayRule,
+            entries.CEntryBundleEntry,
+            entries.CEntryBundleVista,
+            entries.CEntryBundleCard,
+            settings,
+            envoy);
     }
 
     public event Action? CDisplayOpened;

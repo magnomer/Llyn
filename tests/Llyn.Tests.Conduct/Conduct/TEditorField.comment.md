@@ -1,12 +1,12 @@
 # TEditorField.cs
-Hash: `262b64eb0a2d9323`
+Hash: `110bea561ec984df`
 
 ## `public sealed class TEditorField`
 
 Covers the editor's typed field gates over an input editor on a real workspace, with no delay.
-A card's title, expression and definition land as typed once the deferred requests are flushed.
+A meaning's title and definition and a collocation's expression land as typed once the deferred requests are flushed.
 A card's links read back in the card's order.
-Stored link targets retain their resolved headwords and card order.
+The changed-draft notification carries a card's resolved link.
 A card without links reads none.
 An empty desk reads nothing.
 An image's location, a video's location and span, and a gloss's text land as typed.
@@ -18,34 +18,10 @@ An editor closed and then reopened on an entry hears a box stored in another edi
 The editor reads its draft's language, and an opened workspace opens a fresh draft in it.
 The observers the editor attaches show the draft through the marshal the driver hands.
 
-## `internal static TEditorFixture TEditorFieldPrepare(LEngine engine)`
-
-Builds an input editor whose marshal runs each action at once.
-
-## `internal static TEditorFixture TEditorFieldPrepare(LEngine engine, Action<Action> marshal)`
-
-Builds an input editor with no delay and the given marshal, and opens a fresh draft in it.
-It answers the fixture, so a test reads only the facets it needs.
-
-## `internal static long TEditorSheetAdd(TEditorFixture editor)`
-
-Appends a Meaning card to the held draft and answers its id.
-
-## `internal static CCardDraft TEditorCardRead(TEditorFixture editor, long sheet)`
-
-The card as the editor's draft read shows it.
-
-## `private static long TEditorSentenceAdd(TEditorFixture editor, long sheet)`
-
-Gives the card one written sentence and answers its id, since a gloss needs the sentence's example.
-
-## `private static IReadOnlyList<CGlossDraft> TEditorGlossRead(TEditorFixture editor, long sheet)`
-
-The glosses of the card's first sentence, as the editor's draft read shows them.
-
 ## `public void CardFieldSet_TypedTexts_WritesTitleExpressionAndDefinition()`
 
 Deferred field requests persist title, expression and definition after flushing.
+The expression is typed on a collocation, because a meaning refuses one.
 
 ## `public void DraftRead_LinkedEntries_CarriesThemOnTheCardInItsOrder()`
 
@@ -102,3 +78,28 @@ An opened workspace gives the new input editor a fresh draft.
 ## `public void ObserverAttach_DraftEdited_ShowsTheDraftThroughTheMarshal()`
 
 Draft notifications use the supplied marshal.
+
+## `internal static TEditorFixture TEditorFieldPrepare(LEngine engine)`
+
+Builds an input editor whose marshal runs each action at once.
+
+## `internal static TEditorFixture TEditorFieldPrepare(LEngine engine, Action<Action> marshal)`
+
+Builds an input editor with no delay and the given marshal, and opens a fresh draft in it.
+It answers the fixture, so a test reads only the facets it needs.
+
+## `internal static long TEditorSheetAdd(TEditorFixture editor)`
+
+Appends a Meaning card to the held draft and answers its id.
+
+## `internal static CCardDraft TEditorCardRead(TEditorFixture editor, long sheet)`
+
+The card as the editor's draft read shows it.
+
+## `private static long TEditorSentenceAdd(TEditorFixture editor, long sheet)`
+
+Gives the card one written sentence and answers its id, since a gloss needs the sentence's example.
+
+## `private static IReadOnlyList<CGlossDraft> TEditorGlossRead(TEditorFixture editor, long sheet)`
+
+The glosses of the card's first sentence, as the editor's draft read shows them.

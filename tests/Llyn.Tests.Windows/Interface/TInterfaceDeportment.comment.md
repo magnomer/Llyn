@@ -1,5 +1,5 @@
 # TInterfaceDeportment.cs
-Hash: `97c0ea9afb5c428c`
+Hash: `02ea84af5bcd5466`
 
 ## `[assembly: CollectionBehavior(DisableTestParallelization = true)]`
 
@@ -11,9 +11,7 @@ Two workspaces alive in parallel let one disposal close a connection the other i
 
 The relays for the deportment classes the Windows tests drive.
 It is a class of its own rather than a part of `TInterface`.
-This relay class is not partial.
 Some relays construct bare WPF surfaces to expose production painters and handlers.
-The posture relay builds its deportment over a real workspace folder.
 The index item and caret key relays reach internal statics and make no WPF object.
 The rime-book and script switch relays hand a WPF toggle through, so their caller runs them on an STA thread.
 The reflex type relay copies the held row with the typed text and hands it to the row's refine.
@@ -108,6 +106,7 @@ Copies the held row through `CReflex.CReflexTypedApply`, as the gate does, and h
 ## `internal static object TCardCreate()`
 
 Builds a card with no rows over a blank draft.
+The blank draft carries no meaning links.
 The card is internal, so the relay hands it back as an object.
 
 ## `internal static void TCardLabelShow(object card, IReadOnlyList<CTagDraft> drafts)`
@@ -177,10 +176,22 @@ The item is internal, so the relay hands it back as an object.
 
 Runs the reading card painter on a laid out row.
 
+## `internal static void TLeafRowRefine(FrameworkElement container, object row)`
+
+Runs the collocation row painter on a laid out row.
+
 ## `internal static QLecternCard TLecternCardCreate(CDisplay display, FrameworkElement surface)`
 
 Builds the reading card section over the display's card, route and sound areas and the given surface.
 The surface holds WPF lists, so the caller runs it on an STA thread.
+
+## `internal static object TLeafSeeCreate(long id, string text)`
+
+Builds one "see" line item naming card `id`, typed as `object` so the caller stays out of internal types.
+
+## `internal static void TLecternSeeAttach(QLecternCard card, Action<long> notice)`
+
+Hands `notice` the ids the card section's "see" clicks raise for the contents scroll.
 
 ## `internal static void TCardRowShow(ObservableCollection<QTranscriptionItem> rows, IReadOnlyList<CTranscriptionDraft> drafts)`
 

@@ -45,6 +45,7 @@ public sealed class QLecternCard
         _qLecternCardCollocation.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QLecternChipObserve));
         _qLecternCardMeaning.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QLecternHingeObserve));
         _qLecternCardCollocation.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QLecternHingeObserve));
+        _qLecternCardMeaning.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QLecternSeeObserve));
         _qLecternCardMeaning.AddHandler(
             PMention.PMentionClickEvent, new EventHandler<PMentionArgument>(QLecternMentionObserve));
         _qLecternCardCollocation.AddHandler(
@@ -52,6 +53,8 @@ public sealed class QLecternCard
     }
 
     internal event Action<PMention, CMentionOffer?>? QLecternMentionNotice;
+
+    internal event Action<long>? QLecternSeeNotice;
 
     public void QLecternExampleRefine()
     {
@@ -80,7 +83,7 @@ public sealed class QLecternCard
         _qLecternCardMeaning.ItemsSource =
             card.CLecternCardMeanings.Select(static leaf => new QLeafItem(leaf, leaf.CLeafMeaning)).ToList();
         _qLecternCardCollocation.ItemsSource =
-            card.CLecternCardCollocations.Select(static leaf => new QLeafItem(leaf, leaf.CLeafExpression)).ToList();
+            card.CLecternCardOther.Select(static leaf => new QLeafItem(leaf, leaf.CLeafPhrase)).ToList();
     }
 
     private void QLecternChipObserve(object sender, RoutedEventArgs e)
@@ -99,6 +102,17 @@ public sealed class QLecternCard
             QLook.QLookCheckedRefine(
                 hinge,
                 _qLecternCardArea.CDisplayFoldToggle(card.QLeafItemId, QLook.QLookCheckedRead(hinge.IsChecked)));
+        }
+    }
+
+    private void QLecternSeeObserve(object sender, RoutedEventArgs e)
+    {
+        ArgumentNullException.ThrowIfNull(e);
+
+        if (QSender.QSenderSourceRead<QLeafSee>(e) is QLeafSee see)
+        {
+            e.Handled = _qLecternCardArea.CDisplayFoldToggle(see.QLeafSeeId, false);
+            QLecternSeeNotice?.Invoke(see.QLeafSeeId);
         }
     }
 

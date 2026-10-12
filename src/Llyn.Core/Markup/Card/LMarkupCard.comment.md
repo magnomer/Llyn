@@ -1,7 +1,7 @@
 # LMarkupCard.cs
-Hash: `3bb4ce7a45f8ba43`
+Hash: `4f245dcabda5b7bc`
 
-## `public sealed record LMarkupCard(LStateValue LMarkupCardTitle, LStateValue LMarkupCardExpression, LStateValue LMarkupCardMeaning, IReadOnlyList<LMarkupSentence>? LMarkupCardSentence = null, IReadOnlyList<LSituationDraft>? LMarkupCardSituation = null, IReadOnlyList<LRegisterDraft>? LMarkupCardRegister = null, IReadOnlyList<LMarkupTranslation>? LMarkupCardTranslation = null, IReadOnlyList<LTagDraft>? LMarkupCardTag = null, IReadOnlyList<LImageDraft>? LMarkupCardImage = null, IReadOnlyList<LVideoDraft>? LMarkupCardVideo = null, IReadOnlyList<LMarkupCard>? LMarkupCardChild = null)`
+## `public sealed record LMarkupCard(LStateValue LMarkupCardTitle, LStateValue LMarkupCardExpression, LStateValue LMarkupCardMeaning, IReadOnlyList<LMarkupSentence>? LMarkupCardSentence = null, IReadOnlyList<LSituationDraft>? LMarkupCardSituation = null, IReadOnlyList<LRegisterDraft>? LMarkupCardRegister = null, IReadOnlyList<LMarkupTranslation>? LMarkupCardTranslation = null, IReadOnlyList<LTagDraft>? LMarkupCardTag = null, IReadOnlyList<LImageDraft>? LMarkupCardImage = null, IReadOnlyList<LVideoDraft>? LMarkupCardVideo = null, IReadOnlyList<LMarkupCard>? LMarkupCardChild = null, IReadOnlyList<string>? LMarkupCardSense = null)`
 
 One meaning or collocation as a markup file carries it.
 The shape is `LCardDraft` with every id and position gone.
@@ -21,10 +21,12 @@ Position is the order in the list holding the card.
 - `LMarkupCardImage` — Image drafts, locations verbatim.
 - `LMarkupCardVideo` — Video drafts, locations and spans verbatim.
 - `LMarkupCardChild` — Nested sub-senses, always empty on a collocation.
+- `LMarkupCardSense` — Dotted paths of the meanings a collocation links, in link order, empty on a meaning.
 
 ## `public bool Equals(LMarkupCard? other)`
 
-Row-by-row equality in order, children included.
+Row-by-row equality in order, children and sense paths included.
+Paths are compared ordinally.
 
 ## `public override int GetHashCode()`
 

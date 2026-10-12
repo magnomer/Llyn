@@ -44,6 +44,20 @@ public static class LOutlineSection
             case LPortraitRole.LPortraitRoleUsage:
                 LOutlineUsageAppend(outline, section);
                 break;
+            case LPortraitRole.LPortraitRoleList:
+                outline.Append(new string('#', Math.Min(depth + 2, 6)))
+                    .Append(' ')
+                    .Append(LOutline.LOutlineNormalize(section.LPortraitSectionHeading))
+                    .Append("\n\n");
+                LOutlineBodyAppend(outline, section, depth);
+                break;
+            case LPortraitRole.LPortraitRoleRow:
+                outline.Append("**")
+                    .Append(LOutline.LOutlineNormalize(section.LPortraitSectionHeading))
+                    .Append("**\n\n");
+                LOutlineLineAppend(outline, section.LPortraitSectionLine, string.Empty, string.Empty);
+                LOutlineBodyAppend(outline, section, depth);
+                break;
             default:
                 LOutlineBandAppend(outline, section, depth);
                 break;

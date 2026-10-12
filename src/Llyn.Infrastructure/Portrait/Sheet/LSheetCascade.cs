@@ -172,6 +172,18 @@ public static class LSheetCascade
         (".phrase", "font-size:16px;font-weight:600;margin:0 0 7px 0;"),
         (".sense", "font-size:16px;margin:0;"),
 
+        (".collocations", "margin:20px 0 0 0;border:1px solid var(--line);border-radius:10px;"),
+        (".collocations>h3", "font-size:13px;font-weight:600;color:var(--muted);margin:0;"
+            + "padding:9px 16px;border-bottom:1px solid var(--line);"),
+        (".collocation", "padding:12px 16px;break-inside:avoid;page-break-inside:avoid;"),
+        (".collocation+.collocation", "border-top:1px solid var(--line);"),
+        ("details.collocation>summary", "display:flex;align-items:baseline;gap:10px;"),
+        ("details.collocation>summary::before", "content:\"\";align-self:center;flex:0 0 12px;height:12px;"
+            + "transform:rotate(-90deg);background-position:center;background-size:12px 12px;"
+            + "background-repeat:no-repeat;"),
+        ("details.collocation[open]>summary::before", "transform:none;"),
+        ("details.collocation>summary .phrase", "margin:0;"),
+
         ("section.band .speech", "margin:14px 0 0 12px;display:flex;flex-wrap:wrap;"),
         ("section.band .speech span", "height:28px;line-height:28px;margin:0 7px 7px 0;padding:0 12px;"
             + "border-radius:14px;background:var(--accent-soft);"
@@ -283,6 +295,7 @@ public static class LSheetCascade
             .Append("\")}.heart.on{background-image:url(\"")
             .Append(LPortraitIcon.LPortraitIconRead("favorite-marked").LPortraitAssetAddress)
             .Append("\")}details.card>summary::after,details.box>summary::after,details.fold>summary::before")
+            .Append(",details.collocation>summary::before")
             .Append("{background-image:url(\"")
             .Append(LPortraitIcon.LPortraitIconRead("expand").LPortraitAssetAddress)
             .Append("\")}");

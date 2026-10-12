@@ -1,5 +1,5 @@
 # TInterfaceConductCard.cs
-Hash: `8e32259e6250bd76`
+Hash: `618e1de3d61950bb`
 
 ## `internal static class TInterfaceConductCard`
 
@@ -10,7 +10,7 @@ Each relay is transparent and carries no test logic of its own.
 ## `internal static CCard TCardCreate(LEngine engine, CDesk desk, CEnvoy envoy)`
 
 Builds the card gates over `desk` and real outlets on `engine`, as the editor does.
-`envoy` is where a failed translation is shown.
+`envoy` is where the card gates show their failures, such as a failed translation.
 
 ## `internal static CCardList TCardListCreate(CDesk desk)`
 
@@ -21,7 +21,7 @@ Its stub card port supplies no real fold persistence.
 
 Builds the sentence gates over `desk` with the engine's vocabulary facade and a real draft outlet.
 Its settings port is the shared fake, and its envoy answers no to every question.
-It holds a fresh repaint memory of its own.
+It holds a fresh `CLedgerNoticed` of its own.
 
 ## `internal static CStateValue TCardStateRead(LStateValue value)`
 
@@ -40,3 +40,9 @@ Relays the internal video map, so a fact can hand it a row nobody located.
 
 Relays the entry draft map, so the facts pass engine drafts through the boundary.
 It hands no folded ids, so every card maps unfolded.
+It hands no link menu, so no card carries meaning links.
+
+## `internal static IReadOnlyList<CMeaning> TCardSenseRead(this CCardField field)`
+
+Relays the link menu read of the card field gate.
+It reads the meanings of the draft the editor holds.

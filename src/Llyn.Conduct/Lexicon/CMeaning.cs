@@ -1,3 +1,3 @@
 namespace Llyn.Conduct;
 
-public sealed record CMeaning(long CMeaningId, string CMeaningName, int CMeaningDepth);
+public sealed record CMeaning(long CMeaningId, string CMeaningName, int CMeaningDepth, string CMeaningPath = "");

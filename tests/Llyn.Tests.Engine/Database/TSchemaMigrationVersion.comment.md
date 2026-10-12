@@ -1,5 +1,5 @@
 # TSchemaMigrationVersion.cs
-Hash: `cebfbbb62728b5c4`
+Hash: `90578ebc24bd345b`
 
 ## `public sealed class TSchemaMigrationVersion`
 
@@ -39,9 +39,15 @@ A bare value with no source gains no row, and neither does an empty one.
 
 A version-47 workspace has no Situation media tables.
 The rebuild adds them empty and carries every Situation and Image across untouched.
+It leaves exactly one `*.v47.db` copy in the workspace folder.
 
 ## `public void DatabaseCreate_RetiredUnits_ClearsThemAndKeepsTheEntries()`
 
 A version-79 workspace may hold the retired content and function units, numbered 1 and 2.
 The rebuild clears both to unchosen and keeps every entry, while morpheme and word keep their numbers.
 Every freedom comes across unchosen, since the column is new.
+
+## `public void DatabaseCreate_VersionEightyOne_AddsCollocationSense()`
+
+A version-80 workspace has no collocation link table.
+The rebuild adds it empty with its index, and keeps every collocation.

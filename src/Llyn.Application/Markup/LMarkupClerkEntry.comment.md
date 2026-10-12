@@ -1,5 +1,5 @@
 # LMarkupClerkEntry.cs
-Hash: `7abb58cf0904771a`
+Hash: `23db0d114404e1e7`
 
 ## `public sealed class LMarkupClerkEntry`
 
@@ -17,6 +17,7 @@ Reads the entry, speech and morphology ports out of `rig`.
 Loads the entry draft for `id` and translates every id-bearing field into names.
 Null means no entry has that id.
 Draft ids and positions are dropped, because list order carries the positions.
+A collocation's meaning links travel as meaning paths, resolved against the draft's meanings.
 Reflex rows are written in the order the pack declares, through `LReflexClerkSort`, never in storage order.
 The lexical unit and freedom are carried as the draft holds them.
 Grasp, frequency, favorite and timestamps are never read.

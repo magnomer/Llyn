@@ -1,5 +1,5 @@
 # QCompass.cs
-Hash: `8b59e79e86a917b1`
+Hash: `27667124d0102300`
 
 ## `public sealed class QCompass`
 
@@ -56,6 +56,7 @@ The wording, the card names and the numbering are Conduct's answer.
 ## `private void QCompassRowsRefine(IReadOnlyList<CCompassRow> rows)`
 
 Pairs each answered row with the element it names and fills the shown list in one pass.
+A meaning's count line names the meaning's card, and carries Conduct's muted verdict as it came.
 A card whose container the list has not generated is skipped, since the reader cannot go there.
 
 ## `private void QCompassColumnRefine()`
@@ -77,7 +78,10 @@ None of them announce it.
 
 ## `private void QCompassCurrentRefine()`
 
-The current row is the last one whose anchor has passed the top of the view.
+The current row is the last one whose anchor sits within `QCompassEdge` of the view's top or above it.
+A row sharing the target of the current row never takes over from it.
+A meaning's collocation count line points at that meaning's card.
+So the meaning row stays current, and the count line is never marked.
 A reader who has scrolled past nothing is still reading the first section.
 
 ## `private void QCompassTargetRefine(FrameworkElement target)`
@@ -88,7 +92,7 @@ A target not shown in the view leaves the scroll where it is.
 
 ## `public void QCompassRowRefine(object sender)`
 
-Scrolls to the section the clicked row names, a look-only answer with no gate.
+Scrolls to the section or card the clicked row names, a look-only answer with no gate.
 
 ## `public void QCompassSpotlightRefine(long id)`
 

@@ -1,5 +1,5 @@
 # LCardClerk.cs
-Hash: `c53f71af1ce92114`
+Hash: `bdb3cac0e6820774`
 
 ## `public sealed class LCardClerk`
 
@@ -15,18 +15,18 @@ A card naming nothing is created, and a stored row the draft no longer names is 
 
 ## `public LCardClerk(LRig rig, LTagClerk tags, LRegisterClerk registers, LTranslationClerk translations, LExampleClerk examples)`
 
-Reads the collocation, image, video, sentence and situation ports out of `rig`.
+Reads the collocation, meaning, image, video, sentence and situation ports out of `rig`.
 The four clerks handed in write the lines a card carries.
 
 ## `public void LCollocationSave(long entryId, IReadOnlyList<LCardDraft> cards, string language, List<LRevisionDelta> changes, Dictionary<long, long> identity)`
 
 Reconciles the entry's Collocations to the cards the draft lists.
-A card naming a stored row of this entry updates that row when its text or its place moved.
+A card naming a stored row updates it when its text, its place or its links changed.
 A row the card left as it was is neither rewritten nor recorded, so a no-op save leaves no history.
 An unreadable value is still sent, because the store is what refuses it.
-A card naming nothing creates one.
+A card naming nothing creates one and then links it.
 A stored row the draft stopped naming is deleted.
-A card that has gone blank never reaches here.
+A blank card is skipped, so its stored row counts as no longer named.
 So clearing a card removes its row, exactly as adding text to a blank one adds one.
 
 Deletions run first, so the creates that follow append onto a set already free of the going rows.
@@ -38,10 +38,18 @@ A card names a stored row once.
 Two cards carrying one id would otherwise both write that row.
 So the second is a new card.
 
+## `private bool LCollocationSenseSync(long rowId, LCardDraft card, Dictionary<long, long> identity, IReadOnlySet<long> meanings)`
+
+Writes the meaning links of one Collocation to match the card's ordered link list.
+A negative link id is settled through the map, so a meaning created in the same save is linked.
+A link naming no meaning of this entry is dropped, and a repeated link keeps its first place.
+The first link left is the home of the Collocation.
+Answers whether the stored links differed, so a relink alone counts as a change to record.
+
 ## `public long LCollocationInsert(long entryId, LCardDraft card, Dictionary<long, long> identity)`
 
 Writes one new Collocation row from `card` and records its id in the map.
-The entry clerk's create and the reconcile above both append through it.
+`LCollocationSave` is its one caller.
 
 ## `public void LCardClerkSync(long ownerId, LCardDraft card, string language, bool collocation, Dictionary<long, long> identity)`
 

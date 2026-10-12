@@ -13,8 +13,7 @@ internal static class LSheetDeck
         LLiveryPage livery,
         LPortraitPage portrait,
         string heading,
-        IReadOnlyList<LCardDraft> cards,
-        bool collocated)
+        IReadOnlyList<LCardDraft> cards)
     {
         ArgumentNullException.ThrowIfNull(sheet);
         ArgumentNullException.ThrowIfNull(livery);
@@ -31,14 +30,14 @@ internal static class LSheetDeck
         for (int index = 0; index < band.LPortraitSectionChild.Count; index++)
         {
             long id = index < cards.Count ? cards[index].LCardDraftId : 0;
-            LSheetFaceAppend(sheet, band.LPortraitSectionChild[index], id, livery.LLiveryPageFold, collocated);
+            LSheetFaceAppend(sheet, band.LPortraitSectionChild[index], id, livery.LLiveryPageFold);
         }
 
         sheet.Append("</section>\n");
     }
 
     private static void LSheetFaceAppend(
-        StringBuilder sheet, LPortraitSection face, long id, IReadOnlySet<long> fold, bool collocated)
+        StringBuilder sheet, LPortraitSection face, long id, IReadOnlySet<long> fold)
     {
         bool stored = id > 0;
         if (stored)
@@ -66,7 +65,7 @@ internal static class LSheetDeck
                 .Append("</span>");
             if (stored)
             {
-                sheet.Append("<span class=\"peek\">").Append(LSheet.LSheetNormalize(LSheetPeekRead(face, collocated)))
+                sheet.Append("<span class=\"peek\">").Append(LSheet.LSheetNormalize(LSheetPeekRead(face)))
                     .Append("</span>");
             }
         }
@@ -76,21 +75,8 @@ internal static class LSheetDeck
         sheet.Append(stored ? "</section>\n</details>\n" : "</section>\n</article>\n");
     }
 
-    private static string LSheetPeekRead(LPortraitSection face, bool collocated)
+    private static string LSheetPeekRead(LPortraitSection face)
     {
-        if (!collocated)
-        {
-            return face.LPortraitSectionLine.Count > 0 ? face.LPortraitSectionLine[0].LPortraitLineText : string.Empty;
-        }
-
-        foreach (LPortraitSection child in face.LPortraitSectionChild)
-        {
-            if (child.LPortraitSectionRole == LPortraitRole.LPortraitRolePhrase && child.LPortraitSectionLine.Count > 0)
-            {
-                return child.LPortraitSectionLine[0].LPortraitLineText;
-            }
-        }
-
-        return string.Empty;
+        return face.LPortraitSectionLine.Count > 0 ? face.LPortraitSectionLine[0].LPortraitLineText : string.Empty;
     }
 }

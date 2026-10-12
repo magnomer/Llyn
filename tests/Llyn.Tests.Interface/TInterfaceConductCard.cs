@@ -35,5 +35,7 @@ internal static class TInterfaceConductCard
 
     internal static CEntryDraft TCardEntryRead(
         LEntryDraft draft, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets) =>
-        CFolio.CFolioEntryRead(draft, targets, new HashSet<long>(), TInterfaceConduct.TMediaCreate());
+        CFolio.CFolioEntryRead(draft, targets, new HashSet<long>(), TInterfaceConduct.TMediaCreate(), []);
+
+    internal static IReadOnlyList<CMeaning> TCardSenseRead(this CCardField field) => field.CCardSenseRead();
 }

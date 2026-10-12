@@ -1,5 +1,5 @@
 # LSchemaIndex.cs
-Hash: `4f11331ef2110360`
+Hash: `642f88e749df6a26`
 
 ## `public static class LSchemaIndex`
 
@@ -27,6 +27,8 @@ Existing indexes are left as they are.
 ### `command.CommandText =`
 
 Lexical rows owned by an Entry or a Meaning whose owning column carries no key of its own.
+An Example's Reference is here too.
+So is the Meaning side of a collocation link, so deleting a Meaning does not scan the links.
 
 ### `command.CommandText =`
 

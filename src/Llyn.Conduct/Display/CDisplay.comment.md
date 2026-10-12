@@ -1,5 +1,5 @@
 # CDisplay.cs
-Hash: `a07c099e989a4fd0`
+Hash: `20f4eec71748e89f`
 
 ## `public sealed class CDisplay`
 
@@ -143,7 +143,7 @@ It opens what a clicked chip, link or word names.
 
 ## `public CCompass CDisplayCompass { get; }`
 
-The lectern's compass, built once here over the rules.
+The lectern's compass, built once here over the rules and the entry, vista and card ports.
 It reads the floating contents and finds the place of a card.
 
 ## `internal LDisplay LDisplayRule { get; }`

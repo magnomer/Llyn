@@ -1,9 +1,13 @@
 # TPortraitFolio.cs
-Hash: `2c6c7f447350de3f`
+Hash: `071815c59fc69cd2`
 
 ## `public sealed class TPortraitFolio`
 
 Covers the Word export, whose package is written by hand.
+
+## `public void FolioSave_FoldedRow_PrintsTheRowOpen()`
+
+A folded row prints the list heading, its phrase, meaning and fields, in that order.
 
 ## `public void FolioSave_FullPortrait_WritesAReadablePackage()`
 

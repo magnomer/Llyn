@@ -1,9 +1,9 @@
 # TDisplay.cs
-Hash: `47922d4cce7edbc2`
+Hash: `6cdb274190221f27`
 
 ## `public sealed class TDisplay`
 
-Covers the reading view rules that moved into the conduct, driven with no window.
+Covers the reading view rules in the conduct, driven with no window.
 
 ## `public void DisplaySoundClear_ShownDraft_DropsDraftAndEntry()`
 
@@ -23,7 +23,8 @@ A stored entry no source has ranked shows no chip.
 
 ## `public void DisplayCompassRead_ShownCards_NamesEachPartAndCardAndNumbersTwins()`
 
-The lookup echoes each key but the collocation one, so every other wording key shows in the names.
+The lookup echoes each key but `Display.CollocationSingle`, so every other wording key shows in the names.
+The unlinked collocation section is named `Display.CollocationOther`.
 A titled card keeps its title, an untitled one its kind, and an uncertain one the unknown mark.
 The collocation kind is looked up to the meaning wording, so the two twins carry one name and are numbered.
 Each card carries its number, its depth and its place in its section's list.
@@ -37,7 +38,7 @@ With no draft shown, the parts are named through the lookup and carry no cards.
 A band at or below zero reads zero stars, the unknown tier and no rank.
 Its spare stars then fill the whole row.
 A band on the scale keeps its stars and tier, and its spare stars fill the row.
-An empty source stays empty, since the chip only shows it as a tooltip.
+An empty source stays empty.
 
 ## `public void DisplayFrequencyRead_BandPastScale_ReadsUnknownTier(int band)`
 
@@ -46,7 +47,7 @@ The band stays non-negative and the source passes through.
 
 ## `public void DisplayFrequencyRead_NoGauge_ReadsNone()`
 
-An engine that answers no gauge reads no frequency, so the chip hides.
+An engine that answers no gauge reads no frequency.
 
 ## `private static LPronunciationPort TFrequencyPortCreate(LFrequencyGauge? gauge)`
 

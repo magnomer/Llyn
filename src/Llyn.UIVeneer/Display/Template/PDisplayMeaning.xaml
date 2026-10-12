@@ -37,6 +37,25 @@
                     <StackPanel>
                         <TextBlock x:Name="PCardMeaning" Style="{DynamicResource Display.Card.Definition}" />
                         <ContentControl x:Name="PCardContents" ContentTemplate="{DynamicResource Display.Card.Body}" Focusable="False" />
+                        <TextBlock
+                            x:Name="PCardHeading"
+                            Margin="0,14,0,6"
+                            Style="{DynamicResource Display.Card.Definition}"
+                            FontWeight="SemiBold"
+                            Foreground="{DynamicResource Theme.Muted}"
+                            Visibility="Collapsed" />
+                        <ItemsControl
+                            x:Name="PCardHome"
+                            Padding="10,4"
+                            BorderBrush="{DynamicResource Theme.Line}"
+                            BorderThickness="1"
+                            ItemTemplate="{DynamicResource Display.Collocation.Row}"
+                            Visibility="Collapsed" />
+                        <ItemsControl
+                            x:Name="PCardSee"
+                            Margin="0,12,0,0"
+                            ItemTemplate="{DynamicResource Display.Collocation.See}"
+                            Visibility="Collapsed" />
                     </StackPanel>
                 </Grid>
             </Grid>

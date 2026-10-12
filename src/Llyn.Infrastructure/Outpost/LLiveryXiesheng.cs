@@ -43,7 +43,9 @@ internal static class LLiveryXiesheng
         IReadOnlyList<(LReflexDraft, LReflexGuise?)> rows = member.LStemMemberRows;
         bool folding = rows.Count > 0;
         sheet.Append(
-                folding ? LLiveryCard.LLiveryFoldFormat(member.LStemMemberOpened) : "<div class=\"llyn-card\">\n\n")
+                folding
+                    ? LLiveryCard.LLiveryFoldFormat("llyn-card", member.LStemMemberOpened)
+                    : "<div class=\"llyn-card\">\n\n")
             .Append(LLiveryCharacterFormat(member.LStemMemberCharacter, entries, note));
         string reading = member.LStemMemberReading;
         if (reading.Length > 0)

@@ -1,5 +1,5 @@
 # LSheetStyle.cs
-Hash: `df627556f554795a`
+Hash: `a011f8b916bf3a3b`
 
 ## `public static class LSheetStyle`
 
@@ -36,6 +36,9 @@ Writes one custom property with the theme text untouched.
 Each rule as a selector and its declarations, in the order the page has always written them.
 Order matters in CSS, so a later rule still wins over an earlier one.
 The paradigm rule hides the table its checked radio does not name, so Short/Full switches without script.
+A collocation row's summary sets the phrase and the meaning on one baseline, with no marker.
+This sheet draws no chevron, since PDF and print open every row through `LPortraitPage.LPortraitPageOpen`.
+A catalog HTML export keeps the page's folds, so a folded row there shows no fold mark.
 
 ### `private const string LSheetStylePaper =`
 

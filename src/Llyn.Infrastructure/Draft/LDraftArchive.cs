@@ -313,6 +313,11 @@ public sealed class LDraftArchive : LDraftVault
                 LDraftArchiveCheck(tag.LTagDraftId, "tag");
             }
 
+            foreach (long sense in card.LCardDraftSense)
+            {
+                LDraftArchiveCheck(sense, "sense");
+            }
+
             LDraftArchiveCheck(card.LCardDraftImage, card.LCardDraftVideo);
             LDraftArchiveCheck(card.LCardDraftChild);
         }

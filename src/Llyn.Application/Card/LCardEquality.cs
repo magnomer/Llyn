@@ -36,6 +36,7 @@ public static class LCardEquality
                 || !LCardEqualityMatch(written.LCardDraftTag, held.LCardDraftTag)
                 || !LCardEqualityMatch(written.LCardDraftImage, held.LCardDraftImage)
                 || !LCardEqualityMatch(written.LCardDraftVideo, held.LCardDraftVideo)
+                || !LCardEqualityMatch(written.LCardDraftSense, held.LCardDraftSense)
                 || !LCardEqualityMatch(written.LCardDraftChild, held.LCardDraftChild))
             {
                 return false;
@@ -117,6 +118,7 @@ public static class LCardEquality
             && card.LCardDraftTag.Count == 0
             && card.LCardDraftImage.All(static row => row.LImageDraftEmpty)
             && card.LCardDraftVideo.All(static row => row.LVideoDraftEmpty)
+            && card.LCardDraftSense.Count == 0
             && card.LCardDraftChild.Count == 0;
     }
 

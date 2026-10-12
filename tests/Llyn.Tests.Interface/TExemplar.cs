@@ -19,7 +19,7 @@ internal static class TExemplar
         RegexOptions.Compiled);
 
     private static readonly Regex TExemplarListPattern = new(
-        "\"(LCardDraftTranslation|LInflectionMorphology|LReflexDraftAnchors)\":\\s*\\[[^\\]]*\\]",
+        "\"(LCardDraftTranslation|LCardDraftSense|LInflectionMorphology|LReflexDraftAnchors)\":\\s*\\[[^\\]]*\\]",
         RegexOptions.Compiled);
 
     private static readonly JsonSerializerOptions TExemplarJsonOptions = new()
@@ -61,6 +61,7 @@ internal static class TExemplar
             null,
             ["Noun", "Verb"]));
         long sense = engine.TEngineEntryLoad(mention.LEntryId)!.LEntryDraftMeanings[0].LCardDraftId;
+        long linked = TInterface.TIdentityCreate();
 
         LReference reference = engine.TEngineReferenceCreate(TInterface.TReferenceCreate(
             0,
@@ -165,14 +166,14 @@ internal static class TExemplar
                     "exemplar-second-title",
                     LStateValue.LStateValueUnspecified,
                     "exemplar-second-meaning",
-                    [], [], [], [], [], [], [], 2),
+                    [], [], [], [], [], [], [], 2, LCardDraftId: linked),
             ],
             [
                 new LCardDraft(
                     LStateValue.LStateValueUnspecified,
                     "exemplar-collocation-phrase",
                     "exemplar-collocation-meaning",
-                    [], [], [], [], [], [], [], 1),
+                    [], [], [], [], [], [], [], 1, LCardDraftSense: [linked]),
             ],
             [
                 new LSpeechDraft(LSpeechDraftValue: noun.LSpeechValueId, null, noun.LSpeechValueName),
@@ -288,6 +289,7 @@ internal static class TExemplar
                 reflex.LReflexDraftRegion);
         }
 
+        TExemplarTextAdd(texts, draft.LEntryDraftEtymology.LEtymologyDraftText);
         TExemplarTextAdd(texts, draft.LEntryDraftMeanings);
         TExemplarTextAdd(texts, draft.LEntryDraftCollocations);
         return texts;

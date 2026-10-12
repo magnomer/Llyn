@@ -1,5 +1,5 @@
 # LDraftPort.cs
-Hash: `557db94c11347858`
+Hash: `0b4d195f35d9bf53`
 
 ## `public interface LDraftPort`
 
@@ -119,10 +119,17 @@ A field's selection as the span a Mention request carries, measured in code poin
 
 Whether a field's selection covers any code point, so a link command may run.
 
-## `IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)`
+## `IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)>? LEngineSenseRead(`
 
 The Meanings the sense menu offers for the linked Mention under a sentence field's selection.
 Pending typing is persisted before the find, and no linked Mention answers null.
+
+## `IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth, string LMeaningPath)>`
+
+Every Meaning of the held draft at any depth, in reading order, each with its path.
+It feeds the link picker of a collocation card and the entry folio.
+The caller passes the localization key that names an unnamed Meaning.
+A tenure that holds no draft answers an empty list.
 
 ## `int LEngineOffsetRead(string text, int unit);`
 

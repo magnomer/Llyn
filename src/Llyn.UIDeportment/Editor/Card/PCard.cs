@@ -54,6 +54,8 @@ internal sealed class PCard : INotifyPropertyChanged
                 ? row
                 : fresh);
 
+    public ObservableCollection<QBondItem> PCardBond { get; } = [];
+
     public PCaret<PLabelChip> PCardLabel { get; } = new(
         "Card.LabelHint",
         static chip => chip.PLabelChipId,

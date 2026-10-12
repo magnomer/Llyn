@@ -1,5 +1,5 @@
 # CPortrait.cs
-Hash: `a3e604583d953baa`
+Hash: `37a9199673348538`
 
 ## `internal static class CPortrait`
 
@@ -12,6 +12,7 @@ Only the panel gates and `CSPress` call it, so every member is an `L` helper.
 ## `private static readonly string[] LPortraitLabelKeys`
 
 The wording keys of an entry page, in the order of the engine label's words.
+The collocation keys are `Display.CollocationSingle`, `Display.CollocationOther`, `Display.CollocationStub` and `Display.CollocationHeading`.
 The three unit keys and the two freedom keys close the list, in the order the label maps them.
 
 ## `internal static IReadOnlyList<CPortraitChoice> LPortraitChoiceRead()`

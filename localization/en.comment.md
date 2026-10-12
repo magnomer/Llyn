@@ -1,5 +1,5 @@
 # en.json
-Hash: `827bf119a87fec1c`
+Hash: `e5fd7a4d5722f17f`
 
 The English interface catalog, and the language every launch starts from.
 It is embedded into `Llyn.Infrastructure` and never read from disk.
@@ -31,6 +31,14 @@ Most are generic, so other packs can reuse them, and the inflection table shows 
 `Paradigm.Short` labels the switch button that shows the short inflection table.
 `Paradigm.Full` labels the switch button that shows the full inflection table.
 `Card.Fold` and `Card.Unfold` are the hinge tooltips that fold or unfold one card.
+`Card.SenseCaption` captions the row of link chips on a collocation card.
+`Card.SenseAdd` labels the chip that adds one more Meaning link.
+`Display.CollocationOther` heads the collocations with no home Meaning, in the read view and the exports.
+`Display.CollocationStub` words the "see N" line under a further link, with `{0}` the collocation and `{1}` its home Meaning's number.
+`Display.CollocationHeading` captions the collocation rows under a Meaning, with `{0}` their count.
+`Display.CollocationCount` and `Display.CollocationCountOne` word the muted "N collocations" contents line, plural and singular.
+`Display.CollocationExample` and `Display.CollocationExampleOne` word a closed row's example marker, plural and singular.
+`Display.CollocationAlso` words a closed row's "also N" marker, with `{0}` the comma-joined numbers of its further Meanings.
 `Notebook.*` labels the Sync page field naming the top Joplin notebook.
 `Xiesheng.ReadingsShow` and `Xiesheng.ReadingsHide` label the series member hinge that shows or hides all its readings.
 `Settings.Inflection` names the settings page that holds the `Analysis.*` switch and its hint.

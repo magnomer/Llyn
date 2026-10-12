@@ -29,9 +29,9 @@ public sealed class TCardFold
             held.LEntryDraftMeanings.Select(static held => held.LCardDraftId),
             card.CLecternCardMeanings.Select(static leaf => leaf.CLeafId));
         Assert.Equal([false, true], card.CLecternCardMeanings.Select(static leaf => leaf.CLeafFolded));
-        Assert.True(Assert.Single(card.CLecternCardCollocations).CLeafFolded);
+        Assert.True(Assert.Single(card.CLecternCardOther).CLeafFolded);
         Assert.All(
-            card.CLecternCardMeanings.Concat(card.CLecternCardCollocations),
+            card.CLecternCardMeanings.Concat(card.CLecternCardOther),
             static leaf => Assert.True(leaf.CLeafStored));
     }
 
@@ -149,7 +149,7 @@ public sealed class TCardFold
 
         CLecternCard card = wing.CWingDisplay.CDisplayCard.CDisplayCardRead();
         Assert.All(
-            card.CLecternCardMeanings.Concat(card.CLecternCardCollocations),
+            card.CLecternCardMeanings.Concat(card.CLecternCardOther),
             static leaf => Assert.False(leaf.CLeafFolded));
         Assert.Empty(engine.TEngineFoldRead(salt.LEntryId));
     }

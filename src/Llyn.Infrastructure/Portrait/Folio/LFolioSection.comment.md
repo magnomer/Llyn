@@ -1,5 +1,5 @@
 # LFolioSection.cs
-Hash: `9508ff8072a7a5d5`
+Hash: `1ac0fe1b757c64fb`
 
 ## `public static class LFolioSection`
 
@@ -11,6 +11,9 @@ The role of the node decides its style, so a situation, a register and a tag eac
 Dispatches on the role.
 A kind joins the card, a usage has its own rows, and any other role is a band.
 A bridge draws nothing of its own, since the shared body already draws links.
+A collocation list draws its heading as a label line, then its rows.
+A row draws its heading as a phrase line, then its sense lines, then the shared body.
+The folio reads no fold, so a folded row prints open.
 
 ## `private static void LFolioBandAppend(StringBuilder body, LPortraitSection section, List<LPortraitAsset> plates, LTheme theme)`
 
@@ -41,7 +44,8 @@ One detail row follows with the line texts, their labels and the link languages.
 
 The bridge line, the note as paragraphs, the children from `start`, then the plates.
 The children come before the plates because the panel draws its pictures under the tags.
-A readable picture is embedded and scaled to the text width, and its caption follows as a label.
+A readable picture is embedded at its pixel size, narrowed to the text width when wider.
+Its caption follows as a label.
 An unreadable one falls back to its address, and a video is a play mark before its address.
 
 ## `private static void LFolioLineAppend(StringBuilder body, string style, IReadOnlyList<LPortraitLine> lines)`

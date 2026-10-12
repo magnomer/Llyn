@@ -91,7 +91,7 @@ internal static class TInterfaceDeportment
             [],
             [],
             static card => card.PCardDefinition,
-            new CCardDraft(0, 0, blank, blank, blank, [], [], [], [], [], [], [], false, false));
+            new CCardDraft(0, 0, blank, blank, blank, [], [], [], [], [], [], [], false, false, []));
     }
 
     internal static void TCardLabelShow(object card, IReadOnlyList<CTagDraft> drafts) =>
@@ -174,8 +174,16 @@ internal static class TInterfaceDeportment
     internal static void TLeafCardRefine(FrameworkElement container, object card) =>
         PLeaf.PLeafCardRefine(container, card, null);
 
+    internal static void TLeafRowRefine(FrameworkElement container, object row) =>
+        PLeaf.PLeafRowRefine(container, row, null);
+
     internal static QLecternCard TLecternCardCreate(CDisplay display, FrameworkElement surface) =>
         new(surface, display.CDisplayCard, display.CDisplayRoute, display.CDisplaySound);
+
+    internal static object TLeafSeeCreate(long id, string text) => new QLeafSee(id, text);
+
+    internal static void TLecternSeeAttach(QLecternCard card, Action<long> notice) =>
+        card.QLecternSeeNotice += notice;
 
     internal static void TCardRowShow(
         ObservableCollection<QTranscriptionItem> rows, IReadOnlyList<CTranscriptionDraft> drafts) =>

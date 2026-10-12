@@ -79,6 +79,7 @@ public sealed class QLectern
         display.CDisplayClosed += QLecternEtymology.QLecternEtymologyRefine;
 
         QLecternCompass = new QCompass(display.CDisplayCompass, surface);
+        QLecternCard.QLecternSeeNotice += QLecternCompass.QCompassSpotlightRefine;
         display.CDisplayOpened += QLecternCompass.QCompassRefine;
         display.CDisplayClosed += QLecternCompass.QCompassEmptyRefine;
         _ = new QRoster(surface, QLecternCompass);

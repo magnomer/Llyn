@@ -1,5 +1,5 @@
 # LPortraitClerk.cs
-Hash: `fb313b27df89267b`
+Hash: `eb575a3acb3e5217`
 
 ## `public sealed class LPortraitClerk`
 
@@ -9,7 +9,7 @@ A failing read of any section throws to the caller.
 No section is silently left out of the page.
 The kind pages of examples, references and situations are composed by their own clerks.
 
-## `public LPortraitClerk(LLanguageClerk languages, LEntryClerk entries, LVocabularyClerk vocabulary, LTranslationClerk translations, LReferenceClerk references, LFavoriteClerk favorites, LFanqieClerk fanqie, LFrequencyClerk frequencies, LParadigmClerk paradigms, LScriptClerk scripts, Func<LSettings> settings)`
+## `public LPortraitClerk(LLanguageClerk languages, LEntryClerk entries, LVocabularyClerk vocabulary, LTranslationClerk translations, LReferenceClerk references, LFavoriteClerk favorites, LFoldClerk folds, LFanqieClerk fanqie, LFrequencyClerk frequencies, LParadigmClerk paradigms, LScriptClerk scripts, Func<LSettings> settings)`
 
 Keeps the clerks each section reads through.
 
@@ -17,6 +17,9 @@ Keeps the clerks each section reads through.
 
 The page of one entry, refused when the entry no longer stands.
 Sections come in display order, then the readings with respelling and phonemic marks decided per language.
+Collocations show as rows under their home meaning at any depth, each carrying its stored fold.
+Each further link of a collocation shows a see-line under that meaning.
+The collocations linked to no meaning follow under the Other heading as the same rows, each with its fold.
 The speech chips open with the name of the entry's lexical unit, then its freedom, each when chosen.
 A failing favorite check throws rather than showing the entry as no favorite.
 A false `fetch` reads stored frequencies only, so a push over every entry starts no network fetch.

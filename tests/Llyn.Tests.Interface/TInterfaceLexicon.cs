@@ -75,6 +75,13 @@ internal static partial class TInterface
         DateTimeOffset moment) =>
         new(id, origin, entry, content, moment);
 
+    internal static string? TMeaningPathRead(IReadOnlyList<LCardDraft> meanings, long meaningId) =>
+        LMeaning.LMeaningPathRead(meanings, meaningId);
+
+    internal static long? TCollocationHomeRead(
+        IReadOnlyList<LCardDraft> meanings, LCardDraft collocation, bool nested) =>
+        LCollocation.LCollocationHomeRead(meanings, collocation, nested);
+
     internal static LEntry TEntryCreate(
         long id,
         string headword,

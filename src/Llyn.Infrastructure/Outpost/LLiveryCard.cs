@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using Llyn.Core;
@@ -21,10 +22,10 @@ internal static class LLiveryCard
         LEntryDraft draft = page.LLiveryPageDraft;
         LLiveryDeckAppend(
             sheet, page, draft.LEntryDraftMeanings, lookup("Display.MeaningPlural"),
-            lookup("Display.MeaningSingle"), note);
-        LLiveryDeckAppend(
-            sheet, page, draft.LEntryDraftCollocations, lookup("Display.Collocation"),
-            lookup("Display.CollocationSingle"), note);
+            lookup("Display.MeaningSingle"), note, lookup, draft.LEntryDraftCollocations);
+        LLiveryCollocation.LLiveryOtherAppend(
+            sheet, page, LCollocation.LCollocationOtherRead(draft.LEntryDraftMeanings, draft.LEntryDraftCollocations),
+            lookup("Display.CollocationOther"), note);
         LLiveryIncomingAppend(sheet, page, note, lookup);
     }
 
@@ -34,7 +35,9 @@ internal static class LLiveryCard
         IReadOnlyList<LCardDraft> cards,
         string heading,
         string blank,
-        Func<long, string> note)
+        Func<long, string> note,
+        Func<string, string> lookup,
+        IReadOnlyList<LCardDraft> collocations)
     {
         if (cards.Count == 0)
         {
@@ -44,12 +47,21 @@ internal static class LLiveryCard
         sheet.Append("## ").Append(LLiveryHeader.LLiveryTextFormat(heading)).Append("\n\n");
         for (int place = 0; place < cards.Count; place++)
         {
-            LLiveryFaceAppend(sheet, page, cards[place], LLiveryNumberFormat(cards[place], place), blank, note);
+            LLiveryFaceAppend(
+                sheet, page, cards[place], LLiveryNumberFormat(cards[place], place), blank, note, lookup,
+                collocations);
         }
     }
 
     private static void LLiveryFaceAppend(
-        StringBuilder sheet, LLiveryPage page, LCardDraft card, string number, string blank, Func<long, string> note)
+        StringBuilder sheet,
+        LLiveryPage page,
+        LCardDraft card,
+        string number,
+        string blank,
+        Func<long, string> note,
+        Func<string, string> lookup,
+        IReadOnlyList<LCardDraft> collocations)
     {
         string title = card.LCardDraftTitle.LStateValueShow();
         string expression = card.LCardDraftExpression.LStateValueShow();
@@ -57,7 +69,7 @@ internal static class LLiveryCard
         bool stored = card.LCardDraftId > 0;
         if (stored)
         {
-            sheet.Append(LLiveryFoldFormat(!page.LLiveryPageFold.Contains(card.LCardDraftId)));
+            sheet.Append(LLiveryFoldFormat("llyn-card", !page.LLiveryPageFold.Contains(card.LCardDraftId)));
         }
         else
         {
@@ -81,6 +93,24 @@ internal static class LLiveryCard
             sheet.Append(LLiveryEtymology.LLiveryMentionFormat(meaning, [], note)).Append("\n\n");
         }
 
+        LLiveryFieldAppend(sheet, page, card, note);
+        for (int place = 0; place < card.LCardDraftChild.Count; place++)
+        {
+            LCardDraft child = card.LCardDraftChild[place];
+            LLiveryFaceAppend(
+                sheet, page, child, number + "." + LLiveryNumberFormat(child, place), blank, note, lookup,
+                collocations);
+        }
+
+        LLiveryBodyAppend(sheet, page, card, note);
+        LLiveryCollocation.LLiveryListAppend(sheet, page, card, collocations, note, lookup);
+        LLiveryCollocation.LLiveryStubAppend(sheet, page, card, collocations, lookup);
+        sheet.Append(stored ? "</details>\n\n" : "</div>\n\n");
+    }
+
+    internal static void LLiveryFieldAppend(
+        StringBuilder sheet, LLiveryPage page, LCardDraft card, Func<long, string> note)
+    {
         List<string> situations = [];
         foreach (LSituationDraft situation in card.LCardDraftSituation)
         {
@@ -96,13 +126,11 @@ internal static class LLiveryCard
 
         LLiveryBadgeAppend(sheet, "llyn-register", registers);
         LLiveryTargetAppend(sheet, page, card, note);
+    }
 
-        for (int place = 0; place < card.LCardDraftChild.Count; place++)
-        {
-            LCardDraft child = card.LCardDraftChild[place];
-            LLiveryFaceAppend(sheet, page, child, number + "." + LLiveryNumberFormat(child, place), blank, note);
-        }
-
+    internal static void LLiveryBodyAppend(
+        StringBuilder sheet, LLiveryPage page, LCardDraft card, Func<long, string> note)
+    {
         foreach (LSentenceDraft sentence in card.LCardDraftSentence)
         {
             LLiverySentenceAppend(sheet, page, sentence, note);
@@ -121,12 +149,11 @@ internal static class LLiveryCard
 
         LLiveryBadgeAppend(sheet, "llyn-tag", tags);
         LLiveryMediaAppend(sheet, card);
-        sheet.Append(stored ? "</details>\n\n" : "</div>\n\n");
     }
 
-    internal static string LLiveryFoldFormat(bool opened)
+    internal static string LLiveryFoldFormat(string style, bool opened)
     {
-        return "<details class=\"llyn-card\"" + (opened ? " open" : string.Empty) + ">\n<summary>";
+        return "<details class=\"" + style + "\"" + (opened ? " open" : string.Empty) + ">\n<summary>";
     }
 
     private static string LLiveryNumberFormat(LCardDraft card, int place)

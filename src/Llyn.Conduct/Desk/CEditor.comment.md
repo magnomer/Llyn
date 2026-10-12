@@ -1,5 +1,5 @@
 # CEditor.cs
-Hash: `14515482c5769286`
+Hash: `1943f8120ce8a49b`
 
 ## `public sealed class CEditor`
 
@@ -34,9 +34,9 @@ Workspace opening replaces the held entry with a fresh draft.
 
 One speech area follows the shared desk across drafts.
 
-## `public CCardField CEditorField`
+## `public CCardField CEditorField { get; }`
 
-A stateless card-field area can be built afresh over the same desk.
+One card-field area follows the shared desk and holds the ports the sense list is read through.
 
 ## `public CCardList CEditorList { get; }`
 

@@ -1,5 +1,5 @@
 # TAuditLineSetting.cs
-Hash: `e2e62e247f812efa`
+Hash: `4faeacb0d3dc491d`
 
 ## `internal static class TAuditLineSetting`
 

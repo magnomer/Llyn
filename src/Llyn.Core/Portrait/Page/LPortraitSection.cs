@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Llyn.Core;
 
@@ -13,13 +14,25 @@ public sealed record LPortraitSection(
     IReadOnlyList<string>? LPortraitSectionChip = null,
     IReadOnlyList<LPortraitLink>? LPortraitSectionLink = null,
     IReadOnlyList<LPortraitSection>? LPortraitSectionChild = null,
-    LPortraitRole LPortraitSectionRole = LPortraitRole.LPortraitRoleBand)
+    LPortraitRole LPortraitSectionRole = LPortraitRole.LPortraitRoleBand,
+    bool LPortraitSectionFold = false)
 {
     public IReadOnlyList<string> LPortraitSectionChip { get; init; } = LPortraitSectionChip ?? [];
 
     public IReadOnlyList<LPortraitLink> LPortraitSectionLink { get; init; } = LPortraitSectionLink ?? [];
 
     public IReadOnlyList<LPortraitSection> LPortraitSectionChild { get; init; } = LPortraitSectionChild ?? [];
+
+    internal static LPortraitSection LPortraitSectionOpen(LPortraitSection section)
+    {
+        ArgumentNullException.ThrowIfNull(section);
+
+        return section with
+        {
+            LPortraitSectionChild = section.LPortraitSectionChild.Select(LPortraitSectionOpen).ToList(),
+            LPortraitSectionFold = false,
+        };
+    }
 
     public static LPortraitSection LPortraitSectionCreate(string heading, string text)
     {

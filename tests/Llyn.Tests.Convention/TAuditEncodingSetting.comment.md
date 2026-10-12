@@ -1,5 +1,5 @@
 # TAuditEncodingSetting.cs
-Hash: `6e33c16fb421d24b`
+Hash: `5814d85972cbd719`
 
 ## `internal static class TAuditEncodingSetting`
 

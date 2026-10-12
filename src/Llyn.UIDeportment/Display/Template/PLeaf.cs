@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Media;
 
 namespace Llyn.UIDeportment;
 
@@ -39,27 +40,73 @@ internal static class PLeaf
 
         QCardFold.QCardFoldRefine(container, card.QLeafItemFolded, card.QLeafItemStored);
 
-        if (QLook.QLookPartFind<TextBlock>(container, "PCardCollocation") is TextBlock expression)
-        {
-            expression.Text = card.QLeafItemExpression;
-            expression.Visibility = QLook.QLookVisibleRead(card.QLeafItemExpressed);
-        }
-
         if (QLook.QLookPartFind<TextBlock>(container, "PCardMeaning") is TextBlock meaning)
         {
             meaning.Text = card.QLeafItemMeaning;
             meaning.Visibility = QLook.QLookVisibleRead(card.QLeafItemDefined);
         }
 
-        if (QLook.QLookPartFind<ContentControl>(container, "PCardContents") is ContentControl contents)
+        PLeafBodyRefine(container, card);
+        if (QLook.QLookPartFind<TextBlock>(container, "PCardHeading") is TextBlock homes)
         {
-            contents.Content = card;
-            PLeafBodyRefine(contents, card);
+            homes.Text = card.QLeafItemHeading;
+            homes.Visibility = QLook.QLookVisibleRead(card.QLeafItemHome.Count > 0);
         }
+
+        PLeafListRefine(container, "PCardHome", card.QLeafItemHome, PLeafRowRefine);
+        PLeafListRefine(container, "PCardSee", card.QLeafItemSee, PLeafSeeRefine);
     }
 
-    private static void PLeafBodyRefine(FrameworkElement body, QLeafItem card)
+    internal static void PLeafRowRefine(FrameworkElement container, object item, string? _)
     {
+        if (item is not QLeafItem row)
+        {
+            return;
+        }
+
+        QCardFold.QCardFoldRefine(container, row.QLeafItemFolded, row.QLeafItemStored);
+        if (QLook.QLookPartFind<TextBlock>(container, "PCardPhrase") is TextBlock phrase)
+        {
+            phrase.Text = row.QLeafItemPhrase;
+        }
+
+        if (QLook.QLookPartFind<TextBlock>(container, "PCardMeaning") is TextBlock meaning)
+        {
+            meaning.Text = row.QLeafItemMeaning;
+            meaning.Visibility = QLook.QLookVisibleRead(row.QLeafItemDefined);
+            meaning.TextWrapping = QLook.QLookFirstRead(row.QLeafItemFolded, TextWrapping.NoWrap, TextWrapping.Wrap);
+        }
+
+        if (QLook.QLookPartFind<ItemsControl>(container, "PCardFlag") is ItemsControl flags)
+        {
+            flags.ItemsSource = row.QLeafItemFlag;
+            flags.Visibility = QLook.QLookVisibleRead(row.QLeafItemFolded && row.QLeafItemFlag.Count > 0);
+            QLookItem.QLookItemAttach(flags, PLeafFlagRefine);
+        }
+
+        if (QLook.QLookPartFind<TextBlock>(container, "PCardCount") is TextBlock count)
+        {
+            count.Text = row.QLeafItemExample;
+            count.Visibility = QLook.QLookVisibleRead(row.QLeafItemFolded && row.QLeafItemQuoted);
+        }
+
+        if (QLook.QLookPartFind<TextBlock>(container, "PCardAlso") is TextBlock also)
+        {
+            also.Text = row.QLeafItemAlso;
+            also.Visibility = QLook.QLookVisibleRead(row.QLeafItemFolded && row.QLeafItemShared);
+        }
+
+        PLeafBodyRefine(container, row);
+    }
+
+    private static void PLeafBodyRefine(FrameworkElement container, QLeafItem card)
+    {
+        if (QLook.QLookPartFind<ContentControl>(container, "PCardContents") is not ContentControl body)
+        {
+            return;
+        }
+
+        body.Content = card;
         PLeafListRefine(body, "PCardSituation", card.QLeafItemSituation, PLeafSituationRefine);
         PLeafListRefine(body, "PCardRegister", card.QLeafItemRegister, PLeafRegisterRefine);
         PLeafListRefine(body, "PCardTag", card.QLeafItemTag, PLeafTagRefine);
@@ -119,6 +166,14 @@ internal static class PLeaf
         QLookItem.QLookItemAttach(list, fill);
     }
 
+    private static void PLeafSeeRefine(FrameworkElement container, object item, string? _)
+    {
+        if (item is QLeafSee see && QLook.QLookPartFind<TextBlock>(container, "PCardSeeLabel") is TextBlock label)
+        {
+            label.Text = see.QLeafSeeText;
+        }
+    }
+
     private static void PLeafSentenceRefine(FrameworkElement container, object item, string? _)
     {
         if (item is not QLeafLine line)
@@ -164,6 +219,14 @@ internal static class PLeaf
         {
             gloss.ItemsSource = line.QLeafLineGloss;
             QLookItem.QLookItemAttach(gloss, PGloss.PGlossRowApply);
+        }
+    }
+
+    private static void PLeafFlagRefine(FrameworkElement container, object item, string? _)
+    {
+        if (item is ImageSource flag && QLook.QLookPartFind<Image>(container, "PCardEnsign") is Image ensign)
+        {
+            ensign.Source = flag;
         }
     }
 

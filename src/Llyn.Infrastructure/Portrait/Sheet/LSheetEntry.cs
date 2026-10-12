@@ -36,10 +36,12 @@ public static class LSheetEntry
 
         LEntryDraft draft = livery.LLiveryPageDraft;
         LSheetBox.LSheetFanqieAppend(sheet, livery, portrait, label);
-        LSheetDeck.LSheetDeckAppend(
-            sheet, livery, portrait, label.LPortraitLabelMeanings, draft.LEntryDraftMeanings, false);
-        LSheetDeck.LSheetDeckAppend(
-            sheet, livery, portrait, label.LPortraitLabelCollocations, draft.LEntryDraftCollocations, true);
+        LSheetDeck.LSheetDeckAppend(sheet, livery, portrait, label.LPortraitLabelMeanings, draft.LEntryDraftMeanings);
+        if (LSheetSection.LSheetSectionFind(portrait, label.LPortraitLabelOther) is LPortraitSection other)
+        {
+            LSheetSection.LSheetSectionAppend(sheet, other);
+        }
+
         LSheetLineage.LSheetIncomingAppend(sheet, portrait, label);
         LSheetLineage.LSheetEtymologyAppend(sheet, portrait, label);
         LSheetLineage.LSheetAnnotationAppend(sheet, portrait, label);

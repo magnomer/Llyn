@@ -3,7 +3,7 @@ Hash: `9b6199c38f7bf330`
 
 ## Generation
 
-AUDITNAMES GENERATION 21.
+AUDITNAMES GENERATION 23.
 
 A generation is not a revision count.
 It names functionality, not edits.
@@ -17,13 +17,13 @@ Wording, plumbing, and refactoring leave the generation alone.
 
 This project is one of two implementations that investigate the same names.
 Neither shares code with the other, and that is the design.
-Both must be at the same generation, so both carry the number.
+Both must be at the same generation, so both carry the number, here as `TAuditNameSetting.TAuditGeneration`.
 A disagreement between them is a defect in one, for a person to read.
 
 Generation 8 holds every naming value in the hand-written `TAuditNameSetting.cs`.
 The registered names reach this project only through the generated `TAuditNameRegistry.cs`, `TAuditVerbRegistry.cs` and `TAuditExemptRegistry.cs`.
-Every other file in this project is identical in every project at this generation.
-Both files are committed, so this project builds on its own.
+This walker and `TAuditNameFilter.cs` are identical in every project at this generation.
+The setting and the registries are committed, so this project builds on its own.
 
 Generation 8 checks missing prefix, component count, base registration, and verb ending.
 It exempts descriptive test methods under an all-or-nothing test-prefix consistency gate.

@@ -159,4 +159,30 @@ public sealed class TSchemaMigrationVersion
             workspace.TWorkspaceColumnRead("SELECT unit FROM entry ORDER BY entry_id;"));
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM entry WHERE freedom <> 0;"));
     }
+
+    [Fact]
+    public void DatabaseCreate_VersionEightyOne_AddsCollocationSense()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+
+        workspace.TWorkspaceScriptRun(
+            "DROP TABLE collocation_sense; " +
+            "INSERT INTO entry (entry_id, headword, language, added_utc, updated_utc) " +
+            "VALUES (1, 'set', 'English', '2026-01-01', '2026-01-01'); " +
+            "INSERT INTO sense (sense_id, entry_parent, position) VALUES (1, 1, 0); " +
+            "INSERT INTO collocation (collocation_id, entry_parent, position) VALUES (2, 1, 0); " +
+            "UPDATE schema_version SET version = 80;");
+
+        workspace.TWorkspaceDatabase.TDatabaseCreate();
+
+        Assert.Equal(
+            LSchemaMigration.LSchemaMigrationVersion,
+            workspace.TWorkspaceCountRead("SELECT version FROM schema_version;"));
+        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM collocation WHERE collocation_id = 2;"));
+        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM collocation_sense;"));
+        Assert.Equal(
+            1,
+            workspace.TWorkspaceCountRead(
+                "SELECT COUNT(*) FROM sqlite_master WHERE type = 'index' AND name = 'collocation_sense_member';"));
+    }
 }

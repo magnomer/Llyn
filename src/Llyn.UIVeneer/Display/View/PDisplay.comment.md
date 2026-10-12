@@ -1,10 +1,10 @@
 # PDisplay.xaml
-Hash: `62ecdda020d8daf8`
+Hash: `9187c7b59e6b8a37`
 
 ## `<UserControl.Resources>`
 
 The read-only card shapes are merged in from [PDisplayCard.xaml](../Template/PDisplayCard.comment.md).
-A Meaning card and a Collocation card are one card (LCardDraft), so the two templates share their tail.
+A Meaning and a Collocation are one card (LCardDraft), so the meaning card and the collocation row share their body.
 They are kept apart from this file.
 The card is its own shape, not part of the page around it.
 Named parts provide the entry's reading surface, rather than exposing every draft member.
@@ -170,6 +170,13 @@ The column keeps its width while folded.
 The toggle therefore does not slide under that button when the panel goes away.
 The behavior lives in [QCompass](../../../Llyn.UIDeportment/Display/QCompass.comment.md).
 
+## `<StackPanel x:Name="PDisplayCollocationSection" Margin="0,28,0,0">`
+
+The collocations that link to no meaning, under the title `Display.CollocationOther`.
+Linked collocations show inside their home meaning, so this section lists only the rest.
+They are the same folding rows as under a meaning, inside one bordered list.
+It collapses when every collocation is linked.
+
 ## `<StackPanel x:Name="PDisplayStampSection" Margin="2,36,2,24">`
 
 The entry's creation and last update times, closing the page beneath one hairline.
@@ -183,7 +190,7 @@ The drag band shares the page's grid cell and lies on top of it.
 It sits inside the scroll viewer, so it scrolls and clips with the text it highlights.
 `QDisplay` attaches it to `PDisplayContents`, so a press anywhere on the page reaches it first.
 
-## `<Ellipse x:Name="PDisplayLanguageGlobe"`
+## `<Ellipse x:Name="PDisplayLanguageGlobe" Width="12" Height="12" Stroke="{StaticResource Theme.Accent}" StrokeThickness="1.2" />`
 
 The globe stands where no flag is known.
 The lectern shows the flag or the globe, so no trigger here watches the image.

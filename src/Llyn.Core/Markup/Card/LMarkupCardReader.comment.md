@@ -1,5 +1,5 @@
 # LMarkupCardReader.cs
-Hash: `59ce082b296bd3ed`
+Hash: `773e779971f1dbc9`
 
 ## `internal static class LMarkupCardReader`
 
@@ -12,6 +12,8 @@ Every parser walks its children in file order and reports what it does not know 
 Reads one card with its sentences, chips, media and children in file order.
 A nested `meaning` is read as a child only when `nested` allows it.
 Under a collocation such a child is an omission, since a collocation never nests.
+A `sense` child is read as a link path only when the card is not nested.
+Under a meaning it is an omission.
 
 ## `private static LMarkupSentence LMarkupSentenceParse(LMarkupNode element, List<LMarkupOmission> omissions)`
 

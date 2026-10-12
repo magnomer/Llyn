@@ -1,5 +1,5 @@
 # TDraftCoverageSetting.cs
-Hash: `daf81f33186a45ba`
+Hash: `38a2f484a6705c0a`
 
 ## `internal static class TDraftCoverageSetting`
 
@@ -31,6 +31,8 @@ Names no side must carry, because none of them is a typed value.
 
 The path patterns of the portrait side, in Core, Application and the portrait facade.
 A field a draft carries must be read in one of these files, or waived.
+`LCollocation.cs` joins the side because the portrait reads a collocation's meaning links through it.
+Its first link that still exists is the home the collocation prints under, and every further one gets a see-line.
 
 ## `public static readonly string[] TPortraitWaiver`
 

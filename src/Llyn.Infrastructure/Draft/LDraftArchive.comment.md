@@ -1,5 +1,5 @@
 # LDraftArchive.cs
-Hash: `5b44786c96625059`
+Hash: `ed3beb7b8f9059df`
 
 ## `public sealed class LDraftArchive : LDraftVault`
 
@@ -38,6 +38,7 @@ Positive means a stored row and negative means an id the engine minted, so zero 
 Only the engine mints, and the guard here means no caller can slip past it.
 A credited author is an item too, so a credit with id zero is refused the same way.
 The image and video rows of a held Situation are items too, and are checked as a card's are.
+The Meaning ids a collocation card links to are checked the same way.
 The entry id of the draft itself may be zero, because that names a new record rather than an item.
 
 ## `public const int LDraftArchiveVersion = 6;`

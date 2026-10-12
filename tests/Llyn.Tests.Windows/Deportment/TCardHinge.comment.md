@@ -1,5 +1,5 @@
 # TCardHinge.cs
-Hash: `c6d4de04feb2c3f8`
+Hash: `d2e41474db5dfd42`
 
 ## `public sealed class TCardHinge`
 
@@ -7,6 +7,7 @@ Covers the writing card's fold hinge as the row painter and the click handler se
 The reading card's cases live in `TLecternHinge`, which borrows the row builders here.
 Each case runs on its own STA thread, since its rows and look resources are WPF objects.
 The rows are bare templates that carry only the parts the painters touch, under their real names.
+The card drafts it builds carry no meaning links.
 Each list holds the two fold keys the theme defines, so a folded header resolves them.
 The click cases reach the real fold gates over a real workspace.
 So the store is read back rather than a double asked.

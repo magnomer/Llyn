@@ -1,5 +1,5 @@
 # TAuditObjectSetting.cs
-Hash: `d70a0b16b7450716`
+Hash: `ba5dd78150b23a06`
 
 ## `internal static class TAuditObjectSetting`
 
@@ -12,7 +12,7 @@ Raising a limit spares more types, which would loosen the audit.
 Every limit is reached at its value or above.
 Kraken has no dictionary, since it reuses the Serpent, Centipede, Octopus and Spider limits.
 
-## `public const int TAuditGeneration = 21;`
+## `public const int TAuditGeneration = 23;`
 
 The generation of the audit settings, kept by hand beside the ceilings.
 

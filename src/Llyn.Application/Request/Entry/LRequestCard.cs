@@ -39,3 +39,15 @@ public sealed record LRequestCardMeaning(long LRequestDraftId, long LRequestCard
 {
     public override string LRequestKey => $"{nameof(LRequestCardMeaning)}:{LRequestCardId}";
 }
+
+public sealed record LRequestSenseAddition(long LRequestDraftId, long LRequestCardId, long LRequestSenseId)
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => $"{nameof(LRequestSenseAddition)}:{LRequestCardId}:{LRequestSenseId}";
+}
+
+public sealed record LRequestSenseRemoval(long LRequestDraftId, long LRequestCardId, long LRequestSenseId)
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => $"{nameof(LRequestSenseRemoval)}:{LRequestCardId}:{LRequestSenseId}";
+}

@@ -176,8 +176,13 @@
                     </StackPanel>
 
                     <StackPanel x:Name="PDisplayCollocationSection" Margin="0,28,0,0">
-                        <TextBlock Height="34" Margin="2,0,2,12" Padding="0,5,0,0" FontSize="19" FontWeight="SemiBold" Text="{DynamicResource Display.Collocation}" />
-                        <ItemsControl x:Name="PDisplayCollocation" ItemTemplate="{StaticResource Display.Collocation.Card}" />
+                        <TextBlock Height="34" Margin="2,0,2,12" Padding="0,5,0,0" FontSize="19" FontWeight="SemiBold" Text="{DynamicResource Display.CollocationOther}" />
+                        <ItemsControl
+                            x:Name="PDisplayCollocation"
+                            Padding="10,4"
+                            BorderBrush="{DynamicResource Theme.Line}"
+                            BorderThickness="1"
+                            ItemTemplate="{StaticResource Display.Collocation.Row}" />
                     </StackPanel>
 
                     <StackPanel x:Name="PDisplayIncomingSection" Margin="0,28,0,0">

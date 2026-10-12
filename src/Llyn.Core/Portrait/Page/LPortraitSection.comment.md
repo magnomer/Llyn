@@ -1,5 +1,5 @@
 # LPortraitSection.cs
-Hash: `668650e744d94679`
+Hash: `8b48b9b24f37a9c9`
 
 ## `public sealed record LPortraitSection`
 
@@ -23,6 +23,13 @@ A position above zero numbers a card, and zero leaves a section unnumbered.
 - `LPortraitSectionLink` - the linked entries, such as translations.
 - `LPortraitSectionChild` - the nested sections, such as child cards and example rows.
 - `LPortraitSectionRole` - what the section is on screen, a band unless the reader says otherwise.
+- `LPortraitSectionFold` - true when the row's fold is stored, so a writer that folds shows it closed.
+  It is false by default, and `LPortraitSectionOpen` clears it for print.
+
+## `internal static LPortraitSection LPortraitSectionOpen(LPortraitSection section)`
+
+The same section with its fold and every descendant's fold cleared.
+`LPortraitPage.LPortraitPageOpen` is its one reader.
 
 ## `public static LPortraitSection LPortraitSectionCreate(string heading, string text)`
 

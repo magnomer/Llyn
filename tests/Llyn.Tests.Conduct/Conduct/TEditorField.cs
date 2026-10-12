@@ -18,15 +18,20 @@ public sealed class TEditorField
         using LEngine engine = workspace.TWorkspaceEngineStart();
         TEditorFixture editor = TEditorFieldPrepare(engine);
         long sheet = TEditorSheetAdd(editor);
+        editor.TEditorFixtureDesk.TDeskDefer(TInterface.TRequestAdditionCreate(
+            editor.TEditorFixtureDesk.CDeskId, LCardKind.LCardKindCollocation, 0, int.MaxValue));
+        long phrase = editor.TEditorDraftRead()!.CEntryDraftCollocations[^1].CCardDraftId;
 
         editor.TEditorFixtureField.CCardTitleSet(sheet, "Heat");
-        editor.TEditorFixtureField.CCardExpressionSet(sheet, "on fire");
+        editor.TEditorFixtureField.CCardExpressionSet(phrase, "on fire");
         editor.TEditorFixtureField.CCardMeaningSet(sheet, "burning");
         editor.TEditorFixtureDesk.CDeskDraft.CDeskDraftPersist();
 
-        CCardDraft card = editor.TEditorDraftRead()!.CEntryDraftMeanings.Single(row => row.CCardDraftId == sheet);
+        CEntryDraft draft = editor.TEditorDraftRead()!;
+        CCardDraft card = draft.CEntryDraftMeanings.Single(row => row.CCardDraftId == sheet);
+        CCardDraft collocation = draft.CEntryDraftCollocations.Single(row => row.CCardDraftId == phrase);
         Assert.Equal("Heat", card.CCardDraftTitle.CStateWordingText);
-        Assert.Equal("on fire", card.CCardDraftExpression.CStateWordingText);
+        Assert.Equal("on fire", collocation.CCardDraftExpression.CStateWordingText);
         Assert.Equal("burning", card.CCardDraftMeaning.CStateWordingText);
     }
 

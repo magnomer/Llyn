@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Llyn.Core;
 
 namespace Llyn.Application;
@@ -59,13 +60,48 @@ public sealed class LMarkupClerkDraft
                     : pronunciation with { LPronunciationDraftAudio = string.Empty });
         }
 
+        IReadOnlyList<LCardDraft> meanings =
+            LMarkupCardResolve(entry.LMarkupEntryMeaning, entry, prepared, omissions, held, cited);
+        IReadOnlyList<LCardDraft> collocations =
+            LMarkupCardResolve(entry.LMarkupEntryCollocation, entry, prepared, omissions, held, cited);
+        if (entry.LMarkupEntryCollocation.Any(static card => card.LMarkupCardSense.Count > 0))
+        {
+            long next = -(held.Count + cited.Count + 1);
+            meanings = LMarkupCardPrepare(meanings, ref next);
+            List<LCardDraft> linked = new(collocations.Count);
+            for (int index = 0; index < collocations.Count; index++)
+            {
+                LMarkupCard card = entry.LMarkupEntryCollocation[index];
+                List<long> senses = new(card.LMarkupCardSense.Count);
+                foreach (string path in card.LMarkupCardSense)
+                {
+                    long senseId = LMeaning.LMeaningPathFind(meanings, path);
+                    if (senseId == 0)
+                    {
+                        omissions.Add(new LMarkupOmission(
+                            0, $"sense \"{path}\" of \"{card.LMarkupCardExpression.LStateValueShow()}\""));
+                        continue;
+                    }
+
+                    if (!senses.Contains(senseId))
+                    {
+                        senses.Add(senseId);
+                    }
+                }
+
+                linked.Add(collocations[index] with { LCardDraftSense = senses });
+            }
+
+            collocations = linked;
+        }
+
         return new LEntryDraft(
             entry.LMarkupEntryHeadword,
             language,
             pronunciations,
             entry.LMarkupEntryNote,
-            LMarkupCardResolve(entry.LMarkupEntryMeaning, entry, prepared, omissions, held, cited),
-            LMarkupCardResolve(entry.LMarkupEntryCollocation, entry, prepared, omissions, held, cited),
+            meanings,
+            collocations,
             speeches,
             entry.LMarkupEntryForm,
             inflections,
@@ -204,5 +240,21 @@ public sealed class LMarkupClerkDraft
         }
 
         return drafts;
+    }
+
+    private static IReadOnlyList<LCardDraft> LMarkupCardPrepare(IReadOnlyList<LCardDraft> cards, ref long next)
+    {
+        List<LCardDraft> numbered = new(cards.Count);
+        foreach (LCardDraft card in cards)
+        {
+            long id = next--;
+            numbered.Add(card with
+            {
+                LCardDraftId = id,
+                LCardDraftChild = LMarkupCardPrepare(card.LCardDraftChild, ref next),
+            });
+        }
+
+        return numbered;
     }
 }

@@ -1,5 +1,5 @@
 # TCardFold.cs
-Hash: `ff8856dfc5773655`
+Hash: `d4147bcd78f235d5`
 
 ## `public sealed class TCardFold`
 
@@ -9,32 +9,35 @@ Folds made through the engine relay arrange the store, and the gates are read ba
 
 ## `public void DisplayCardRead_FoldedCards_CarryEachCardsStoredFold()`
 
-Each leaf carries its card id, its stored fold and that it can fold.
-A folded meaning and a folded collocation read folded, and the other meaning reads open.
+Each meaning leaf carries its card id in draft order.
+Every leaf carries its stored fold and reads as able to fold.
+A folded meaning and a folded unlinked collocation read folded, and the other meaning reads open.
+The collocation is read from the lectern card's other-collocations list, since it links to no meaning.
 
 ## `public void DisplayFoldToggle_StoredCard_FoldsThenUnfoldsAndRaisesTheDisplayFold()`
 
 The reading view gate folds a card, the next card read shows it folded, and the store holds the fold.
 The same gate unfolds it, and the next card read shows it open.
-Each toggle raises the view's own fold event for the shown entry, which drives the re-read.
-Both toggles answer true, since the port took each write.
+Each toggle raises the view's own fold event for the shown entry.
+Both toggles answer true.
 
 ## `public void EntryDraftChanged_FoldedCard_CarriesTheStoredFold()`
 
-The opened draft carries each card's stored fold.
-Its meaning cards also assert the stored marker.
+The opened draft is handed once and carries each card's stored fold.
+Its first meaning reads folded, while the second meaning and the collocation read open.
+Each meaning reads stored.
 
 ## `public void CardFoldToggle_StoredCard_FoldsTheCardById()`
 
 The editor list gate folds a collocation by its id and the store holds exactly that card.
 The editor hears the fold and hands the card folded, while the draft stays clean.
 The same gate unfolds it, and the store and the held draft both read open.
-Both toggles answer true, since the port took each write.
+Both toggles answer true.
 
 ## `public void CardFoldToggle_UnsavedCard_AnswersItCannotFoldAndStoresNothing()`
 
-A meaning added in the editor is unstored, so it reads as unable to fold.
-Its fold gate stores nothing, and the card still reads open.
+A meaning added in the editor is unstored.
+Its fold gate stores nothing, and the card still reads open in the next draft.
 
 ## `public void DisplayFoldToggle_OneEntry_LeavesAnotherEntrysCardsUnfolded()`
 
@@ -42,7 +45,7 @@ A fold on one entry leaves every card of another entry open, in the view and in 
 
 ## `public void DisplayFoldToggle_EditorOnTheSameEntry_RefreshesTheEditorCards()`
 
-A fold in the reading view reaches an editor on the same entry through the fold bulletin.
+A fold in the reading view reaches an editor on the same entry.
 The editor hands its draft again with the folded card marked.
 
 ## `public void CardFoldToggle_ReadingViewOnTheSameEntry_RaisesTheDisplayFold()`

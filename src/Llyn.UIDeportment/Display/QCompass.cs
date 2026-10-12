@@ -134,7 +134,7 @@ public sealed class QCompass
             if (target is not null)
             {
                 _qCompassRows.Add(new QCompassItem(
-                    target, row.CCompassRowName, row.CCompassRowNumber, row.CCompassRowDepth));
+                    target, row.CCompassRowName, row.CCompassRowNumber, row.CCompassRowDepth, row.CCompassRowMuted));
             }
         }
     }
@@ -176,7 +176,7 @@ public sealed class QCompass
                 continue;
             }
 
-            if (top <= QCompassEdge)
+            if (top <= QCompassEdge && !ReferenceEquals(current?.QCompassItemTarget, row.QCompassItemTarget))
             {
                 current = row;
             }

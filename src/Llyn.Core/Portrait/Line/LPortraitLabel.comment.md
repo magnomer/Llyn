@@ -1,5 +1,5 @@
 # LPortraitLabel.cs
-Hash: `94dcf9075df7669e`
+Hash: `0dc4501554f04f66`
 
 ## `public sealed record LPortraitLabel`
 
@@ -12,8 +12,10 @@ Passing the words in keeps export out of the interface layer without moving tran
 - `LPortraitLabelUnknown` - what stands in for a field that could not be read.
 - `LPortraitLabelMeaning` - the singular word, used as a card kind.
 - `LPortraitLabelMeanings` - the plural word, used as a section heading.
-- `LPortraitLabelCollocation` - the singular word, used as a card kind.
-- `LPortraitLabelCollocations` - the plural word, used as a section heading.
+- `LPortraitLabelCollocation` - the singular word, naming the kind of a referring collocation in the incoming band.
+- `LPortraitLabelOther` - the heading over the collocations linked to no meaning.
+- `LPortraitLabelStub` - the format of a see-line, filled with the expression, else the title, and the home meaning's number.
+- `LPortraitLabelHeading` - the format of the heading over a meaning's collocation rows, filled with the row count.
 - `LPortraitLabelIncoming` - the heading over the entries that link here.
 - `LPortraitLabelNote` - the heading over the entry note.
 - `LPortraitLabelForm` - the heading over the written forms.

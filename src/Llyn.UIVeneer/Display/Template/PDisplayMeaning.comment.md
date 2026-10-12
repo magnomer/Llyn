@@ -1,11 +1,12 @@
 # PDisplayMeaning.xaml
-Hash: `601a57f55ba4a01a`
+Hash: `f965dfe515ea48aa`
 
 ## `ResourceDictionary`
 
 The meaning card as the reading view draws it.
 Its header carries the position and the title, and its body opens with the definition.
-The rows under the definition are the shared card body.
+The shared card body follows the definition.
+The caption and the folding rows of the collocations homed on the meaning, then the "see" lines, close the body.
 
 ## Inline notes
 
@@ -44,7 +45,24 @@ The kind caption gives way to it then.
 The hinge spans both columns and sits at the right edge, vertically centred.
 It stands where the writing card's hinge stands, with no eraser to its left.
 The reading driver hears its click as it bubbles from the card list.
-The reading driver finds it as the only toggle carrying a reading card.
+The reading driver finds it as a toggle carrying a reading item, as it finds a row's hinge.
+
+### `<TextBlock x:Name="PCardHeading" ...>`
+
+The muted "Collocations · N" caption over the rows, worded by Conduct.
+The fill shows it only when the meaning has homed collocations.
+
+### `<ItemsControl x:Name="PCardHome" ...>`
+
+The collocations whose home is this meaning or one below it, one folding row each inside one bordered list.
+They use the collocation row template, so a homed row looks like one under Other collocations.
+The fill shows the list only when the meaning has any.
+
+### `<ItemsControl x:Name="PCardSee" ...>`
+
+The "see" lines for collocations that link to this meaning or one below it but live under another.
+Each line uses the collocation "see" template, a muted link the reading driver hears to open the row.
+The fill shows the list only when the meaning has any.
 
 ### `<Grid x:Name="PCardBody" Grid.Row="1" Style="{DynamicResource Theme.Card.Body}">`
 

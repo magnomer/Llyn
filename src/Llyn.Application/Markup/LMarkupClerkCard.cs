@@ -17,7 +17,8 @@ public sealed class LMarkupClerkCard
         _lMarkupCardExample = example;
     }
 
-    public IReadOnlyList<LMarkupCard> LMarkupCardCreate(IReadOnlyList<LCardDraft> cards)
+    public IReadOnlyList<LMarkupCard> LMarkupCardCreate(
+        IReadOnlyList<LCardDraft> cards, IReadOnlyList<LCardDraft> meanings)
     {
         List<LMarkupCard> written = new(cards.Count);
         foreach (LCardDraft card in cards)
@@ -63,6 +64,15 @@ public sealed class LMarkupClerkCard
                 videos.Add(video with { LVideoDraftId = 0 });
             }
 
+            List<string> senses = new(card.LCardDraftSense.Count);
+            foreach (long senseId in card.LCardDraftSense)
+            {
+                if (LMeaning.LMeaningPathRead(meanings, senseId) is string path)
+                {
+                    senses.Add(path);
+                }
+            }
+
             written.Add(new LMarkupCard(
                 card.LCardDraftTitle,
                 card.LCardDraftExpression,
@@ -74,7 +84,8 @@ public sealed class LMarkupClerkCard
                 tags,
                 images,
                 videos,
-                LMarkupCardCreate(card.LCardDraftChild)));
+                LMarkupCardCreate(card.LCardDraftChild, meanings),
+                senses));
         }
 
         return written;

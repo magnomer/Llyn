@@ -55,6 +55,15 @@ public static class LSheetStyle
         (".phrase", "font-size:16px;font-weight:600;margin:0 0 7px 0;"),
         (".sense", "font-size:16px;margin:0;"),
 
+        (".collocations", "margin:20px 0 0 0;border:1px solid var(--line);border-radius:10px;"),
+        (".collocations>h3", "font-size:13px;font-weight:600;color:var(--muted);margin:0;"
+            + "padding:9px 16px;border-bottom:1px solid var(--line);"),
+        (".collocation", "padding:12px 16px;break-inside:avoid;page-break-inside:avoid;"),
+        (".collocation+.collocation", "border-top:1px solid var(--line);"),
+        ("details.collocation>summary", "display:flex;align-items:baseline;gap:10px;list-style:none;"),
+        ("details.collocation>summary::-webkit-details-marker", "display:none;"),
+        ("details.collocation>summary .phrase", "margin:0;"),
+
         (".scene", "margin:18px 0 0 0;display:flex;flex-wrap:wrap;"),
         (".scene span", "margin:0 9px 7px 0;padding:4px 10px;border-radius:11px;"
             + "background:var(--situation-soft);border:1px solid var(--situation-edge);"

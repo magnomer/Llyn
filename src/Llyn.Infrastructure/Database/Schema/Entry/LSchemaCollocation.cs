@@ -39,6 +39,15 @@ public static class LSchemaCollocation
                 FOREIGN KEY (entry_parent) REFERENCES entry (entry_id) ON DELETE CASCADE
             );
 
+            CREATE TABLE IF NOT EXISTS collocation_sense (
+                collocation_parent INTEGER NOT NULL,
+                sense_ref INTEGER NOT NULL,
+                position INTEGER NOT NULL,
+                PRIMARY KEY (collocation_parent, sense_ref),
+                FOREIGN KEY (collocation_parent) REFERENCES collocation (collocation_id) ON DELETE CASCADE,
+                FOREIGN KEY (sense_ref) REFERENCES sense (sense_id) ON DELETE CASCADE
+            );
+
             CREATE TABLE IF NOT EXISTS note (
                 entry_parent INTEGER NOT NULL PRIMARY KEY,
                 text TEXT NOT NULL,

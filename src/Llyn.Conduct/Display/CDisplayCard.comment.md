@@ -1,5 +1,5 @@
 # CDisplayCard.cs
-Hash: `5c82cee2a988cacc`
+Hash: `34833f92d482bf8e`
 
 ## `public sealed class CDisplayCard`
 
@@ -16,7 +16,7 @@ The display rules the shown draft, the chosen entry, the media port and the repa
 
 ## `private readonly LCardPort _cDisplayCardPort;`
 
-The card port the link targets, usages, etymology and folds are read through.
+The card port the collocation layout, link targets, usages, etymology and folds are read through.
 A fold is also saved and deleted through it.
 
 ## `private readonly LReferencePort _cDisplayReferencePort;`
@@ -33,7 +33,7 @@ The sentence port the sentence order is read from.
 
 ## `private readonly LSettingsPort _cDisplaySettings;`
 
-The settings port the ready notice and the unknown mark are read from.
+The settings port the failure notices, the unknown mark and the collocation wordings are read from.
 
 ## `private readonly CEnvoy _cDisplayEnvoy;`
 
@@ -46,7 +46,7 @@ It takes the rules whole, since the shown draft and the chosen entry change afte
 
 ## `private LEntryDraft? LDisplayShown`
 
-The shown draft the sound half holds, passed unread to the engine.
+The shown draft the sound half holds, which the card and etymology reads start from.
 
 ## `private CLedgerNoticed LDisplayNoticed`
 
@@ -56,6 +56,16 @@ Every read here runs on a repaint and shows its failure through it, so a lasting
 ## `public CLecternCard CDisplayCardRead()`
 
 The shown entry's cards, each ready to paint, with whether their sections show.
+No shown draft answers no cards, with no section shown.
+Each linked collocation is a row in the leaf of the top-level meaning that holds its home.
+The collocations with no live link fill the Other list.
+Where each collocation sits, and each row's phrase and markers, come from one engine read.
+So Conduct applies no link rule itself.
+The link targets already read are handed to it, so each row's flags need no second read.
+That read reaches no store, so it needs no fallback.
+The stub wording `Display.CollocationStub` is read once and carried to every leaf that shows a "see" stub.
+The marker wordings `Display.CollocationExample`, `Display.CollocationExampleOne` and `Display.CollocationAlso` are read once the same way.
+So is the caption wording `Display.CollocationHeading`, which heads a meaning's collocation rows.
 The order, the Source lines, the link targets and the folds are four reads, each answering a fallback when refused.
 Each refusal also shows its own notice, so the page still draws.
 The unknown mark is the engine's word, so a frame or a sentence embeds it ready.
@@ -69,7 +79,7 @@ Ignoring a nonpositive card id still yields true, without confirming a stored ro
 The port raises the fold bulletin, and `CDisplay.CDisplayFoldChanged` then makes the driver read the cards again.
 So this view and every other view on the entry repaint from the store alike.
 The card id is the leaf's own `CLeafId`, handed back unread.
-An unsaved card writes nothing, since the clerk below refuses its id.
+An unsaved card writes nothing, since the clerk below skips its nonpositive id.
 No entry chosen writes nothing and answers false.
 A refused write shows `Fold.SaveFailed` every time, since the user acted, and answers false.
 The caller puts its chevron back on false, since no bulletin will repaint it.

@@ -1,20 +1,22 @@
 # QLeafItem.cs
-Hash: `aae51d240483e161`
+Hash: `4a9ff3986e30777d`
 
 ## `internal sealed class QLeafItem`
 
-Presentation item for one meaning or collocation card of the reading view.
+Presentation item for one meaning card or one collocation row of the reading view.
 It carries plain copies of what the card template prints, taken from the ready [CLeaf](../../../Llyn.Conduct/Display/CLeaf.comment.md).
 The texts are looked up under the keys Conduct chose, so the fills only paint.
 
 ## `internal QLeafItem(CLeaf card, CStateWording peek)`
 
 Builds the item from one ready card.
-`peek` supplies the definition for a meaning card or the expression for a collocation.
-The lectern picks it by the list the card comes in, so the item derives nothing.
+`peek` supplies the definition for a meaning card or the phrase for a collocation.
+The lectern card picks it by the list the card comes in.
 A worded text shows its key's looked-up text, and any other text shows as written.
 A muted title leaves the kind caption in its place, and a muted line folds away.
 Each chip and link becomes its own item.
+Each collocation homed on a meaning card becomes a nested item, peeking its phrase.
+Each "see" line becomes a `QLeafSee` item.
 The example lines become [QLeafLine](QLeafLine.comment.md) items, so the line fill holds no Conduct record.
 The picture and film rows become [QLeafImage](QLeafImage.comment.md) and [QLeafVideo](QLeafVideo.comment.md) items for the same reason.
 
@@ -32,7 +34,7 @@ Whether the card is folded, as the store holds it.
 
 ## `internal bool QLeafItemStored`
 
-Whether the card can fold, which decides whether its hinge shows.
+Whether the card is stored, which decides whether its hinge shows.
 
 ## `internal string QLeafItemRank`
 
@@ -41,18 +43,15 @@ The badge formats the supplied position in the current culture, without counting
 ## `internal string QLeafItemTitle { get; }`
 
 The title key is resolved once when this presentation item is built.
+A collocation row is built with its phrase as `peek`, since a row has no folded title place.
 
 ## `internal bool QLeafItemTitled`
 
 An unmuted title occupies the header instead of the kind caption or folded peek.
 
-## `internal string QLeafItemExpression { get; }`
+## `internal string QLeafItemPhrase { get; }`
 
-The expression is ready display text, so the fill performs no wording lookup.
-
-## `internal bool QLeafItemExpressed`
-
-The expression line follows Conduct's muted verdict rather than testing display text.
+The phrase a collocation row is headed with, resolved under Conduct's key once, so the row fill only paints.
 
 ## `internal string QLeafItemMeaning { get; }`
 
@@ -84,8 +83,43 @@ Example lines use their own presentation items, keeping Conduct records out of t
 
 ## `internal IReadOnlyList<QLeafImage> QLeafItemImage { get; }`
 
-Image rows use shared presentation items rather than engine records.
+Image rows use shared presentation items rather than Conduct records.
 
 ## `internal IReadOnlyList<QLeafVideo> QLeafItemVideo { get; }`
 
-Video rows use shared presentation items rather than engine records.
+Video rows use shared presentation items rather than Conduct records.
+
+## `internal IReadOnlyList<ImageSource?> QLeafItemFlag { get; }`
+
+One ensign per translation language of a closed row, mapped from the language once when the item is built.
+A language without an ensign gives an empty image, so the row never filters Conduct's list.
+
+## `internal string QLeafItemExample`
+
+The closed row's ready "N examples" marker, Conduct's text unchanged.
+
+## `internal bool QLeafItemQuoted`
+
+The example marker follows Conduct's verdict on whether the row has one, rather than measuring the text.
+
+## `internal string QLeafItemAlso`
+
+The closed row's ready "also N" marker, Conduct's text unchanged.
+
+## `internal bool QLeafItemShared`
+
+The "also N" marker follows Conduct's verdict on whether the row has one, rather than measuring the text.
+
+## `internal string QLeafItemHeading`
+
+The ready "Collocations · N" caption over a meaning's rows, Conduct's text unchanged.
+
+## `internal IReadOnlyList<QLeafItem> QLeafItemHome { get; }`
+
+The collocations homed on this meaning or one below it, shown as folding rows beneath it.
+A collocation item holds none, since the home rule gives a collocation no collocations.
+
+## `internal IReadOnlyList<QLeafSee> QLeafItemSee { get; }`
+
+The "see" lines for collocations that also link here or below but live under another meaning.
+Each is its own item, carrying the collocation's id for the click and Conduct's text unchanged.

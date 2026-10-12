@@ -1,5 +1,5 @@
 # PCollocationTemplate.xaml
-Hash: `33f31d8acabcec1e`
+Hash: `4e2f11414f531bd8`
 
 The editable collocation card, as markup alone.
 The editor's markup merges it, and the editor's fill subscribes the card's events.
@@ -12,10 +12,10 @@ The editor's card fill writes each field and hands every list its items.
 
 ## `Theme.Card.Body`
 
-The body orders expression, meaning, situations, registers, translations, examples, tags and media.
+The body orders expression, meaning, linked meanings, situations, registers, translations, examples, tags and media.
 The media-add controls follow those fields.
 A writer fills a card in the order a reader will meet it.
-No field is labelled, for the same reason the meaning card labels none.
+Only the linked meanings carry a caption, and no other field is labelled.
 
 ## `PTitle`
 
@@ -43,6 +43,36 @@ The hinge is a plain `ToggleButton`, found by its contract name.
 It stands where the reading card's hinge stands.
 A press on it is taken by the button, so the header under it never starts a drag.
 The card fill subscribes its click and paints its state.
+
+## `PCardBond`
+
+The collocation's linked meanings as chips, set before the situations.
+The caption `Card.SenseCaption` leads the row, and the first chip is the home.
+Each chip shows the meaning's path and name, and an eraser unlinks it.
+Only the collocation template carries it.
+
+The caption and the add button are drawn as boxes of a chip's height.
+Each pads one line of `Theme.Card.SituationSize` text by five above and below, as the chip and the situation entry do.
+They take the chip's bottom margin of seven and sit at the top of the row.
+Equal boxes from one top share one centre, so caption, chips and button read as one line.
+
+## `PBondChooser`
+
+The add button, captioned `Card.SenseAdd`, closing the chip row.
+It carries no context menu, so a right click does nothing.
+
+## `PBondMenu`
+
+The meaning picker, a themed `Popup` under `PBondChooser` like the mention picker.
+It takes `Theme.Popup.Surface`, the surface the mention picker's popup also takes.
+It does not stay open, so an outside click shuts it.
+The driver fills and opens it, and shuts it on a pick or Escape.
+
+## `PBondList`
+
+The picker's rows, one per meaning of the entry.
+Each row is a `Theme.Popup.RowSurface`, so it lights on hover as the mention rows do.
+Its path and name parts reuse the chip's part names, because the driver fills each from the same row item.
 
 ## `PCardBody`
 

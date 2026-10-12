@@ -1,5 +1,5 @@
 # LMeaning.cs
-Hash: `39b3ef5e9866c04c`
+Hash: `a467044e1d4d18bc`
 
 ## `public sealed record LMeaning(long LMeaningId, long LMeaningEntryId, long? LMeaningParentId, int LMeaningPosition, LStateValue LMeaningTitle, LStateValue LMeaningDefinition)`
 
@@ -28,3 +28,27 @@ Each Meaning holds exactly one definition, empty when unset.
 
 The text a Meaning is listed under, which is its title, then its definition, then empty.
 A list that finds it empty prints its own unknown mark instead.
+
+## `public static string? LMeaningPathRead(IReadOnlyList<LCardDraft> meanings, long meaningId)`
+
+The dotted path of a meaning in the draft tree, such as "1.2".
+Each step is the rank among siblings, counted from one by list order.
+It is the format a mention's `<sense>` uses in markup.
+It is null for id 0 or an id absent from the tree.
+
+## `public static long LMeaningPathFind(IReadOnlyList<LCardDraft> meanings, string path)`
+
+The inverse of `LMeaningPathRead`.
+It answers 0 when a step is not a number or the path leaves the tree.
+
+## `public static long LMeaningRootRead(IReadOnlyList<LCardDraft> meanings, long meaningId)`
+
+The id of the top-level meaning above a meaning, or the meaning itself at the top.
+It answers 0 for an id absent from the tree.
+
+## `public static IReadOnlyList<LMeaning> LMeaningDraftRead(long entryId, IReadOnlyList<LCardDraft> meanings)`
+
+The flat Meaning rows of a draft tree, each owned by `entryId` and carrying its parent id.
+A row's position is its index among siblings.
+The rows hold the cards' own ids, so a collocation link can be checked against them.
+Order across levels is not guaranteed.

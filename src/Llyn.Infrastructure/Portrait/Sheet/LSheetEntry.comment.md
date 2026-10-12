@@ -1,5 +1,5 @@
 # LSheetEntry.cs
-Hash: `5e7ea60ffac27852`
+Hash: `450e69ebb2151aca`
 
 ## `public static class LSheetEntry`
 
@@ -16,9 +16,13 @@ The body is one `<main class="entry">` in the order of `PDisplay.xaml`.
 The header, the sound block, the speech line and the frequency pill come from the Livery page.
 The paradigm box follows through `LSheetParadigm.LSheetParadigmAppend`, where the view places `PDisplayParadigm`.
 The lower body follows in the order of `PDisplay.xaml`.
-It runs the fanqie box, the two decks, incoming, etymology, the note, then the script box.
+It runs the fanqie box, the Meaning deck, the Other band, incoming, etymology, the note, then the script box.
 Etymology and the note are two calls, each writing its own band.
 Their content still comes from the portrait sections, so only the frame differs from `LSheet`.
+The Meaning deck is the one deck of numbered cards, through `LSheetDeck.LSheetDeckAppend`.
+The Other band holds the collocations with no home among the Meanings, under `LPortraitLabelOther`.
+It is written through `LSheetSection.LSheetSectionAppend`, so each row matches a homed collocation's row.
+The portrait page picks them, so a linked collocation shows once under its home.
 The glyph and frequency bands are left out, since the sound block and the pill already show them.
 The form and paradigm bands are left out too, since the paradigm box replaces them.
 The stamp footer closes the body.

@@ -52,6 +52,7 @@ public sealed class CEditor
         CEditorEntry = new CEntry(
             CEditorDesk, drafts, entries.CEntryBundleCard, media, settings, envoy, noticed);
         CEditorList = new CCardList(CEditorDesk, entries.CEntryBundleCard, settings, envoy);
+        CEditorField = new CCardField(CEditorDesk, drafts, settings, envoy);
         CEditorDesk.CDeskObserverAttach(marshal);
         CEditorEsteem.LEsteemObserverAttach(marshal);
         CEditorTimbre.LTimbreObserverAttach(marshal);
@@ -109,7 +110,7 @@ public sealed class CEditor
 
     public CCardSpeech CEditorSpeech { get; }
 
-    public CCardField CEditorField => new(CEditorDesk);
+    public CCardField CEditorField { get; }
 
     public CCardList CEditorList { get; }
 

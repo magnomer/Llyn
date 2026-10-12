@@ -1,16 +1,16 @@
 # TAuditBorderSetting.cs
-Hash: `bad21c1428b06c03`
+Hash: `0b6da0ad7399d4b6`
 
 ## `internal static class TAuditBorderSetting`
 
 Hand-written and tracked settings for the ring structure of the border.
-They hold the neighbours, the capsule, the cut, the offer and sealed prefixes, the ceilings and the exempt rows.
+They hold the neighbours, the capsule, the cut, the offer prefixes, the sealed rings, the ceilings and the exempt rows.
 The offers each pair may name live in `TAuditEngineSetting`, `TAuditDeportmentSetting` and `TAuditDemeanorSetting`.
 No script writes this file, and the border fact reads no script configuration.
 `AuditStructure.json` holds its own copy, kept in step by hand as scripts/principles.md asks.
 The neighbours and the cut are tied to the charter and the UI roots by facts, not by hand.
 
-## `public const int TAuditGeneration = 21;`
+## `public const int TAuditGeneration = 23;`
 
 Numbers the revision of the border settings this file holds.
 
@@ -23,7 +23,7 @@ The one project that names every project, so it is no ring of the border.
 Every ring project under `src`, Host excepted, as its name to the one ring it may name as neighbour.
 A ring names its neighbour alone and ferries the data of every ring inside it.
 The two adapters name `Llyn.Core` as spokes, since the contracts they implement live there.
-The core names no neighbour.
+The core and the capsule name no neighbour.
 
 ## `public static readonly IReadOnlyDictionary<string, string> TAuditBorderCapsule`
 
@@ -33,7 +33,8 @@ A capsule declares no neighbour of its own and belongs to one ring alone.
 ## `public static readonly string[] TAuditBorderCut`
 
 The UI rings above the cut.
-A cut ring names only its neighbour, and nothing from below the cut undercuts into it.
+A cut ring names only its neighbour and its capsule.
+A name it takes from a deeper ring below the cut is `Undercutting`.
 
 ## `public static readonly IReadOnlyDictionary<string, string[]> TAuditOfferPrefix`
 
@@ -42,12 +43,12 @@ Conduct offers `C` types and the engine offers `L` types.
 A neighbour missing here fails every entry offered from it, so a new pair needs its row.
 The script holds the same map as `offerPrefixes`.
 
-## `public static readonly IReadOnlyDictionary<string, string[]> TAuditUnsealingPrefix`
+## `public static readonly IReadOnlyList<string> TAuditUnsealingRing`
 
-For a UI ring, the type prefixes it seals.
-A public type of that ring whose name starts with one is a sealed controller.
+The UI rings whose every public top-level type is a sealed controller, whatever its prefix.
 Its public members may name no type from below the ring's neighbour.
-Deportment seals `L`, the medium-free controllers that later sink into Conduct.
+Deportment is sealed whole, the medium-free controllers that later sink into Conduct.
+The script holds the same list as `unsealingRings`.
 
 ## `public static readonly IReadOnlyDictionary<string, int> TAuditBorderCeiling`
 

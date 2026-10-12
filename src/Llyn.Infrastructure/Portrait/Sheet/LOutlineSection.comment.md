@@ -1,5 +1,5 @@
 # LOutlineSection.cs
-Hash: `1e873c050dfd5694`
+Hash: `08c5cda1dd64e535`
 
 ## `public static class LOutlineSection`
 
@@ -9,7 +9,9 @@ The role of the node decides its form, so a situation, a register and a tag keep
 ## `public static void LOutlineSectionAppend(StringBuilder outline, LPortraitSection section, int depth)`
 
 Dispatch follows the role.
-Card and kind, phrase, scene, tone, label, bridge, quote and usage each have a form.
+Card and kind, phrase, scene, tone, label, bridge, quote, usage, list and row each have a form.
+A collocation list is a heading leveled by its depth as a card's is, then its rows.
+A row is its phrase in bold, its meaning, then its fields, always open, since Markdown has no fold.
 Any other role is a band.
 A scene is an italic run, and a tone and a label are code runs.
 A bridge is the arrow run of the shared body.

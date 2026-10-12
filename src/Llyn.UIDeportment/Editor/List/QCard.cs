@@ -20,6 +20,8 @@ internal sealed class QCard
 
     private readonly QLink _qCardLink;
 
+    private readonly QBond _qCardBond = new();
+
     private readonly QLabel _qCardLabel;
 
     private readonly QSentence _qCardSentence;
@@ -71,6 +73,7 @@ internal sealed class QCard
     {
         _cCardField = field;
         _cCardList = list;
+        _qCardBond.QBondIntroduce(field);
         _qCardPosition.QCardPositionIntroduce(list);
     }
 
@@ -83,6 +86,7 @@ internal sealed class QCard
 
         QCardRowRefine(container, card, changed);
         QCardFieldApply(container, card);
+        _qCardBond.QBondApply(container, card, changed);
         if (QLook.QLookPartFind<Border>(container, "PCardHeader") is Border header)
         {
             header.MouseLeftButtonDown -= _qCardDrag.QCardDragRefine;
@@ -350,6 +354,7 @@ internal sealed class QCard
         QContext.QContextShow(card, draft.CCardDraftSituation);
         QRegister.QRegisterShow(card, draft.CCardDraftRegister);
         QLink.QLinkShow(card, draft.CCardDraftTranslation);
+        QBond.QBondRefine(card, draft.CCardDraftSense);
         QLabel.QLabelShow(card, draft.CCardDraftTag);
         card.PCardImageShow(draft.CCardDraftImage);
         card.PCardVideoShow(draft.CCardDraftVideo);

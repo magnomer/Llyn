@@ -263,6 +263,8 @@ public sealed class TDisplayFailure
         TInterfaceConduct.TAtelierCreate(engine, new Dictionary<string, Func<object?[]?, object?>>
         {
             ["LEngineEntryLoad"] = args => engine.TEngineEntryLoad((long)args![0]!),
+            ["LEngineCollocationRead"] = args => engine.TEngineCollocationRead(
+                (LEntryDraft)args![0]!, (IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>>)args[1]!),
         });
 
     private static CWing TDisplayWingOpen(LEngine engine, CAtelier atelier, List<string> asked)

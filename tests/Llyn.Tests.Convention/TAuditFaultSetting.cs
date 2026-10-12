@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static class TAuditFaultSetting
 {
-    public const int TAuditGeneration = 21;
+    public const int TAuditGeneration = 23;
 
     public static readonly string[] TAuditFaultRing =
     [

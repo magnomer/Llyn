@@ -230,6 +230,31 @@ public sealed class TSheetEntry
     }
 
     [Fact]
+    public void SheetEntryFormat_UnlinkedCollocation_WritesOtherRow()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LCardDraft collocation = TInterface.TCardDraftCreate(
+            LStateValue.LStateValueUnspecified,
+            TInterfaceState.TStateValueCreate("set off"),
+            TInterfaceState.TStateValueCreate("to start a journey"),
+            [], [], [], [], [], 1);
+        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "set", "English", string.Empty, string.Empty, [TInterface.TCardCreate("to place", 1)], [collocation]));
+
+        string sheet = TSheetTextFormat(engine, entry);
+
+        Assert.Contains("<section class=\"band\">\n<h2>Other collocations</h2>\n", sheet, StringComparison.Ordinal);
+        Assert.Contains(
+            "<div class=\"collocations\">\n<details class=\"collocation\" open>\n<summary><span class=\"phrase\">"
+            + "set off</span><span class=\"sense\">to start a journey</span></summary>",
+            sheet,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "<section class=\"band deck\">\n<h2>Other collocations</h2>", sheet, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void SheetEntryFormat_OpenedFanqie_WritesOpenDetails()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

@@ -1,5 +1,5 @@
 # TInterfaceClerk.cs
-Hash: `e2da247d5e7a02d9`
+Hash: `98d037b84cd12c42`
 
 ## `internal static partial class TInterface`
 
@@ -223,6 +223,7 @@ The revision and query clerks it adds read the same rig, so the import stamps wh
 ## `internal static LPortraitClerk TPortraitClerkCreate(LRig rig)`
 
 The portrait clerk with every clerk a page composes from, built over `rig`.
+Its fold clerk reads the entry's stored folds for the page.
 
 ## `internal static LPortraitClerkPress TPortraitPressCreate(LRig rig)`
 

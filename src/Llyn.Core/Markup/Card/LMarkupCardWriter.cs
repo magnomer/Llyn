@@ -57,6 +57,11 @@ internal static class LMarkupCardWriter
             element.Add(LMarkupCardFormat(child, "meaning"));
         }
 
+        foreach (string sense in card.LMarkupCardSense)
+        {
+            element.Add(LMarkupNode.LMarkupNodeCreate("sense", sense));
+        }
+
         return LMarkupNode.LMarkupNodeCreate(name, element);
     }
 

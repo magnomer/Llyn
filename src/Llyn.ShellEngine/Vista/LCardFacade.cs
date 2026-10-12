@@ -61,6 +61,29 @@ public sealed class LCardFacade : LCardPort
             : null;
     }
 
+    public IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth, string LMeaningPath)>
+        LEngineMeaningScan(LTenure held, string key)
+    {
+        ArgumentNullException.ThrowIfNull(held);
+        ArgumentNullException.ThrowIfNull(key);
+
+        if (held.LTenureRead() is not LDraft draft)
+        {
+            return [];
+        }
+
+        return LMeaningClerk.LMeaningClerkScan(
+            draft.LDraftStored ?? 0,
+            draft.LDraftContent.LEntryDraftMeanings,
+            _lCardFacadeSettings.LEngineTextRead(key));
+    }
+
+    public LCollocationLayout LEngineCollocationRead(
+        LEntryDraft shown, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets)
+    {
+        return LDraftClerkSense.LCollocationLayoutRead(shown, targets);
+    }
+
     public LTranslationOffer LEngineTranslationFind(LTenure held, string text, string word, bool chosen)
     {
         ArgumentNullException.ThrowIfNull(held);

@@ -249,6 +249,27 @@ public static class LLiveryStyle
                 background: {{canvas}}; vertical-align: top;
             }
             .llyn .llyn-expression { color: {{muted}}; font-size: 14px; }
+            .llyn .llyn-collocations { margin: 0 0 20px; border: 1px solid {{line}}; border-radius: 8px; }
+            .llyn .llyn-collocations > p:has(> .llyn-heading) {
+                margin: 0; padding: 9px 16px; border-bottom: 1px solid {{line}};
+            }
+            .llyn .llyn-collocations .llyn-heading {
+                display: inline; height: auto; padding: 0; border-radius: 0; background: none;
+                color: {{muted}}; font-size: 13px; font-weight: 600; line-height: inherit;
+            }
+            .llyn .llyn-collocation { padding: 12px 16px; }
+            .llyn .llyn-collocation + .llyn-collocation { border-top: 1px solid {{line}}; }
+            .llyn .llyn-collocation > :last-child { margin-bottom: 0; }
+            .llyn .llyn-collocation > summary { list-style: none; cursor: pointer; }
+            .llyn .llyn-collocation[open] > summary { margin-bottom: 12px; }
+            .llyn .llyn-collocation > summary::-webkit-details-marker { display: none; }
+            .llyn .llyn-collocation > summary::before {
+                content: ""; display: inline-block; width: 6px; height: 6px; margin: 0 12px 2px 2px;
+                border-right: 2px solid {{muted}}; border-bottom: 2px solid {{muted}}; transform: rotate(-45deg);
+            }
+            .llyn .llyn-collocation[open] > summary::before { transform: rotate(45deg); }
+            .llyn .llyn-phrase { font-size: 16px; font-weight: 500; }
+            .llyn .llyn-meaning { margin-left: 8px; }
             .llyn .llyn-situation {
                 display: inline-block; height: 23px; margin-right: 6px; padding: 0 10px;
                 border: 1px solid {{situationEdge}}; border-radius: 12px; background: {{situationSoft}};

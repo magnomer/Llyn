@@ -1,5 +1,5 @@
 # LDraftClerkCard.cs
-Hash: `cee90cc963d79cf0`
+Hash: `b03badb861b0a014`
 
 ## `public static class LDraftClerkCard`
 
@@ -11,8 +11,16 @@ Every other routine is pure and works on cards already named.
 ## `public static LEntryDraft? LCardApply(LEntryDraft content, LRequest request, LIdentity identity)`
 
 Routes every card request to its handler, and answers null for any other request.
-The clerk then hands that request on to its other handlers.
+Link additions and removals go to `LDraftClerkSense`.
+An expression request goes to `LCardExpressionChange`.
 `identity` names the card an addition makes, and no other request uses it.
+
+## `private static LEntryDraft LCardExpressionChange(LEntryDraft content, LRequestCardExpression request)`
+
+A meaning carries no expression, so a typed one sent to a card among the meanings is refused.
+An empty or unspecified one sent to a meaning hands the draft back unchanged.
+Nothing typed is lost that way, and a request that writes every field of a meaning still applies.
+An expression for any other card goes through `LCardChange`.
 
 ## `public static LEntryDraft LCardInsert(LEntryDraft content, LRequestCardAddition request, LIdentity identity)`
 
@@ -33,6 +41,7 @@ A place beyond either end of the list is read as that end.
 ## `public static LEntryDraft LCardRemove(LEntryDraft content, long id)`
 
 Drops the card named from the meanings, their children or the collocations, and refuses when none carries it.
+A removed meaning takes every collocation link to it and to its descendants with it.
 
 ## `public static LEntryDraft LCardMove(LEntryDraft content, LRequestCardShift request)`
 
@@ -73,12 +82,12 @@ Whether the list holds one card only, and that card carries the id.
 ## `public static int? LCardShiftRead(LEntryDraft content, long id, int place)`
 
 The place a card moves to in its own list, counting from zero, or null when nothing moves.
-A card in neither list, a place outside its list, or the place it holds already answers null.
+A card in neither top-level list, a place outside its list, or the place it holds already answers null.
 So a list of one never moves, and the caller sends nothing.
 
 ## `private static IReadOnlyList<LCardDraft> LCardListRead(LEntryDraft content, long id)`
 
-The list that holds the card: the meanings when they carry it, and the collocations otherwise.
+The top-level meanings when they hold the card, and the collocations otherwise.
 
 ## `private static int LCardPlaceRead(IReadOnlyList<LCardDraft> cards, long id)`
 

@@ -1,5 +1,5 @@
 # LCardPort.cs
-Hash: `1dbaa2554458f5f4`
+Hash: `58a1a53a3ef53dff`
 
 ## `public interface LCardPort`
 
@@ -18,6 +18,14 @@ Missing targets are omitted rather than rendered as blank chips.
 ## `LEtymologyResult LEngineEtymologyRead(LEntryDraft draft);`
 
 Resolved source links and the narrative verdict travel together, so the reading view needs one etymology answer.
+
+## `LCollocationLayout LEngineCollocationRead(LEntryDraft shown, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets);`
+
+Where the reading view and its compass place each collocation of the shown draft.
+Homes, stubs, the other list and each row's phrase and markers come in one answer.
+So no reader applies the link rules itself.
+The caller hands in the translations it already read, so the flags cost no second read.
+The compass shows no flags, so it hands in an empty map.
 
 ## `IReadOnlySet<long> LEngineFoldRead(long entryId);`
 

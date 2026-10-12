@@ -1,5 +1,5 @@
 # TAuditTruthWalker.cs
-Hash: `a8a08e9c233a1c36`
+Hash: `c6d4f7595d1cd452`
 
 ## `internal static partial class TAuditTruthWalker`
 
@@ -73,7 +73,7 @@ A field holding an engine type is duplicating before any reference is read.
 A field typed `object` is duplicating too, since an untyped slot hides what it holds.
 A field whose name ends in `State` is duplicating too, since only the engine resolves a state.
 A `??=` whose right side requests caches the answer and is duplicating.
-Visits every reference to the field, outside its class only when the field is shared.
+Visits every reference to the field and its aliases, outside its class only for shared fields or non-private symbols.
 A use of a ref parameter the field was passed to counts as inside, wherever its method lies.
 A write is sorted by `TAuditOriginWalker.TAuditWriterResolve`.
 A `ref` write into a plain helper is sorted by the argument the helper assigns.

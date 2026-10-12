@@ -19,16 +19,29 @@ public static class LDraftClerkCard
                 content,
                 sent.LRequestCardId,
                 card => card with { LCardDraftTitle = LStateValue.LStateValueRead(sent.LRequestValue) }),
-            LRequestCardExpression sent => LCardChange(
-                content,
-                sent.LRequestCardId,
-                card => card with { LCardDraftExpression = LStateValue.LStateValueRead(sent.LRequestValue) }),
+            LRequestCardExpression sent => LCardExpressionChange(content, sent),
             LRequestCardMeaning sent => LCardChange(
                 content,
                 sent.LRequestCardId,
                 card => card with { LCardDraftMeaning = LStateValue.LStateValueRead(sent.LRequestValue) }),
+            LRequestSenseAddition sent => LDraftClerkSense.LCardSenseAttach(
+                content, sent.LRequestCardId, sent.LRequestSenseId),
+            LRequestSenseRemoval sent => LDraftClerkSense.LCardSenseDetach(
+                content, sent.LRequestCardId, sent.LRequestSenseId),
             _ => null,
         };
+    }
+
+    private static LEntryDraft LCardExpressionChange(LEntryDraft content, LRequestCardExpression request)
+    {
+        LStateValue expression = LStateValue.LStateValueRead(request.LRequestValue);
+        if (LCardFind(content.LEntryDraftMeanings, card => card.LCardDraftId == request.LRequestCardId) is null)
+        {
+            return LCardChange(
+                content, request.LRequestCardId, card => card with { LCardDraftExpression = expression });
+        }
+
+        return expression.LStateValueEmpty ? content : throw new LRefusal(LRefusal.LRefusalCard);
     }
 
     public static LEntryDraft LCardInsert(LEntryDraft content, LRequestCardAddition request, LIdentity identity)
@@ -105,10 +118,10 @@ public static class LDraftClerkCard
             throw new LRefusal(LRefusal.LRefusalCard);
         }
 
-        IReadOnlyList<LCardDraft>? meanings = LCardRemove(content.LEntryDraftMeanings, id, out _);
+        IReadOnlyList<LCardDraft>? meanings = LCardRemove(content.LEntryDraftMeanings, id, out LCardDraft? removed);
         if (meanings is not null)
         {
-            return content with { LEntryDraftMeanings = meanings };
+            return LDraftClerkSense.LCardSenseSweep(content with { LEntryDraftMeanings = meanings }, removed!);
         }
 
         IReadOnlyList<LCardDraft> collocations = LCardRemove(content.LEntryDraftCollocations, id, out _)

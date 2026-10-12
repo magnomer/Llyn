@@ -1,10 +1,21 @@
 # TPortraitSheet.cs
-Hash: `d788633041da0e69`
+Hash: `6f7592d5e2cb9603`
 
 ## `public sealed class TPortraitSheet`
 
 Covers the HTML rendering, which the PDF is printed from.
 What is proved here holds for both.
+Only the collocation rows differ, since the PDF prints a page opened by `LPortraitPage.LPortraitPageOpen`.
+
+## `public void SheetFormat_OpenedPage_PrintsTheFoldedRowOpen()`
+
+A folded row on a page opened for print shows open under its list heading.
+Its summary holds the phrase and the meaning, and its fields follow.
+
+## `public void SheetFormat_FoldedRow_WritesClosedDetails()`
+
+A folded row on an unopened page keeps its fold, as an HTML export shows it.
+Its fields stay inside the closed disclosure.
 
 ## `public void SheetFormat_FullPortrait_CarriesEveryFieldTheDisplayShows()`
 

@@ -1,5 +1,5 @@
 # LLiveryStyle.cs
-Hash: `4b31fec36aee7aa1`
+Hash: `2634b6a664c70f6d`
 
 ## `public static class LLiveryStyle`
 
@@ -21,12 +21,12 @@ The link hides, so a recording shows only a small player beside its reading.
 Joplin also puts its own icon in front of every link to a note or resource.
 That icon hides, so a link to another entry reads as in Llyn.
 A table whose header cells are all empty hides its header row.
-The writers give every table such a header, since Markdown needs one.
+The writers give every Markdown table such a header, since Markdown needs one.
 The local `table` matches those tables, and drops Joplin's borders and fills on them.
 The local `reading` matches the seven-column readings tables of `LLiverySound`, through the `reflex` header test.
 Its labels and varieties are 14 pixels, its readings 20, and every later column 13.
 The local `card` matches card tables other than readings, so a series member card keeps the entry's sizes.
-Its `:where` keeps the card rules at their old weight against the local `table`.
+Its `:where` adds no weight, so the card rules keep the weight of `.llyn .llyn-card table`.
 The local `sound` matches its two-column sound rows, outside the paradigm box.
 A `llyn-tone` span is superscript, except inside a `card` table, where the rime card shows it as text.
 The `llyn-more` summary loses its marker and shows only its text.
@@ -60,6 +60,17 @@ A `muted` chevron at the right end replaces it, turned for the open and folded s
 The chevron mirrors the app's right-aligned hinge, and the native marker would sit at the left.
 The chevron is the only fold affordance a card shows in Joplin.
 A folded card drops the rule under its summary and the space below it.
+
+A `llyn-collocations` block is a bordered box with 8-pixel corners.
+The paragraph holding its `llyn-heading` count is ruled off from the rows below it.
+A `llyn-heading` span inside the block is a caption, not a pill.
+The caption is `muted` at 13 pixels and weight 600.
+Its rule is scoped to `llyn-collocations` and resets the pill's box, fill and line height.
+Every other `llyn-heading` span keeps the pill, with its `accentSoft` fill and `accent` text.
+Each `llyn-collocation` row is ruled from the one above it.
+Its summary leads with a small `muted` chevron, pointing right while closed and down while open.
+The phrase is 16 pixels at weight 500, and the meaning follows it on the same line.
+
 An empty `llyn-blank` span is the box `LLiverySheet` leaves for a dropped picture.
 A `llyn-vacant` span is the muted text a reconstruction note shows for an empty part.
 A `llyn-diwei` div is boxed like a card, but its characters stay left-aligned.

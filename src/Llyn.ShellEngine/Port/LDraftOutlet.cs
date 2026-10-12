@@ -108,6 +108,10 @@ public sealed class LDraftOutlet : LDraftPort
         LTenure held, long card, long sentence, string text, int start, int length, string key) =>
         _lDraftOutletEngine.LEngineCard.LEngineSenseRead(held, card, sentence, text, start, length, key);
 
+    public IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth, string LMeaningPath)>
+        LEngineMeaningScan(LTenure held, string key) =>
+        _lDraftOutletEngine.LEngineCard.LEngineMeaningScan(held, key);
+
     public int LEngineOffsetRead(string text, int unit) =>
         _lDraftOutletEngine.LEngineMention.LEngineOffsetRead(text, unit);
 

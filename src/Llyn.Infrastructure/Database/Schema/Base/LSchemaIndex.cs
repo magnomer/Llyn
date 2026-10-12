@@ -16,6 +16,7 @@ public static class LSchemaIndex
             CREATE INDEX IF NOT EXISTS sense_parent ON sense (sense_parent);
             CREATE INDEX IF NOT EXISTS collocation_entry ON collocation (entry_parent);
             CREATE INDEX IF NOT EXISTS example_reference ON example (reference_ref);
+            CREATE INDEX IF NOT EXISTS collocation_sense_member ON collocation_sense (sense_ref);
             """;
         command.ExecuteNonQuery();
 

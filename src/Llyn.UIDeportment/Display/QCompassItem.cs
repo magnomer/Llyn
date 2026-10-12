@@ -7,12 +7,13 @@ public sealed class QCompassItem : INotifyPropertyChanged
 {
     private bool _qCompassItemCurrent;
 
-    public QCompassItem(FrameworkElement target, string name, string number, int depth)
+    public QCompassItem(FrameworkElement target, string name, string number, int depth, bool muted)
     {
         QCompassItemTarget = target;
         QCompassItemName = name;
         QCompassItemNumber = number;
         QCompassItemIndent = new Thickness(depth * 13, 0, 0, 0);
+        QCompassItemMuted = muted;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -24,6 +25,8 @@ public sealed class QCompassItem : INotifyPropertyChanged
     public string QCompassItemNumber { get; }
 
     public Thickness QCompassItemIndent { get; }
+
+    public bool QCompassItemMuted { get; }
 
     public bool QCompassItemCurrent
     {

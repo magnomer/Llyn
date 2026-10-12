@@ -1,5 +1,5 @@
 # LLiveryCard.cs
-Hash: `d2754bd0190f6fc0`
+Hash: `240587df8d35a9c1`
 
 ## `internal static class LLiveryCard`
 
@@ -10,16 +10,19 @@ It reads only `LLiveryPage`, the `note` map and the `lookup` it is handed.
 
 `LLiverySheet.LLiveryFormat` calls it right after `LLiveryScript.LLiveryScriptAppend`.
 It writes the meanings under `Display.MeaningPlural` through `LLiveryDeckAppend`.
-It writes the collocations under `Display.Collocation` the same way.
+Each meaning receives the entry's collocations, so the ones it is home to nest inside it.
+It writes the collocations with no home among the meanings under `Display.CollocationOther` as rows.
+Those are picked by `LCollocation.LCollocationOtherRead` and written by `LLiveryCollocation.LLiveryOtherAppend`.
 `LLiveryIncomingAppend` writes the incoming usages last.
 
-## `private static void LLiveryDeckAppend(StringBuilder sheet, LLiveryPage page, IReadOnlyList<LCardDraft> cards, string heading, string blank, Func<long, string> note)`
+## `private static void LLiveryDeckAppend(StringBuilder sheet, LLiveryPage page, IReadOnlyList<LCardDraft> cards, string heading, string blank, Func<long, string> note, Func<string, string> lookup, IReadOnlyList<LCardDraft> collocations)`
 
 Writes `heading` as a level two heading, then one card per entry of `cards` through `LLiveryFaceAppend`.
 `blank` is the placeholder title for a card without one.
+`collocations` is handed on to each card unchanged, and `lookup` words the row headings and stubs.
 No cards write nothing, not even the heading.
 
-## `private static void LLiveryFaceAppend(StringBuilder sheet, LLiveryPage page, LCardDraft card, string number, string blank, Func<long, string> note)`
+## `private static void LLiveryFaceAppend(StringBuilder sheet, LLiveryPage page, LCardDraft card, string number, string blank, Func<long, string> note, Func<string, string> lookup, IReadOnlyList<LCardDraft> collocations)`
 
 Writes one card as a `llyn-card` block, followed by a blank line.
 A stored card opens through `LLiveryFoldFormat`, open unless `LLiveryPageFold` holds its id.
@@ -29,21 +32,34 @@ A card with no stored id stays a plain div, since it has nothing to fold.
 Nested child cards follow the same rule.
 The head holds `number` as a `llyn-number` chip and the title as a `llyn-title` span.
 The title is the stored title, else the expression, else `blank` with `llyn-blank` added.
-A collocation with both a title and an expression writes the expression under the head.
+A card with both a title and an expression writes the expression under the head.
 The stored meaning text follows through `LLiveryEtymology.LLiveryMentionFormat`, so its line breaks survive.
 The content then follows in view mode's order.
+`LLiveryFieldAppend` comes first, then the children, each as a nested card numbered after its parent.
+`LLiveryBodyAppend` follows, then `LLiveryCollocation.LLiveryListAppend` with the collocations at home here.
+`LLiveryCollocation.LLiveryStubAppend` closes the card with a stub for each further link here.
+
+## `internal static void LLiveryFieldAppend(StringBuilder sheet, LLiveryPage page, LCardDraft card, Func<long, string> note)`
+
+Writes the fields a card shows above its children.
+`LLiveryCollocation` reuses it for a row body.
 Situations, then registers, come first through `LLiveryBadgeAppend`.
 Translations follow through `LLiveryTargetAppend`, above the examples as in view mode.
-Children follow, each as a nested card numbered after its parent.
-Examples follow through `LLiverySentenceAppend`.
+
+## `internal static void LLiveryBodyAppend(StringBuilder sheet, LLiveryPage page, LCardDraft card, Func<long, string> note)`
+
+Writes the fields a card shows below its children.
+`LLiveryCollocation` reuses it for a row body.
+Examples come first through `LLiverySentenceAppend`.
 Tags follow through `LLiveryBadgeAppend`.
-Images and videos come last through `LLiveryMediaAppend`.
+Images and videos close it through `LLiveryMediaAppend`.
 
-## `internal static string LLiveryFoldFormat(bool opened)`
+## `internal static string LLiveryFoldFormat(string style, bool opened)`
 
-The opening of a foldable `llyn-card` `details` block, up to its open `summary` tag.
+The opening of a foldable `details` block of class `style`, up to its open `summary` tag.
 It carries `open` when `opened` is set.
-The card style draws its fold chevron at the top right of the summary.
+A `llyn-card` draws its fold chevron at the top right of the summary.
+A `llyn-collocation` row of `LLiveryCollocation` draws its chevron before the phrase.
 `LLiveryXiesheng` reuses it for each series member with reflex rows.
 
 ## `private static string LLiveryNumberFormat(LCardDraft card, int place)`

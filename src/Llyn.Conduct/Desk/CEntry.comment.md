@@ -1,10 +1,10 @@
 # CEntry.cs
-Hash: `21c16f01e1232d46`
+Hash: `e9a6c654ecc7c982`
 
 ## `public sealed class CEntry`
 
 The head fields of the entry an editor's desk holds, with their reads and gates.
-They cover the headword, reading, note, language, unit and etymons.
+They cover the headword, reading, note, language, unit, freedom and etymons.
 It also announces each draft the desk prepares, so every driver writes its controls from one event.
 It announces the held draft again for the held entry's card, reflex-list or editor-box fold bulletin.
 It hands each field edit to a quill over the held tenure.
@@ -16,6 +16,7 @@ The editor's desk, whose held tenure every read and edit goes through.
 ## `private readonly LDraftPort _cEntryDraftPort;`
 
 The draft port the chip quill reads the cards' link targets through.
+The held entry's meaning scan is read through it too.
 
 ## `private readonly LMediaPort _cEntryMediaPort;`
 
@@ -45,7 +46,7 @@ It listens to the desk's prepared drafts from the start, so no draft is prepared
 ## `public event Action<CEntryDraft>? CEntryDraftChanged;`
 
 The held entry was read again, so a driver writes its controls from it.
-It carries the content the desk prepared, never a second read of the draft.
+Its cards are the content the desk prepared, never a second read of the draft.
 The chip quill resolves the cards' link targets for that same content, so every card paints its links ready.
 Each card also carries its stored fold and whether it can fold.
 A fold bulletin on the held entry raises it again with the same draft and fresh folds.
@@ -68,7 +69,7 @@ A fold is not an edit, so the bulletin never touches the tenure or its undo.
 
 ## `internal CEntryDraft LEntryDraftRead(LTenure held, LDraft draft)`
 
-Shapes `draft` for the editor view through the folio, with its links and its folds.
+Shapes `draft` for the editor view through the folio, with its links, its folds and the entry's meaning scan.
 The prepared draft and the fold bulletin both shape through here, so the two never drift.
 It is internal so the test relay reads the held draft the way the event hands it.
 

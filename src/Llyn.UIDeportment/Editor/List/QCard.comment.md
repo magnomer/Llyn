@@ -1,5 +1,5 @@
 # QCard.cs
-Hash: `905ec0f1679444bc`
+Hash: `9041706b7b83bda4`
 
 ## `internal sealed class QCard`
 
@@ -15,11 +15,13 @@ The badge driver receives both lists so position requests can locate their card.
 ## `internal void QCardIntroduce(CCardField field, CCardList list)`
 
 Field edits and list gestures retain separate Conduct facets.
+The meaning-link driver `QBond` receives the field facet here too.
 The badge driver shares the same list facet.
 
 ## `internal void QCardApply(FrameworkElement container, object item, string? changed)`
 
 Only card items receive handlers and presentation.
+`QBond` fills the card's link chips and wires its chooser after the field lists.
 Handlers are removed before reattachment, avoiding duplicate subscriptions during refills.
 The changed-property name limits field text replacement.
 
@@ -65,6 +67,7 @@ The caller chooses each new card's peek wording, which remains derived rather th
 ## `private void QCardDraftRefine(PCard card, CCardDraft draft)`
 
 Every retained or new card receives ready values without a per-card Conduct lookup.
+The linked meanings reach the card through `QBond.QBondRefine`.
 Sentence rows share the sentence driver's current order.
 The supplied position is independent of loop position.
 Fold verdicts arrive last, allowing an in-place fold repaint after other fields are current.

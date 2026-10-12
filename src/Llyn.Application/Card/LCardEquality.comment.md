@@ -1,5 +1,5 @@
 # LCardEquality.cs
-Hash: `503148a69bd1e326`
+Hash: `7b2fe6cd813afde8`
 
 ## `public static class LCardEquality`
 
@@ -13,6 +13,7 @@ Every comparer is one overload of `LCardEqualityMatch`, told apart by the row ty
 
 Whether two card lists carry the same cards in the same order.
 Order counts, because the order cards are in is the order they are stored in.
+The meaning links of a card count too, in order, since the first is its home.
 Position is compared with it, so a reorder is caught by what it changed rather than by chance.
 
 ## `public static bool LCardEqualityMatch(IReadOnlyList<LVideoDraft> one, IReadOnlyList<LVideoDraft> other)`
@@ -36,6 +37,7 @@ The cards that carry something, in their original order.
 Whether a card holds nothing at all.
 An open form always shows one such card, and offering it is not an edit.
 A blank sentence, image or video row counts as nothing, since the form offers those too.
+A card holding a meaning link is not blank.
 
 ## `private static bool LCardEqualityMatch(IReadOnlyList<LSentenceDraft> one, IReadOnlyList<LSentenceDraft> other)`
 
@@ -58,7 +60,8 @@ Title, description, kind and id all count, not only the title the card shows.
 
 ## `private static bool LCardEqualityMatch(IReadOnlyList<long> one, IReadOnlyList<long> other)`
 
-Whether two translation lists name the same entries in the same order.
+Whether two id lists name the same ids in the same order.
+It compares both translation targets and meaning links.
 
 ## `private static bool LCardEqualityMatch(IReadOnlyList<LTagDraft> one, IReadOnlyList<LTagDraft> other)`
 

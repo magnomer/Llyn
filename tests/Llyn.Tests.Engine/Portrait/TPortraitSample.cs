@@ -4,6 +4,39 @@ namespace Llyn.Tests;
 
 internal static class TPortraitSample
 {
+    internal static LPortraitPage TPortraitRowCreate()
+    {
+        LPortraitSection row = TInterface.TPortraitSectionCreate(
+            "set off",
+            0,
+            [TInterface.TPortraitLineCreate(string.Empty, "to start a journey")],
+            [],
+            [],
+            [],
+            [],
+            [TInterface.TPortraitSectionCreate(
+                "Registers", 0, [], ["informal"], [], [], [], [], LPortraitRole.LPortraitRoleTone)],
+            LPortraitRole.LPortraitRoleRow) with { LPortraitSectionFold = true };
+        LPortraitSection rows = TInterface.TPortraitSectionCreate(
+            "Collocations · 1", 0, [], [], [], [], [], [row], LPortraitRole.LPortraitRoleList);
+        LPortraitSection sense = TInterface.TPortraitSectionCreate(
+            "to place",
+            1,
+            [TInterface.TPortraitLineCreate(string.Empty, "to put in position")],
+            [],
+            [],
+            [],
+            [],
+            [rows],
+            LPortraitRole.LPortraitRoleCard);
+
+        return TInterface.TPortraitPageCreate(
+            "set",
+            "English",
+            [],
+            [TInterface.TPortraitSectionCreate("Meanings", 0, [], [], [], [], [], [sense])]);
+    }
+
     internal static LPortraitPage TPortraitSampleCreate()
     {
         LPortraitSection mention = TInterface.TPortraitSectionCreate(

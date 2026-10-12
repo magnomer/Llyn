@@ -77,7 +77,8 @@ public sealed class CEntry
             draft.LDraftContent,
             new LQuillChip(held, _cEntryDraftPort).LQuillTranslationRead(draft.LDraftContent),
             LEntryFoldRead(),
-            _cEntryMediaPort);
+            _cEntryMediaPort,
+            _cEntryDraftPort.LEngineMeaningScan(held, "Display.Unknown"));
     }
 
     private void LEntryDraftShow()

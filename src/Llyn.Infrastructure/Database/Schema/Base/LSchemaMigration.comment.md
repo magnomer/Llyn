@@ -1,5 +1,5 @@
 # LSchemaMigration.cs
-Hash: `f674543facee4fd9`
+Hash: `19e387f890aa14a8`
 
 ## `public static class LSchemaMigration`
 
@@ -22,7 +22,7 @@ So a crash at any point leaves it whole, at one version or the other.
 A copy of the old file is kept beside it under its version, so nothing is lost to a rebuild.
 The same rebuild serves a file written by a newer build, since what this build cannot read it cannot keep.
 
-## `public const long LSchemaMigrationVersion = 80;`
+## `public const long LSchemaMigrationVersion = 81;`
 
 The schema version this build produces.
 A change to any table raises it.
@@ -69,8 +69,9 @@ Scratch cleanup also runs after commit, so a later failure does not undo a commi
 Builds the fresh file, copies the old file aside, and attaches the fresh file to the old one.
 One transaction first clears the retired lexical units in the old file, so no entry is refused on the way.
 It then carries each shared table across and settles old unknown citations and register marks.
-It also dates the stored glyph pictures whose captions still carry their age in the source's own words.
-It also settles frequency and reflex rows an older version stored differently.
+It settles the reflex rows an older version stored differently.
+It dates the stored glyph pictures whose captions still carry their age in the source's own words.
+It settles the frequency rows an older version stored differently.
 It renumbers every Collocation whose id a Meaning also holds.
 It then sweeps the orphans and brings the rows back.
 Bringing them back drops every old table, runs the schema on the file, and copies the fresh tables in.

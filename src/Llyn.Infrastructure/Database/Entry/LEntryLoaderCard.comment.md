@@ -1,5 +1,5 @@
 # LEntryLoaderCard.cs
-Hash: `95e0b048c2120f0c`
+Hash: `8f7544d1b4dd3a83`
 
 ## `public sealed class LEntryLoaderCard`
 
@@ -20,6 +20,7 @@ Each card holds the cards nested under it.
 
 The Collocation cards of the entry `id`, in stored order.
 A Collocation never nests, so its children are read nowhere.
+Each card also carries the ids of the Meanings it links to, in link order.
 
 ## Inline notes
 
@@ -27,7 +28,7 @@ A Collocation never nests, so its children are read nowhere.
 
 The Meanings under one parent, each already holding the Meanings under it.
 The senses are grouped by parent once and the tree is walked from the roots.
-A root is grouped under the empty key, because the store writes no parent for one.
+A root is grouped under key 0, because the store writes no parent for one.
 Each group is already in stored position order, so no group is sorted again here.
 Position is per sibling group, which is what the store's unique index counts.
 
@@ -48,7 +49,7 @@ So which owner side is being read is the only thing that differs.
 The collocation flag says which side ownerId names.
 The card's own columns are handed in already read off its row.
 The position is handed in the same way, raised by one before it arrives.
-Both archives keep their positions contiguous from zero, so the one place that adds the one is here.
+Both archives keep their positions contiguous from zero, so each caller adds the one.
 
 ### `ownerId);`
 

@@ -1,9 +1,13 @@
 # TPortraitOutline.cs
-Hash: `728c6ba7f9b41947`
+Hash: `48efe478fabf24ad`
 
 ## `public sealed class TPortraitOutline`
 
 Covers the Markdown rendering.
+
+## `public void OutlineFormat_FoldedRow_PrintsTheRowOpen()`
+
+A folded row prints open under its fourth-level list heading, as its bold phrase, meaning and tone chip.
 
 ## `public void OutlineFormat_FullPortrait_KeepsTheDisplayReadingOrder()`
 

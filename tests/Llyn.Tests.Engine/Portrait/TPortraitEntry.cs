@@ -74,6 +74,97 @@ public sealed class TPortraitEntry
     }
 
     [Fact]
+    public void PortraitRead_LinkedCollocation_ShowsUnderTheLinkedMeaning()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineMorphologySave(false);
+        LCardDraft first = TInterface.TCardCreate("to place", 1) with { LCardDraftId = TInterface.TIdentityCreate() };
+        LCardDraft second = TInterface.TCardCreate("to harden", 2) with { LCardDraftId = TInterface.TIdentityCreate() };
+        LCardDraft collocation = TInterface.TCardDraftCreate(
+            LStateValue.LStateValueUnspecified,
+            TInterfaceState.TStateValueCreate("set off"),
+            LStateValue.LStateValueUnspecified,
+            [], [], [], [], [], 1) with
+        {
+            LCardDraftSense = [second.LCardDraftId, first.LCardDraftId],
+        };
+        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "set", "English", string.Empty, string.Empty, [first, second], [collocation]));
+
+        LPortraitPage page = engine.TEnginePortraitRead(entry.LEntryId, TInterface.TPortraitLabelRead());
+
+        Assert.DoesNotContain(
+            "Other collocations", page.LPortraitPageSection.Select(row => row.LPortraitSectionHeading));
+        IReadOnlyList<LPortraitSection> cards = page.LPortraitPageSection[0].LPortraitSectionChild;
+        LPortraitSection rows = Assert.Single(
+            cards[1].LPortraitSectionChild, row => row.LPortraitSectionRole == LPortraitRole.LPortraitRoleList);
+        Assert.Equal("Collocations · 1", rows.LPortraitSectionHeading);
+        LPortraitSection home = Assert.Single(rows.LPortraitSectionChild);
+        Assert.Equal(LPortraitRole.LPortraitRoleRow, home.LPortraitSectionRole);
+        Assert.Equal("set off", home.LPortraitSectionHeading);
+        Assert.False(home.LPortraitSectionFold);
+        Assert.Equal("→ set off see 2", cards[0].LPortraitSectionChild[^1].LPortraitSectionLine[0].LPortraitLineText);
+    }
+
+    [Fact]
+    public void PortraitRead_UnlinkedCollocation_ShowsAsOtherRow()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineMorphologySave(false);
+        LCardDraft collocation = TInterface.TCardDraftCreate(
+            LStateValue.LStateValueUnspecified,
+            TInterfaceState.TStateValueCreate("set off"),
+            TInterfaceState.TStateValueCreate("to start a journey"),
+            [], [], [], [], [], 1);
+        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "set", "English", string.Empty, string.Empty, [TInterface.TCardCreate("to place", 1)], [collocation]));
+        LEntryDraft saved = engine.TEngineEntryLoad(entry.LEntryId)!;
+        engine.TEngineFoldSave(entry.LEntryId, saved.LEntryDraftCollocations[0].LCardDraftId);
+
+        LPortraitPage page = engine.TEnginePortraitRead(entry.LEntryId, TInterface.TPortraitLabelRead());
+
+        LPortraitSection other = Assert.Single(
+            page.LPortraitPageSection, section => section.LPortraitSectionHeading == "Other collocations");
+        LPortraitSection row = Assert.Single(other.LPortraitSectionChild);
+        Assert.Equal(LPortraitRole.LPortraitRoleRow, row.LPortraitSectionRole);
+        Assert.Equal("set off", row.LPortraitSectionHeading);
+        Assert.Equal("to start a journey", Assert.Single(row.LPortraitSectionLine).LPortraitLineText);
+        Assert.True(row.LPortraitSectionFold);
+    }
+
+    [Fact]
+    public void PortraitRead_FoldedCollocation_CarriesTheFoldOnItsRow()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineMorphologySave(false);
+        LCardDraft meaning = TInterface.TCardCreate("to place", 1) with { LCardDraftId = TInterface.TIdentityCreate() };
+        LCardDraft collocation = TInterface.TCardDraftCreate(
+            LStateValue.LStateValueUnspecified,
+            TInterfaceState.TStateValueCreate("set off"),
+            TInterfaceState.TStateValueCreate("to start a journey"),
+            [], [], [], [], [], 1) with
+        {
+            LCardDraftSense = [meaning.LCardDraftId],
+        };
+        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "set", "English", string.Empty, string.Empty, [meaning], [collocation]));
+        LEntryDraft saved = engine.TEngineEntryLoad(entry.LEntryId)!;
+        engine.TEngineFoldSave(entry.LEntryId, saved.LEntryDraftCollocations[0].LCardDraftId);
+
+        LPortraitPage page = engine.TEnginePortraitRead(entry.LEntryId, TInterface.TPortraitLabelRead());
+
+        LPortraitSection rows = Assert.Single(
+            page.LPortraitPageSection[0].LPortraitSectionChild[0].LPortraitSectionChild,
+            row => row.LPortraitSectionRole == LPortraitRole.LPortraitRoleList);
+        LPortraitSection row = Assert.Single(rows.LPortraitSectionChild);
+        Assert.True(row.LPortraitSectionFold);
+        Assert.Equal("to start a journey", Assert.Single(row.LPortraitSectionLine).LPortraitLineText);
+    }
+
+    [Fact]
     public void PortraitRead_RespelledLanguage_PrintsOneReadingPerRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

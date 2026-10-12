@@ -1,5 +1,5 @@
 # LCollocationVault.cs
-Hash: `545de2a8c78042bf`
+Hash: `e8addaf6f4280679`
 
 ## `public interface LCollocationVault`
 
@@ -26,7 +26,7 @@ Throws when no collocation carries that id.
 ## `void LCollocationDelete(long id);`
 
 Deletes the collocation identified by `id`.
-Its example, tag, and situation association rows go with it through the foreign-key cascade.
+Its meaning links and its other association rows go with it through the foreign-key cascade.
 The independent Examples, Tags, and Situations they pointed at are left standing.
 The collocations left under the same entry are renumbered so their positions stay contiguous.
 
@@ -34,3 +34,16 @@ The collocations left under the same entry are renumbered so their positions sta
 
 Rewrites the positions of the entry's collocations so they follow `order`.
 A collocation left out of `order` keeps a position past the last.
+
+## `IReadOnlyList<long> LCollocationSenseRead(long collocationId);`
+
+Reads the ids of the meanings the collocation links, in link order.
+The first is its home.
+
+## `void LCollocationSenseAttach(long collocationId, long senseId, int position);`
+
+Links the collocation to the meaning at `position` in its link order.
+
+## `void LCollocationSenseDetach(long collocationId, long senseId);`
+
+Removes one link and leaves the meaning and the collocation standing.

@@ -27,8 +27,8 @@ public sealed class LPortraitClerkPress
 
         if (format == LPortraitMedium.LPortraitMediumPdf)
         {
-            await _lPortraitPressPrinter.LPressSave(_lPortraitPressPortraits.LPortraitSheetFormat(portrait), path)
-                .ConfigureAwait(false);
+            string sheet = _lPortraitPressPortraits.LPortraitSheetFormat(LPortraitPage.LPortraitPageOpen(portrait));
+            await _lPortraitPressPrinter.LPressSave(sheet, path).ConfigureAwait(false);
             return;
         }
 
@@ -39,7 +39,7 @@ public sealed class LPortraitClerkPress
     {
         ArgumentNullException.ThrowIfNull(page);
 
-        return LPortraitClerkOpen(_lPortraitPressPortraits.LPortraitSheetFormat(page));
+        return LPortraitClerkOpen(_lPortraitPressPortraits.LPortraitSheetFormat(LPortraitPage.LPortraitPageOpen(page)));
     }
 
     public async Task LPortraitClerkExport(
@@ -60,7 +60,9 @@ public sealed class LPortraitClerkPress
         {
             case LPortraitMedium.LPortraitMediumPdf:
                 await _lPortraitPressPrinter.LPressSave(
-                        _lPortraitPressPortraits.LPortraitSheetFormat(livery, portrait, label, lookup), path)
+                        _lPortraitPressPortraits.LPortraitSheetFormat(
+                            livery, LPortraitPage.LPortraitPageOpen(portrait), label, lookup),
+                        path)
                     .ConfigureAwait(false);
                 return;
             case LPortraitMedium.LPortraitMediumHtml:
@@ -83,7 +85,8 @@ public sealed class LPortraitClerkPress
         ArgumentNullException.ThrowIfNull(label);
         ArgumentNullException.ThrowIfNull(lookup);
 
-        return LPortraitClerkOpen(_lPortraitPressPortraits.LPortraitSheetFormat(livery, portrait, label, lookup));
+        return LPortraitClerkOpen(_lPortraitPressPortraits.LPortraitSheetFormat(
+            livery, LPortraitPage.LPortraitPageOpen(portrait), label, lookup));
     }
 
     private async Task<LGalleyClerk> LPortraitClerkOpen(string html)

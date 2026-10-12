@@ -13,6 +13,18 @@ public static class LMarkupClerkUnion
         ArgumentNullException.ThrowIfNull(loaded);
         ArgumentNullException.ThrowIfNull(parsed);
 
+        Dictionary<long, long> absorbed = [];
+        IReadOnlyList<LCardDraft> meanings = LMarkupCardPlace(
+            LMarkupCardAppend(loaded.LEntryDraftMeanings, parsed.LEntryDraftMeanings, absorbed));
+        List<LCardDraft> collocations = new(parsed.LEntryDraftCollocations.Count);
+        foreach (LCardDraft card in parsed.LEntryDraftCollocations)
+        {
+            collocations.Add(card with
+            {
+                LCardDraftSense = [.. card.LCardDraftSense.Select(id => absorbed.GetValueOrDefault(id, id)).Distinct()],
+            });
+        }
+
         return loaded with
         {
             LEntryDraftPronunciations = LMarkupRowAppend(
@@ -48,10 +60,9 @@ public static class LMarkupClerkUnion
                 loaded.LEntryDraftInflections,
                 parsed.LEntryDraftInflections,
                 static row => row.LInflectionText),
-            LEntryDraftMeanings = LMarkupCardPlace(
-                LMarkupCardAppend(loaded.LEntryDraftMeanings, parsed.LEntryDraftMeanings)),
+            LEntryDraftMeanings = meanings,
             LEntryDraftCollocations = LMarkupCardPlace(
-                LMarkupCardAppend(loaded.LEntryDraftCollocations, parsed.LEntryDraftCollocations)),
+                LMarkupCardAppend(loaded.LEntryDraftCollocations, collocations, [])),
             LEntryDraftNote = LMarkupNoteAppend(loaded.LEntryDraftNote, parsed.LEntryDraftNote),
             LEntryDraftEtymology = loaded.LEntryDraftEtymology.LEtymologyDraftEmpty
                 ? parsed.LEntryDraftEtymology
@@ -131,7 +142,7 @@ public static class LMarkupClerkUnion
     }
 
     private static IReadOnlyList<LCardDraft> LMarkupCardAppend(
-        IReadOnlyList<LCardDraft> loaded, IReadOnlyList<LCardDraft> parsed)
+        IReadOnlyList<LCardDraft> loaded, IReadOnlyList<LCardDraft> parsed, Dictionary<long, long> absorbed)
     {
         List<LCardDraft> merged = [.. loaded];
         foreach (LCardDraft card in parsed)
@@ -143,7 +154,12 @@ public static class LMarkupClerkUnion
             }
             else
             {
-                merged[index] = LMarkupCardAppend(merged[index], card);
+                if (card.LCardDraftId != 0)
+                {
+                    absorbed[card.LCardDraftId] = merged[index].LCardDraftId;
+                }
+
+                merged[index] = LMarkupCardAppend(merged[index], card, absorbed);
             }
         }
 
@@ -187,7 +203,7 @@ public static class LMarkupClerkUnion
             : $"{shown}\n{value.LStateValueUncertain}";
     }
 
-    private static LCardDraft LMarkupCardAppend(LCardDraft loaded, LCardDraft parsed)
+    private static LCardDraft LMarkupCardAppend(LCardDraft loaded, LCardDraft parsed, Dictionary<long, long> absorbed)
     {
         return loaded with
         {
@@ -219,7 +235,11 @@ public static class LMarkupClerkUnion
                 loaded.LCardDraftVideo,
                 parsed.LCardDraftVideo,
                 static row => LMarkupStateFormat(row.LVideoDraftLocation)),
-            LCardDraftChild = LMarkupCardAppend(loaded.LCardDraftChild, parsed.LCardDraftChild),
+            LCardDraftSense = LMarkupRowAppend(
+                loaded.LCardDraftSense,
+                parsed.LCardDraftSense,
+                static row => row.ToString(CultureInfo.InvariantCulture)),
+            LCardDraftChild = LMarkupCardAppend(loaded.LCardDraftChild, parsed.LCardDraftChild, absorbed),
         };
     }
 

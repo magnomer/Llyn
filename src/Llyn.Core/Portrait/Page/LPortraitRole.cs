@@ -21,4 +21,8 @@ public enum LPortraitRole
     LPortraitRoleLabel,
 
     LPortraitRoleUsage,
+
+    LPortraitRoleList,
+
+    LPortraitRoleRow,
 }

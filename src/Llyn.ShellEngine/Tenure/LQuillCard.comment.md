@@ -1,10 +1,11 @@
 # LQuillCard.cs
-Hash: `91b9a85c69afb98f`
+Hash: `53194206db46ddde`
 
 ## `public sealed class LQuillCard`
 
 The card edits of one tenure, each building one request.
 It adds, removes and moves whole cards, and takes a card's typed title, expression and definition.
+It also links and unlinks a collocation card to a Meaning.
 The list rules live in `LDraftClerkCard`, and this type only reads the draft and sends.
 
 ## `private readonly LTenure _lQuillCardTenure;`
@@ -41,3 +42,12 @@ Defers a card's typed expression, like its title.
 ## `public void LCardMeaningSet(long card, string text)`
 
 Defers a card's typed definition, like its title.
+
+## `public void LCardSenseAttach(long card, long sense)`
+
+Links a collocation card to a Meaning, sent at once.
+The draft clerk appends the link last, so a card's first link stays its home.
+
+## `public void LCardSenseDetach(long card, long sense)`
+
+Removes one link of a collocation card to a Meaning, sent at once.

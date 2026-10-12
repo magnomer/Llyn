@@ -15,7 +15,8 @@ public sealed record LMarkupCard(
     IReadOnlyList<LTagDraft>? LMarkupCardTag = null,
     IReadOnlyList<LImageDraft>? LMarkupCardImage = null,
     IReadOnlyList<LVideoDraft>? LMarkupCardVideo = null,
-    IReadOnlyList<LMarkupCard>? LMarkupCardChild = null) : IEquatable<LMarkupCard>
+    IReadOnlyList<LMarkupCard>? LMarkupCardChild = null,
+    IReadOnlyList<string>? LMarkupCardSense = null) : IEquatable<LMarkupCard>
 {
     public LStateValue LMarkupCardTitle { get; init; } = LMarkupCardTitle ?? LStateValue.LStateValueUnspecified;
 
@@ -40,6 +41,8 @@ public sealed record LMarkupCard(
 
     public IReadOnlyList<LMarkupCard> LMarkupCardChild { get; init; } = LMarkupCardChild ?? [];
 
+    public IReadOnlyList<string> LMarkupCardSense { get; init; } = LMarkupCardSense ?? [];
+
     public bool Equals(LMarkupCard? other)
     {
         return other is not null
@@ -53,7 +56,8 @@ public sealed record LMarkupCard(
             && LMarkupCardTag.SequenceEqual(other.LMarkupCardTag)
             && LMarkupCardImage.SequenceEqual(other.LMarkupCardImage)
             && LMarkupCardVideo.SequenceEqual(other.LMarkupCardVideo)
-            && LMarkupCardChild.SequenceEqual(other.LMarkupCardChild);
+            && LMarkupCardChild.SequenceEqual(other.LMarkupCardChild)
+            && LMarkupCardSense.SequenceEqual(other.LMarkupCardSense, StringComparer.Ordinal);
     }
 
     public override int GetHashCode()

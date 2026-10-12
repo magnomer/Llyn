@@ -17,6 +17,7 @@ internal static class LMarkupCardReader
         List<LImageDraft> images = [];
         List<LVideoDraft> videos = [];
         List<LMarkupCard> children = [];
+        List<string> senses = [];
 
         foreach (LMarkupNode child in element.LMarkupNodeChild)
         {
@@ -55,6 +56,9 @@ internal static class LMarkupCardReader
                 case "meaning" when nested:
                     children.Add(LMarkupCardParse(child, true, omissions));
                     break;
+                case "sense" when !nested:
+                    senses.Add(LMarkup.LMarkupTextParse(child));
+                    break;
                 default:
                     LMarkupReader.LMarkupOmissionAdd(omissions, child);
                     break;
@@ -72,7 +76,8 @@ internal static class LMarkupCardReader
             tags,
             images,
             videos,
-            children);
+            children,
+            senses);
     }
 
     private static LMarkupSentence LMarkupSentenceParse(LMarkupNode element, List<LMarkupOmission> omissions)

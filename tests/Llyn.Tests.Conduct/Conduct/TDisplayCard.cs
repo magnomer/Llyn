@@ -40,7 +40,7 @@ public sealed class TDisplayCard
         Assert.Equal(1, leaf.CLeafPosition);
         Assert.Equal(
             new CStateWording(string.Empty, "Display.Unknown", false, "Display.Unknown"), leaf.CLeafTitle);
-        Assert.Equal(new CStateWording(string.Empty, null, true, null), leaf.CLeafExpression);
+        Assert.Equal(new CStateWording(string.Empty, null, true, null), leaf.CLeafPhrase);
         Assert.Equal(new CStateWording("a liquid", null, false, null), leaf.CLeafMeaning);
         CTranslationTarget target = Assert.Single(leaf.CLeafTranslation);
         Assert.Equal((eau.LEntryId, "eau", "French"), (
@@ -48,7 +48,7 @@ public sealed class TDisplayCard
         CLeafChip tag = Assert.Single(leaf.CLeafTag);
         Assert.Equal(new CStateWording("literal", null, false, null), tag.CLeafChipWording);
         Assert.Equal((CSubject.CSubjectTag, true), (tag.CLeafChipSubject, tag.CLeafChipStored));
-        Assert.Empty(card.CLecternCardCollocations);
+        Assert.Empty(card.CLecternCardOther);
         Assert.True(card.CLecternCardDefined);
         Assert.False(card.CLecternCardCollocated);
     }
@@ -97,7 +97,7 @@ public sealed class TDisplayCard
         CLecternCard card = wing.CWingDisplay.CDisplayCard.CDisplayCardRead();
 
         Assert.Empty(card.CLecternCardMeanings);
-        Assert.Empty(card.CLecternCardCollocations);
+        Assert.Empty(card.CLecternCardOther);
         Assert.False(card.CLecternCardDefined);
         Assert.False(card.CLecternCardCollocated);
     }

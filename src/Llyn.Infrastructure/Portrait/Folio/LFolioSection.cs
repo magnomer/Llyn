@@ -49,6 +49,15 @@ public static class LFolioSection
             case LPortraitRole.LPortraitRoleUsage:
                 LFolioUsageAppend(body, section);
                 break;
+            case LPortraitRole.LPortraitRoleList:
+                LFolioLine.LFolioLineAppend(body, "Label", section.LPortraitSectionHeading);
+                LFolioBodyAppend(body, section, plates, theme);
+                break;
+            case LPortraitRole.LPortraitRoleRow:
+                LFolioLine.LFolioLineAppend(body, "Phrase", section.LPortraitSectionHeading);
+                LFolioLineAppend(body, "Sense", section.LPortraitSectionLine);
+                LFolioBodyAppend(body, section, plates, theme);
+                break;
             default:
                 LFolioBandAppend(body, section, plates, theme);
                 break;

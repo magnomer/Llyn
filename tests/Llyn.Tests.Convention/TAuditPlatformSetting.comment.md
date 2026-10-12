@@ -1,5 +1,5 @@
 # TAuditPlatformSetting.cs
-Hash: `ac0ef999b1eb2828`
+Hash: `e68f92698e41a561`
 
 ## `internal static class TAuditPlatformSetting`
 

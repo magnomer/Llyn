@@ -130,7 +130,7 @@ public sealed class TCardHinge
         using LEngine engine = workspace.TWorkspaceEngineStart();
         TEditorFixture editor = new(TInterfaceEditor.TEditorCreate(engine));
         CCardDraft draft = new(
-            7, 1, TCardHingeTitle, TCardHingeBlank, TCardHingeMeaning, [], [], [], [], [], [], [], false, true);
+            7, 1, TCardHingeTitle, TCardHingeBlank, TCardHingeMeaning, [], [], [], [], [], [], [], false, true, []);
         bool? shown = null;
 
         TCardHingeRun(() =>
@@ -187,7 +187,7 @@ public sealed class TCardHinge
     private static ContentPresenter TCardHingeRefine(CStateWording title, bool folded, bool stored)
     {
         CCardDraft draft = new(
-            7, 1, title, TCardHingeBlank, TCardHingeMeaning, [], [], [], [], [], [], [], folded, stored);
+            7, 1, title, TCardHingeBlank, TCardHingeMeaning, [], [], [], [], [], [], [], folded, stored, []);
         FrameworkElementFactory crown = new(typeof(StackPanel));
         crown.AppendChild(new FrameworkElementFactory(typeof(TextBox)) { Name = "PTitle" });
         ItemsControl list = TCardHingeLoad(TCardHingeBuild(crown));
