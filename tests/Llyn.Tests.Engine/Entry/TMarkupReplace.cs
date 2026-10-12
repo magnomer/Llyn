@@ -7,82 +7,6 @@ namespace Llyn.Tests;
 public sealed class TMarkupReplace
 {
     [Fact]
-    public void MarkupImport_AppendKnownMeaning_JoinsCardAndKeepsId()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-
-        LEntry ember = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
-            "ember", "English", string.Empty, string.Empty,
-            [TInterface.TCardCreate("a glowing coal", 1), TInterface.TCardCreate("a remnant", 2)],
-            []));
-        long coalId = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(ember.LEntryId))
-            .LEntryDraftMeanings[0].LCardDraftId;
-
-        const string text = """
-            <llyn>
-              <entry>
-                <headword>ember</headword>
-                <language>English</language>
-                <meaning>
-                  <definition>a glowing coal</definition>
-                  <tag>fire</tag>
-                </meaning>
-                <meaning>
-                  <definition>a spark of feeling</definition>
-                </meaning>
-              </entry>
-            </llyn>
-            """;
-        string path = TInterface.TMarkupSave(workspace, text);
-        TMarkupOutcome outcome = engine.TEngineMarkupImport(
-            engine.TEngineMarkupRead(path),
-            [TInterface.TMarkupIntakeCreate(0, LMarkupMode.LMarkupModeMerge, ember.LEntryId)]);
-
-        Assert.Equal(ember.LEntryId, Assert.Single(outcome.TMarkupOutcomeEntry).LEntryId);
-        LEntryDraft draft = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(ember.LEntryId));
-        Assert.Equal(3, draft.LEntryDraftMeanings.Count);
-        Assert.Equal(coalId, draft.LEntryDraftMeanings[0].LCardDraftId);
-        Assert.Equal("fire", Assert.Single(draft.LEntryDraftMeanings[0].LCardDraftTag).LTagDraftText);
-        Assert.Equal("a remnant", draft.LEntryDraftMeanings[1].LCardDraftMeaning.TStateValueShow());
-        Assert.Equal("a spark of feeling", draft.LEntryDraftMeanings[2].LCardDraftMeaning.TStateValueShow());
-        Assert.Equal(3, draft.LEntryDraftMeanings[2].LCardDraftPosition);
-        Assert.Empty(outcome.TMarkupOutcomeOmission);
-    }
-
-    [Fact]
-    public void MarkupImport_AppendKnownIpa_SkipsRowAndJoinsNote()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-
-        LEntry ember = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
-            "ember", "English", "ˈɛmbər", "stored note", [], []));
-
-        const string text = """
-            <llyn>
-              <entry>
-                <headword>ember</headword>
-                <language>English</language>
-                <pronunciation><ipa>ˈɛmbər</ipa></pronunciation>
-                <pronunciation><ipa>ˈɛmbɚ</ipa></pronunciation>
-                <note>file note</note>
-              </entry>
-            </llyn>
-            """;
-        string path = TInterface.TMarkupSave(workspace, text);
-        engine.TEngineMarkupImport(
-            engine.TEngineMarkupRead(path),
-            [TInterface.TMarkupIntakeCreate(0, LMarkupMode.LMarkupModeMerge, ember.LEntryId)]);
-
-        LEntryDraft draft = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(ember.LEntryId));
-        Assert.Equal(2, draft.LEntryDraftPronunciations.Count);
-        Assert.Equal("ˈɛmbər", draft.LEntryDraftPronunciations[0].LPronunciationDraftIpa);
-        Assert.Equal("ˈɛmbɚ", draft.LEntryDraftPronunciations[1].LPronunciationDraftIpa);
-        Assert.Equal("stored note\n\nfile note", draft.LEntryDraftNote);
-    }
-
-    [Fact]
     public void MarkupImport_ReplaceEntry_KeepsIdGraspFavoriteAndRenames()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -162,6 +86,57 @@ public sealed class TMarkupReplace
         LMentionDraft mention = Assert.Single(example.LExampleDraftMention);
         Assert.Equal(glow.LEntryId, mention.LMentionDraftEntry);
         Assert.Equal(0, mention.LMentionDraftSense);
+    }
+
+    [Fact]
+    public void MarkupImport_ReplaceCitedSense_ReportsLineAndText()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LEntry glow = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "glow", "English", string.Empty, string.Empty, [TInterface.TCardCreate("shine", 1)], []));
+        long senseId = Assert.Single(
+            Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(glow.LEntryId)).LEntryDraftMeanings).LCardDraftId;
+
+        LSentenceDraft sentence = TInterfaceExample.TSentenceDraftCreate(
+            TInterfaceState.TStateValueCreate("The ember glows."), 0, LStateAnchor.LStateAnchorUnspecified);
+        sentence = sentence with
+        {
+            LSentenceDraftExample = Assert.IsType<LExampleDraft>(sentence.LSentenceDraftExample) with
+            {
+                LExampleDraftMention = [TInterfaceMentionSpan.TMentionDraftCreate(0, 10, 5, glow.LEntryId, senseId)],
+            },
+        };
+        engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "ember", "English", string.Empty, string.Empty,
+            [
+                TInterface.TCardDraftCreate(
+                    LStateValue.LStateValueUnspecified,
+                    LStateValue.LStateValueUnspecified,
+                    TInterfaceState.TStateValueCreate("a glowing coal"),
+                    [sentence], [], [], [], [], 1),
+            ],
+            []));
+
+        const string text = """
+            <llyn>
+              <entry>
+                <headword>glow</headword>
+                <language>English</language>
+                <meaning><definition>give out light</definition></meaning>
+              </entry>
+            </llyn>
+            """;
+        string path = TInterface.TMarkupSave(workspace, text);
+        TMarkupOutcome outcome = engine.TEngineMarkupImport(
+            engine.TEngineMarkupRead(path),
+            [TInterface.TMarkupIntakeCreate(0, LMarkupMode.LMarkupModeReplace, glow.LEntryId)]);
+
+        LMarkupOmission omission = Assert.Single(outcome.TMarkupOutcomeOmission);
+        Assert.Equal(
+            (2, "sense of example \"The ember glows.\""),
+            (omission.LMarkupOmissionLine, omission.LMarkupOmissionText));
     }
 
     [Fact]

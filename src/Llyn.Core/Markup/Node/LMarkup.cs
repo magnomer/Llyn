@@ -62,6 +62,25 @@ public static class LMarkup
         return LMarkupNode.LMarkupNodeCreate(LMarkupRoot, children);
     }
 
+    public static IReadOnlyList<LMarkupOmission> LMarkupOmissionClamp(IReadOnlyList<LMarkupOmission> omissions)
+    {
+        ArgumentNullException.ThrowIfNull(omissions);
+
+        if (omissions.Count <= LMarkupOmissionCeiling)
+        {
+            return omissions;
+        }
+
+        List<LMarkupOmission> kept = new(LMarkupOmissionCeiling + 1);
+        for (int index = 0; index < LMarkupOmissionCeiling; index++)
+        {
+            kept.Add(omissions[index]);
+        }
+
+        kept.Add(new LMarkupOmission(omissions[LMarkupOmissionCeiling].LMarkupOmissionLine, "..."));
+        return kept;
+    }
+
     internal static LStateValue LMarkupValueParse(LMarkupNode? element)
     {
         if (element is null)

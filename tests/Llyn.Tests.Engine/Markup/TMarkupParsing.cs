@@ -77,6 +77,68 @@ public sealed class TMarkupParsing
     }
 
     [Fact]
+    public void MarkupParse_BlankScheme_ReportsOmission()
+    {
+        const string text = """
+            <llyn>
+              <entry>
+                <headword>ember</headword>
+                <transcription><scheme> </scheme><text>EM-ber</text></transcription>
+              </entry>
+            </llyn>
+            """;
+
+        IReadOnlyList<LMarkupEntry> entries = TInterface.TMarkupParse(
+            text, out IReadOnlyList<LMarkupOmission> omissions);
+
+        Assert.Empty(Assert.Single(entries).LMarkupEntryTranscription);
+        LMarkupOmission omission = Assert.Single(omissions);
+        Assert.Equal((4, "<transcription>"), (omission.LMarkupOmissionLine, omission.LMarkupOmissionText));
+    }
+
+    [Fact]
+    public void MarkupParse_DoubledScheme_KeepsFirstAndReports()
+    {
+        const string text = """
+            <llyn>
+              <entry>
+                <headword>ember</headword>
+                <transcription><scheme>Respelling</scheme><text>EM-ber</text></transcription>
+                <transcription><scheme> Respelling </scheme><text>EM-bur</text></transcription>
+              </entry>
+            </llyn>
+            """;
+
+        IReadOnlyList<LMarkupEntry> entries = TInterface.TMarkupParse(
+            text, out IReadOnlyList<LMarkupOmission> omissions);
+
+        LTranscriptionDraft transcription = Assert.Single(Assert.Single(entries).LMarkupEntryTranscription);
+        Assert.Equal("EM-ber", transcription.LTranscriptionDraftText);
+        LMarkupOmission omission = Assert.Single(omissions);
+        Assert.Equal((5, "<transcription>"), (omission.LMarkupOmissionLine, omission.LMarkupOmissionText));
+    }
+
+    [Fact]
+    public void MarkupParse_UnknownUnit_ReportsOmission()
+    {
+        const string text = """
+            <llyn>
+              <entry>
+                <headword>ember</headword>
+                <unit>phrase</unit>
+              </entry>
+            </llyn>
+            """;
+
+        IReadOnlyList<LMarkupEntry> entries = TInterface.TMarkupParse(
+            text, out IReadOnlyList<LMarkupOmission> omissions);
+
+        Assert.Equal(LUnit.LUnitEmpty, Assert.Single(entries).LMarkupEntryUnit);
+        LMarkupOmission omission = Assert.Single(omissions);
+        Assert.Equal((4, "<unit>"), (omission.LMarkupOmissionLine, omission.LMarkupOmissionText));
+    }
+
+    [Fact]
     public void MarkupParse_IdAttribute_ReportsOmission()
     {
         const string text = """

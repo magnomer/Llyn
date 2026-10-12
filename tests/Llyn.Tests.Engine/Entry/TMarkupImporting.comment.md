@@ -1,5 +1,5 @@
 # TMarkupImporting.cs
-Hash: `d64b109ef77ea29e`
+Hash: `8d86de7909f3b53d`
 
 ## `public sealed class TMarkupImporting`
 
@@ -18,6 +18,11 @@ Each entry translates to the other, so both links resolve to rows the same impor
 
 The translation target is neither stored nor in the file, so only the link is dropped.
 
+### `public void MarkupImport_UnknownRegisterTwice_ReusesOneRegister()`
+
+Two files, each with an unknown register, are imported as new entries one after the other.
+The second reuses the unknown register the first created, so the shelf holds one.
+
 ### `public void MarkupImport_TwinTargets_DropsLinkAndReportsOmission()`
 
 The two stored twins differ only in case, so normalization is what makes them twins.
@@ -29,6 +34,11 @@ A file that is not well-formed is refused whole, and no entry is stored.
 ### `public void MarkupImport_BlankSecondHeadword_StoresNeither()`
 
 The first entry is sound on its own, and only the rollback removes it.
+
+### `public void MarkupImport_InflectionNamesOverLines_ResolvesBoth()`
+
+The inflection's speech and morphology sit on their own lines, so the reader keeps the newlines around them.
+The workspace trim strips only spaces, so the names must be trimmed before the lookup.
 
 ### `public void MarkupImport_ExportedFile_RoundTrips()`
 

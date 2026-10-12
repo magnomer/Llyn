@@ -37,7 +37,7 @@ public sealed class LRegisterChip
         ArgumentNullException.ThrowIfNull(request);
 
         LStateValue name = LStateValue.LStateValueRead(request.LRequestValue);
-        LRegister? stored = LRegisterChipResolve(_lRegisterChipVault, name.LStateValueShow());
+        LRegister? stored = LRegisterChipResolve(_lRegisterChipVault, name);
         return LRegisterChipApply(
             content,
             request.LRequestCardId,
@@ -124,22 +124,26 @@ public sealed class LRegisterChip
         });
     }
 
-    public static LRegister? LRegisterChipResolve(LRegisterVault registers, string name)
+    public static LRegister? LRegisterChipResolve(LRegisterVault registers, LStateValue name)
     {
         ArgumentNullException.ThrowIfNull(registers);
+        ArgumentNullException.ThrowIfNull(name);
 
-        string written = LCatalog.LCatalogTextNormalize(name);
-        if (written.Length == 0)
+        bool unknown = name.LStateValueUncertain;
+        string written = LCatalog.LCatalogTextNormalize(name.LStateValueShow());
+        if (!unknown && written.Length == 0)
         {
             return null;
         }
 
         foreach (LRegister register in registers.LRegisterRead())
         {
-            if (string.Equals(
-                    LCatalog.LCatalogTextNormalize(register.LRegisterName.LStateValueShow()),
-                    written,
-                    StringComparison.Ordinal))
+            if (unknown
+                    ? register.LRegisterName.LStateValueUncertain
+                    : string.Equals(
+                        LCatalog.LCatalogTextNormalize(register.LRegisterName.LStateValueShow()),
+                        written,
+                        StringComparison.Ordinal))
             {
                 return register;
             }

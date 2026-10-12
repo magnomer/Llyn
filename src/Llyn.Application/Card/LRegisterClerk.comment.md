@@ -1,5 +1,5 @@
 # LRegisterClerk.cs
-Hash: `20f6bf680134666d`
+Hash: `8a24d2adadc14ffc`
 
 ## `public sealed class LRegisterClerk`
 
@@ -76,4 +76,5 @@ A positive id nothing is stored under is refused.
 The card would otherwise be bound to a row the user never chose.
 A row carrying a negative id is looked up by its wording first.
 A name the shelf already holds is shared rather than doubled.
+An unknown name shares the shelf's first unknown Register the same way.
 Only then is a new written Register created, recorded in the map under that id.

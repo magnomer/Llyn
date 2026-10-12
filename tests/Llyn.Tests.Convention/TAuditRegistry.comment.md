@@ -1,10 +1,10 @@
 # TAuditRegistry.cs
-Hash: `06a72acbb75fb62a`
+Hash: `27c74af9a11890bb`
 
 ## `internal sealed class TAuditRegistry`
 
 The registered bases, verbs, and exemptions the name audit checks against.
-Loaded from `TAuditNameRegistry` and `TAuditVerbRegistry`, so the tests read no document and no embedded resource.
+Loaded from `TAuditNameRegistry`, `TAuditVerbRegistry` and `TAuditExemptRegistry`, so the tests read no document and no embedded resource.
 
 ## `public bool TAuditExemptValidate(string name, string sourcePath)`
 
@@ -14,7 +14,7 @@ The same word stays a violation everywhere else.
 
 ## `public static TAuditRegistry TAuditLoad()`
 
-Builds the sets from the registry arrays of TAuditNameRegistry.cs and TAuditVerbRegistry.cs, the generated files in this project.
+Builds the sets from the registry arrays of TAuditNameRegistry.cs, TAuditVerbRegistry.cs and TAuditExemptRegistry.cs, the generated files in this project.
 Those files hold names only, never a setting.
 Regenerate it before the tests.
 A stale registry audits against stale names.

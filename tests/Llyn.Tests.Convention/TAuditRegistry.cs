@@ -14,7 +14,7 @@ internal sealed class TAuditRegistry
     {
         TAuditBases = new HashSet<string>(TAuditNameRegistry.TAuditBases, StringComparer.Ordinal),
         TAuditVerbs = new HashSet<string>(TAuditVerbRegistry.TAuditVerbs, StringComparer.Ordinal),
-        TAuditExempt = TAuditNameRegistry.TAuditExempt.ToDictionary(
+        TAuditExempt = TAuditExemptRegistry.TAuditExempt.ToDictionary(
             entry => entry.Key,
             entry => new HashSet<string>(entry.Value, StringComparer.OrdinalIgnoreCase),
             StringComparer.Ordinal)

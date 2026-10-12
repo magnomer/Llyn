@@ -1,5 +1,5 @@
 # LRegisterChip.cs
-Hash: `72a87d561d0a4de9`
+Hash: `57d69f23b8552a78`
 
 ## `public sealed class LRegisterChip`
 
@@ -40,8 +40,11 @@ Moves the register carrying the id to the place asked for, and refuses when the 
 
 Renames the register in every card holding it, and refuses when none does.
 
-## `public static LRegister? LRegisterChipResolve(LRegisterVault registers, string name)`
+## `public static LRegister? LRegisterChipResolve(LRegisterVault registers, LStateValue name)`
 
-The stored Register whose folded name is the folded name given, or null for a blank or unknown name.
+The stored Register whose folded name is the folded name given, or null for a blank name.
+An unknown name matches the first stored Register whose name is also unknown.
+Each import of an unknown register would otherwise add one more nameless row to the shelf.
+An unknown name never matches a named Register.
 `LRegisterClerk` asks the same question when it creates a Register and when it settles a card's row.
 The rule is written here once.

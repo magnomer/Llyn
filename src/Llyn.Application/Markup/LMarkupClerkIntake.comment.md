@@ -1,14 +1,14 @@
 # LMarkupClerkIntake.cs
-Hash: `a64a1951c509c025`
+Hash: `a7b87b94b3d4cf6d`
 
 ## `public sealed class LMarkupClerkIntake`
 
 The import of a parsed markup cargo under the reader's intake choices.
-Every entry is created or rewritten in one session and one revision, the held mentions settled at the end.
+All entries are saved in one session and one revision, held mentions and cited references settled last.
 
 ## `public LMarkupClerkIntake(LRig rig, LClaimClerk claims, LEntryClerk entries, LRevisionClerk revisions, LEntryQueryClerk query, LLacunaClerk lacunae, LFrequencyClerk frequencies, LMarkupClerkLink link, LMarkupClerkDraft draft)`
 
-Reads the vault and the entry, meaning and mention ports out of `rig`.
+Reads the vault and the entry, meaning, mention and example ports out of `rig`.
 Keeps the clerks the import writes through.
 `revisions` stamps the one revision an import records, and `query` finds the stored entries a parsed one may join.
 
@@ -28,9 +28,13 @@ A stored entry is loaded through the entry clerk, so its reflex rows come in the
 
 One intake per entry, each index once, else the import is refused.
 A replace first detaches the senses that point into the entry.
+A merge or replace with a blank language keeps the stored language.
+A replace with a blank headword keeps the stored headword, since the save refuses a blank one.
 A merge folds the parsed draft into the stored one.
 Every entry is saved through the entry clerk with its pending inflection fetch cancelled.
 The frequency fetches start once the session committed.
+The entry's omissions, the detach rows included, take the entry's line when they carry none.
+The outcome is clamped to the omission ceiling once, so import rows never follow the `...` row.
 
 ## `private static void LMarkupLineSet(List<LMarkupOmission> omissions, int noted, int line)`
 
@@ -49,7 +53,16 @@ A fresh entry with a blank headword refuses the import.
 ## `private void LMarkupSenseDetach(long entryId, List<LMarkupOmission> omissions)`
 
 Clears the sense of every mention that points at a meaning of the entry, noting each example touched.
+Each example is named by its text, since its id is never shown to the user.
+The text is cut to forty text elements, so a long sentence keeps the row on one glance.
+An example can stand in several entries or none, so a headword would not name it.
 
-## `private void LMarkupMentionSettle(IReadOnlyList<(LMarkupMention, int)> held, IReadOnlyDictionary<long, long> identity, IReadOnlyDictionary<(string, string), long> prepared, List<LMarkupOmission> omissions)`
+## `private void LMarkupMentionSettle(IReadOnlyList<(LMarkupMention, int, long)> held, IReadOnlyDictionary<long, long> identity, IReadOnlyDictionary<(string, string), long> prepared, List<LMarkupOmission> omissions)`
 
 The sense of every held mention resolved now that the entries stand, a sense not found omitted.
+A held mention absent from `identity` was never stored, so it is skipped.
+
+## `private void LMarkupReferenceSettle(IReadOnlyList<(LMarkupReference, long)> cited, IReadOnlyDictionary<long, long> identity)`
+
+The source of every cited example found or created, and written onto the stored example.
+An example absent from `identity` was dropped, as text-less or already present in a merge, so its reference stays untouched.

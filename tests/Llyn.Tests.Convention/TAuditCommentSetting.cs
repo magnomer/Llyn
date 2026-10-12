@@ -67,6 +67,7 @@ internal static class TAuditCommentSetting
 
     public static readonly string[] TAuditCommentExempt =
     [
+        "TAuditExemptRegistry.cs",
         "TAuditNameRegistry.cs",
         "TAuditVerbRegistry.cs",
     ];

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Llyn.Core;
@@ -69,10 +70,22 @@ internal static class LMarkupReader
                     speeches.Add(LMarkup.LMarkupTextParse(child));
                     break;
                 case "unit":
-                    unit = LUnitKey.LUnitKeyParse(LMarkup.LMarkupTextParse(child));
+                    string unitText = LMarkup.LMarkupTextParse(child);
+                    unit = LUnitKey.LUnitKeyParse(unitText);
+                    if (unit == LUnit.LUnitEmpty && !string.IsNullOrWhiteSpace(unitText))
+                    {
+                        LMarkupOmissionAdd(omissions, child);
+                    }
+
                     break;
                 case "freedom":
-                    freedom = LFreedomKey.LFreedomKeyParse(LMarkup.LMarkupTextParse(child));
+                    string freedomText = LMarkup.LMarkupTextParse(child);
+                    freedom = LFreedomKey.LFreedomKeyParse(freedomText);
+                    if (freedom == LFreedom.LFreedomEmpty && !string.IsNullOrWhiteSpace(freedomText))
+                    {
+                        LMarkupOmissionAdd(omissions, child);
+                    }
+
                     break;
                 case "form":
                     forms.Add(LMarkupFormParse(child, forms.Count, omissions));
@@ -84,7 +97,7 @@ internal static class LMarkupReader
                     pronunciations.Add(LMarkupPronunciationReader.LMarkupPronunciationParse(child, omissions));
                     break;
                 case "transcription":
-                    transcriptions.Add(LMarkupPronunciationReader.LMarkupTranscriptionParse(child, omissions));
+                    LMarkupTranscriptionAdd(transcriptions, child, omissions);
                     break;
                 case "reflex":
                     reflexes.Add(LMarkupPronunciationReader.LMarkupReflexParse(child, omissions));
@@ -127,6 +140,21 @@ internal static class LMarkupReader
             etymons,
             unit,
             freedom);
+    }
+
+    private static void LMarkupTranscriptionAdd(
+        List<LTranscriptionDraft> transcriptions, LMarkupNode element, List<LMarkupOmission> omissions)
+    {
+        LTranscriptionDraft transcription = LMarkupPronunciationReader.LMarkupTranscriptionParse(element, omissions);
+        string scheme = transcription.LTranscriptionDraftScheme.Trim();
+        if (scheme.Length == 0 || transcriptions.Exists(held => string.Equals(
+                held.LTranscriptionDraftScheme.Trim(), scheme, StringComparison.Ordinal)))
+        {
+            LMarkupOmissionAdd(omissions, element);
+            return;
+        }
+
+        transcriptions.Add(transcription);
     }
 
     private static LMarkupEtymon LMarkupEtymonParse(LMarkupNode element, List<LMarkupOmission> omissions)

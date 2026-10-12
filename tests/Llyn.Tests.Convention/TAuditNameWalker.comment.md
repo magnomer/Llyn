@@ -21,7 +21,7 @@ Both must be at the same generation, so both carry the number.
 A disagreement between them is a defect in one, for a person to read.
 
 Generation 8 holds every naming value in the hand-written `TAuditNameSetting.cs`.
-The registered names reach this project only through the generated `TAuditNameRegistry.cs`.
+The registered names reach this project only through the generated `TAuditNameRegistry.cs`, `TAuditVerbRegistry.cs` and `TAuditExemptRegistry.cs`.
 Every other file in this project is identical in every project at this generation.
 Both files are committed, so this project builds on its own.
 

@@ -1,5 +1,5 @@
 # TMarkupParsing.cs
-Hash: `ebc4a716a4fa2bcf`
+Hash: `c6b7e95715b1a546`
 
 ## `public sealed class TMarkupParsing`
 
@@ -20,6 +20,21 @@ The sample is the reference shape, so a field the reader drops shows here first.
 
 An element the reader does not know is skipped, and the omission names it with its line.
 The entry around it still reads, so one stray tag does not cost the import.
+
+### `public void MarkupParse_BlankScheme_ReportsOmission()`
+
+A transcription with a blank scheme is skipped and reported at its line.
+The save would refuse it and with it the whole file.
+
+### `public void MarkupParse_DoubledScheme_KeepsFirstAndReports()`
+
+A second transcription whose trimmed scheme repeats the first is skipped and reported.
+The first row stands, so the file order decides which text is kept.
+
+### `public void MarkupParse_UnknownUnit_ReportsOmission()`
+
+A unit word the reader does not know leaves the unit unchosen and is reported at its line.
+The user must see that the word was dropped.
 
 ### `public void MarkupParse_IdAttribute_ReportsOmission()`
 

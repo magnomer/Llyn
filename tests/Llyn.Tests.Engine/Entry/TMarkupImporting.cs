@@ -49,6 +49,35 @@ public sealed class TMarkupImporting
     }
 
     [Fact]
+    public void MarkupImport_UnknownRegisterTwice_ReusesOneRegister()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        foreach (string headword in new[] { "ember", "braise" })
+        {
+            string text = $"""
+                <llyn>
+                  <entry>
+                    <headword>{headword}</headword>
+                    <language>English</language>
+                    <meaning>
+                      <definition>a glowing coal</definition>
+                      <register state="unknown"/>
+                    </meaning>
+                  </entry>
+                </llyn>
+                """;
+            string path = TInterface.TMarkupSave(workspace, text);
+            engine.TEngineMarkupImport(engine.TEngineMarkupRead(path), TMarkupIntakeCreate(1));
+        }
+
+        Assert.Single(
+            engine.TEngineRegisterFind(string.Empty, LCatalogOrder.LCatalogOrderUsage),
+            row => row.LCatalogRegisterStored.LRegisterName.LStateValueUncertain);
+    }
+
+    [Fact]
     public void MarkupImport_TwinTargets_DropsLinkAndReportsOmission()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -106,6 +135,40 @@ public sealed class TMarkupImporting
 
         Assert.Equal(LRefusal.LRefusalHeadword, refusal.LRefusalReason);
         Assert.Empty(engine.TEngineEntryFind(string.Empty));
+    }
+
+    [Fact]
+    public void MarkupImport_InflectionNamesOverLines_ResolvesBoth()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        const string text = """
+            <llyn>
+              <entry>
+                <headword>word</headword>
+                <language>English</language>
+                <speech>Noun</speech>
+                <inflection>
+                  <text>words</text>
+                  <speech>
+                    Noun
+                  </speech>
+                  <morphology>
+                    plural
+                  </morphology>
+                </inflection>
+              </entry>
+            </llyn>
+            """;
+        string path = TInterface.TMarkupSave(workspace, text);
+        TMarkupOutcome outcome = engine.TEngineMarkupImport(engine.TEngineMarkupRead(path), TMarkupIntakeCreate(1));
+
+        Assert.Empty(outcome.TMarkupOutcomeOmission);
+        LEntry word = Assert.Single(outcome.TMarkupOutcomeEntry);
+        LInflection stored = Assert.Single(engine.TEntryInflectionRead(word.LEntryId));
+        Assert.Equal(engine.TSpeechValueFind("English", "Noun")!.LSpeechValueId, stored.LInflectionSpeechId);
+        Assert.Single(stored.LInflectionMorphology);
     }
 
     [Fact]

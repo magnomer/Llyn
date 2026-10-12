@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Llyn.Core;
 
 namespace Llyn.Application;
@@ -10,6 +11,7 @@ public sealed class LMarkupClerkIntake
     private readonly LEntryVault _lMarkupIntakeRows;
     private readonly LMeaningVault _lMarkupIntakeMeanings;
     private readonly LMentionVault _lMarkupIntakeMentions;
+    private readonly LExampleVault _lMarkupIntakeExamples;
     private readonly LClaimClerk _lMarkupIntakeClaims;
     private readonly LEntryClerk _lMarkupIntakeEntries;
     private readonly LRevisionClerk _lMarkupIntakeRevisions;
@@ -43,6 +45,7 @@ public sealed class LMarkupClerkIntake
         _lMarkupIntakeRows = rig.LRigEntries;
         _lMarkupIntakeMeanings = rig.LRigLexicon.LRigLexiconMeanings;
         _lMarkupIntakeMentions = rig.LRigSentence.LRigSentenceMentions;
+        _lMarkupIntakeExamples = rig.LRigSentence.LRigSentenceExamples;
         _lMarkupIntakeClaims = claims;
         _lMarkupIntakeEntries = entries;
         _lMarkupIntakeRevisions = revisions;
@@ -122,12 +125,14 @@ public sealed class LMarkupClerkIntake
             }
 
             List<LRevisionDelta> changes = [];
-            List<(LMarkupMention, int)> held = [];
+            List<(LMarkupMention, int, long)> held = [];
+            List<(LMarkupReference, long)> cited = [];
             Dictionary<long, long> identity = [];
             for (int index = 0; index < entries.Count; index++)
             {
                 long id = prepared[index];
                 LMarkupMode mode = ordered[index]!.LMarkupIntakeMode;
+                int noted = omissions.Count;
                 if (mode == LMarkupMode.LMarkupModeReplace)
                 {
                     LMarkupSenseDetach(id, omissions);
@@ -142,8 +147,15 @@ public sealed class LMarkupClerkIntake
                     };
                 }
 
-                int noted = omissions.Count;
-                LEntryDraft draft = _lMarkupIntakeDraft.LMarkupDraftResolve(entry, named, omissions, held);
+                if (mode == LMarkupMode.LMarkupModeReplace && string.IsNullOrWhiteSpace(entry.LMarkupEntryHeadword))
+                {
+                    entry = entry with
+                    {
+                        LMarkupEntryHeadword = _lMarkupIntakeRows.LEntryRead(id)?.LEntryHeadword ?? string.Empty,
+                    };
+                }
+
+                LEntryDraft draft = _lMarkupIntakeDraft.LMarkupDraftResolve(entry, named, omissions, held, cited);
                 LMarkupLineSet(omissions, noted, entry.LMarkupEntryLine);
 
                 if (mode == LMarkupMode.LMarkupModeMerge)
@@ -163,6 +175,7 @@ public sealed class LMarkupClerkIntake
             }
 
             LMarkupMentionSettle(held, identity, named, omissions);
+            LMarkupReferenceSettle(cited, identity);
             _lMarkupIntakeRevisions.LRevisionClerkRecord(changes);
 
             session.LVaultSessionCommit();
@@ -173,7 +186,7 @@ public sealed class LMarkupClerkIntake
             _lMarkupIntakeFrequencies.LFrequencyClerkStart(entry.LEntryId);
         }
 
-        return new LMarkupOutcome(omissions);
+        return new LMarkupOutcome(LMarkup.LMarkupOmissionClamp(omissions));
     }
 
     private static void LMarkupLineSet(List<LMarkupOmission> omissions, int noted, int line)
@@ -255,7 +268,9 @@ public sealed class LMarkupClerkIntake
 
     private void LMarkupSenseDetach(long entryId, List<LMarkupOmission> omissions)
     {
+        const int excerpt = 40;
         LMentionVault mentions = _lMarkupIntakeMentions;
+        LExampleVault examples = _lMarkupIntakeExamples;
         HashSet<long> affected = [];
         foreach (LMeaning meaning in _lMarkupIntakeMeanings.LMeaningRead(entryId))
         {
@@ -263,28 +278,34 @@ public sealed class LMarkupClerkIntake
             {
                 if (affected.Add(exampleId))
                 {
-                    omissions.Add(new LMarkupOmission(0, $"sense of example {exampleId}"));
+                    string text = examples.LExampleRead(exampleId)?.LExampleText.LStateValueShow() ?? string.Empty;
+                    StringInfo shown = new(text);
+                    if (shown.LengthInTextElements > excerpt)
+                    {
+                        text = shown.SubstringByTextElements(0, excerpt) + "...";
+                    }
+
+                    omissions.Add(new LMarkupOmission(0, $"sense of example \"{text}\""));
                 }
             }
         }
     }
 
     private void LMarkupMentionSettle(
-        IReadOnlyList<(LMarkupMention, int)> held,
+        IReadOnlyList<(LMarkupMention, int, long)> held,
         IReadOnlyDictionary<long, long> identity,
         IReadOnlyDictionary<(string, string), long> prepared,
         List<LMarkupOmission> omissions)
     {
         LMentionVault mentions = _lMarkupIntakeMentions;
         LMarkupClerkLink link = _lMarkupIntakeLink;
-        for (int index = 0; index < held.Count; index++)
+        foreach ((LMarkupMention mention, int line, long draftId) in held)
         {
-            if (!identity.TryGetValue(-(index + 1), out long mentionId))
+            if (!identity.TryGetValue(draftId, out long mentionId))
             {
                 continue;
             }
 
-            (LMarkupMention mention, int line) = held[index];
             long target = link.LMarkupEntryResolve(
                 mention.LMarkupMentionHeadword, mention.LMarkupMentionLanguage, prepared);
             long sense = target == 0 ? 0 : link.LMarkupSenseResolve(target, mention.LMarkupMentionSense);
@@ -296,6 +317,23 @@ public sealed class LMarkupClerkIntake
             }
 
             mentions.LMentionSenseSet(mentionId, sense);
+        }
+    }
+
+    private void LMarkupReferenceSettle(
+        IReadOnlyList<(LMarkupReference, long)> cited, IReadOnlyDictionary<long, long> identity)
+    {
+        LExampleVault examples = _lMarkupIntakeExamples;
+        LMarkupClerkLink link = _lMarkupIntakeLink;
+        foreach ((LMarkupReference reference, long draftId) in cited)
+        {
+            if (!identity.TryGetValue(draftId, out long exampleId))
+            {
+                continue;
+            }
+
+            examples.LExampleSourceUpdate(
+                exampleId, LStateAnchor.LStateAnchorCreate(link.LMarkupReferenceResolve(reference)));
         }
     }
 }

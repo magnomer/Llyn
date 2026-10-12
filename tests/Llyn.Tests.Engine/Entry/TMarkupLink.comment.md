@@ -1,5 +1,5 @@
 # TMarkupLink.cs
-Hash: `8380f987077ed8e4`
+Hash: `3c865b1d6a8a9897`
 
 ## `public sealed class TMarkupLink`
 
@@ -36,6 +36,11 @@ A span that stands for no entry is stored, and the export writes it back with no
 
 A Replace file with no language element must not blank the stored language.
 
+### `public void MarkupImport_ReplaceWithoutHeadword_KeepsStoredHeadword()`
+
+A blank headword under Replace takes the target's stored one, as a blank language does.
+The save refuses a blank headword, so without the fallback the whole import would fail.
+
 ### `public void MarkupImport_MentionOffsetOverflow_DropsMention()`
 
 An offset of `int.MaxValue` plus its length wraps negative in `int` and would pass the end check.
@@ -45,13 +50,15 @@ An offset of `int.MaxValue` plus its length wraps negative in `int` and would pa
 A UNC path and a `file` address with a host both name a machine Windows would send credentials to.
 The web image between them passes, which shows only the refused rows are dropped.
 
-### `public void MarkupImport_ReferenceWithoutTitle_CreatesOwnReference()`
+### `internal const string TMarkupOwn`
 
-A stored reference with no title and no year must not catch every file reference that has none either.
+An entry whose example cites its own first sense.
+`TMarkupReference` builds its reference files on it too.
 
-### `private static LExampleDraft TExampleRead(LCardDraft card)`
+### `internal static LExampleDraft TExampleRead(LCardDraft card)`
 
 The one example a card of these files carries.
+`TMarkupReference` reads its examples through it too.
 
 ### `private static LMarkupExample TExampleRead(LMarkupCard card)`
 

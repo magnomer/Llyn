@@ -84,6 +84,7 @@
       "<!--": "-->"
     },
     "exemptFiles": [
+      "TAuditExemptRegistry.cs",
       "TAuditNameRegistry.cs",
       "TAuditVerbRegistry.cs"
     ]

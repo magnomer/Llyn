@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 
 public sealed class TMarkupLink
 {
-    private const string TMarkupOwn = """
+    internal const string TMarkupOwn = """
         <llyn>
           <entry>
             <headword>glow</headword>
@@ -289,35 +289,23 @@ public sealed class TMarkupLink
     }
 
     [Fact]
-    public void MarkupImport_ReferenceWithoutTitle_CreatesOwnReference()
+    public void MarkupImport_ReplaceWithoutHeadword_KeepsStoredHeadword()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        LReference blank = engine.TEngineReferenceCreate(TInterface.TReferenceCreate(
-            0,
-            LStateValue.LStateValueUnspecified,
-            LStateValue.LStateValueUnspecified,
-            LReferenceKind.LReferenceKindOther,
-            TInterfaceState.TStateValueCreate("a note"),
-            LStateValue.LStateValueUnspecified,
-            LStateMark.LStateMarkUnspecified));
+        LEntry glow = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "glow", "English", string.Empty, string.Empty, [TInterface.TCardCreate("shine", 1)], []));
 
-        string text = TMarkupOwn.Replace(
-            "</example>",
-            "<reference><kind>web</kind></reference></example>");
-        string path = TMarkupSave(workspace, text);
-        TMarkupOutcome outcome = engine.TEngineMarkupImport(
-            engine.TEngineMarkupRead(path), [TInterface.TMarkupIntakeCreate(0, LMarkupMode.LMarkupModeNew)]);
+        string path = TMarkupSave(workspace, TMarkupOwn.Replace("<headword>glow</headword>", "<headword> </headword>"));
+        engine.TEngineMarkupImport(
+            engine.TEngineMarkupRead(path),
+            [TInterface.TMarkupIntakeCreate(0, LMarkupMode.LMarkupModeReplace, glow.LEntryId)]);
 
-        LEntryDraft draft = Assert.IsType<LEntryDraft>(
-            engine.TEngineEntryLoad(Assert.Single(outcome.TMarkupOutcomeEntry).LEntryId));
-        long? cited = TExampleRead(Assert.Single(draft.LEntryDraftMeanings)).LExampleDraftReference.LStateAnchorId;
-        Assert.NotNull(cited);
-        Assert.NotEqual(blank.LReferenceId, cited);
+        Assert.Equal("glow", Assert.Single(engine.TEngineEntryFind(string.Empty)).LEntryHeadword);
     }
 
-    private static LExampleDraft TExampleRead(LCardDraft card)
+    internal static LExampleDraft TExampleRead(LCardDraft card)
     {
         return Assert.IsType<LExampleDraft>(Assert.Single(card.LCardDraftSentence).LSentenceDraftExample);
     }

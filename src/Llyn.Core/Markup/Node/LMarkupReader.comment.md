@@ -1,5 +1,5 @@
 # LMarkupReader.cs
-Hash: `4b9b662131bd3ccb`
+Hash: `3965a6bf1dc54305`
 
 ## `internal static class LMarkupReader`
 
@@ -33,6 +33,15 @@ Reads one `entry` element with all of its repeated children in file order.
 The line the element opens on travels with the record, so the import can place its own omissions.
 A `unit` element is read through `LUnitKeyParse`, so an unknown value leaves the unit unchosen.
 A `freedom` element is read through `LFreedomKeyParse` the same way.
+A unit or freedom word the parser does not know is also reported, so the user sees it was dropped.
+The report lives here, not in the parsers, because the speech loader also calls `LUnitKeyParse`.
+
+## `private static void LMarkupTranscriptionAdd(List<LTranscriptionDraft> transcriptions, LMarkupNode element, List<LMarkupOmission> omissions)`
+
+Keeps one `transcription` element unless its scheme is blank or already read in this entry.
+Such a row is reported and skipped, so the rest of the file still imports.
+The scheme compare is the save's, trimmed and ordinal.
+The save refuses those rows, and that refusal guards the editor, so the file is cleaned here.
 
 ## `private static LMarkupEtymon LMarkupEtymonParse(LMarkupNode element, List<LMarkupOmission> omissions)`
 

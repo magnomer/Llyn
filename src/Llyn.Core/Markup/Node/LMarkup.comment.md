@@ -1,5 +1,5 @@
 # LMarkup.cs
-Hash: `fbe1c540aea03aa7`
+Hash: `f1a4662e9be0ea86`
 
 ## `public static class LMarkup`
 
@@ -33,6 +33,7 @@ The adapter enforces it while streaming the text, before any tree is built.
 ## `public const int LMarkupOmissionCeiling = 1000;`
 
 The most omissions one read reports before it stops counting.
+The same ceiling bounds the whole import report, read and import rows together.
 
 ## `private static readonly IReadOnlyDictionary<string, string> LMarkupUnknownMark`
 
@@ -50,6 +51,14 @@ Any attribute other than `state="unknown"` is skipped and named the same way, so
 
 Writes `entries` as a tree under one `llyn` root.
 An unspecified value writes nothing and an unknown value writes an empty element marked unknown.
+
+## `public static IReadOnlyList<LMarkupOmission> LMarkupOmissionClamp(IReadOnlyList<LMarkupOmission> omissions)`
+
+Cuts a finished report to the ceiling, so rows added after the read cannot pass it.
+A report within the ceiling comes back as it is.
+A longer one keeps its first rows and ends with exactly one `...` row.
+That row takes the line of the first row it hides, as the reader's own `...` row does.
+A reader `...` row always stands at the ceiling index, so it is replaced and never doubled.
 
 ## `internal static LStateValue LMarkupValueParse(LMarkupNode? element)`
 

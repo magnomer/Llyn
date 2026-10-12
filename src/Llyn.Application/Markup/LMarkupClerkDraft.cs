@@ -23,12 +23,14 @@ public sealed class LMarkupClerkDraft
         LMarkupEntry entry,
         IReadOnlyDictionary<(string, string), long> prepared,
         List<LMarkupOmission> omissions,
-        List<(LMarkupMention, int)> held)
+        List<(LMarkupMention, int, long)> held,
+        List<(LMarkupReference, long)> cited)
     {
         ArgumentNullException.ThrowIfNull(entry);
         ArgumentNullException.ThrowIfNull(prepared);
         ArgumentNullException.ThrowIfNull(omissions);
         ArgumentNullException.ThrowIfNull(held);
+        ArgumentNullException.ThrowIfNull(cited);
 
         string language = entry.LMarkupEntryLanguage;
         LSpeechVault values = _lMarkupDraftSpeeches;
@@ -62,8 +64,8 @@ public sealed class LMarkupClerkDraft
             language,
             pronunciations,
             entry.LMarkupEntryNote,
-            LMarkupCardResolve(entry.LMarkupEntryMeaning, entry, prepared, omissions, held),
-            LMarkupCardResolve(entry.LMarkupEntryCollocation, entry, prepared, omissions, held),
+            LMarkupCardResolve(entry.LMarkupEntryMeaning, entry, prepared, omissions, held, cited),
+            LMarkupCardResolve(entry.LMarkupEntryCollocation, entry, prepared, omissions, held, cited),
             speeches,
             entry.LMarkupEntryForm,
             inflections,
@@ -78,7 +80,7 @@ public sealed class LMarkupClerkDraft
     {
         LSpeechValue? value = string.IsNullOrWhiteSpace(language)
             ? null
-            : _lMarkupDraftSpeeches.LSpeechValueFind(language, name);
+            : _lMarkupDraftSpeeches.LSpeechValueFind(language, name.Trim());
         if (value is null)
         {
             omissions.Add(new LMarkupOmission(0, $"speech \"{name}\""));
@@ -100,10 +102,11 @@ public sealed class LMarkupClerkDraft
         List<long> resolved = new(inflection.LMarkupInflectionMorphology.Count);
         foreach (string name in inflection.LMarkupInflectionMorphology)
         {
+            string typed = name.Trim();
             LMorphology? found = null;
             foreach (LFeature feature in features)
             {
-                found = morphologies.LMorphologyFind(feature.LFeatureId, name);
+                found = morphologies.LMorphologyFind(feature.LFeatureId, typed);
                 if (found is not null)
                 {
                     break;
@@ -134,7 +137,8 @@ public sealed class LMarkupClerkDraft
         LMarkupEntry entry,
         IReadOnlyDictionary<(string, string), long> prepared,
         List<LMarkupOmission> omissions,
-        List<(LMarkupMention, int)> held)
+        List<(LMarkupMention, int, long)> held,
+        List<(LMarkupReference, long)> cited)
     {
         LMarkupClerkLink link = _lMarkupDraftLink;
         List<LCardDraft> drafts = new(cards.Count);
@@ -145,7 +149,7 @@ public sealed class LMarkupClerkDraft
             {
                 sentences.Add(new LSentenceDraft(
                     sentence.LMarkupSentenceExample is LMarkupExample example
-                        ? link.LMarkupExampleResolve(example, entry.LMarkupEntryLine, prepared, omissions, held)
+                        ? link.LMarkupExampleResolve(example, entry.LMarkupEntryLine, prepared, omissions, held, cited)
                         : null,
                     sentence.LMarkupSentenceParticle,
                     sentence.LMarkupSentenceDependence));
@@ -196,7 +200,7 @@ public sealed class LMarkupClerkDraft
                 videos,
                 drafts.Count + 1,
                 0,
-                LMarkupCardResolve(card.LMarkupCardChild, entry, prepared, omissions, held)));
+                LMarkupCardResolve(card.LMarkupCardChild, entry, prepared, omissions, held, cited)));
         }
 
         return drafts;

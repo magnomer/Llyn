@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Text;
 using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
@@ -93,5 +96,41 @@ public sealed class TMarkupCargo
 
         Assert.Equal("<origin>", Assert.Single(cargo.LMarkupCargoOmission).LMarkupOmissionText);
         Assert.Equal(cargo.LMarkupCargoOmission, outcome.TMarkupOutcomeOmission);
+    }
+
+    [Theory]
+    [InlineData(1001, 2)]
+    [InlineData(999, 3)]
+    public void MarkupImport_OmissionsPastCeiling_EndsWithOneEllipsis(int origins, int etymons)
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        StringBuilder extra = new();
+        for (int index = 0; index < origins; index++)
+        {
+            extra.Append("<origin>x</origin>");
+        }
+
+        for (int index = 0; index < etymons; index++)
+        {
+            extra.Append("<etymon><headword>none")
+                .Append(index.ToString(CultureInfo.InvariantCulture))
+                .Append("</headword><language>English</language></etymon>");
+        }
+
+        string path = workspace.TWorkspaceMarkupSave(TMarkupTwo.Replace(
+            "<headword>glow", extra + "<headword>glow", StringComparison.Ordinal));
+        TMarkupOutcome outcome = engine.TEngineMarkupImport(
+            engine.TEngineMarkupRead(path),
+            [
+                TInterface.TMarkupIntakeCreate(0, LMarkupMode.LMarkupModeNew),
+                TInterface.TMarkupIntakeCreate(1, LMarkupMode.LMarkupModeNew),
+            ]);
+
+        IReadOnlyList<LMarkupOmission> omissions = outcome.TMarkupOutcomeOmission;
+        Assert.Equal(LMarkup.LMarkupOmissionCeiling + 1, omissions.Count);
+        Assert.Equal("...", omissions[^1].LMarkupOmissionText);
+        Assert.Single(omissions, omission => omission.LMarkupOmissionText == "...");
     }
 }

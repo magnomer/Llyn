@@ -37,12 +37,14 @@ public sealed class LMarkupClerkLink
         int line,
         IReadOnlyDictionary<(string, string), long> prepared,
         List<LMarkupOmission> omissions,
-        List<(LMarkupMention, int)> held)
+        List<(LMarkupMention, int, long)> held,
+        List<(LMarkupReference, long)> cited)
     {
         ArgumentNullException.ThrowIfNull(example);
         ArgumentNullException.ThrowIfNull(prepared);
         ArgumentNullException.ThrowIfNull(omissions);
         ArgumentNullException.ThrowIfNull(held);
+        ArgumentNullException.ThrowIfNull(cited);
 
         int length = LMentionClerk.LMentionRuneRead(example.LMarkupExampleText.LStateValueShow()).Count;
         List<LMentionDraft> mentions = new(example.LMarkupExampleMention.Count);
@@ -69,20 +71,25 @@ public sealed class LMarkupClerkLink
             long draftId = 0;
             if (target != 0 && mention.LMarkupMentionSense.Length > 0)
             {
-                held.Add((mention, line));
-                draftId = -held.Count;
+                draftId = -(held.Count + cited.Count + 1);
+                held.Add((mention, line, draftId));
             }
 
             mentions.Add(new LMentionDraft(
                 draftId, mention.LMarkupMentionOffset, mention.LMarkupMentionLength, target));
         }
 
+        long exampleId = 0;
+        if (example.LMarkupExampleReference is LMarkupReference reference)
+        {
+            exampleId = -(held.Count + cited.Count + 1);
+            cited.Add((reference, exampleId));
+        }
+
         return new LExampleDraft(
             example.LMarkupExampleText,
-            0,
-            example.LMarkupExampleReference is LMarkupReference reference
-                ? LStateAnchor.LStateAnchorCreate(LMarkupReferenceResolve(reference))
-                : LStateAnchor.LStateAnchorUnspecified,
+            exampleId,
+            LStateAnchor.LStateAnchorUnspecified,
             example.LMarkupExampleLanguage,
             example.LMarkupExampleGloss,
             mentions);
@@ -220,28 +227,10 @@ public sealed class LMarkupClerkLink
         return true;
     }
 
-    private static bool LMarkupMentionCheck(LMarkupMention mention, int length, IReadOnlyList<LMentionDraft> kept)
+    public long LMarkupReferenceResolve(LMarkupReference reference)
     {
-        long start = mention.LMarkupMentionOffset;
-        long end = start + mention.LMarkupMentionLength;
-        if (start < 0 || mention.LMarkupMentionLength <= 0 || end > length)
-        {
-            return false;
-        }
+        ArgumentNullException.ThrowIfNull(reference);
 
-        foreach (LMentionDraft other in kept)
-        {
-            if (start < other.LMentionDraftOffset + (long)other.LMentionDraftLength && other.LMentionDraftOffset < end)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private long LMarkupReferenceResolve(LMarkupReference reference)
-    {
         string title = LCatalog.LCatalogTextNormalize(reference.LMarkupReferenceTitle.LStateValueShow());
         string year = LCatalog.LCatalogTextNormalize(reference.LMarkupReferenceYear.LStateValueShow());
         string url = LCatalog.LCatalogTextNormalize(reference.LMarkupReferenceUrl.LStateValueShow());
@@ -280,5 +269,25 @@ public sealed class LMarkupClerkLink
 
         _lMarkupLinkAuthors.LAuthorReferenceSave(created.LReferenceId, authors);
         return created.LReferenceId;
+    }
+
+    private static bool LMarkupMentionCheck(LMarkupMention mention, int length, IReadOnlyList<LMentionDraft> kept)
+    {
+        long start = mention.LMarkupMentionOffset;
+        long end = start + mention.LMarkupMentionLength;
+        if (start < 0 || mention.LMarkupMentionLength <= 0 || end > length)
+        {
+            return false;
+        }
+
+        foreach (LMentionDraft other in kept)
+        {
+            if (start < other.LMentionDraftOffset + (long)other.LMentionDraftLength && other.LMentionDraftOffset < end)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
