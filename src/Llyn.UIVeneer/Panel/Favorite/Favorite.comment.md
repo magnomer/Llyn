@@ -1,0 +1,45 @@
+# Favorite
+
+This folder holds the favorite panel, which lists the entries the user has marked and opens the chosen one.
+The C# shell only calls `InitializeComponent()`, and the markup carries no hook.
+`QFavorite` sets commands, the search hint and row fills.
+The picker and the filter have their own drivers, which set their icons and popups.
+
+## `PFavorite`
+
+### Seams
+
+The seams part the favourite catalog from the entry it opens.
+The row seam runs under the ordering bar and the command row.
+It is bled past the panel margin to meet the navigation's edge.
+The column seam sits in the middle of the gutter and reaches the foot of the window.
+Neither seam encloses anything, because a line marks a division and a box would claim an object.
+
+### `PSeries`
+
+The sort control and the search field are one control over the roster column.
+Its edge matches the catalog below, and the outline around both is drawn once.
+The ordering picker is the shared `PChoiceOrder`, placed as `PFavoriteOrder`.
+The language filter is the shared `PChoiceFilter`, placed as `PFavoriteFilter`.
+The panel has no new-record button, because a new entry is written in the input tab and never here.
+
+### `PDisplay`
+
+The read-only entry view is shared, so the favorite entries read exactly as in the other entry-browsing panels.
+What differs between the panels is which entry is selected, not how it reads.
+
+### Catalog spacing
+
+The catalog uses the shared `Theme.Catalog.Frame` and `Theme.Catalog.Scroll` styles.
+The scroll bar takes its lane only when the list overflows, and the rows then narrow to make room.
+The shared `Theme.Catalog.Row` keeps the same rounded shape, padding and row spacing across browse panels.
+
+### `PFavoriteRail`
+
+The command row is the shared `PPanelRail`, and its own driver folds the two button pairs by mode.
+
+## Stamp
+
+Commit: `c2f335c331fe`
+- `PFavorite.xaml` `3d018f7389f8ecf5`
+- `PFavorite.xaml.cs` `c88847559fcf383d`

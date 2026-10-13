@@ -40,6 +40,8 @@ internal sealed class QCard
 
     private CCardList _cCardList = null!;
 
+    private CCaret _cCaret = null!;
+
     internal QCard(
         QCardDrag drag,
         QContext context,
@@ -51,12 +53,10 @@ internal sealed class QCard
         QExample example,
         QImage image,
         QVideo video,
-        ObservableCollection<PLanguageItem> languages,
-        ObservableCollection<PCard> meanings,
-        ObservableCollection<PCard> collocations)
+        ObservableCollection<PLanguageItem> languages)
     {
         _qCardDrag = drag;
-        _qCardPosition = new QCardPosition(meanings, collocations);
+        _qCardPosition = new QCardPosition();
         _qCardContext = context;
         _qCardRegister = register;
         _qCardLink = link;
@@ -69,10 +69,11 @@ internal sealed class QCard
         _qCardLanguage = languages;
     }
 
-    internal void QCardIntroduce(CCardField field, CCardList list)
+    internal void QCardIntroduce(CCardField field, CCardList list, CCaret caret)
     {
         _cCardField = field;
         _cCardList = list;
+        _cCaret = caret;
         _qCardBond.QBondIntroduce(field);
         _qCardPosition.QCardPositionIntroduce(list);
     }
@@ -289,10 +290,8 @@ internal sealed class QCard
     }
 
     internal void QCardRefine(
-        ObservableCollection<PCard> cards,
-        string prefix,
-        IReadOnlyList<CCardDraft> drafts,
-        Func<PCard, CStateWording> peek)
+        ObservableCollection<PCard> cards, string prefix,
+        IReadOnlyList<CCardDraft> drafts, Func<PCard, CStateWording> peek)
     {
         List<PCard> free = [.. cards];
         List<PCard> shown = new(drafts.Count);
@@ -351,11 +350,12 @@ internal sealed class QCard
         card.PCardExpressionShow(draft.CCardDraftExpression);
         card.PCardDefinitionShow(draft.CCardDraftMeaning);
         card.PCardSentence.PCardSentenceShow(draft.CCardDraftSentence, _qCardSentence.QSentenceOrder);
-        QContext.QContextShow(card, draft.CCardDraftSituation);
-        QRegister.QRegisterShow(card, draft.CCardDraftRegister);
-        QLink.QLinkShow(card, draft.CCardDraftTranslation);
+        IReadOnlyDictionary<CCaretTrail, long?> anchor = _cCaret.CCaretRead(draft.CCardDraftId);
+        _qCardContext.QContextShow(card, draft, anchor[_cCaret.CCaretSituation]);
+        QRegister.QRegisterShow(card, draft.CCardDraftRegister, anchor[_cCaret.CCaretRegister]);
+        QLink.QLinkShow(card, draft.CCardDraftTranslation, anchor[_cCaret.CCaretTranslation]);
         QBond.QBondRefine(card, draft.CCardDraftSense);
-        QLabel.QLabelShow(card, draft.CCardDraftTag);
+        _qCardLabel.QLabelShow(card, draft, anchor[_cCaret.CCaretTag]);
         card.PCardImageShow(draft.CCardDraftImage);
         card.PCardVideoShow(draft.CCardDraftVideo);
         card.PCardPosition = draft.CCardDraftPosition;

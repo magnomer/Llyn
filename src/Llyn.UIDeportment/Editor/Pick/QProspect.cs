@@ -19,6 +19,8 @@ internal sealed class QProspect
 
     private CCard _cCard = null!;
 
+    private CCaret _cCaret = null!;
+
     private CSentence _cSentence = null!;
 
     private QLink _qProspectLink = null!;
@@ -38,9 +40,10 @@ internal sealed class QProspect
 
     private Border QProspectContents => QContract.QContractFind<Border>(_qProspectSurface, "PContents");
 
-    internal void QProspectIntroduce(CCard card, CSentence sentence, QLink link)
+    internal void QProspectIntroduce(CCard card, CCaret caret, CSentence sentence, QLink link)
     {
         _cCard = card;
+        _cCaret = caret;
         _cSentence = sentence;
         _qProspectLink = link;
     }
@@ -107,12 +110,8 @@ internal sealed class QProspect
             case TextBox { DataContext: PCaret<QLinkChip> caret }:
                 if (_qProspectLink.QLinkCardFind(caret) is PCard owner)
                 {
-                    _cCard.CCardTranslationInsert(
-                        owner.PCardId,
-                        item.PProspectItemId,
-                        item.PProspectItemHeadword,
-                        item.PProspectItemLanguage,
-                        caret.PCaretPosition);
+                    _cCaret.CCaretTranslationInsert(
+                        owner.PCardId, item.PProspectItemId, item.PProspectItemHeadword, item.PProspectItemLanguage);
                     QProspectShutRefine();
                     caret.PCaretClear();
                 }
@@ -186,12 +185,8 @@ internal sealed class QProspect
             return;
         }
 
-        _cCard.CCardTranslationInsert(
-            card.PCardId,
-            item.PProspectItemId,
-            item.PProspectItemHeadword,
-            item.PProspectItemLanguage,
-            row.PCaretPosition);
+        _cCaret.CCaretTranslationInsert(
+            card.PCardId, item.PProspectItemId, item.PProspectItemHeadword, item.PProspectItemLanguage);
         e.Handled = true;
         QProspectShutRefine();
         row.PCaretClear();

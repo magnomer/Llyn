@@ -26,7 +26,7 @@ internal sealed class QProffer
 
     private readonly ObservableCollection<PProfferItem> _qProfferItem = [];
 
-    private CCard _cCard = null!;
+    private CCaret _cCaret = null!;
 
     private CSentence _cSentence = null!;
 
@@ -50,9 +50,9 @@ internal sealed class QProffer
 
     private Border QProfferContents => QContract.QContractFind<Border>(_qProfferSurface, "PContents");
 
-    internal void QProfferIntroduce(CCard card, CSentence sentence)
+    internal void QProfferIntroduce(CCaret caret, CSentence sentence)
     {
-        _cCard = card;
+        _cCaret = caret;
         _cSentence = sentence;
     }
 
@@ -111,16 +111,14 @@ internal sealed class QProffer
         {
             case FrameworkElement { DataContext: PCaret<PRegister> caret }
                 when _qProfferRegister.QRegisterCardFind(caret) is PCard card:
-                _cCard.CCardRegisterInsert(
-                    card.PCardId, item.PProfferItemId, card.PCardRegister.PCaretPosition);
+                _cCaret.CCaretRegisterInsert(card.PCardId, item.PProfferItemId);
                 e.Handled = true;
                 QProfferShutRefine();
                 card.PCardRegister.PCaretClear();
                 break;
             case FrameworkElement { DataContext: PCaret<PContext> caret }
                 when _qProfferContext.QContextCardFind(caret) is PCard card:
-                _cCard.CCardSituationInsert(
-                    card.PCardId, item.PProfferItemId, card.PCardContext.PCaretPosition);
+                _cCaret.CCaretSituationInsert(card.PCardId, item.PProfferItemId);
                 e.Handled = true;
                 QProfferShutRefine();
                 card.PCardContext.PCaretClear();
@@ -180,16 +178,14 @@ internal sealed class QProffer
         {
             case FrameworkElement { DataContext: PCaret<PRegister> caret }
                 when _qProfferRegister.QRegisterCardFind(caret) is PCard card:
-                _cCard.CCardRegisterInsert(
-                    card.PCardId, item.PProfferItemId, card.PCardRegister.PCaretPosition);
+                _cCaret.CCaretRegisterInsert(card.PCardId, item.PProfferItemId);
                 e.Handled = true;
                 QProfferShutRefine();
                 card.PCardRegister.PCaretClear();
                 break;
             case FrameworkElement { DataContext: PCaret<PContext> caret }
                 when _qProfferContext.QContextCardFind(caret) is PCard card:
-                _cCard.CCardSituationInsert(
-                    card.PCardId, item.PProfferItemId, card.PCardContext.PCaretPosition);
+                _cCaret.CCaretSituationInsert(card.PCardId, item.PProfferItemId);
                 e.Handled = true;
                 QProfferShutRefine();
                 card.PCardContext.PCaretClear();

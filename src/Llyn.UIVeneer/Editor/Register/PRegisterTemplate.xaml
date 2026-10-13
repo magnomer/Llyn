@@ -34,7 +34,7 @@
             VerticalContentAlignment="Center"
             FontSize="{DynamicResource Theme.Card.RegisterSize}"
             Foreground="{DynamicResource Theme.Ink}"
-            Style="{DynamicResource Theme.Input.Bare}" />
+            Style="{DynamicResource Theme.Input.Caret}" />
     </DataTemplate>
 
     <Style x:Key="Theme.Register.Field" TargetType="ItemsControl">

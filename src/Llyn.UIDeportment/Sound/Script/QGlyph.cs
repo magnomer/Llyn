@@ -54,9 +54,7 @@ internal sealed class QGlyph
     {
         if (e.Parameter is QTranscriptionItem row)
         {
-            _qNotation.QNotationStartRefine(
-                _cErrand.CErrandTranscriptionStart(
-                    row.QTranscriptionItemId, row.QTranscriptionItemScheme));
+            _qNotation.QNotationStartRefine(_cErrand.CErrandTranscriptionStart(row.QTranscriptionItemId));
         }
     }
 

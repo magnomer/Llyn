@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -9,17 +8,7 @@ namespace Llyn.UIDeportment;
 
 internal sealed class QCardPosition
 {
-    private readonly ObservableCollection<PCard> _qCardPositionMeaning;
-
-    private readonly ObservableCollection<PCard> _qCardPositionCollocation;
-
     private CCardList _cCardList = null!;
-
-    internal QCardPosition(ObservableCollection<PCard> meanings, ObservableCollection<PCard> collocations)
-    {
-        _qCardPositionMeaning = meanings;
-        _qCardPositionCollocation = collocations;
-    }
 
     internal void QCardPositionIntroduce(CCardList list)
     {
@@ -52,9 +41,8 @@ internal sealed class QCardPosition
             return;
         }
 
-        ObservableCollection<PCard>? list = QCardPositionFind(card);
-
-        if (list is null || list.Count <= 1)
+        bool opened = _cCardList.CCardPositionOpen(card.PCardId);
+        if (!opened)
         {
             return;
         }
@@ -81,32 +69,20 @@ internal sealed class QCardPosition
         if (e.Key is Key.Escape && sender is FrameworkElement { DataContext: PCard card })
         {
             e.Handled = true;
+            _cCardList.CCardPositionClose(card.PCardId);
             card.PCardPositionHide();
         }
     }
 
     private void QCardPositionObserve(object sender, RoutedEventArgs e)
     {
-        if (e is KeyEventArgs { Key: not Key.Enter }
-            || sender is not TextBox { DataContext: PCard card } box
-            || !card.PCardPositionActive)
+        if (e is KeyEventArgs { Key: not Key.Enter } || sender is not TextBox { DataContext: PCard card } box)
         {
             return;
         }
 
-        _cCardList.CCardMove(card.PCardId, box.Text);
-        if (e is KeyEventArgs)
-        {
-            e.Handled = true;
-        }
-
+        bool settled = _cCardList.CCardPositionSettle(card.PCardId, box.Text);
+        e.Handled = settled && e is KeyEventArgs;
         card.PCardPositionHide();
-    }
-
-    private ObservableCollection<PCard>? QCardPositionFind(PCard card)
-    {
-        return _qCardPositionMeaning.Contains(card) ? _qCardPositionMeaning
-            : _qCardPositionCollocation.Contains(card) ? _qCardPositionCollocation
-            : null;
     }
 }

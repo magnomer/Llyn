@@ -77,25 +77,8 @@ internal sealed class PCaret<PCaretChip> : INotifyPropertyChanged
         }
     }
 
-    internal int PCaretPosition
+    internal void PCaretRowShow(IReadOnlyList<PCaretChip> chips)
     {
-        get
-        {
-            for (int index = 0; index < PCaretRow.Count; index++)
-            {
-                if (ReferenceEquals(PCaretRow[index], _pCaretAnchor))
-                {
-                    return index;
-                }
-            }
-
-            return PCaretRow.Count;
-        }
-    }
-
-    internal void PCaretShow(IReadOnlyList<PCaretChip> chips)
-    {
-        List<PCaretChip> trail = PCaretTrailRead();
         QLookItem.QLookItemShow(
             PCaretRow,
             chips,
@@ -103,32 +86,12 @@ internal sealed class PCaret<PCaretChip> : INotifyPropertyChanged
             chip => _pCaretKey(chip).GetValueOrDefault(),
             static chip => chip,
             _pCaretRevision);
-        PCaretAnchor = PCaretTrailResolve(trail);
-
         PCaretUpdate();
     }
 
-    internal PCaretChip? PCaretFind(int step)
+    internal void PCaretAnchorShow(PCaretChip? anchor)
     {
-        int target = PCaretPosition + (step < 0 ? step : step - 1);
-        if (target < 0 || target >= PCaretRow.Count)
-        {
-            return null;
-        }
-
-        return PCaretRow[target];
-    }
-
-    internal bool PCaretMove(int step)
-    {
-        int target = PCaretPosition + step;
-        if (target < 0 || target > PCaretRow.Count)
-        {
-            return false;
-        }
-
-        PCaretAnchor = target < PCaretRow.Count ? PCaretRow[target] : null;
-        return true;
+        PCaretAnchor = anchor;
     }
 
     internal void PCaretClear()
@@ -151,33 +114,6 @@ internal sealed class PCaret<PCaretChip> : INotifyPropertyChanged
         PCaretHint = PCaretRow.Count > 0
             ? string.Empty
             : QLocalizationCatalog.QLocalizationTextRead(_pCaretHintKey);
-    }
-
-    private List<PCaretChip> PCaretTrailRead()
-    {
-        List<PCaretChip> trail = [];
-        for (int index = PCaretPosition; index < PCaretRow.Count; index++)
-        {
-            trail.Add(PCaretRow[index]);
-        }
-
-        return trail;
-    }
-
-    private PCaretChip? PCaretTrailResolve(IReadOnlyList<PCaretChip> trail)
-    {
-        foreach (PCaretChip chip in trail)
-        {
-            for (int index = 0; index < PCaretRow.Count; index++)
-            {
-                if (ReferenceEquals(PCaretRow[index], chip))
-                {
-                    return chip;
-                }
-            }
-        }
-
-        return null;
     }
 
     private void PCaretRaise(string propertyName)

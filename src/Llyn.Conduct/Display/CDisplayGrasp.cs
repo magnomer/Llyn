@@ -46,4 +46,12 @@ public sealed class CDisplayGrasp
         _cDisplayGraspRule.LDisplayGraspSave(_cDisplayGraspRule.LDisplayChosen, step);
         return CDisplayGraspRead();
     }
+
+    public CGrasp CDisplayGraspMove(int move)
+    {
+        long? chosen = _cDisplayGraspRule.LDisplayChosen;
+        int kept = _cDisplayGraspRule.LDisplayGraspRead(chosen);
+        int step = Math.Clamp(kept + move, 0, CDisplayGraspStep);
+        return step == kept ? CDisplayGraspRead() : CDisplayGraspSet(step);
+    }
 }

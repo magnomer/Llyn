@@ -1,12 +1,12 @@
-# Llyn.Tests.Windows.csproj
-Hash: `093ab6e30d54e7fc`
+# Llyn.Tests.Windows
 
-Builds the behaviour tests that compile only on Windows.
+The behaviour tests that compile only on Windows.
+They stand apart from the portable suite because they drive Deportment, which builds for Windows.
 
 ## `<TargetFramework>net10.0-windows10.0.17763.0</TargetFramework>`
 
-The tests reference Deportment, which builds for Windows.
-Deportment hosts WebView2, which needs Windows 10 build 17763, so the tests target the same version.
+The tests reference Deportment, which hosts WebView2.
+WebView2 needs Windows 10 build 17763, so the tests target the same version.
 
 ## `<SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>`
 
@@ -32,3 +32,8 @@ The reference also brings the language packs beside the test binaries.
 
 The tests reference Deportment directly.
 This project declares no direct Capsule or Veneer reference.
+
+## Stamp
+
+Commit: `c2f335c331fe`
+- `Llyn.Tests.Windows.csproj` `093ab6e30d54e7fc`

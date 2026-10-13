@@ -217,7 +217,7 @@ Only adjacent layers name one another. A hard boundary around Conduct prevents U
 | `performance/` | Fixed workloads used for performance tracing. |
 | `docs-analysis/` | Generated audit and analysis reports retained with source versions. |
 
-Most source files have a neighboring `.comment.md` sidecar explaining their current wiring or implementation. These sidecars complement the code; they do not override the target structure in `Llyn.comment.md`.
+Every source folder has one `<Folder>.comment.md` sidecar explaining the intent and reasons behind its code. These sidecars complement the code; they do not override the target structure in `Llyn.comment.md`.
 
 ## Licensing status
 

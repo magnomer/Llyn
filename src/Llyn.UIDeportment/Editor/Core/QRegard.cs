@@ -17,7 +17,8 @@ internal sealed class QRegard
     {
         _qRegardSurface = surface;
         QRegardFavorite.Click += QRegardFavoriteObserve;
-        QRegardGrasp.PGraspChanged += QRegardGraspObserve;
+        QRegardGrasp.PGraspPressed += QRegardGraspObserve;
+        QRegardGrasp.PGraspMoved += QRegardMoveObserve;
         QRegardGrasp.PGraspHovered += QRegardHoverRefine;
     }
 
@@ -66,18 +67,26 @@ internal sealed class QRegard
     private void QRegardGraspRefine()
     {
         QRegardGrasp.IsEnabled = _cDesk.CDeskStored;
-        QRegardGrasp.PGraspStep = _cEsteem.CEsteemGrasp;
-        QRegardGraspLabel.Text = _cEsteem.CEsteemGraspRead(QRegardGrasp.PGraspStep);
+        CGrasp grasp = _cEsteem.CEsteemGraspRead();
+        QRegardGrasp.PGraspStep = grasp.CGraspStep;
+        QRegardGraspLabel.Text = grasp.CGraspLabel;
     }
 
-    private void QRegardHoverRefine(object sender, RoutedEventArgs e)
+    private void QRegardHoverRefine(int? hovered)
     {
-        QRegardGraspLabel.Text = _cEsteem.CEsteemGraspRead(QRegardGrasp.PGraspPointed);
+        QRegardGraspLabel.Text = hovered is int pointed
+            ? _cEsteem.CEsteemGraspRead(pointed)
+            : _cEsteem.CEsteemGraspRead().CGraspLabel;
     }
 
-    private void QRegardGraspObserve(object sender, RoutedEventArgs e)
+    private void QRegardGraspObserve(int pressed)
     {
-        _cEsteem.CEsteemGraspSet(QRegardGrasp.PGraspStep);
+        _cEsteem.CEsteemGraspSet(pressed);
+    }
+
+    private void QRegardMoveObserve(int move)
+    {
+        _cEsteem.CEsteemGraspMove(move);
     }
 
     private void QRegardFrequencyRefine()

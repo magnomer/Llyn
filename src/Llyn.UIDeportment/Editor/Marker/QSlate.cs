@@ -22,7 +22,7 @@ internal sealed class QSlate
 
     private readonly ObservableCollection<PSlateItem> _qSlateItem = [];
 
-    private CCard _cCard = null!;
+    private CCaret _cCaret = null!;
 
     internal QSlate(FrameworkElement surface, QLabel label)
     {
@@ -42,9 +42,9 @@ internal sealed class QSlate
 
     private Border QSlateContents => QContract.QContractFind<Border>(_qSlateSurface, "PContents");
 
-    internal void QSlateIntroduce(CCard card)
+    internal void QSlateIntroduce(CCaret caret)
     {
-        _cCard = card;
+        _cCaret = caret;
     }
 
     private void QSlateApply(FrameworkElement container, object item, string? _)
@@ -95,7 +95,7 @@ internal sealed class QSlate
             return;
         }
 
-        _cCard.CCardTagInsert(card.PCardId, item.PSlateItemId, row.PCaretPosition);
+        _cCaret.CCaretTagInsert(card.PCardId, item.PSlateItemId);
         e.Handled = true;
         QSlateShutRefine();
         row.PCaretClear();
@@ -144,7 +144,7 @@ internal sealed class QSlate
             return;
         }
 
-        _cCard.CCardTagInsert(card.PCardId, item.PSlateItemId, row.PCaretPosition);
+        _cCaret.CCaretTagInsert(card.PCardId, item.PSlateItemId);
         e.Handled = true;
         QSlateShutRefine();
         row.PCaretClear();

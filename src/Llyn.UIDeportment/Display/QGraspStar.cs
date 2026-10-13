@@ -21,9 +21,11 @@ public sealed class QGraspStar
 
     private readonly DependencyProperty _qGraspLimit;
 
-    private readonly RoutedEvent _qGraspChanged;
+    private readonly Action<int?> _qGraspHovered;
 
-    private readonly RoutedEvent _qGraspHovered;
+    private readonly Action<int> _qGraspPressed;
+
+    private readonly Action<int> _qGraspMoved;
 
     private readonly ImageSource _qGraspStarImage;
 
@@ -37,22 +39,24 @@ public sealed class QGraspStar
         FrameworkElement grasp,
         DependencyProperty step,
         DependencyProperty limit,
-        RoutedEvent changed,
-        RoutedEvent hovered,
+        Action<int?> hovered,
+        Action<int> pressed,
+        Action<int> moved,
         ImageSource? star)
     {
         _qGraspElement = grasp;
         _qGraspStep = step;
         _qGraspLimit = limit;
-        _qGraspChanged = changed;
-        _qGraspHovered = hovered;
+        _qGraspHovered = hovered ?? throw new ArgumentNullException(nameof(hovered));
+        _qGraspPressed = pressed ?? throw new ArgumentNullException(nameof(pressed));
+        _qGraspMoved = moved ?? throw new ArgumentNullException(nameof(moved));
         _qGraspStarImage = star ?? throw new ArgumentNullException(nameof(star));
         grasp.IsEnabledChanged += (_, _) => grasp.Opacity = grasp.IsEnabled ? 1 : 0.4;
     }
 
-    public int? QGraspHover { get; private set; }
+    private int? QGraspHover { get; set; }
 
-    public int QGraspPointed => QGraspHover ?? QGraspCurrent;
+    private int QGraspPointed => QGraspHover ?? QGraspCurrent;
 
     private int QGraspCurrent => (int)_qGraspElement.GetValue(_qGraspStep);
 
@@ -99,30 +103,26 @@ public sealed class QGraspStar
     public void QGraspPressRefine(Point point)
     {
         _qGraspElement.Focus();
-        QGraspStepRefine(QGraspStepDraw(point));
+        _qGraspPressed(QGraspStepDraw(point));
     }
 
     public void QGraspKeyRefine(KeyEventArgs e)
     {
-        int? next = e.Key switch
+        int? move = e.Key switch
         {
-            Key.Left => Math.Max(0, QGraspCurrent - 1),
-            Key.Right => Math.Min(QGraspLast, QGraspCurrent + 1),
-            Key.Home => 0,
+            Key.Left => -1,
+            Key.Right => 1,
+            Key.Home => -QGraspLast,
             Key.End => QGraspLast,
             _ => null,
         };
 
-        if (next is not int step)
+        if (move is not int step)
         {
             return;
         }
 
-        if (step != QGraspCurrent)
-        {
-            QGraspStepRefine(step);
-        }
-
+        _qGraspMoved(step);
         e.Handled = true;
     }
 
@@ -177,13 +177,7 @@ public sealed class QGraspStar
     {
         QGraspHover = hovered;
         _qGraspElement.InvalidateVisual();
-        _qGraspElement.RaiseEvent(new RoutedEventArgs(_qGraspHovered, _qGraspElement));
-    }
-
-    private void QGraspStepRefine(int step)
-    {
-        _qGraspElement.SetValue(_qGraspStep, step);
-        _qGraspElement.RaiseEvent(new RoutedEventArgs(_qGraspChanged, _qGraspElement));
+        _qGraspHovered(hovered);
     }
 
     private void QGraspStarDraw(DrawingContext context, Brush ink, Rect frame)

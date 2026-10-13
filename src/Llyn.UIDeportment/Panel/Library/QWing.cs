@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Windows.Media;
 using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
@@ -39,11 +38,10 @@ internal sealed class QWing
         QWingOrderIcon.QIconSource = QIcon.QIconResolve("sort", 24);
         QWingSieveIcon.QIconSource = QIcon.QIconResolve("filter", 24);
 
-        QWingQuery.LostKeyboardFocus += QWingLeaveRefine;
+        QWingLookup.IsKeyboardFocusWithinChanged += QWingLookupObserve;
         QWingQuery.PreviewKeyDown += QWingKeyRefine;
         QWingQuery.PreviewKeyDown += QWingKeyObserve;
         QWingQuery.TextChanged += QWingQueryObserve;
-        QWingIndex.LostKeyboardFocus += QWingLeaveRefine;
 
         QLookItem.QLookItemAttach(QWingIndex, QWingRowRefine);
         DependencyPropertyDescriptor.FromProperty(UIElement.VisibilityProperty, typeof(ItemsControl))
@@ -54,6 +52,8 @@ internal sealed class QWing
         QContract.QContractFind<ToggleButton>(_qWingSurface, "PWingOrderDropper");
 
     private QIconImage QWingOrderIcon => QContract.QContractFind<QIconImage>(_qWingSurface, "PWingOrderIcon");
+
+    private FrameworkElement QWingLookup => QContract.QContractFind<FrameworkElement>(_qWingSurface, "PWingLookup");
 
     private TextBox QWingQuery => QContract.QContractFind<TextBox>(_qWingSurface, "PWingQuery");
 
@@ -145,32 +145,27 @@ internal sealed class QWing
     private void QWingQueryObserve(object sender, TextChangedEventArgs e)
     {
         _cWing.CWingQuerySet(QWingQuery.Text ?? string.Empty);
-        _qIndex.QIndexShownRefine(_cWing.CWingQueried);
+        _qIndex.QIndexShownRefine(_cWing.CWingRowsShown);
     }
 
     private void QWingKeyRefine(object sender, KeyEventArgs e)
     {
-        if (!_qIndex.QIndexShown || e.Key != Key.Escape)
+        if (e.Key != Key.Escape)
         {
             return;
         }
 
-        _qIndex.QIndexShownRefine(false);
-        e.Handled = true;
+        e.Handled = _cWing.CWingRowsClose();
+        _qIndex.QIndexShownRefine(_cWing.CWingRowsShown);
     }
 
     private void QWingKeyObserve(object sender, KeyEventArgs e)
     {
-        if (!_qIndex.QIndexShown)
-        {
-            return;
-        }
-
         if (e.Key == Key.Enter)
         {
-            bool opened = _cWing.CWingEntryOpen(_qIndex.QIndexChosenRead());
+            bool opened = _cWing.CWingRowsOpen(_qIndex.QIndexChosenRead());
             e.Handled = opened;
-            _qIndex.QIndexShownRefine(!opened);
+            _qIndex.QIndexShownRefine(_cWing.CWingRowsShown);
             return;
         }
 
@@ -184,21 +179,21 @@ internal sealed class QWing
         _qIndex.QIndexScrollRefine(moved);
     }
 
-    private void QWingLeaveRefine(object sender, KeyboardFocusChangedEventArgs e)
+    private void QWingLookupObserve(object sender, DependencyPropertyChangedEventArgs e)
     {
-        if (e.NewFocus is Visual target
-            && (ReferenceEquals(target, QWingQuery) || _qIndex.QIndexHoldCheck(target)))
+        if (e.NewValue is true)
         {
             return;
         }
 
-        _qIndex.QIndexShownRefine(false);
+        _cWing.CWingRowsClose();
+        _qIndex.QIndexShownRefine(_cWing.CWingRowsShown);
     }
 
     private void QWingIndexObserve(object sender, RoutedEventArgs e)
     {
-        _qIndex.QIndexShownRefine(
-            !_cWing.CWingEntryOpen(((sender as FrameworkElement)?.DataContext as QIndexItem)?.QIndexItemId));
+        _cWing.CWingRowsOpen(((sender as FrameworkElement)?.DataContext as QIndexItem)?.QIndexItemId);
+        _qIndex.QIndexShownRefine(_cWing.CWingRowsShown);
     }
 
     private void QWingRowRefine(FrameworkElement container, object item, string? change)

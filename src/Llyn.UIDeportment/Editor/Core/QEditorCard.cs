@@ -80,9 +80,7 @@ internal sealed class QEditorCard
             new QExample(QEditorCardSentence, _qGloss, _qCitation),
             _qImage,
             _qVideo,
-            _qEditorCardLanguage,
-            _qEditorCardMeaning,
-            _qEditorCardCollocation);
+            _qEditorCardLanguage);
         _qMeaning = new QMeaning(surface, _qEditorCardMeaning, _qCard);
         _qCollocation = new QCollocation(surface, _qEditorCardCollocation, _qCard);
         _qEtymologyEditor = new QEtymologyEditor(surface, QEditorCardProspect);
@@ -98,6 +96,7 @@ internal sealed class QEditorCard
         QMentionMenu mentionMenu,
         CEntry entry,
         CCard card,
+        CCaret caret,
         CSentence sentence,
         CCardList list,
         CCardField field,
@@ -106,21 +105,21 @@ internal sealed class QEditorCard
     {
         _qImage.QImageIntroduce(image);
         _qVideo.QVideoIntroduce(video);
-        _qContext.QContextIntroduce(card, _qProffer);
-        _qRegister.QRegisterIntroduce(card, _qProffer);
-        _qProffer.QProfferIntroduce(card, sentence);
-        QEditorCardProspect.QProspectIntroduce(card, sentence, _qLink);
-        _qLink.QLinkIntroduce(card);
+        _qContext.QContextIntroduce(card, caret, _qProffer);
+        _qRegister.QRegisterIntroduce(card, caret, _qProffer);
+        _qProffer.QProfferIntroduce(caret, sentence);
+        QEditorCardProspect.QProspectIntroduce(card, caret, sentence, _qLink);
+        _qLink.QLinkIntroduce(card, caret);
         _qSpeaker.QSpeakerIntroduce(entry, atelier, envoy);
         _qGloss.QGlossIntroduce(sentence);
         QEditorCardSentence.QSentenceIntroduce(
             card, sentence, atelier.CAtelierMention, mentionMenu, QEditorCardProspect);
         _qCitation.QCitationIntroduce(card, sentence, atelier);
-        _qLabel.QLabelIntroduce(card, _qSlate);
-        _qSlate.QSlateIntroduce(card);
+        _qLabel.QLabelIntroduce(card, caret, _qSlate);
+        _qSlate.QSlateIntroduce(caret);
         _qEtymologyEditor.QEtymologyIntroduce(card, entry, atelier);
         _qCardDrag.QCardDragIntroduce(list);
-        _qCard.QCardIntroduce(field, list);
+        _qCard.QCardIntroduce(field, list, caret);
         _qMeaning.QMeaningIntroduce(list);
         _qCollocation.QCollocationIntroduce(list);
     }

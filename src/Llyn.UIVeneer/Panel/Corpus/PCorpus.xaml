@@ -263,7 +263,6 @@
                                         Style="{DynamicResource Theme.Transcript.Citation}" />
                                     <Popup
                                         x:Name="PCitationDrawer"
-                                        MaxWidth="320"
                                         AllowsTransparency="True"
                                         Placement="Custom"
                                         StaysOpen="False">

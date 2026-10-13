@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -76,6 +77,15 @@ public sealed class CErrand
         }
 
         return _cErrandClip.LClipRead();
+    }
+
+    public CNotationRoll CErrandTranscriptionStart(long transcription)
+    {
+        string scheme = _cErrandDesk.CDeskDraft.CDeskDraftTenure?.LTenureRead()?.LDraftContent
+            .LEntryDraftTranscriptions
+            .FirstOrDefault(row => row.LTranscriptionDraftId == transcription)?.LTranscriptionDraftScheme
+            ?? string.Empty;
+        return CErrandTranscriptionStart(transcription, scheme);
     }
 
     public CNotationRoll CErrandTranscriptionStart(long? target, string scheme)

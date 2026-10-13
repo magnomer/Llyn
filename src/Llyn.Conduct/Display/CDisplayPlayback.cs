@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -62,8 +63,15 @@ public sealed class CDisplayPlayback
         LDisplayPlaybackStart(() => _cDisplayPlaybackMedia.LEngineRecordingPlay(shown, volume));
     }
 
-    public void CDisplayPlaybackStart(string? audio, double volume)
+    public void CDisplayPlaybackStart(long accent, double volume)
     {
+        if (LDisplayPlaybackShown?.LEntryDraftAccents.FirstOrDefault(row => row.LPronunciationDraftId == accent)
+            is not LPronunciationDraft spoken)
+        {
+            return;
+        }
+
+        string audio = spoken.LPronunciationDraftAudio;
         LDisplayPlaybackStart(() => _cDisplayPlaybackMedia.LEngineRecordingPlay(audio, volume));
     }
 

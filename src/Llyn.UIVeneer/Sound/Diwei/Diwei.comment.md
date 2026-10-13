@@ -1,0 +1,25 @@
+# Diwei
+
+This folder holds the category page of the rime table.
+It stands where the reading view stands and is shown in its place while a category is open.
+
+## `PDiwei`
+
+The shell behind `PDiwei.xaml`, the category page the yunjing panel places.
+Its constructor only calls `InitializeComponent()`.
+The page holds a headword line for the category and the characters placed under it.
+The headword line carries the key, the kind chip and the language chip, as an entry's line would.
+On an initial's page the sections list the placements by division, each row a rime and its characters.
+On a rime's page they list them by the initial's articulatory place, each row an initial and its characters.
+Under each section heading the tally lines print, one per borrowing language and kind of reading.
+Each line lays its parts out in a row, each part followed by its raised character count.
+Clicking a part opens a popup listing those characters, each a chip opening its entry as the plate's chips do.
+A switch at the right end of every section heading picks IPA or respelling for those lines.
+The switches repeat one state, so any of them flips all, and they show only while respelling is on.
+The chip and switch commands are bound by `QDiwei`, since the markup holds no command binding.
+
+## Stamp
+
+Commit: `c2f335c331fe`
+- `PDiwei.xaml` `40fd66c6100f97e3`
+- `PDiwei.xaml.cs` `f33cbe8b3be04632`

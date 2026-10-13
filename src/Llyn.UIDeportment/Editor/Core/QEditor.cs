@@ -94,6 +94,7 @@ internal sealed class QEditor : QChronicleHost
             mentionMenu,
             editor.CEditorEntry,
             editor.CEditorCard,
+            editor.CEditorCaret,
             editor.CEditorSentence,
             editor.CEditorList,
             editor.CEditorField,

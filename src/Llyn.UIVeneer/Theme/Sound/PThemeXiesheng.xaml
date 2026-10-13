@@ -6,7 +6,7 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Base/PThemePalette.xaml" />
         <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Base/PThemeInput.xaml" />
-        <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Sound/PThemeReflex.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Sound/Reflex/PThemeReflex.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="Theme.Stem.Empty" TargetType="TextBlock">

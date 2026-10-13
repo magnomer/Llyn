@@ -134,6 +134,13 @@ internal static class CFolio
         return Math.Clamp(wanted, 1, count) - 1;
     }
 
+    internal static int CFolioCountRead(LEntryDraft content, long cardId)
+    {
+        ArgumentNullException.ThrowIfNull(content);
+
+        return CFolioListRead(content, cardId).Count;
+    }
+
     internal static IReadOnlyList<LCardDraft> CFolioOrderRead(IReadOnlyList<LCardDraft> cards)
     {
         ArgumentNullException.ThrowIfNull(cards);

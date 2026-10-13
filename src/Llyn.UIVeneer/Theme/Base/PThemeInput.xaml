@@ -246,4 +246,8 @@
         <Setter Property="Template" Value="{DynamicResource Theme.Input.Field.Bare}" />
     </Style>
 
+    <Style x:Key="Theme.Input.Caret" TargetType="TextBox" BasedOn="{StaticResource Theme.Input.Bare}" />
+
+    <Thickness x:Key="Theme.Input.CaretMargin">9,0,-9,7</Thickness>
+
 </ResourceDictionary>

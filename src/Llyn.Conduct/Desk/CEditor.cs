@@ -29,6 +29,7 @@ public sealed class CEditor
         CEditorDesk = new CDesk(drafts, settings, "Input", envoy);
         CEditorDisplay = new CDisplay(drafts, entries, phonology, settings, media, envoy, noticed);
         CEditorCard = new CCard(CEditorDesk, drafts, entries.CEntryBundleReference, settings, envoy);
+        CEditorCaret = new CCaret(CEditorDesk, CEditorCard);
         CEditorSentence = new CSentence(
             CEditorDesk, phonology.CPhonologyBundleSentence, drafts, settings, envoy, noticed);
         CEditorSounding = new CSounding(
@@ -91,6 +92,8 @@ public sealed class CEditor
     public CDisplay CEditorDisplay { get; }
 
     public CCard CEditorCard { get; }
+
+    public CCaret CEditorCaret { get; }
 
     public CSentence CEditorSentence { get; }
 

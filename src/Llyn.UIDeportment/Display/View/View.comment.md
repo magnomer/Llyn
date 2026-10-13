@@ -1,0 +1,106 @@
+# View
+
+View holds the shell of the shared read-only entry view.
+Every browse-style panel that shows an entry hosts it, and the panel decides which entry shows.
+Nothing here loads a draft.
+
+## `PDisplayCommand`
+
+These routed commands are bound by every panel that shows an entry.
+A command is used rather than a click.
+So each panel enables the button by the same check it uses for print.
+The portrait command exports a portrait of the entry the panel is reading.
+
+## `PGrasp`
+
+The grasp row is a row of stars the user clicks to say how well they know an entry.
+Each step is half a star.
+It draws itself, so there is no child element per star and no template to keep in step.
+The step is a count of half stars from zero to the limit, in the store's own unit.
+The limit comes from the deportment, so the row names no Core constant.
+The row only maps a click to a step and raises it, and never decides what the store holds.
+Its star driver is exposed so the host's driver can hand it the ready answers.
+The row holds no Conduct type and requests no logic.
+
+### `PGraspLimit`
+
+The host sets it once before any step is shown.
+End and Right stop at it, but the star count comes from the ready hit answers.
+
+### `PGraspStep`
+
+Conduct promises a step within the limit, and the row's own pointer and keys never set it.
+So the row holds no clamp of its own.
+
+### Brushes
+
+Fill, empty, unrated and preview brushes are set from theme resources.
+The draw reads them, so a theme change recolours the stars.
+
+### `PGraspPressed`
+
+It carries the step a click landed on and is raised even when that step stands.
+The row does not write the step, so the listener sends it to Conduct and Conduct sets it back.
+
+### `PGraspMoved`
+
+It carries a relative move from a key, and Home and End carry the whole limit.
+The listener sends the move to Conduct, which keeps the result within the limit.
+
+### `PGraspHovered`
+
+It carries the half-star step under the pointer, or nothing when the pointer leaves the row.
+The listener words the step beside the stars and falls back to the standing label on nothing.
+
+### `OnRender`
+
+The row has no child elements, so this override alone puts the stars on screen.
+The step, the limit and every brush affect render.
+
+## `QDisplay`
+
+The driver of the shared read-only view is handed the view's page and later a display.
+It builds the lectern that paints the page.
+It never loads a draft and never decides which entry is shown.
+Its constructor wires nothing, so the view stays inert until it is introduced.
+The lectern's sections pull and wire their own parts, so this class only joins the lectern to the window.
+The lectern is kept for the library's navigation, which reaches for card spotlights.
+
+### `QDisplayIntroduce`
+
+The swath's clear answers the area's open and close before the lectern subscribes anything.
+Etymology and card notices go to the window menu, since the lectern knows no window.
+The page's volume slider attaches to the window's one volume owner, so every tray keeps one level.
+
+## Inline notes
+
+### QDisplay.cs: `QDisplaySwath.PSwathAttach(QDisplayContents)`
+
+The band a reader drags across the page lies over the contents, inside the scroll viewer.
+It listens on the viewer, so a drag begun anywhere on the page selects.
+Showing or clearing an entry drops the band, since the text it spanned is gone.
+
+## `QRoster`
+
+The roster holds the item fills of the view's lists.
+The card and row fills live in `PLeaf`, with the meaning list taking the card fill.
+The Other collocations list takes the row fill.
+It keeps the compass, since a contents row's click goes to it.
+
+### `QRosterUsageRefine`
+
+The epithet is read through `QLookEpithetRead`, which keeps the en space before it.
+
+### `QRosterCompassRefine`
+
+A muted row's name takes `Theme.Muted`, and any other row clears it so the name follows the row's own ink.
+The current row carries the `Chosen` cue, which `QLookDisplay` colours in the accent.
+The click is subscribed once.
+
+## Stamp
+
+Commit: `c2f335c331fe`
+- `PDisplayCommand.cs` `82c7e2476f817dc9`
+- `PGrasp.cs` `2bc702992982ff83`
+- `QDisplay.cs` `b91d123ef344c3e6`
+- `QRoster.cs` `b2df99db6021bbc1`

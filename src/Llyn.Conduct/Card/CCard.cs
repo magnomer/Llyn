@@ -38,7 +38,7 @@ public sealed class CCard
         return CMention.LMentionProspectRead(_cCardDesk, word, _cCardEnvoy, _cCardSettingsPort);
     }
 
-    public CProspect CCardTranslationAdd(long cardId, string text, int position)
+    internal CProspect CCardTranslationAdd(long cardId, string text, int position)
     {
         ArgumentNullException.ThrowIfNull(text);
 
@@ -56,7 +56,7 @@ public sealed class CCard
         }
     }
 
-    public CProspect CCardTranslationResolve(long cardId, string text, int position, bool offered)
+    internal CProspect CCardTranslationResolve(long cardId, string text, int position, bool offered)
     {
         ArgumentNullException.ThrowIfNull(text);
 
@@ -79,7 +79,7 @@ public sealed class CCard
         }
     }
 
-    public void CCardTranslationInsert(long cardId, long? entryId, string headword, string language, int position)
+    internal void CCardTranslationInsert(long cardId, long? entryId, string headword, string language, int position)
     {
         try
         {
@@ -170,88 +170,14 @@ public sealed class CCard
         return new CTag(tag.LTagId, tag.LTagText);
     }
 
-    public CSlate CCardTagAdd(long cardId, string text, int position, bool settled)
-    {
-        return _cCardDesk.CDeskDraft.CDeskDraftChip?.LQuillTagAdd(cardId, text, position, settled) is LTagOffer offer
-            ? LCardSlateRead(offer)
-            : new CSlate(text, [], false);
-    }
-
-    private static CSlate LCardSlateRead(LTagOffer offer)
-    {
-        return new CSlate(
-            offer.LTagOfferText,
-            offer.LTagOfferRows
-                .Select(static row => new CSlateRow(row.LTagRowId, row.LTagRowLead, row.LTagRowMark, row.LTagRowTail))
-                .ToList(),
-            offer.LTagOfferShown);
-    }
-
-    public void CCardTagInsert(long cardId, long tagId, int position)
-    {
-        _cCardDesk.CDeskDraft.CDeskDraftChip?.LQuillTagInsert(cardId, tagId, position);
-    }
-
     public void CCardTagRemove(long cardId, long tagId)
     {
         _cCardDesk.CDeskDraft.CDeskDraftChip?.LQuillTagRemove(cardId, tagId);
     }
 
-    public CProffer CCardSituationAdd(long cardId, string text, int position, bool settled)
-    {
-        return _cCardDesk.CDeskDraft.CDeskDraftChip?.LQuillSituationAdd(
-                cardId, text, position, settled) is LSituationOffer offer
-            ? LCardProfferRead(offer)
-            : new CProffer(text, [], false);
-    }
-
-    private static CProffer LCardProfferRead(LSituationOffer offer)
-    {
-        return new CProffer(
-            offer.LSituationOfferText,
-            offer.LSituationOfferRows
-                .Select(static row => new CProfferRow(
-                    row.LSituationRowId,
-                    row.LSituationRowLead,
-                    row.LSituationRowMark,
-                    row.LSituationRowTail,
-                    row.LSituationRowCount))
-                .ToList(),
-            offer.LSituationOfferShown);
-    }
-
-    public void CCardSituationInsert(long cardId, long situationId, int position)
-    {
-        _cCardDesk.CDeskDraft.CDeskDraftChip?.LQuillSituationInsert(cardId, situationId, position);
-    }
-
     public void CCardSituationRemove(long cardId, long situationId)
     {
         _cCardDesk.CDeskDraft.CDeskDraftChip?.LQuillSituationRemove(cardId, situationId);
-    }
-
-    public CProffer CCardRegisterAdd(long cardId, string text, int position, bool settled)
-    {
-        return _cCardDesk.CDeskDraft.CDeskDraftChip?.LQuillRegisterAdd(
-                cardId, text, position, settled) is LRegisterOffer offer
-            ? LCardProfferRead(offer)
-            : new CProffer(text, [], false);
-    }
-
-    private static CProffer LCardProfferRead(LRegisterOffer offer)
-    {
-        return new CProffer(
-            offer.LRegisterOfferText,
-            offer.LRegisterOfferRows
-                .Select(static row => new CProfferRow(
-                    row.LRegisterRowId, row.LRegisterRowLead, row.LRegisterRowMark, row.LRegisterRowTail))
-                .ToList(),
-            offer.LRegisterOfferShown);
-    }
-
-    public void CCardRegisterInsert(long cardId, long registerId, int position)
-    {
-        _cCardDesk.CDeskDraft.CDeskDraftChip?.LQuillRegisterInsert(cardId, registerId, position);
     }
 
     public void CCardRegisterRemove(long cardId, long registerId)

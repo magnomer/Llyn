@@ -34,7 +34,7 @@
             VerticalContentAlignment="Center"
             FontSize="{DynamicResource Theme.Card.SituationSize}"
             Foreground="{DynamicResource Theme.Ink}"
-            Style="{DynamicResource Theme.Input.Bare}" />
+            Style="{DynamicResource Theme.Input.Caret}" />
     </DataTemplate>
 
     <Style x:Key="Theme.Context.Field" TargetType="ItemsControl">

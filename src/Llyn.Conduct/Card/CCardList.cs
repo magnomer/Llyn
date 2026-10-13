@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -13,6 +14,8 @@ public sealed class CCardList
     private readonly LSettingsPort _cCardListSettings;
 
     private readonly CEnvoy _cCardListEnvoy;
+
+    private readonly HashSet<long> _cCardListMoving = [];
 
     internal CCardList(CDesk desk, LCardPort cards, LSettingsPort settings, CEnvoy envoy)
     {
@@ -94,5 +97,35 @@ public sealed class CCardList
         {
             CCardMove(cardId, place);
         }
+    }
+
+    public bool CCardPositionOpen(long cardId)
+    {
+        if (_cCardListDesk.CDeskDraft.CDeskDraftTenure?.LTenureRead() is not LDraft held
+            || CFolio.CFolioCountRead(held.LDraftContent, cardId) <= 1)
+        {
+            return false;
+        }
+
+        _cCardListMoving.Add(cardId);
+        return true;
+    }
+
+    public void CCardPositionClose(long cardId)
+    {
+        _cCardListMoving.Remove(cardId);
+    }
+
+    public bool CCardPositionSettle(long cardId, string ordinal)
+    {
+        ArgumentNullException.ThrowIfNull(ordinal);
+
+        if (!_cCardListMoving.Remove(cardId))
+        {
+            return false;
+        }
+
+        CCardMove(cardId, ordinal);
+        return true;
     }
 }

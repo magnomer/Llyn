@@ -94,26 +94,6 @@ internal static class TInterfaceDeportment
             new CCardDraft(0, 0, blank, blank, blank, [], [], [], [], [], [], [], false, false, []));
     }
 
-    internal static void TCardLabelShow(object card, IReadOnlyList<CTagDraft> drafts) =>
-        QLabel.QLabelShow((PCard)card, drafts);
-
-    internal static bool TCardLabelMove(object card, int step) => ((PCard)card).PCardLabel.PCaretMove(step);
-
-    internal static long? TCardLabelFind(object card, int step) =>
-        ((PCard)card).PCardLabel.PCaretFind(step)?.PLabelChipId;
-
-    internal static (List<long>, int) TCardLabelRead(object card)
-    {
-        PCard held = (PCard)card;
-        List<long> ids = [];
-        foreach (object row in held.PCardLabel.PCaretRow)
-        {
-            ids.Add(((PLabelChip)row).PLabelChipId);
-        }
-
-        return (ids, held.PCardLabel.PCaretPosition);
-    }
-
     internal static TextBox TCardPositionAttach(object card)
     {
         FrameworkElementFactory face = new(typeof(TextBox)) { Name = "PCardPositionText" };
@@ -153,8 +133,8 @@ internal static class TInterfaceDeportment
 
     internal static void TCardHingeAttach(ItemsControl list, CEditor editor)
     {
-        QCard card = new(null!, null!, null!, null!, null!, null!, null!, null!, null!, null!, [], [], []);
-        card.QCardIntroduce(editor.CEditorField, editor.CEditorList);
+        QCard card = new(null!, null!, null!, null!, null!, null!, null!, null!, null!, null!, []);
+        card.QCardIntroduce(editor.CEditorField, editor.CEditorList, editor.CEditorCaret);
         QLookItem.QLookItemAttach(list, card.QCardApply);
     }
 

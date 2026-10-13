@@ -12,93 +12,67 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Border
+        <Rectangle
+            x:Name="PWingSeam"
             Grid.Row="0"
-            Margin="0,0,0,18"
-            Style="{StaticResource Theme.Search.Bar}">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <ToggleButton
-                    x:Name="PWingOrderDropper"
-                    Grid.Column="0"
-                    Style="{StaticResource Theme.Search.Dropper}"
-                    ToolTip="{DynamicResource Order.Title}">
-                    <local:QIconImage x:Name="PWingOrderIcon" Width="24" Height="24" />
-                </ToggleButton>
-                <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
-                <TextBox
-                    x:Name="PWingQuery"
-                    Grid.Column="2"
-                    Style="{StaticResource Theme.Search.Field}" />
-                <Rectangle Grid.Column="3" Margin="2,0,5,0" Style="{StaticResource Theme.Search.Divider}" />
-                <ToggleButton
-                    x:Name="PWingSieveDropper"
-                    Grid.Column="4"
-                    Style="{StaticResource Theme.Search.Dropper}"
-                    ToolTip="{DynamicResource Sieve.Title}">
-                    <Grid Width="24" Height="24">
-                        <local:QIconImage x:Name="PWingSieveIcon" Width="24" Height="24" />
-                        <Ellipse
-                            x:Name="PWingSieveMark"
-                            Width="6"
-                            Height="6"
-                            Margin="0,2,1,0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Top"
-                            Fill="{StaticResource Theme.Accent}"
-                            Visibility="Collapsed" />
-                    </Grid>
-                </ToggleButton>
-                <Popup
-                    x:Name="PWingOrderDropdown"
-                    Width="252"
-                    AllowsTransparency="True"
-                    HorizontalOffset="-6"
-                    Placement="Bottom"
-                    StaysOpen="False"
-                    VerticalOffset="12">
-                    <Border Margin="10" Padding="8" Style="{StaticResource Theme.Popup.Surface}">
-                        <StackPanel x:Name="PWingOrderList">
-                            <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Order.Title}" />
-                        </StackPanel>
-                    </Border>
-                </Popup>
-                <Popup
-                    x:Name="PWingSieveDropdown"
-                    Width="190"
-                    AllowsTransparency="True"
-                    HorizontalOffset="-151"
-                    Placement="Bottom"
-                    StaysOpen="False"
-                    VerticalOffset="6">
-                    <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
-                        <StackPanel x:Name="PWingSieveList" />
-                    </Border>
-                </Popup>
-            </Grid>
-        </Border>
+            Style="{StaticResource Theme.Panel.SeamRow}"
+            Visibility="Collapsed" />
 
-        <Grid Grid.Row="1" Margin="0,14,0,0">
+        <Grid x:Name="PWingLookup" Grid.Row="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <Rectangle
-                x:Name="PWingSeam"
+            <Border
                 Grid.Row="0"
-                Style="{StaticResource Theme.Panel.SeamRow}"
-                Visibility="Collapsed" />
+                Margin="0,0,0,32"
+                Style="{StaticResource Theme.Search.Bar}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <ToggleButton
+                        x:Name="PWingOrderDropper"
+                        Grid.Column="0"
+                        Style="{StaticResource Theme.Search.Dropper}"
+                        ToolTip="{DynamicResource Order.Title}">
+                        <local:QIconImage x:Name="PWingOrderIcon" Width="24" Height="24" />
+                    </ToggleButton>
+                    <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
+                    <TextBox
+                        x:Name="PWingQuery"
+                        Grid.Column="2"
+                        Style="{StaticResource Theme.Search.Field}" />
+                    <Rectangle Grid.Column="3" Margin="2,0,5,0" Style="{StaticResource Theme.Search.Divider}" />
+                    <ToggleButton
+                        x:Name="PWingSieveDropper"
+                        Grid.Column="4"
+                        Style="{StaticResource Theme.Search.Dropper}"
+                        ToolTip="{DynamicResource Sieve.Title}">
+                        <Grid Width="24" Height="24">
+                            <local:QIconImage x:Name="PWingSieveIcon" Width="24" Height="24" />
+                            <Ellipse
+                                x:Name="PWingSieveMark"
+                                Width="6"
+                                Height="6"
+                                Margin="0,2,1,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Fill="{StaticResource Theme.Accent}"
+                                Visibility="Collapsed" />
+                        </Grid>
+                    </ToggleButton>
+                </Grid>
+            </Border>
 
             <Border
                 x:Name="PWingTray"
-                Grid.Row="0"
+                Grid.Row="1"
                 Margin="0,0,0,12"
                 Style="{StaticResource Theme.Panel.Surface}"
                 Visibility="Collapsed">
@@ -133,10 +107,37 @@
                         Visibility="Collapsed" />
                 </Grid>
             </Border>
-
-            <Border Grid.Row="1" ClipToBounds="True" Style="{StaticResource Theme.Panel.Surface}">
-                <veneer:PDisplay x:Name="PWingDisplay" />
-            </Border>
         </Grid>
+
+        <Popup
+            x:Name="PWingOrderDropdown"
+            Width="252"
+            AllowsTransparency="True"
+            HorizontalOffset="-6"
+            Placement="Bottom"
+            StaysOpen="False"
+            VerticalOffset="12">
+            <Border Margin="10" Padding="8" Style="{StaticResource Theme.Popup.Surface}">
+                <StackPanel x:Name="PWingOrderList">
+                    <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Order.Title}" />
+                </StackPanel>
+            </Border>
+        </Popup>
+        <Popup
+            x:Name="PWingSieveDropdown"
+            Width="190"
+            AllowsTransparency="True"
+            HorizontalOffset="-151"
+            Placement="Bottom"
+            StaysOpen="False"
+            VerticalOffset="6">
+            <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
+                <StackPanel x:Name="PWingSieveList" />
+            </Border>
+        </Popup>
+
+        <Border Grid.Row="1" ClipToBounds="True" Style="{StaticResource Theme.Panel.Surface}">
+            <veneer:PDisplay x:Name="PWingDisplay" />
+        </Border>
     </Grid>
 </UserControl>

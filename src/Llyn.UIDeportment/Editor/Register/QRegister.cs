@@ -18,6 +18,8 @@ internal sealed class QRegister
 
     private CCard _cCard = null!;
 
+    private CCaret _cCaret = null!;
+
     private QProffer _qRegisterProffer = null!;
 
     internal QRegister(
@@ -29,13 +31,14 @@ internal sealed class QRegister
         surface.AddHandler(TextBoxBase.TextChangedEvent, new TextChangedEventHandler(QRegisterTextObserve));
     }
 
-    internal void QRegisterIntroduce(CCard card, QProffer proffer)
+    internal void QRegisterIntroduce(CCard card, CCaret caret, QProffer proffer)
     {
         _cCard = card;
+        _cCaret = caret;
         _qRegisterProffer = proffer;
     }
 
-    internal static void QRegisterShow(PCard card, IReadOnlyList<CRegisterDraft> drafts)
+    internal static void QRegisterShow(PCard card, IReadOnlyList<CRegisterDraft> drafts, long? anchor)
     {
         List<PRegister> chips = [];
         foreach (CRegisterDraft draft in drafts)
@@ -43,7 +46,23 @@ internal sealed class QRegister
             chips.Add(new PRegister(draft.CRegisterDraftName, draft.CRegisterDraftId));
         }
 
-        card.PCardRegister.PCaretShow(chips);
+        card.PCardRegister.PCaretRowShow(chips);
+        QRegisterAnchorShow(card, anchor);
+    }
+
+    private static void QRegisterAnchorShow(PCard card, long? anchor)
+    {
+        PRegister? paired = null;
+        foreach (PRegister chip in card.PCardRegister.PCaretRow)
+        {
+            if (chip.PRegisterId == anchor)
+            {
+                paired = chip;
+                break;
+            }
+        }
+
+        card.PCardRegister.PCaretAnchorShow(paired);
     }
 
     internal void QRegisterApply(FrameworkElement container, object item, string? _)
@@ -120,8 +139,7 @@ internal sealed class QRegister
         if (e.OriginalSource is TextBox { DataContext: PCaret<PRegister> caret } box
             && QRegisterCardFind(caret) is PCard card)
         {
-            _qRegisterProffer.QProfferRegisterRefine(card, _cCard.CCardRegisterAdd(
-                card.PCardId, box.Text, card.PCardRegister.PCaretPosition, false));
+            _qRegisterProffer.QProfferRegisterRefine(card, _cCaret.CCaretRegisterAdd(card.PCardId, box.Text));
         }
     }
 
@@ -136,15 +154,14 @@ internal sealed class QRegister
     internal void QRegisterCommitObserve(object sender, KeyEventArgs e)
     {
         if (e.Key != Key.Enter
-            || sender is not FrameworkElement { DataContext: PCaret<PRegister> row }
+            || sender is not TextBox { DataContext: PCaret<PRegister> row } box
             || QRegisterCardFind(row) is not PCard card)
         {
             return;
         }
 
         e.Handled = true;
-        _qRegisterProffer.QProfferRegisterRefine(card, _cCard.CCardRegisterAdd(
-            card.PCardId, card.PCardRegister.PCaretText, card.PCardRegister.PCaretPosition, true));
+        _qRegisterProffer.QProfferRegisterRefine(card, _cCaret.CCaretRegisterSettle(card.PCardId, box.Text));
     }
 
     internal void QRegisterEraseObserve(object sender, KeyEventArgs e)
@@ -160,13 +177,7 @@ internal sealed class QRegister
             box.CaretIndex,
             box.Text.Length,
             box.SelectionLength,
-            step =>
-            {
-                if (card.PCardRegister.PCaretFind(step) is PRegister chip)
-                {
-                    _cCard.CCardRegisterRemove(card.PCardId, chip.PRegisterId);
-                }
-            });
+            step => _cCaret.CCaretRegister.CCaretTrailDelete(card.PCardId, step));
     }
 
     internal void QRegisterCaretRefine(object sender, KeyEventArgs e)
@@ -181,7 +192,12 @@ internal sealed class QRegister
             e.Key.ToString(),
             box.Text.Length,
             box.SelectionLength,
-            card.PCardRegister.PCaretMove,
+            step =>
+            {
+                (bool moved, long? anchor) = _cCaret.CCaretRegister.CCaretTrailMove(card.PCardId, step);
+                QRegisterAnchorShow(card, anchor);
+                return moved;
+            },
             () => QField.QFieldCaretApply(box, row, 0));
     }
 
@@ -192,11 +208,10 @@ internal sealed class QRegister
 
     internal void QRegisterCloseObserve(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PCaret<PRegister> row }
+        if (sender is TextBox { DataContext: PCaret<PRegister> row } box
             && QRegisterCardFind(row) is PCard card)
         {
-            _qRegisterProffer.QProfferRegisterRefine(card, _cCard.CCardRegisterAdd(
-                card.PCardId, card.PCardRegister.PCaretText, card.PCardRegister.PCaretPosition, true));
+            _qRegisterProffer.QProfferRegisterRefine(card, _cCaret.CCaretRegisterSettle(card.PCardId, box.Text));
         }
     }
 

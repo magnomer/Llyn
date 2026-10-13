@@ -14,7 +14,7 @@ internal sealed class QImageItem : INotifyPropertyChanged, QImagePending
     private Uri? _qImageItemAddress;
     private bool _qImageItemSeen;
     private ImageSource? _qImageItemPreview;
-    private long _qImageItemRow;
+    private readonly long _qImageItemRow;
 
     internal QImageItem(CImageDraft written)
     {
@@ -72,7 +72,6 @@ internal sealed class QImageItem : INotifyPropertyChanged, QImagePending
     {
         ArgumentNullException.ThrowIfNull(written);
 
-        _qImageItemRow = written.CImageDraftId;
         QImageItemLocation = written.CImageDraftWording;
         if (Equals(_qImageItemAddress, written.CImageDraftAddress))
         {

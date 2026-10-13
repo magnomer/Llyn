@@ -89,21 +89,15 @@ internal sealed class QTranscriptCitation
 
     private void QCitationKeyRefine(object sender, KeyEventArgs e)
     {
-        if (!_qDrawer.QDrawerShown)
-        {
-            return;
-        }
-
-        if (e.Key == Key.Escape)
-        {
-            _qDrawer.QDrawerHide();
-            e.Handled = true;
-            return;
-        }
-
         if (e.Key is Key.Down or Key.Up)
         {
-            _qDrawer.QDrawerMove(e.Key == Key.Down);
+            e.Handled = _qDrawer.QDrawerMove(e.Key == Key.Down);
+            return;
+        }
+
+        if (e.Key == Key.Escape && _qDrawer.QDrawerShown)
+        {
+            _qDrawer.QDrawerHide();
             e.Handled = true;
         }
     }

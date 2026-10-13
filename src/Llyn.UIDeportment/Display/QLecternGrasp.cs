@@ -27,19 +27,27 @@ public sealed class QLecternGrasp
             _qLecternGraspArea.CDisplayGraspUnrated,
             _qLecternGraspArea.CDisplayGraspHit);
 
-        _qLecternGrasp.PGraspChanged += QLecternGraspObserve;
+        _qLecternGrasp.PGraspPressed += QLecternGraspObserve;
+        _qLecternGrasp.PGraspMoved += QLecternMoveObserve;
         _qLecternGrasp.PGraspHovered += QLecternHoverRefine;
         _qLecternGraspArea.CDisplayGraspChanged += QObserver.QObserverCreate<CBulletin>(surface, QLecternGraspRefine);
     }
 
-    private void QLecternGraspObserve(object sender, RoutedEventArgs e)
+    private void QLecternGraspObserve(int pressed)
     {
-        QLecternGraspRefine(_qLecternGraspArea.CDisplayGraspSet(_qLecternGrasp.PGraspStep));
+        QLecternGraspRefine(_qLecternGraspArea.CDisplayGraspSet(pressed));
     }
 
-    private void QLecternHoverRefine(object sender, RoutedEventArgs e)
+    private void QLecternMoveObserve(int move)
     {
-        _qLecternGraspLabel.Text = _qLecternGraspArea.CDisplayGraspRead(_qLecternGrasp.PGraspPointed);
+        QLecternGraspRefine(_qLecternGraspArea.CDisplayGraspMove(move));
+    }
+
+    private void QLecternHoverRefine(int? hovered)
+    {
+        _qLecternGraspLabel.Text = hovered is int pointed
+            ? _qLecternGraspArea.CDisplayGraspRead(pointed)
+            : _qLecternGraspArea.CDisplayGraspRead().CGraspLabel;
     }
 
     public void QLecternGraspRefine()

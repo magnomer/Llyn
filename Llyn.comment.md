@@ -353,3 +353,20 @@ The projects under `tests` are left out on purpose.
 `performance/Llyn.Performance` is left out on purpose too.
 It holds the drills, fixed workloads that no script runs at present.
 It references portable engine projects only, never a UI project.
+
+## `Directory.Build.props`
+
+Every project in the repository imports it, so its properties reach each assembly.
+`version.json` is the single source of the version.
+`current-version` is read at compile time and stamped into every assembly's version metadata.
+Runtime code reads the version back through reflection on the executing assembly.
+A missing or unreadable file stamps `0.0.0` instead of failing the build.
+NuGet packages ship IntelliSense `.xml` files that single-file publish would leave beside the executable.
+`AllowedReferenceRelatedFileExtensions` therefore copies only `.pdb`, so the install folder stays clean.
+
+## Stamp
+
+Commit: `c2f335c331fe`
+- `Directory.Build.props` `8e311ca932ba355d`
+- `Llyn.slnx` `62f044b684ced0b3`
+- `version.json` `626ec3cde3568205`

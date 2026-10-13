@@ -58,6 +58,22 @@ public sealed class CEsteem
         CEsteemGraspChanged?.Invoke();
     }
 
+    public void CEsteemGraspMove(int move)
+    {
+        int kept = CEsteemGrasp;
+        int step = Math.Clamp(kept + move, 0, CEsteemGraspStep);
+        if (step != kept)
+        {
+            CEsteemGraspSet(step);
+        }
+    }
+
+    public CGrasp CEsteemGraspRead()
+    {
+        int step = CEsteemGrasp;
+        return new CGrasp(step, CEsteemGraspRead(step));
+    }
+
     public string CEsteemGraspRead(int step)
     {
         return _cEsteemDisplay.LDisplayGraspFormat(LEsteemEntry, step);

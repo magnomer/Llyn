@@ -1,3 +1,4 @@
+using System;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -47,18 +48,6 @@ public sealed class PGrasp : FrameworkElement
         typeof(PGrasp),
         new FrameworkPropertyMetadata(Brushes.Gray, FrameworkPropertyMetadataOptions.AffectsRender));
 
-    public static readonly RoutedEvent PGraspChangedEvent = EventManager.RegisterRoutedEvent(
-        nameof(PGraspChanged),
-        RoutingStrategy.Bubble,
-        typeof(RoutedEventHandler),
-        typeof(PGrasp));
-
-    public static readonly RoutedEvent PGraspHoveredEvent = EventManager.RegisterRoutedEvent(
-        nameof(PGraspHovered),
-        RoutingStrategy.Bubble,
-        typeof(RoutedEventHandler),
-        typeof(PGrasp));
-
     private readonly QGraspStar _qGraspStar;
 
     public PGrasp()
@@ -73,26 +62,19 @@ public sealed class PGrasp : FrameworkElement
             this,
             PGraspStepProperty,
             PGraspLimitProperty,
-            PGraspChangedEvent,
-            PGraspHoveredEvent,
+            hovered => PGraspHovered?.Invoke(hovered),
+            pressed => PGraspPressed?.Invoke(pressed),
+            moved => PGraspMoved?.Invoke(moved),
             PGraspStarImage);
     }
 
-    public event RoutedEventHandler PGraspChanged
-    {
-        add => AddHandler(PGraspChangedEvent, value);
-        remove => RemoveHandler(PGraspChangedEvent, value);
-    }
+    public event Action<int?>? PGraspHovered;
 
-    public event RoutedEventHandler PGraspHovered
-    {
-        add => AddHandler(PGraspHoveredEvent, value);
-        remove => RemoveHandler(PGraspHoveredEvent, value);
-    }
+    public event Action<int>? PGraspPressed;
+
+    public event Action<int>? PGraspMoved;
 
     public QGraspStar PGraspStar => _qGraspStar;
-
-    public int PGraspPointed => _qGraspStar.QGraspPointed;
 
     public int PGraspLimit
     {

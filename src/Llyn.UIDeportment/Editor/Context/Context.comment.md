@@ -1,0 +1,82 @@
+# Context
+
+Context holds the Situation field of a card.
+It is separate from the other chip fields.
+A Situation is stored under an id and written again, not edited.
+
+## `PContext`
+
+This is one committed Situation, the boxed wording the user sees.
+It carries the id the Situation is stored under, so a card keeps naming the same Situation across saves.
+The id is fixed at construction.
+A Situation whose wording should change is closed and written again rather than edited in place.
+A Situation the store could not read back is marked rather than shown.
+The mark stands until the user closes the chip and writes the wording again.
+So nothing unknown is quietly turned into nothing at all.
+
+## `PContextSelector`
+
+The field draws committed Situations and one open entry as a single run of items.
+They wrap together as one run, which needs the item template chosen per item.
+
+## `QContext`
+
+This is the Situation field's driver, split by role.
+Each Observe hears one event and ends in one card gate, and each Refine only changes the look.
+The first handler to handle a key ends its route.
+The dropdown's key handlers come first, so an open dropdown hears a key before the entry does.
+An item's data context is the Situation or the entry, not the card.
+So each handler finds the owning card by asking which card's caret is the item or holds it.
+
+### `QContextShow`
+
+The caret knows only chips, so this driver is the one place a Situation draft is read.
+
+### `QContextTextObserve`
+
+Any other box's edit is ignored, since its data context is no Situation caret.
+The gate adds every Situation a comma completed and answers what the entry keeps.
+
+### `QContextCommitObserve`
+
+Enter runs after the dropdown's handlers, so Enter on a chosen stored Situation never reaches it.
+The wording goes to the engine as written, and the engine decides which Situation it names.
+A wording already stored is attached under its own id, so the workspace does not fill with twins.
+
+### `QContextEraseObserve`
+
+The key is taken at the edge even with no chip there.
+
+### `QContextCaretRefine`
+
+The arrows only walk the empty entry past a chip and ask no gate, so it is a Refine.
+
+### `QContextBlurRefine`
+
+It is subscribed before the close observer, so the dropdown shuts first.
+
+### `QContextCloseObserve`
+
+Leaving the field commits what stands in the entry, so a Situation typed and abandoned is kept.
+Choosing a row empties the entry first, so the click that chose it commits nothing twice.
+
+### `QContextFieldApply`
+
+The selector is set only while none is, since a new selector would rebuild every item.
+
+### `QContextFocusRefine`
+
+Clicking the field's empty space puts the caret in the entry.
+So the whole box behaves as the one input it looks like.
+
+### `QContextCardFind`
+
+It answers null when no shown card holds the chip or caret.
+The dropdown asks it too, since a pick on a Situation caret lands on that card.
+
+## Stamp
+
+Commit: `c2f335c331fe`
+- `PContext.cs` `90e338f58d6b0c27`
+- `PContextSelector.cs` `1633b5000b4cae23`
+- `QContext.cs` `4d00328832f5556b`

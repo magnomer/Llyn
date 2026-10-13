@@ -18,6 +18,8 @@ internal sealed class QContext
 
     private CCard _cCard = null!;
 
+    private CCaret _cCaret = null!;
+
     private QProffer _qContextProffer = null!;
 
     internal QContext(
@@ -29,21 +31,38 @@ internal sealed class QContext
         surface.AddHandler(TextBoxBase.TextChangedEvent, new TextChangedEventHandler(QContextTextObserve));
     }
 
-    internal void QContextIntroduce(CCard card, QProffer proffer)
+    internal void QContextIntroduce(CCard card, CCaret caret, QProffer proffer)
     {
         _cCard = card;
+        _cCaret = caret;
         _qContextProffer = proffer;
     }
 
-    internal static void QContextShow(PCard card, IReadOnlyList<CSituationDraft> drafts)
+    internal void QContextShow(PCard card, CCardDraft draft, long? anchor)
     {
         List<PContext> chips = [];
-        foreach (CSituationDraft draft in drafts)
+        foreach (CSituationDraft situation in draft.CCardDraftSituation)
         {
-            chips.Add(new PContext(draft.CSituationDraftWording, draft.CSituationDraftId));
+            chips.Add(new PContext(situation.CSituationDraftWording, situation.CSituationDraftId));
         }
 
-        card.PCardContext.PCaretShow(chips);
+        card.PCardContext.PCaretRowShow(chips);
+        QContextAnchorShow(card, anchor);
+    }
+
+    private static void QContextAnchorShow(PCard card, long? anchor)
+    {
+        PContext? paired = null;
+        foreach (PContext chip in card.PCardContext.PCaretRow)
+        {
+            if (chip.PContextId == anchor)
+            {
+                paired = chip;
+                break;
+            }
+        }
+
+        card.PCardContext.PCaretAnchorShow(paired);
     }
 
     internal void QContextApply(FrameworkElement container, object item, string? _)
@@ -120,8 +139,7 @@ internal sealed class QContext
         if (e.OriginalSource is TextBox { DataContext: PCaret<PContext> caret } box
             && QContextCardFind(caret) is PCard card)
         {
-            _qContextProffer.QProfferSituationRefine(card, _cCard.CCardSituationAdd(
-                card.PCardId, box.Text, card.PCardContext.PCaretPosition, false));
+            _qContextProffer.QProfferSituationRefine(card, _cCaret.CCaretSituationAdd(card.PCardId, box.Text));
         }
     }
 
@@ -136,14 +154,13 @@ internal sealed class QContext
     internal void QContextCommitObserve(object sender, KeyEventArgs e)
     {
         if (e.Key != Key.Enter
-            || sender is not TextBox { DataContext: PCaret<PContext> row }
+            || sender is not TextBox { DataContext: PCaret<PContext> row } box
             || QContextCardFind(row) is not PCard card)
         {
             return;
         }
 
-        _cCard.CCardSituationAdd(
-            card.PCardId, card.PCardContext.PCaretText, card.PCardContext.PCaretPosition, true);
+        _cCaret.CCaretSituationSettle(card.PCardId, box.Text);
         e.Handled = true;
         _qContextProffer.QProfferShutRefine();
         card.PCardContext.PCaretClear();
@@ -162,13 +179,7 @@ internal sealed class QContext
             box.CaretIndex,
             box.Text.Length,
             box.SelectionLength,
-            step =>
-            {
-                if (card.PCardContext.PCaretFind(step) is PContext chip)
-                {
-                    _cCard.CCardSituationRemove(card.PCardId, chip.PContextId);
-                }
-            });
+            step => _cCaret.CCaretSituation.CCaretTrailDelete(card.PCardId, step));
     }
 
     internal void QContextCaretRefine(object sender, KeyEventArgs e)
@@ -183,7 +194,12 @@ internal sealed class QContext
             e.Key.ToString(),
             box.Text.Length,
             box.SelectionLength,
-            card.PCardContext.PCaretMove,
+            step =>
+            {
+                (bool moved, long? anchor) = _cCaret.CCaretSituation.CCaretTrailMove(card.PCardId, step);
+                QContextAnchorShow(card, anchor);
+                return moved;
+            },
             () => QField.QFieldCaretApply(box, row, 0));
     }
 
@@ -194,11 +210,10 @@ internal sealed class QContext
 
     internal void QContextCloseObserve(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PCaret<PContext> row }
+        if (sender is TextBox { DataContext: PCaret<PContext> row } box
             && QContextCardFind(row) is PCard card)
         {
-            _cCard.CCardSituationAdd(
-                card.PCardId, card.PCardContext.PCaretText, card.PCardContext.PCaretPosition, true);
+            _cCaret.CCaretSituationSettle(card.PCardId, box.Text);
             card.PCardContext.PCaretClear();
         }
     }

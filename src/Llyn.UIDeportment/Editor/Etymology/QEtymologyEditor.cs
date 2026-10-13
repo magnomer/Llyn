@@ -80,8 +80,7 @@ internal sealed class QEtymologyEditor
     {
         TextBox box = (TextBox)e.OriginalSource;
         _qEtymologyProspect.QProspectPlaceRefine(box, PMentionSelection.PMentionSelectionPlace(box));
-        _qEtymologyProspect.QProspectOpenRefine(
-            _cCard.CCardMentionRead(((PEtymon)e.Parameter).PEtymonText));
+        _qEtymologyProspect.QProspectOpenRefine(_cCard.CCardMentionRead(box.Text));
     }
 
     private void QEtymologyRemoveObserve(object sender, ExecutedRoutedEventArgs e)

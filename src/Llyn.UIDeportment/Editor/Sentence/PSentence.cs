@@ -10,7 +10,6 @@ internal sealed class PSentence : INotifyPropertyChanged
 {
     private CStateWording _pSentenceText;
     private long? _pSentenceCitation;
-    private long _pSentenceRow;
 
     internal PSentence(
         ObservableCollection<QCitationItem> catalog,
@@ -27,7 +26,7 @@ internal sealed class PSentence : INotifyPropertyChanged
         PSentenceParticleCatalog = particles;
         PSentenceDependenceCatalog = dependences;
         PSentenceLanguageCatalog = languages;
-        _pSentenceRow = draft.CSentenceDraftId;
+        PSentenceRow = draft.CSentenceDraftId;
         _pSentenceText = draft.CSentenceDraftText;
         PSentenceCitation = example?.CExampleDraftReference;
         PSentenceCited = draft.CSentenceDraftCited;
@@ -52,7 +51,7 @@ internal sealed class PSentence : INotifyPropertyChanged
 
     internal event Action<PGloss, string>? PSentenceGlossNotice;
 
-    internal long PSentenceRow => _pSentenceRow;
+    internal long PSentenceRow { get; }
 
     internal bool PSentenceCited { get; private set; }
 
@@ -92,7 +91,6 @@ internal sealed class PSentence : INotifyPropertyChanged
 
         CExampleDraft? example = draft.CSentenceDraftExample;
 
-        _pSentenceRow = draft.CSentenceDraftId;
         PSentenceGlossShow(example?.CExampleDraftGloss ?? []);
         PSentenceText = draft.CSentenceDraftText;
         PSentenceCitation = example?.CExampleDraftReference;

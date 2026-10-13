@@ -33,6 +33,7 @@ internal sealed class QDrawer
         _qDrawerView = view;
         view.ItemsSource = _qDrawerList;
         popup.CustomPopupPlacementCallback = QDrawerPlace;
+        popup.Closed += QDrawerCloseRefine;
         QLookItem.QLookItemAttach(view, (container, item, _) => QDrawerItem.QDrawerItemApply(container, item, press));
     }
 
@@ -43,12 +44,6 @@ internal sealed class QDrawer
         ArgumentNullException.ThrowIfNull(offer);
         ArgumentNullException.ThrowIfNull(field);
 
-        _qDrawerList.Clear();
-        foreach (CProfferRow row in offer.CProfferRows)
-        {
-            _qDrawerList.Add(new QDrawerItem(row));
-        }
-
         if (!offer.CProfferShown)
         {
             QDrawerHide();
@@ -57,8 +52,15 @@ internal sealed class QDrawer
 
         FrameworkElement anchor = QDrawerFrameFind(field) ?? field;
         _qDrawerPopup.PlacementTarget = anchor;
+        _qDrawerPopup.MaxWidth = Window.GetWindow(anchor)?.ActualWidth ?? double.PositiveInfinity;
         _qDrawerSheet.MinWidth = anchor.ActualWidth;
         _qDrawerPopup.IsOpen = true;
+        _qDrawerList.Clear();
+        foreach (CProfferRow row in offer.CProfferRows)
+        {
+            _qDrawerList.Add(new QDrawerItem(row));
+        }
+
         _qDrawerView.SelectedIndex = -1;
     }
 
@@ -69,16 +71,23 @@ internal sealed class QDrawer
         _qDrawerList.Clear();
     }
 
-    internal void QDrawerMove(bool down)
+    internal bool QDrawerMove(bool down)
     {
         int? lit = CLantern.CLanternMove(_qDrawerView.SelectedIndex, _qDrawerView.Items.Count, down ? 1 : -1);
         if (lit is not int chosen)
         {
-            return;
+            return false;
         }
 
         _qDrawerView.SelectedIndex = chosen;
         _qDrawerView.ScrollIntoView(_qDrawerView.SelectedItem);
+        return true;
+    }
+
+    private void QDrawerCloseRefine(object? sender, EventArgs e)
+    {
+        _qDrawerView.SelectedIndex = -1;
+        _qDrawerList.Clear();
     }
 
     private static CustomPopupPlacement[] QDrawerPlace(Size popup, Size target, Point offset)

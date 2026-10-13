@@ -1,6 +1,7 @@
 {
-  "generation": 23,
+  "generation": 26,
   "project": "Llyn",
+  "enforced": true,
   "sources": {
     "roots": [
       "languages",
@@ -9,21 +10,15 @@
       "tests",
       "themes"
     ],
-    "files": [
-      "Directory.Build.props",
-      "Llyn.slnx",
-      "version.json"
-    ],
     "commentPattern": "*.comment.md",
-    "pairs": {
-      ".xaml.cs": "{base}.xaml.comment.md",
-      ".cs": "{base}.comment.md",
-      ".xaml": "{base}.comment.md",
-      ".csproj": "{base}.comment.md",
-      ".json": "{base}.comment.md",
-      ".props": "{base}.comment.md",
-      ".slnx": "{base}.comment.md"
-    },
+    "suffixes": [
+      ".cs",
+      ".xaml",
+      ".csproj",
+      ".json",
+      ".props",
+      ".slnx"
+    ],
     "excludeSegments": [
       ".git",
       ".vs",
@@ -58,7 +53,8 @@
       "etc",
       "vs",
       "cf"
-    ]
+    ],
+    "folderFiles": 10
   },
   "remark": {
     "markers": {
@@ -90,12 +86,11 @@
     ]
   },
   "exempt": {
-    "comments": [
-      "version.comment.md"
-    ]
+    "comments": []
   },
   "ceilings": {
-    "unstamped": 0
+    "unstamped": 0,
+    "folders": {}
   },
   "report": {
     "directory": "docs-analysis",
