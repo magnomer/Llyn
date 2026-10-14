@@ -108,7 +108,7 @@ public sealed class PContour : FrameworkElement
 
     protected override Size MeasureOverride(Size availableSize)
     {
-        return new QContourPlot(PContourScale, PContourSyllables.Count).QContourPlotSize;
+        return new Size(0, new QContourPlot(PContourScale, PContourSyllables.Count).QContourPlotSize.Height);
     }
 
     protected override void OnRender(DrawingContext drawingContext)
@@ -120,12 +120,15 @@ public sealed class PContour : FrameworkElement
         }
 
         QContourPlot plot = new(PContourScale, PContourSyllables.Count);
-        PContourFrameDraw(drawingContext);
+        drawingContext.PushTransform(new TranslateTransform(plot.QContourOriginRead(RenderSize.Width), 0));
+        PContourFrameDraw(drawingContext, plot.QContourPlotSize);
         PContourGuideDraw(drawingContext, plot);
         for (int index = 0; index < PContourSyllables.Count; index++)
         {
             PContourCellDraw(drawingContext, plot, PContourSyllables[index], index);
         }
+
+        drawingContext.Pop();
     }
 
     private static DependencyProperty PContourBrushCreate(string name)
@@ -152,9 +155,9 @@ public sealed class PContour : FrameworkElement
         InvalidateVisual();
     }
 
-    private void PContourFrameDraw(DrawingContext drawingContext)
+    private void PContourFrameDraw(DrawingContext drawingContext, Size size)
     {
-        Rect frame = new(0.5, 0.5, Math.Max(0, RenderSize.Width - 1), Math.Max(0, RenderSize.Height - 1));
+        Rect frame = new(0.5, 0.5, Math.Max(0, size.Width - 1), Math.Max(0, size.Height - 1));
         drawingContext.DrawRoundedRectangle(
             PContourFrame, new Pen(PContourEdge, 1), frame, PContourCornerRadius, PContourCornerRadius);
     }
@@ -162,7 +165,7 @@ public sealed class PContour : FrameworkElement
     private void PContourGuideDraw(DrawingContext drawingContext, QContourPlot plot)
     {
         double left = plot.QContourLeftRead(0);
-        double right = plot.QContourRightRead(RenderSize.Width);
+        double right = plot.QContourRightRead(plot.QContourPlotSize.Width);
         Pen guide = new(PContourGuide, 1);
         foreach (int level in PContourScale)
         {

@@ -10,6 +10,7 @@ That is the reading, answer, candidate and variety records, the respelling rules
 The recording records, the harvest fan-out, the workspace download, and the engine discovery are relayed here too.
 The language pack loader, the glyph split and the engine's language reads are relayed here too.
 The anatomy, descent and tone contour reads are relayed here too.
+The engine's accent sheet read is relayed too, so a test sees what the view and tone graph show.
 The reflex guise with an optional shown text and the shown-form rule are relayed here too.
 The stem key scan and the shengfu record are relayed here too.
 The frequency records, the gauge, and the once and band resolves are relayed here too.
@@ -134,8 +135,8 @@ It lets the lookup fan-out be tested without a client or a language pack.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `TInterfacePronunciation.cs` `1906fb6ccbfc5af2`
+Commit: `aae5349dbb94`
+- `TInterfacePronunciation.cs` `aa7b1576f0713edb`
 - `TInterfaceSource.cs` `cdac272edbe526b4`
 - `TListenerStub.cs` `cd67f626a506e3b1`
 - `TPronunciationHelper.cs` `5e32f29b42e25acc`

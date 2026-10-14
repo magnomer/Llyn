@@ -167,8 +167,9 @@ A fall and a rise differ at a glance.
 
 ### `Theme.Contour.Box`
 
-The box sits under the pronunciation row in both modes and hugs the left like the rows above.
-It takes its own width from its syllables.
+The box sits under the pronunciation row in both modes.
+It stretches over its slot, the column of the delimited pronunciation, and draws its plot centred on it.
+Its drawn width comes from its syllables and may hang past the slot on both sides.
 
 ## `PThemeDiwei.xaml`
 
@@ -331,12 +332,13 @@ The first two row columns share their widths across rows, so the chips line up.
 The chip matches the editor marker chip apart from the removal button.
 The parts of speech take a row of their own, below the pronunciation.
 
-### `Theme.Unit.Name`
+### `Theme.Unit.Chip`
 
-The unit is a muted line above the speech chips.
-It is not a chip, because it names a kind of piece, not one of its roles.
-Its right margin parts it from the freedom that follows on the same line.
-`Theme.Freedom.Name` is written as the unit is, right after it.
+The view draws the unit as the editor draws it: an outlined chip on the speech row.
+The outline, not a fill, marks it as a kind of piece rather than one of its roles.
+It copies the editor's dropper border, so View and Edit show the same chip.
+`Theme.Unit.Name` is its text, written as a speech name.
+`Theme.Freedom.Chip` and `Theme.Freedom.Name` are written as the unit's, right after it.
 
 ## `PThemeXiesheng.xaml`
 
@@ -359,14 +361,14 @@ The hinge keeps its place folded or opened, because the rows unfold below it.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `aae5349dbb94`
 - `PThemeAccent.xaml` `9c0e30ae29c4e71f`
-- `PThemeContour.xaml` `05a0c52c40259b15`
+- `PThemeContour.xaml` `5d453453e0924ed5`
 - `PThemeDiwei.xaml` `3bc509521e75d83f`
 - `PThemeFanqie.xaml` `9617690fd799a490`
 - `PThemePronunciation.xaml` `786bf25f1d301c65`
 - `PThemeRebuild.xaml` `0967ab6bc83fe474`
 - `PThemeScript.xaml` `0982495d8d4d730c`
-- `PThemeSpeech.xaml` `5f5d5a5e9c0afb20`
+- `PThemeSpeech.xaml` `e500ae67d8cda4a1`
 - `PThemeTranscription.xaml` `1ad3479f49cd16a8`
 - `PThemeXiesheng.xaml` `9871e402a53af889`

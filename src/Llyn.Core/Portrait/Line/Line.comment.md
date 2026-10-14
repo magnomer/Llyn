@@ -23,7 +23,7 @@ The localized words an entry likeness needs, resolved by the caller.
 Passing the words in keeps export out of the interface layer without moving translation into logic.
 The stub word is the format of a see-line.
 It is filled with the expression, else the title, and the home meaning's number.
-The heading word is the format of the heading over a meaning's collocation rows, filled with the row count.
+The heading word is the plain heading over a meaning's collocation rows, with no count.
 The unit and freedom words name each lexical unit and freedom in the speech chips.
 Every other member is a heading or label for one kind of section.
 
@@ -90,7 +90,7 @@ The expression becomes a phrase child standing first, drawn before the meaning a
 The card's fields follow through `LPortraitBodyAdd`, then the child cards recurse through here.
 The meanings are the whole meaning tree, and the collocations are those that may link into it.
 Under a meaning, the collocations whose home it is follow its child cards as one list child.
-The list is headed by the label's heading word filled with the row count.
+The list is headed by the label's heading word as it stands.
 After the list come the see-lines of the collocations that link it without it being their home.
 The folds are the cards whose fold is stored, handed on to the rows.
 An unset field becomes empty text and an unknown one becomes the mark, as the display does.
@@ -174,8 +174,8 @@ A row with no example holds only the frame line.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `LPortraitCard.cs` `75f8fa2f83350454`
+Commit: `aae5349dbb94`
+- `LPortraitCard.cs` `fca823bbddee1ad3`
 - `LPortraitLabel.cs` `0dc4501554f04f66`
 - `LPortraitLegend.cs` `a249935f5a5769be`
 - `LPortraitLine.cs` `b47739206ec6efc2`

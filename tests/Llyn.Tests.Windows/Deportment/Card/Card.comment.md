@@ -92,10 +92,10 @@ A meaning card with one homed collocation shows Conduct's ready caption and the 
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `aae5349dbb94`
 - `TBerthSeat.cs` `75eb74163de8d120`
 - `TCardHinge.cs` `d2e41474db5dfd42`
 - `TCardOrdinal.cs` `788665234082c696`
 - `TCardRow.cs` `618531bdc90512ef`
 - `TCaretKey.cs` `6eaf4b7930a95206`
-- `TLecternHinge.cs` `d50f83100083af6e`
+- `TLecternHinge.cs` `84da2bf5782fe891`

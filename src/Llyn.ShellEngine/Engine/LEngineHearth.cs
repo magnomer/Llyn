@@ -48,6 +48,7 @@ internal sealed class LEngineHearth
     {
         _lEngineHearthStaff.LEngineStaffLanguage.LLanguageStaffVocabulary.LLanguageImport();
         _lEngineHearthStaff.LEngineStaffLanguage.LLanguageStaffApply();
+        _lEngineHearthStaff.LEngineStaffWorkspace.LWorkspaceStaffWorkspace.LWorkspaceRespellingUpdate();
         if (_lEngineHearthStaff.LEngineStaffWorkspace.LWorkspaceStaffWorkspace.LWorkspaceClerkMigrated)
         {
             _lEngineHearthStaff.LEngineStaffWorkspace.LWorkspaceStaffWorkspace.LWorkspaceClerkUpdate();

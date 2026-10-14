@@ -56,28 +56,25 @@ public static class LSheetSound
                 lines.Append(LSheet.LSheetNormalize(row.LAccentRowVariety));
             }
 
-            lines.Append("</th><td>");
+            StringBuilder reading = new StringBuilder();
             if (accent.LAccentSheetOpener.Length > 0)
             {
-                lines.Append("<span class=\"bracket\">")
+                reading.Append("<span class=\"bracket\">")
                     .Append(LSheet.LSheetNormalize(accent.LAccentSheetOpener)).Append("</span>");
             }
 
-            lines.Append("<span class=\"text\">")
+            reading.Append("<span class=\"text\">")
                 .Append(LSheetToneFormat(row.LAccentRowText, toned, LSheet.LSheetNormalize)).Append("</span>");
             if (accent.LAccentSheetCloser.Length > 0)
             {
-                lines.Append("<span class=\"bracket\">")
+                reading.Append("<span class=\"bracket\">")
                     .Append(LSheet.LSheetNormalize(accent.LAccentSheetCloser)).Append("</span>");
             }
 
-            lines.Append("</td></tr>\n");
-            if (primary && accent.LAccentSheetContour.Count > 0)
-            {
-                lines.Append("<tr class=\"contour\"><th></th><td>")
-                    .Append(LSheetContourFormat(accent.LAccentSheetContour, theme, LSheet.LSheetNormalize))
-                    .Append("</td></tr>\n");
-            }
+            lines.Append("</th><td>")
+                .Append(LSheetAxisFormat(
+                    reading.ToString(), primary ? accent.LAccentSheetContour : [], theme, LSheet.LSheetNormalize))
+                .Append("</td></tr>\n");
         }
 
         foreach (LTranscriptionDraft spelled in LGlyph.LGlyphOtherRead(
@@ -170,6 +167,18 @@ public static class LSheetSound
         ArgumentNullException.ThrowIfNull(text);
 
         return phonemic && !text.StartsWith('/') ? '/' + text + '/' : text;
+    }
+
+    internal static string LSheetAxisFormat(
+        string reading, IReadOnlyList<LContour> contour, LTheme theme, Func<string, string> escape)
+    {
+        ArgumentNullException.ThrowIfNull(reading);
+        ArgumentNullException.ThrowIfNull(contour);
+
+        return contour.Count == 0
+            ? reading
+            : "<span class=\"llyn-axis\"><span>" + reading + "</span>"
+              + LSheetContourFormat(contour, theme, escape) + "</span>";
     }
 
     internal static string LSheetContourFormat(

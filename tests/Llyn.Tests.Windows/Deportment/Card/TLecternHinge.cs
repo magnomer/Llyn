@@ -251,7 +251,7 @@ public sealed class TLecternHinge
         TCardHinge.TCardHingeRun(() =>
         {
             CLeaf row = TLecternRowCreate(2, true, [], string.Empty);
-            CLeaf meaning = TLecternRowCreate(1, false, [row], "Collocations · 1");
+            CLeaf meaning = TLecternRowCreate(1, false, [row], "Collocations");
             FrameworkElementFactory card = new(typeof(StackPanel));
             card.AppendChild(new FrameworkElementFactory(typeof(TextBlock)) { Name = "PCardHeading" });
             card.AppendChild(new FrameworkElementFactory(typeof(ItemsControl)) { Name = "PCardHome" });
@@ -262,7 +262,7 @@ public sealed class TLecternHinge
             TInterfaceDeportment.TLeafCardRefine(container, list.Items[0]);
             TextBlock heading = (TextBlock)TCardHinge.TCardHingeResolve(container, "PCardHeading");
 
-            Assert.Equal(("Collocations · 1", Visibility.Visible), (heading.Text, heading.Visibility));
+            Assert.Equal(("Collocations", Visibility.Visible), (heading.Text, heading.Visibility));
             Assert.Equal(Visibility.Visible, TCardHinge.TCardHingeResolve(container, "PCardHome").Visibility);
         });
     }

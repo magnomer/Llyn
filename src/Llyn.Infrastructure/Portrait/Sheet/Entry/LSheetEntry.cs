@@ -56,43 +56,27 @@ public static class LSheetEntry
     private static void LSheetSpeechAppend(StringBuilder sheet, LLiveryPage page, Func<string, string> lookup)
     {
         LEntryDraft draft = page.LLiveryPageDraft;
-        if (!draft.LEntryDraftMarked)
+        IReadOnlyList<LEntryChip> chips = LEntryChip.LEntryChipRead(
+            draft.LEntryDraftUnit, draft.LEntryDraftFreedom, draft.LEntryDraftSpeeches);
+        if (chips.Count == 0)
         {
             return;
         }
 
-        string unit = LUnitKey.LUnitKeyRead(draft.LEntryDraftUnit);
-        string freedom = LFreedomKey.LFreedomKeyRead(draft.LEntryDraftFreedom);
-        sheet.Append("<div class=\"speech\">\n");
-        if (unit.Length > 0 || freedom.Length > 0)
+        sheet.Append("<div class=\"speech\">\n<div class=\"chips\">");
+        foreach (LEntryChip chip in chips)
         {
-            sheet.Append("<div class=\"scope\">");
-            if (unit.Length > 0)
+            (string style, string text) = chip.LEntryChipKind switch
             {
-                sheet.Append("<span class=\"unit\">").Append(LSheet.LSheetNormalize(lookup(unit))).Append("</span>");
-            }
-
-            if (freedom.Length > 0)
-            {
-                sheet.Append("<span class=\"freedom\">").Append(LSheet.LSheetNormalize(lookup(freedom)))
-                    .Append("</span>");
-            }
-
-            sheet.Append("</div>\n");
+                LEntryChipKind.LEntryChipUnit => ("chip unit", lookup(chip.LEntryChipText)),
+                LEntryChipKind.LEntryChipFreedom => ("chip freedom", lookup(chip.LEntryChipText)),
+                _ => ("chip", chip.LEntryChipText),
+            };
+            sheet.Append("<span class=\"").Append(style).Append("\">")
+                .Append(LSheet.LSheetNormalize(text)).Append("</span>");
         }
 
-        if (draft.LEntryDraftNames.Count > 0)
-        {
-            sheet.Append("<div class=\"chips\">");
-            foreach (string name in draft.LEntryDraftNames)
-            {
-                sheet.Append("<span class=\"chip\">").Append(LSheet.LSheetNormalize(name)).Append("</span>");
-            }
-
-            sheet.Append("</div>\n");
-        }
-
-        sheet.Append("</div>\n");
+        sheet.Append("</div>\n</div>\n");
     }
 
     private static void LSheetFrequencyAppend(StringBuilder sheet, LLiveryPage page, Func<string, string> lookup)

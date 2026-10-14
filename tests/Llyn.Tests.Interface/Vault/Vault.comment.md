@@ -65,6 +65,33 @@ A listed relation or tongue counts the boxes that use it across every map.
 A delete of a custom item clears it from every box and keeps the boxes.
 It then reports whether a row went.
 
+## `TVaultFakeCue`
+
+An in-memory cue store with cells per cue, keyed from one past a hundred.
+A create appends to the deck, and a delete renumbers each deck it left.
+A delete drops the cues' cells too, as the cascade does.
+An update writes the flag, the exclusion and both texts, as the archive does.
+A cell save keeps the cells by column, then by index.
+A holder read answers the cue's own entry id, since the fake keeps no lexical rows.
+
+## `TVaultFakeDeck`
+
+An in-memory deck store with bearings per deck, as a fake rig needs.
+It is built over a `TVaultFakeCue` and a `TVaultFakeStencil`, so its delete can mirror the archive's.
+A delete drops the deck and its bearings, then the stencil it owns if that stencil is unsaved.
+It removes the deck's cues through the cue port, as the cascade does in SQLite.
+So a workflow test over the fakes sees what SQLite does.
+A create appends to the folder, and a delete renumbers the decks left there.
+An update keeps the grain, the stencil and the added time, as the archive does.
+
+## `TVaultFakeFolder`
+
+An in-memory deck folder store keyed from one past a hundred, as a fake rig needs.
+It is built over a `TVaultFakeDeck`, so its delete can mirror the foreign key.
+A folder delete sets its decks to the top level through the deck port.
+So the deck fake stays the only writer of a deck.
+A create appends the folder after the last one.
+
 ## `TVaultFakePronunciation`
 
 An in-memory pronunciation store keyed from one, so a clerk save can run without SQLite.
@@ -81,6 +108,14 @@ The anchor scan answers nothing, since no clerk test tallies anchors.
 
 An in-memory revision log keyed from one, so a clerk test can read back what a delete recorded.
 The change lists are kept as handed in, in the order recorded.
+
+## `TVaultFakeStencil`
+
+An in-memory stencil store keyed from one past a hundred, as a fake rig needs.
+The list read answers saved stencils only, as the archive does.
+An update replaces the name and the slots and keeps the saved mark.
+The port has no delete, since no workflow deletes a stencil on its own.
+The deck fake removes an owned stencil through the internal `TVaultFakeDelete`.
 
 ## `TVaultFakeTombstone`
 
@@ -102,14 +137,18 @@ The realm is always the empty `Guid`, since no schema ever wrote one here.
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `aae5349dbb94`
 - `TInterfaceDatabase.cs` `da6742d17a5b907e`
 - `TInterfaceVault.cs` `77bad45b5f2ce34c`
 - `TVaultFake.cs` `7d9c55a8e3e857fb`
 - `TVaultFakeAncestor.cs` `c045bd98f192efe5`
+- `TVaultFakeCue.cs` `458fbecacde3fc62`
+- `TVaultFakeDeck.cs` `47f068bafbd3bf0e`
+- `TVaultFakeFolder.cs` `04b2a4e56b6ba408`
 - `TVaultFakePronunciation.cs` `23fc443861d386b7`
 - `TVaultFakeReflex.cs` `f5c05bb32d9f3a49`
 - `TVaultFakeRevision.cs` `6f60bed6da1e60c5`
+- `TVaultFakeStencil.cs` `80d9b2203f0acc6f`
 - `TVaultFakeTombstone.cs` `00e6cc058522a937`
 - `TVaultFakeTranscription.cs` `76c3478e6a91afcf`
 - `TVaultFakeWorkspace.cs` `4823df3b3751b6f0`

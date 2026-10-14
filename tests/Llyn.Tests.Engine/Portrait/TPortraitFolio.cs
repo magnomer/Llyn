@@ -22,7 +22,7 @@ public sealed class TPortraitFolio
             using StreamReader reader = new StreamReader(stream);
             string document = reader.ReadToEnd();
 
-            int caption = document.IndexOf("Collocations · 1", System.StringComparison.Ordinal);
+            int caption = document.IndexOf("Collocations", System.StringComparison.Ordinal);
             int phrase = document.IndexOf("set off", System.StringComparison.Ordinal);
             int meaning = document.IndexOf("to start a journey", System.StringComparison.Ordinal);
             int tone = document.IndexOf("informal", System.StringComparison.Ordinal);

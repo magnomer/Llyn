@@ -65,6 +65,37 @@ public sealed class LLanguageCache
         };
     }
 
+    public bool LLanguageStaleCheck(string language, LPronunciationDraft spoken)
+    {
+        ArgumentNullException.ThrowIfNull(language);
+        ArgumentNullException.ThrowIfNull(spoken);
+
+        IReadOnlyList<LRespelling> groups = language.Trim().Length == 0
+            ? []
+            : LLanguageCacheRead(language).LLanguageRespellings;
+        return groups.Count > 0
+            && spoken.LPronunciationDraftIpa.Length > 0
+            && LRespelling.LRespellingStaleCheck(
+                groups,
+                spoken.LPronunciationDraftIpa,
+                spoken.LPronunciationDraftRespelling,
+                spoken.LPronunciationDraftVariety.Trim());
+    }
+
+    public bool LLanguageStaleCheck(LReflexDraft row)
+    {
+        ArgumentNullException.ThrowIfNull(row);
+
+        string language = row.LReflexDraftLanguage.Trim();
+        IReadOnlyList<LRespelling> groups = language.Length == 0
+            ? []
+            : LLanguageCacheRead(language).LLanguageRespellings;
+        return groups.Count > 0
+            && row.LReflexDraftText.Trim().Length > 0
+            && LRespelling.LRespellingStaleCheck(
+                groups, row.LReflexDraftText, row.LReflexDraftRespelling, string.Empty);
+    }
+
     public LEntryDraft LLanguageRespellingRebuild(LEntryDraft content)
     {
         ArgumentNullException.ThrowIfNull(content);

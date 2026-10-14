@@ -9,7 +9,7 @@ public sealed class TPortraitOutline
     {
         string page = TInterface.TOutlineFormat(TPortraitSample.TPortraitRowCreate());
 
-        Assert.Contains("#### Collocations · 1\n\n**set off**\n\nto start a journey\n\n`informal`\n\n", page);
+        Assert.Contains("#### Collocations\n\n**set off**\n\nto start a journey\n\n`informal`\n\n", page);
     }
 
     [Fact]

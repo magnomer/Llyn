@@ -27,8 +27,7 @@ internal static class LLiveryCollocation
         }
 
         sheet.Append("<div class=\"llyn-collocations\">\n\n<span class=\"llyn-heading\">")
-            .Append(LLiveryHeader.LLiveryTextFormat(string.Format(
-                CultureInfo.CurrentCulture, lookup("Display.CollocationHeading"), rows.Count)))
+            .Append(LLiveryHeader.LLiveryTextFormat(lookup("Display.CollocationHeading")))
             .Append("</span>\n\n");
         LLiveryRowAppend(sheet, page, rows, note);
         sheet.Append("</div>\n\n");

@@ -36,6 +36,15 @@ public sealed record LRespelling(
         return result;
     }
 
+    public static bool LRespellingStaleCheck(
+        IReadOnlyList<LRespelling> groups, string phonetic, string respelling, string variety)
+    {
+        string derived = LRespellingScan(groups, phonetic, variety);
+        return respelling.Length > 0
+            && !string.Equals(respelling, derived, StringComparison.Ordinal)
+            && string.Equals(LRespellingScan(groups, respelling, variety), derived, StringComparison.Ordinal);
+    }
+
     private bool LRespellingVarietyCheck(string variety) =>
         LRespellingVarieties.Count == 0 ||
         LRespellingVarieties.Any(name => string.Equals(name, variety, StringComparison.Ordinal));

@@ -78,6 +78,8 @@ The tail's own block ends at its position, and any earlier block ends at its end
 The page items a band runs across, and the text the band covers.
 It stands apart from `PSwath`, which keeps the drag and the drawing.
 Every bound is measured against the owning swath, so the items and the highlight share one frame.
+A tone contour is bounded by what it draws, not by its slot.
+Its slot is the pronunciation's column and its box may hang past it, so the highlight covers the box.
 
 ### `QSwathTextScan`
 
@@ -194,9 +196,9 @@ A popup that stays open over another window would answer keys meant for that win
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `aae5349dbb94`
 - `PSwath.cs` `584dc17c6a493ecd`
 - `PSwathSeam.cs` `7d4ab1291ea7b670`
 - `QMentionAsk.cs` `99ebaa29f9e3be85`
 - `QMentionMenu.cs` `4e16ce165e70c6d0`
-- `QSwathText.cs` `123171a15a75d495`
+- `QSwathText.cs` `45ea49e1d4586220`

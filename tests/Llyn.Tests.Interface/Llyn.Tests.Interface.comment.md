@@ -69,6 +69,7 @@ The settings loader is relayed here, so the file contract can be checked without
 The posture file adapter is relayed the same way, so the posture text contract can be checked without a keep.
 The adapter itself is built here over a keep file, and its read and save are relayed.
 The trail adapter is built and relayed here too, since it stands beside the posture in the rig.
+The trail clerk is built over a rig, and its path rule is relayed.
 The print setting file is built and relayed the same way, since it keeps its JSON beside the posture.
 The print setting clerk is built over a fake rig with a given store.
 So its restore policy is checked alone.
@@ -158,11 +159,11 @@ A file the operating system has not released yet is not a test failure.
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `aae5349dbb94`
 - `Llyn.Tests.Interface.csproj` `5a64ed92eefef899`
 - `TEditorFixture.cs` `a42623dacfe4b6f9`
 - `TInterfaceBoundary.cs` `c098561a2150175f`
 - `TInterfaceCitation.cs` `e5b81a7ec75e2151`
 - `TInterfaceMarkdown.cs` `e3d48d9e8ac783fa`
-- `TInterfaceSettings.cs` `53890c16052cbbfe`
+- `TInterfaceSettings.cs` `dfe037625e43f9ba`
 - `TWorkspace.cs` `2cc686a2ca627691`

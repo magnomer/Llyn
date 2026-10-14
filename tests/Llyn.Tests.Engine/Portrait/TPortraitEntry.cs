@@ -99,7 +99,7 @@ public sealed class TPortraitEntry
         IReadOnlyList<LPortraitSection> cards = page.LPortraitPageSection[0].LPortraitSectionChild;
         LPortraitSection rows = Assert.Single(
             cards[1].LPortraitSectionChild, row => row.LPortraitSectionRole == LPortraitRole.LPortraitRoleList);
-        Assert.Equal("Collocations · 1", rows.LPortraitSectionHeading);
+        Assert.Equal("Collocations", rows.LPortraitSectionHeading);
         LPortraitSection home = Assert.Single(rows.LPortraitSectionChild);
         Assert.Equal(LPortraitRole.LPortraitRoleRow, home.LPortraitSectionRole);
         Assert.Equal("set off", home.LPortraitSectionHeading);
@@ -184,6 +184,27 @@ public sealed class TPortraitEntry
 
         Assert.Equal("ˈkɪndəl", Assert.Single(plain.LPortraitPageLine).LPortraitLineText);
         Assert.Equal("KIN-dəl", Assert.Single(respelled.LPortraitPageLine).LPortraitLineText);
+    }
+
+    [Fact]
+    public void PortraitRead_LatinHeadword_DropsGlyphSection()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LEntry latin = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "ma", "Mandarin", string.Empty, string.Empty, [TInterface.TCardCreate("mother", 1)], []));
+        LEntry han = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "妈", "Mandarin", string.Empty, string.Empty, [TInterface.TCardCreate("mother", 1)], []));
+        LPortraitLabel label = TInterface.TPortraitLabelRead();
+
+        LPortraitPage page = engine.TEnginePortraitRead(latin.LEntryId, label);
+
+        Assert.DoesNotContain(
+            label.LPortraitLabelGlyph, page.LPortraitPageSection.Select(row => row.LPortraitSectionHeading));
+        LPortraitSection glyph = Assert.Single(
+            engine.TEnginePortraitRead(han.LEntryId, label).LPortraitPageSection,
+            row => row.LPortraitSectionHeading == label.LPortraitLabelGlyph);
+        Assert.Equal(["妈"], glyph.LPortraitSectionChip);
     }
 
     [Fact]

@@ -37,11 +37,14 @@ The article page is asked before the REST rendering, because the REST host rejec
 
 It gives one transcription row under the scheme named here.
 It also gives the language each character opens an entry in.
-The wikitext attempt reads the `{{zh-see}}` pointer, which names the traditional main form.
-A page that is already traditional carries none, so the lookup finds nothing.
-The reading view then shows the headword's own characters.
+The first wikitext attempt reads the `{{zh-see}}` pointer, which names the traditional main form.
 The pointer's later parameters are cut at the first bar.
 A page with a second pointer so yields a second candidate.
+A page that is already traditional carries no pointer, so the first attempt finds nothing there.
+The second attempt then answers the page's own title, so Edit's search and the reading view agree.
+Its confirm pattern asks for a Chinese section and no pointer, so a page of another language yields nothing.
+A word with no page answers an error body without a Chinese section, so the search still finds nothing.
+The second attempt asks the same address again, and only when the first finds nothing.
 
 ## `respelling[0]` Standard
 
@@ -132,6 +135,6 @@ Features are the grammatical features each part takes, and values are those each
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `source.json` `592a033242aa3f9a`
+Commit: `aae5349dbb94`
+- `source.json` `0c2e4b3e1c98c912`
 - `vocabulary.json` `e267aab5c680e576`

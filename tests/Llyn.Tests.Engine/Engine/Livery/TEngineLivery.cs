@@ -112,6 +112,47 @@ public sealed class TEngineLivery
     }
 
     [Fact]
+    public void LiveryFormat_TonedContour_CentresPlotUnderReading()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "好", "Mandarin", "xau214", string.Empty, [TInterface.TCardCreate("good", 1)], []));
+        string path = Path.Combine(workspace.TWorkspaceFolder, "hao.mp3");
+        File.WriteAllBytes(path, [1, 2, 3, 4]);
+        LLiveryPage page = Assert.IsType<LLiveryPage>(engine.TLiveryRead(entry.LEntryId));
+        LEntryDraft draft = page.LLiveryPageDraft;
+        page = page with
+        {
+            LLiveryPageDraft = draft with
+            {
+                LEntryDraftPronunciations =
+                    [draft.LEntryDraftPronunciations[0] with { LPronunciationDraftAudio = path }],
+            },
+            LLiveryPageAccent = page.LLiveryPageAccent with
+            {
+                LAccentSheetContour = [TInterface.TContourCreate("xau214", [2, 1, 4])],
+            },
+        };
+
+        LLiveryNote note = TInterface.TLiveryFormat(page, static key => key);
+        string body = note.LLiveryNoteBody;
+
+        LParcel audio = Assert.Single(note.LLiveryNoteParcel, static parcel => parcel.LParcelMime == "audio/mpeg");
+        string head = "<span class=\"llyn-axis\"><span><span class=\"llyn-accent\">";
+        int axis = body.IndexOf(head, StringComparison.Ordinal);
+        int player = body.IndexOf("[" + audio.LParcelTitle + "](:/" + audio.LParcelId + ")", StringComparison.Ordinal);
+        Assert.True(axis >= 0 && player > axis);
+        string block = body[axis..player];
+        Assert.Contains("</span><span class=\"llyn-contour\">", block, StringComparison.Ordinal);
+        Assert.EndsWith("\" class=\"llyn-contour-chart\"></span></span> ", block, StringComparison.Ordinal);
+        Assert.Contains(
+            ".llyn .llyn-axis { display: inline-flex; flex-direction: column; align-items: center; }",
+            TInterface.TLiveryStyleFormat(TInterface.TThemeLoad()),
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void LiveryFormat_StoredRecording_AddsAudioParcel()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

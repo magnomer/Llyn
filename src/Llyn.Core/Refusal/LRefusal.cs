@@ -46,6 +46,20 @@ public sealed class LRefusal : Exception
 
     public const string LRefusalPending = "Refusal.WarrantPending";
 
+    public const string LRefusalDeck = "Refusal.DeckMissing";
+
+    public const string LRefusalCue = "Refusal.CueMissing";
+
+    public const string LRefusalBound = "Refusal.CueBound";
+
+    public const string LRefusalCode = "Refusal.DeckCodeTaken";
+
+    public const string LRefusalPhone = "Refusal.DeckPhonePending";
+
+    public const string LRefusalBusy = "Refusal.DepotBusy";
+
+    public const string LRefusalPathRooted = "Refusal.PathRooted";
+
     public LRefusal(string reason)
         : base(reason)
     {

@@ -66,7 +66,7 @@ The reading driver hears its click as it bubbles from the card list.
 
 ### `PCardHeading`
 
-The muted "Collocations · N" caption is worded by Conduct.
+The muted "Collocations" caption is worded by Conduct, with no count.
 The fill shows it only when the meaning has homed collocations.
 
 ### `PCardHome`
@@ -235,7 +235,7 @@ The stamp label is muted and small, because the stamps are a footnote.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `aae5349dbb94`
 - `PDisplayCard.xaml` `9189158db876e2c7`
 - `PDisplayCollocation.xaml` `3319fa918b8df9eb`
 - `PDisplayExample.xaml` `c3a66be3055d55b1`

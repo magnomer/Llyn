@@ -8,7 +8,7 @@ namespace Llyn.Infrastructure;
 
 public static class LSchemaMigration
 {
-    public const long LSchemaMigrationVersion = 82;
+    public const long LSchemaMigrationVersion = 83;
 
     private const string LSchemaMigrationFresh = "fresh";
 
@@ -193,6 +193,8 @@ public static class LSchemaMigration
     {
         while (true)
         {
+            LSchemaDeck.LSchemaCueSettle(connection, LSchemaMigrationFresh);
+
             List<(string LSchemaTable, long LSchemaRow)> orphans = [];
             using (SqliteCommand check = connection.CreateCommand())
             {

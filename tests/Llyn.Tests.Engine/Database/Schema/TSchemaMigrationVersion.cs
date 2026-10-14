@@ -186,4 +186,91 @@ public sealed class TSchemaMigrationVersion
             workspace.TWorkspaceCountRead(
                 "SELECT COUNT(*) FROM sqlite_master WHERE type = 'index' AND name = 'collocation_sense_member';"));
     }
+
+    [Fact]
+    public void DatabaseCreate_MissingSense_KeepsCueOrphaned()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+
+        workspace.TWorkspaceScriptRun(
+            "INSERT INTO stencil (stencil_id) VALUES (1); " +
+            "INSERT INTO deck (deck_id, position, name, grain, stencil_ref, deck_code, added_utc, updated_utc) " +
+            "VALUES (1, 0, 'Verbs', 2, 1, 'Verbs', '2026-01-01', '2026-01-01'); " +
+            "PRAGMA foreign_keys = OFF; " +
+            "INSERT INTO cue (cue_id, deck_parent, position, grain, sense_ref, added_utc) " +
+            "VALUES (1, 1, 0, 2, 9, '2026-01-01'); " +
+            "UPDATE schema_version SET version = 82;");
+
+        workspace.TWorkspaceDatabase.TDatabaseCreate();
+
+        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM cue WHERE sense_ref IS NULL;"));
+    }
+
+    [Fact]
+    public void DatabaseCreate_MissingDeck_SweepsCues()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+
+        workspace.TWorkspaceScriptRun(
+            "INSERT INTO stencil (stencil_id) VALUES (1); " +
+            "INSERT INTO deck (deck_id, position, name, grain, stencil_ref, deck_code, added_utc, updated_utc) " +
+            "VALUES (1, 0, 'Verbs', 1, 1, 'Verbs', '2026-01-01', '2026-01-01'); " +
+            "PRAGMA foreign_keys = OFF; " +
+            "INSERT INTO cue (cue_id, deck_parent, position, grain, added_utc) " +
+            "VALUES (1, 1, 0, 0, '2026-01-01'), (2, 9, 0, 0, '2026-01-01'); " +
+            "INSERT INTO cue_cell (cue_parent, column_kind, column_index, value) " +
+            "VALUES (1, 1, 1, 'kept'), (2, 1, 1, 'swept'); " +
+            "UPDATE schema_version SET version = 82;");
+
+        workspace.TWorkspaceDatabase.TDatabaseCreate();
+
+        Assert.Equal([1L], workspace.TWorkspaceColumnRead("SELECT cue_id FROM cue ORDER BY cue_id;"));
+        Assert.Equal([1L], workspace.TWorkspaceColumnRead("SELECT cue_parent FROM cue_cell ORDER BY cue_parent;"));
+    }
+
+    [Fact]
+    public void DatabaseCreate_SharedCollocationId_FollowsRenumber()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+
+        workspace.TWorkspaceScriptRun(
+            "INSERT INTO entry (entry_id, headword, language, added_utc, updated_utc) " +
+            "VALUES (1, 'word', 'English', '2026-01-01', '2026-01-01'); " +
+            "INSERT INTO sense (sense_id, entry_parent, position) VALUES (1, 1, 0); " +
+            "INSERT INTO collocation (collocation_id, entry_parent, position) VALUES (1, 1, 0), (5, 1, 1); " +
+            "INSERT INTO stencil (stencil_id) VALUES (1); " +
+            "INSERT INTO deck (deck_id, position, name, grain, stencil_ref, deck_code, added_utc, updated_utc) " +
+            "VALUES (1, 0, 'Phrases', 3, 1, 'Phrases', '2026-01-01', '2026-01-01'); " +
+            "INSERT INTO cue (cue_id, deck_parent, position, grain, collocation_ref, added_utc) " +
+            "VALUES (1, 1, 0, 3, 1, '2026-01-01'); " +
+            "UPDATE schema_version SET version = 82;");
+
+        workspace.TWorkspaceDatabase.TDatabaseCreate();
+
+        Assert.Equal(
+            [5L, 6L],
+            workspace.TWorkspaceColumnRead("SELECT collocation_id FROM collocation ORDER BY collocation_id;"));
+        Assert.Equal(6, workspace.TWorkspaceCountRead("SELECT collocation_ref FROM cue;"));
+    }
+
+    [Fact]
+    public void DatabaseCreate_SweptSenseParent_KeepsCueOrphaned()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+
+        workspace.TWorkspaceScriptRun(
+            "INSERT INTO stencil (stencil_id) VALUES (1); " +
+            "INSERT INTO deck (deck_id, position, name, grain, stencil_ref, deck_code, added_utc, updated_utc) " +
+            "VALUES (1, 0, 'Verbs', 2, 1, 'Verbs', '2026-01-01', '2026-01-01'); " +
+            "PRAGMA foreign_keys = OFF; " +
+            "INSERT INTO sense (sense_id, entry_parent, position) VALUES (1, 9, 0); " +
+            "INSERT INTO cue (cue_id, deck_parent, position, grain, sense_ref, added_utc) " +
+            "VALUES (1, 1, 0, 2, 1, '2026-01-01'); " +
+            "UPDATE schema_version SET version = 82;");
+
+        workspace.TWorkspaceDatabase.TDatabaseCreate();
+
+        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense;"));
+        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM cue WHERE sense_ref IS NULL;"));
+    }
 }

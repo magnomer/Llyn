@@ -34,6 +34,7 @@ public static class LSchema
         LSchemaStem.LSchemaStemCreate(connection);
         LSchemaDiwei.LSchemaDiweiCreate(connection);
         LSchemaAnchor.LSchemaAnchorCreate(connection);
+        LSchemaDeck.LSchemaDeckCreate(connection);
 
         LSchemaRevision.LSchemaRevisionCreate(connection);
 

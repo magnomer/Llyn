@@ -41,10 +41,10 @@ Most are generic, so other packs can reuse them, and the inflection table shows 
 `Display.CollocationOther` heads the collocations with no home Meaning, in the read view and the exports.
 `Display.CollocationStub` words the "see N" line under a further link.
 Its slot `{0}` is the collocation and `{1}` its home Meaning's number.
-`Display.CollocationHeading` captions the collocation rows under a Meaning, with `{0}` their count.
-`Display.CollocationCount` and `Display.CollocationCountOne` word the muted "N collocations" contents line.
+`Display.CollocationHeading` captions the collocation rows under a Meaning, and words that Meaning's muted contents line.
+It carries no slot, so neither place shows a count.
 `Display.CollocationExample` and `Display.CollocationExampleOne` word a closed row's example marker.
-Each of these pairs holds a plural and a singular form.
+The pair holds a plural and a singular form.
 `Display.CollocationAlso` words a closed row's "also N" marker.
 Its slot `{0}` is the comma-joined numbers of the further Meanings.
 `Notebook.*` labels the Sync page field naming the top Joplin notebook.
@@ -72,8 +72,7 @@ Each failure text sits beside its area's other texts at the same place as in `en
 A failure area with no other texts, such as `Sentence`, `Fold` or `Box`, sits where `en.json` puts it.
 The person headers spell out person and number instead of the English abbreviations.
 `Display.CollocationStub` reads `→ {0} ({1} 참조)`, keeping the same two slots as `en.json`.
-`Display.CollocationCount` and `Display.CollocationCountOne` both read `연어 {0}개`, since Korean counts without a plural.
-`Display.CollocationExample` and `Display.CollocationExampleOne` both read `예문 {0}개` for the same reason.
+`Display.CollocationExample` and `Display.CollocationExampleOne` both read `예문 {0}개`, since Korean counts without a plural.
 `Display.CollocationAlso` reads `{0}번 뜻에도 쓰임`, "used in sense N too", rather than a literal "also".
 `Print.*` reads the print window in polite Korean, with short noun labels for controls and 합니다 sentences for failures.
 `Print.PageTotal` reads `/ {0}`, a slash in place of the English word "of".
@@ -81,6 +80,6 @@ The person headers spell out person and number instead of the English abbreviati
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `en.json` `4f45de9d0c9a4d57`
-- `ko.json` `1379e59d1fb47184`
+Commit: `aae5349dbb94`
+- `en.json` `c121d28d49d699be`
+- `ko.json` `9b50d9f1705db6f6`

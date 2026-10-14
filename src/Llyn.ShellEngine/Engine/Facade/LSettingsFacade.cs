@@ -204,6 +204,22 @@ internal sealed class LSettingsFacade
         return LEngineSettingsRead().LSettingsNotebook;
     }
 
+    internal string LEngineDepotSave(string folder)
+    {
+        string valid;
+        lock (_lSettingsFacadeGate)
+        {
+            valid = LSettingsFacadeStaff.LEngineStaffLanguage.LLanguageStaffTrail.LTrailPathValidate(folder);
+        }
+
+        if (LEngineSettingsChange(settings => settings with { LSettingsDepot = valid }))
+        {
+            _lSettingsFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectSettings, 0);
+        }
+
+        return LEngineSettingsRead().LSettingsDepot;
+    }
+
     internal bool LEngineSettingsChange(Func<LSettings, LSettings> change)
     {
         lock (_lSettingsFacadeGate)

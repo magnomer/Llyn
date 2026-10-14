@@ -239,15 +239,20 @@ The Joplin notebook title is read under the `notebook` key, only as a string.
 The record trims it, and a blank or missing one becomes `Llyn`.
 So an older workspace keeps syncing into the notebook it always had.
 
+### LSettingsLoader.cs: folder.ValueKind == JsonValueKind.String
+
+The deck sync folder is read under the `depot` key, only as a string.
+Anything else means empty, so an older workspace starts with no folder chosen.
+
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `aae5349dbb94`
 - `LAuditWriter.cs` `dd4172f169ed53a1`
 - `LClockSystem.cs` `b36331da33b322ac`
 - `LKeepFile.cs` `c6c78aa9341281fa`
 - `LLocalizationLoader.cs` `c26518d6f35865af`
 - `LPostureFile.cs` `ac5bf5c7f5c371e1`
 - `LPressFile.cs` `d65a8925b22bf89c`
-- `LSettingsLoader.cs` `5c625f95d9fb5447`
+- `LSettingsLoader.cs` `cfe342fe0adef4c1`
 - `LTrailSystem.cs` `5a881c39877d0491`
 - `LWorkspaceRoot.cs` `17802ced47eeb2be`

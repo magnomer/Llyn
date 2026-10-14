@@ -73,6 +73,12 @@ A qualified path resolves to itself and a relative one anchors under the root, u
 The name reads past a trailing separator, and a barred character becomes an underscore.
 The root check accepts a rooted path and refuses a bare name.
 
+## `TTrailClerk.cs`
+
+Covers the path rule the trail clerk adds over the trail adapter.
+An absolute path refuses with `Refusal.PathRooted`, and a relative one comes back as given.
+It sits beside `TTrail.cs`, since the rule reads that adapter's rooted check.
+
 ## `TUsher.cs`
 
 Covers the file usher behind the `LUsher` port: the presence check, the quiet delete and the lock check.
@@ -87,7 +93,7 @@ The root sits under the temp folder and never has to exist, since no call here r
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `aae5349dbb94`
 - `TLocalization.cs` `1407ac74b05cbe5c`
 - `TLocalizationLoader.cs` `aef25aefe3308c74`
 - `TPressClerk.cs` `bacfa606e4abd25e`
@@ -95,4 +101,5 @@ Commit: `c2f335c331fe`
 - `TSettings.cs` `34444d3b99812ac2`
 - `TThemePalette.cs` `32851b33adb43566`
 - `TTrail.cs` `0f416a889d3d95cd`
+- `TTrailClerk.cs` `bb69a74682e0c796`
 - `TUsher.cs` `2bb1b70a37a362bc`

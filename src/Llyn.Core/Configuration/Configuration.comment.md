@@ -68,6 +68,12 @@ The property redeclares the positional title so the constructor and a `with` cop
 So a padded or blank title never reaches a sync, whichever layer built the record.
 `LSettingsNotebookResolve` trims the title, and a blank or missing one becomes the fallback.
 
+## `LSettingsDepot`
+
+The deck sync folder, relative to the workspace root.
+Empty means no folder is chosen yet.
+The record keeps any text, since the settings facade refuses an absolute path before it reaches here.
+
 ## `LSettingsOnline`
 
 How many of the web lookups are on, counting frequency and morphology.
@@ -86,11 +92,11 @@ That is the open tab, its split, each ordering and each hidden language.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `aae5349dbb94`
 - `LDoctorRescue.cs` `e975d172db3ce09b`
 - `LEstablishment.cs` `9bf61dd8ca2a9225`
 - `LKeep.cs` `a5eff2fe2750869f`
 - `LLayout.cs` `730225fc03370b2d`
 - `LPostureState.cs` `ea33d7f7b2e30456`
-- `LSettings.cs` `4179d400e6422dfb`
+- `LSettings.cs` `5b26170f8200a08d`
 - `LWorkspaceState.cs` `f1376a62e761ae0b`

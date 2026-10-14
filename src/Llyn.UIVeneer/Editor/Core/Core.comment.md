@@ -135,6 +135,8 @@ The deportment finds it by this name, both for the tab and for its driver.
 
 The primary pronunciation places its variety before the bracketed field and its buttons after it.
 The brackets are named so the editor can turn them into slashes for a phonemic respelling.
+The brackets and the field stand alone in a column of the shared size group `PReadingSpan`.
+The buttons stand in the next column, so they never count in the pronunciation's width.
 The chip is empty for a pronunciation without a variety, so the brackets then open at the margin.
 Play shows only while the row has a recording.
 Lookup and download open the editor's menus under the button pressed, for this row.
@@ -144,6 +146,9 @@ The plus and minus carry no row, which the handlers read as the primary.
 
 It draws the tone contour beneath the chip when the chosen language is tonal.
 The editor copies the pronunciation field into its IPA on every keystroke, so the picture follows the typing.
+Its row repeats the chip's first two columns, `PReadingLabel` and `PReadingSpan`, and the box takes the second.
+So the box centres on the pronunciation from bracket to bracket, and follows the field as it grows.
+The reading view builds its box the same way.
 The editor sets the tonal flag whenever the language changes.
 
 ### PEditor.xaml: `PReflexBlock`
@@ -188,8 +193,8 @@ The editor shows it with the block and sets its `Pending` cue to turn the icon w
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `PEditor.xaml` `6faba677bb261c18`
+Commit: `aae5349dbb94`
+- `PEditor.xaml` `3314af49b6913ed9`
 - `PEditor.xaml.cs` `29ffbc2c15f8f19d`
 - `PEditorCard.xaml` `ac6c941e70bc9e7e`
 - `PEditorDropdown.xaml` `1fb3025a80aa0ef9`

@@ -173,6 +173,37 @@ public sealed class TUnit
             StringComparison.Ordinal);
     }
 
+    [Fact]
+    public void SheetEntryFormat_UnitAndFreedom_WritesOneChipRow()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "the",
+            "English",
+            string.Empty,
+            string.Empty,
+            [TInterface.TCardCreate("definite article", 1)],
+            [],
+            speeches: ["Determiner"]) with
+        {
+            LEntryDraftUnit = LUnit.LUnitWord,
+            LEntryDraftFreedom = LFreedom.LFreedomDependent,
+        });
+
+        LLiveryPage page = Assert.IsType<LLiveryPage>(engine.TLiveryRead(entry.LEntryId));
+
+        string sheet = TInterface.TSheetEntryFormat(
+            page, engine.TEnginePortraitRead(entry.LEntryId, TInterface.TPortraitLabelRead()), static key => key);
+
+        Assert.Contains(
+            "<div class=\"chips\"><span class=\"chip unit\">Unit.Word</span>"
+            + "<span class=\"chip freedom\">Freedom.Dependent</span><span class=\"chip\">Determiner</span></div>",
+            sheet,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain("class=\"scope\"", sheet, StringComparison.Ordinal);
+    }
+
     private static LEntryDraft TUnitDraftCreate()
     {
         return TInterface.TEntryDraftCreate(

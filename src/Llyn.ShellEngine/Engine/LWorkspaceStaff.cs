@@ -11,7 +11,12 @@ internal sealed record LWorkspaceStaff(
     LPortraitClerk LWorkspaceStaffPortrait,
     LPortraitClerkPress LWorkspaceStaffPress,
     LPressClerk LWorkspaceStaffGalley,
-    LCourierClerk LWorkspaceStaffCourier)
+    LCourierClerk LWorkspaceStaffCourier,
+    LDeckClerk LWorkspaceStaffDeck,
+    LCueClerk LWorkspaceStaffCue,
+    LStencilClerk LWorkspaceStaffStencil,
+    LDepotLatch LWorkspaceStaffLatch,
+    LDepotClerk LWorkspaceStaffDepot)
 {
     internal static LWorkspaceStaff LWorkspaceStaffBuild(
         LRig rig,
@@ -49,6 +54,17 @@ internal sealed record LWorkspaceStaff(
         LCourierClerk courier = new(
             rig, entry.LEntryStaffQuery, gate, settings, exception => workspace.LWorkspaceAuditRecord(exception));
 
-        return new LWorkspaceStaff(workspace, markup, intake, portrait, press, galley, courier);
+        LDeckClerk deck = new(rig, language.LLanguageStaffTrail);
+        LCueClerk cue = new(rig, entry.LEntryStaffEntry);
+        LStencilClerk stencil = new(
+            rig, entry.LEntryStaffEntry, catalog.LCatalogStaffTranslation, catalog.LCatalogStaffReference,
+            language.LLanguageStaffTrail);
+        LDepotLatch latch = new();
+        LDepotClerk depot = new(
+            rig, stencil, language.LLanguageStaffTrail, latch, gate, settings,
+            exception => workspace.LWorkspaceAuditRecord(exception));
+
+        return new LWorkspaceStaff(
+            workspace, markup, intake, portrait, press, galley, courier, deck, cue, stencil, latch, depot);
     }
 }

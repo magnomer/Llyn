@@ -86,6 +86,10 @@ internal static partial class TInterface
 
     internal static LTrail TTrailCreate() => new LTrailSystem();
 
+    internal static LTrailClerk TTrailClerkCreate(LRig rig) => new(rig);
+
+    internal static string TTrailPathValidate(this LTrailClerk clerk, string path) => clerk.LTrailPathValidate(path);
+
     internal static string? TTrailResolve(this LTrail trail, string root, string path) =>
         trail.LTrailResolve(root, path);
 

@@ -169,6 +169,14 @@ So a combining mark and its precomposed form from different sites match the same
 Applies a whole pack's groups in list order, feeding the output of one into the next.
 An empty list returns the input untouched.
 
+## `LRespellingStaleCheck`
+
+True when a stored respelling was derived by older rules of the same pack.
+The groups run over the stored respelling, and the result must equal the groups run over the reading.
+The stored respelling must differ from that derivation, so a current one is never stale.
+A respelling written by hand rarely rewrites to the derivation, so it stays.
+A blank respelling is never stale, since filling blanks is a separate step.
+
 ## `LRespellingRule`
 
 One rewrite step a language pack declares, a regex pattern and the text that replaces every match.
@@ -191,11 +199,11 @@ The synthesized record equality would compare the compiled regex by reference an
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `aae5349dbb94`
 - `LRecording.cs` `1f78459a2bd0625b`
 - `LReflexGuise.cs` `c886a7cc91060e18`
 - `LReflexOrder.cs` `517b53769a2f330d`
 - `LReflexRule.cs` `fc8e93cfc84b13ae`
 - `LReflexSource.cs` `38631f0e411b057b`
-- `LRespelling.cs` `c4d22e7995592870`
+- `LRespelling.cs` `d2fc98a73dd5b35b`
 - `LRespellingRule.cs` `57925fff177f64f7`

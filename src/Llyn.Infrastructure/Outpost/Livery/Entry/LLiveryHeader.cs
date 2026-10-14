@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using Llyn.Core;
@@ -40,32 +41,25 @@ internal static class LLiveryHeader
         ArgumentNullException.ThrowIfNull(page);
         ArgumentNullException.ThrowIfNull(lookup);
 
-        string unit = LUnitKey.LUnitKeyRead(page.LLiveryPageDraft.LEntryDraftUnit);
-        string freedom = LFreedomKey.LFreedomKeyRead(page.LLiveryPageDraft.LEntryDraftFreedom);
-        int start = sheet.Length;
-        if (page.LLiveryPageDraft.LEntryDraftMarked)
+        LEntryDraft draft = page.LLiveryPageDraft;
+        IReadOnlyList<LEntryChip> chips = LEntryChip.LEntryChipRead(
+            draft.LEntryDraftUnit, draft.LEntryDraftFreedom, draft.LEntryDraftSpeeches);
+        foreach (LEntryChip chip in chips)
         {
-            if (unit.Length > 0)
+            (string style, string text) = chip.LEntryChipKind switch
             {
-                sheet.Append("<span class=\"llyn-unit\">").Append(LLiveryTextFormat(lookup(unit))).Append("</span> ");
-            }
+                LEntryChipKind.LEntryChipUnit => ("llyn-unit", lookup(chip.LEntryChipText)),
+                LEntryChipKind.LEntryChipFreedom => ("llyn-freedom", lookup(chip.LEntryChipText)),
+                _ => ("llyn-speech", chip.LEntryChipText),
+            };
+            sheet.Append("<span class=\"").Append(style).Append("\">").Append(LLiveryTextFormat(text))
+                .Append("</span> ");
+        }
 
-            if (freedom.Length > 0)
-            {
-                sheet.Append("<span class=\"llyn-freedom\">").Append(LLiveryTextFormat(lookup(freedom)))
-                    .Append("</span> ");
-            }
-
-            foreach (string name in page.LLiveryPageDraft.LEntryDraftNames)
-            {
-                sheet.Append("<span class=\"llyn-speech\">").Append(LLiveryTextFormat(name)).Append("</span> ");
-            }
-
-            if (sheet.Length > start)
-            {
-                sheet.Length--;
-                sheet.Append("\n\n");
-            }
+        if (chips.Count > 0)
+        {
+            sheet.Length--;
+            sheet.Append("\n\n");
         }
 
         if (LFrequencyGauge.LFrequencyGaugeResolve(page.LLiveryPageFrequency, lookup("Frequency.Once"))

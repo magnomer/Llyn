@@ -19,6 +19,15 @@ Unlinking raises the linked notice once, because only a change raises it.
 A posture moved to another root reads and writes that root, and the first root keeps its own state.
 A window stored at once reaches the file, and a minimized window stores nothing.
 
+## `TContourPlot`
+
+The tone plot centres on the slot it is handed, which is the delimited pronunciation's column.
+A slot narrower than the plot yields a negative origin, so the plot hangs over both sides equally.
+A wider slot yields an equal inset on both sides.
+Either way the plot's centre equals the slot's centre.
+An odd remainder still yields a whole pixel, so the frame keeps its snap.
+These cases need no thread, since the plot is plain geometry.
+
 ## `TDrawer`
 
 The citation drawer is driven over a mirror of the product XAML.
@@ -95,9 +104,10 @@ This silence keeps the trays and the display from notifying each other in a loop
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `aae5349dbb94`
 - `TBootstrapContext.cs` `160359e5c04253c5`
 - `TCapsulePosture.cs` `56b6ed906b2a3514`
+- `TContourPlot.cs` `5cc02f9da3b00670`
 - `TDrawer.cs` `276519735ee9b51e`
 - `TEtymologyItem.cs` `044bc3bbb086afa0`
 - `TIndexItem.cs` `95431f069623230a`

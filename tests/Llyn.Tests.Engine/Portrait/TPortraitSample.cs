@@ -18,7 +18,7 @@ internal static class TPortraitSample
                 "Registers", 0, [], ["informal"], [], [], [], [], LPortraitRole.LPortraitRoleTone)],
             LPortraitRole.LPortraitRoleRow) with { LPortraitSectionFold = true };
         LPortraitSection rows = TInterface.TPortraitSectionCreate(
-            "Collocations · 1", 0, [], [], [], [], [], [row], LPortraitRole.LPortraitRoleList);
+            "Collocations", 0, [], [], [], [], [], [row], LPortraitRole.LPortraitRoleList);
         LPortraitSection sense = TInterface.TPortraitSectionCreate(
             "to place",
             1,

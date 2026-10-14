@@ -56,6 +56,12 @@ The retired content and function units, numbered 1 and 2, are cleared to unchose
 Their entries carry across, while morpheme and word keep their numbers.
 Every freedom comes across unchosen, since the column is new.
 
+The version-82 rebuild keeps a cue whose Meaning is gone, with its reference set to none.
+A cue whose deck is gone is swept, and its cells go with it.
+A cue bound to a renumbered Collocation follows the new number.
+A cue bound to a Meaning that the sweep itself deletes stays too, orphaned.
+That last fact fails with one settle before the sweep, so it pins the settle in every sweep round.
+
 ## `TSchemaRealm.cs`
 
 Covers the realm row, the origin stamp and the id counters of a fresh workspace.
@@ -83,9 +89,9 @@ That is what stops SQLite reusing a deleted id.
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `aae5349dbb94`
 - `TSchemaMigration.cs` `59dc0c10918ea99c`
 - `TSchemaMigrationReference.cs` `720f13444005e50b`
 - `TSchemaMigrationReflex.cs` `afa08e2720b02717`
-- `TSchemaMigrationVersion.cs` `d8043645b976db34`
+- `TSchemaMigrationVersion.cs` `4657fd7cc52fb9f6`
 - `TSchemaRealm.cs` `c8fcae2f1ea45a3b`

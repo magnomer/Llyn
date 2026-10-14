@@ -1,0 +1,233 @@
+# Fake audit 0.20.14610
+
+- Generation: 26
+- Enforced: True
+- Orphan: 139, ceiling 0
+- Tested: 71, ceiling 0
+- Above ceiling: 2
+- Stale ceilings: 0
+
+A member is live when a live reader, a constructor, an override, generated code, markup or the serializer reads it. Orphan is read by nothing live. Tested is read only by tests.
+
+## Orphan
+
+- `src/Llyn.Application/Rehearsal/LCueClerk.cs:10` `_lCueClerkVault`: read only by fake members LCueClerkCreate
+- `src/Llyn.Application/Rehearsal/LCueClerk.cs:11` `_lCueClerkDecks`: read only by fake members LCueClerkAdd, LCueClerkCreate, LCueClerkFind
+- `src/Llyn.Application/Rehearsal/LCueClerk.cs:12` `_lCueClerkCues`: read only by fake members LCueCellRead, LCueCellSave, LCueClerkAdd and 6 more
+- `src/Llyn.Application/Rehearsal/LCueClerk.cs:13` `_lCueClerkEntries`: read only by fake members LCueClerkAdd
+- `src/Llyn.Application/Rehearsal/LCueClerk.cs:146` `LCueClerkRemove`: read only by fake members LEngineCueRemove
+- `src/Llyn.Application/Rehearsal/LCueClerk.cs:152` `LCueClerkMove`: read only by fake members LEngineCueMove
+- `src/Llyn.Application/Rehearsal/LCueClerk.cs:164` `LCueClerkSet`: read only by fake members LEngineCueSet
+- `src/Llyn.Application/Rehearsal/LCueClerk.cs:170` `LCueClerkFind`: read only by fake members LCueCellSave, LCueClerkSet
+- `src/Llyn.Application/Rehearsal/LCueClerk.cs:183` `LCueRowCreate`: read only by fake members LCueClerkCreate, LCueClerkScan
+- `src/Llyn.Application/Rehearsal/LDeckClerk.cs:10` `_lDeckClerkVault`: read only by fake members LDeckClerkCreate, LDeckClerkMove, LDeckClerkUpdate and 1 more
+- `src/Llyn.Application/Rehearsal/LDeckClerk.cs:11` `_lDeckClerkDecks`: read only by fake members LDeckClerkCreate, LDeckClerkDelete, LDeckClerkMove and 6 more
+- `src/Llyn.Application/Rehearsal/LDeckClerk.cs:12` `_lDeckClerkFolders`: read only by fake members LDeckFolderCreate, LDeckFolderDelete, LDeckFolderRead and 1 more
+- `src/Llyn.Application/Rehearsal/LDeckClerk.cs:13` `_lDeckClerkStencils`: read only by fake members LDeckClerkCreate
+- `src/Llyn.Application/Rehearsal/LDeckClerk.cs:14` `_lDeckClerkTrail`: read only by fake members LDeckClerkCreate, LDeckClerkUpdate
+- `src/Llyn.Application/Rehearsal/LDeckClerk.cs:101` `LDeckClerkMove`: read only by fake members LEngineDeckMove
+- `src/Llyn.Application/Rehearsal/LDeckClerk.cs:134` `LDeckClerkDelete`: read only by fake members LEngineDeckDelete
+- `src/Llyn.Application/Rehearsal/LDeckClerk.cs:179` `LDeckPlaceRead`: read only by fake members LDeckClerkMove, LDeckFolderDelete
+- `src/Llyn.Application/Rehearsal/LDepotClerk.cs:13` `LDepotClerkId`: read only by fake members LDepotHeaderResolve, LDepotRowFormat
+- `src/Llyn.Application/Rehearsal/LDepotClerk.cs:15` `LDepotClerkLead`: read only by fake members LDepotHeaderResolve
+- `src/Llyn.Application/Rehearsal/LDepotClerk.cs:17` `LDepotClerkSides`: read only by fake members LDepotClerkOrder
+- `src/Llyn.Application/Rehearsal/LDepotClerk.cs:19` `LDepotClerkCategories`: read only by fake members LDepotClerkOrder
+- `src/Llyn.Application/Rehearsal/LDepotClerk.cs:21` `LDepotClerkOrder`: read only by fake members LDepotColumnFormat, LDepotHeaderResolve
+- `src/Llyn.Application/Rehearsal/LDepotClerk.cs:35` `_lDepotClerkDecks`: read only by fake members LDepotDeckExport
+- `src/Llyn.Application/Rehearsal/LDepotClerk.cs:36` `_lDepotClerkCues`: read only by fake members LDepotDeckExport, LDepotFaceRead
+- `src/Llyn.Application/Rehearsal/LDepotClerk.cs:37` `_lDepotClerkDepot`: read only by fake members LDepotCellResolve, LDepotDeckExport
+- `src/Llyn.Application/Rehearsal/LDepotClerk.cs:38` `_lDepotClerkManifest`: read only by fake members LDepotDeckExport
+- `src/Llyn.Application/Rehearsal/LDepotClerk.cs:39` `_lDepotClerkClock`: read only by fake members LDepotDeckExport
+- `src/Llyn.Application/Rehearsal/LDepotClerk.cs:40` `_lDepotClerkStencil`: read only by fake members LDepotDeckExport, LDepotFaceRead
+- `src/Llyn.Application/Rehearsal/LDepotClerk.cs:41` `_lDepotClerkTrail`: read only by fake members LDepotCellResolve, LDepotDeckExport
+- `src/Llyn.Application/Rehearsal/LDepotClerk.cs:42` `_lDepotClerkLatch`: read only by fake members LDepotClerkExport
+- `src/Llyn.Application/Rehearsal/LDepotClerk.cs:43` `_lDepotClerkGate`: read only by fake members LDepotDeckExport
+- `src/Llyn.Application/Rehearsal/LDepotClerk.cs:44` `_lDepotClerkSettings`: read only by fake members LDepotDeckExport
+- `src/Llyn.Application/Rehearsal/LDepotClerk.cs:45` `_lDepotClerkFault`: read only by fake members LDepotCellResolve, LDepotDeckExport
+- `src/Llyn.Application/Rehearsal/LDepotClerk.cs:94` `LDepotHeaderResolve`: read only by fake members LDepotDeckExport
+- `src/Llyn.Application/Rehearsal/LDepotClerk.cs:110` `LDepotDeckExport`: read only by fake members LDepotClerkExport
+- `src/Llyn.Application/Rehearsal/LDepotClerk.cs:208` `LDepotFaceRead`: read only by fake members LDepotDeckExport
+- `src/Llyn.Application/Rehearsal/LDepotClerk.cs:215` `LDepotCellResolve`: read only by fake members LDepotDeckExport
+- `src/Llyn.Application/Rehearsal/LDepotClerk.cs:263` `LDepotRowFormat`: read only by fake members LDepotDeckExport
+- `src/Llyn.Application/Rehearsal/LDepotClerk.cs:278` `LDepotColumnFormat`: read only by fake members LDepotHeaderResolve, LDepotRowFormat
+- `src/Llyn.Application/Rehearsal/LDepotLatch.cs:7` `_lDepotLatchBusy`: read only by fake members LDepotLatchCheck, LDepotLatchFinish, LDepotLatchStart
+- `src/Llyn.Application/Rehearsal/LStencilClerk.cs:11` `_lStencilClerkDecks`: read only by fake members LStencilClerkRead, LStencilClerkResolve
+- `src/Llyn.Application/Rehearsal/LStencilClerk.cs:12` `_lStencilClerkStencils`: read only by fake members LStencilClerkApply, LStencilClerkSave, LStencilOwnedRead and 1 more
+- `src/Llyn.Application/Rehearsal/LStencilClerk.cs:13` `_lStencilClerkCues`: read only by fake members LStencilClerkResolve, LStencilClerkResolve
+- `src/Llyn.Application/Rehearsal/LStencilClerk.cs:14` `_lStencilClerkEntries`: read only by fake members LStencilClerkResolve
+- `src/Llyn.Application/Rehearsal/LStencilClerk.cs:15` `_lStencilClerkTranslations`: read only by fake members LStencilClerkResolve
+- `src/Llyn.Application/Rehearsal/LStencilClerk.cs:16` `_lStencilClerkReferences`: read only by fake members LStencilClerkResolve
+- `src/Llyn.Application/Rehearsal/LStencilClerk.cs:17` `_lStencilClerkTrail`: read only by fake members LStencilClerkResolve
+- `src/Llyn.Application/Rehearsal/LStencilClerk.cs:132` `LStencilOwnedRead`: read only by fake members LStencilClerkRead, LStencilClerkResolve
+- `src/Llyn.Application/Rehearsal/LStencilClerk.cs:138` `LStencilSlotResolve`: read only by fake members LStencilClerkResolve
+- `src/Llyn.Application/Rehearsal/LStencilReader.cs:10` `_lStencilReaderTranslations`: read only by fake members LStencilTargetScan
+- `src/Llyn.Application/Rehearsal/LStencilReader.cs:11` `_lStencilReaderReferences`: read only by fake members LStencilSourceScan
+- `src/Llyn.Application/Rehearsal/LStencilReader.cs:12` `_lStencilReaderTrail`: read only by fake members LStencilImageScan
+- `src/Llyn.Application/Rehearsal/LStencilReader.cs:13` `_lStencilReaderLabel`: read only by fake members LStencilReaderRead
+- `src/Llyn.Application/Rehearsal/LStencilReader.cs:31` `LStencilReaderRead`: read only by fake members LStencilSlotResolve
+- `src/Llyn.Application/Rehearsal/LStencilReader.cs:86` `LStencilCardScan`: read only by fake members LStencilReaderRead
+- `src/Llyn.Application/Rehearsal/LStencilReader.cs:113` `LStencilExampleScan`: read only by fake members LStencilReaderRead
+- `src/Llyn.Application/Rehearsal/LStencilReader.cs:131` `LStencilTargetScan`: read only by fake members LStencilReaderRead
+- `src/Llyn.Application/Rehearsal/LStencilReader.cs:157` `LStencilImageScan`: read only by fake members LStencilReaderRead
+- `src/Llyn.Application/Rehearsal/LStencilReader.cs:171` `LStencilSourceScan`: read only by fake members LStencilReaderRead
+- `src/Llyn.Application/Rehearsal/LStencilReader.cs:197` `LStencilTextScan`: read only by fake members LStencilReaderRead, LStencilSourceScan, LStencilTargetScan
+- `src/Llyn.Application/Vocabulary/LVocabularyClerk.cs:65` `LSpeechShow`: read only by fake members LStencilReaderRead
+- `src/Llyn.Core/Refusal/LRefusal.cs:49` `LRefusalDeck`: read only by fake members LCueClerkAdd, LCueClerkCreate, LDeckClerkMove and 4 more
+- `src/Llyn.Core/Rehearsal/LCueMarkup.cs:51` `LCueMarkupAppend`: read only by fake members LCueMarkupResolve
+- `src/Llyn.Core/Rehearsal/LDeckReceipt.cs:9` `LDeckReceiptFailed`: read by nothing
+- `src/Llyn.Core/Rehearsal/LDeckSchedule.cs:12` `LDeckScheduleFloor`: read by nothing
+- `src/Llyn.Core/Rehearsal/LDepot.cs:12` `LDepotDigestRead`: read only by fake members LDepotDeckExport
+- `src/Llyn.Core/Rehearsal/LDepot.cs:14` `LDepotMediaResolve`: read only by fake members LDepotCellResolve
+- `src/Llyn.Core/Rehearsal/LDepot.cs:16` `LDepotMediaCheck`: read only by fake members LDepotCellResolve
+- `src/Llyn.Core/Rehearsal/LDepot.cs:18` `LDepotMediaCopy`: read only by fake members LDepotCellResolve
+- `src/Llyn.Core/Rehearsal/LDepot.cs:20` `LDepotMediaDelete`: read only by fake members LDepotDeckExport
+- `src/Llyn.Core/Rehearsal/LStencilDefault.cs:18` `LStencilDefaultCreate`: read only by fake members LStencilDefaultRead
+- `src/Llyn.Core/Rehearsal/LStencilToken.cs:69` `LStencilTokenRead`: read only by fake members LStencilTokenParse
+- `src/Llyn.Core/Vault/Rehearsal/LCueVault.cs:11` `LCueHolderRead`: read only by fake members LStencilClerkResolve
+- `src/Llyn.Core/Vault/Rehearsal/LCueVault.cs:13` `LCueUpdate`: read only by fake members LCueClerkSet
+- `src/Llyn.Core/Vault/Rehearsal/LDeckFolderVault.cs:7` `LDeckFolderCreate`: read only by fake members LDeckFolderCreate
+- `src/Llyn.Core/Vault/Rehearsal/LDeckFolderVault.cs:9` `LDeckFolderRead`: read only by fake members LDeckFolderRead, LDeckFolderUpdate
+- `src/Llyn.Core/Vault/Rehearsal/LDeckFolderVault.cs:11` `LDeckFolderUpdate`: read only by fake members LDeckFolderUpdate
+- `src/Llyn.Core/Vault/Rehearsal/LDeckFolderVault.cs:13` `LDeckFolderDelete`: read only by fake members LDeckFolderDelete
+- `src/Llyn.Core/Vault/Rehearsal/LStencilVault.cs:13` `LStencilUpdate`: read only by fake members LStencilClerkApply, LStencilSlotSet
+- `src/Llyn.ShellEngine/Engine/Facade/LSettingsFacade.cs:207` `LEngineDepotSave`: read by nothing
+- `src/Llyn.ShellEngine/Engine/LEngine.cs:14` `LEngineDeck`: read only by fake members LDeckOutlet
+- `src/Llyn.ShellEngine/Engine/LWorkspaceStaff.cs:15` `LWorkspaceStaffDeck`: read only by fake members LEngineDeckCreate, LEngineDeckDelete, LEngineDeckMove and 8 more
+- `src/Llyn.ShellEngine/Engine/LWorkspaceStaff.cs:16` `LWorkspaceStaffCue`: read only by fake members LEngineCellRead, LEngineCellSave, LEngineCueAdd and 5 more
+- `src/Llyn.ShellEngine/Engine/LWorkspaceStaff.cs:17` `LWorkspaceStaffStencil`: read only by fake members LEngineFaceRead, LEngineSlotSet, LEngineStencilApply and 2 more
+- `src/Llyn.ShellEngine/Engine/LWorkspaceStaff.cs:19` `LWorkspaceStaffDepot`: read only by fake members LEngineDeckExport
+- `src/Llyn.ShellEngine/Port/LDeckOutlet.cs:9` `_lDeckOutletEngine`: read only by fake members LDeckOutlet
+- `src/Llyn.ShellEngine/Port/LDeckPort.cs:8` `LEngineDeckRead`: read by nothing
+- `src/Llyn.ShellEngine/Port/LDeckPort.cs:10` `LEngineDeckRead`: read by nothing
+- `src/Llyn.ShellEngine/Port/LDeckPort.cs:12` `LEngineDeckCreate`: read by nothing
+- `src/Llyn.ShellEngine/Port/LDeckPort.cs:14` `LEngineDeckUpdate`: read by nothing
+- `src/Llyn.ShellEngine/Port/LDeckPort.cs:16` `LEngineDeckUpdate`: read by nothing
+- `src/Llyn.ShellEngine/Port/LDeckPort.cs:18` `LEngineDeckMove`: read by nothing
+- `src/Llyn.ShellEngine/Port/LDeckPort.cs:20` `LEngineDeckMove`: read by nothing
+- `src/Llyn.ShellEngine/Port/LDeckPort.cs:22` `LEngineDeckDelete`: read by nothing
+- `src/Llyn.ShellEngine/Port/LDeckPort.cs:24` `LEngineFolderCreate`: read by nothing
+- `src/Llyn.ShellEngine/Port/LDeckPort.cs:26` `LEngineFolderUpdate`: read by nothing
+- `src/Llyn.ShellEngine/Port/LDeckPort.cs:28` `LEngineFolderDelete`: read by nothing
+- `src/Llyn.ShellEngine/Port/LDeckPort.cs:30` `LEngineCueRead`: read by nothing
+- `src/Llyn.ShellEngine/Port/LDeckPort.cs:32` `LEngineCueAdd`: read by nothing
+- `src/Llyn.ShellEngine/Port/LDeckPort.cs:34` `LEngineCueCreate`: read by nothing
+- `src/Llyn.ShellEngine/Port/LDeckPort.cs:36` `LEngineCueRemove`: read by nothing
+- `src/Llyn.ShellEngine/Port/LDeckPort.cs:38` `LEngineCueMove`: read by nothing
+- `src/Llyn.ShellEngine/Port/LDeckPort.cs:40` `LEngineCueSet`: read by nothing
+- `src/Llyn.ShellEngine/Port/LDeckPort.cs:42` `LEngineFaceRead`: read by nothing
+- `src/Llyn.ShellEngine/Port/LDeckPort.cs:44` `LEngineCellRead`: read by nothing
+- `src/Llyn.ShellEngine/Port/LDeckPort.cs:46` `LEngineCellSave`: read by nothing
+- `src/Llyn.ShellEngine/Port/LDeckPort.cs:48` `LEngineStencilRead`: read by nothing
+- `src/Llyn.ShellEngine/Port/LDeckPort.cs:50` `LEngineSlotSet`: read by nothing
+- `src/Llyn.ShellEngine/Port/LDeckPort.cs:52` `LEngineStencilSave`: read by nothing
+- `src/Llyn.ShellEngine/Port/LDeckPort.cs:54` `LEngineStencilApply`: read by nothing
+- `src/Llyn.ShellEngine/Tool/LDeckFacade.cs:12` `_lDeckFacadeHearth`: read only by fake members LDeckFacadeStaff
+- `src/Llyn.ShellEngine/Tool/LDeckFacade.cs:13` `_lDeckFacadeGate`: read only by fake members LEngineCellRead, LEngineCellSave, LEngineCueAdd and 21 more
+- `src/Llyn.ShellEngine/Tool/LDeckFacade.cs:22` `LDeckFacadeStaff`: read only by fake members LEngineCellRead, LEngineCellSave, LEngineCueAdd and 23 more
+- `src/Llyn.ShellEngine/Tool/LDeckFacade.cs:24` `LEngineDeckRead`: read only by fake members LDeckOutlet
+- `src/Llyn.ShellEngine/Tool/LDeckFacade.cs:33` `LEngineDeckRead`: read only by fake members LDeckOutlet
+- `src/Llyn.ShellEngine/Tool/LDeckFacade.cs:41` `LEngineDeckCreate`: read only by fake members LDeckOutlet
+- `src/Llyn.ShellEngine/Tool/LDeckFacade.cs:49` `LEngineDeckUpdate`: read only by fake members LDeckOutlet
+- `src/Llyn.ShellEngine/Tool/LDeckFacade.cs:57` `LEngineDeckUpdate`: read only by fake members LDeckOutlet
+- `src/Llyn.ShellEngine/Tool/LDeckFacade.cs:65` `LEngineDeckMove`: read only by fake members LDeckOutlet
+- `src/Llyn.ShellEngine/Tool/LDeckFacade.cs:73` `LEngineDeckMove`: read only by fake members LDeckOutlet
+- `src/Llyn.ShellEngine/Tool/LDeckFacade.cs:81` `LEngineDeckDelete`: read only by fake members LDeckOutlet
+- `src/Llyn.ShellEngine/Tool/LDeckFacade.cs:89` `LEngineFolderCreate`: read only by fake members LDeckOutlet
+- `src/Llyn.ShellEngine/Tool/LDeckFacade.cs:97` `LEngineFolderUpdate`: read only by fake members LDeckOutlet
+- `src/Llyn.ShellEngine/Tool/LDeckFacade.cs:105` `LEngineFolderDelete`: read only by fake members LDeckOutlet
+- `src/Llyn.ShellEngine/Tool/LDeckFacade.cs:113` `LEngineCueRead`: read only by fake members LDeckOutlet
+- `src/Llyn.ShellEngine/Tool/LDeckFacade.cs:121` `LEngineCueAdd`: read only by fake members LDeckOutlet
+- `src/Llyn.ShellEngine/Tool/LDeckFacade.cs:129` `LEngineCueCreate`: read only by fake members LDeckOutlet
+- `src/Llyn.ShellEngine/Tool/LDeckFacade.cs:137` `LEngineCueRemove`: read only by fake members LDeckOutlet
+- `src/Llyn.ShellEngine/Tool/LDeckFacade.cs:145` `LEngineCueMove`: read only by fake members LDeckOutlet
+- `src/Llyn.ShellEngine/Tool/LDeckFacade.cs:153` `LEngineCueSet`: read only by fake members LDeckOutlet
+- `src/Llyn.ShellEngine/Tool/LDeckFacade.cs:161` `LEngineFaceRead`: read only by fake members LDeckOutlet
+- `src/Llyn.ShellEngine/Tool/LDeckFacade.cs:169` `LEngineDeckExport`: read by nothing
+- `src/Llyn.ShellEngine/Tool/LDeckFacade.cs:174` `LEngineDepotCheck`: read by nothing
+- `src/Llyn.ShellEngine/Tool/LDeckFacade.cs:179` `LEngineCellRead`: read only by fake members LDeckOutlet
+- `src/Llyn.ShellEngine/Tool/LDeckFacade.cs:187` `LEngineCellSave`: read only by fake members LDeckOutlet
+- `src/Llyn.ShellEngine/Tool/LDeckFacade.cs:195` `LEngineStencilRead`: read only by fake members LDeckOutlet
+- `src/Llyn.ShellEngine/Tool/LDeckFacade.cs:203` `LEngineSlotSet`: read only by fake members LDeckOutlet
+- `src/Llyn.ShellEngine/Tool/LDeckFacade.cs:211` `LEngineStencilSave`: read only by fake members LDeckOutlet
+- `src/Llyn.ShellEngine/Tool/LDeckFacade.cs:219` `LEngineStencilApply`: read only by fake members LDeckOutlet
+
+## Tested
+
+- `src/Llyn.Application/Rehearsal/LCueClerk.cs:25` `LCueClerkRead`: read only by tests TInterface.TCueClerkRead and by fake members LEngineCueRead
+- `src/Llyn.Application/Rehearsal/LCueClerk.cs:30` `LCueClerkAdd`: read only by tests TInterface.TCueClerkAdd and by fake members LEngineCueAdd
+- `src/Llyn.Application/Rehearsal/LCueClerk.cs:62` `LCueClerkScan`: read only by tests TInterface.TCueClerkScan and by fake members LCueClerkAdd
+- `src/Llyn.Application/Rehearsal/LCueClerk.cs:110` `LCueClerkCreate`: read only by tests TInterface.TCueClerkCreate and by fake members LEngineCueCreate
+- `src/Llyn.Application/Rehearsal/LCueClerk.cs:128` `LCueCellRead`: read only by tests TInterface.TCueCellRead and by fake members LEngineCellRead
+- `src/Llyn.Application/Rehearsal/LCueClerk.cs:133` `LCueCellSave`: read only by tests TInterface.TCueCellSave and by fake members LEngineCellSave
+- `src/Llyn.Application/Rehearsal/LDeckClerk.cs:27` `LDeckClerkRead`: read only by tests TInterface.TDeckClerkRead and by fake members LEngineDeckRead
+- `src/Llyn.Application/Rehearsal/LDeckClerk.cs:32` `LDeckClerkRead`: read only by tests TInterface.TDeckClerkRead and by fake members LEngineDeckRead
+- `src/Llyn.Application/Rehearsal/LDeckClerk.cs:38` `LDeckClerkCreate`: read only by tests TInterface.TDeckClerkCreate and by fake members LEngineDeckCreate
+- `src/Llyn.Application/Rehearsal/LDeckClerk.cs:60` `LDeckNameSet`: read only by tests TInterface.TDeckNameSet and by fake members LEngineDeckUpdate
+- `src/Llyn.Application/Rehearsal/LDeckClerk.cs:68` `LDeckClerkUpdate`: read only by tests TInterface.TDeckClerkUpdate and by fake members LEngineDeckUpdate
+- `src/Llyn.Application/Rehearsal/LDeckClerk.cs:128` `LDeckOrderSet`: read only by tests TInterface.TDeckOrderSet and by fake members LEngineDeckMove
+- `src/Llyn.Application/Rehearsal/LDeckClerk.cs:139` `LDeckFolderRead`: read only by tests TInterface.TDeckFolderRead and by fake members LEngineDeckRead
+- `src/Llyn.Application/Rehearsal/LDeckClerk.cs:144` `LDeckFolderCreate`: read only by tests TInterface.TDeckFolderCreate and by fake members LEngineFolderCreate
+- `src/Llyn.Application/Rehearsal/LDeckClerk.cs:150` `LDeckFolderUpdate`: read only by tests TInterface.TDeckFolderUpdate and by fake members LEngineFolderUpdate
+- `src/Llyn.Application/Rehearsal/LDeckClerk.cs:162` `LDeckFolderDelete`: read only by tests TInterface.TDeckFolderDelete and by fake members LEngineFolderDelete
+- `src/Llyn.Application/Rehearsal/LDepotClerk.cs:76` `LDepotClerkExport`: read only by tests TInterface.TDepotClerkExport and by fake members LEngineDeckExport
+- `src/Llyn.Application/Rehearsal/LDepotLatch.cs:9` `LDepotLatchStart`: read only by tests TInterface.TDepotLatchStart and by fake members LDepotClerkExport
+- `src/Llyn.Application/Rehearsal/LDepotLatch.cs:14` `LDepotLatchFinish`: read only by tests TInterface.TDepotLatchFinish and by fake members LDepotClerkExport
+- `src/Llyn.Application/Rehearsal/LDepotLatch.cs:19` `LDepotLatchCheck`: read only by tests TInterface.TDepotLatchCheck and by fake members LEngineDepotCheck
+- `src/Llyn.Application/Rehearsal/LStencilClerk.cs:40` `LStencilClerkResolve`: read only by tests TInterface.TStencilClerkResolve and by fake members LDepotFaceRead, LStencilClerkResolve
+- `src/Llyn.Application/Rehearsal/LStencilClerk.cs:68` `LStencilClerkResolve`: read only by tests TInterface.TStencilClerkResolve and by fake members LEngineFaceRead
+- `src/Llyn.Application/Rehearsal/LStencilClerk.cs:83` `LStencilClerkRead`: read only by tests TInterface.TStencilClerkRead and by fake members LDepotDeckExport, LEngineStencilRead, LStencilClerkApply and 2 more
+- `src/Llyn.Application/Rehearsal/LStencilClerk.cs:89` `LStencilSlotSet`: read only by tests TInterface.TStencilSlotSet and by fake members LEngineSlotSet
+- `src/Llyn.Application/Rehearsal/LStencilClerk.cs:110` `LStencilClerkSave`: read only by tests TInterface.TStencilClerkSave and by fake members LEngineStencilSave
+- `src/Llyn.Application/Rehearsal/LStencilClerk.cs:123` `LStencilClerkApply`: read only by tests TInterface.TStencilClerkApply and by fake members LEngineStencilApply
+- `src/Llyn.Application/Workspace/LTrailClerk.cs:38` `LTrailPathValidate`: read only by tests TInterface.TTrailPathValidate and by fake members LDepotDeckExport, LEngineDepotSave
+- `src/Llyn.Core/Refusal/LRefusal.cs:51` `LRefusalCue`: read only by tests TCueClerk.StencilClerkResolve_MissingCue_Refuses and by fake members LCueCellSave, LCueClerkSet, LStencilClerkResolve
+- `src/Llyn.Core/Refusal/LRefusal.cs:53` `LRefusalBound`: read only by tests TCueClerk.CueCellSave_BoundCue_Refuses and by fake members LCueCellSave
+- `src/Llyn.Core/Refusal/LRefusal.cs:55` `LRefusalCode`: read only by tests TDeckClerk.DeckClerkUpdate_CodeTaken_Refuses and by fake members LDeckClerkUpdate
+- `src/Llyn.Core/Refusal/LRefusal.cs:57` `LRefusalPhone`: read only by tests TDepotClerk.DepotClerkExport_PhoneFilePending_Refuses and by fake members LDepotDeckExport
+- `src/Llyn.Core/Refusal/LRefusal.cs:59` `LRefusalBusy`: read only by tests TDepotClerk.DepotClerkExport_Busy_RefusesSecondRun and by fake members LDepotClerkExport
+- `src/Llyn.Core/Refusal/LRefusal.cs:61` `LRefusalPathRooted`: read only by tests TTrailClerk.TrailPathValidate_AbsolutePath_Refuses and by fake members LTrailPathValidate
+- `src/Llyn.Core/Rehearsal/LCue.cs:19` `LCueOrphaned`: read only by tests TCue.CueOrphaned_FreeGrain_ReturnsFalse, TCue.CueOrphaned_MeaningGrainNullSense_ReturnsTrue, TCue.CueOrphaned_PairBothSourcesNull_ReturnsTrue and 4 more and by fake members LCueResting
+- `src/Llyn.Core/Rehearsal/LCue.cs:30` `LCueResting`: read only by tests TCue.CueOrphaned_FreeGrain_ReturnsFalse, TCue.CueOrphaned_MeaningGrainNullSense_ReturnsTrue and by fake members LDepotDeckExport
+- `src/Llyn.Core/Rehearsal/LCueFace.cs:5` `LCueFaceCells`: read only by tests TCueClerk.StencilClerkResolve_CueId_FillsDeckStencil, TStencilClerk.StencilClerkResolve_AllDefinitions_JoinsWithBar, TStencilClerk.StencilClerkResolve_ImageOnMeaning_FillsPicture and 6 more and by fake members LDepotDeckExport, LDepotHeaderResolve, LDepotRowFormat
+- `src/Llyn.Core/Rehearsal/LCueMarkup.cs:9` `LCueMarkupResolve`: read only by tests TInterface.TCueMarkupResolve
+- `src/Llyn.Core/Rehearsal/LCueMarkup.cs:44` `LCueMarkupFormat`: read only by tests TInterface.TCueMarkupFormat and by fake members LCueMarkupAppend, LCueMarkupResolve, LStencilSlotResolve
+- `src/Llyn.Core/Rehearsal/LDeckCode.cs:10` `LDeckCodeResolve`: read only by tests TInterface.TDeckCodeResolve and by fake members LDeckClerkCreate
+- `src/Llyn.Core/Rehearsal/LDeckCode.cs:24` `LDeckCodeCheck`: read only by tests TInterface.TDeckCodeCheck and by fake members LDeckClerkUpdate, LDeckCodeResolve
+- `src/Llyn.Core/Rehearsal/LDeckManifestVault.cs:5` `LDeckManifestRead`: read only by tests TInterface.TDeckManifestRead and by fake members LDepotDeckExport
+- `src/Llyn.Core/Rehearsal/LDeckManifestVault.cs:7` `LDeckManifestSave`: read only by tests TInterface.TDeckManifestSave and by fake members LDepotDeckExport
+- `src/Llyn.Core/Rehearsal/LDeckReceipt.cs:6` `LDeckReceiptCards`: read only by tests TDepotClerk.DepotClerkExport_OrphanedCue_LeavesCueOut, TDepotClerk.DepotClerkExport_OtherWorkspaceBusy_Runs
+- `src/Llyn.Core/Rehearsal/LDeckReceipt.cs:7` `LDeckReceiptCopied`: read only by tests TDepotClerk.DepotClerkExport_SameImage_CopiesOnce
+- `src/Llyn.Core/Rehearsal/LDeckReceipt.cs:8` `LDeckReceiptRemoved`: read only by tests TDepotClerk.DepotClerkExport_DroppedImage_DeletesOnlyOwn
+- `src/Llyn.Core/Rehearsal/LDepot.cs:8` `LDepotSave`: read only by tests TInterface.TDepotSave and by fake members LDepotDeckExport
+- `src/Llyn.Core/Rehearsal/LDepot.cs:10` `LDepotRead`: read only by tests TInterface.TDepotRead
+- `src/Llyn.Core/Rehearsal/LStencilDefault.cs:7` `LStencilDefaultRead`: read only by tests TInterface.TStencilDefaultRead and by fake members LDeckClerkCreate
+- `src/Llyn.Core/Rehearsal/LStencilToken.cs:9` `LStencilTokenLiteral`: read only by tests TStencilToken.StencilTokenParse_LiteralAndField_SplitsBoth, TStencilToken.StencilTokenParse_UnknownField_KeepsLiteral and by fake members LStencilSlotResolve
+- `src/Llyn.Core/Rehearsal/LStencilToken.cs:10` `LStencilTokenField`: read only by tests TStencilToken.StencilTokenParse_AllField_SetsAll, TStencilToken.StencilTokenParse_LiteralAndField_SplitsBoth, TStencilToken.StencilTokenParse_NthField_ReadsIndex and 1 more and by fake members LStencilSlotResolve
+- `src/Llyn.Core/Rehearsal/LStencilToken.cs:11` `LStencilTokenIndex`: read only by tests TStencilToken.StencilTokenParse_AllField_SetsAll, TStencilToken.StencilTokenParse_LiteralAndField_SplitsBoth, TStencilToken.StencilTokenParse_NthField_ReadsIndex and by fake members LStencilSlotResolve
+- `src/Llyn.Core/Rehearsal/LStencilToken.cs:12` `LStencilTokenAll`: read only by tests TStencilToken.StencilTokenParse_AllField_SetsAll, TStencilToken.StencilTokenParse_LiteralAndField_SplitsBoth, TStencilToken.StencilTokenParse_NthField_ReadsIndex and by fake members LStencilSlotResolve
+- `src/Llyn.Core/Rehearsal/LStencilToken.cs:14` `LStencilTokenParse`: read only by tests TInterface.TStencilTokenParse and by fake members LStencilSlotResolve
+- `src/Llyn.Core/Vault/Rehearsal/LCueVault.cs:7` `LCueCreate`: read only by tests TInterface.TCueCreate and by fake members LCueClerkAdd, LCueClerkCreate
+- `src/Llyn.Core/Vault/Rehearsal/LCueVault.cs:9` `LCueRead`: read only by tests TInterface.TCueRead, TVaultFakeCue.TVaultFakeScan, TVaultFakeDeck.LDeckDelete and by fake members LCueClerkAdd, LCueClerkFind, LCueClerkMove and 3 more
+- `src/Llyn.Core/Vault/Rehearsal/LCueVault.cs:15` `LCueOrderSet`: read only by tests TVaultFakeCue.LCueDelete and by fake members LCueClerkMove
+- `src/Llyn.Core/Vault/Rehearsal/LCueVault.cs:17` `LCueDelete`: read only by tests TVaultFakeDeck.LDeckDelete and by fake members LCueClerkRemove
+- `src/Llyn.Core/Vault/Rehearsal/LCueVault.cs:19` `LCueCellRead`: read only by tests TInterface.TCueCellRead and by fake members LCueCellRead, LDepotFaceRead
+- `src/Llyn.Core/Vault/Rehearsal/LCueVault.cs:21` `LCueCellSave`: read only by tests TInterface.TCueCellSave and by fake members LCueCellSave, LCueClerkCreate
+- `src/Llyn.Core/Vault/Rehearsal/LDeckVault.cs:7` `LDeckCreate`: read only by tests TInterface.TDeckCreate and by fake members LDeckClerkCreate
+- `src/Llyn.Core/Vault/Rehearsal/LDeckVault.cs:9` `LDeckRead`: read only by tests TInterface.TDeckRead, TVaultFakeFolder.LDeckFolderDelete and by fake members LCueClerkFind, LDeckClerkCreate, LDeckClerkMove and 4 more
+- `src/Llyn.Core/Vault/Rehearsal/LDeckVault.cs:11` `LDeckRead`: read only by tests TInterface.TDeckRead, TVaultFakeDeck.LDeckDelete and by fake members LCueClerkAdd, LCueClerkCreate, LDeckClerkRead and 4 more
+- `src/Llyn.Core/Vault/Rehearsal/LDeckVault.cs:13` `LDeckUpdate`: read only by tests TInterface.TDeckUpdate, TVaultFakeFolder.LDeckFolderDelete and by fake members LDeckClerkMove, LDeckClerkUpdate, LDeckFolderDelete and 1 more
+- `src/Llyn.Core/Vault/Rehearsal/LDeckVault.cs:15` `LDeckOrderSet`: read only by tests TInterface.TDeckOrderSet, TVaultFakeDeck.LDeckDelete and by fake members LDeckClerkMove, LDeckOrderSet
+- `src/Llyn.Core/Vault/Rehearsal/LDeckVault.cs:17` `LDeckDelete`: read only by tests TInterface.TDeckDelete and by fake members LDeckClerkDelete
+- `src/Llyn.Core/Vault/Rehearsal/LDeckVault.cs:19` `LBearingRead`: read only by tests TInterface.TBearingRead and by fake members LDeckClerkRead
+- `src/Llyn.Core/Vault/Rehearsal/LDeckVault.cs:21` `LBearingSave`: read only by tests TInterface.TBearingSave and by fake members LDeckClerkCreate, LDeckClerkUpdate
+- `src/Llyn.Core/Vault/Rehearsal/LStencilVault.cs:7` `LStencilCreate`: read only by tests TInterface.TStencilCreate and by fake members LDeckClerkCreate, LStencilClerkSave
+- `src/Llyn.Core/Vault/Rehearsal/LStencilVault.cs:9` `LStencilRead`: read only by tests TInterface.TStencilRead
+- `src/Llyn.Core/Vault/Rehearsal/LStencilVault.cs:11` `LStencilRead`: read only by tests TInterface.TStencilRead, TVaultFakeDeck.LDeckDelete and by fake members LStencilClerkApply, LStencilOwnedRead
+- `src/Llyn.ShellEngine/Engine/LWorkspaceStaff.cs:18` `LWorkspaceStaffLatch`: read only by tests TInterface.TDepotLatchRead and by fake members LEngineDepotCheck
+
+## Above ceiling
+
+- Orphan: 139 hit(s), ceiling 0
+- Tested: 71 hit(s), ceiling 0
+
+## Stale ceilings

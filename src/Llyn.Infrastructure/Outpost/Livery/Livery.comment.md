@@ -127,6 +127,10 @@ That centres its 32-pixel height 7 pixels above the baseline, level with the rea
 The `middle` value would centre it on the smaller cell text, below the reading's middle.
 The contour box keeps a 10-pixel margin above it.
 Contour chart images scale up by half and carry their own colours.
+The `llyn-axis` block is an inline-flex column, so the contour box centres on the accent above it.
+Its accent line keeps the 37-pixel row height.
+The label cell of that row sits at the top, on the same line.
+The player beside the block keeps its baseline, which is the accent's.
 
 ### Regard row
 
@@ -253,8 +257,8 @@ The empty cell keeps the marks in the column the characters use.
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `aae5349dbb94`
 - `LLiverySheet.cs` `960715135a175c55`
-- `LLiveryStyle.cs` `8007253a1e6a9822`
+- `LLiveryStyle.cs` `c5e268204a726c80`
 - `LLiveryXiesheng.cs` `7fe0c4fa2c46ae6e`
 - `LLiveryYunjing.cs` `fdb8c41af05a7c10`

@@ -174,6 +174,61 @@ public sealed class TRespellingDraft
     }
 
     [Fact]
+    public void RequestApply_ToneSandhi_RespellsRealizedTone()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LDraft started = engine.TEngineDraftStart("Input", null);
+        engine.TEngineRequestApply(TInterface.TRequestLanguageCreate(started.LDraftId, "Mandarin"));
+
+        LDraft answered = engine.TEngineRequestApply(
+            TInterface.TRequestIpaCreate(started.LDraftId, "t͡ɕʰi²¹⁴⁻²¹ ʈ͡ʂʰu̯ɑŋ³⁵"));
+        LPronunciationDraft primary = Assert.Single(answered.LDraftContent.LEntryDraftPronunciations);
+        Assert.Equal("t͡ɕʰi²¹⁴⁻²¹ ʈ͡ʂʰu̯ɑŋ³⁵", primary.LPronunciationDraftIpa);
+        Assert.Equal("tsʰi²¹ tʂʰuaŋ³⁵", primary.LPronunciationDraftRespelling);
+
+        engine.TEngineRespellingSave(true);
+        LAccentSheet respelled = engine.TEngineAccentRead(answered.LDraftContent);
+        Assert.Equal("tsʰi²¹ tʂʰuaŋ³⁵", respelled.LAccentSheetPrimary.LAccentRowText);
+        Assert.Equal(["tsʰi²¹", "tʂʰuaŋ³⁵"], respelled.LAccentSheetContour.Select(row => row.LContourText));
+
+        engine.TEngineRespellingSave(false);
+        LAccentSheet plain = engine.TEngineAccentRead(answered.LDraftContent);
+        Assert.Equal("t͡ɕʰi²¹⁴⁻²¹ ʈ͡ʂʰu̯ɑŋ³⁵", plain.LAccentSheetPrimary.LAccentRowText);
+        Assert.Equal("t͡ɕʰi²¹⁴⁻²¹", plain.LAccentSheetContour[0].LContourText);
+    }
+
+    [Fact]
+    public void WorkspaceRespellingUpdate_StaleAndEdited_RenewsOnlyStale()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        long entryId;
+        using (LEngine engine = workspace.TWorkspaceEngineStart())
+        {
+            entryId = engine.TEngineEntrySave(TRespellingDraftCreate(
+                [
+                    TInterface.TPronunciationDraftCreate("t͡ɕʰi²¹⁴⁻²¹ ʈ͡ʂʰu̯ɑŋ³⁵", respelling: "tsʰi²¹⁴⁻²¹ tʂʰuaŋ³⁵"),
+                    TInterface.TPronunciationDraftCreate("ʈ͡ʂʊŋ²¹⁴⁻²¹", respelling: "jung²¹⁴⁻²¹"),
+                ]) with
+            {
+                LEntryDraftReflexes =
+                [
+                    TInterface.TReflexDraftCreate("Mandarin", "", "t͡ɕʰi²¹⁴⁻²¹", respelling: "tsʰi²¹⁴⁻²¹"),
+                ],
+            }).LEntryId;
+        }
+
+        using LEngine reopened = workspace.TWorkspaceEngineStart();
+
+        Assert.Equal(
+            [("t͡ɕʰi²¹⁴⁻²¹ ʈ͡ʂʰu̯ɑŋ³⁵", "tsʰi²¹ tʂʰuaŋ³⁵"), ("ʈ͡ʂʊŋ²¹⁴⁻²¹", "jung²¹⁴⁻²¹")],
+            reopened.TEntryPronunciationRead(entryId)
+                .Select(row => (row.LPronunciationDraftIpa, row.LPronunciationDraftRespelling)));
+        LReflexDraft reflex = Assert.Single(reopened.TEntryReflexRead(entryId));
+        Assert.Equal(("t͡ɕʰi²¹⁴⁻²¹", "tsʰi²¹"), (reflex.LReflexDraftText, reflex.LReflexDraftRespelling));
+    }
+
+    [Fact]
     public void RespellingCheck_SwitchAndPack_AnswerTogether()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();

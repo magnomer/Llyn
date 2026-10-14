@@ -79,7 +79,7 @@ The notice is raised regardless of the gate verdict, so a refused unfold still r
 
 Entry fields redraw on open and close, while the note redraws only on open.
 The note section's visibility follows the shown entry, keeping its content refresh separate from hiding it.
-An unchosen unit or freedom hides its line, so a bare entry shows no empty label.
+An unchosen unit or freedom hides its chip, so a bare entry shows no empty chip.
 The note is Markdown, drawn as blocks by `QMarkdownFace`.
 
 ## `QLecternFrequency`
@@ -138,11 +138,11 @@ The label column joins the shared `PReadingLabel` width only while its section s
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `aae5349dbb94`
 - `QGraspStar.cs` `b96249bbb783b9db`
 - `QLectern.cs` `f44b838e37fa2538`
 - `QLecternCard.cs` `e28c8917b89e8475`
-- `QLecternEntry.cs` `d20c6b267a0dbe0d`
+- `QLecternEntry.cs` `f13d612b00f01fd0`
 - `QLecternEtymology.cs` `db6f54cdb8b0c4f2`
 - `QLecternFrequency.cs` `557735b484228775`
 - `QLecternGrasp.cs` `419a09bfaccb2698`

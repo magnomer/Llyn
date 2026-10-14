@@ -14,6 +14,10 @@ A page marked with a speech of no name writes no chip line.
 So the chip writer neither cuts earlier text nor adds a blank line.
 A toned contour draws one chart image per syllable, never an inline `<svg>`, since Joplin's sanitizer strips it.
 The syllable falling to the bottom ends its gradient on `contourBottom`, and the other's dot paints `contourMid`.
+A toned contour beside a stored recording shares one `llyn-axis` block with the accent.
+The player link follows the block, outside it.
+The style note lays that block out as a centred column.
+So the plot centres on the reading and never on the player.
 A stored recording becomes one audio parcel behind a Markdown link, with no `<audio>` tag.
 A missing recording file leaves no parcel and no player, while the pronunciation still prints.
 A rime book repeated across two sources prints its book chip once, while both source badges print.
@@ -130,8 +134,8 @@ Each box keeps its tongue and gloss spans, and the headword closes the tree in `
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `TEngineLivery.cs` `b2d8aea3fe2e868d`
+Commit: `aae5349dbb94`
+- `TEngineLivery.cs` `171299b8324074fb`
 - `TEngineLiveryCard.cs` `e96a6501a7a378a6`
 - `TEngineLiveryInflection.cs` `f92f64ecc5403946`
 - `TEngineLiveryLanguage.cs` `93be9c93139a750d`

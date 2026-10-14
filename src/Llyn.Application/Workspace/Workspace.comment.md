@@ -18,6 +18,12 @@ The workspace is shown by its folder name, or by the full root when the name is 
 
 It tells a flag code that is a path from a remote code.
 
+### `LTrailPathValidate`
+
+It refuses an absolute path with `Refusal.PathRooted` and answers a relative one as given.
+The trail resolves an absolute path as itself, so only this refusal keeps a value under the root.
+The rooted test is the trail's own, so a drive-relative or slash-led path refuses too.
+
 ### `LTrailPathResolve`
 
 It answers null when the trail refuses the path.
@@ -123,8 +129,26 @@ It fills the respelling of every pronunciation that has a reading but no respell
 It fills a missing reflex respelling the same way, and recomputes the anatomy of every reflex with text.
 The reflex list is written back only when something changed, so a settled entry costs no write.
 
+### `LWorkspaceRespellingUpdate`
+
+Runs at every workspace open, since a pack's respelling rules can change between runs.
+Every entry is passed through `LRespellingStaleUpdate` in one session.
+
+### `LWorkspaceEntryScan`
+
+The one loop both passes share, every entry through one step inside one session.
+One entry that fails is recorded and skipped, so one bad row never blocks the workspace.
+Keeping one loop keeps one catch, so the failure policy has one owner.
+
+### `LRespellingStaleUpdate`
+
+Derives again every respelling `LLanguageStaleCheck` finds stale, pronunciation and reflex alike.
+The reading is never written, so the stored transcription keeps every tone it had.
+A renewed reflex has its anatomy recut, and the reflex list is written only when a row renewed.
+Blank and hand-written respellings are left as they are.
+
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `LTrailClerk.cs` `2097b4a2eb283d08`
-- `LWorkspaceClerk.cs` `c7be97a92bcdd963`
+Commit: `aae5349dbb94`
+- `LTrailClerk.cs` `4f1c00088148fe4c`
+- `LWorkspaceClerk.cs` `bb20fd730734af55`

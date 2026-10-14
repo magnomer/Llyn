@@ -179,6 +179,7 @@
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" SharedSizeGroup="PReadingLabel" />
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="PReadingSpan" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Style="{StaticResource Theme.Pronunciation.Lead}">
@@ -192,6 +193,8 @@
                                         <TextBox x:Name="PPronunciationField" Style="{StaticResource Theme.Pronunciation.Field}" />
                                     </Grid>
                                     <TextBlock x:Name="PPronunciationCloser" Style="{StaticResource Theme.Pronunciation.Bracket}" Text="]" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2" Style="{StaticResource Theme.Pronunciation.Body}">
                                     <Button
                                         x:Name="PPlaybackAction"
                                         Style="{StaticResource Theme.Accent.Tool}"
@@ -212,7 +215,13 @@
                         </Border>
                     </StackPanel>
 
-                    <local:PContour x:Name="PContour" Style="{StaticResource Theme.Contour.Box}" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="PReadingLabel" />
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="PReadingSpan" />
+                        </Grid.ColumnDefinitions>
+                        <local:PContour x:Name="PContour" Grid.Column="1" Style="{StaticResource Theme.Contour.Box}" />
+                    </Grid>
                     <ItemsControl x:Name="PAccent" ItemTemplate="{StaticResource Theme.Accent.Row}" />
                     <ItemsControl x:Name="PTranscription" ItemTemplate="{StaticResource Theme.Transcription.Row}" Visibility="Collapsed" />
                     <ItemsControl x:Name="PGlyph" ItemTemplate="{StaticResource Theme.Glyph.Row}" Visibility="Collapsed" />

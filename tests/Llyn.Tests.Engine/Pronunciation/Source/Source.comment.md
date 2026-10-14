@@ -41,6 +41,10 @@ The REST rendering writes `data-mw-wikitext` before `id` on each section heading
 A heading anchor written as `<h2 id=` therefore missed every REST page.
 The Korean fixture holds an empty category span inside the IPA span, which the span reader skips.
 The Spanish fixture lists the phonemic reading first and the phonetic one in brackets after it.
+It also covers the Mandarin and Cantonese `glyph` source on recorded wikitext answers of the parse API.
+A traditional page with no `{{zh-see}}` pointer answers its own title, as the reading view shows it.
+A simplified page answers the form its pointer names, and only that form.
+A missing page answers a blank that was reached.
 
 ## `TSourceSpanish`
 
@@ -63,8 +67,8 @@ The fake client answers the body for any address, so the live URL is never calle
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `aae5349dbb94`
 - `TSourceGeneric.cs` `095a67904a6f352c`
 - `TSourceMorphology.cs` `dad89363daf96f29`
-- `TSourcePack.cs` `f8ba71575389e4b5`
+- `TSourcePack.cs` `2ee512e52a57fe5f`
 - `TSourceSpanish.cs` `19854b0c39cfbb71`

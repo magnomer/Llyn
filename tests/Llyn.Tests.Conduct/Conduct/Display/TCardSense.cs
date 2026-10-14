@@ -88,7 +88,7 @@ public sealed class TCardSense
     }
 
     [Fact]
-    public void DisplayCompassRead_HomedCollocation_AddsMutedCountRow()
+    public void DisplayCompassRead_HomedCollocation_AddsMutedHeadingRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -96,20 +96,20 @@ public sealed class TCardSense
         display.LDisplayRule.LDisplaySound.TDisplaySoundShow(7, TCompassDraftCreate([41], [42], [42]));
 
         IReadOnlyList<CCompassRow> rows = display.CDisplayCompass.CCompassRead(
-            [CCompassPart.CCompassPartMeaning, CCompassPart.CCompassPartCollocation], static key => key + " {0}");
+            [CCompassPart.CCompassPartMeaning, CCompassPart.CCompassPartCollocation], static key => key);
 
         Assert.Equal([0, 1, 2, 1, 2], rows.Select(static row => row.CCompassRowDepth));
         Assert.Equal([null, 0, 0, 1, 1], rows.Select(static row => row.CCompassRowCard));
         Assert.Equal([false, false, true, false, true], rows.Select(static row => row.CCompassRowMuted));
         Assert.Equal(
-            ["Display.CollocationCountOne 1", "Display.CollocationCount 2"],
+            ["Display.CollocationHeading", "Display.CollocationHeading"],
             rows.Where(static row => row.CCompassRowMuted).Select(static row => row.CCompassRowName));
         Assert.All(rows.Where(static row => row.CCompassRowMuted), static row => Assert.Empty(row.CCompassRowNumber));
         Assert.DoesNotContain(rows, static row => row.CCompassRowPart == CCompassPart.CCompassPartCollocation);
     }
 
     [Fact]
-    public void DisplayCompassRead_EqualCounts_KeepsCountsUnnumbered()
+    public void DisplayCompassRead_TwinHeadings_KeepsHeadingsUnnumbered()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -117,10 +117,10 @@ public sealed class TCardSense
         display.LDisplayRule.LDisplaySound.TDisplaySoundShow(7, TCompassDraftCreate([41], [42]));
 
         IReadOnlyList<CCompassRow> rows = display.CDisplayCompass.CCompassRead(
-            [CCompassPart.CCompassPartMeaning], static key => key + " {0}");
+            [CCompassPart.CCompassPartMeaning], static key => key);
 
         Assert.Equal(
-            ["Display.CollocationCountOne 1", "Display.CollocationCountOne 1"],
+            ["Display.CollocationHeading", "Display.CollocationHeading"],
             rows.Where(static row => row.CCompassRowMuted).Select(static row => row.CCompassRowName));
     }
 
@@ -141,7 +141,7 @@ public sealed class TCardSense
     }
 
     [Fact]
-    public void DisplayCardRead_HomedCollocation_WordsHeadingCount()
+    public void DisplayCardRead_HomedCollocation_WordsPlainHeading()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -153,7 +153,7 @@ public sealed class TCardSense
 
         CLecternCard card = wing.CWingDisplay.CDisplayCard.CDisplayCardRead();
 
-        Assert.Equal(string.Format(CultureInfo.CurrentCulture, heading, 1), card.CLecternCardMeanings[0].CLeafHeading);
+        Assert.Equal(heading, card.CLecternCardMeanings[0].CLeafHeading);
         Assert.Empty(card.CLecternCardMeanings[1].CLeafHeading);
     }
 

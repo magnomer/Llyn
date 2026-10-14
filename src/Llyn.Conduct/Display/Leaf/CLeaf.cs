@@ -100,8 +100,8 @@ public sealed record CLeaf(
                 (layout?.LCollocationLayoutAlso.GetValueOrDefault(card.LCardDraftId, []) ?? []) is { Count: > 0 } paths
                     ? string.Format(CultureInfo.CurrentCulture, also, string.Join(", ", paths))
                     : string.Empty,
-                (layout?.LCollocationLayoutHome.GetValueOrDefault(card.LCardDraftId, []) ?? []) is { Count: > 0 } homes
-                    ? string.Format(CultureInfo.CurrentCulture, heading, homes.Count)
+                (layout?.LCollocationLayoutHome.GetValueOrDefault(card.LCardDraftId, []) ?? []).Count > 0
+                    ? heading
                     : string.Empty))
             .ToList();
     }

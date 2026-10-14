@@ -77,7 +77,7 @@ Most builders hand their arguments to the constructor unchanged, and most format
 A fixed English label set, so a test asserts on known words without the localization files.
 Its unit and freedom names are English too.
 It words the unlinked collocation heading as "Other collocations" and the stub as "→ {0} see {1}".
-It words the caption over a meaning's homed collocations as "Collocations · {0}".
+It words the caption over a meaning's homed collocations as "Collocations", with no count.
 
 ## `TPortraitLegendRead`
 
@@ -282,10 +282,10 @@ A test sets it to stand for a store that cannot be written.
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `aae5349dbb94`
 - `TExemplar.cs` `113831e430921ef2`
 - `TExemplarText.cs` `10b64d46827e6b52`
-- `TInterfacePortrait.cs` `04d25771c17ce281`
+- `TInterfacePortrait.cs` `7235e4186cbd7169`
 - `TOutpostFake.cs` `cee6a1e7570dc877`
 - `TPress.cs` `655181875f05072d`
 - `TPressBoard.cs` `e9775568b2cd1543`

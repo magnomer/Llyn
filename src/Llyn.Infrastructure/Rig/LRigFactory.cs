@@ -47,6 +47,7 @@ public static class LRigFactory
             LRigFactorySentence.LRigSentenceBuild(database),
             LRigFactoryContext.LRigContextBuild(database),
             LRigFactorySource.LRigSourceBuild(client, root),
+            LRigFactoryRehearsal.LRigRehearsalBuild(database, root),
             new LOutpostHttp(),
             new LLanguageLoader(root, client),
             press,

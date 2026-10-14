@@ -75,6 +75,10 @@ Flipping the switch raises a settings bulletin so open readings redraw.
 A reflex row's text derives a bare respelling through the row's own language, never wrapped in slashes.
 A reflex respelling written by hand stands until the text or the language changes.
 Rows saved without a respelling, pronunciation and reflex alike, have one derived and stored on the way in.
+A Mandarin sandhi pair respells to its realized tone, in the row, the accent sheet and its contour labels.
+With the switch off the sheet shows the whole pair, and the reading keeps it either way.
+A respelling stored under older rules is derived again when the workspace opens, reading untouched.
+A hand-written respelling and the reading beside it stay as they were.
 A load reads the stored form back and derives nothing.
 
 ## `TTranscription`
@@ -96,9 +100,9 @@ The archive shelves every surviving row first, so both ids survive and only the 
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `aae5349dbb94`
 - `TPronunciation.cs` `dd68d3d094c39615`
 - `TReflex.cs` `7c6ce6a407088f9a`
 - `TReflexOrder.cs` `8c81c82e194f8fb1`
-- `TRespellingDraft.cs` `e2f4afa84345da9a`
+- `TRespellingDraft.cs` `37a8ceeeb6b10da2`
 - `TTranscription.cs` `9a7fc295dc68d7d6`

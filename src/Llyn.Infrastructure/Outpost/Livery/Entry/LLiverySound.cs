@@ -49,17 +49,12 @@ internal static class LLiverySound
                         row.LAccentRowId != 0 && pronunciation.LPronunciationDraftId == row.LAccentRowId);
                 lines.Add((
                     flag.Length > 0 ? flag : LLiveryHeader.LLiveryTextFormat(row.LAccentRowVariety),
-                    "<span class=\"llyn-accent\">" + LLiveryToneFormat(spoken, toned) + "</span>"
+                    LSheetSound.LSheetAxisFormat(
+                        "<span class=\"llyn-accent\">" + LLiveryToneFormat(spoken, toned) + "</span>",
+                        primary ? accent.LAccentSheetContour : [],
+                        theme,
+                        static text => WebUtility.HtmlEncode(text) ?? string.Empty)
                     + LLiveryPlayerFormat(recorded)));
-                if (primary && accent.LAccentSheetContour.Count > 0)
-                {
-                    lines.Add((
-                        string.Empty,
-                        LSheetSound.LSheetContourFormat(
-                            accent.LAccentSheetContour,
-                            theme,
-                            static text => WebUtility.HtmlEncode(text) ?? string.Empty)));
-                }
             }
         }
 

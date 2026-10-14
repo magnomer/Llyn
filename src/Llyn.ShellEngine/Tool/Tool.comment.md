@@ -1,7 +1,7 @@
 # Tool
 
 These are the facades the engine offers its shells, one per tool.
-The tools are Joplin push, fanqie, livery, markup, portrait, pronunciation, reflex and stem.
+The tools are Joplin push, decks, fanqie, livery, markup, portrait, pronunciation, reflex and stem.
 Each takes the hearth and the sibling facades it calls, all built by `LEngine` before it.
 It takes siblings rather than the engine, so it names only the facades it uses.
 The gate, the staff and the shared state are read through the hearth.
@@ -26,7 +26,35 @@ So the shell offers Connect again instead of a connection that no longer works.
 `LEngineWarrantClear` is its reverse.
 A settings bulletin follows either only for a real change, so an unchanged token repaints nothing.
 
-## `LFanqieFacade`
+## `LDeckFacade`
+
+The facade for decks, their folders, their cues and their stencils.
+Each member takes the gate and relays one call of the deck, cue or stencil clerk.
+It decides nothing, so every rule, refusal and order stays with the clerks.
+It calls no sibling facade, so it takes the hearth alone.
+`LDeckPort` is its face, through `LDeckOutlet`, as `LPortraitPort` faces the courier.
+
+`LEngineDeckRead()` reads the folders and the decks under one gate, so the roll comes from one moment.
+The folders come first, so the deck list reaches Conduct with the folders it files under.
+`LEngineDeckRead(long)` answers null for a deck never stored.
+It answers the deck with its bearings, the shape the deck editor loads.
+
+`LEngineDeckUpdate(long, string)` renames and keeps the code, since the code is the phone's download name.
+`LEngineDeckUpdate(LDeck, IReadOnlyList)` saves the editor's deck and bearings.
+A code another deck holds comes back as the clerk's refusal, untouched.
+`LEngineDeckMove(long?, IReadOnlyList)` sets the order inside one folder, or the top level for null.
+
+`LEngineDeckCreate`, `LEngineFolderCreate` and `LEngineCueCreate` answer the new row's id.
+`LEngineCueAdd` answers how many cues the add made, after the clerk skips rows the deck already binds.
+
+`LEngineFaceRead` takes the label from its caller, as `LEnginePortraitRead` does.
+The stencil clerk finds the card and its deck's template, so the facade gathers nothing.
+`LEngineStencilRead` and `LEngineSlotSet` read and edit the deck's owned template.
+
+`LEngineDeckExport` takes no gate, since the depot clerk takes it around its own reads.
+It takes the label from its caller, as `LEngineFaceRead` does.
+`LEngineDepotCheck` reads the workspace latch, so the export and the import gates show one busy state.
+
 
 The facade for fanqie, wrapping the fanqie, diwei and tally reads of the fanqie and diwei clerks.
 It implements the fanqie and diwei ports itself.
@@ -263,8 +291,9 @@ It answers empty while neither exists.
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `aae5349dbb94`
 - `LCourierFacade.cs` `316cb119faa9202c`
+- `LDeckFacade.cs` `19db7f673eea2312`
 - `LFanqieFacade.cs` `19ca044c7f98d17f`
 - `LLiveryFacade.cs` `930588ef8cfd2c99`
 - `LMarkupFacade.cs` `68847305501ca292`

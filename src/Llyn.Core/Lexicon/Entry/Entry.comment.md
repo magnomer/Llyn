@@ -24,6 +24,23 @@ The entry-level detail travels as the shapes the archives store, never as flatte
 `LEntryDraftAccents` holds every pronunciation after the primary one.
 `LEntryDraftNormalize` walks every card and is called only after the user agreed to lose what the store could not read.
 
+## `LEntryChip`
+
+One chip of an entry's chip row and its kind.
+`LEntryChipRead` owns the row's order, the one the view shows.
+The unit comes first, then the freedom, then each named part of speech.
+It takes the draft's unit, freedom and speeches, so each caller names the draft fields it shows.
+An unchosen or unknown unit or freedom adds no chip, and a draft with nothing marked reads as no chip.
+A unit or freedom chip carries its localization key from `LUnitKeyRead` or `LFreedomKeyRead`.
+A speech chip carries its name.
+The print sheet, the Joplin note and the DOCX and Markdown portrait all read the row here.
+Each of them only words and styles it.
+
+## `LEntryChipKind`
+
+Whether a chip is the unit, the freedom or a part of speech.
+A writer styles the first two as outlined chips.
+
 ## `LFoldBox`
 
 Which folding box of the entry editor a fold request means, Fanqie or Script.
@@ -66,8 +83,10 @@ The editor, the reading view and the exports name a unit through `LUnitKeyRead`,
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `aae5349dbb94`
 - `LEntry.cs` `33570d75bb87f462`
+- `LEntryChip.cs` `4e5cafe96cf4c9f2`
+- `LEntryChipKind.cs` `9368a296b1bee07f`
 - `LEntryDraft.cs` `9d5be3296a8b37ff`
 - `LFoldBox.cs` `1cc4cf7e5a366082`
 - `LForm.cs` `08608a643507cab0`

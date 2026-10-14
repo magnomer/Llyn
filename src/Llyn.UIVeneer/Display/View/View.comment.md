@@ -58,6 +58,8 @@ It stays empty until those are fetched, and an empty reading takes no room.
 It is the pronunciation chip the editor also wears, defined once in the theme.
 It shows the primary pronunciation's variety before the brackets and play after them.
 The brackets are named so the lectern can turn them into slashes for a phonemic respelling.
+The brackets and the reading stand alone in a column of the shared size group `PReadingSpan`.
+The buttons stand in the next column, so they never count in the pronunciation's width.
 Play shows only while the primary pronunciation owns a recording still on disk.
 The editor's lookup, download and plus-minus buttons stand after it, drawn hidden.
 They keep the room the editor's row takes, so the volume tray stands at one x in both views.
@@ -67,6 +69,8 @@ The chip collapses when the entry carries no pronunciation.
 
 It draws the tone contour of the primary pronunciation when the entry's language is tonal.
 `QLecternAccent` hands it the syllables of the shown contour, whichever form the chip prints.
+Its row repeats the chip's first two columns, `PReadingLabel` and `PReadingSpan`, and the box takes the second.
+So the box centres on the pronunciation from bracket to bracket, at any width of either.
 It hides itself when there is no tone to draw.
 
 ### PDisplay.xaml: `PDisplayAccent`
@@ -102,10 +106,10 @@ The editor draws the same tray, so a recording plays the same way where it is re
 
 ### PDisplay.xaml: `PDisplaySpeechSection`
 
-The parts of speech stand on a row of their own, as in the editor.
-`PDisplayUnit` names the lexical unit above them, collapsed until a unit is chosen.
-`PDisplayFreedom` follows it on the same line, collapsed until a freedom is chosen.
-Sharing the pronunciation row put them beside a chip that the editor puts a button beside.
+The unit, the freedom and the parts of speech share one row, drawn as the editor draws them.
+`PDisplayUnitChip` and `PDisplayFreedomChip` are the editor's outlined chips without their dropdowns.
+Each stays collapsed until its value is chosen.
+The editor's remove buttons and part-of-speech field are edit controls, so the view leaves them out.
 
 ### PDisplay.xaml: `PDisplayFrequencySection`
 
@@ -181,6 +185,6 @@ The lectern shows the flag or the globe, so no trigger here watches the image.
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `PDisplay.xaml` `787f7119df3e349a`
+Commit: `aae5349dbb94`
+- `PDisplay.xaml` `9c7683142db4c4b0`
 - `PDisplay.xaml.cs` `bc75ac1cd4702294`

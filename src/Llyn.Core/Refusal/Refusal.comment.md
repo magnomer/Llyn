@@ -126,7 +126,41 @@ Two runs would race over the manifest and the stored token, so the second waits 
 A connect whose access request Joplin left unanswered past the polling limit.
 The user may simply not have seen the prompt, so they accept it and try again.
 
+## `LRefusalDeck`
+
+A deck action whose deck is no longer in the workspace.
+
+## `LRefusalCue`
+
+A card action whose card is no longer in any deck.
+
+## `LRefusalBound`
+
+A cell save on a card bound to an entry.
+Its cells come from the entry through the deck's template, so only a free card takes typed cells.
+
+## `LRefusalCode`
+
+A deck update whose code another deck already holds, in any case.
+The code names the phone's file, so two decks may never share one.
+
+## `LRefusalPhone`
+
+A deck export whose phone file changed since Llyn last wrote it.
+Writing over it would lose the phone's reviews, so the import must run first.
+The name says phone, since `LRefusalPending` already holds the Joplin request.
+
+## `LRefusalBusy`
+
+A deck export asked while the same workspace still runs one.
+Two runs would race over the phone folder and its manifest.
+
+## `LRefusalPathRooted`
+
+A workspace path that is absolute where only a relative one is allowed.
+The deck sync folder sits under the workspace root, so the workspace moves with its folder.
+
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `LRefusal.cs` `97ac9729718b70d9`
+Commit: `aae5349dbb94`
+- `LRefusal.cs` `e9581dc5961921b6`

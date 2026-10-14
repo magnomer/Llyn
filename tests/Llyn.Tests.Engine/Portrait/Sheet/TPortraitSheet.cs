@@ -13,7 +13,7 @@ public sealed class TPortraitSheet
 
         string page = TInterface.TSheetFormat(opened, TInterface.TThemeLoad());
 
-        Assert.Contains("<div class=\"collocations\">\n<h3>Collocations · 1</h3>", page);
+        Assert.Contains("<div class=\"collocations\">\n<h3>Collocations</h3>", page);
         Assert.Contains(
             "<details class=\"collocation\" open>\n<summary><span class=\"phrase\">set off</span>"
             + "<span class=\"sense\">to start a journey</span></summary>",

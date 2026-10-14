@@ -29,7 +29,7 @@
 
     <Style x:Key="Theme.Contour.Box" TargetType="local:PContour">
         <Setter Property="Margin" Value="0,6,0,2" />
-        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
     </Style>
 

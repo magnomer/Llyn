@@ -11,6 +11,7 @@ public sealed class LEngine : IDisposable
     public LMentionFacade LEngineMention { get; }
     internal LMarkupFacade LEngineMarkup { get; }
     internal LCourierFacade LEngineCourier { get; }
+    internal LDeckFacade LEngineDeck { get; }
     internal LLiveryFacade LEngineLivery { get; }
     public LWorkspaceFacade LEngineWorkspace { get; }
     public LReflexFacade LEngineReflex { get; }
@@ -92,6 +93,7 @@ public sealed class LEngine : IDisposable
             LEngineVocabulary);
         LEnginePortrait = new LPortraitFacade(LEngineHearth, LEngineLivery, LEngineSettings);
         LEngineCourier = new LCourierFacade(LEngineHearth, LEngineLivery, LEngineSettings);
+        LEngineDeck = new LDeckFacade(LEngineHearth);
         LEngineTenure = new LTenureFacade(this);
         LEngineHearth.LEngineWorkspaceOpen();
     }

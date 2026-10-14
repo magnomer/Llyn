@@ -68,7 +68,7 @@ public static class LPortraitCard
             if (rows.Count > 0)
             {
                 children.Add(new LPortraitSection(
-                    string.Format(CultureInfo.CurrentCulture, label.LPortraitLabelHeading, rows.Count),
+                    label.LPortraitLabelHeading,
                     [],
                     string.Empty,
                     [],

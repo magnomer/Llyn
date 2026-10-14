@@ -362,6 +362,12 @@ The settings record trims it as it is set, and a blank title stores `Llyn`.
 So the settings field shows what the next sync will write, not what was typed.
 Nothing is sent to Joplin here, since the next push reads the title afresh.
 
+## `LEngineDepotSave`
+
+It persists the deck sync folder and answers the folder it stored.
+It relays only, so the trail clerk decides the path rule and the settings change stores it.
+An absolute folder raises `Refusal.PathRooted` before anything is written.
+
 ## `LEngineSettingsChange`
 
 It applies one change to the settings snapshot under the gate and writes it through the workspace clerk.
@@ -508,12 +514,12 @@ The folder path is read there, so the caller hands nothing it gathered.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `aae5349dbb94`
 - `LDraftFacade.cs` `ca0ef8326da7c3ad`
 - `LLanguageFacade.cs` `22bf9bcec6db6495`
 - `LRequestFacade.cs` `9a08f1ac9c85e708`
 - `LScriptFacade.cs` `0868062d56c4daf9`
-- `LSettingsFacade.cs` `f39a358bfdd92e75`
+- `LSettingsFacade.cs` `8af15864f028e6e9`
 - `LTenureFacade.cs` `c7d7ee4457051f6e`
 - `LVocabularyFacade.cs` `f1299bc555399645`
 - `LWorkspaceFacade.cs` `f0eb53a0cb7a7ee9`

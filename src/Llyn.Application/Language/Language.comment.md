@@ -41,6 +41,13 @@ Derives every pronunciation row's respelling again, for a draft whose language c
 Fills only the blank respellings of a draft, and recuts every reflex row.
 A row the user already respelled keeps what it has, since this runs on a draft being stored, not edited.
 
+### `LLanguageStaleCheck`
+
+Asks `LRespellingStaleCheck` whether a stored respelling lags behind the pack's current rules.
+The pronunciation overload uses the entry's language and the row's variety.
+The reflex overload uses the row's own language and no variety, as its derivation does.
+A blank language, a pack without groups or a blank reading is never stale.
+
 ### `LLanguageAnatomyResolve`
 
 The row has its anatomy cut afresh under the rules of the pack of the entry's language.
@@ -136,6 +143,6 @@ Any other code is fetched through the language port.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `LLanguageCache.cs` `d16ef3eec7823894`
+Commit: `aae5349dbb94`
+- `LLanguageCache.cs` `a1504ff0d6b80640`
 - `LLanguageClerk.cs` `9b2b5e191d8385d2`

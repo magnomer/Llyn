@@ -97,6 +97,15 @@
             "group": 1,
             "normalize": false,
             "every": true
+          },
+          {
+            "urls": [
+              "https://en.wiktionary.org/w/api.php?action=parse&prop=wikitext&format=json&redirects=1&page={word}"
+            ],
+            "confirm": "(?s)\\A(?!.*\\{\\{zh-see\\|)(?=.*==Chinese==)",
+            "strategy": "json",
+            "path": "parse.title",
+            "normalize": false
           }
         ]
       }
@@ -119,7 +128,8 @@
         ["ɛ", "e"],
         ["ɔ", "o"],
         ["ä", "a"],
-        ["ɑ", "a"]
+        ["ɑ", "a"],
+        ["[⁰¹²³⁴⁵⁶⁷⁸⁹]+[⁻-]([⁰¹²³⁴⁵⁶⁷⁸⁹]+)", "$1"]
       ]
     }
   ],

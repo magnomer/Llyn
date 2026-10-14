@@ -102,6 +102,9 @@ Indexes and triggers go with their tables, and SQLite's own tables cannot be dro
 
 `LSchemaOrphanSweep` deletes every row whose parent did not come across, until the foreign-key check reports nothing.
 Deleting a parent can orphan its own children, which is why the check runs again.
+Each round first runs `LSchemaDeck.LSchemaCueSettle`, which sets to none every cue reference whose row is gone.
+So a cue whose lexical row an earlier round swept stays, orphaned, rather than going in the next round.
+Every other table is swept as before.
 
 `LSchemaTableRead` lists the tables both schemas hold, in the order the schema created them.
 SQLite's own tables are left out, except the id counters.
@@ -286,6 +289,11 @@ The shengfu table comes after fanqie, since both are read for one character of a
 The anchor table comes after reflex, fanqie and diwei.
 The sequence places both foreign-key parents before the anchor table, making their ownership dependencies visible.
 
+### LSchema.cs: LSchemaDeck.LSchemaDeckCreate(connection)
+
+The Rehearsal tables come after every lexical table their cues point at.
+No lexical table points back at them.
+
 ### LSchema.cs: LSchemaRevision.LSchemaRevisionCreate(connection)
 
 The operational and history tables close the schema.
@@ -324,16 +332,25 @@ Every other ordered set already has one.
 Without it a duplicate position is silently possible and the read order becomes arbitrary.
 Any duplicate an older database still holds is renumbered by the migration that precedes this call.
 
+### LSchemaIndex.cs: command.CommandText = (fifth statement)
+
+It indexes the five lexical references of a cue, so a lexical delete does not scan the cues.
+A deck's folder reference is indexed for the same reason.
+A cue's place within its deck and a deck's place within its folder are unique, none counting as zero.
+The deck code is unique because it names the deck's export file.
+An index takes the column name where `<table>_<role>` would equal a table name.
+So the folder index is `deck_folder_ref`, since `deck_folder` is a table.
+
 ## Stamp
 
-Commit: `c6e60141a172`
-- `LSchema.cs` `3a65c29bf73d02d0`
+Commit: `aae5349dbb94`
+- `LSchema.cs` `8cca5734789a23ae`
 - `LSchemaAnchor.cs` `269b59734b8ecf68`
 - `LSchemaCitation.cs` `8f67c1c2b7d5273d`
 - `LSchemaFavorite.cs` `e20098526745e8aa`
-- `LSchemaIndex.cs` `b5273cb9ba02109c`
+- `LSchemaIndex.cs` `682400f9b6d2dde6`
 - `LSchemaMarker.cs` `7f186069510a11a3`
-- `LSchemaMigration.cs` `6c34a01d519f3020`
+- `LSchemaMigration.cs` `605ccf6abf6e3cdf`
 - `LSchemaQuotation.cs` `6e6e272cb61c61fa`
 - `LSchemaStamp.cs` `53e8d23fe6a0faee`
 - `LSchemaVersion.cs` `331b3131521e536f`

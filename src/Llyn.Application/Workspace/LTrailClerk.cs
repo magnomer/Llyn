@@ -35,6 +35,17 @@ public sealed class LTrailClerk
         return _lTrailClerkTrail.LTrailRootCheck(path);
     }
 
+    public string LTrailPathValidate(string path)
+    {
+        ArgumentNullException.ThrowIfNull(path);
+        if (_lTrailClerkTrail.LTrailRootCheck(path))
+        {
+            throw new LRefusal(LRefusal.LRefusalPathRooted);
+        }
+
+        return path;
+    }
+
     public bool LTrailPathCheck(string path)
     {
         ArgumentNullException.ThrowIfNull(path);

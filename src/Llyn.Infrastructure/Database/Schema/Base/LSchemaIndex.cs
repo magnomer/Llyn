@@ -71,5 +71,19 @@ public static class LSchemaIndex
                 ON collocation_translation (collocation_parent, position);
             """;
         command.ExecuteNonQuery();
+
+        command.CommandText =
+            """
+            CREATE INDEX IF NOT EXISTS cue_entry ON cue (entry_ref);
+            CREATE INDEX IF NOT EXISTS cue_sense ON cue (sense_ref);
+            CREATE INDEX IF NOT EXISTS cue_collocation ON cue (collocation_ref);
+            CREATE INDEX IF NOT EXISTS cue_example ON cue (example_ref);
+            CREATE INDEX IF NOT EXISTS cue_target ON cue (target_ref);
+            CREATE UNIQUE INDEX IF NOT EXISTS cue_place ON cue (deck_parent, position);
+            CREATE INDEX IF NOT EXISTS deck_folder_ref ON deck (folder_ref);
+            CREATE UNIQUE INDEX IF NOT EXISTS deck_place ON deck (IFNULL(folder_ref, 0), position);
+            CREATE UNIQUE INDEX IF NOT EXISTS deck_code ON deck (deck_code);
+            """;
+        command.ExecuteNonQuery();
     }
 }

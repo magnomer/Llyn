@@ -11,7 +11,8 @@ public sealed record LSettings(
     int LSettingsOutpost = 41184,
     string LSettingsWarrant = "",
     bool LSettingsAnalysis = true,
-    string LSettingsNotebook = LSettings.LSettingsNotebookFallback)
+    string LSettingsNotebook = LSettings.LSettingsNotebookFallback,
+    string LSettingsDepot = "")
 {
     public const string LSettingsNotebookFallback = "Llyn";
 

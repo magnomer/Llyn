@@ -26,6 +26,9 @@ The near-close vowels ɪ and ʊ become i and u.
 The open-mid vowels ɛ and ɔ become e and o.
 The centralized ä and the open back ɑ become a.
 The composed ä matches because the reading is composed first.
+The last row keeps only the realized tone of a sandhi pair, so ²¹⁴⁻²¹ prints as ²¹.
+It matches superscript digits joined by a superscript or plain hyphen, and keeps the digits after the joiner.
+The stored reading keeps the whole pair, and an unrespelled view still shows it.
 The pack declares no varieties, so the group runs on every reading.
 
 ## `transcription[0]` Pinyin
@@ -57,11 +60,14 @@ A simplified-form page only points at its main form, so the attempt follows the 
 ## `glyph` Traditional
 
 It gives one transcription row under the scheme named here, and the language each character opens an entry in.
-The wikitext attempt reads the `{{zh-see}}` pointer, which names the traditional main form.
-A page that is already traditional carries none, so the lookup finds nothing.
-The reading view then shows the headword's own characters.
+The first wikitext attempt reads the `{{zh-see}}` pointer, which names the traditional main form.
 The pointer's later parameters are cut at the first bar.
 A page with a second pointer so yields a second candidate.
+A page that is already traditional carries no pointer, so the first attempt finds nothing there.
+The second attempt then answers the page's own title, so Edit's search and the reading view agree.
+Its confirm pattern asks for a Chinese section and no pointer, so a page of another language yields nothing.
+A word with no page answers an error body without a Chinese section, so the search still finds nothing.
+The second attempt asks the same address again, and only when the first finds nothing.
 
 ## `pronunciation[0]` Wiktionary
 
@@ -174,6 +180,6 @@ A row with neither drops the links.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `source.json` `b7bb053a7d1601fb`
+Commit: `aae5349dbb94`
+- `source.json` `9c6a693f7140b2cc`
 - `vocabulary.json` `f75daa1c13010703`

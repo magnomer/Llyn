@@ -27,6 +27,8 @@ The tree holds title, language, reading line, speech chips, the numbered card, i
 They come in the panel's order.
 A chosen unit's word opens the speech chips, and the chosen freedom's word follows it.
 Both stand ahead of the parts of speech.
+A Latin headword with no saved glyph row prints no glyph section, as the view shows none.
+A Han headword prints its characters there.
 
 A collocation's first link decides the meaning it prints under, and no other-collocations band appears.
 It prints as an open row, headed by its phrase, in a list headed by the row count.
@@ -150,13 +152,13 @@ A selected Example in the corpus view opens the press over the Example text.
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `aae5349dbb94`
 - `TCitationPage.cs` `bbba4a3d7bb84873`
 - `TPortraitClerk.cs` `c69cf83f9713e596`
-- `TPortraitEntry.cs` `23342f25a464518f`
+- `TPortraitEntry.cs` `89ef6416dc54ad18`
 - `TPortraitExporting.cs` `bc7bcef2e8061fb9`
-- `TPortraitFolio.cs` `071815c59fc69cd2`
-- `TPortraitOutline.cs` `48efe478fabf24ad`
+- `TPortraitFolio.cs` `e9389e56a2c4ecb1`
+- `TPortraitOutline.cs` `3312559e8e1f3164`
 - `TPortraitPage.cs` `6bb628aabbfd96d7`
-- `TPortraitSample.cs` `42ca0bada13b12a6`
+- `TPortraitSample.cs` `741c3d7a438cdc57`
 - `TPortraitVista.cs` `22284381645c0ddc`

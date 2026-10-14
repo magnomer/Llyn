@@ -25,9 +25,8 @@ The language chip opens with the variety flag from `LLiveryBannerFormat`, when o
 ### `LLiveryChipAppend`
 
 It writes the speech chips as one paragraph, then the frequency chip as another.
-The speech paragraph is written only when the draft is marked.
-The lexical unit leads it, then the freedom, each named through `lookup`.
-Each part is left out when the page holds no data for it.
+The speech paragraph holds the chips in the order `LEntryChip.LEntryChipRead` gives: unit, freedom, then the named speeches.
+It only styles them: unit and freedom are outlined chips named through `lookup`, and the speeches are filled chips.
 The trailing space is trimmed only when a chip was written.
 A marked draft with no unit, freedom or named speech writes no speech paragraph.
 So text written before this method is never cut.
@@ -81,8 +80,9 @@ An accent row is the sheet's opener, text and closer, with tone digits marked wh
 Its label is the variety's flag, and the name prints when no flag reads.
 The primary row pairs with the draft's first pronunciation, and any other row with the pronunciation of its id.
 That recording adds a player at the row's end, where the play button stands in view mode.
-A row under the primary row holds the contour charts when the contour has syllables.
-Its label stays empty, as view mode draws the charts under the accent.
+The primary row's accent and its contour charts share one axis through `LSheetSound.LSheetAxisFormat`.
+So the plot centres on the reading, as in view mode.
+The player follows the axis block, outside it, so it never moves the plot's centre.
 Each table is left out when it has no row.
 
 ### `LLiveryReadingAppend`
@@ -291,7 +291,7 @@ The collocations linked to no meaning are the same folding rows under their own 
 
 The home is found by `LCollocation.LCollocationHomeRead`, so a collocation shows in full only there.
 No homed collocation writes nothing, not even the heading.
-The block opens with a `llyn-heading` span worded by `Display.CollocationHeading` with the row count.
+The block opens with a `llyn-heading` span worded by `Display.CollocationHeading`, with no count.
 
 ### `LLiveryOtherAppend`
 
@@ -366,13 +366,13 @@ So a stored line break survives inside one paragraph without inline HTML.
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `aae5349dbb94`
 - `LLiveryCard.cs` `2ce8b8cbd4fcb572`
-- `LLiveryCollocation.cs` `05c6d5672c67b022`
+- `LLiveryCollocation.cs` `f0a101a7eda446ba`
 - `LLiveryEtymology.cs` `8037c0b43dfd6fec`
-- `LLiveryHeader.cs` `afa6aec7733c89de`
+- `LLiveryHeader.cs` `759bcc84399d7e72`
 - `LLiveryInflection.cs` `41638ef2745a54c8`
 - `LLiveryLink.cs` `fe209a81b5072d60`
 - `LLiveryRime.cs` `4db006890840f32c`
 - `LLiveryScript.cs` `ff9a864059db6a9f`
-- `LLiverySound.cs` `288e1a48cfec5345`
+- `LLiverySound.cs` `57129c2f5e3fc34f`

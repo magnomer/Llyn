@@ -54,6 +54,11 @@ internal sealed class QContourPlot
 
     private double QContourPlotHeight => Math.Max(0, _qContourPlotScale.Count - 1) * QContourLevelGap;
 
+    internal double QContourOriginRead(double width)
+    {
+        return Math.Round((width - QContourPlotSize.Width) / 2);
+    }
+
     internal double QContourLeftRead(int index)
     {
         return QContourPadding + QContourAxisWidth + index * (QContourCellWidth + QContourCellGap);

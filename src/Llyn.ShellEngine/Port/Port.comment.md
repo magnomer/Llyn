@@ -1,11 +1,24 @@
 # Port
 
-This folder holds the four engine slices the conduct sees that span several facades.
+This folder holds the five engine slices the conduct sees that span several facades.
 Each port has a sealed outlet, which Host builds on the engine and hands to Conduct.
 An outlet reaches the owning facades through the engine and holds no other state.
 A port stands apart from the engine so the layers above never name the engine itself.
 
-## `LDraftOutlet`
+## `LDeckOutlet`
+
+The engine's face for `LDeckPort`, handed by the host to the conduct in place of the engine itself.
+Every member forwards to the same-named member of `LEngineDeck` and holds no state or logic.
+It rejects a null engine and keeps it for every forward.
+
+## `LDeckPort`
+
+The slice the conduct sees for decks, deck folders, cues and stencils.
+It is a realm of its own, so `LPortraitPort` does not grow with it.
+Each member behaves as `LDeckFacade` documents it.
+The deck read carries the folders, so one call fills the deck list.
+The face read takes the label from the conduct, as the portrait read does.
+
 
 The engine's face for `LDraftPort`, handed by the host to the conduct in place of the engine itself.
 Every member forwards to the engine part that owns it and holds no state.
@@ -185,7 +198,9 @@ A blank variety has no flag, so its key is empty and finds nothing.
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `aae5349dbb94`
+- `LDeckOutlet.cs` `bd306102c504449d`
+- `LDeckPort.cs` `ec0170076ca3cd3a`
 - `LDraftOutlet.cs` `3c00d5a269978c47`
 - `LDraftPort.cs` `b5d61d945bfd7907`
 - `LMediaOutlet.cs` `cc595890330f42a2`

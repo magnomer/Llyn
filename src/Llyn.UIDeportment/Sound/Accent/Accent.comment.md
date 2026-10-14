@@ -63,9 +63,15 @@ The box hides itself while the language is not tonal or the reading carries no t
 It starts collapsed and never takes the pointer, so a press lands on what lies beneath.
 Its brushes and font are theme references, so a theme change repaints it.
 The cells are sized so a contour is read at a glance, never as a glyph.
-So it asks for its full width and never shrinks to fit.
+So it draws its full width and never shrinks to fit.
+It asks for its plot's height and no width.
+Its width is the slot it is handed, and it draws the plot centred on that slot.
+A plot wider than the slot hangs over both sides by the same amount.
+So the screens hand it the column of the delimited pronunciation, and the plot centres under it.
+The pronunciation keeps its place, and its buttons do not widen the slot.
 It draws nothing until both syllables and scale are present.
 The frame goes first and the guides next, so every pitch line sits on top.
+The whole drawing is shifted by the plot's origin in the slot, so frame, guides and cells move as one.
 The frame brush also rims every dot, so a dot stands off the line it sits on.
 The scale is highest first, the first level is the top line and each next lies one gap below.
 
@@ -93,6 +99,9 @@ The bottom padding is narrower.
 The label row is one 15-pixel line with its baseline about 4 pixels above its foot.
 So a baseline sits 14 pixels above the edge, as on the Joplin chart.
 The size has room for at least one cell.
+The origin is the plot's left edge in its slot, half the width the plot lacks or spares.
+It is negative when the plot is wider than the slot.
+It is rounded to a whole pixel, so the frame and guides keep their half-pixel snap.
 A line's height follows how many levels lie above it, read from the scale's own order.
 So the plot assumes no direction and no range, and a scale in another order draws as handed.
 Turning points spread evenly across the cell, inset from both edges.
@@ -101,11 +110,11 @@ So a level tone is a flat line across the same span.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `PContour.cs` `2c22c21e13cf4b82`
+Commit: `aae5349dbb94`
+- `PContour.cs` `c8dbbe44118731d8`
 - `QAccent.cs` `171a48d1f55c07b3`
 - `QAccentCommand.cs` `a63197563f21dece`
 - `QAccentControl.cs` `12df01bae289db01`
 - `QContourInk.cs` `89725f62a4ae583b`
 - `QContourItem.cs` `819e805c0669a089`
-- `QContourPlot.cs` `1938a0f05ce90b5e`
+- `QContourPlot.cs` `2e5337eba06fc119`

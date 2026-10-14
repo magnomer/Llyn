@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using Llyn.Core;
 
 namespace Llyn.Application;
@@ -19,23 +19,7 @@ public static class LPortraitClerkCrest
             return;
         }
 
-        string text = draft.LEntryDraftHeadword;
-        foreach (LTranscriptionDraft spelled in draft.LEntryDraftTranscriptions)
-        {
-            if (string.Equals(spelled.LTranscriptionDraftScheme, glyph.LGlyphName, StringComparison.Ordinal)
-                && !spelled.LTranscriptionDraftEmpty)
-            {
-                text = spelled.LTranscriptionDraftText;
-                break;
-            }
-        }
-
-        List<string> chips = [];
-        foreach (Rune rune in text.EnumerateRunes())
-        {
-            chips.Add(rune.ToString());
-        }
-
+        List<string> chips = [.. glyph.LGlyphDivide(draft).Select(static cell => cell.LGlyphCellText)];
         if (chips.Count > 0)
         {
             sections.Add(new LPortraitSection(

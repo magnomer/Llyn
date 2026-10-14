@@ -78,6 +78,9 @@ public static class LLiveryStyle
                 background: {{surface}};
             }
             .llyn .llyn-contour-chart { width: 108px; height: 114px; vertical-align: top; }
+            .llyn .llyn-axis { display: inline-flex; flex-direction: column; align-items: center; }
+            .llyn .llyn-axis > span:first-child { line-height: 37px; }
+            {{sound}} tr:has(.llyn-axis) > td:first-child { vertical-align: top; line-height: 37px; }
             .llyn h1 .llyn-language {
                 display: inline-block; height: 25px; margin-left: 12px; padding: 0 10px; border-radius: 13px;
                 background: {{soft}}; color: {{accent}}; font-size: 12px; font-weight: 400; line-height: 25px;

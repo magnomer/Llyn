@@ -104,7 +104,7 @@ Nesting stops there, since nothing homes under a collocation.
 The stub is the format of a stub line, filled with the phrase and the home path.
 The example wordings give no marker for a count of zero.
 The also wording joins the further paths with commas, and no paths give no marker.
-The heading words the count of homed collocations, and a meaning with none gives no caption.
+The heading is the plain caption with no count, and a meaning with no homed collocation gives none.
 The cards come in the order `CFolio.CFolioOrderRead` sets, the order the editor's list shows.
 So the reading view, its contents and the editor number every card alike.
 The order, the unknown mark, the Source lines and the link targets are read once for the entry.
@@ -139,9 +139,9 @@ A row quoting no Example has no text to divide and no Source line.
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `aae5349dbb94`
 - `CDisplayCard.cs` `aa31921ed809e737`
-- `CLeaf.cs` `00a7c9c3e7c4b2b8`
+- `CLeaf.cs` `19d7e62dbe91e5d6`
 - `CLeafChip.cs` `d604e4f1c5b56d4f`
 - `CLeafLine.cs` `6e7cb04876fe7741`
 - `CLecternCard.cs` `4f3140b154d29b23`

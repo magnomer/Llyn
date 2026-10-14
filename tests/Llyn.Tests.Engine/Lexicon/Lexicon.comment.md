@@ -146,10 +146,11 @@ The units and freedoms offered are the same in every language.
 A language change leaves both as chosen.
 The dropdown's second choice of the held value clears it.
 The unit and freedom chips lead the speech chips of a Joplin note.
+The print sheet writes them in the same chip row as the speeches, with no separate scope line.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `aae5349dbb94`
 - `TAuthorAbsorbing.cs` `2d18dd4c46364a19`
 - `TFavorite.cs` `00998332c4948308`
 - `TGrasp.cs` `fc971b3834a60e34`
@@ -158,4 +159,4 @@ Commit: `c2f335c331fe`
 - `TSpeech.cs` `cd1f43db2e32dd9c`
 - `TSpeechRetirement.cs` `9c83a1639d8c4839`
 - `TState.cs` `40a7ada7b5110e57`
-- `TUnit.cs` `c0525a3b97fe6260`
+- `TUnit.cs` `276a7c295c73568e`

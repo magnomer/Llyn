@@ -112,8 +112,7 @@ public sealed class CCompass
                 collocated ? layout.LCollocationLayoutOther : shown.LEntryDraftMeanings);
             string kind = lookup(collocated ? "Display.CollocationSingle" : "Display.MeaningSingle");
             string unknown = lookup("Display.Unknown");
-            string count = lookup("Display.CollocationCount");
-            string countOne = lookup("Display.CollocationCountOne");
+            string heading = lookup("Display.CollocationHeading");
             Func<LCardDraft, string, string> label = (card, fallback) =>
             {
                 CStateValue title = CFolio.CFolioStateRead(card.LCardDraftTitle);
@@ -128,15 +127,13 @@ public sealed class CCompass
                     cards[index].LCardDraftPosition.ToString(CultureInfo.CurrentCulture),
                     1,
                     false));
-                int homed = collocated
-                    ? 0
-                    : layout.LCollocationLayoutHome.GetValueOrDefault(cards[index].LCardDraftId, []).Count;
-                if (homed > 0)
+                if (!collocated
+                    && layout.LCollocationLayoutHome.GetValueOrDefault(cards[index].LCardDraftId, []).Count > 0)
                 {
                     rows.Add(new CCompassRow(
                         part,
                         index,
-                        string.Format(CultureInfo.CurrentCulture, homed == 1 ? countOne : count, homed),
+                        heading,
                         string.Empty,
                         2,
                         true));

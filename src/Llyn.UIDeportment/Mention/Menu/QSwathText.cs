@@ -55,8 +55,10 @@ public sealed class QSwathText
 
     public Rect QSwathTextPlace(FrameworkElement item)
     {
-        return item.TransformToVisual(_qSwathTextOwner)
-            .TransformBounds(new Rect(0, 0, item.ActualWidth, item.ActualHeight));
+        Rect local = item is PContour
+            ? VisualTreeHelper.GetContentBounds(item)
+            : new Rect(0, 0, item.ActualWidth, item.ActualHeight);
+        return item.TransformToVisual(_qSwathTextOwner).TransformBounds(local);
     }
 
     public PSwathSeam? QSwathTextFind(Point point)

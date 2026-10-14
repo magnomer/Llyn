@@ -16,6 +16,7 @@ public sealed record LRig(
     LRigSentence LRigSentence,
     LRigContext LRigContext,
     LRigSource LRigSource,
+    LRigRehearsal LRigRehearsal,
     LOutpost LRigOutpost,
     LLanguageVault LRigLanguages,
     LPress LRigPress,

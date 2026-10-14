@@ -193,14 +193,24 @@ public sealed class LWorkspaceClerk
 
     public void LWorkspaceClerkUpdate()
     {
+        LWorkspaceEntryScan(entry =>
+        {
+            LRespellingUpdate(entry);
+            _lWorkspaceClerkEpithets.LReflexEpithetSave(entry.LEntryId);
+            _lWorkspaceClerkParadigms.LParadigmClerkUpdate(entry);
+        });
+    }
+
+    public void LWorkspaceRespellingUpdate() => LWorkspaceEntryScan(LRespellingStaleUpdate);
+
+    private void LWorkspaceEntryScan(Action<LEntry> step)
+    {
         using LVaultSession session = _lWorkspaceClerkVault.LVaultSessionStart();
         foreach (LEntry entry in _lWorkspaceClerkEntries.LEntryFind(string.Empty))
         {
             try
             {
-                LRespellingUpdate(entry);
-                _lWorkspaceClerkEpithets.LReflexEpithetSave(entry.LEntryId);
-                _lWorkspaceClerkParadigms.LParadigmClerkUpdate(entry);
+                step(entry);
             }
             catch (Exception exception) when (exception is not OutOfMemoryException)
             {
@@ -257,6 +267,52 @@ public sealed class LWorkspaceClerk
         if (changed)
         {
             reflexes.LReflexSet(entry.LEntryId, spelled);
+        }
+    }
+
+    private void LRespellingStaleUpdate(LEntry entry)
+    {
+        LLanguageCache languages = _lWorkspaceClerkLanguages;
+        foreach (LPronunciation row in _lWorkspaceClerkPronunciations.LPronunciationRead(entry.LEntryId))
+        {
+            LPronunciationDraft spoken = new(
+                row.LPronunciationIpa ?? string.Empty,
+                LPronunciationDraftVariety: row.LPronunciationVariety ?? string.Empty,
+                LPronunciationDraftRespelling: row.LPronunciationRespelling ?? string.Empty);
+            if (languages.LLanguageStaleCheck(entry.LEntryLanguage, spoken))
+            {
+                LPronunciationDraft derived = languages.LLanguageRespellingResolve(entry.LEntryLanguage, spoken);
+                _lWorkspaceClerkPronunciations.LPronunciationUpdate(
+                    row with { LPronunciationRespelling = derived.LPronunciationDraftRespelling });
+            }
+        }
+
+        IReadOnlyList<LReflex> stored = _lWorkspaceClerkReflexes.LReflexRead(entry.LEntryId);
+        List<LReflex> renewed = new(stored.Count);
+        bool changed = false;
+        foreach (LReflex row in stored)
+        {
+            LReflexDraft reflex = new(
+                row.LReflexLanguage, LReflexDraftText: row.LReflexText, LReflexDraftRespelling: row.LReflexRespelling);
+            if (!languages.LLanguageStaleCheck(reflex))
+            {
+                renewed.Add(row);
+                continue;
+            }
+
+            LReflexDraft spelled = languages.LLanguageAnatomyResolve(
+                entry.LEntryLanguage, languages.LLanguageRespellingResolve(reflex));
+            renewed.Add(row with
+            {
+                LReflexRespelling = spelled.LReflexDraftRespelling,
+                LReflexAnatomy = spelled.LReflexDraftAnatomy,
+            });
+            changed = true;
+        }
+
+        if (changed)
+        {
+            _lWorkspaceClerkReflexes.LReflexSet(entry.LEntryId, renewed);
         }
     }
 }

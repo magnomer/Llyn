@@ -83,14 +83,17 @@ public static class LSheetCascade
             + "margin:0 3px;max-width:292px;overflow:hidden;text-overflow:ellipsis;"
             + "font-family:var(--phonetic);font-size:19px;font-weight:500;color:var(--ink);"),
         (".pronunciation .cell", "display:inline-block;margin:0 3px;"),
+        (".pronunciation tr:has(.llyn-axis)>th", "vertical-align:top;line-height:37px;"),
+        (".llyn-axis", "display:inline-flex;flex-direction:column;align-items:center;"),
+        (".llyn-axis>span:first-child", "line-height:37px;"),
 
         (".entry>.speech", "margin:14px 0 -4px 12px;line-height:normal;"),
-        (".scope", "display:flex;"),
-        (".scope>span", "margin:0 6px 7px 0;font-size:12px;font-weight:600;color:var(--muted);"),
         (".chips", "display:flex;flex-wrap:wrap;"),
         (".chip", "display:inline-flex;align-items:center;height:28px;margin:0 7px 7px 0;padding:0 12px;"
             + "border-radius:14px;background:var(--accent-soft);"
             + "font-size:12px;font-weight:600;color:var(--accent);"),
+        (".chip.unit,.chip.freedom", "box-sizing:border-box;border:1px solid var(--accent-soft);"
+            + "background:none;color:var(--muted);"),
 
         (".frequency", "margin:14px 0 0 12px;line-height:normal;"),
         (".frequency>.pill", "display:inline-flex;align-items:center;height:28px;margin:0 7px 7px 0;"

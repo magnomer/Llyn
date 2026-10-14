@@ -22,6 +22,21 @@ Deleting it clears it from each box and keeps the boxes.
 A draft saved with an already deleted relation or tongue stores it cleared and loses no box.
 The entry load and the draft archive both give the map back as it was written.
 
+## `TDeckArchive.cs`
+
+Covers the stored decks, their bearings and the stencil list.
+A created deck reads back every schedule value it was given.
+An update that clears the quorum reads back null.
+A deck delete takes its cues by cascade.
+It takes the deck's own unsaved stencil and its slots too.
+It keeps a saved stencil the deck pointed at.
+A reversed order set reads back reversed and numbered from zero.
+Two saved bearings read back as written.
+A meaning cue reads back bound to its meaning.
+Deleting that meaning keeps the cue and leaves it orphaned.
+Nine text cells saved out of order read back by index.
+The stencil list holds the saved stencil with its slots and leaves the owned one out.
+
 ## `TDatabaseSession.cs`
 
 Covers the unit of work and the ordering it makes possible.
@@ -107,9 +122,10 @@ The outermost one never does.
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `aae5349dbb94`
 - `TAncestorArchive.cs` `b0f2c0f0c1f050fa`
 - `TDatabaseSession.cs` `1fa6062d74eacb4d`
+- `TDeckArchive.cs` `0890bf4a844ed16a`
 - `TDiweiArchive.cs` `7ff34907ce49c7c7`
 - `TDoctor.cs` `24949bade3a5f5ab`
 - `TLacunaCell.cs` `7987b0edee4d5f16`

@@ -30,27 +30,27 @@ It carries the homed row's id for the click.
 
 A collocation without links is listed in the Other part, which then shows.
 
-## `DisplayCompassRead_HomedCollocation_AddsMutedCountRow`
+## `DisplayCompassRead_HomedCollocation_AddsMutedHeadingRow`
 
 This case shows its own draft, with one collocation homed at the first meaning and two at the second.
 Each meaning with homed collocations gets one muted depth-two row after its own row.
 It never gets one row per collocation.
 The row points at its meaning's card and carries no number.
-It is worded with `Display.CollocationCountOne` for one and `Display.CollocationCount` for more, the count filled in.
+Both rows are worded with `Display.CollocationHeading` alone, so neither shows its count.
 No collocation is unhomed, so the collocation part is absent.
 
-## `DisplayCompassRead_EqualCounts_KeepsCountsUnnumbered`
+## `DisplayCompassRead_TwinHeadings_KeepsHeadingsUnnumbered`
 
-Two meanings each home one collocation, so their count rows read alike.
-A count is not a name, so the twin rule leaves both unnumbered.
+Two meanings each home one collocation, so their heading rows read alike.
+A caption is not a name, so the twin rule leaves both unnumbered.
 
 ## `DisplayCardRead_NoStoredFold_ReadsRowOpen`
 
 No fold is stored for the shared entry, so the homed row and the Other row both read open.
 
-## `DisplayCardRead_HomedCollocation_WordsHeadingCount`
+## `DisplayCardRead_HomedCollocation_WordsPlainHeading`
 
-The first meaning, home of one collocation, carries the caption worded with a count of one.
+The first meaning, home of one collocation, carries the plain caption with no count.
 The second meaning homes none, so its caption stays empty.
 
 ## `DisplayCardRead_HomedRow_MapsMarkers`
@@ -255,8 +255,8 @@ Saves an English noun whose paradigm asks for a plural nothing stores.
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `TCardSense.cs` `9221ebe024afd394`
+Commit: `aae5349dbb94`
+- `TCardSense.cs` `d735c0849a13e9a1`
 - `TDisplay.cs` `6cdb274190221f27`
 - `TDisplayAccent.cs` `5ee40ff6798ed4f6`
 - `TDisplayArea.cs` `a27204159e3bc5ec`

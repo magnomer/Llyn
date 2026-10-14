@@ -169,6 +169,8 @@ The press is a `TPress`, the printer queue a `TPressQueue` and the print setting
 The warrant is a `TWarrantFake`, so no test touches the operating system store.
 The process id is one.
 The posture is a `TPostureFake` and the phonograph is a `TPhonographFake`.
+The pronunciation and reflex ports are an empty `TVaultFakePronunciation` and `TVaultFakeReflex`.
+The workspace open reads them for every entry to renew stale respellings, so they answer instead of throwing.
 Every other port, besides the fakes below, is a throwing stub, the livery, manifest and outpost ports among them.
 
 ## `TRigSourceCreate`
@@ -221,7 +223,7 @@ One reversal is shared between hiding and restoring.
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `aae5349dbb94`
 - `TClockFake.cs` `dffa2b2fcf999593`
 - `TEngineFake.cs` `364e90d7a21a82f8`
 - `TEngineFault.cs` `deab7d5e61cdcbfb`
@@ -229,5 +231,5 @@ Commit: `c6e60141a172`
 - `TInterfaceClerk.cs` `d709eb341150b4ef`
 - `TPhonographFake.cs` `af34df5efbe42d1c`
 - `TPostureFake.cs` `85c13ab0bfe0439a`
-- `TRigFake.cs` `36dfde754350ec1b`
+- `TRigFake.cs` `c83bd318f58f76b1`
 - `TWarrantFake.cs` `7cef68fe9f435952`

@@ -18,7 +18,10 @@ Sections come in display order, then the readings with respelling and phonemic m
 Collocations show as rows under their home meaning at any depth, each carrying its stored fold.
 Each further link of a collocation shows a see-line under that meaning.
 The collocations linked to no meaning follow under the Other heading as the same rows, each with its fold.
-The speech chips open with the name of the entry's lexical unit, then its freedom, each when chosen.
+The speech chips follow the order `LEntryChip.LEntryChipRead` gives.
+That order is the lexical unit, the freedom, then the named speeches.
+Unit and freedom take their words from the label.
+The DOCX and Markdown writers keep the chips on one plain line.
 A failing favorite check throws rather than showing the entry as no favorite.
 A false `fetch` reads stored frequencies only, so a push over every entry starts no network fetch.
 
@@ -71,8 +74,9 @@ Methods append to the supplied section list without reading storage.
 ### `LPortraitGlyphAdd`
 
 A null glyph suppresses the section rather than falling back to headword chips.
-Otherwise, the first nonempty transcription matching the glyph scheme wins, with the headword as fallback.
-Rune-based chips keep supplementary characters intact.
+Otherwise, the chips are the cells of `LGlyph.LGlyphDivide`, the rule the view uses.
+The first nonempty transcription matching the glyph scheme wins.
+The headword is the fallback only when it holds Han characters.
 
 ### `LPortraitFrequencyAdd`
 
@@ -169,9 +173,9 @@ HTML is the default.
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `LPortraitClerk.cs` `34c2d6ec5d6de04c`
+Commit: `aae5349dbb94`
+- `LPortraitClerk.cs` `0516d1d97f04ef0a`
 - `LPortraitClerkCard.cs` `4fb506393af6c1af`
-- `LPortraitClerkCrest.cs` `e60a2a1605f5294c`
+- `LPortraitClerkCrest.cs` `5300e9670c77db79`
 - `LPortraitClerkLabel.cs` `2d3cf92501455e97`
 - `LPortraitClerkPress.cs` `f9f3944e31e417f1`

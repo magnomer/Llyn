@@ -17,7 +17,7 @@ internal static partial class TInterface
         "Collocation",
         "Other collocations",
         "→ {0} see {1}",
-        "Collocations · {0}",
+        "Collocations",
         "Links here",
         "Note",
         "Forms",

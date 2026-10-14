@@ -84,6 +84,15 @@ The markup link clerk is built here and shared by the intake, its draft clerk an
 The courier records its failures through the workspace clerk, so a failed push leaves a trace.
 The courier takes no portrait clerk, since `LCourierFacade` hands it each Livery page at send time.
 The courier searches through the query clerk, never through the entry lifecycle.
+The deck, cue and stencil clerks are built here for `LDeckFacade`.
+The deck clerk receives the trail clerk, which normalizes a name before the deck code is derived.
+The cue clerk receives the entry clerk, which loads each entry an add scans.
+The stencil clerk receives the entry, translation, reference and trail clerks its fields read.
+The depot latch is built once per workspace and handed to the depot clerk.
+The depot clerk shares the stencil clerk, so an export reads the faces the deck view shows.
+It records its failures through the workspace clerk, as the courier does.
+The depot latch is built here once per workspace, so a busy export blocks only its own workspace.
+A workspace switch rebuilds the staff, so the new workspace starts with an idle latch.
 
 ## `LEngine`
 
@@ -208,6 +217,7 @@ The vocabulary clerk imports them directly, so the hearth needs no facade.
 The 音韻地位 categories are derived again from the stored fanqie rows and the hypothesis on disk.
 The phonetic series of every pack that declares a series source are built again.
 `LLanguageStaff.LLanguageStaffApply` runs those two steps on the language group.
+Stored respellings derived by older pack rules are then derived again through the workspace clerk.
 A workspace rebuilt from an older schema has its derived strings filled once through the workspace clerk.
 
 ## `LEngineRigApply`
@@ -246,13 +256,13 @@ So a subscriber can detach without disturbing iteration.
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `aae5349dbb94`
 - `LBulletinRoster.cs` `089b003a16e92876`
 - `LCatalogStaff.cs` `23816a2bb79aced1`
 - `LClaimStaff.cs` `fc2ed893e2af6438`
-- `LEngine.cs` `636e6b879da26c0c`
-- `LEngineHearth.cs` `4e01284d73088905`
+- `LEngine.cs` `756ad32eb4843300`
+- `LEngineHearth.cs` `6d2bc7cbc8f929e2`
 - `LEngineStaff.cs` `1282514bb49cde5e`
 - `LEntryStaff.cs` `769d85bf0ae2afca`
 - `LLanguageStaff.cs` `599e9aed32f045b6`
-- `LWorkspaceStaff.cs` `864353d4bae6311d`
+- `LWorkspaceStaff.cs` `8cf3350b651dcf0f`

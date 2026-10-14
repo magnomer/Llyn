@@ -82,6 +82,7 @@
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition x:Name="PDisplayPronunciationLead" Width="Auto" SharedSizeGroup="PReadingLabel" />
+                                        <ColumnDefinition Width="Auto" SharedSizeGroup="PReadingSpan" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Style="{StaticResource Theme.Pronunciation.Lead}">
@@ -92,6 +93,8 @@
                                         <TextBlock x:Name="PDisplayPronunciationOpener" Style="{StaticResource Theme.Pronunciation.Bracket}" Text="[" />
                                         <TextBlock x:Name="PDisplayPronunciation" Style="{StaticResource Theme.Pronunciation.Text}" />
                                         <TextBlock x:Name="PDisplayPronunciationCloser" Style="{StaticResource Theme.Pronunciation.Bracket}" Text="]" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2" Style="{StaticResource Theme.Pronunciation.Body}">
                                         <Button
                                             x:Name="PPlaybackAction"
                                             Style="{StaticResource Theme.Accent.Tool}"
@@ -115,7 +118,13 @@
                             </Border>
                         </StackPanel>
 
-                        <local:PContour x:Name="PDisplayContour" Style="{StaticResource Theme.Contour.Box}" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="PReadingLabel" />
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="PReadingSpan" />
+                            </Grid.ColumnDefinitions>
+                            <local:PContour x:Name="PDisplayContour" Grid.Column="1" Style="{StaticResource Theme.Contour.Box}" />
+                        </Grid>
                         <ItemsControl x:Name="PDisplayAccent" ItemTemplate="{StaticResource Theme.Accent.Display}" />
                         <ItemsControl x:Name="PDisplayTranscription" ItemTemplate="{StaticResource Theme.Transcription.Display}" />
                         <Border x:Name="PDisplayGlyphSection" Style="{StaticResource Theme.Pronunciation.Surface}" Visibility="Collapsed">
@@ -137,24 +146,28 @@
                     </StackPanel>
 
                     <StackPanel x:Name="PDisplaySpeechSection" Margin="12,14,0,-4" Visibility="Collapsed">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock x:Name="PDisplayUnit" Style="{StaticResource Theme.Unit.Name}" Visibility="Collapsed" />
-                            <TextBlock x:Name="PDisplayFreedom" Style="{StaticResource Theme.Freedom.Name}" Visibility="Collapsed" />
-                        </StackPanel>
-                        <ItemsControl x:Name="PDisplaySpeech">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel Orientation="Horizontal" />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Style="{StaticResource Theme.Speech.Chip}">
-                                        <TextBlock x:Name="PSpeechName" Style="{StaticResource Theme.Speech.Name}" />
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
+                        <WrapPanel Orientation="Horizontal">
+                            <Border x:Name="PDisplayUnitChip" Style="{StaticResource Theme.Unit.Chip}" Visibility="Collapsed">
+                                <TextBlock x:Name="PDisplayUnit" Style="{StaticResource Theme.Unit.Name}" />
+                            </Border>
+                            <Border x:Name="PDisplayFreedomChip" Style="{StaticResource Theme.Freedom.Chip}" Visibility="Collapsed">
+                                <TextBlock x:Name="PDisplayFreedom" Style="{StaticResource Theme.Freedom.Name}" />
+                            </Border>
+                            <ItemsControl x:Name="PDisplaySpeech" VerticalAlignment="Top">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Style="{StaticResource Theme.Speech.Chip}">
+                                            <TextBlock x:Name="PSpeechName" Style="{StaticResource Theme.Speech.Name}" />
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </WrapPanel>
                     </StackPanel>
 
                     <StackPanel x:Name="PDisplayFrequencySection" Margin="12,14,0,0" Visibility="Collapsed">

@@ -19,6 +19,11 @@ Colours are always theme keys, so the sheet follows whichever theme the display 
 The etymology tree copies `PThemeEtymology.xaml`: line-coloured stems and bars, framed boxes and the accent root.
 Its card scrolls sideways on screen, as the view's does.
 Its boxes wrap their text, so the tree narrows to fit the page.
+The primary accent row's `llyn-axis` block is an inline-flex column.
+So the contour plot centres on the delimited reading.
+The reading's line keeps the 37-pixel row height.
+That row's label cell sits at the top, on the same line.
+So the label stays level with the reading while the plot hangs below it.
 
 ### `LSheetCascadePaper`
 
@@ -54,8 +59,12 @@ The stamp footer closes the body.
 
 ### Speech, frequency and stamp
 
-`LSheetSpeechAppend` prints nothing unless the draft is marked, the same test the view applies.
-Unit and freedom print only when set.
+`LSheetSpeechAppend` writes one chip row in the order `LEntryChip.LEntryChipRead` gives.
+It only styles the chips.
+Unit and freedom are outlined, with no fill, a border and the muted colour.
+The speeches are filled.
+Unit and freedom are named through `lookup`.
+A draft with no chip writes no speech block.
 `LSheetFrequencyAppend` writes one pill with no heading, showing the tier name and the gauge's sources as its `title`.
 The band prints lit pips and dim ones.
 An unranked gauge shows its tier name alone, as the view hides the band.
@@ -244,7 +253,7 @@ The tone joiner stays inside a tone run when a digit follows it, as in a sandhi 
 The block follows the order of `PDisplay.xaml`.
 The shown reflex rows come first, then the folded ones in a closed `<details>` summarised by `Reflex.More`.
 Then one table holds the accent rows, the other transcriptions and the glyph cells.
-The primary accent row comes first, with its contour charts on the row under it.
+The primary accent row comes first, with its contour charts under its reading through `LSheetAxisFormat`.
 An accent row with empty text is skipped.
 The sheet's opener and closer, when set, wrap each accent text as brackets.
 Accent text marks its tone digits when the contour is toned.
@@ -270,6 +279,18 @@ This export and `LLiverySound` both read it, so the rule has one owner.
 ### `LSheetSlashFormat`
 
 It wraps a phonemic reading in slashes, unless it already starts with one.
+
+### `LSheetAxisFormat`
+
+It puts the delimited reading and its contour plot on one vertical axis.
+View mode centres `PContour` on the reading the same way.
+The reading markup arrives written, so each channel keeps its own brackets and spans.
+With no contour it returns the reading unchanged.
+Otherwise one `llyn-axis` span holds the reading in a plain span, then the `LSheetContourFormat` charts.
+The centre is the reading's alone: a Joplin audio player stays outside the span, so it never shifts the axis.
+A plot wider than the reading overhangs it on both sides, as in the view.
+The block itself is never centred in the page.
+It keeps its cell's left alignment.
 
 ### `LSheetContourFormat`
 
@@ -307,14 +328,14 @@ An unknown role throws, so a new Core role cannot pass uncoloured.
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `aae5349dbb94`
 - `LSheetBox.cs` `b32b74e843b28e08`
-- `LSheetCascade.cs` `6db19790830d547e`
+- `LSheetCascade.cs` `c1ae5e1cfac739da`
 - `LSheetDeck.cs` `b6f318017bcde83c`
 - `LSheetEnsign.cs` `27a403c779ddd2cc`
-- `LSheetEntry.cs` `450e69ebb2151aca`
+- `LSheetEntry.cs` `e2969340032e811c`
 - `LSheetHeader.cs` `51370f27bc7b37bc`
 - `LSheetInflection.cs` `e0cadba77db7f1cb`
 - `LSheetLineage.cs` `e1c16782c82b9d2c`
 - `LSheetParadigm.cs` `210fb09dca0eec79`
-- `LSheetSound.cs` `3f14e81fa423e9f4`
+- `LSheetSound.cs` `83315197f8ecdfed`

@@ -132,15 +132,21 @@ public sealed class LPortraitClerk
         LPortraitClerkCrest.LPortraitScriptAdd(sections, LPortraitScriptScan(entryId, language), label);
 
         bool respelled = _lPortraitClerkSettings().LSettingsRespelled;
-        List<string> chips = [.. LVocabularyClerk.LSpeechShow(draft.LEntryDraftSpeeches)];
-        if (label.LPortraitLabelFreedom.TryGetValue(draft.LEntryDraftFreedom, out string? freedom))
+        List<string> chips = [];
+        foreach (LEntryChip chip in LEntryChip.LEntryChipRead(
+                     draft.LEntryDraftUnit, draft.LEntryDraftFreedom, draft.LEntryDraftSpeeches))
         {
-            chips.Insert(0, freedom);
-        }
-
-        if (label.LPortraitLabelUnit.TryGetValue(draft.LEntryDraftUnit, out string? unit))
-        {
-            chips.Insert(0, unit);
+            string? text = chip.LEntryChipKind switch
+            {
+                LEntryChipKind.LEntryChipUnit => label.LPortraitLabelUnit.GetValueOrDefault(draft.LEntryDraftUnit),
+                LEntryChipKind.LEntryChipFreedom =>
+                    label.LPortraitLabelFreedom.GetValueOrDefault(draft.LEntryDraftFreedom),
+                _ => chip.LEntryChipText,
+            };
+            if (text is not null)
+            {
+                chips.Add(text);
+            }
         }
 
         return new LPortraitPage(

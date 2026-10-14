@@ -73,8 +73,18 @@ Without a page it uses the stored entry's own page.
 
 Builds a paradigm cell whose first letters are marked, or with no mark when the count is zero.
 
+## `TSheetSound`
+
+Covers the sound section of the entry sheet that HTML, PDF and print share.
+`TSheetEntry` keeps the sheet's other sections, so neither file outgrows its length limit.
+The page is read from a stored Mandarin entry and given a toned contour with `with`.
+The primary accent's reading and its plot share one `llyn-axis` block in one cell.
+The reading comes first and the charts close the block, so the plot centres on the reading.
+No separate contour row remains, and the cascade writes the axis as an inline-flex column.
+
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `TPortraitSheet.cs` `6f7592d5e2cb9603`
+Commit: `aae5349dbb94`
+- `TPortraitSheet.cs` `0100401a8287c7ce`
 - `TSheetEntry.cs` `1b22334d2e3275b0`
+- `TSheetSound.cs` `040fee8dc22722d3`

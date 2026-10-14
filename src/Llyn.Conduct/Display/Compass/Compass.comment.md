@@ -27,8 +27,8 @@ The collocation part lists only the collocations with no live link.
 With none, the part gives no row at all, as the page then hides its Other section.
 The homes and the Other list come from one engine read of the collocation layout.
 The compass shows no flags, so it hands that read an empty target map.
-A meaning with collocations adds one muted count line one level below it, carrying that meaning's card place.
-The line is worded with `Display.CollocationCountOne` for one and `Display.CollocationCount` for more.
+A meaning with collocations adds one muted heading line one level below it, carrying that meaning's card place.
+The line is worded with `Display.CollocationHeading`, the caption the page shows over those rows, and counts nothing.
 It carries no number, since it names no card.
 Cards come in the order `CFolio.CFolioOrderRead` sets.
 So a row's card place is the index of the same card on the page.
@@ -39,7 +39,7 @@ A card's number is carried apart from its name, since a number is not part of a 
 A card's title goes through the one state map.
 The full card map is not run, since the contents need no lists or links.
 The engine then numbers the names two rows share, so the contents never show two rows alike.
-Count lines skip that rule, since a count is not a name.
+Heading lines skip that rule, since a caption is not a name.
 `LCompassKeyRead` maps each part to its wording key by name, so an unknown part throws.
 `LCompassNameResolve` makes the wordings distinct by the engine's twin rule.
 A refused lookup is shown once through the repaint memory and answers the plain wordings.
@@ -53,15 +53,15 @@ Conduct then chooses each part's wording and lists the cards under it.
 ## `CCompassRow`
 
 One row of the floating contents, ready to show.
-`CCompassRowDepth` is zero for a section, one for a card under it, two for the count line under a meaning.
-`CCompassRowCard` is null for the section itself, and a count line carries the place of its meaning.
-`CCompassRowNumber` is empty for a section and for a count line.
+`CCompassRowDepth` is zero for a section, one for a card under it, two for the heading line under a meaning.
+`CCompassRowCard` is null for the section itself, and a heading line carries the place of its meaning.
+`CCompassRowNumber` is empty for a section and for a heading line.
 `CCompassRowName` is numbered while another row carries the same wording.
-`CCompassRowMuted` marks the count line, which is never numbered as a twin.
+`CCompassRowMuted` marks the heading line, which is never numbered as a twin.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `CCompass.cs` `9603d322a2615d76`
+Commit: `aae5349dbb94`
+- `CCompass.cs` `79aeda0895b429aa`
 - `CCompassPart.cs` `8ca6c8843e2b6a56`
 - `CCompassRow.cs` `55e13f23dc73ca46`
