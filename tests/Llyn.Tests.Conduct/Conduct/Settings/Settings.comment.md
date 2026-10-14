@@ -67,6 +67,8 @@ The Layout read words the page for the linked flag handed in.
 An attached view is shown every page at once, with its titles.
 The Web summary counts out of two, and the Layout summary is left to the driver.
 A saved notebook title answers trimmed, and the Sync page's summary names it.
+A folder chosen inside the workspace is stored as its path from the workspace root.
+A folder outside the workspace answers null and shows the engine's `Refusal.PathRooted` under `Settings.SaveFailed`.
 A saved epithet shows the view again with Listing on, and a detached view is shown nothing more.
 The fake port's normalised language and online count reach the state unchanged.
 A scanned language reads its native name, an unscanned one its code, and the epithet saves reach the port.
@@ -89,7 +91,7 @@ A wrapped refusal answers its reason alone, and a bare fault answers the unexpec
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `f6dae2392935`
 - `TCourier.cs` `c99609864ae5e284`
-- `TLedger.cs` `1118c38284deaad8`
+- `TLedger.cs` `32ba4134438b4858`
 - `TLedgerNotice.cs` `6d08ced59d0d1d23`

@@ -76,7 +76,8 @@ The root check accepts a rooted path and refuses a bare name.
 ## `TTrailClerk.cs`
 
 Covers the path rule the trail clerk adds over the trail adapter.
-An absolute path refuses with `Refusal.PathRooted`, and a relative one comes back as given.
+A path outside the workspace refuses with `Refusal.PathRooted`, whether absolute or climbing out.
+An absolute path inside the workspace comes back relative, and a relative one comes back as given.
 It sits beside `TTrail.cs`, since the rule reads that adapter's rooted check.
 
 ## `TUsher.cs`
@@ -93,7 +94,7 @@ The root sits under the temp folder and never has to exist, since no call here r
 
 ## Stamp
 
-Commit: `aae5349dbb94`
+Commit: `f6dae2392935`
 - `TLocalization.cs` `1407ac74b05cbe5c`
 - `TLocalizationLoader.cs` `aef25aefe3308c74`
 - `TPressClerk.cs` `bacfa606e4abd25e`
@@ -101,5 +102,5 @@ Commit: `aae5349dbb94`
 - `TSettings.cs` `34444d3b99812ac2`
 - `TThemePalette.cs` `32851b33adb43566`
 - `TTrail.cs` `0f416a889d3d95cd`
-- `TTrailClerk.cs` `bb69a74682e0c796`
+- `TTrailClerk.cs` `d1c2f8b6be0f7e9e`
 - `TUsher.cs` `2bb1b70a37a362bc`

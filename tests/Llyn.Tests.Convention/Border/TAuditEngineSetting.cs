@@ -24,6 +24,7 @@ internal static class TAuditEngineSetting
                 "LMarkdownPort",
                 "LPronunciationPort",
                 "LAncestorPort",
+                "LDeckPort",
                 "LFanqiePort",
                 "LDiweiPort",
                 "LScriptPort",

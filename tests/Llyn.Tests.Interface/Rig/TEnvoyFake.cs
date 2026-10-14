@@ -31,6 +31,21 @@ internal static class TEnvoyFake
             },
         });
 
+    internal static CEnvoy TEnvoyTallyCreate(bool answer, List<string> asked) =>
+        TEngineFake.TEngineCreate<CEnvoy>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["CEnvoyConfirm"] = args =>
+            {
+                asked.Add(string.Join(">", args!));
+                return answer;
+            },
+            ["CEnvoyFailureShow"] = args =>
+            {
+                asked.Add((string)args![0]!);
+                return null;
+            },
+        });
+
     internal static CEnvoy TEnvoyFileCreate(string? path, CPortraitMedium medium, List<string> asked) =>
         TEngineFake.TEngineCreate<CEnvoy>(new Dictionary<string, Func<object?[]?, object?>>
         {
@@ -77,6 +92,38 @@ internal static class TEnvoyFake
             {
                 asked.Add("Leave");
                 return leave;
+            },
+            ["CEnvoyFailureShow"] = args =>
+            {
+                asked.Add((string)args![0]!);
+                return null;
+            },
+        });
+
+    internal static CEnvoy TEnvoyFolderCreate(string? folder, List<string> asked) =>
+        TEngineFake.TEngineCreate<CEnvoy>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["CEnvoyFolderRead"] = args =>
+            {
+                asked.Add("Folder:" + (string)args![0]!);
+                return folder;
+            },
+            ["CEnvoyFailureShow"] = args =>
+            {
+                asked.Add(args!.Length > 1 && args[1] is CLedgerNotice notice
+                    ? (string)args[0]! + ">" + notice.CLedgerNoticeKey
+                    : (string)args[0]!);
+                return null;
+            },
+        });
+
+    internal static CEnvoy TEnvoyMediaCreate(string? path, List<string> asked) =>
+        TEngineFake.TEngineCreate<CEnvoy>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["CEnvoyMediaRead"] = args =>
+            {
+                asked.Add("Media:" + (string)args![0]!);
+                return path;
             },
             ["CEnvoyFailureShow"] = args =>
             {

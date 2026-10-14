@@ -148,12 +148,38 @@ internal sealed class QEnvoy : CEnvoy
         return (chosen ? dialog.FileName : null, medium);
     }
 
+    public string? CEnvoyMediaRead(string key, IReadOnlyList<string> suffixes)
+    {
+        ArgumentNullException.ThrowIfNull(suffixes);
+
+        string title = QLocalizationCatalog.QLocalizationTextRead(key);
+        Microsoft.Win32.OpenFileDialog dialog = new()
+        {
+            Title = title,
+            Filter = string.Concat(title, "|", string.Join(";", suffixes.Select(static suffix => "*" + suffix))),
+            CheckFileExists = true,
+        };
+
+        return dialog.ShowDialog(QEnvoyOwner) == true ? dialog.FileName : null;
+    }
+
     public string? CEnvoyWorkspaceRead(string workspace)
     {
         Microsoft.Win32.OpenFolderDialog dialog = new()
         {
             Title = QLocalizationCatalog.QLocalizationTextRead("Settings.Workspace"),
             InitialDirectory = workspace,
+        };
+
+        return dialog.ShowDialog(QEnvoyOwner) == true ? dialog.FolderName : null;
+    }
+
+    public string? CEnvoyFolderRead(string folder)
+    {
+        Microsoft.Win32.OpenFolderDialog dialog = new()
+        {
+            Title = QLocalizationCatalog.QLocalizationTextRead("Settings.Depot"),
+            InitialDirectory = folder,
         };
 
         return dialog.ShowDialog(QEnvoyOwner) == true ? dialog.FolderName : null;

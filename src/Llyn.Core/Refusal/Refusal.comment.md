@@ -150,6 +150,11 @@ A deck export whose phone file changed since Llyn last wrote it.
 Writing over it would lose the phone's reviews, so the import must run first.
 The name says phone, since `LRefusalPending` already holds the Joplin request.
 
+## `LRefusalDepot`
+
+A deck export asked while the workspace has no phone folder set.
+The user can fix it in the settings, so it is a refusal and not a fault.
+
 ## `LRefusalBusy`
 
 A deck export asked while the same workspace still runs one.
@@ -162,5 +167,5 @@ The deck sync folder sits under the workspace root, so the workspace moves with 
 
 ## Stamp
 
-Commit: `aae5349dbb94`
-- `LRefusal.cs` `e9581dc5961921b6`
+Commit: `f6dae2392935`
+- `LRefusal.cs` `f118bd4f498337a4`

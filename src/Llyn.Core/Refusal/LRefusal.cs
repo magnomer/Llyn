@@ -56,6 +56,8 @@ public sealed class LRefusal : Exception
 
     public const string LRefusalPhone = "Refusal.DeckPhonePending";
 
+    public const string LRefusalDepot = "Refusal.DepotMissing";
+
     public const string LRefusalBusy = "Refusal.DepotBusy";
 
     public const string LRefusalPathRooted = "Refusal.PathRooted";

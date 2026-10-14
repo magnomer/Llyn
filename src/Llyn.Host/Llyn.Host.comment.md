@@ -65,6 +65,6 @@ The host then disposes the engine the window ran over.
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `LHost.cs` `9b8f34eb7a69c9e5`
+Commit: `f6dae2392935`
+- `LHost.cs` `186d792f9fda3adc`
 - `Llyn.Host.csproj` `e789063a5fe25eef`

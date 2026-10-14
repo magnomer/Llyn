@@ -38,12 +38,15 @@ public sealed class LTrailClerk
     public string LTrailPathValidate(string path)
     {
         ArgumentNullException.ThrowIfNull(path);
-        if (_lTrailClerkTrail.LTrailRootCheck(path))
+        string? inside = _lTrailClerkTrail.LTrailRootCheck(path)
+            ? _lTrailClerkTrail.LTrailRelativeResolve(_lTrailClerkWorkspace, path)
+            : path;
+        if (inside is null || _lTrailClerkTrail.LTrailResolve(_lTrailClerkWorkspace, inside) is null)
         {
             throw new LRefusal(LRefusal.LRefusalPathRooted);
         }
 
-        return path;
+        return inside;
     }
 
     public bool LTrailPathCheck(string path)

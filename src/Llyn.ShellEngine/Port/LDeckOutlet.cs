@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -67,6 +69,12 @@ public sealed class LDeckOutlet : LDeckPort
 
     public LCueFace LEngineFaceRead(long cueId, LPortraitLabel label) =>
         _lDeckOutletEngine.LEngineDeck.LEngineFaceRead(cueId, label);
+
+    public Task<LDeckReceipt> LEngineDeckExport(long deckId, LPortraitLabel label, CancellationToken cancellation) =>
+        _lDeckOutletEngine.LEngineDeck.LEngineDeckExport(deckId, label, cancellation);
+
+    public bool LEngineDepotCheck() =>
+        _lDeckOutletEngine.LEngineDeck.LEngineDepotCheck();
 
     public IReadOnlyList<LCueCell> LEngineCellRead(long cueId) =>
         _lDeckOutletEngine.LEngineDeck.LEngineCellRead(cueId);

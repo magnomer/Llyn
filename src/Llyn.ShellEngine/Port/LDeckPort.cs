@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -40,6 +42,10 @@ public interface LDeckPort
     void LEngineCueSet(long cueId, int flag, bool excluded);
 
     LCueFace LEngineFaceRead(long cueId, LPortraitLabel label);
+
+    Task<LDeckReceipt> LEngineDeckExport(long deckId, LPortraitLabel label, CancellationToken cancellation);
+
+    bool LEngineDepotCheck();
 
     IReadOnlyList<LCueCell> LEngineCellRead(long cueId);
 

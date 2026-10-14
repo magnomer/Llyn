@@ -53,7 +53,13 @@ The press variant hands the print window question to `answer` and leaves that qu
 Its file question answers `path` as a PDF, `press.pdf` when none is given, and records `File:` plus the offered name.
 A null press path stands for a reader who declines the Save as PDF file dialog.
 The coinage variant records `Coinage:` plus the message key and answers `wording`.
+The tally variant records a confirm's key, tally key and tally joined by `>`, and answers `answer`.
+  A plain confirm records its key alone, so a fact reads whether the count was shown.
 The markup variant answers its file question unrecorded, so a fact counts the notices alone.
+The media variant records `Media:` plus the title key and answers `path`.
+The folder variant records `Folder:` plus the starting folder and answers `folder`.
+It records a failure with a notice as the key and the notice's reason joined by `>`.
+So a fact reads which refusal the gate showed.
 
 ## TInterfaceClerk
 
@@ -223,11 +229,11 @@ One reversal is shared between hiding and restoring.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
+Commit: `f6dae2392935`
 - `TClockFake.cs` `dffa2b2fcf999593`
 - `TEngineFake.cs` `364e90d7a21a82f8`
 - `TEngineFault.cs` `deab7d5e61cdcbfb`
-- `TEnvoyFake.cs` `5afb6f4c63ea5fd7`
+- `TEnvoyFake.cs` `6d5bffee0960fa06`
 - `TInterfaceClerk.cs` `d709eb341150b4ef`
 - `TPhonographFake.cs` `af34df5efbe42d1c`
 - `TPostureFake.cs` `85c13ab0bfe0439a`

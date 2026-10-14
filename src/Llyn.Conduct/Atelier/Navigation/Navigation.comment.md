@@ -74,8 +74,8 @@ Whether each trail holds a station, which lights the retreat and advance buttons
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `CNavigation.cs` `068280fe17e68e61`
+Commit: `f6dae2392935`
+- `CNavigation.cs` `38cc54e7cbec5a7a`
 - `CNavigationPanel.cs` `269271317524a145`
 - `CNavigationState.cs` `1c11754f58b51511`
 - `CVoyage.cs` `a3937490b66ec360`

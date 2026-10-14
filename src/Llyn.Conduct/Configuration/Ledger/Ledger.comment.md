@@ -1,19 +1,16 @@
 # Ledger
 
 This folder holds the settings ledger with the workspace settings and their saves.
-It also holds the pages a settings view lists and the repaint memory of shown failures.
+It also holds the reader of the pages a settings view lists, and the repaint memory of shown failures.
 
 ## `CLedger`
 
-The settings ledger holds the workspace settings, their saves and the pages a settings view lists.
+The settings ledger holds the saves of the workspace settings and the failure policy every gate shares.
 A view is handed one ready state on every open and after every settings or workspace change.
 It reads the settings port from `CAtelier` on every call rather than keeping a copy.
 Only the atelier builds it, once.
-
-`CLedgerPages` fixes the page order, each with the keys its search also reads.
-`CLedgerWeb` counts the online lookups, the frequency and the morphology lookup.
-`_cLedgerWanted` keeps the last search text, so every later state shows the same narrowing.
-`CLedgerChanged` carries the whole state.
+It builds its `CLedgerReader` from the same atelier, and the reader never calls back.
+`CLedgerChanged` carries the whole state, which the reader reads.
 
 `LLedgerRepaint` is the atelier's repaint memory, built with the ledger and ending with the atelier.
 The ledger owns it, since it is the failure policy every gate funnels through and it hears the user's acts.
@@ -27,6 +24,11 @@ So the driver repaints from the saved settings rather than what was typed.
 A failed save shows `Settings.SaveFailed`.
 `CLedgerNotebookSave` answers the title the engine stored, which trims it and turns a blank one into `Llyn`.
 It answers null on a failed save.
+`CLedgerDepotSave` answers the flashcard folder the engine stored, or null on a failure or a refusal.
+The engine refuses an absolute path, and the gate only shows the refusal.
+`CLedgerDepotChange` asks for the folder through `CEnvoyFolderRead`, starting at the workspace root.
+The folder sits under that root, so the dialog opens there.
+A decline saves nothing, and a dialog that fails shows `Settings.SaveFailed`.
 A saved analysis change makes the reading view and the editor repaint their inflection box.
 
 `CLedgerFailureShow` shows a failure a driver's own medium raised, such as a player's refusal.
@@ -42,9 +44,22 @@ A read that runs on every repaint goes through `LLedgerRepaint` first, which mer
 The driver's consult never reads Conduct again, so it only shows what it was handed.
 
 `CLedgerFolderOpen` reports a folder the shell cannot open under `Settings.FolderFailed`, since it may have moved away.
-`CLedgerFind` matches each page's title, helper and own keys by the shared catalog rule, and blank text shows every page.
+`CLedgerFind`, `CLedgerAnalysisRead` and `CLedgerMetaRead` relay to the reader, so drivers keep one door.
+
+## `CLedgerReader`
+
+Reads the ledger's state for display and owns the search over its pages.
+Reading for display and changing settings are two roles, so the reads left `CLedger`.
+The search text moved with its only reader, so it keeps one writer.
+It asks only the atelier's settings port.
+
+`CLedgerPages` fixes the page order, each with the keys its search also reads.
+`CLedgerWeb` counts the online lookups, the frequency and the morphology lookup.
+`_cLedgerWanted` keeps the last search text, so every later state shows the same narrowing.
+`CLedgerReaderFind` alone writes it.
+`CLedgerReaderFind` matches each page's title, helper and own keys by the shared catalog rule, and blank text shows every page.
 `CLedgerMetaRead` takes `linked` raw, since the linked switch is GUI-only state kept by its Capsule.
-`LLedgerRead` loads the texts first, so every title and summary reads in the stored language.
+`CLedgerReaderRead` loads the texts first, so every title and summary reads in the stored language.
 The Layout summary stays empty, since only the driver knows the linked switch.
 The Inflection summary reads custom analysis from the engine, and the Sync summary reads the notebook title.
 An unknown page reads empty.
@@ -79,11 +94,12 @@ A lock guards the set, since a background read may fail while the dispatcher sho
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `CLedger.cs` `9b3c7cf256f66396`
+Commit: `f6dae2392935`
+- `CLedger.cs` `f65bd19f56db7e4d`
 - `CLedgerNotice.cs` `34a2b3923db6163d`
 - `CLedgerNoticed.cs` `2f38e70b00bec262`
 - `CLedgerPage.cs` `45f2b5ab3f092932`
+- `CLedgerReader.cs` `502b05ca5bd38dab`
 - `CLedgerShown.cs` `8b61a9eaaf6811db`
 - `CLedgerState.cs` `a50b903fdb52a7de`
 - `CSettings.cs` `82deb205c34554dc`

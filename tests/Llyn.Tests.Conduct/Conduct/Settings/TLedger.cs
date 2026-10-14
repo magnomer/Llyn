@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using Llyn.Conduct;
 using Llyn.Core;
@@ -156,6 +157,38 @@ public sealed class TLedger
         Assert.Equal("Lexicon", stored);
         Assert.Equal("Lexicon", last.CLedgerStateSettings.CSettingsNotebook);
         Assert.Equal("Lexicon", last.CLedgerStatePages[6].CLedgerPageMeta);
+    }
+
+    [Fact]
+    public void LedgerDepotChange_FolderInWorkspace_StoresRelativePath()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        List<string> asked = [];
+
+        atelier.CAtelierLedger.CLedgerDepotChange(TEnvoyFake.TEnvoyFolderCreate(
+            Path.Combine(atelier.CAtelierPathRead(), "Decks", "Phone"), asked));
+
+        Assert.Equal(Path.Combine("Decks", "Phone"), engine.TEngineSettingsRead().LSettingsDepot);
+        Assert.Equal(["Folder:" + atelier.CAtelierPathRead()], asked);
+    }
+
+    [Fact]
+    public void LedgerDepotSave_OutsideWorkspace_ShowsRefusal()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        List<string> asked = [];
+
+        string? stored = atelier.CAtelierLedger.CLedgerDepotSave(
+            Path.Combine(Path.GetDirectoryName(atelier.CAtelierPathRead())!, "Decks"),
+            TEnvoyFake.TEnvoyFolderCreate(null, asked));
+
+        Assert.Null(stored);
+        Assert.Equal(["Settings.SaveFailed>Refusal.PathRooted"], asked);
+        Assert.Empty(engine.TEngineSettingsRead().LSettingsDepot);
     }
 
     [Fact]

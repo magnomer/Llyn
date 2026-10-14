@@ -255,13 +255,16 @@ internal static partial class TInterface
         };
 
     internal static LDepotClerk TDepotClerkCreate(LRig rig, LDepotLatch latch) =>
+        TDepotClerkCreate(rig, latch, "Phone");
+
+    internal static LDepotClerk TDepotClerkCreate(LRig rig, LDepotLatch latch, string depot) =>
         new(
             rig,
             TStencilClerkCreate(rig),
             new LTrailClerk(rig),
             latch,
             new object(),
-            static () => TSettingsCreate("en") with { LSettingsDepot = "Phone" },
+            () => TSettingsCreate("en") with { LSettingsDepot = depot },
             static _ => { });
 
     internal static Task<LDeckReceipt> TDepotClerkExport(this LDepotClerk clerk, long deckId) =>

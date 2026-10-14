@@ -70,6 +70,9 @@ public sealed class LSettingsOutlet : LSettingsPort
     public string LEngineNotebookSave(string notebook) =>
         _lSettingsOutletEngine.LEngineSettings.LEngineNotebookSave(notebook);
 
+    public string LEngineDepotSave(string folder) =>
+        _lSettingsOutletEngine.LEngineSettings.LEngineDepotSave(folder);
+
     public void LEngineRespellingSave(bool respelled) =>
         _lSettingsOutletEngine.LEngineSettings.LEngineRespellingSave(respelled);
 

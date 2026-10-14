@@ -25,6 +25,9 @@ The imperfect, future and conditional terms exist so inflection labels can share
 The sync term names the push to Joplin, shared by the sync button and the Sync settings page.
 The print, cancel, color and custom terms are shared within the print window.
 The print term also labels the Scribe print button, and the cancel term the Leave, Coinage and Customs dialogs.
+The deck, flashcard and study terms name the flashcard feature.
+The deck-sync term names the export to the phone app, apart from the sync term that names the Joplin push.
+It labels the deck export button and the Depot setting.
 
 ### `texts`
 
@@ -48,6 +51,26 @@ The pair holds a plural and a singular form.
 `Display.CollocationAlso` words a closed row's "also N" marker.
 Its slot `{0}` is the comma-joined numbers of the further Meanings.
 `Notebook.*` labels the Sync page field naming the top Joplin notebook.
+`Settings.Depot` and `Settings.DepotHelper` title the flashcard folder setting and its folder dialog.
+The setting title is the deck-sync term, as `Settings.Sync` is the sync term.
+`Refusal.PathRooted` refuses an absolute folder path, since the folder sits under the workspace root.
+`Deck.*` labels the deck list, its folders, the delete dialog and the export to the phone app.
+`Deck.DeleteCount` is the label before the flashcard tally that the delete dialog prints under its question.
+`Deck.LoadFailed` heads the failure notice when the deck list or a deck's flashcard count cannot be read.
+`Deck.SaveFailed` heads the failure notice when a deck or folder change is refused or fails.
+`Deck.Grain` captions the choice of unit a deck's flashcards are made from, and `Grain.*` names those units.
+`Deck.Basic` and `Deck.BasicHelper` switch the export to the Basic text style.
+`Deck.ExportReceipt` words the four counts of one export: flashcards written, files copied, files removed and failed.
+`Deck.Count`, `Deck.CountOne`, `Deck.RoleWarning` and `Deck.SplitOffer` wait for the phases that show them.
+`Coinage.Deck` and `Coinage.DeckFolder` prompt for the name of a new deck and a new deck folder.
+`Coinage.Stencil` prompts for the name a template is saved under.
+`Cue.*` labels one flashcard, its flag, its exclusion from study and its orphaned state.
+`Cue.Cell` captions one editable cell of a free flashcard, and `Cue.Pick` the button that picks its picture or sound file.
+`Stencil.*` labels the template editor.
+It holds the side and column names, one `Slot*` per field a slot can cite, and the three join choices.
+`Stencil.Picture` and `Stencil.Sound` also title the file dialogs of the picked cells.
+`Bearing.*` labels the direction, lead side and statistics set of a deck.
+Each `Refusal.Deck*`, `Refusal.Cue*` and `Refusal.Depot*` text says what the user can do next.
 `Xiesheng.ReadingsShow` and `Xiesheng.ReadingsHide` label the series member hinge that shows or hides all its readings.
 `Settings.Inflection` names the settings page that holds the `Analysis.*` switch and its hint.
 `Input.Ancestor*` labels the etymology editor's boxes, their hints and their insert, add, remove and restore controls.
@@ -76,10 +99,11 @@ The person headers spell out person and number instead of the English abbreviati
 `Display.CollocationAlso` reads `{0}번 뜻에도 쓰임`, "used in sense N too", rather than a literal "also".
 `Print.*` reads the print window in polite Korean, with short noun labels for controls and 합니다 sentences for failures.
 `Print.PageTotal` reads `/ {0}`, a slash in place of the English word "of".
+`Deck.*`, `Cue.*` and `Refusal.Deck*` pick the Korean particle that fits the fixed term, such as 덱을 and 플래시카드를.
 `Yunjing.Division` cites slot `{0}`, the raw division, where `en.json` cites the formatted `{1}`.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
-- `en.json` `c121d28d49d699be`
-- `ko.json` `9b50d9f1705db6f6`
+Commit: `f6dae2392935`
+- `en.json` `fa6b8bf2e07b1e0b`
+- `ko.json` `668f58ce06234a89`

@@ -45,6 +45,8 @@ Only the port declaring `member` faults it, so the fault sweep reaches the real 
 ## `TEntryBundleCreate`
 
 The plain overload builds the bundle Host builds, every port the facade on the engine that owns it.
+The deck port is the one exception, an `LDeckOutlet` over the engine, as Host builds it.
+  The deck facade is internal to the engine, so the outlet relays to it.
 The swap overload puts the given fake in place of every port it implements.
 A fake made for one port thus stands in for that port alone.
 The fault overload wraps every facade port with `TEngineFault`, and only the port declaring the member faults it.
@@ -493,9 +495,9 @@ The arrival opens relay a panel's open as the navigation runs it.
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `f6dae2392935`
 - `TInterfaceArea.cs` `bf5825a6e7d0f03b`
-- `TInterfaceConduct.cs` `9a01822a966e7d6c`
+- `TInterfaceConduct.cs` `749182a34b02a3cd`
 - `TInterfaceConductCard.cs` `c6ee6bda935fd266`
 - `TInterfaceConductDesk.cs` `0086e8d80029c5d2`
 - `TInterfaceConductDialog.cs` `3c2d58ee2694a179`

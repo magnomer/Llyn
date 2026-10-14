@@ -7,7 +7,7 @@ namespace Llyn.Tests;
 public sealed class TTrailClerk
 {
     [Fact]
-    public void TrailPathValidate_AbsolutePath_Refuses()
+    public void TrailPathValidate_OutsideWorkspace_Refuses()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         LTrailClerk clerk = TInterface.TTrailClerkCreate(workspace.TWorkspaceRigCreate());
@@ -26,5 +26,27 @@ public sealed class TTrailClerk
         string folder = Path.Combine("sync", "phone");
 
         Assert.Equal(folder, clerk.TTrailPathValidate(folder));
+    }
+
+    [Fact]
+    public void TrailPathValidate_InsideWorkspace_ReturnsRelativePath()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        LTrailClerk clerk = TInterface.TTrailClerkCreate(workspace.TWorkspaceRigCreate());
+
+        Assert.Equal(
+            Path.Combine("sync", "phone"),
+            clerk.TTrailPathValidate(Path.Combine(workspace.TWorkspaceFolder, "sync", "phone")));
+    }
+
+    [Fact]
+    public void TrailPathValidate_RelativeEscape_Refuses()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        LTrailClerk clerk = TInterface.TTrailClerkCreate(workspace.TWorkspaceRigCreate());
+
+        LRefusal refusal = Assert.Throws<LRefusal>(() => clerk.TTrailPathValidate(Path.Combine("..", "phone")));
+
+        Assert.Equal(LRefusal.LRefusalPathRooted, refusal.LRefusalReason);
     }
 }

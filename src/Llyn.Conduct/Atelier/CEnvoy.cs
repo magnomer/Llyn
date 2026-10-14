@@ -29,5 +29,9 @@ public interface CEnvoy
 
     string? CEnvoyWorkspaceRead(string workspace);
 
+    string? CEnvoyFolderRead(string folder);
+
     string? CEnvoyCoinageRead(string key);
+
+    string? CEnvoyMediaRead(string key, IReadOnlyList<string> suffixes);
 }

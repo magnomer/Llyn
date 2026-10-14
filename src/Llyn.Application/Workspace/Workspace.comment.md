@@ -20,9 +20,13 @@ It tells a flag code that is a path from a remote code.
 
 ### `LTrailPathValidate`
 
-It refuses an absolute path with `Refusal.PathRooted` and answers a relative one as given.
-The trail resolves an absolute path as itself, so only this refusal keeps a value under the root.
-The rooted test is the trail's own, so a drive-relative or slash-led path refuses too.
+It answers an absolute path under the workspace root as the relative path from that root.
+  So a folder dialog's choice is stored the way a typed relative path is.
+It refuses with `Refusal.PathRooted` any path that resolves outside the root.
+  That covers an absolute path elsewhere, another drive, and a relative path climbing out.
+A relative path inside the root comes back as given.
+The trail resolves an absolute path as itself, so only this rule keeps a value under the root.
+The rooted test is the trail's own, so a drive-relative or slash-led path is treated as absolute.
 
 ### `LTrailPathResolve`
 
@@ -149,6 +153,6 @@ Blank and hand-written respellings are left as they are.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
-- `LTrailClerk.cs` `4f1c00088148fe4c`
+Commit: `f6dae2392935`
+- `LTrailClerk.cs` `5ce5ee6c557bf595`
 - `LWorkspaceClerk.cs` `bb20fd730734af55`

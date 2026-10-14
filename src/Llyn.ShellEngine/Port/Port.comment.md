@@ -18,6 +18,7 @@ It is a realm of its own, so `LPortraitPort` does not grow with it.
 Each member behaves as `LDeckFacade` documents it.
 The deck read carries the folders, so one call fills the deck list.
 The face read takes the label from the conduct, as the portrait read does.
+The deck export takes the label the same way, and the busy check reads the workspace latch.
 
 
 The engine's face for `LDraftPort`, handed by the host to the conduct in place of the engine itself.
@@ -178,6 +179,8 @@ On shows the pack's custom sheets with marked letters split at the root, and off
 The inflection box of the reading view and the editor repaints after a change.
 `LEngineNotebookSave` answers the trimmed title it stored.
 A blank title stores `Llyn`, and the next sync renames the same notebook to the stored title.
+`LEngineDepotSave` answers the flashcard folder it stored.
+An absolute path is refused with `Refusal.PathRooted`, since the folder sits under the workspace root.
 `LEngineFailureRead` gives a refusal's reason key, or else `unexpected`.
 `recorded` and the audit file come with it once the fault is written.
 One call reads the reason and writes the fault, so Conduct decides nothing about the exception.
@@ -198,14 +201,14 @@ A blank variety has no flag, so its key is empty and finds nothing.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
-- `LDeckOutlet.cs` `bd306102c504449d`
-- `LDeckPort.cs` `ec0170076ca3cd3a`
+Commit: `f6dae2392935`
+- `LDeckOutlet.cs` `6323b17583bacd57`
+- `LDeckPort.cs` `381d2ffec28a8eb9`
 - `LDraftOutlet.cs` `3c00d5a269978c47`
 - `LDraftPort.cs` `b5d61d945bfd7907`
 - `LMediaOutlet.cs` `cc595890330f42a2`
 - `LMediaPort.cs` `ba9007f05060ea3d`
 - `LPortraitOutlet.cs` `4b7d31ff3f0aa3c2`
 - `LPortraitPort.cs` `e9d21be77d9ef27b`
-- `LSettingsOutlet.cs` `8616ce696d985f3d`
-- `LSettingsPort.cs` `96ab98b7a2a6a4f5`
+- `LSettingsOutlet.cs` `5e05ed89b3950d92`
+- `LSettingsPort.cs` `68435b3064cc13e3`

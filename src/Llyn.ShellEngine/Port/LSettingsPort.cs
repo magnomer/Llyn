@@ -50,6 +50,8 @@ public interface LSettingsPort
 
     string LEngineNotebookSave(string notebook);
 
+    string LEngineDepotSave(string folder);
+
     void LEngineRespellingSave(bool respelled);
 
     (string LEngineFailureNotice, string? LEngineFailureLabel, string? LEngineFailurePath) LEngineFailureRead(

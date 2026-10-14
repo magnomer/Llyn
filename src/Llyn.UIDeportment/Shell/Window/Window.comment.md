@@ -98,6 +98,9 @@ A cancelled file, markup or folder dialog answers null, which the gate reads as 
 The save dialog lists the gate's formats in order and starts on the chosen one.
 Its one-based filter index picks the medium from that same list, so the filter and the format cannot drift apart.
 Dialog titles stay here, since only a windowed chooser has one.
+The flashcard folder dialog opens in the folder the gate hands it and answers the chosen path as picked.
+The media dialog is an open dialog, titled by the gate's key and filtered to the gate's suffixes.
+  It offers no all-files choice, so the phone gets only a file kind it plays.
 The customs window keeps its declared rows in the gate and hands none back.
 Every Print command reaches the print window through the print gate, so every command shows the preview.
 The coinage dialog answers the wording as typed, or null on retreat.
@@ -198,9 +201,9 @@ Device pixels become layout units first, so a scaled display still lands the win
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `f6dae2392935`
 - `QCaption.cs` `a94cfc236ad84fe3`
-- `QEnvoy.cs` `d1f3da6060d85254`
+- `QEnvoy.cs` `ce0505b274893fb3`
 - `QHeadquarter.cs` `77429c1948810be1`
 - `QNavigation.cs` `1d10c925a4904be0`
 - `QPanelRoster.cs` `bdde7d16914ce742`

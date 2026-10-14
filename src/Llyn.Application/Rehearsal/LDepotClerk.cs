@@ -113,7 +113,7 @@ public sealed class LDepotClerk
         string folder = (setting.Length > 0
                 ? _lDepotClerkTrail.LTrailPathResolve(_lDepotClerkTrail.LTrailPathValidate(setting))
                 : null)
-            ?? throw new InvalidOperationException("No phone folder is set for the workspace.");
+            ?? throw new LRefusal(LRefusal.LRefusalDepot);
 
         LDeck deck;
         string? written;

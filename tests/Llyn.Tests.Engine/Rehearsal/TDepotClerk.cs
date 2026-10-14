@@ -110,6 +110,23 @@ public sealed class TDepotClerk
     }
 
     [Fact]
+    public async Task DepotClerkExport_FolderUnset_RefusesDepotMissing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        TDepotFake depot = new();
+        LRig rig = workspace.TWorkspaceRigCreate().TDepotRigCreate(depot, new TDeckManifestFake());
+        LDeck deck = TDepotDeckCreate(rig, [[TInterface.TCueCellCreate(LCueColumn.LCueColumnText, 1, "bank")]]);
+        LDepotLatch latch = TInterface.TDepotLatchCreate();
+
+        LRefusal refusal = await Assert.ThrowsAsync<LRefusal>(
+            () => TInterface.TDepotClerkCreate(rig, latch, " ").TDepotClerkExport(deck.LDeckId));
+
+        Assert.Equal(LRefusal.LRefusalDepot, refusal.LRefusalReason);
+        Assert.Empty(depot.TDepotFakeFiles);
+        Assert.False(latch.TDepotLatchCheck());
+    }
+
+    [Fact]
     public async Task DepotClerkExport_OtherWorkspaceBusy_Runs()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

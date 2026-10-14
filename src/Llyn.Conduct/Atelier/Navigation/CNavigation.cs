@@ -19,6 +19,7 @@ public sealed class CNavigation
         "Corpus",
         "Reference",
         "Guild",
+        "Deck",
         "Favorite",
         "Duplex",
         "Settings",

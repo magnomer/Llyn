@@ -103,6 +103,7 @@ The ledger and the courier hear through it.
 
 The entry ports Host hands to Conduct in one piece, one port per narrow slice of the engine.
 Each facade implements its own port, so no forwarding outlet stands between Conduct and the engine.
+The deck port is the exception, an `LDeckOutlet` over the engine, because the deck facade is internal.
 An area builder reads only the ports its constructors call and hands each one down.
 It is internal, so Host and Conduct reach it and no Deportment driver can name it.
 The constructor rejects a missing port, and only Host builds a bundle.
@@ -137,8 +138,13 @@ Conduct disposes the session either way.
 The gate chooses the offered name and the formats, so the question needs no read of its own.
 `CEnvoyWorkspaceRead` answers null on a decline, and the gate then moves nothing.
 The gate asks it inside its failure policy, so a dialog that fails is reported as `Workspace.OpenFailed`.
+`CEnvoyFolderRead` asks for the flashcard folder, starting in the folder the gate hands it.
+It answers null on a decline, and the gate then saves nothing.
 `CEnvoyCoinageRead` answers the wording as typed, or null when the user retreats.
 The clerk behind the gate trims the wording, so the driver hands it back untouched.
+`CEnvoyMediaRead` asks for a picture or sound file to open, titled and filtered by the gate's key.
+It is not `CEnvoyFileRead`, which is the export save dialog.
+It answers the chosen path, or null on a decline, and the gate then saves nothing.
 
 ## `CScreen`
 
@@ -236,10 +242,10 @@ The amount is written with one decimal in megabytes and as a whole number in kil
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `f6dae2392935`
 - `CAtelier.cs` `f47a17e14661cb82`
-- `CEntryBundle.cs` `558218ec80be6f8e`
-- `CEnvoy.cs` `ba575c886117535b`
+- `CEntryBundle.cs` `5a3f6144e85000d5`
+- `CEnvoy.cs` `54422ae5955ae73f`
 - `CPhonologyBundle.cs` `c969d9a57ef9c34d`
 - `CScreen.cs` `060eb21146468883`
 - `CWorkspace.cs` `e3533e69d610ae75`

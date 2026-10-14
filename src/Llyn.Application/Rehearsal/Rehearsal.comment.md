@@ -184,8 +184,9 @@ The workspace staff hands it the workspace latch, so it holds no busy flag of it
 
 A run that loses the latch refuses as busy and changes nothing.
 The phone folder comes from the settings and must stay under the workspace root.
-A rooted setting is refused, because the trail passes an absolute path through.
-An unset folder fails plainly until a refusal string exists for it.
+The setting passes `LTrailPathValidate` again, so a stored path outside the root is refused.
+An unset or unresolvable folder refuses with `Refusal.DepotMissing` before the latch work begins.
+  A refusal reaches the user as a sentence, where a plain throw would read as a fault.
 
 A deck file whose digest differs from the manifest's is a phone export.
 The run refuses it, because Llyn never overwrites a file it has not read.
@@ -224,10 +225,10 @@ Wrong answers and statistics stay out in phase 1.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
+Commit: `f6dae2392935`
 - `LCueClerk.cs` `afe1228a6db37fca`
 - `LDeckClerk.cs` `78691b90d1a74996`
-- `LDepotClerk.cs` `6e8d5c45ae233c56`
+- `LDepotClerk.cs` `efa9a9dc0d991ae9`
 - `LDepotLatch.cs` `fc94d5346f3c0f68`
 - `LStencilClerk.cs` `b1ddc9a051d8e835`
 - `LStencilReader.cs` `e300f7e601e1ca04`

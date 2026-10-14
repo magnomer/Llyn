@@ -67,6 +67,7 @@ Two sources with one content name are copied once.
 Only a name the manifest owns is deleted, so a phone's own file stays.
 An http picture is written as its address and copies nothing.
 A started latch refuses a run, and another workspace's latch blocks nothing.
+A blank phone folder refuses with `Refusal.DepotMissing` and leaves the latch free.
 An orphaned cue never becomes a row.
 
 ## `TDeckClerk`
@@ -104,14 +105,14 @@ An unknown key, a zero index, two suffixes or a stray brace stay literal.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
+Commit: `f6dae2392935`
 - `TCue.cs` `fb984bcfc6fa43be`
 - `TCueClerk.cs` `2482063704eefa59`
 - `TCueMarkup.cs` `2c0c1a28489dafd0`
 - `TDeckClerk.cs` `11940141f47aaa8e`
 - `TDeckCode.cs` `97c6a001d711f683`
 - `TDeckManifestFile.cs` `fe2b883882b6283f`
-- `TDepotClerk.cs` `dbb9715cd0ab95d8`
+- `TDepotClerk.cs` `2abdb0327195a6b9`
 - `TDepotFolder.cs` `cb913707dba4edfb`
 - `TDepotLatch.cs` `3aad50a929a35ba7`
 - `TStencilClerk.cs` `34eb8cb057ced205`

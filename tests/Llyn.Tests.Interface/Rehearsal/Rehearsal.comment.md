@@ -47,7 +47,7 @@ A save replaces the stored manifest whole, as the file store does.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
+Commit: `f6dae2392935`
 - `TDeckManifestFake.cs` `3fab1686919043f2`
 - `TDepotFake.cs` `961f9dc912e1dc22`
-- `TInterfaceRehearsal.cs` `2041dea3f83ffb59`
+- `TInterfaceRehearsal.cs` `89fea26388d538c6`
