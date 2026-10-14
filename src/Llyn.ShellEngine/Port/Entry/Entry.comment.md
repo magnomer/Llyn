@@ -1,7 +1,7 @@
 # Entry
 
 This folder holds the slices that load and show one stored entry.
-They cover its card links and folds, grasp, markdown note, Mentions and example sentence.
+They cover its etymology map, card links and folds, grasp, markdown note, Mentions and example sentence.
 
 ## `LCardPort`
 
@@ -10,7 +10,6 @@ The slice for a shown entry's card links and stored card folds.
 Incoming links include both card kinds, with epithets chosen by settings.
 Top-level meanings and collocations each receive a translation key, even without resolved targets.
 Missing targets are omitted rather than rendered as blank chips.
-Resolved source links and the narrative verdict travel together, so the reading view needs one etymology answer.
 `LEngineCollocationRead` places each collocation of the shown draft for the reading view and its compass.
 Homes, stubs, the other list and each row's phrase and markers come in one answer.
 So no reader applies the link rules itself.
@@ -21,6 +20,17 @@ Card folds remain outside lexical edits and undo.
 Save and delete announce a fold bulletin for the entry on normal completion.
 This holds even when a nonpositive card id writes nothing.
 Views of that entry can then re-read their folds.
+
+## `LAncestorPort`
+
+The slice a deportment sees for an entry's etymology map.
+`LAncestorFacade` implements it.
+The Lineage read takes the shown draft's boxes, so the tree follows edits not yet saved.
+Relations and user tongues carry usage counts, and the app's languages come before the user's tongues.
+Creating a relation or tongue answers the held value when the name exists, ignoring case.
+A delete answers the count of boxes that held the value, or null when nothing was deleted.
+A builtin relation is never deleted.
+The caller asks for confirmation beforehand, since the count is only known by reading the list.
 
 ## `LEntryPort`
 
@@ -61,7 +71,6 @@ A missing note parses to no blocks.
 The slice a deportment sees when it opens a Mention or a link.
 `LMentionFacade` implements it.
 `LEngineMentionFind` gives the Mention under an offset of a stored Example or of one sentence of the shown entry.
-`LEngineEtymologyFind` does so for the shown entry's etymology.
 `LEngineLinkRead` gives the entry a clicked link names, or null when it names none.
 A link names its entry only through a stored id, so an empty id names nothing.
 
@@ -74,10 +83,11 @@ The dependence labels and particles are those already saved in the language's ex
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `LCardPort.cs` `58a1a53a3ef53dff`
+Commit: `c6e60141a172`
+- `LAncestorPort.cs` `7e9777eb958ef99c`
+- `LCardPort.cs` `abe0d7c5966b542d`
 - `LEntryPort.cs` `f364cbbcc156a244`
 - `LGraspPort.cs` `9099a47b67179e94`
 - `LMarkdownPort.cs` `d966d5c1e2a4e15c`
-- `LMentionPort.cs` `c4b6fa24e46c66b9`
+- `LMentionPort.cs` `fb0fed747dc2e183`
 - `LSentencePort.cs` `8284e49bd11eb19f`

@@ -45,7 +45,7 @@ internal sealed class QEditorCard
 
     private readonly QCollocation _qCollocation;
 
-    private readonly QEtymologyEditor _qEtymologyEditor;
+    private readonly QEtymology _qEtymology;
 
     internal QEditorCard(FrameworkElement surface)
     {
@@ -83,7 +83,7 @@ internal sealed class QEditorCard
             _qEditorCardLanguage);
         _qMeaning = new QMeaning(surface, _qEditorCardMeaning, _qCard);
         _qCollocation = new QCollocation(surface, _qEditorCardCollocation, _qCard);
-        _qEtymologyEditor = new QEtymologyEditor(surface, QEditorCardProspect);
+        _qEtymology = new QEtymology(surface, QEditorCardProspect);
     }
 
     internal QSentence QEditorCardSentence { get; }
@@ -101,14 +101,15 @@ internal sealed class QEditorCard
         CCardList list,
         CCardField field,
         CImage image,
-        CVideo video)
+        CVideo video,
+        CEtymology etymology)
     {
         _qImage.QImageIntroduce(image);
         _qVideo.QVideoIntroduce(video);
         _qContext.QContextIntroduce(card, caret, _qProffer);
         _qRegister.QRegisterIntroduce(card, caret, _qProffer);
         _qProffer.QProfferIntroduce(caret, sentence);
-        QEditorCardProspect.QProspectIntroduce(card, caret, sentence, _qLink);
+        QEditorCardProspect.QProspectIntroduce(caret, sentence, _qLink);
         _qLink.QLinkIntroduce(card, caret);
         _qSpeaker.QSpeakerIntroduce(entry, atelier, envoy);
         _qGloss.QGlossIntroduce(sentence);
@@ -117,7 +118,7 @@ internal sealed class QEditorCard
         _qCitation.QCitationIntroduce(card, sentence, atelier);
         _qLabel.QLabelIntroduce(card, caret, _qSlate);
         _qSlate.QSlateIntroduce(caret);
-        _qEtymologyEditor.QEtymologyIntroduce(card, entry, atelier);
+        _qEtymology.QEtymologyIntroduce(etymology, entry);
         _qCardDrag.QCardDragIntroduce(list);
         _qCard.QCardIntroduce(field, list, caret);
         _qMeaning.QMeaningIntroduce(list);

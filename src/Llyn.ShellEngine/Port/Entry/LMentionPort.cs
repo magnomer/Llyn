@@ -8,7 +8,5 @@ public interface LMentionPort
 
     LMentionResult LEngineMentionFind(LEntryDraft shown, long sentence, int offset);
 
-    LMentionResult LEngineEtymologyFind(LEntryDraft shown, int offset);
-
     long? LEngineLinkRead(long? link);
 }

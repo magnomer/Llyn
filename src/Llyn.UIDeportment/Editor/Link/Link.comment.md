@@ -5,8 +5,8 @@ Both are popups or fields that are retargeted at whatever asked for them.
 
 ## `PLinkSelector`
 
-The field holds committed chips and one open entry in a single collection, so they wrap as one run.
-That needs the item template chosen per item.
+The field's chips and the one-item entry list `QBerth` builds beside them share this selector.
+So the template is chosen per item, the entry template for the caret and the chip template otherwise.
 
 ## `QAnchor`
 
@@ -30,7 +30,7 @@ The row comes back from the draft change with its new label.
 ## `QLink`
 
 This is the Translation field's driver, split by role.
-Each Observe hears one event and ends in one card gate, and each Refine only changes the look.
+Each Observe hears one event and ends in one Conduct gate, and each Refine only changes the look.
 The first handler to handle a key ends its route.
 Trim, blank, resolve and search rules live below Conduct, not here.
 The caret gate holds the chip trail, so no handler here counts chips or reads a position.
@@ -100,7 +100,7 @@ The Translation dropdown asks it too, since a pick on a Translation caret links 
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `PLinkSelector.cs` `d070f64083422ea2`
 - `QAnchor.cs` `942ece4b06597d3d`
-- `QLink.cs` `0630259d08571549`
+- `QLink.cs` `aa3d59d46da4d415`

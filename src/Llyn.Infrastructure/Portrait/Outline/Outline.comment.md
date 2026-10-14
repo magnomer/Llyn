@@ -57,12 +57,13 @@ The shared body is the links as an arrow run, the note unescaped, the children, 
 A blank line closes a run of quote or usage items, so the next paragraph does not join the list.
 A code run needs no escaping, so a chip in backticks is written as the reader wrote it.
 Any other run is escaped like every field.
-A line writes its label in bold before the text, or the text alone when it has no label.
+A line writes its normalized opener first, so an etymology line keeps its depth dots and arrow.
+Then it writes its label in bold before the text, or the text alone when it has no label.
 A link is an arrow, then each headword with its language in brackets, separated by dots.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `LOutline.cs` `04c1fe57bee401a5`
 - `LOutlineNote.cs` `fdd8eea1b5827283`
-- `LOutlineSection.cs` `08c5cda1dd64e535`
+- `LOutlineSection.cs` `b328d1f3b7018591`

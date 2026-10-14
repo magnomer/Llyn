@@ -30,7 +30,8 @@ public static class LLiveryClerk
         IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> target,
         IReadOnlyDictionary<long, string> source,
         IReadOnlyList<LUsage> incoming,
-        IReadOnlyList<LTranslationTarget> etymon,
+        IReadOnlyList<LLineage> lineage,
+        IReadOnlyList<LAncestorRelation> relation,
         Func<string, string?> flag,
         IReadOnlyDictionary<string, string> ensign,
         IReadOnlyDictionary<LFontRole, LFont> font,
@@ -40,7 +41,8 @@ public static class LLiveryClerk
         ArgumentNullException.ThrowIfNull(draft);
         ArgumentNullException.ThrowIfNull(target);
         ArgumentNullException.ThrowIfNull(incoming);
-        ArgumentNullException.ThrowIfNull(etymon);
+        ArgumentNullException.ThrowIfNull(lineage);
+        ArgumentNullException.ThrowIfNull(relation);
         ArgumentNullException.ThrowIfNull(flag);
         ArgumentNullException.ThrowIfNull(paradigm);
 
@@ -49,7 +51,6 @@ public static class LLiveryClerk
         named.AddRange(target.Values.SelectMany(static rows => rows)
             .Select(static row => row.LTranslationTargetLanguage));
         named.AddRange(incoming.Select(static usage => usage.LUsageLanguage));
-        named.AddRange(etymon.Select(static row => row.LTranslationTargetLanguage));
         Stack<LCardDraft> cards =
             new Stack<LCardDraft>(draft.LEntryDraftMeanings.Concat(draft.LEntryDraftCollocations));
         while (cards.TryPop(out LCardDraft? card))
@@ -77,8 +78,8 @@ public static class LLiveryClerk
 
         return new LLiveryPage(
             draft, favorite, grasp, created, updated, accent, guise, folded, fold, transcription, glyph, cell,
-            frequency, paradigm, inflection, fanqie, script, target, source, incoming, etymon, banner, ensign,
-            shown, font, opened, reading);
+            frequency, paradigm, inflection, fanqie, script, target, source, incoming, lineage, relation,
+            banner, ensign, shown, font, opened, reading);
     }
 
     public static LLiveryLanguage LLiveryClerkBuild(

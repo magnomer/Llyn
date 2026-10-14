@@ -6,15 +6,17 @@ namespace Llyn.Tests;
 public sealed class TSchemaMigrationVersion
 {
     [Fact]
-    public void DatabaseCreate_BuildWithoutEtymology_RaisesTheTablesEmpty()
+    public void DatabaseCreate_BuildHoldingEtymology_DropsTheOldTablesAndKeepsTheEntries()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
 
         workspace.TWorkspaceScriptRun(
-            "DROP TABLE etymology_mention; DROP TABLE etymology; DROP TABLE etymon; " +
+            "CREATE TABLE etymology (entry_parent INTEGER PRIMARY KEY, text TEXT); " +
+            "CREATE TABLE etymology_mention (entry_parent INTEGER, entry_ref INTEGER); " +
+            "CREATE TABLE etymon (entry_parent INTEGER, entry_ref INTEGER, position INTEGER); " +
             "INSERT INTO entry (headword, language, added_utc, updated_utc) " +
             "VALUES ('run', 'English', '2026-01-01', '2026-01-01'); " +
-            "UPDATE schema_version SET version = 73;");
+            "UPDATE schema_version SET version = 81;");
 
         workspace.TWorkspaceDatabase.TDatabaseCreate();
 
@@ -22,9 +24,8 @@ public sealed class TSchemaMigrationVersion
             LSchemaMigration.LSchemaMigrationVersion,
             workspace.TWorkspaceCountRead("SELECT version FROM schema_version;"));
         Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM entry WHERE headword = 'run';"));
-        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM etymology;"));
-        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM etymology_mention;"));
-        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM etymon;"));
+        Assert.Equal(0, workspace.TWorkspaceCountRead(
+            "SELECT COUNT(*) FROM sqlite_master WHERE name IN ('etymology', 'etymology_mention', 'etymon');"));
     }
 
     [Fact]

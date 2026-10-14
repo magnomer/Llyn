@@ -66,15 +66,12 @@ public sealed class TEntryClerkSaving
                 [meaning],
                 [],
                 transcriptions: [TInterface.TTranscriptionDraftCreate("exemplar-scheme", "kɪndl")],
-                reflexes: [TInterface.TReflexDraftCreate("Korean", "", "롱")]) with
-            {
-                LEntryDraftEtymology = TInterface.TEtymologyDraftCreate("from Old Norse kynda"),
-            });
+                reflexes: [TInterface.TReflexDraftCreate("Korean", "", "롱")]));
 
         long? revision = engine.TEngineRevisionRead();
         Assert.NotNull(revision);
         Assert.Equal(
-            ["entry/create", "sense/create", "transcription/create", "reflex/create", "etymology/create"],
+            ["entry/create", "sense/create", "transcription/create", "reflex/create"],
             workspace.TRevisionChangeRead(revision.Value)
                 .Select(change => change.LRevisionDeltaSubject + "/" + change.LRevisionDeltaKind));
         Assert.Equal(stored.LEntryId, workspace.TRevisionChangeRead(revision.Value)[0].LRevisionDeltaTarget);

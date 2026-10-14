@@ -72,12 +72,6 @@ public sealed class CDisplayRoute
             text, unit, (shown, offset) => _cDisplayMentionPort.LEngineMentionFind(shown, sentence, offset));
     }
 
-    public CMentionOffer? CDisplayEtymologyFind(string text, int unit)
-    {
-        return LDisplayMentionOpen(
-            text, unit, (shown, offset) => _cDisplayMentionPort.LEngineEtymologyFind(shown, offset));
-    }
-
     private CMentionOffer? LDisplayMentionOpen(
         string text, int unit, Func<LEntryDraft, int, LMentionResult> find)
     {

@@ -55,8 +55,7 @@ internal sealed class QStack
 
     private StackPanel QCollocation => QContract.QContractFind<StackPanel>(_qStackSurface, "PCollocation");
 
-    private FrameworkElement QEtymologyField =>
-        QContract.QContractFind<FrameworkElement>(_qStackSurface, "PEtymologyField");
+    private FrameworkElement QEtymology => QContract.QContractFind<FrameworkElement>(_qStackSurface, "PEtymology");
 
     private Border QNote => QContract.QContractFind<Border>(_qStackSurface, "PNote");
 
@@ -71,7 +70,7 @@ internal sealed class QStack
         [
             (QStackMeaning, QMeaning),
             (QStackCollocation, QCollocation),
-            (QStackEtymology, QEtymologyField),
+            (QStackEtymology, QEtymology),
             (QStackNote, QNote)
         ];
 

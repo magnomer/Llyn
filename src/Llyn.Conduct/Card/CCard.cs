@@ -10,24 +10,20 @@ public sealed class CCard
 {
     private readonly CDesk _cCardDesk;
 
-    private readonly LDraftPort _cCardDraftPort;
-
     private readonly LReferencePort _cCardReferencePort;
 
     private readonly LSettingsPort _cCardSettingsPort;
 
     private readonly CEnvoy _cCardEnvoy;
 
-    internal CCard(CDesk desk, LDraftPort drafts, LReferencePort references, LSettingsPort settings, CEnvoy envoy)
+    internal CCard(CDesk desk, LReferencePort references, LSettingsPort settings, CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(desk);
-        ArgumentNullException.ThrowIfNull(drafts);
         ArgumentNullException.ThrowIfNull(references);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(envoy);
 
         _cCardDesk = desk;
-        _cCardDraftPort = drafts;
         _cCardReferencePort = references;
         _cCardSettingsPort = settings;
         _cCardEnvoy = envoy;
@@ -195,71 +191,5 @@ public sealed class CCard
         {
             CLedger.LLedgerFailureShow(_cCardEnvoy, _cCardSettingsPort, "Reference.CreateFailed", exception);
         }
-    }
-
-    public void CCardEtymologySet(string text)
-    {
-        _cCardDesk.CDeskDraft.CDeskDraftEtymology?.LQuillEtymologySet(text);
-    }
-
-    public IReadOnlyList<CMentionLabel> CCardEtymologyRead()
-    {
-        return _cCardDesk.CDeskDraft.CDeskDraftTenure is LTenure held
-            ? CMention.LMentionLabelRead(_cCardDraftPort.LEngineEtymologyResolve(held))
-            : [];
-    }
-
-    public void CCardEtymonAdd(long? entryId)
-    {
-        if (entryId is not long stored)
-        {
-            _cCardEnvoy.CEnvoyFailureShow("Refusal.TargetMissing");
-            return;
-        }
-
-        _cCardDesk.CDeskDraft.CDeskDraftEtymology?.LEtymonAdd(stored, int.MaxValue);
-    }
-
-    public void CCardEtymonRemove(long entryId)
-    {
-        _cCardDesk.CDeskDraft.CDeskDraftEtymology?.LEtymonRemove(entryId);
-    }
-
-    public void CCardMentionSave(string text, int start, int length, long? entryId)
-    {
-        if (entryId is not long stored)
-        {
-            _cCardEnvoy.CEnvoyFailureShow("Refusal.TargetMissing");
-            return;
-        }
-
-        CCardMentionSend(_cCardDraftPort.LEngineSpanRead(text, start, length), stored);
-    }
-
-    public void CCardMentionDelete(string text, int start, int length)
-    {
-        CCardMentionSend(
-            _cCardDesk.CDeskDraft.CDeskDraftTenure is LTenure held
-                ? new LQuillEtymology(held).LQuillEtymologyFind(_cCardDraftPort.LEngineSpanRead(text, start, length))
-                : null,
-            0);
-    }
-
-    public bool CCardMentionCheck(string text, int start, int length)
-    {
-        return _cCardDesk.CDeskDraft.CDeskDraftTenure is LTenure held
-            && new LQuillEtymology(held).LQuillEtymologyFind(_cCardDraftPort.LEngineSpanRead(text, start, length))
-                is not null;
-    }
-
-    private void CCardMentionSend(LMentionDraft? span, long entryId)
-    {
-        if (span is null)
-        {
-            return;
-        }
-
-        _cCardDesk.CDeskDraft.CDeskDraftEtymology?.LEtymologyMentionSave(
-            span.LMentionDraftOffset, span.LMentionDraftLength, entryId);
     }
 }

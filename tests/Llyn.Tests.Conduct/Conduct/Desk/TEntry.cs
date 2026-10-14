@@ -82,21 +82,5 @@ public sealed class TEntry
         CEntry entry = TEditor.TEditorPrepare(engine, "input").TEditorFixtureEntry;
 
         Assert.Equal(string.Empty, entry.CEntryPronunciationRead());
-        Assert.Empty(entry.CEntryEtymonRead());
-    }
-
-    [Fact]
-    public void EtymonRead_AddedSource_ListsItsHeadword()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        long cat = engine.TEngineTranslationCreate("cat", "English").LEntryId;
-        TEditorFixture editor = TEditor.TEditorPrepare(engine, "input");
-        editor.TEditorFixtureOpen(null);
-
-        editor.TEditorFixtureCard.CCardEtymonAdd(cat);
-
-        CTranslationTarget etymon = Assert.Single(editor.TEditorFixtureEntry.CEntryEtymonRead());
-        Assert.Equal("cat", etymon.CTranslationTargetHeadword);
     }
 }

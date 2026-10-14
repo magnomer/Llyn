@@ -31,6 +31,7 @@ public sealed class LEngine : IDisposable
     public LCardFacade LEngineCard { get; }
     public LCatalogFacade LEngineCatalog { get; }
     public LEntryFacade LEngineEntry { get; }
+    public LAncestorFacade LEngineAncestor { get; }
     internal LEngineHearth LEngineHearth { get; }
     internal LVistaRowFacade LEngineVistaRow { get; }
 
@@ -51,6 +52,7 @@ public sealed class LEngine : IDisposable
         LEnginePronunciation = new LPronunciationFacade(LEngineHearth, LEngineDraft, LEngineVistaRow);
         LEngineCard = new LCardFacade(LEngineHearth, LEnginePronunciation, LEngineSettings, LEngineVistaRow);
         LEngineEntry = new LEntryFacade(LEngineHearth, LEngineCard, LEngineDraft);
+        LEngineAncestor = new LAncestorFacade(LEngineHearth);
         LEngineExample = new LExampleFacade(LEngineHearth, LEngineDraft);
         LEngineReference = new LReferenceFacade(LEngineHearth, LEngineDraft);
         LEngineSituation = new LSituationFacade(LEngineHearth, LEngineDraft);

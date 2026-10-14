@@ -12,13 +12,13 @@ Whether a pack names the Register is read from the stored row, so the chip carri
 
 ## `PRegisterSelector`
 
-The field holds committed chips and one caret in a single collection.
+The field's chips and the one-item entry list `QBerth` builds beside them share this selector.
 The caret is the one row typed into, so it alone takes the entry template.
 
 ## `QRegister`
 
 This is the Register field's driver, split by role.
-Each Observe hears one event and ends in one card gate, and each Refine only changes the look.
+Each Observe hears one event and ends in one Conduct gate, and each Refine only changes the look.
 The first handler to handle a key ends its route, and the dropdown's key handlers come first.
 A chip or caret item's data context is the item, not the card.
 So each handler finds the owning card by asking which card's caret is the item or holds it.
@@ -26,6 +26,7 @@ So each handler finds the owning card by asking which card's caret is the item o
 ### `QRegisterShow`
 
 The caret knows only chips, so this driver is the one place a Register draft is read.
+The anchor is the chip whose id Conduct's trail names, and no match leaves the entry at the end.
 
 ### `QRegisterTextObserve`
 
@@ -40,10 +41,12 @@ The wording goes to the engine as written, and the engine decides whether it nam
 ### `QRegisterEraseObserve`
 
 The key is taken at the edge even with no chip there.
+The deletion is requested from the caret trail, which finds the chip and removes it.
 
 ### `QRegisterCaretRefine`
 
-The arrows only walk the empty entry past a chip and ask no gate.
+The arrows ask the caret trail to step past a chip, and the screen only redraws the anchor it names.
+A refused step reports no move, so the key falls through to the box.
 
 ### `QRegisterBlurRefine`
 
@@ -56,10 +59,11 @@ Leaving the field commits what stands in the entry, so a Register typed and aban
 ### `QRegisterFieldApply`
 
 The selector is set only while none is, since a new selector would rebuild every item.
+The entry is built by `QBerth` beside the chips and stands where the card's caret is anchored.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `PRegister.cs` `78f4581e696a5ffe`
 - `PRegisterSelector.cs` `33a0ab2dc7c6bc68`
-- `QRegister.cs` `886cc728a50a1213`
+- `QRegister.cs` `d3c1bd19d9abcd7f`

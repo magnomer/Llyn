@@ -17,9 +17,8 @@ The shell reads the visual tree once, builds this, and hands it to the engine.
 The engine never learns that controls exist and the save never walks the tree.
 Both card lists arrive in the order they are shown, and a card's position is its place in its list.
 The entry-level detail travels as the shapes the archives store, never as flattened text.
-The etymology draft is never null, since an entry that says nothing carries an empty one.
+`LEntryDraftAncestors` holds the etymology map's boxes, and an entry with no etymology carries an empty list.
 `LEntryDraftNames` leaves out a part stored with no name, since only its stored value would show.
-`LEntryDraftSources` lists every entry the etymology names, links and narrative spans alike, so one query resolves them.
 `LEntryDraftCitations` lists every Source an Example cites across meanings, collocations and child cards, for one display query.
 `LEntryDraftPronunciation` is the first of the list, or null, and the surfaces that show one reading read it.
 `LEntryDraftAccents` holds every pronunciation after the primary one.
@@ -67,9 +66,9 @@ The editor, the reading view and the exports name a unit through `LUnitKeyRead`,
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `LEntry.cs` `33570d75bb87f462`
-- `LEntryDraft.cs` `646de645b0b6e8e4`
+- `LEntryDraft.cs` `9d5be3296a8b37ff`
 - `LFoldBox.cs` `1cc4cf7e5a366082`
 - `LForm.cs` `08608a643507cab0`
 - `LFreedom.cs` `a9233b2e06da7c36`

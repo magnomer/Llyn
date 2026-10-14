@@ -18,6 +18,8 @@ public sealed class CDisplayCard
 
     private readonly LSentencePort _cDisplaySentence;
 
+    private readonly LAncestorPort _cDisplayAncestorPort;
+
     private readonly LSettingsPort _cDisplaySettings;
 
     private readonly CEnvoy _cDisplayEnvoy;
@@ -28,6 +30,7 @@ public sealed class CDisplayCard
         LReferencePort references,
         LExamplePort examples,
         LSentencePort sentences,
+        LAncestorPort ancestors,
         LSettingsPort settings,
         CEnvoy envoy)
     {
@@ -36,6 +39,7 @@ public sealed class CDisplayCard
         ArgumentNullException.ThrowIfNull(references);
         ArgumentNullException.ThrowIfNull(examples);
         ArgumentNullException.ThrowIfNull(sentences);
+        ArgumentNullException.ThrowIfNull(ancestors);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(envoy);
 
@@ -44,6 +48,7 @@ public sealed class CDisplayCard
         _cDisplayReferencePort = references;
         _cDisplayExamplePort = examples;
         _cDisplaySentence = sentences;
+        _cDisplayAncestorPort = ancestors;
         _cDisplaySettings = settings;
         _cDisplayEnvoy = envoy;
     }
@@ -187,30 +192,26 @@ public sealed class CDisplayCard
         }
     }
 
-    public CLecternEtymology CDisplayEtymologyRead()
+    public CEtymologyState CDisplayEtymologyRead()
     {
-        if (LDisplayShown is not LEntryDraft shown)
+        if (LDisplayShown is not LEntryDraft shown || _cDisplayRule.LDisplaySound.LDisplayEntry is not long id)
         {
-            return new CLecternEtymology(string.Empty, [], false, false, false, false);
+            return new CEtymologyState([], [], []);
         }
 
-        LEtymologyResult etymology;
         try
         {
-            etymology = _cDisplayCardPort.LEngineEtymologyRead(shown);
+            return new CEtymologyState(
+                CAncestor.CAncestorRead(
+                    _cDisplayAncestorPort.LEngineLineageRead(id, shown.LEntryDraftAncestors), null),
+                [.. _cDisplayAncestorPort.LEngineRelationRead().Select(CAncestorChoice.CAncestorChoiceRead)],
+                [],
+                shown.LEntryDraftHeadword);
         }
         catch (Exception exception)
         {
-            LDisplayNoticed.LLedgerRepaintShow(_cDisplayEnvoy, _cDisplaySettings, "Display.EtymologyFailed", exception);
-            etymology = new LEtymologyResult([], shown.LEntryDraftEtymology.LEtymologyDraftNarrated);
+            LDisplayNoticed.LLedgerRepaintShow(_cDisplayEnvoy, _cDisplaySettings, "Display.AncestryFailed", exception);
+            return new CEtymologyState([], [], []);
         }
-
-        return new CLecternEtymology(
-            shown.LEntryDraftEtymology.LEtymologyDraftText,
-            CFolio.CFolioTargetRead(etymology.LEtymologyResultTargets),
-            etymology.LEtymologyResultFilled,
-            etymology.LEtymologyResultNarrated,
-            etymology.LEtymologyResultLinked,
-            shown.LEntryDraftDerived);
     }
 }

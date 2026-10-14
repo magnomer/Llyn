@@ -1,7 +1,7 @@
 # Entry
 
 These tests cover the entry from draft to store, each on a real temporary workspace.
-They span the draft round trip, save, load, update, the delete cascade, entry queries, etymology and collocation links.
+They span the draft round trip, save, load, update, the delete cascade, entry queries and collocation links.
 They stand apart from the Engine folder, which covers tenures, vistas, liveries and workspace moves.
 Most run through the engine relays, and the store and query cases call the archives directly.
 
@@ -160,26 +160,6 @@ A tag write naming a Tag row nobody stores is refused.
 That failure is reached only after the entry row and the card text have been written.
 A refused update records no history at all.
 
-## `TEtymology.cs`
-
-It covers the etymology an entry declares.
-That is the two shapes, the spans of the narrative, and what a commit stores.
-A draft may carry both shapes, and the store keeps the prose alone.
-Clearing the narrative demotes the etymology to its links, in the order they were added.
-A moved link keeps its new place through a commit.
-Dropping the last link leaves the entry saying nothing about its origin.
-A link names a stored entry once.
-An unknown or repeated entry refuses the link rather than writing a broken row.
-An offset is a code-point index, so a surrogate pair counts as one.
-A span that does not fit the text is refused before it reaches the draft.
-Rewriting the narrative drops a span the new text no longer holds.
-A new span takes the place of every span it overlaps.
-A span of an etymology always names an entry, so naming none is how one is dropped.
-A changed etymology records one revision change, naming the etymology once with the narrative as its summary.
-`TEtymologyEntryCreate` stores one bare entry, since only its id matters to a link.
-`TEtymologyRead` reads the etymology as the store gives it back, and `TEtymologyHeldRead` reads the open draft's.
-The held read serves the rules that refuse before a commit.
-
 ## Inline notes
 
 ### TEntryLoading.cs: Assert.Equal(["sword", "word"], engine.TEngineEntryFind("WORD"))
@@ -191,7 +171,7 @@ An empty query lists everything, ordered by headword.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `TCollocationSense.cs` `81360a78fa51777a`
 - `TEntryDraft.cs` `e7076b12c7cffecf`
 - `TEntryLoading.cs` `312bb2445f4a871e`
@@ -199,4 +179,3 @@ Commit: `c2f335c331fe`
 - `TEntrySaving.cs` `aefb951dbbf559b1`
 - `TEntryStore.cs` `de0802e0a187965c`
 - `TEntryUpdating.cs` `5f0f1bfe8d654d3e`
-- `TEtymology.cs` `5b4acea82de6c313`

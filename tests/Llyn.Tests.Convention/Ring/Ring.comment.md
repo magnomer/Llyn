@@ -162,14 +162,14 @@ A member appends its own name, so `DateTime.UtcNow` is told apart from `DateTime
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `TAuditBoundary.cs` `51ad50d413ce0aab`
-- `TAuditBoundarySetting.cs` `c2f7d96a238908c0`
+- `TAuditBoundarySetting.cs` `4e9200085c208d70`
 - `TAuditCensus.cs` `1927cbc5ad714acf`
-- `TAuditCensusSetting.cs` `214ecca9784d24e5`
+- `TAuditCensusSetting.cs` `8fb52cbc35a34b4e`
 - `TAuditCensusWalker.cs` `301bfbc58a822e20`
 - `TAuditCharter.cs` `9640ab92d9a80db5`
-- `TAuditCharterSetting.cs` `f8713aa0bcf7c7ae`
+- `TAuditCharterSetting.cs` `29df81e8f6c27a35`
 - `TAuditPurity.cs` `9acbad32aaa34359`
-- `TAuditPuritySetting.cs` `790a612900ddf321`
+- `TAuditPuritySetting.cs` `6bf999085e3bd848`
 - `TAuditPurityWalker.cs` `77f32b04ab93854e`

@@ -158,11 +158,11 @@ A file the operating system has not released yet is not a test failure.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `Llyn.Tests.Interface.csproj` `5a64ed92eefef899`
-- `TEditorFixture.cs` `4559c9a91f4e504c`
+- `TEditorFixture.cs` `a42623dacfe4b6f9`
 - `TInterfaceBoundary.cs` `c098561a2150175f`
-- `TInterfaceCitation.cs` `2279924024e7c9bf`
+- `TInterfaceCitation.cs` `e5b81a7ec75e2151`
 - `TInterfaceMarkdown.cs` `e3d48d9e8ac783fa`
 - `TInterfaceSettings.cs` `53890c16052cbbfe`
 - `TWorkspace.cs` `2cc686a2ca627691`

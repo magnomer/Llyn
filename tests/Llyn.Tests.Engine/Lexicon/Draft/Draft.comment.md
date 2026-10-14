@@ -12,7 +12,7 @@ The settings and every waiver reason live in `TDraftCoverageSetting`.
 
 The portrait side is the `Portrait` folders of the core and the application, plus `LCollocation.cs` and the engine's portrait facade.
 The markup side is the `Markup` folder of the core and the application's markup clerk.
-The exemplar side is the one file that builds the shared exemplar entry.
+The exemplar side is the two files that build the shared exemplar entry and list its typed strings.
 Every listed type must be a record in the core, and every shared waiver must still be a property.
 
 ### `TDraftCheck`
@@ -62,6 +62,7 @@ The records a draft entry is built from, `LForm`, `LInflection` and `LSyllable` 
 These names no side must carry, because none of them is a typed value.
 
 - Every `Id` is a row key, minted by the store.
+  `LAncestorDraftId` is the exception, since the markup clerk maps it to the box key it writes.
 - `LFormEntryId`, `LInflectionEntryId` and `LSyllablePronunciationId` are the owning row's key.
 - Every `Position` is the order of a list, carried by the list itself.
 - Every `Seeded` marks a row made unasked, which counts only once filled.
@@ -86,13 +87,14 @@ These are names the portrait shows another way or never prints.
 - `LPronunciationDraftAudio` and `LPronunciationDraftSource` are behind the reading, which prints alone.
 - `LPronunciationDraftSyllables` and every `LSyllable` part are the cut of a reading the portrait prints whole.
 - `LMentionDraftOffset`, `LMentionDraftLength` and `LMentionDraftSense` are the span, and the portrait links the entry.
+- Every `LAncestorDraft` part reaches the portrait through the lineage clerk, which lives outside the side.
 - `LReflexDraftOwned` marks a user-entered meaning for rebuilds, so the portrait never names it.
 - `LSituationDraftDescription` and `LSituationDraftKind` belong to the situation's own page.
   The card shows its title.
 
 ### `TDraftMarkup`
 
-The path patterns of the markup side, in Core and the four markup clerk files.
+The path patterns of the markup side, in Core and the five markup clerk files.
 
 ### `TMarkupWaiver`
 
@@ -100,11 +102,13 @@ The path patterns of the markup side, in Core and the four markup clerk files.
 
 ### `TDraftExemplar`
 
-The path of the exemplar side, the test file that fills a whole entry.
+The paths of the exemplar side, the test file that fills a whole entry and the one listing its strings.
 
 ### `TExemplarWaiver`
 
-Empty, since the exemplar fills every typed field by name.
+The exemplar passes an Ancestor box key by position.
+Its two boxes leave `LAncestorDraftChild`, `LAncestorDraftRelation` and `LAncestorDraftTongue` unset.
+So these four names never appear in the exemplar side.
 
 ## `TDraftFact`
 
@@ -113,7 +117,7 @@ So the shell copies a verdict instead of counting.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `TDraftCoverage.cs` `9dba35a561f37211`
-- `TDraftCoverageSetting.cs` `ea1cff0b6a68aeaf`
-- `TDraftFact.cs` `a064114eb9112a4b`
+- `TDraftCoverageSetting.cs` `1d6eff7d69841857`
+- `TDraftFact.cs` `faf0693926ac304b`

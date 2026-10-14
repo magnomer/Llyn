@@ -79,7 +79,7 @@ A pick marks its row and stores the value, and a second pick clears it.
 Covers the marks an editor sets on its stored entry.
 A grasp write reads back from the engine and words its label.
 The standing step pressed again clears the grasp.
-A grasp move past either end stops at the end and leaves the stored step standing.
+A grasp move past either end stops at the end, and the engine stores that end.
 A fresh draft ignores the write, words nothing and still announces a re-read.
 A favourite mark and its clearing read back the same way, each announced.
 The grasp limit equals the Core grasp step on a draft and a stored editor.
@@ -90,9 +90,9 @@ These two hostile cases build the marks on a stored entry over `TDisplayGrasp.TG
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `TEditor.cs` `6f943e488d6bccfd`
 - `TEditorField.cs` `110bea561ec984df`
 - `TEditorFresh.cs` `0f095b23c43c4cd3`
 - `TEditorUnit.cs` `38c4aeb9ce8622e6`
-- `TEsteem.cs` `3e773bdff9585a3b`
+- `TEsteem.cs` `5ddb21513d0a534a`

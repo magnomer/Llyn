@@ -110,14 +110,14 @@ A press on the standing step comes back cleared, since the display's one rule ow
 ## `CDisplayRoute`
 
 The route area handles the clicks that open another place.
-A chip, a source link, or a word in a line or the etymology opens through it.
+A chip, a source link, or a word in a line opens through it.
 It holds no state beyond the atelier's mention area, which stays null until the navigation is attached.
 `CDisplayRowChosen` carries the tab and the record a clicked chip names, and the display hands it to the navigation.
 `CDisplayChipOpen` opens a stored chip's record in the tab its kind picks, chosen by name in `LDisplayTabRead`.
 Any other chip falls to the link, which opens the library tab on its entry.
 The engine says which entry a link names, and an empty id names none, so nothing opens.
 It answers whether a tab was asked, so the driver marks the click handled.
-`CDisplayMentionFind` and `CDisplayEtymologyFind` take the whole shown text and the clicked UTF-16 unit.
+`CDisplayMentionFind` takes the whole shown text and the clicked UTF-16 unit.
 The engine reads the row's text, language and Mentions from the shown entry itself.
 So no Mention travels up through the driver and back.
 `LDisplayMentionOpen` answers null when no mention area is held or nothing is shown.
@@ -207,12 +207,12 @@ Any other name is the unknown tier, so the chip always finds a brush and a name.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `CDisplay.cs` `20f4eec71748e89f`
+Commit: `c6e60141a172`
+- `CDisplay.cs` `39bf40eb3a593f09`
 - `CDisplayAccent.cs` `9fddfe5a415f4f7e`
-- `CDisplayGrasp.cs` `89f4790148ec0d3c`
-- `CDisplayPlayback.cs` `ea506107f4ac6cc6`
-- `CDisplayRoute.cs` `201c643682b60ca1`
+- `CDisplayGrasp.cs` `0acd77ec4e934a75`
+- `CDisplayPlayback.cs` `bde1c68e992d1856`
+- `CDisplayRoute.cs` `53fe8dbcb726393d`
 - `CGrasp.cs` `726f35d01c119673`
 - `CLectern.cs` `fed67f5c9720b3bf`
 - `CLecternAccent.cs` `92ed38553d3d9914`

@@ -55,6 +55,11 @@ A position above zero numbers a card, and zero leaves a section unnumbered.
 The note is drawn as blocks and is empty when the section holds lines instead.
 The fold is true when the row's fold is stored, so a writer that folds shows it closed.
 It is false by default, and `LPortraitSectionOpen` clears it for print.
+`LPortraitSectionLineage` is the etymology tree, null in every other section.
+It is one `LLineage` box holding the headword, with the roots as its sources.
+So the tree needs no Core type of its own.
+The headword box has no id, entry, language, gloss or relation.
+A writer that draws boxes reads the tree, and one that draws text reads the lines.
 
 ## `LPortraitSectionOpen`
 
@@ -112,10 +117,10 @@ It covers every key an exported sheet reads, so a thin theme file still paints t
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `LPortraitFrame.cs` `897bc6f64abf68e4`
 - `LPortraitMedium.cs` `dc200723d24a5539`
 - `LPortraitPage.cs` `657609a913d4981f`
 - `LPortraitRole.cs` `9c2b6cdd51509e4a`
-- `LPortraitSection.cs` `8b48b9b24f37a9c9`
+- `LPortraitSection.cs` `a9630333682168be`
 - `LTheme.cs` `287bd1b58804b690`

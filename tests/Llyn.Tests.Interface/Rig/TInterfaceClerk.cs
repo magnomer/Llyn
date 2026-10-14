@@ -71,7 +71,7 @@ internal static partial class TInterface
                 LRigSoundTranscriptions = new TVaultFakeTranscription(),
                 LRigSoundReflexes = new TVaultFakeReflex(),
             },
-            LRigLexicon = rig.LRigLexicon with { LRigLexiconEtymologies = new TVaultFakeEtymology() },
+            LRigLexicon = rig.LRigLexicon with { LRigLexiconAncestors = new TVaultFakeAncestor() },
         };
     }
 
@@ -228,15 +228,16 @@ internal static partial class TInterface
                 static (_, _) => { }),
             new LFrequencyClerk(rig, languages, new object(), TSettingsRead, static (_, _) => { }),
             link,
-            new LMarkupClerkDraft(rig, link));
+            new LMarkupClerkDraft(rig, link, TMarkupAncestorCreate(rig, link)));
     }
 
     internal static LPortraitClerk TPortraitClerkCreate(LRig rig)
     {
         LLanguageCache languages = new(rig.LRigLanguages);
         object gate = new();
+        LLanguageClerk language = new(rig, languages, new LTrailClerk(rig));
         return new LPortraitClerk(
-            new LLanguageClerk(rig, languages, new LTrailClerk(rig)),
+            language,
             TEntryClerkCreate(rig),
             new LVocabularyClerk(rig),
             new LTranslationClerk(rig, new LRevisionClerk(rig)),
@@ -247,6 +248,8 @@ internal static partial class TInterface
             new LFrequencyClerk(rig, languages, gate, TSettingsRead, static (_, _) => { }),
             new LParadigmClerk(rig, languages),
             new LScriptClerk(rig, languages, gate, static (_, _) => { }),
+            new LLineageClerk(rig),
+            new LAncestorClerk(rig, language),
             TSettingsRead);
     }
 
@@ -319,7 +322,14 @@ internal static partial class TInterface
                 new object(),
                 static (_, _) => { }),
             new LMarkupClerkCard(rig, example),
-            example);
+            TMarkupAncestorCreate(
+                rig, new LMarkupClerkLink(rig, new LReferenceClerk(rig), new LAuthorClerk(rig), new LTrailClerk(rig))));
+    }
+
+    private static LMarkupClerkAncestor TMarkupAncestorCreate(LRig rig, LMarkupClerkLink link)
+    {
+        LLanguageClerk language = new(rig, new LLanguageCache(rig.LRigLanguages), new LTrailClerk(rig));
+        return new LMarkupClerkAncestor(rig, new LAncestorClerk(rig, language), link);
     }
 
     internal static LMarkupCargo TMarkupClerkRead(this LMarkupClerk clerk, string path) =>

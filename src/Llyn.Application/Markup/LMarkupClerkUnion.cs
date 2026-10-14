@@ -64,9 +64,9 @@ public static class LMarkupClerkUnion
             LEntryDraftCollocations = LMarkupCardPlace(
                 LMarkupCardAppend(loaded.LEntryDraftCollocations, collocations, [])),
             LEntryDraftNote = LMarkupNoteAppend(loaded.LEntryDraftNote, parsed.LEntryDraftNote),
-            LEntryDraftEtymology = loaded.LEntryDraftEtymology.LEtymologyDraftEmpty
-                ? parsed.LEntryDraftEtymology
-                : loaded.LEntryDraftEtymology,
+            LEntryDraftAncestors = loaded.LEntryDraftAncestors.Count == 0
+                ? parsed.LEntryDraftAncestors
+                : loaded.LEntryDraftAncestors,
             LEntryDraftUnit = loaded.LEntryDraftUnit == LUnit.LUnitEmpty
                 ? parsed.LEntryDraftUnit
                 : loaded.LEntryDraftUnit,

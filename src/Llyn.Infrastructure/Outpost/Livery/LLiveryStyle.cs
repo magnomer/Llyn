@@ -294,6 +294,40 @@ public static class LLiveryStyle
                 background: {{soft}}; color: {{accent}}; line-height: 25px;
             }
             .llyn .llyn-language { color: {{muted}}; font-size: 12px; }
+            .llyn .lineage {
+                margin: 0 0 14px; padding: 18px 22px; border: 1px solid {{line}}; border-radius: 12px;
+                background: {{surface}}; overflow-x: auto;
+            }
+            .llyn .lineage .tree {
+                display: inline-flex; flex-direction: column; align-items: center; vertical-align: top;
+            }
+            .llyn .lineage .stock { display: flex; justify-content: center; align-items: flex-end; }
+            .llyn .lineage .etymon {
+                position: relative; display: flex; flex-direction: column; align-items: center; padding: 0 12px;
+            }
+            .llyn .lineage .etymon::before, .llyn .lineage .etymon::after {
+                content: ""; position: absolute; bottom: 0; height: 0; border-top: 1px solid {{line}};
+            }
+            .llyn .lineage .etymon::before { left: 0; right: 50%; }
+            .llyn .lineage .etymon::after { left: 50%; right: 0; }
+            .llyn .lineage .etymon:first-child::before, .llyn .lineage .etymon:last-child::after { display: none; }
+            .llyn .lineage .stem { display: block; width: 0; height: 10px; border-left: 1px solid {{line}}; }
+            .llyn .etymon > .tongue { margin: 0 0 3px; font-size: 11px; color: {{muted}}; text-align: center; }
+            .llyn .etymon > .word {
+                min-width: 80px; padding: 4px 10px; border: 1px solid {{line}}; border-radius: 6px;
+                text-align: center; color: {{ink}};
+            }
+            .llyn .etymon > .word.linked { border-color: {{accent}}; color: {{accent}}; }
+            .llyn .etymon > .word.borrowed { border-style: dashed; border-color: {{muted}}; }
+            .llyn .etymon > .word > b { margin-left: 6px; font-weight: 400; color: {{accent}}; }
+            .llyn .etymon > .gloss {
+                max-width: 200px; margin: 3px 0 0; font-size: 12px; color: {{muted}}; text-align: center;
+            }
+            .llyn .etymon > .relation { font-size: 11px; color: {{muted}}; text-align: center; }
+            .llyn .lineage .root {
+                min-width: 120px; padding: 5px 14px; border: 1px solid {{accent}}; border-radius: 6px;
+                background: {{surface}}; text-align: center; font-size: 15px; font-weight: 600; color: {{accent}};
+            }
             .llyn .llyn-target .llyn-language { margin-left: 4px; font-size: 11px; }
             .llyn .llyn-epithet { margin-left: 6px; color: {{muted}}; font-size: 13px; }
             .llyn .llyn-owner {

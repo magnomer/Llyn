@@ -23,8 +23,9 @@ The fill sets the close icon, since an icon is drawn by code.
 ### `Theme.Register.Entry`
 
 The field's panel seats the caret among the chips, and the fill subscribes its keys and its leaving.
+It takes the caret input style, a bare field that takes no room while it is empty and unfocused.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `PRegisterTemplate.xaml` `8242d2e5bb8a410b`
+Commit: `c6e60141a172`
+- `PRegisterTemplate.xaml` `6ac54dab5ca3052c`

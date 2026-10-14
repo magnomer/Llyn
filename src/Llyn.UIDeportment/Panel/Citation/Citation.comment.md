@@ -26,6 +26,8 @@ When the popup closes by any route, the selection clears and the offered rows em
 
 The drawer shuts when the engine's verdict says it stays shut.
 It opens under the field's frame and is at least as wide as it.
+It is never wider than its window.
+The rows are filled only once it stands open.
 No row is chosen on opening, so Enter commits the typed line until an arrow is pressed.
 
 ### `QDrawerMove`
@@ -281,13 +283,13 @@ The notice's Example is not read, since the transcript answers the draft's Menti
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `QCitationItem.cs` `b0bb21eefb49ff43`
-- `QDrawer.cs` `5bbc059f4b2fd2de`
+- `QDrawer.cs` `f37ab7da12554317`
 - `QDrawerItem.cs` `3faf6e5db0d974be`
 - `QOccurrenceItem.cs` `08fe00f01d95dc44`
 - `QQuotation.cs` `19aa8cfe966fbd31`
 - `QQuotationItem.cs` `90d64fd4af9f9ef3`
-- `QTranscriptCitation.cs` `17199ca8207bd35c`
+- `QTranscriptCitation.cs` `84af282473993067`
 - `QTranscriptGloss.cs` `721f6bb7610c05b6`
 - `QTranscriptMention.cs` `6930521213e35ccd`

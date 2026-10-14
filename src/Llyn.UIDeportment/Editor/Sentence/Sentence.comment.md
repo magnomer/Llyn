@@ -34,7 +34,7 @@ Every change goes out through a gate and comes back through the redraw.
 
 ### `PSentenceShow`
 
-The row id is always taken, because the engine is the only minter.
+The row id is not taken, since it was fixed at construction.
 A field already reading what the engine holds is left alone, so the caret survives its own echo.
 
 ### `PSentenceCitation`
@@ -177,8 +177,8 @@ The silence gate is its own, so no magic id is sent for a mention with no target
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `PSentence.cs` `90fa6d54bdf5b393`
+Commit: `c6e60141a172`
+- `PSentence.cs` `d4f86a343103aa9f`
 - `PSentenceFrame.cs` `9666ee246efc010d`
 - `QCitation.cs` `7dee7a05a62658f5`
 - `QExample.cs` `5f90d6603b8d3066`

@@ -41,7 +41,9 @@ Its new meaning is empty and its ownership flag is clear.
 Covers the rebuild steps that belong to one older version of the schema.
 Each fact writes a workspace as that version left it, then rebuilds it.
 A build without a table gets the table added empty, and every other row carries across.
-This holds for the etymology tables, the Situation media tables and the collocation link table.
+This holds for the Situation media tables and the collocation link table.
+A version-81 build holding the old `etymology`, `etymology_mention` and `etymon` tables drops all three.
+Its entries stay, and the version row reads the current version.
 The Situation media rebuild leaves exactly one `*.v47.db` copy in the workspace folder.
 An older workspace numbered Collocations apart from Meanings, so the first of each was number 1.
 The migration moves the Collocation above both sequences, and its links and history follow it.
@@ -81,9 +83,9 @@ That is what stops SQLite reusing a deleted id.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `TSchemaMigration.cs` `59dc0c10918ea99c`
 - `TSchemaMigrationReference.cs` `720f13444005e50b`
 - `TSchemaMigrationReflex.cs` `afa08e2720b02717`
-- `TSchemaMigrationVersion.cs` `90578ebc24bd345b`
+- `TSchemaMigrationVersion.cs` `d8043645b976db34`
 - `TSchemaRealm.cs` `c8fcae2f1ea45a3b`

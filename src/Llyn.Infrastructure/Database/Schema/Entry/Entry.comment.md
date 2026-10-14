@@ -5,6 +5,17 @@ Each file builds one family of tables, so one file holds one responsibility.
 Table and column names are persisted keys.
 They stay lowercase and independent of code member names.
 
+## `LSchemaAncestor`
+
+Creates the etymology map of an entry and the two lists its boxes draw from.
+The relation list is seeded with the five builtin relations.
+A re-run marks an existing row of that name builtin.
+The tongue list holds only the languages a user added, since the app languages live elsewhere.
+A box cascades with its owning entry and with the child it feeds, so removing a box removes its sources.
+Its link to an entry, tongue or relation is set to none when that row goes.
+So a box outlives them.
+Position cannot be negative, and a box holds a tongue or a language text and never both.
+
 ## `LSchemaEntry`
 
 Creates the Entry root, its written forms, its parts of speech and the part-of-speech vocabulary.
@@ -82,15 +93,6 @@ Every table whose foreign key names a Collocation follows the new id, found from
 The revision rows naming that Collocation follow too, so the history still points at the same row.
 The collocation sequence ends at the last id given, so a later insert starts above it.
 A workspace with no shared id is left alone.
-
-## `LSchemaEtymology`
-
-Creates the etymology, etymology_mention and etymon tables.
-An entry has at most one etymology row, so entry_parent is unique there.
-Each etymology_mention row is one span of that prose and names the Entry the span means.
-Each etymon row is one direct link, held in position order under the entry that declares it.
-Every row goes when its entry goes, and a link goes when its target entry goes.
-A workspace from before version 74 arrives with all three tables empty.
 
 ## `LSchemaInflection`
 
@@ -235,10 +237,10 @@ A kind limits the rewrite to revision rows of that target type.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
+- `LSchemaAncestor.cs` `949675f3e7e2529d`
 - `LSchemaCollocation.cs` `e90e598319da5101`
 - `LSchemaEntry.cs` `869d40d6d41025eb`
-- `LSchemaEtymology.cs` `8a11e48f9823be89`
 - `LSchemaFold.cs` `8f54d54779c68955`
 - `LSchemaInflection.cs` `39ce71c62dea519e`
 - `LSchemaLacuna.cs` `1ff0cd476f3a833c`

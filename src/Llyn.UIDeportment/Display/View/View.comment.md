@@ -69,7 +69,7 @@ The lectern is kept for the library's navigation, which reaches for card spotlig
 ### `QDisplayIntroduce`
 
 The swath's clear answers the area's open and close before the lectern subscribes anything.
-Etymology and card notices go to the window menu, since the lectern knows no window.
+Card notices go to the window menu, since the lectern knows no window.
 The page's volume slider attaches to the window's one volume owner, so every tray keeps one level.
 
 ## Inline notes
@@ -99,8 +99,8 @@ The click is subscribed once.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `PDisplayCommand.cs` `82c7e2476f817dc9`
-- `PGrasp.cs` `2bc702992982ff83`
-- `QDisplay.cs` `b91d123ef344c3e6`
+- `PGrasp.cs` `24e3a8e1ad890d29`
+- `QDisplay.cs` `e69c4b2b90f3a1e7`
 - `QRoster.cs` `b2df99db6021bbc1`

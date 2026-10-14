@@ -71,7 +71,7 @@ A local file is read whole when decoded, so the preview never holds the file ope
 
 ### `QImageItemShow`
 
-The id is always taken.
+The id is not taken, since it was fixed at construction.
 A changed address reloads the preview of a row already seen, and an unchanged one keeps it.
 So a typed location reloads nothing until it reaches a new address.
 
@@ -142,8 +142,8 @@ A row already loaded does nothing on a repeat load.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `QImage.cs` `5e54f6591523a696`
-- `QImageItem.cs` `9c1a26bf24f875c1`
+- `QImageItem.cs` `a4c9dd4dc28c2594`
 - `QImageLazy.cs` `1ff9279b6097bd60`
 - `QImagePending.cs` `0cdc26e686b37582`

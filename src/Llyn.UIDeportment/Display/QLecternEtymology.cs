@@ -1,8 +1,12 @@
 using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Shapes;
 using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
@@ -13,9 +17,11 @@ public sealed class QLecternEtymology
 
     private readonly CDisplayRoute _qLecternEtymologyRoute;
 
-    private readonly QEtymology _qLecternCardEtymology;
+    private readonly ObservableCollection<QEtymologyItem> _qLecternEtymologyItem = [];
 
-    private readonly UIElement _qLecternCardOrigin;
+    private readonly UIElement _qLecternEtymologySection;
+
+    private readonly TextBlock _qLecternEtymologyHeadword;
 
     public QLecternEtymology(FrameworkElement surface, CDisplayCard area, CDisplayRoute route)
     {
@@ -25,43 +31,122 @@ public sealed class QLecternEtymology
 
         _qLecternEtymologyArea = area;
         _qLecternEtymologyRoute = route;
-        _qLecternCardEtymology = QContract.QContractFind<QEtymology>(surface, "PDisplayEtymology");
-        _qLecternCardOrigin = QContract.QContractFind<StackPanel>(surface, "PDisplayEtymologySection");
+        ItemsControl map = QContract.QContractFind<ItemsControl>(surface, "PDisplayEtymology");
+        _qLecternEtymologySection = QContract.QContractFind<StackPanel>(surface, "PDisplayEtymologySection");
+        _qLecternEtymologyHeadword = QContract.QContractFind<TextBlock>(surface, "PDisplayEtymologyHeadword");
+        map.ItemsSource =_qLecternEtymologyItem;
+        QLookItem.QLookItemAttach(map, QLecternEtymologyApply);
 
-        surface.CommandBindings.Add(new CommandBinding(
-            PEtymologyCommand.PEtymologyCommandEntry, QLecternEtymonObserve));
-        _qLecternCardEtymology.AddHandler(
-            PMention.PMentionClickEvent, new EventHandler<PMentionArgument>(QLecternEtymologyObserve));
+        map.AddHandler(Hyperlink.ClickEvent, new RoutedEventHandler(QLecternEtymologyObserve));
+        _qLecternEtymologySection.PreviewMouseWheel += QLecternEtymologyScroll;
     }
-
-    internal event Action<PMention, CMentionOffer?>? QLecternEtymologyNotice;
 
     public void QLecternEtymologyRefine()
     {
-        CLecternEtymology etymology = _qLecternEtymologyArea.CDisplayEtymologyRead();
-        _qLecternCardEtymology.QEtymologyText = etymology.CLecternEtymologyText;
-        _qLecternCardEtymology.QEtymologyNarrated = etymology.CLecternEtymologyNarrated;
-        _qLecternCardEtymology.QEtymologySourceShow(
-            etymology.CLecternEtymologyTargets
-                .Select(static target => new PEtymon(
-                    target.CTranslationTargetId, target.CTranslationTargetHeadword, target.CTranslationTargetLanguage))
-                .ToList(),
-            etymology.CLecternEtymologyLinked);
-        _qLecternCardEtymology.Visibility = QLook.QLookVisibleRead(etymology.CLecternEtymologyShown);
-        _qLecternCardOrigin.Visibility = QLook.QLookVisibleRead(etymology.CLecternEtymologyDerived);
+        CEtymologyState state = _qLecternEtymologyArea.CDisplayEtymologyRead();
+        QEtymologyItem.QEtymologyItemShow(_qLecternEtymologyItem, state);
+        _qLecternEtymologyHeadword.Text = state.CEtymologyStateHeadword;
+        _qLecternEtymologySection.Visibility = QLook.QLookVisibleRead(_qLecternEtymologyItem.Count > 0);
     }
 
-    private void QLecternEtymonObserve(object sender, ExecutedRoutedEventArgs e)
+    internal static void QLecternEtymologyApply(FrameworkElement container, object item, string? _)
     {
-        _qLecternEtymologyRoute.CDisplayChipOpen(null, e.Parameter as long?);
+        if (item is not QEtymologyItem row)
+        {
+            return;
+        }
+
+        CAncestor ancestor = row.QEtymologyItemAncestor;
+        if (QLook.QLookPartFind<ItemsControl>(container, "PEtymologySources") is ItemsControl sources)
+        {
+            sources.ItemsSource = row.QEtymologyItemSources;
+            QLookItem.QLookItemAttach(sources, QLecternEtymologyApply);
+
+            if (QLook.QLookPartFind<Rectangle>(container, "PEtymologyTrunk") is Rectangle trunk)
+            {
+                trunk.SetBinding(UIElement.VisibilityProperty, new Binding(nameof(ItemsControl.HasItems))
+                {
+                    Source = sources,
+                    Converter = new BooleanToVisibilityConverter(),
+                });
+            }
+        }
+
+        if (QLook.QLookPartFind<Rectangle>(container, "PEtymologyPrior") is Rectangle prior)
+        {
+            prior.Visibility = QLook.QLookVisibleRead(!row.QEtymologyItemFirst);
+        }
+
+        if (QLook.QLookPartFind<Rectangle>(container, "PEtymologyNext") is Rectangle next)
+        {
+            next.Visibility = QLook.QLookVisibleRead(!row.QEtymologyItemLast);
+        }
+
+        if (QLook.QLookPartFind<TextBlock>(container, "PEtymologyTongue") is TextBlock tongue)
+        {
+            tongue.Text = ancestor.CAncestorLanguage;
+            tongue.Visibility = QLook.QLookVisibleRead(ancestor.CAncestorLanguage.Length > 0);
+        }
+
+        if (QLook.QLookPartFind<TextBlock>(container, "PEtymologyText") is TextBlock text)
+        {
+            Inline word = new Run(ancestor.CAncestorText);
+            if (ancestor.CAncestorLinked)
+            {
+                word = new Hyperlink(word);
+                word.SetResourceReference(TextElement.ForegroundProperty, "Theme.Accent");
+            }
+
+            text.Inlines.Clear();
+            text.Inlines.Add(word);
+        }
+
+        if (QLook.QLookPartFind<TextBlock>(container, "PEtymologyGloss") is TextBlock gloss)
+        {
+            gloss.Text = ancestor.CAncestorGloss;
+            gloss.Visibility = QLook.QLookVisibleRead(ancestor.CAncestorGloss.Length > 0);
+        }
+
+        if (QLook.QLookPartFind<Border>(container, "PEtymologyFrame") is Border frame)
+        {
+            frame.Visibility = QLook.QLookVisibleRead(!ancestor.CAncestorBorrowed);
+            frame.SetResourceReference(
+                Border.BorderBrushProperty, ancestor.CAncestorLinked ? "Theme.Accent" : "Theme.Line");
+        }
+
+        if (QLook.QLookPartFind<Rectangle>(container, "PEtymologyTrace") is Rectangle trace)
+        {
+            trace.Visibility = QLook.QLookVisibleRead(ancestor.CAncestorBorrowed);
+        }
+
+        if (QLook.QLookPartFind<TextBlock>(container, "PEtymologyMark") is TextBlock mark)
+        {
+            mark.Visibility = QLook.QLookVisibleRead(ancestor.CAncestorLinked);
+        }
+
+        if (QLook.QLookPartFind<TextBlock>(container, "PEtymologyRelation") is TextBlock relation)
+        {
+            relation.Text = (ancestor.CAncestorRelation is null
+                ? null
+                : row.QEtymologyItemRelations.FirstOrDefault(choice =>
+                    choice.QEtymologyChoiceAncestor.CAncestorChoiceId == ancestor.CAncestorRelation))?.ToString()
+                ?? string.Empty;
+            relation.Visibility = QLook.QLookVisibleRead(relation.Text.Length > 0);
+        }
     }
 
-    private void QLecternEtymologyObserve(object? sender, PMentionArgument e)
+    private void QLecternEtymologyObserve(object sender, RoutedEventArgs e)
     {
-        ArgumentNullException.ThrowIfNull(e);
+        if (e.OriginalSource is FrameworkContentElement { DataContext: QEtymologyItem row })
+        {
+            _qLecternEtymologyRoute.CDisplayChipOpen(null, row.QEtymologyItemAncestor.CAncestorEntry);
+        }
+    }
 
-        QLecternEtymologyNotice?.Invoke(
-            e.PMentionArgumentOrigin,
-            _qLecternEtymologyRoute.CDisplayEtymologyFind(e.PMentionArgumentText, e.PMentionArgumentUnit));
+    private void QLecternEtymologyScroll(object sender, MouseWheelEventArgs e)
+    {
+        e.Handled = true;
+        _qLecternEtymologySection.RaiseEvent(
+            new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta) { RoutedEvent = UIElement.MouseWheelEvent });
     }
 }

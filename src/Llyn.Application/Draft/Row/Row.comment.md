@@ -7,42 +7,51 @@ A row is added blank or with what the form already has, and filled afterwards.
 So a blank row is held and named, and the commit leaves it out.
 Every list edit refuses a row id the draft does not hold.
 
-## `LDraftClerkEtymology`
+## `LDraftClerkAncestor`
 
-Applies the etymology requests to the entry draft being edited.
-It keeps both etymology shapes on the draft and picks neither, which the entry clerk does when saving.
-It holds the entry store to check that a link or a span names a real Entry.
-The identity mints the id of every span the clerk puts down.
+The boxes of an entry's etymology map, edited as one flat list of drafts.
+Each change finds its box by id and refuses an id the draft does not hold.
 
-### `LEtymologyTextApply`
+### `LAncestorApply`
 
-Sets the prose and carries the spans across the edit.
-`LDraftClerkMention` does the carrying, so etymology prose and sentence text shift alike.
+Routes every Ancestor request to its handler, and answers null for any other request.
+Editing a box's text unlinks the box, since a text that no longer names the entry would mislead.
+A gloss edit and a relation edit change only their own field.
+A relation id the stored relation list does not hold is refused, and zero clears the relation.
 
-### `LEtymologyMentionApply`
+### `LAncestorInsert`
 
-Puts one span over the range given, or clears the range when no Entry is named.
-Every span the range touches is dropped first, so no two spans overlap.
-A range outside the text is refused, as is a span naming an Entry the store does not hold.
+Puts an empty box directly above the one named, and the new box takes over its old sources.
+Id zero inserts above the headword, so the new box feeds the headword.
+A linked box is refused, because the map above a linked entry belongs to that entry.
 
-### `LEtymonAdd`
+### `LAncestorAdd`
 
-Inserts a direct link at the position given, clamped into the list.
-A link the draft already holds is refused.
+Adds an empty co-source right after the box named, under the same child.
 
-### `LEtymonMove`
+### `LAncestorRemove`
 
-Moves one direct link to another place in the list.
-A link the draft does not hold is refused.
-`LEtymonRemove` drops the link to the Entry named and leaves the rest in order.
+Removes the box and hands its sources to its child, so nothing above it is lost.
 
-### `LEtymologyValidate`
+### `LAncestorTargetApply`
 
-Refuses an id that is not a positive id of an Entry the store holds.
+Links the box to a stored entry and takes the entry's headword as its text.
+The language and tongue are cleared, since the linked entry owns its language.
+An entry id that is not stored is refused.
+The box's sources are taken out of the draft and set aside on one shelf, for one undo.
+The shelf holds one set at a time, so a later link that sets sources aside replaces it.
 
-### `LEtymologyLengthRead`
+### `LAncestorRestore`
 
-The length of the prose counts code points, which is what a span offset counts.
+Undoes the link, if the shelf is of the same draft and box and the box is still linked.
+The box returns to the text and language it held, and its sources return beneath it.
+Any other case is refused, and the shelf is spent after a success.
+
+### `LAncestorLanguageApply`
+
+A linked box is refused, because its language is its entry's.
+Tongue zero stores the written language as trimmed text.
+Any other tongue id must be in the user's tongue list, and the written text is then cleared.
 
 ## `LDraftClerkGloss`
 
@@ -187,7 +196,6 @@ One entirely inside the suffix shifts by the length delta.
 One touching the edited middle is dropped, because the word it marked is no longer what it was.
 This is right for every single-keystroke edit.
 A paste over the whole sentence drops everything, which is what the user expects.
-The etymology prose uses it too, so both texts carry their spans across an edit alike.
 
 ### `LMentionRead`
 
@@ -288,7 +296,6 @@ It holds the pack cache a row is respelled and cut through.
 ### `LReflexApply`
 
 Routes every reflex request to its handler, and answers null for any other request.
-The clerk then hands that request on to the etymology rows.
 A language or text request respells the row under its own language and recuts its anatomy under the entry's language.
 A respelling request keeps the respelling typed and recuts the anatomy.
 A romanization or note request replaces that one text of the named row.
@@ -349,8 +356,8 @@ The Gloss and Mention classes reach a row's Example through here.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `LDraftClerkEtymology.cs` `367ab59e9a8c31f1`
+Commit: `c6e60141a172`
+- `LDraftClerkAncestor.cs` `eba4a2434bad672d`
 - `LDraftClerkGloss.cs` `92c491993bdf9de1`
 - `LDraftClerkMedia.cs` `9ecb2b5075228d05`
 - `LDraftClerkMention.cs` `40b3a0ded1f2c470`

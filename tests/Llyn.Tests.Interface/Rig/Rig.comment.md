@@ -63,7 +63,7 @@ Most relays pass one clerk call through, so only the builders and the odd ones a
 
 ## `TRigClerkCreate`
 
-A fake rig over `entries` as both entry ports, with in-memory workspace, revision, tombstone, pronunciation, transcription, reflex and etymology stores.
+A fake rig over `entries` as both entry ports, with in-memory workspace, revision, tombstone, pronunciation, transcription, reflex and Ancestor stores.
 That is enough for an entry clerk save to run without SQLite.
 
 ## `TRigClaimCreate`
@@ -98,6 +98,7 @@ The play relay answers the play's ticket and plays at full volume by default.
 
 The markup intake with the clerk graph an import needs, built over the rig.
 The revision and query clerks it adds read the same rig, so the import stamps where the test reads.
+Its draft clerk resolves Ancestor links through the same link clerk as the intake.
 
 ## `TPortraitClerkCreate`
 
@@ -108,7 +109,8 @@ Its fold clerk reads the entry's stored folds for the page.
 
 A markup entry clerk over the rig, with a reflex clerk of its own.
 So an export reads the pack's reflex order.
-One example clerk serves both its card clerk and itself, as in the engine.
+Its card clerk holds the example clerk.
+An Ancestor markup clerk over a link clerk of its own carries the etymology map.
 The markup clerk exports through the entry clerk this builds.
 
 ## `TRecordingFormat`
@@ -219,13 +221,13 @@ One reversal is shared between hiding and restoring.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `TClockFake.cs` `dffa2b2fcf999593`
 - `TEngineFake.cs` `364e90d7a21a82f8`
 - `TEngineFault.cs` `deab7d5e61cdcbfb`
 - `TEnvoyFake.cs` `5afb6f4c63ea5fd7`
-- `TInterfaceClerk.cs` `98d037b84cd12c42`
+- `TInterfaceClerk.cs` `d709eb341150b4ef`
 - `TPhonographFake.cs` `af34df5efbe42d1c`
 - `TPostureFake.cs` `85c13ab0bfe0439a`
-- `TRigFake.cs` `828aa03a482c7f72`
+- `TRigFake.cs` `36dfde754350ec1b`
 - `TWarrantFake.cs` `7cef68fe9f435952`

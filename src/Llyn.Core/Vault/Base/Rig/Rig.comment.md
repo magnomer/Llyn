@@ -61,7 +61,7 @@ It covers the doctor, revisions, workspaces, tombstones, favorites, fold state a
 ## `LRigLexicon`
 
 The ports that describe a word itself.
-It covers etymologies, collocations, glosses, inflections, lacunae, meanings, morphologies and parts of speech.
+It covers etymology maps, collocations, glosses, inflections, lacunae, meanings, morphologies and parts of speech.
 
 ## `LRigSentence`
 
@@ -80,14 +80,14 @@ It covers the source factory, the four fetchers and the recordings.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `LRig.cs` `149bdd27cff6dd93`
 - `LRigAsset.cs` `353ad140ea730368`
 - `LRigCitation.cs` `b5f32e8248f44af8`
 - `LRigContext.cs` `4019730f09188fc7`
 - `LRigDraft.cs` `3d1e48eaa8039edd`
 - `LRigKeeping.cs` `e2b8f853ca537642`
-- `LRigLexicon.cs` `eb91d47d19742e69`
+- `LRigLexicon.cs` `2e1e7ac85cf3fa00`
 - `LRigSentence.cs` `0efa207365b2e66c`
 - `LRigSound.cs` `8226c2ce0a371822`
 - `LRigSource.cs` `443817afa7375534`

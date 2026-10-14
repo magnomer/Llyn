@@ -64,7 +64,8 @@ internal static class TInterfaceConduct
         swap as LReferencePort ?? engine.LEngineReference,
         swap as LAuthorPort ?? engine.LEngineAuthor,
         swap as LMarkdownPort ?? engine.LEngineDraft,
-        swap as LPronunciationPort ?? engine.LEnginePronunciation);
+        swap as LPronunciationPort ?? engine.LEnginePronunciation,
+        swap as LAncestorPort ?? engine.LEngineAncestor);
 
     internal static CEntryBundle TEntryBundleCreate(LEngine engine, string member, bool thrown) => new(
         TEngineFault.TEngineFaultCreate<LEntryPort>(engine.LEngineEntry, member, thrown),
@@ -81,7 +82,8 @@ internal static class TInterfaceConduct
         TEngineFault.TEngineFaultCreate<LReferencePort>(engine.LEngineReference, member, thrown),
         TEngineFault.TEngineFaultCreate<LAuthorPort>(engine.LEngineAuthor, member, thrown),
         TEngineFault.TEngineFaultCreate<LMarkdownPort>(engine.LEngineDraft, member, thrown),
-        TEngineFault.TEngineFaultCreate<LPronunciationPort>(engine.LEnginePronunciation, member, thrown));
+        TEngineFault.TEngineFaultCreate<LPronunciationPort>(engine.LEnginePronunciation, member, thrown),
+        TEngineFault.TEngineFaultCreate<LAncestorPort>(engine.LEngineAncestor, member, thrown));
 
     internal static CEntryBundle TEntryBundleCreate(Dictionary<string, Func<object?[]?, object?>> answers) => new(
         TEngineFake.TEngineCreate<LEntryPort>(answers),
@@ -98,7 +100,8 @@ internal static class TInterfaceConduct
         TEngineFake.TEngineCreate<LReferencePort>(answers),
         TEngineFake.TEngineCreate<LAuthorPort>(answers),
         TEngineFake.TEngineCreate<LMarkdownPort>(answers),
-        TEngineFake.TEngineCreate<LPronunciationPort>(answers));
+        TEngineFake.TEngineCreate<LPronunciationPort>(answers),
+        TEngineFake.TEngineCreate<LAncestorPort>(answers));
 
     internal static CPhonologyBundle TPhonologyBundleCreate(LEngine engine) => new(
         engine.LEngineFanqie,

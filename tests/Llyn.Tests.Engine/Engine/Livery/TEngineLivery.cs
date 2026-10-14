@@ -1,4 +1,3 @@
-using System.Globalization;
 using System.Text.RegularExpressions;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -170,43 +169,6 @@ public sealed class TEngineLivery
     }
 
     [Fact]
-    public void LiveryFormat_StoredEtymon_RendersNoteLink()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        LEntry dog = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
-            "dog", "English", string.Empty, string.Empty, [TInterface.TCardCreate("a hound", 1)], []));
-        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
-            "doggo", "English", string.Empty, string.Empty, [TInterface.TCardCreate("a dog", 1)], []));
-        LLiveryPage page = Assert.IsType<LLiveryPage>(engine.TLiveryRead(entry.LEntryId));
-        page = page with { LLiveryPageEtymon = [TInterface.TTranslationTargetCreate(dog.LEntryId, "dog", "English")] };
-
-        string body = TInterface.TLiveryFormat(page, static key => key).LLiveryNoteBody;
-
-        Assert.Contains("## Display.Etymology", body, StringComparison.Ordinal);
-        Assert.Contains(
-            "- [dog](:/" + dog.LEntryId.ToString(CultureInfo.InvariantCulture) + ")",
-            body,
-            StringComparison.Ordinal);
-    }
-
-    [Fact]
-    public void LiveryFormat_OutsideEtymon_KeepsPlainText()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
-            "doggo", "English", string.Empty, string.Empty, [TInterface.TCardCreate("a dog", 1)], []));
-        LLiveryPage page = Assert.IsType<LLiveryPage>(engine.TLiveryRead(entry.LEntryId));
-        page = page with { LLiveryPageEtymon = [TInterface.TTranslationTargetCreate(987654, "cat", "English")] };
-
-        string body = TInterface.TLiveryFormat(page, static key => key, static _ => string.Empty).LLiveryNoteBody;
-
-        Assert.Contains("- cat <span class=\"llyn-language\">English</span>", body, StringComparison.Ordinal);
-        Assert.DoesNotContain("[cat]", body, StringComparison.Ordinal);
-    }
-
-    [Fact]
     public void LiveryFormat_RepeatedRimeBook_OmitsBookChip()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -232,8 +194,6 @@ public sealed class TEngineLivery
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        LEntry dog = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
-            "dog", "English", string.Empty, string.Empty, [TInterface.TCardCreate("a hound", 1)], []));
         LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
             "break", "English", string.Empty, "A **plain** note", [TInterface.TCardCreate("to come apart", 1)], []));
         LLiveryPage page = Assert.IsType<LLiveryPage>(engine.TLiveryRead(entry.LEntryId));
@@ -245,26 +205,18 @@ public sealed class TEngineLivery
         LFanqieRow row = TInterface.TFanqieRowCreate("字", "Broad", "郎旰", "來", "寒", "翰", "一", "去");
         page = page with
         {
-            LLiveryPageDraft = page.LLiveryPageDraft with
-            {
-                LEntryDraftEtymology = TInterface.TEtymologyDraftCreate(
-                    "from dog", [TInterfaceMentionSpan.TMentionDraftCreate(0, 5, 3, dog.LEntryId)]),
-            },
             LLiveryPageParadigm = TInterface.TParadigmRowScan([slot]),
             LLiveryPageFanqie = [TInterface.TFanqieGroupCreate(string.Empty, "Broad", "Kaom", [row], ["朿"])],
         };
 
         string body = TInterface.TLiveryFormat(page, static key => key).LLiveryNoteBody;
 
-        string link = "from [dog](:/" + dog.LEntryId.ToString(CultureInfo.InvariantCulture) + ")";
         int[] places =
         [
             body.IndexOf("<div class=\"llyn\">", StringComparison.Ordinal),
             body.IndexOf("<span class=\"llyn-label\">past</span> | broke |", StringComparison.Ordinal),
             body.IndexOf("<span class=\"llyn-series\">Display.FanqieShengfu</span>", StringComparison.Ordinal),
             body.IndexOf("<span class=\"llyn-book\">Broad</span>", StringComparison.Ordinal),
-            body.IndexOf("## Display.Etymology", StringComparison.Ordinal),
-            body.IndexOf(link, StringComparison.Ordinal),
             body.IndexOf("## Display.Note\n\nA **plain** note", StringComparison.Ordinal),
             body.IndexOf("---\n\n<span class=\"llyn-stamp\">Display.Created</span>", StringComparison.Ordinal),
             body.IndexOf("<span class=\"llyn-stamp\">Display.Updated</span>", StringComparison.Ordinal),

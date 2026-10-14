@@ -146,29 +146,6 @@ public sealed class TMentionSpan
     }
 
     [Fact]
-    public void EtymologyDraftFind_CaretInsideSpan_ReturnsThatMention()
-    {
-        LMentionDraft mention = TInterfaceMentionSpan.TMentionDraftCreate(7, 3, 4, 42);
-        LEtymologyDraft etymology = new("he said the word", [mention]);
-        LMentionDraft caret = TInterfaceMentionSpan.TMentionSpanRead(etymology.LEtymologyDraftText, 5, 0);
-        LMentionDraft whole = TInterfaceMentionSpan.TMentionSpanRead(etymology.LEtymologyDraftText, 3, 4);
-
-        Assert.Same(mention, TInterfaceMentionSpan.TEtymologyDraftFind(etymology, caret));
-        Assert.Same(mention, TInterfaceMentionSpan.TEtymologyDraftFind(etymology, whole));
-    }
-
-    [Fact]
-    public void EtymologyDraftFind_SpanPastTheMention_ReturnsNothing()
-    {
-        LEtymologyDraft etymology = new("he said the word", [TInterfaceMentionSpan.TMentionDraftCreate(7, 3, 4, 42)]);
-        LMentionDraft wider = TInterfaceMentionSpan.TMentionSpanRead(etymology.LEtymologyDraftText, 3, 8);
-        LMentionDraft later = TInterfaceMentionSpan.TMentionSpanRead(etymology.LEtymologyDraftText, 12, 4);
-
-        Assert.Null(TInterfaceMentionSpan.TEtymologyDraftFind(etymology, wider));
-        Assert.Null(TInterfaceMentionSpan.TEtymologyDraftFind(etymology, later));
-    }
-
-    [Fact]
     public void ExampleDraftFind_SelectionInsideMention_ReturnsIt()
     {
         LMentionDraft held = TInterfaceMentionSpan.TMentionDraftCreate(1, 4, 3, 7);

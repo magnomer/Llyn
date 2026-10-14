@@ -1,33 +1,24 @@
 # Row
 
 The edit requests for the ordered lists and sub-records of a held draft.
-They cover etymology, the example, glosses, mentions, pronunciations, reflexes, registers, sentences, transcriptions and translations.
+They cover the etymology map boxes, the example, glosses, mentions, pronunciations, reflexes, registers, sentences, transcriptions and translations.
 They stand apart from the entry requests, which edit the entry's own fields and cards.
 The field requests key `LRequestKey` by type and row id, so a deferred edit replaces only its own row.
 Each list request names its row by id.
 So a change lands on that row wherever the list has moved it.
 
-## `LRequestEtymology.cs`
+## `LRequestAncestor.cs`
 
-### `LRequestEtymologyText`
-
-The spans held on the draft are carried across the edit, and a span the edit destroyed is dropped.
-It uses one key for the whole field, so typing folds into one undo step.
-
-### `LRequestEtymologyMention`
-
-It makes the span at the offset stand for one Entry, or clears it.
-A zero Entry removes whatever span covers the range and adds none.
-Any span the range touches is dropped first, so spans never overlap.
-The key carries the offset, so two spans of one text are separate steps.
-
-### `LRequestEtymonAddition`
-
-A link already held is refused rather than doubled.
-
-### `LRequestEtymonShift`
-
-The key carries the Entry, so dragging one chip folds into one step.
+These requests are one per gesture of the etymology map editor.
+Each names the draft and the box by id, real or minted.
+Text, language, gloss and relation key by box, so a deferred edit replaces only its own box's field.
+Target and the structural requests keep the type key, since the tenure applies them at once.
+Insertion and addition put an empty box above or beside the one named.
+Id zero in an insertion names the headword itself.
+Removal drops the box and its sources move down to its child.
+Target links the box to an entry, and Restoration undoes the link while its set-aside sources are held.
+Language names a tongue by id, or by text when the tongue id is zero.
+Relation id zero clears the relation.
 
 ## `LRequestExample.cs`
 
@@ -198,8 +189,8 @@ Removal leaves a court link behind it for the form to close.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `LRequestEtymology.cs` `8740750532aed341`
+Commit: `c6e60141a172`
+- `LRequestAncestor.cs` `e0928f51c6dbf32c`
 - `LRequestExample.cs` `e9de61e4d141ceb2`
 - `LRequestGloss.cs` `5ff67c89dcfaff57`
 - `LRequestMention.cs` `c201672700398580`

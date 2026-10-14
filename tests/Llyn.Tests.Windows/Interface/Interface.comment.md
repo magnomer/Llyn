@@ -25,7 +25,9 @@ The scheme relay also reaches an internal choice refresh and makes no WPF object
 The internal drivers and cards are handed back as `object`, so the caller stays out of internal types.
 The reflex type relay copies the held row with the typed text, as the gate does.
 It then hands the copy to the row's refine.
-The etymology relays read the field's two faces by their place in the body.
+The etymology item relay shows Ancestor rows into an item list with no relations or tongues.
+The lectern etymology relay builds one item from a row and its relation.
+It then paints the item's face in a given container.
 The card position attach hangs one card in a bare list with only the number box in its row.
 It lays the list out so its row exists, then hands the row painter to the real item watcher.
 It returns the box the painter finds by its part name.
@@ -54,7 +56,7 @@ The draft also names the card's id.
 
 ### `TCardHingeAttach`
 
-It builds a card driver and introduces the editor's field and list facets to it.
+It builds a card driver and introduces the editor's field, list and caret facets to it.
 The field drivers it never reaches are passed as null, since the row holds only a hinge.
 It attaches the real card fill to the list, so a hinge click reaches the real fold gate.
 
@@ -82,7 +84,7 @@ The wait is bounded, so a step that hangs fails the test rather than the whole r
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `TInterfaceCapsule.cs` `062207ed6f90f438`
-- `TInterfaceDeportment.cs` `02ea84af5bcd5466`
+- `TInterfaceDeportment.cs` `f70b09ea2d2b4c5e`
 - `TWindow.cs` `20d60e5a8413b7cf`

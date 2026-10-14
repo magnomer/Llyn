@@ -6,7 +6,7 @@ It also holds the press, board, proof, queue, setting-store and Joplin fakes the
 ## `TExemplar`
 
 The one fully populated entry draft the export coverage tests share.
-Every typed field carries its own distinct string, except the gloss and reflex languages, which share "Korean".
+Every typed field carries its own distinct string, except the gloss, reflex and Ancestor languages, which share "Korean".
 So a field an export drops names itself in the failure.
 The strings are plain, so no escaping can hide a miss.
 The lexical unit and freedom are set too, so an export that drops either fails the coverage test.
@@ -30,15 +30,21 @@ The collocation links the second meaning by a minted id, so its meaning link sav
 Apart from the headword, the second form's text and the shared "Korean", no string is a prefix of another.
 The noun plural is irregular on purpose, so the paradigm section shows it.
 Regular stays false, since the engine owns it.
+The etymology map holds two Ancestor boxes.
+One links the mention's target entry, and one is typed with a language and gloss.
 
 ## `TExemplarSave`
 
 Saves the draft and returns its id first, then every entry it links to.
 A markup export of the whole list resolves every name on arrival.
 
+## `TExemplarText`
+
+Reads the strings typed into an exemplar draft, for the export checks that look for each one.
+
 ## `TExemplarTextRead`
 
-Returns every string the draft carries, the etymology text included.
+Returns every string the draft carries.
 It is read from the draft itself and never from a second list.
 Ids, numbers and unset values are not strings and are not listed.
 The adder walks each card and then its children in draft order.
@@ -53,7 +59,8 @@ Drops every property without a setter from the contract, the same trim the draft
 ## `TExemplarShapeRead`
 
 The draft as indented JSON with every id zeroed, so two workspaces' drafts compare as one shape.
-Ids, link ids, sense ids, pack value ids and the id lists are zeroed in place, their counts kept.
+Ids, link ids, Ancestor targets, sense ids and pack value ids are zeroed in place.
+The id lists are zeroed too, their counts kept.
 The id lists include the collocation's meaning links, since stored meaning ids differ between workspaces.
 The pronunciation with no syllables keeps its empty list, so a syllable dropped on import still shows.
 Derived properties are left out the way the draft archive leaves them out.
@@ -275,9 +282,10 @@ A test sets it to stand for a store that cannot be written.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `TExemplar.cs` `85bd341f5b4be629`
-- `TInterfacePortrait.cs` `d793566624cd5036`
+Commit: `c6e60141a172`
+- `TExemplar.cs` `113831e430921ef2`
+- `TExemplarText.cs` `10b64d46827e6b52`
+- `TInterfacePortrait.cs` `04d25771c17ce281`
 - `TOutpostFake.cs` `cee6a1e7570dc877`
 - `TPress.cs` `655181875f05072d`
 - `TPressBoard.cs` `e9775568b2cd1543`

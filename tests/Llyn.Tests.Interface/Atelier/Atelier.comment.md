@@ -123,7 +123,7 @@ Each relay is transparent.
 
 ## `TCardCreate`
 
-Builds the card gates over the desk and real outlets on the engine, as the editor does.
+Builds the card gates over the desk, the engine's reference facade and a real settings outlet, as the editor does.
 The envoy is where the card gates show their failures, such as a failed translation.
 
 ## `TCardListCreate`
@@ -466,6 +466,8 @@ The plain overload builds the editor over every real outlet on the engine, with 
 Its marshal runs each notice at once.
 The marshal overload lets a test choose how the editor's notices reach it, such as holding them back.
 The envoy overload lets a test read each notice the editor shows.
+The bundle overload also takes a given entry bundle.
+So a test fakes an entry port and still reads the notices.
 The phonology overload fakes the sound bundle alone, and its media port is a bare stub.
 The port overloads build the editor over given ports, so a test fakes any one of them.
 The fixture overloads of the vista restore and the finish relay into the editor a fixture wraps.
@@ -491,14 +493,14 @@ The arrival opens relay a panel's open as the navigation runs it.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `TInterfaceArea.cs` `bf5825a6e7d0f03b`
-- `TInterfaceConduct.cs` `856394e61858593c`
-- `TInterfaceConductCard.cs` `618e1de3d61950bb`
+- `TInterfaceConduct.cs` `9a01822a966e7d6c`
+- `TInterfaceConductCard.cs` `c6ee6bda935fd266`
 - `TInterfaceConductDesk.cs` `0086e8d80029c5d2`
 - `TInterfaceConductDialog.cs` `3c2d58ee2694a179`
 - `TInterfaceConductPanel.cs` `c7d7de34ba294c4c`
 - `TInterfaceConductPortrait.cs` `c0b5da50cc1382f2`
 - `TInterfaceConductSound.cs` `1f1a6e448d7f4289`
-- `TInterfaceEditor.cs` `1d66f48c377dcb5a`
+- `TInterfaceEditor.cs` `707ba5799d8fcb9d`
 - `TInterfaceNavigation.cs` `860a179cae6ebe17`

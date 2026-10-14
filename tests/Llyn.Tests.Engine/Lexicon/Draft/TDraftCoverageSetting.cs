@@ -4,6 +4,7 @@ internal static class TDraftCoverageSetting
 {
     public static readonly string[] TDraftTypes =
     [
+        "LAncestorDraft",
         "LCardDraft",
         "LEntryDraft",
         "LExampleDraft",
@@ -68,6 +69,14 @@ internal static class TDraftCoverageSetting
 
     public static readonly string[] TPortraitWaiver =
     [
+        "LAncestorDraftChild",
+        "LAncestorDraftGloss",
+        "LAncestorDraftId",
+        "LAncestorDraftLanguage",
+        "LAncestorDraftRelation",
+        "LAncestorDraftTarget",
+        "LAncestorDraftText",
+        "LAncestorDraftTongue",
         "LEntryDraftInflections",
         "LInflectionMorphology",
         "LInflectionSpeechId",
@@ -97,6 +106,7 @@ internal static class TDraftCoverageSetting
         "src/Llyn.Application/Markup/LMarkupClerkEntry.cs",
         "src/Llyn.Application/Markup/LMarkupClerkCard.cs",
         "src/Llyn.Application/Markup/LMarkupClerkExample.cs",
+        "src/Llyn.Application/Markup/LMarkupClerkAncestor.cs",
     ];
 
     public static readonly string[] TMarkupWaiver =
@@ -107,7 +117,14 @@ internal static class TDraftCoverageSetting
     public static readonly string[] TDraftExemplar =
     [
         "tests/Llyn.Tests.Interface/Portrait/TExemplar.cs",
+        "tests/Llyn.Tests.Interface/Portrait/TExemplarText.cs",
     ];
 
-    public static readonly string[] TExemplarWaiver = [];
+    public static readonly string[] TExemplarWaiver =
+    [
+        "LAncestorDraftChild",
+        "LAncestorDraftId",
+        "LAncestorDraftRelation",
+        "LAncestorDraftTongue",
+    ];
 }

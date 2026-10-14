@@ -9,8 +9,6 @@ public interface LCardPort
 
     IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> LEngineTranslationRead(LEntryDraft shown);
 
-    LEtymologyResult LEngineEtymologyRead(LEntryDraft draft);
-
     LCollocationLayout LEngineCollocationRead(
         LEntryDraft shown, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets);
 

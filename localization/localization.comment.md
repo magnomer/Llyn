@@ -50,6 +50,10 @@ Its slot `{0}` is the comma-joined numbers of the further Meanings.
 `Notebook.*` labels the Sync page field naming the top Joplin notebook.
 `Xiesheng.ReadingsShow` and `Xiesheng.ReadingsHide` label the series member hinge that shows or hides all its readings.
 `Settings.Inflection` names the settings page that holds the `Analysis.*` switch and its hint.
+`Input.Ancestor*` labels the etymology editor's boxes, their hints and their insert, add, remove and restore controls.
+`Relation.*` and `Tongue.*` serve the relation and language pickers of an etymology box.
+The five relation names label the built-in relations, which `LAncestorRelation` maps from their stored names.
+Each `DetachConfirm` and `DetachCount` pair replaces `DeleteConfirm` while boxes still use the choice.
 A failure text is keyed `<Area>.<Action>Failed`, or `<Area>.Failed` for an area's main action.
 It sits beside its area's other texts.
 Most reach the user through the ledger, but some show in place, such as `Card.VideoFailed`.
@@ -77,6 +81,6 @@ The person headers spell out person and number instead of the English abbreviati
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `en.json` `e5fd7a4d5722f17f`
-- `ko.json` `7411c3679398dbff`
+Commit: `c6e60141a172`
+- `en.json` `4f45de9d0c9a4d57`
+- `ko.json` `1379e59d1fb47184`

@@ -160,11 +160,11 @@ The flags are read from the finished numbers, and a hub leaves the verdict alone
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `TAuditObject.cs` `be82ffc8a21e284a`
 - `TAuditObjectMember.cs` `a16c1d47d7995c6c`
 - `TAuditObjectPart.cs` `8d291a83366d68f8`
 - `TAuditObjectRow.cs` `24db2a72e938da7f`
-- `TAuditObjectSetting.cs` `d0ed5b7beafa66f5`
+- `TAuditObjectSetting.cs` `725aff3f9c216963`
 - `TAuditObjectType.cs` `b202f87d774b9373`
 - `TAuditObjectWalker.cs` `6f0da4a7cb6ec6f4`

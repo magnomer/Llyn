@@ -5,6 +5,7 @@ It covers the lifecycle, the lookups, the grasp rating, the revision stamp and u
 Each clerk runs over the ports of one rig and holds no gate, no observer and no cache.
 The engine calls them under its own gate and raises the bulletins.
 Searching and grasp stay apart from the lifecycle, since neither edits the word.
+The etymology map's clerks sit in the `Pedigree` child folder.
 
 ## `LCatalogClerk`
 
@@ -55,7 +56,7 @@ That is history that no longer describes the file.
 
 The create overload saves the whole input form as one new entry and records the revision that creates it.
 That is the headword row with its lexical unit and freedom, and its meanings and collocations in card order.
-It is also its note, inflections, pronunciations and etymology, written in whichever of the two shapes the draft ended in.
+It is also its note, inflections, pronunciations, transcriptions, reflexes and ancestor boxes.
 The note is stored as Markdown normalized by `LMarkdown`.
 The revision holds the entry's create first and then a change for every child row written.
 Each child is written through the same clerk and seam an update uses, onto an entry with nothing stored.
@@ -87,7 +88,8 @@ Which stored card a draft card is comes from `LCardDraft.LCardDraftId`, never fr
 The meaning clerk reconciles the tree and the card clerk the flat list.
 Every part is compared before it is written.
 A field that did not change writes no row and records no change.
-The etymology is written after the rest, and the paradigms are refreshed last.
+The ancestor boxes are saved after the other child rows, through `LEntryClerkAncestor`.
+The paradigms are refreshed last.
 
 ### `LEntryClerkUpdate`
 
@@ -97,27 +99,6 @@ A save that changed nothing records no revision.
 ### `LHeadwordValidate`
 
 Refuses a draft whose headword is blank, the one refusal both saves share.
-
-## `LEntryClerkEtymology`
-
-The seam that writes one entry's etymology when the entry is saved.
-It is where the two shapes are decided between, since only one of them may be stored.
-
-### `LEtymologyUpdate`
-
-Writes the draft's etymology and clears whichever shape the draft did not end in.
-A narrative wins when the prose is written, otherwise the links win when there are any.
-A draft that says nothing clears both, and a draft matching the store writes nothing at all.
-The change is recorded on the list, on a creating save as on an update.
-
-### `LEtymologyRead`
-
-The stored etymology of one entry as a draft, both shapes read together.
-
-### `LEtymologyMatch`
-
-The prose is compared trimmed, and the spans and links in their order.
-Span ids are not compared, since a save mints them fresh each time.
 
 ## `LEntryClerkField`
 
@@ -248,10 +229,9 @@ The translation clerk names its incoming rows through it too.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `LCatalogClerk.cs` `56685f63108c1e84`
-- `LEntryClerk.cs` `8ccf658f940e5999`
-- `LEntryClerkEtymology.cs` `58735f5b79de8cbc`
+- `LEntryClerk.cs` `f9953b583dee4375`
 - `LEntryClerkField.cs` `810515c631a82ce2`
 - `LEntryClerkTwin.cs` `190654e34a95c306`
 - `LEntryQueryClerk.cs` `0887fc2f28fecdb4`

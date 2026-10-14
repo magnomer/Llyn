@@ -125,6 +125,12 @@ Each entry keeps its own open state in the database.
 It is the rime-book placement box the reading view shows, folded under its head here.
 Each entry keeps its own open state, as the script box does.
 
+### PEditor.xaml: `PEtymology`
+
+The etymology card is the veneer's own control, which its folder's markup draws.
+It stays collapsed until its tab is chosen, as the meaning, collocation and note cards do.
+The deportment finds it by this name, both for the tab and for its driver.
+
 ### PEditor.xaml: `PPronunciation`
 
 The primary pronunciation places its variety before the bracketed field and its buttons after it.
@@ -182,8 +188,8 @@ The editor shows it with the block and sets its `Pending` cue to turn the icon w
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `PEditor.xaml` `2a001383efaf64be`
+Commit: `c6e60141a172`
+- `PEditor.xaml` `6faba677bb261c18`
 - `PEditor.xaml.cs` `29ffbc2c15f8f19d`
 - `PEditorCard.xaml` `ac6c941e70bc9e7e`
 - `PEditorDropdown.xaml` `1fb3025a80aa0ef9`

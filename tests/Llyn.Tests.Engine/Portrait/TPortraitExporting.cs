@@ -30,6 +30,8 @@ public sealed class TPortraitExporting
             label.LPortraitLabelParadigm,
             "Korean exemplar-kind exemplar-region ●",
             "exemplar-reflex-reading exemplar-reflex-romanization exemplar-reflex-meaning exemplar-reflex-note",
+            "English pattern",
+            "Korean exemplar-ancestor-text ‘exemplar-ancestor-gloss’",
         ];
         TPortraitExportMatch(engine, id, File.ReadAllText(path), TInterface.TSheetNormalize, unshown);
     }
@@ -118,7 +120,7 @@ public sealed class TPortraitExporting
 
         List<string> missing = [];
         List<string> stale = [];
-        foreach (string text in TExemplar.TExemplarTextRead(draft))
+        foreach (string text in TExemplarText.TExemplarTextRead(draft))
         {
             bool hidden = System.Array.IndexOf(TExemplar.TExemplarHidden, text) >= 0;
             bool carried = shown.Contains(text, System.StringComparison.Ordinal);

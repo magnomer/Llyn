@@ -16,10 +16,8 @@ A toned contour draws one chart image per syllable, never an inline `<svg>`, sin
 The syllable falling to the bottom ends its gradient on `contourBottom`, and the other's dot paints `contourMid`.
 A stored recording becomes one audio parcel behind a Markdown link, with no `<audio>` tag.
 A missing recording file leaves no parcel and no player, while the pronunciation still prints.
-A stored etymon prints as a note link under the etymology heading.
-An etymon outside the note map prints as plain text with its language chip.
 A rime book repeated across two sources prints its book chip once, while both source badges print.
-A full page keeps view mode's order for paradigm, series, book chip, etymology, mention link, note and stamps.
+A full page keeps view mode's order for paradigm, series, book chip, note and stamps.
 The courier note map sends the entry's id to a 32-character note id and any other id to empty.
 
 ## `LiveryStyleFormat_TokenTheme_ScopesRulesWithoutColour`
@@ -124,12 +122,17 @@ The English verb break carries two break rows in the pack's slot order.
 Each has one shown cell and no tip.
 A card with a stored target keeps the target, and the linked entry keeps the incoming usage.
 A folded language writes its rows inside `<details>` with the `Reflex.More` summary, after the shown one.
+A linked Ancestor box prints as an HTML anchor in the lineage block under the etymology heading.
+The linked entry's own map nests above it in a stock.
+The borrowed boxes carry the `borrowed` class.
+An etymon text such as `*bʰreg-` takes no Markdown backslash, since the block is HTML.
+Each box keeps its tongue and gloss spans, and the headword closes the tree in `div.root`.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `TEngineLivery.cs` `0f8df8d73b4afd10`
+Commit: `c6e60141a172`
+- `TEngineLivery.cs` `b2d8aea3fe2e868d`
 - `TEngineLiveryCard.cs` `e96a6501a7a378a6`
 - `TEngineLiveryInflection.cs` `f92f64ecc5403946`
 - `TEngineLiveryLanguage.cs` `93be9c93139a750d`
-- `TEngineLiveryPage.cs` `499f61fa72887e05`
+- `TEngineLiveryPage.cs` `4cdafc88e834f0f8`

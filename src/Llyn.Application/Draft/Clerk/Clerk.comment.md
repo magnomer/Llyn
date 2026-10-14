@@ -35,7 +35,7 @@ The mint also drops the blank rows of the kinds it treats as nothing.
 The draft form asks the owners of the kinds that reach past the entry content, in turn.
 Situation media go first, then the sentence, source and credit panels, Mentions, Glosses and situation fields.
 Everything else falls through to the content chain.
-The content form asks the entry fields, the cards, then the reading, reflex and etymology rows.
+The content form asks the entry fields, the cards, then the reading, reflex and ancestor rows.
 The card lists are asked last.
 A kind no owner knows is a programming error, not a refusal, since no form can send one.
 A null text or value is read as empty.
@@ -106,6 +106,7 @@ The headword is compared trimmed and the note canonical, since the commit stores
 A form that differs only there would otherwise report itself changed forever.
 The lists inside are compared by their contents.
 The Meaning and Collocation cards are compared through `LCardEquality`, which owns the card rule.
+The ancestor boxes are compared through `LEntryClerkAncestor.LAncestorMatch`.
 
 ## `LDraftClerkEquality.LTranscriptionScan`
 
@@ -224,10 +225,7 @@ Each list is normalised by the same rule, which drops what is blank and gives th
 Blank unidentified reflex, pronunciation and tag rows are dropped.
 Untitled situations and unnamed registers are dropped.
 Images and videos are only given ids.
-
-## `LDraftClerkMint.LEtymologyNormalize`
-
-Mentions with no link are dropped and the rest are given ids.
+Ancestor boxes are only given ids too, so no box is dropped.
 
 ## `LDraftClerkMint.LTranscriptionNormalize`
 
@@ -341,11 +339,11 @@ Otherwise the draft changed from elsewhere, so its parts become the committed on
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `LDraftClerk.cs` `edc00d06da99f22c`
+Commit: `c6e60141a172`
+- `LDraftClerk.cs` `1c2b0568241d423d`
 - `LDraftClerkEntry.cs` `162ea5dbe85d7507`
-- `LDraftClerkEquality.cs` `f7ecfcf9bc4abcb4`
+- `LDraftClerkEquality.cs` `acf584c41544af70`
 - `LDraftClerkList.cs` `aa0f8b2734e80cb2`
-- `LDraftClerkMint.cs` `d7a979c75a1bf87e`
+- `LDraftClerkMint.cs` `5b258d750b517b61`
 - `LDraftClerkPanel.cs` `184b5dd53dfe60c0`
 - `LSpeechClerk.cs` `1215322af9ec046e`

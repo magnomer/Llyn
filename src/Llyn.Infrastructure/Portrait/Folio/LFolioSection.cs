@@ -228,11 +228,12 @@ public static class LFolioSection
         {
             if (line.LPortraitLineLabel.Length == 0)
             {
-                LFolioLine.LFolioLineAppend(body, style, line.LPortraitLineText);
+                LFolioLine.LFolioLineAppend(body, style, line.LPortraitLineOpener + line.LPortraitLineText);
             }
             else
             {
-                LFolioLine.LFolioLineAppend(body, style, line.LPortraitLineLabel + "  ", line.LPortraitLineText);
+                LFolioLine.LFolioLineAppend(
+                    body, style, line.LPortraitLineOpener + line.LPortraitLineLabel + "  ", line.LPortraitLineText);
             }
         }
     }

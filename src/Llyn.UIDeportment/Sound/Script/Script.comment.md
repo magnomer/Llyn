@@ -14,7 +14,7 @@ The row shows only while the language declares a glyph section.
 The list's tag says whether the section declares sources, so the template can hide the lookup button.
 The lookup menu is the editor's one `QNotation`, opened under the glyph row.
 The menu opens before the search observe, so the old search closes first.
-The start request carries only the row id.
+The start request carries only the row id, and Conduct reads the row's scheme from the held draft.
 The search runs in the glyph scheme, and the engine finds its sources in the pack's glyph section.
 The block is keyed by the transcription id and repaints on every draft change.
 The field is filled while its typing is not heard, so a repaint sends nothing.
@@ -96,8 +96,8 @@ The drop stays here, because another driver would decode with its own library.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `QGlyph.cs` `2def43d2f0684beb`
+Commit: `c6e60141a172`
+- `QGlyph.cs` `8b35d9b15de2d16a`
 - `QGlyphCommand.cs` `2e10a0ac5a3b2af2`
 - `QScript.cs` `82428afc8c003204`
 - `QScriptImage.cs` `5f0922efc7df87bf`

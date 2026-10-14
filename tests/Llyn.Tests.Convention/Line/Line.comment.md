@@ -80,9 +80,9 @@ The audits read no script configuration, and both copies change together as scri
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `TAuditEncoding.cs` `b9e93637b09cabd1`
-- `TAuditEncodingSetting.cs` `af54063db283389e`
+- `TAuditEncodingSetting.cs` `def9bacf5940d3c8`
 - `TAuditLine.cs` `867c2c819f1106ac`
 - `TAuditLineRow.cs` `2a5115baa39988df`
-- `TAuditLineSetting.cs` `35ca67db0ddd50fb`
+- `TAuditLineSetting.cs` `b7abb2330f29c3b6`

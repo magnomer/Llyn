@@ -238,6 +238,31 @@ public static class LSheetCascade
         (".line>.tag", "flex:0 0 auto;padding:1px 8px;border-radius:9px;"
             + "background:var(--accent-soft);font-size:12px;font-weight:600;color:var(--accent);"),
 
+        (".lineage", "background:var(--surface);border:1px solid var(--line);border-radius:12px;"
+            + "padding:18px 22px;overflow-x:auto;break-inside:avoid;page-break-inside:avoid;"),
+        (".lineage .tree", "display:inline-flex;flex-direction:column;align-items:center;vertical-align:top;"),
+        (".lineage .stock", "display:flex;justify-content:center;align-items:flex-end;"),
+        (".lineage .etymon", "position:relative;display:flex;flex-direction:column;align-items:center;"
+            + "padding:0 12px;"),
+        (".lineage .etymon::before,.lineage .etymon::after",
+            "content:\"\";position:absolute;bottom:0;height:0;border-top:1px solid var(--line);"),
+        (".lineage .etymon::before", "left:0;right:50%;"),
+        (".lineage .etymon::after", "left:50%;right:0;"),
+        (".lineage .etymon:first-child::before,.lineage .etymon:last-child::after", "display:none;"),
+        (".lineage .stem", "display:block;width:0;height:10px;border-left:1px solid var(--line);"),
+        (".etymon>.tongue", "margin:0 0 3px 0;font-size:11px;color:var(--muted);text-align:center;"),
+        (".etymon>.word", "min-width:80px;padding:4px 10px;border:1px solid var(--line);border-radius:6px;"
+            + "text-align:center;color:var(--ink);"),
+        (".etymon>.word.linked", "border-color:var(--accent);color:var(--accent);"),
+        (".etymon>.word.borrowed", "border-style:dashed;border-color:var(--muted);"),
+        (".etymon>.word>b", "margin:0 0 0 6px;font-weight:400;color:var(--accent);"),
+        (".etymon>.gloss", "max-width:200px;margin:3px 0 0 0;font-size:12px;color:var(--muted);"
+            + "text-align:center;"),
+        (".etymon>.relation", "font-size:11px;color:var(--muted);text-align:center;"),
+        (".lineage .root", "min-width:120px;padding:5px 14px;background:var(--surface);"
+            + "border:1px solid var(--accent);border-radius:6px;text-align:center;"
+            + "font-size:15px;font-weight:600;color:var(--accent);"),
+
         (".rows", "margin:0;"),
         (".row", "display:flex;align-items:center;gap:12px;background:var(--surface);"
             + "border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:0 0 8px 0;"

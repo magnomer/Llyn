@@ -80,8 +80,8 @@ A call result never holds the variable, since the callee decides what it returns
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `TAssayFault.cs` `07914153c6c07a41`
 - `TAuditFault.cs` `b6f2ce6aeb4ab086`
-- `TAuditFaultSetting.cs` `e989524b1f30b12c`
+- `TAuditFaultSetting.cs` `1b4bb431fc4b6fcf`
 - `TAuditFaultWalker.cs` `a9c101c8ddd998bc`

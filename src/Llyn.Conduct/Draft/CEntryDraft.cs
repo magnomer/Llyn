@@ -6,5 +6,4 @@ public sealed record CEntryDraft(
     string CEntryDraftHeadword,
     string CEntryDraftNote,
     IReadOnlyList<CCardDraft> CEntryDraftMeanings,
-    IReadOnlyList<CCardDraft> CEntryDraftCollocations,
-    CEtymologyDraft CEntryDraftEtymology);
+    IReadOnlyList<CCardDraft> CEntryDraftCollocations);

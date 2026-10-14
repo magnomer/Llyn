@@ -30,15 +30,15 @@ The fill sets the close icon, since an icon is drawn by code.
 ### `Theme.Context.Entry`
 
 The caret is seated among the chips by the field's panel rather than held as one of them.
-It shares the ordinary input style, so its placeholder behaves as every other field's does.
+It takes the caret input style, a bare field that takes no room while it is empty and unfocused.
 It carries no border, because the field around it is the border.
 Its keys are read before the box reads them.
 The box would otherwise swallow the arrows for its own caret and the suggestion list would never see them.
 Its frame is drawn outward, so the entry is inset by that same amount.
 Its room stands as tall as a chip.
-So it opens where a chip opens and keeps a chip-wide gap after the run.
+So it opens where a chip opens, and while focused or written it keeps a chip-wide gap after the run.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `PContextTemplate.xaml` `6753f2cc61e8fe66`
+Commit: `c6e60141a172`
+- `PContextTemplate.xaml` `8ac460332082c5b1`

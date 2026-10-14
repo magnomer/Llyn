@@ -15,12 +15,10 @@ public sealed record LEntryDraft(
     IReadOnlyList<LInflection>? LEntryDraftInflections = null,
     IReadOnlyList<LTranscriptionDraft>? LEntryDraftTranscriptions = null,
     IReadOnlyList<LReflexDraft>? LEntryDraftReflexes = null,
-    LEtymologyDraft? LEntryDraftEtymology = null,
     LUnit LEntryDraftUnit = LUnit.LUnitEmpty,
-    LFreedom LEntryDraftFreedom = LFreedom.LFreedomEmpty)
+    LFreedom LEntryDraftFreedom = LFreedom.LFreedomEmpty,
+    IReadOnlyList<LAncestorDraft>? LEntryDraftAncestors = null)
 {
-    public LEtymologyDraft LEntryDraftEtymology { get; init; } = LEntryDraftEtymology ?? new LEtymologyDraft();
-
     public IReadOnlyList<LPronunciationDraft> LEntryDraftPronunciations { get; init; } =
         LEntryDraftPronunciations ?? [];
 
@@ -34,6 +32,8 @@ public sealed record LEntryDraft(
     public IReadOnlyList<LForm> LEntryDraftForms { get; init; } = LEntryDraftForms ?? [];
 
     public IReadOnlyList<LInflection> LEntryDraftInflections { get; init; } = LEntryDraftInflections ?? [];
+
+    public IReadOnlyList<LAncestorDraft> LEntryDraftAncestors { get; init; } = LEntryDraftAncestors ?? [];
 
     public LPronunciationDraft? LEntryDraftPronunciation =>
         LEntryDraftPronunciations.Count == 0 ? null : LEntryDraftPronunciations[0];
@@ -62,17 +62,6 @@ public sealed record LEntryDraft(
     public bool LEntryDraftCollocated => LEntryDraftCollocations.Count > 0;
 
     public bool LEntryDraftReflected => LEntryDraftReflexes.Count > 0;
-
-    public bool LEntryDraftDerived =>
-        LEntryDraftEtymology.LEtymologyDraftNarrated || LEntryDraftEtymology.LEtymologyDraftLinked;
-
-    public IReadOnlyList<long> LEntryDraftSources =>
-        LEntryDraftEtymology.LEtymologyDraftEtymons
-            .Concat(LEntryDraftEtymology.LEtymologyDraftMentions.Select(
-                static mention => mention.LMentionDraftEntry))
-            .Where(static id => id > 0)
-            .Distinct()
-            .ToList();
 
     public IReadOnlyList<long> LEntryDraftCitations
     {

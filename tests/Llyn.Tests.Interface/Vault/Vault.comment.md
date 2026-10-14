@@ -12,6 +12,8 @@ The database session, the doctor, the realm, the revision log and the workspace 
 A retirement of a part of speech is built and applied here, against the speech store.
 The fanqie store saves and reads a character's rows here, and sets a row's representative rank.
 The stores of what hangs on a meaning or collocation are relayed in `TInterfaceMeaning`.
+The Ancestor store saves and reads a map and creates, lists and deletes relations and tongues here.
+The Ancestor draft builders make one draft box, or turn a stored map into drafts and resolve drafts back.
 Each relay is transparent.
 
 ## `TRealmValueRead`
@@ -53,13 +55,15 @@ The query find is the exception and answers every stored row.
 `TRigFake` seats it as both the entry port and the entry query port of a rig built from fakes.
 The add stores an entry under the next id, as an archive would, and returns it with that id.
 
-## `TVaultFakeEtymology`
+## `TVaultFakeAncestor`
 
-An in-memory etymology store for the clerk tests.
-It keeps the narrative and the links of each entry apart, as the database does.
-It checks nothing, so a test that wants the span rules exercises the archive instead.
-A save numbers the mentions from one and forgets the narrative when the prose is blank.
-The links are kept in the order given, each holding only its target.
+An in-memory Ancestor store that keeps one map per entry, as a fake rig needs.
+A save mints a new id for each box and rewrites each child id to match, as an archive would.
+The five built-in relations are seeded and cannot be deleted.
+A create returns the item already held under the trimmed name, so a name never repeats.
+A listed relation or tongue counts the boxes that use it across every map.
+A delete of a custom item clears it from every box and keeps the boxes.
+It then reports whether a row went.
 
 ## `TVaultFakePronunciation`
 
@@ -98,11 +102,11 @@ The realm is always the empty `Guid`, since no schema ever wrote one here.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `TInterfaceDatabase.cs` `ca2c48221455bf3a`
+Commit: `c6e60141a172`
+- `TInterfaceDatabase.cs` `da6742d17a5b907e`
 - `TInterfaceVault.cs` `77bad45b5f2ce34c`
 - `TVaultFake.cs` `7d9c55a8e3e857fb`
-- `TVaultFakeEtymology.cs` `db8f128df75fca2c`
+- `TVaultFakeAncestor.cs` `c045bd98f192efe5`
 - `TVaultFakePronunciation.cs` `23fc443861d386b7`
 - `TVaultFakeReflex.cs` `f5c05bb32d9f3a49`
 - `TVaultFakeRevision.cs` `6f60bed6da1e60c5`

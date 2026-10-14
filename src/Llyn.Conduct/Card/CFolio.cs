@@ -38,8 +38,7 @@ internal static class CFolio
             draft.LEntryDraftHeadword,
             draft.LEntryDraftNote,
             CFolioSheetRead(draft.LEntryDraftMeanings, targets, folds, media, "Card.DefinitionHint", false, senses),
-            CFolioSheetRead(draft.LEntryDraftCollocations, targets, folds, media, "Card.MeaningHint", true, senses),
-            new CEtymologyDraft(draft.LEntryDraftEtymology.LEtymologyDraftText));
+            CFolioSheetRead(draft.LEntryDraftCollocations, targets, folds, media, "Card.MeaningHint", true, senses));
     }
 
     internal static CStateValue CFolioStateRead(LStateValue value)

@@ -352,7 +352,7 @@
                             <Button x:Name="PCollocationAddition" Content="{DynamicResource Input.CollocationAdd}" Style="{StaticResource Editor.Card.Add}" />
                         </StackPanel>
 
-                        <local:QEtymology x:Name="PEtymologyField" MinHeight="360" Visibility="Collapsed" />
+                        <veneer:PEtymology x:Name="PEtymology" Visibility="Collapsed" />
 
                         <Border x:Name="PNote" MinHeight="360" Style="{StaticResource Theme.Input.Card}" Visibility="Collapsed">
                             <Grid>

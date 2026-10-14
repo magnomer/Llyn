@@ -308,7 +308,7 @@ So is the Meaning side of a collocation link, so deleting a Meaning does not sca
 
 It indexes the member side of every association table, and the shared entities those members name.
 The two references a Mention carries are listed here as well, since both cascade from their parent.
-The target of an etymology span and the target of an Etymon are here for the same reason.
+An Ancestor box's child box, linked Entry, tongue and relation are indexed here too.
 
 ### LSchemaIndex.cs: command.CommandText = (third statement)
 
@@ -317,7 +317,8 @@ It indexes operational rows pointing at lexical rows and at history.
 ### LSchemaIndex.cs: command.CommandText = (fourth statement)
 
 It gives a unique position to the ordered sets that were left without one.
-They are a collocation, a pronunciation, a transcription and an Etymon, each within its Entry.
+They are a collocation, a pronunciation, and a transcription, each within its Entry.
+An Ancestor box is ordered within its Entry and the child it feeds, none counting as zero.
 The translation links a card carries are ordered the same way and take the same index.
 Every other ordered set already has one.
 Without it a duplicate position is silently possible and the read order becomes arbitrary.
@@ -325,14 +326,14 @@ Any duplicate an older database still holds is renumbered by the migration that 
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `LSchema.cs` `b30f64ac78e409eb`
+Commit: `c6e60141a172`
+- `LSchema.cs` `3a65c29bf73d02d0`
 - `LSchemaAnchor.cs` `269b59734b8ecf68`
 - `LSchemaCitation.cs` `8f67c1c2b7d5273d`
 - `LSchemaFavorite.cs` `e20098526745e8aa`
-- `LSchemaIndex.cs` `642f88e749df6a26`
+- `LSchemaIndex.cs` `b5273cb9ba02109c`
 - `LSchemaMarker.cs` `7f186069510a11a3`
-- `LSchemaMigration.cs` `19e387f890aa14a8`
+- `LSchemaMigration.cs` `6c34a01d519f3020`
 - `LSchemaQuotation.cs` `6e6e272cb61c61fa`
 - `LSchemaStamp.cs` `53e8d23fe6a0faee`
 - `LSchemaVersion.cs` `331b3131521e536f`

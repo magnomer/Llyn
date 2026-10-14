@@ -162,9 +162,6 @@ internal static partial class TInterface
     internal static LSentenceDraft TSentenceDraftCreate(LExampleDraft example) =>
         new(example, LStateValue.LStateValueUnspecified, LStateValue.LStateValueUnspecified);
 
-    internal static LEtymologyDraft TEtymologyDraftCreate(string text, IReadOnlyList<LMentionDraft> mentions) =>
-        new(text, mentions);
-
     internal static LFanqieGroup TFanqieGroupCreate(
         string heading, string label, string source, IReadOnlyList<LFanqieRow> rows, IReadOnlyList<string> stems) =>
         new(heading, label, source, rows, stems);

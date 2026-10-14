@@ -65,6 +65,7 @@ The entry sheet picks its bands by the label's heading, since the portrait carri
 ### Bands, cards and senses
 
 A band has its chips as a speech row, then its lines, then the shared body.
+A band or quote line writes its opener before its tag, so an etymology line keeps its dots and arrow.
 A band of usage rows wraps them in one rows block, so the row style stacks them.
 A band of collocation rows wraps them in the box a homed list draws.
 A card header holds the badge number and heading, the heading muted when it is only the card's kind.
@@ -116,9 +117,9 @@ A local path that does not read is dropped too, since elsewhere it would point a
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `LSheet.cs` `290b8d5803491019`
 - `LSheetNote.cs` `2b13b12ff8bb3151`
 - `LSheetPlate.cs` `97f2595914cddff6`
-- `LSheetSection.cs` `01d55bde8e3f7b27`
+- `LSheetSection.cs` `a60039cdf3b4cfbb`
 - `LSheetStyle.cs` `a011f8b916bf3a3b`

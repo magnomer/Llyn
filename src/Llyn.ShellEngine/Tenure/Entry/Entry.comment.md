@@ -10,6 +10,21 @@ Additions read their end position from the held draft, so callers need not carry
 Removals find the owning card from the draft instead of trusting a caller's card id.
 Location edits share `LEaselRequestRun`, so images and videos honour the same deferral flag.
 
+## `LQuillAncestor`
+
+The edits of the etymology map boxes of the draft the tenure holds.
+`LQuillLineageRead` answers an empty tree when no draft is held, and otherwise reads the Lineage of the held boxes.
+A draft of a new entry has no stored id, so the read passes zero.
+No entry is then on the path.
+`LQuillTextSet` is deferred while typing, like other text.
+It applies at once for a linked box, since the first keystroke must drop the link before anything else shows.
+`LQuillGlossSet` is deferred the same way.
+`LQuillTargetSet` applies at once, and answers true when the box had sources that are now set aside.
+The caller shows the one Undo only on true, and a refused link answers false.
+`LQuillLanguageSet` trims the name and matches it, ignoring case, to the language list.
+A user tongue is chosen by id, and any other name is stored as text.
+Relation, insertion, addition, removal and restoration all apply at once, since each changes the shape of the map.
+
 ## `LQuillCard`
 
 Card placement and removal guards belong to `LDraftClerkCard`, keeping list decisions outside the request builder.
@@ -46,12 +61,6 @@ An unmatched span produces no request.
 Note normalization and comparison share the entry clerk, so editing and repaint checks use the same rule.
 Unit and freedom choices compare against the current draft rather than a caller's cached selection.
 Choosing the held value requests the empty value, allowing the same operation to clear it.
-
-## `LQuillEtymology`
-
-Narrative typing defers, while etymon and mention links apply immediately.
-A missing draft or refused etymon read answers empty, allowing the caller to display without resolved targets.
-Other etymon read failures reach the caller.
 
 ## `LQuillPronunciation`
 
@@ -101,12 +110,12 @@ Typed text defers, while scheme picks apply immediately.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `LEasel.cs` `d253cf368264ecad`
+- `LQuillAncestor.cs` `9a383e8186246a3b`
 - `LQuillCard.cs` `53194206db46ddde`
 - `LQuillChip.cs` `ccf49aacacdd2de8`
 - `LQuillEntry.cs` `923cb6b552ca3f64`
-- `LQuillEtymology.cs` `d06d61da2598794e`
 - `LQuillPronunciation.cs` `705a829d2b1a3d36`
 - `LQuillReflex.cs` `0a80a427f2224a5c`
 - `LQuillSentence.cs` `0015d1ed21b5f7f1`

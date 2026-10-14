@@ -99,14 +99,4 @@ public sealed class TDraftFact
         Assert.True(TInterfaceMentionSpan.TMentionDraftCreate(1, 4, 4, 5).LMentionDraftLinked);
         Assert.False(TInterfaceMentionSpan.TMentionDraftCreate(2, 9, 4, 0).LMentionDraftLinked);
     }
-
-    [Theory]
-    [InlineData("a tale", true)]
-    [InlineData("  a tale  ", true)]
-    [InlineData(" \t\n ", false)]
-    [InlineData("", false)]
-    public void EtymologyDraftNarrated_Text_HoldsWordsOnlyWhenNotBlank(string text, bool expected)
-    {
-        Assert.Equal(expected, TInterface.TEtymologyDraftCreate(text).LEtymologyDraftNarrated);
-    }
 }

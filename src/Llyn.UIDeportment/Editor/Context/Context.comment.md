@@ -31,6 +31,7 @@ So each handler finds the owning card by asking which card's caret is the item o
 ### `QContextShow`
 
 The caret knows only chips, so this driver is the one place a Situation draft is read.
+The anchor comes from Conduct's caret trail, so the entry stands where the trail placed it.
 
 ### `QContextTextObserve`
 
@@ -46,10 +47,12 @@ A wording already stored is attached under its own id, so the workspace does not
 ### `QContextEraseObserve`
 
 The key is taken at the edge even with no chip there.
+The deletion is requested from the caret trail, which finds the chip and removes it.
 
 ### `QContextCaretRefine`
 
-The arrows only walk the empty entry past a chip and ask no gate, so it is a Refine.
+The arrows ask the caret trail to step past a chip, and the screen only redraws the anchor it names.
+A refused step reports no move, so the key falls through to the box.
 
 ### `QContextBlurRefine`
 
@@ -76,7 +79,7 @@ The dropdown asks it too, since a pick on a Situation caret lands on that card.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `PContext.cs` `90e338f58d6b0c27`
 - `PContextSelector.cs` `1633b5000b4cae23`
-- `QContext.cs` `4d00328832f5556b`
+- `QContext.cs` `11c61e2422088d31`

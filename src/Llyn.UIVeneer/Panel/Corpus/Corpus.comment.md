@@ -118,6 +118,7 @@ Its plus stands in `PTranscriptShelf`, which the look sheet reveals under the po
 `PCitationSheet` is as wide as the field it opens under, and the panel sets that on opening.
 `PCitationField` holds the single Source the Example cites, a pointer that is cleared without touching the Source itself.
 Typing into it opens `PCitationDrawer` with the matching Sources.
+The drawer carries no width cap of its own, since the panel caps it at its window's width on opening.
 The editor carries no buttons of its own.
 Save is the rail's save, delete is `PCorpusBin`, and there is no discard.
 Leaving the editor asks about the draft as the repertoire panel does.
@@ -231,8 +232,8 @@ The driver's own fill wires `PGlossAddition`, `PGlossRemoval`, the text and the 
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `PCorpus.xaml` `8feb695097304fad`
+Commit: `c6e60141a172`
+- `PCorpus.xaml` `715672aa9f20a8be`
 - `PCorpus.xaml.cs` `edacad6453b8037f`
 - `PCorpusExcerpt.xaml` `4767f2cc016f085c`
 - `PCorpusTranscript.xaml` `0971b525a138f847`

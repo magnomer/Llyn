@@ -1,17 +1,22 @@
 # Entry
 
 This folder holds the relays for an entry's lexical records.
-They cover meanings, sentences, etymology, examples, inflections, state values and fanqie rows.
+They cover meanings, sentences, examples, inflections, state values and fanqie rows.
 It also holds the rime-table fixture.
 
-## TInterfaceEtymology
+## `TInterfaceAncestor.cs`
 
 The etymology half of the test interface.
-It builds the record and the requests a test needs.
-Tests never construct a production type, so every shape crosses here.
-The create relay makes one narrative with its spans and no id, as a store is handed it.
-The mention request names an entry over a stretch of the narrative, or clears the span when it names none.
-The etymon requests add, drop or move a source link among the links.
+Tests never construct a production type, so every Ancestor shape crosses here.
+Each request relay names a draft and a box, and the engine's request flow applies it.
+The requests set a box's text, target entry, language with its tongue, gloss and relation.
+They also insert above a box, add beside it, remove it and restore it after a pick.
+An id of zero names no box, tongue or relation.
+So the same relay inserts at the roots or clears a relation.
+The clerk relays read, add and delete the relation and tongue lists.
+The engine relays read and add relations and add a tongue through the engine.
+The lineage relay reads the tree of a draft's map for an entry.
+`TAncestorBoxCreate` builds a stored box at position zero, and `TAncestorMapSave` and `TAncestorMapRead` store and read a map through the rig.
 
 ## `TInterfaceExample`
 
@@ -112,12 +117,12 @@ The Engine rime table tests and the Conduct yunjing panel tests place their cell
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `TInterfaceEtymology.cs` `8f3d2327f0bc0fe9`
+Commit: `c6e60141a172`
+- `TInterfaceAncestor.cs` `0ba588ff693a76f4`
 - `TInterfaceExample.cs` `f2df04344ad12a53`
 - `TInterfaceFanqie.cs` `9835e3d194d52aa7`
 - `TInterfaceInflection.cs` `c64a5c850d40f157`
-- `TInterfaceLexicon.cs` `19f3f35bd3df2df6`
+- `TInterfaceLexicon.cs` `6bf8c76bb901db9d`
 - `TInterfaceMeaning.cs` `fa7d0c0de042a497`
 - `TInterfaceSentence.cs` `f85ee90b93b5c834`
 - `TInterfaceState.cs` `23703b8485b4e3c9`

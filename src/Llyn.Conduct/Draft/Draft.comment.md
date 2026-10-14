@@ -14,13 +14,8 @@ It carries only what a driver writes into its controls.
 
 The held entry as the editor shows it whenever the desk announces it.
 It mirrors only what the editor's parts read.
-It holds the headword, the note, the meaning and collocation cards, and the etymology.
-
-## `CEtymologyDraft`
-
-The etymology of an entry, as the etymology field shows it.
-Its etymons stay in the engine, and the editor reads them through its own gate.
-Its Mentions arrive as ready chips through `CCard.CCardEtymologyRead`.
+It holds the headword, the note, the meaning cards and the collocation cards.
+The etymology boxes are not part of it, since the etymology gate reads them from the held draft itself.
 
 ## `CMarker`
 
@@ -48,10 +43,9 @@ One transcription of an entry, as the transcription and glyph rows show it.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `CDraft.cs` `b3bb4baa7849e72b`
-- `CEntryDraft.cs` `6517490298000267`
-- `CEtymologyDraft.cs` `5f58fb76c9a452bd`
+- `CEntryDraft.cs` `4dcad69c4d192ac1`
 - `CMarker.cs` `5593c710aee3c7f3`
 - `CReflexDraft.cs` `6d3c5be31f5d104d`
 - `CTranscriptionDraft.cs` `b28f91481756e9ef`

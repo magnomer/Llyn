@@ -2,6 +2,8 @@
 
 These tests isolate entry card gates and draft wording from window behavior.
 Real workspace tests inspect held drafts to distinguish completed edits from pending input and suggestions.
+Typed chip cases go through a `CCaret` built over the desk and the card, as the editor builds it.
+Caret cases check that settles and picks land before the anchor and deletes take the chip beside the caret.
 
 ## `TCard`
 
@@ -14,7 +16,7 @@ Disabling delay lets field tests inspect edits immediately on a held entry desk.
 
 ## `TCardSheetAdd`
 
-Tag, translation, register and situation tests share this meaning card setup.
+Tag, translation, register, situation and caret trail tests share this meaning card setup.
 
 ## `TCardTranslationRead`
 
@@ -22,12 +24,7 @@ Translation tests inspect linked ids independently of their suggestions.
 
 ## `TCardSentenceAdd`
 
-Reference tests share this sentence setup to exercise citations on separate cards.
-
-## `TCardEtymology`
-
-Span checks distinguish selections inside a linked mention from selections outside it.
-An unopened desk checks that reading chips requires no held draft.
+Reference tests share this sentence setup, and a second call puts the next sentence on a separate card.
 
 ## `TCardList`
 
@@ -67,7 +64,7 @@ Two cards check that suggestion exclusion belongs to the card holding the tag.
 
 ## `TCaretTrail`
 
-Each case checks one rule of the caret, against a held draft's chip rows.
+Each case checks one rule of the caret, against the register row of a held draft.
 A step past either end refuses and keeps the caret, and a delete past an end removes nothing.
 A removed anchor reads the next chip, and a chip added before the anchor leaves it standing.
 One case reads every trail of a card at once.
@@ -77,19 +74,19 @@ One case reads every trail of a card at once.
 Suggestions, resolution and insertion are tested separately to distinguish choosing from linking.
 Fresh translation removal checks court cleanup, while stored translation removal checks that the target remains findable.
 Duplicate headwords check display numbering without changing headword text.
-The caret is built over the desk and the card, as the editor builds it.
+The mention picker reads live here too, since they map the same translation offer.
 A caret moved back inserts a picked row before its anchor and leaves the anchor standing.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `TCard.cs` `a1c183924f8ad673`
-- `TCardEtymology.cs` `8fb076bb0cec6e22`
 - `TCardList.cs` `4700acc755d2cbf7`
 - `TCardReference.cs` `14ed3d1cc2cc9837`
-- `TCardRegister.cs` `255eac3a81088dfc`
+- `TCardRegister.cs` `3d15e4b41aed92e9`
 - `TCardSentence.cs` `04006230f6c0a70c`
-- `TCardSituation.cs` `97020c28ffde233f`
+- `TCardSituation.cs` `fa4fc1da8387b068`
 - `TCardSpeech.cs` `8c3b0ecae8677f2f`
-- `TCardTag.cs` `b39dd4915b874323`
-- `TCardTranslation.cs` `265de7207ac29b5b`
+- `TCardTag.cs` `276f014b44fa7962`
+- `TCardTranslation.cs` `b990397e938bff90`
+- `TCaretTrail.cs` `8cbc3ec4f9a7069d`

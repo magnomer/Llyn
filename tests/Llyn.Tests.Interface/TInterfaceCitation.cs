@@ -67,6 +67,6 @@ internal static class TInterfaceCitation
             {
                 ["LEngineReferenceFind"] = _ => throw new InvalidOperationException("no sources"),
             });
-        return new CCard(desk, new LDraftOutlet(engine), references, new LSettingsOutlet(engine), envoy);
+        return new CCard(desk, references, new LSettingsOutlet(engine), envoy);
     }
 }

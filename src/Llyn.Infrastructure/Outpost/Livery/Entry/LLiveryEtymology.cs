@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Net;
+using System.Linq;
 using System.Text;
 using Llyn.Core;
 
@@ -16,125 +16,71 @@ internal static class LLiveryEtymology
         ArgumentNullException.ThrowIfNull(note);
         ArgumentNullException.ThrowIfNull(lookup);
 
-        LEtymologyDraft? etymology = page.LLiveryPageDraft.LEntryDraftEtymology;
-        bool narrated = etymology?.LEtymologyDraftNarrated == true;
-        if (narrated || page.LLiveryPageEtymon.Count > 0)
-        {
-            sheet.Append("## ").Append(LLiveryHeader.LLiveryTextFormat(lookup("Display.Etymology"))).Append("\n\n");
-            if (narrated)
-            {
-                sheet.Append(LLiveryMentionFormat(
-                    etymology!.LEtymologyDraftText, etymology.LEtymologyDraftMentions, note)).Append("\n\n");
-            }
-
-            foreach (LTranslationTarget etymon in page.LLiveryPageEtymon)
-            {
-                sheet.Append("- ")
-                    .Append(LLiveryLinkFormat(etymon.LTranslationTargetHeadword, etymon.LTranslationTargetId, note));
-                if (etymon.LTranslationTargetLanguage.Length > 0)
-                {
-                    sheet.Append(" <span class=\"llyn-language\">")
-                        .Append(LLiveryHeader.LLiveryTextFormat(etymon.LTranslationTargetLanguage)).Append("</span>");
-                }
-
-                sheet.Append('\n');
-            }
-
-            if (page.LLiveryPageEtymon.Count > 0)
-            {
-                sheet.Append('\n');
-            }
-        }
-
-        string stored = page.LLiveryPageDraft.LEntryDraftNote ?? string.Empty;
-        if (stored.Trim().Length > 0)
-        {
-            sheet.Append("## ").Append(LLiveryHeader.LLiveryTextFormat(lookup("Display.Note"))).Append("\n\n")
-                .Append(stored.Replace("\r\n", "\n", StringComparison.Ordinal).Trim('\n')).Append("\n\n");
-        }
-
-        LLiveryStampAppend(sheet, page, lookup);
-    }
-
-    internal static string LLiveryLinkFormat(string text, long id, Func<long, string> note)
-    {
-        string shown = LLiveryHeader.LLiveryTextFormat(text);
-        string target = LLiveryTargetRead(id, note);
-        return target.Length == 0 ? shown : "[" + shown + "](:/" + target + ")";
-    }
-
-    internal static string LLiveryAnchorFormat(string text, long id, Func<long, string> note)
-    {
-        string shown = LLiveryHeader.LLiveryTextFormat(text);
-        string target = LLiveryTargetRead(id, note);
-        return target.Length == 0 ? shown : "<a href=\":/" + WebUtility.HtmlEncode(target) + "\">" + shown + "</a>";
-    }
-
-    private static string LLiveryTargetRead(long id, Func<long, string> note)
-    {
-        ArgumentNullException.ThrowIfNull(note);
-
-        return id > 0 ? note(id) ?? string.Empty : string.Empty;
-    }
-
-    internal static string LLiveryMentionFormat(
-        string text, IReadOnlyList<LMentionDraft> mentions, Func<long, string> note)
-    {
-        ArgumentNullException.ThrowIfNull(text);
-        ArgumentNullException.ThrowIfNull(mentions);
-
-        StringBuilder line = new StringBuilder();
-        int done = text.Length - text.TrimStart().Length;
-        int last = text.TrimEnd().Length;
-        foreach (LMentionDraft mention in mentions)
-        {
-            int start = mention.LMentionDraftOffset;
-            int end = start + mention.LMentionDraftLength;
-            if (!mention.LMentionDraftLinked || start < done || mention.LMentionDraftLength <= 0 || end > last)
-            {
-                continue;
-            }
-
-            line.Append(LLiveryBreakFormat(text[done..start]))
-                .Append(LLiveryLinkFormat(text[start..end], mention.LMentionDraftEntry, note));
-            done = end;
-        }
-
-        return line.Append(LLiveryBreakFormat(text[done..Math.Max(done, last)])).ToString().Trim();
-    }
-
-    private static string LLiveryBreakFormat(string text)
-    {
-        string[] lines = text.Replace("\r", string.Empty, StringComparison.Ordinal).Split('\n');
-        for (int place = 0; place < lines.Length; place++)
-        {
-            lines[place] = LLiveryHeader.LLiveryTextFormat(lines[place]);
-        }
-
-        return string.Join("\\\n", lines);
-    }
-
-    private static void LLiveryStampAppend(StringBuilder sheet, LLiveryPage page, Func<string, string> lookup)
-    {
-        if (string.IsNullOrEmpty(page.LLiveryPageCreated) && string.IsNullOrEmpty(page.LLiveryPageUpdated))
+        if (page.LLiveryPageLineage.Count == 0)
         {
             return;
         }
 
-        List<string> lines = [];
-        foreach ((string key, string stamp) in new[]
-                 {
-                     ("Display.Created", page.LLiveryPageCreated),
-                     ("Display.Updated", page.LLiveryPageUpdated),
-                 })
+        Dictionary<long, string> relations = page.LLiveryPageRelation.ToDictionary(
+            static relation => relation.LAncestorRelationId,
+            relation => relation.LAncestorRelationKey.Length > 0
+                ? lookup(relation.LAncestorRelationKey)
+                : relation.LAncestorRelationName);
+        sheet.Append("## ").Append(LLiveryHeader.LLiveryTextFormat(lookup("Display.Etymology"))).Append("\n\n");
+        sheet.Append("<div class=\"lineage\"><div class=\"tree\">\n");
+        LLiveryStockAppend(sheet, page.LLiveryPageLineage, relations, note);
+        sheet.Append("<i class=\"stem\"></i><div class=\"root\">")
+            .Append(LLiveryHeader.LLiveryHtmlFormat(page.LLiveryPageDraft.LEntryDraftHeadword))
+            .Append("</div>\n</div></div>\n\n");
+    }
+
+    private static void LLiveryStockAppend(
+        StringBuilder sheet,
+        IReadOnlyList<LLineage> sources,
+        Dictionary<long, string> relations,
+        Func<long, string> note)
+    {
+        sheet.Append("<div class=\"stock\">\n");
+        foreach (LLineage box in sources)
         {
-            if (!string.IsNullOrEmpty(stamp))
+            string relation = box.LLineageRelationId is long id && relations.TryGetValue(id, out string? name)
+                ? name
+                : string.Empty;
+            sheet.Append("<div class=\"etymon\">");
+            if (box.LLineageSources.Count > 0)
             {
-                lines.Add("<span class=\"llyn-stamp\">" + LLiveryHeader.LLiveryTextFormat(lookup(key)) + "</span> "
-                    + LLiveryHeader.LLiveryTextFormat(stamp));
+                LLiveryStockAppend(sheet, box.LLineageSources, relations, note);
+                sheet.Append("<i class=\"stem\"></i>");
             }
+
+            LLiveryPieceAppend(sheet, "tongue", box.LLineageLanguage);
+            sheet.Append("<span class=\"word")
+                .Append(box.LLineageEntryId is null ? string.Empty : " linked")
+                .Append(box.LLineageBorrowed ? " borrowed" : string.Empty)
+                .Append("\">")
+                .Append(box.LLineageEntryId is long entry
+                    ? LLiveryLink.LLiveryEtymonFormat(box.LLineageText, entry, note)
+                    : LLiveryHeader.LLiveryHtmlFormat(box.LLineageText))
+                .Append(box.LLineageEntryId is null ? string.Empty : "<b>↗</b>")
+                .Append("</span>");
+            LLiveryPieceAppend(sheet, "gloss", box.LLineageGloss);
+            sheet.Append("<i class=\"stem\"></i>");
+            LLiveryPieceAppend(sheet, "relation", relation);
+            sheet.Append("<i class=\"stem\"></i></div>\n");
         }
 
-        sheet.Append("---\n\n").Append(string.Join("\\\n", lines)).Append("\n\n");
+        sheet.Append("</div>\n");
+    }
+
+    private static void LLiveryPieceAppend(StringBuilder sheet, string style, string text)
+    {
+        if (text.Length > 0)
+        {
+            sheet.Append("<span class=\"")
+                .Append(style)
+                .Append("\">")
+                .Append(LLiveryHeader.LLiveryHtmlFormat(text))
+                .Append("</span>");
+        }
     }
 }

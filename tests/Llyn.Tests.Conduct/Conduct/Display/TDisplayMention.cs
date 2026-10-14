@@ -186,42 +186,6 @@ public sealed class TDisplayMention
     }
 
     [Fact]
-    public void DisplayEtymologyFind_ProseWord_ReadsItInTheShownLanguageAndOpensTheSoleEntry()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        LEntry water = TDisplayEntrySave(engine, "water", "English");
-        LEntry run = TDisplayEntrySave(engine, "run", "English");
-        LDraft held = engine.TEngineDraftStart("Input", run.LEntryId);
-        engine.TEngineRequestApply(TInterface.TEtymologyTextCreate(held.LDraftId, "from water"));
-        engine.TEngineDraftCommit(held.LDraftId);
-        List<string> asked = [];
-        List<long> arrived = TDisplayLibraryAdd(atelier, asked, true);
-        CDisplay area = TDisplayMentionPrepare(atelier, asked, run.LEntryId);
-
-        CMentionOffer? offer = area.CDisplayRoute.CDisplayEtymologyFind("from water", 6);
-
-        Assert.Equal(5, offer?.CMentionOfferUnit);
-        Assert.Empty(offer!.CMentionOfferEntry);
-        Assert.Equal([water.LEntryId], arrived);
-        Assert.Equal(["Library"], asked);
-    }
-
-    [Fact]
-    public void DisplayEtymologyFind_NothingShown_AnswersNothing()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        List<string> asked = [];
-        CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, asked), true);
-
-        Assert.Null(wing.CWingDisplay.CDisplayRoute.CDisplayEtymologyFind("from water", 1));
-        Assert.Empty(asked);
-    }
-
-    [Fact]
     public void DisplayMentionFind_EngineFails_ShowsTheFindFailureAndOffersNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

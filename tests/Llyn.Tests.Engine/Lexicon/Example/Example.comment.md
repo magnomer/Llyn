@@ -82,7 +82,7 @@ It falls back to the run where nothing matches.
 Span operations use code-point offsets and respect word and script boundaries.
 Division preserves gaps and avoids empty pieces around mentions.
 Selection normalization trims outer spaces.
-Etymology and Example lookup accept only selections contained by one mention.
+Example lookup accepts only selections contained by one mention.
 A draft reads a sentence example by its card and sentence ids.
 
 A caret inside an English word or contraction resolves to the full word span.
@@ -153,11 +153,11 @@ It falls back to the marker first rather than refusing to lay the row out.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `TExample.cs` `a9f3021b68f07b9d`
 - `TExampleLine.cs` `12fd9a19c0177a20`
 - `TMention.cs` `cb740644a69ee697`
 - `TMentionFinding.cs` `ab0e214226ad13fc`
-- `TMentionSpan.cs` `40e8ee01cf5db21d`
+- `TMentionSpan.cs` `fe6960d3e17c668e`
 - `TSentence.cs` `6b1a3fcdaa01b3d5`
 - `TSentenceOrder.cs` `8167c86b34858bbf`

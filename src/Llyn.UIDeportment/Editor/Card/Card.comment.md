@@ -126,7 +126,7 @@ So a pasted comma ends a chip as a typed one does.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `PCard.cs` `7357f03389c2c351`
 - `PCardSentence.cs` `ae3ddd5aef584c1f`
-- `PCaret.cs` `41e4c4447bef05ac`
+- `PCaret.cs` `d289b16aa6ba7486`

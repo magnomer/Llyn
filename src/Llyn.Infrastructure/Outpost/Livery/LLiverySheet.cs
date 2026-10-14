@@ -60,6 +60,8 @@ public sealed class LLiverySheet : LLivery
         LLiveryScript.LLiveryScriptAppend(sheet, page, lookup);
         LLiveryCard.LLiveryCardAppend(sheet, page, note, lookup);
         LLiveryEtymology.LLiveryEtymologyAppend(sheet, page, note, lookup);
+        LLiveryCard.LLiveryAnnotationAppend(sheet, page, lookup);
+        LLiveryStampAppend(sheet, page, lookup);
         sheet.Append("</div>\n");
 
         Dictionary<string, LParcel> parcels = new Dictionary<string, LParcel>(StringComparer.Ordinal);
@@ -135,6 +137,30 @@ public sealed class LLiverySheet : LLivery
         sheet.Append("</div>\n");
 
         return new LLiveryNote(sheet.ToString(), []);
+    }
+
+    private static void LLiveryStampAppend(StringBuilder sheet, LLiveryPage page, Func<string, string> lookup)
+    {
+        if (string.IsNullOrEmpty(page.LLiveryPageCreated) && string.IsNullOrEmpty(page.LLiveryPageUpdated))
+        {
+            return;
+        }
+
+        List<string> lines = [];
+        foreach ((string key, string stamp) in new[]
+                 {
+                     ("Display.Created", page.LLiveryPageCreated),
+                     ("Display.Updated", page.LLiveryPageUpdated),
+                 })
+        {
+            if (!string.IsNullOrEmpty(stamp))
+            {
+                lines.Add("<span class=\"llyn-stamp\">" + LLiveryHeader.LLiveryTextFormat(lookup(key)) + "</span> "
+                    + LLiveryHeader.LLiveryTextFormat(stamp));
+            }
+        }
+
+        sheet.Append("---\n\n").Append(string.Join("\\\n", lines)).Append("\n\n");
     }
 
     private static void LLiveryStyleCheck(string style)

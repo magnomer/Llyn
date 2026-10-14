@@ -259,9 +259,9 @@ public static class LOutlineSection
     private static string LOutlineLineFormat(LPortraitLine line)
     {
         string text = LOutline.LOutlineNormalize(line.LPortraitLineText);
-        return line.LPortraitLineLabel.Length == 0
+        return LOutline.LOutlineNormalize(line.LPortraitLineOpener) + (line.LPortraitLineLabel.Length == 0
             ? text
-            : "**" + LOutline.LOutlineNormalize(line.LPortraitLineLabel) + "** " + text;
+            : "**" + LOutline.LOutlineNormalize(line.LPortraitLineLabel) + "** " + text);
     }
 
     private static string LOutlineLinkFormat(IReadOnlyList<LPortraitLink> links)

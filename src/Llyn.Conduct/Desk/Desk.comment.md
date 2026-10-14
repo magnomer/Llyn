@@ -90,7 +90,7 @@ The quills are also null while the desk fills its controls, so a fill's echo wri
 `CDeskDraftSpeech` is the exception.
 It stays open during a fill, since the field read runs then, and each edit gate checks the fill itself.
 The speech quill keeps the pending part typed into the field, so the desk holds one per tenure.
-The reference, author, example, sentence, mention, transcription and etymology quills are built fresh for each use.
+The reference, author, example, sentence, mention and transcription quills are built fresh for each use.
 The errand, easel, chip and speech quills are built when a tenure starts and dropped when it ends.
 
 It raises the draft announcements, so the fill flag and the echo it guards live together.
@@ -126,6 +126,7 @@ The image, video and transcription areas are stateless and can be built afresh o
 `CEditorFold` is built over the desk's stored entry, which it asks on every read and write.
 It listens to nothing itself, since `CEntry` supplies draft notifications when the fold bulletin arrives.
 `CEditorClose` cancels the held desk session before cancelling its errands.
+`CEditorEtymology` edits the held entry's etymology map over the desk and the ancestor port.
 
 `CEditorOwned` is true only for an input vista, and an unrestored vista answers false.
 `LEditorVistaRestore` gives the desk and display the same vista, keeping their tab context aligned.
@@ -139,7 +140,7 @@ So post-store reopening uses the draft's former identity.
 
 ## `CEntry`
 
-The head fields of the entry an editor's desk holds: headword, reading, note, language, unit, freedom and etymons.
+The head fields of the entry an editor's desk holds: headword, reading, note, language, unit and freedom.
 It announces each draft the desk prepares, so every driver writes its controls from one event.
 It listens to the desk's prepared drafts from the start, so no draft is prepared unheard.
 It hands each field edit to a quill.
@@ -283,13 +284,13 @@ The subject maps through `CCatalog.LCatalogSubjectRead`, so a subject it does no
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `CDesk.cs` `c78c6c751713c474`
 - `CDeskChronicle.cs` `fc6b9a85af7d4b71`
-- `CDeskDraft.cs` `be8bb5c89177a70e`
-- `CEditor.cs` `1943f8120ce8a49b`
-- `CEntry.cs` `e9a6c654ecc7c982`
-- `CErrand.cs` `0272f344c569928b`
-- `CEsteem.cs` `e5972618617736ba`
+- `CDeskDraft.cs` `bf7d16d5e2c74ad0`
+- `CEditor.cs` `5d1bfba5d2ae835e`
+- `CEntry.cs` `55889cc7f93cf067`
+- `CErrand.cs` `8f73391eb2be162b`
+- `CEsteem.cs` `51426f8b6a69a0fd`
 - `CSession.cs` `b50233150aac7538`
 - `LVigil.cs` `0f184a43ea348fd4`

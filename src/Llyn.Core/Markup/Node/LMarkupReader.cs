@@ -51,8 +51,7 @@ internal static class LMarkupReader
         List<LReflexDraft> reflexes = [];
         List<LMarkupCard> meanings = [];
         List<LMarkupCard> collocations = [];
-        List<LMarkupEtymon> etymons = [];
-        LMarkupEtymology? etymology = null;
+        List<LMarkupAncestor> ancestors = [];
         LUnit unit = LUnit.LUnitEmpty;
         LFreedom freedom = LFreedom.LFreedomEmpty;
 
@@ -102,17 +101,14 @@ internal static class LMarkupReader
                 case "reflex":
                     reflexes.Add(LMarkupPronunciationReader.LMarkupReflexParse(child, omissions));
                     break;
-                case "etymon":
-                    etymons.Add(LMarkupEtymonParse(child, omissions));
-                    break;
-                case "etymology":
-                    etymology = LMarkupEtymologyParse(child, omissions);
-                    break;
                 case "meaning":
                     meanings.Add(LMarkupCardReader.LMarkupCardParse(child, true, omissions));
                     break;
                 case "collocation":
                     collocations.Add(LMarkupCardReader.LMarkupCardParse(child, false, omissions));
+                    break;
+                case "ancestor":
+                    ancestors.Add(LMarkupAncestorParse(child, omissions));
                     break;
                 case "note":
                     note = LMarkup.LMarkupTextParse(child);
@@ -136,10 +132,9 @@ internal static class LMarkupReader
             collocations,
             note,
             element.LMarkupNodeLine,
-            etymology,
-            etymons,
             unit,
-            freedom);
+            freedom,
+            ancestors);
     }
 
     private static void LMarkupTranscriptionAdd(
@@ -157,20 +152,43 @@ internal static class LMarkupReader
         transcriptions.Add(transcription);
     }
 
-    private static LMarkupEtymon LMarkupEtymonParse(LMarkupNode element, List<LMarkupOmission> omissions)
+    private static LMarkupAncestor LMarkupAncestorParse(LMarkupNode element, List<LMarkupOmission> omissions)
     {
-        string headword = string.Empty;
-        string language = string.Empty;
-
+        LMarkupAncestor ancestor = new(0, null, 0);
         foreach (LMarkupNode child in element.LMarkupNodeChild)
         {
+            int? number = child.LMarkupNodeName is "key" or "child" or "position"
+                ? LMarkup.LMarkupNumberParse(child)
+                : null;
+            string text = LMarkup.LMarkupTextParse(child);
             switch (child.LMarkupNodeName)
             {
+                case "key" or "child" or "position" when number is null:
+                    LMarkupOmissionAdd(omissions, child);
+                    break;
+                case "key":
+                    ancestor = ancestor with { LMarkupAncestorKey = number!.Value };
+                    break;
+                case "child":
+                    ancestor = ancestor with { LMarkupAncestorChild = number };
+                    break;
+                case "position":
+                    ancestor = ancestor with { LMarkupAncestorPosition = number!.Value };
+                    break;
                 case "headword":
-                    headword = LMarkup.LMarkupTextParse(child);
+                    ancestor = ancestor with { LMarkupAncestorHeadword = text };
+                    break;
+                case "text":
+                    ancestor = ancestor with { LMarkupAncestorText = text };
                     break;
                 case "language":
-                    language = LMarkup.LMarkupTextParse(child);
+                    ancestor = ancestor with { LMarkupAncestorLanguage = text };
+                    break;
+                case "gloss":
+                    ancestor = ancestor with { LMarkupAncestorGloss = text };
+                    break;
+                case "relation":
+                    ancestor = ancestor with { LMarkupAncestorRelation = text };
                     break;
                 default:
                     LMarkupOmissionAdd(omissions, child);
@@ -178,31 +196,7 @@ internal static class LMarkupReader
             }
         }
 
-        return new LMarkupEtymon(headword, language);
-    }
-
-    private static LMarkupEtymology LMarkupEtymologyParse(LMarkupNode element, List<LMarkupOmission> omissions)
-    {
-        string text = string.Empty;
-        List<LMarkupMention> mentions = [];
-
-        foreach (LMarkupNode child in element.LMarkupNodeChild)
-        {
-            switch (child.LMarkupNodeName)
-            {
-                case "text":
-                    text = LMarkup.LMarkupTextParse(child);
-                    break;
-                case "mention":
-                    mentions.Add(LMarkupCardReader.LMarkupMentionParse(child, false, omissions));
-                    break;
-                default:
-                    LMarkupOmissionAdd(omissions, child);
-                    break;
-            }
-        }
-
-        return new LMarkupEtymology(text, mentions);
+        return ancestor;
     }
 
     private static LForm LMarkupFormParse(LMarkupNode element, int position, List<LMarkupOmission> omissions)

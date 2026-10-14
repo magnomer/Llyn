@@ -118,6 +118,7 @@ The caller chooses each new card's peek wording, which remains derived rather th
 ### `QCardDraftRefine`
 
 The supplied position is independent of loop position.
+The four chip fields take their anchors from one caret gate read, so every refill reseats each entry.
 Fold verdicts arrive last, allowing an in-place fold repaint after other fields are current.
 
 ## `QCardDrag`
@@ -274,14 +275,14 @@ The card arrives through the bulletin, already named and placed, so the form nev
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `PCardGhost.cs` `11d4107967115302`
 - `QBond.cs` `d88c00794d12fc9c`
 - `QBondItem.cs` `91b81f9342fbd78b`
-- `QCard.cs` `9041706b7b83bda4`
+- `QCard.cs` `d44c1765649144c7`
 - `QCardDrag.cs` `02db6c80c5a91e0c`
 - `QCardFold.cs` `e15e8aeeda7c7de4`
 - `QCardGesture.cs` `58709ec8b5d4eafe`
-- `QCardPosition.cs` `4d1fe50beea3d0c3`
+- `QCardPosition.cs` `8ca4a94d9bc198a7`
 - `QCollocation.cs` `3f18052e6475fa98`
 - `QMeaning.cs` `d6f0fefdea6d93fc`

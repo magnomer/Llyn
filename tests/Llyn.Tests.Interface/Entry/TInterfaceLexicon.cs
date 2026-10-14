@@ -177,8 +177,6 @@ internal static partial class TInterface
         return named;
     }
 
-    internal static LEtymologyDraft TEtymologyDraftCreate(string text) => new(text);
-
     internal static LNote TNoteCreate(long entryId, string text) =>
         new(entryId, text);
 

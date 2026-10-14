@@ -44,7 +44,7 @@ internal static class TRigFake
             entries,
             entries,
             new LRigLexicon(
-                TRigStubCreate<LEtymologyVault>(),
+                TRigStubCreate<LAncestorVault>(),
                 TRigStubCreate<LCollocationVault>(),
                 TRigStubCreate<LGlossVault>(),
                 TRigStubCreate<LInflectionVault>(),

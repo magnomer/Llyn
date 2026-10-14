@@ -117,12 +117,12 @@ Rows come back in path and line order.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `TAuditFake.cs` `281e16070eef28b9`
 - `TAuditFakeCandidate.cs` `c76e4546064389cc`
 - `TAuditFakeMember.cs` `3c2c44c59c44edbc`
 - `TAuditFakeSerial.cs` `b9b72edf6488103a`
-- `TAuditFakeSetting.cs` `9aeccefb31088f95`
+- `TAuditFakeSetting.cs` `997a6625741d25ea`
 - `TAuditFakeSymbol.cs` `c82651b1fabf2050`
 - `TAuditFakeUse.cs` `019a711c29d548c2`
 - `TAuditFakeWalker.cs` `eb85e80055b371c6`

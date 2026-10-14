@@ -45,7 +45,7 @@ A wait no test outlives, so only a request sent at once can show before the fact
 
 Covers the editor's head field gates end to end on a real workspace.
 Field gates write the headword, the trimmed note and the reading, and an empty language changes nothing.
-The reads answer empty on an empty desk, and an added etymon reads back by headword.
+The reading answers empty on an empty desk.
 It builds its editors through `TEditor`, so both files open the same stored entry.
 
 ## `TSession`
@@ -59,10 +59,10 @@ The quit decision asks only over unsaved work, and every editor hears the one an
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `TDesk.cs` `76919744adc4f5dc`
 - `TDeskChronicle.cs` `78a5a7c1f4c0db7e`
 - `TDeskDraft.cs` `10fa2f8f82605c92`
 - `TEaselDesk.cs` `d9a92700b2cd8765`
-- `TEntry.cs` `7ba0fd27b577acb9`
+- `TEntry.cs` `c7407ea7a0b1c9d5`
 - `TSession.cs` `b4e7142879e4bb5a`

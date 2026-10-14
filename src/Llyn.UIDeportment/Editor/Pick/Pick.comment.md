@@ -44,6 +44,7 @@ The miss Refine is subscribed before the pick Observe, so each hears the press i
 ### `QProfferPickObserve`
 
 A Register caret and a Situation caret each link their stored row at the caret.
+The caret gate places the row from its own trail, so no position is read here.
 The citation field cites the chosen Source on its sentence row through `CSentenceCitationSet`.
 The press is heard before focus moves, so that field is still the one the list was opened for.
 The clerk skips a row the card already carries.
@@ -107,7 +108,8 @@ This driver offers the Entries a typed translation may link to.
 It sits beside the Proffer popup the editor also owns.
 The pronunciation lookup and the part-of-speech menu share the shape.
 A typed translation opens it at a card's link caret, offering matches and then a create row per language.
-A selected or typed word opens it at the selection, offering matches only, for a mention or an etymon.
+A selected or typed word opens it at the selection, offering matches only.
+A mention and an etymology source word use it this way.
 The corpus scribe reaches the second through its own editor, so the popup is still declared once.
 Its shutting drops the selection, so Enter never takes a row the dropdown no longer shows.
 
@@ -121,7 +123,6 @@ The blank word, the find, the self filter, the languages and the failure notice 
 The stored rows come first, then one create row per offered language.
 A mention's offer carries no language, because a Mention may only point at an Entry that already exists.
 The create row carries the typed word untouched, because that word is what the tentative entry will be called.
-A picked row is inserted through the caret gate, which places it at the trail's own position.
 
 ### `QProspectTranslationRefine`
 
@@ -134,8 +135,10 @@ The row is a plain surface rather than a button, so the list beneath it keeps it
 Every pick hands the raw row, a nullable id with the word and language it carries.
 A create row has a null id, and the gate alone decides what that means.
 The translation gate starts a tentative entry for it first, then links it.
+A link caret's row is inserted through the caret gate, which places it at the trail's own position.
 The driver never tests the id, so no value of it skips a gate or picks another.
-Any field other than a link caret, etymon entry or sentence runs the mention pick command on itself.
+Any field other than a link caret or sentence runs the mention pick command on itself.
+An etymology source word is such a field, and its driver answers the command.
 The field's text and selection are read at the pick, raw, since the dropdown never takes focus.
 
 ### `QProspectKeyRefine`
@@ -151,6 +154,11 @@ A kept selection would let Enter take a row no one sees.
 ### `QProspectKeyObserve`
 
 It runs after the dropdown's Refine and before the entry's own Enter, so a chosen row wins.
+On a link caret it inserts the translation through the caret gate and clears the caret.
+On any text box it runs the mention pick command with the row's id.
+So Enter picks as a click does.
+The etymology source word is picked this way.
+No selected row or another key leaves the event alone.
 
 ### `QProspectShutRefine`
 
@@ -163,8 +171,8 @@ A data trigger and a string format stood there before.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `PProfferItem.cs` `2c61e99019035e61`
 - `PProspectItem.cs` `0db2c8c692a1358d`
-- `QProffer.cs` `b6854fd93d6f1f9a`
-- `QProspect.cs` `6aea75238707bd16`
+- `QProffer.cs` `7febc9bc46af3d60`
+- `QProspect.cs` `2c16bce7d731bba8`

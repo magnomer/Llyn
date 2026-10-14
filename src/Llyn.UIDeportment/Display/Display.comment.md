@@ -82,11 +82,6 @@ The note section's visibility follows the shown entry, keeping its content refre
 An unchosen unit or freedom hides its line, so a bare entry shows no empty label.
 The note is Markdown, drawn as blocks by `QMarkdownFace`.
 
-## `QLecternEtymology`
-
-The etymon command is bound on the surface, keeping link handling outside the etymology control.
-Clicked word offers leave through `QLecternEtymologyNotice`, so the section needs no window reference.
-
 ## `QLecternFrequency`
 
 Open, close and frequency bulletins share one redraw path, keeping the chip consistent across those updates.
@@ -108,6 +103,28 @@ A favorite click redraws from the gate's returned state rather than trusting the
 The flag is drawn for the language the area shows after loading, not a language captured before the await.
 The initial empty-language draw clears the previous flag before loading starts.
 
+## `QLecternEtymology`
+
+The etymology section draws the map of boxes the shown entry descends from.
+It raises no notice, and nothing else reaches for it, so `QLectern` keeps no handle to it.
+The lectern builds it and wires its repaint to the open and close callbacks.
+A repaint reads one state from the card area and shows the section only when a box exists.
+The headword stands at the foot of the map, taken from the state.
+The tree is built by the editor's `QEtymologyItem`, so both maps nest and match boxes alike.
+A box hides its tongue and its gloss while they are empty.
+A box with an entry link draws its word as a hyperlink in the accent colour.
+A click on it opens that entry through the route, so the map is a way to travel.
+A borrowed box draws a dashed trace in place of its frame, and a linked box adds a mark.
+The relation word is the text of the choice the box's relation id selects.
+It hides when no choice matches.
+Each trunk rule is bound to `HasItems` of the sources list above it, so a box without sources draws none.
+A box hides its left half-bar when it is the first of its siblings.
+It hides its right half-bar when it is the last.
+So the half-bars of a sibling row join into one fork.
+The reading map shows no tools, since only the editor changes boxes.
+A wheel turn over the map is raised again on the section.
+So the page scrolls and the map does not.
+
 ## `QLecternIncoming`
 
 One handler on the list hears every row, since the click bubbles from the row button.
@@ -121,14 +138,14 @@ The label column joins the shared `PReadingLabel` width only while its section s
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `QGraspStar.cs` `dcd52f657675785d`
-- `QLectern.cs` `e7123a00cc9fe93e`
+Commit: `c6e60141a172`
+- `QGraspStar.cs` `b96249bbb783b9db`
+- `QLectern.cs` `f44b838e37fa2538`
 - `QLecternCard.cs` `e28c8917b89e8475`
 - `QLecternEntry.cs` `d20c6b267a0dbe0d`
-- `QLecternEtymology.cs` `6e4de0055e2e5d2c`
+- `QLecternEtymology.cs` `db6f54cdb8b0c4f2`
 - `QLecternFrequency.cs` `557735b484228775`
-- `QLecternGrasp.cs` `110ca96b350aa6bd`
+- `QLecternGrasp.cs` `419a09bfaccb2698`
 - `QLecternHeader.cs` `129c98ee22f19ead`
 - `QLecternIncoming.cs` `2013dfbcd1cfc565`
 - `QLecternLead.cs` `f744babc1ea40def`

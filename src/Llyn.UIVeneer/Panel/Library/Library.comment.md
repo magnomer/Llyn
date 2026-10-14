@@ -97,7 +97,7 @@ The matches collapse once a row is taken, so the Entry reads on the full height.
 
 ### `PWingTray`
 
-The card follows the list it frames, and `PWingSeam` above it follows the same list.
+The card follows the list it frames, and `PWingSeam`, drawn beneath the lookup row, follows the same list.
 Both start collapsed, and the wing copies the list's visibility onto them whenever it changes.
 An empty card would otherwise sit above the Entry with nothing in it.
 The empty text inside it shows while a typed query matches nothing.
@@ -116,10 +116,10 @@ Comparison is what differs, not how an Entry reads.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `PDuplex.xaml` `53f7bb0809856f2e`
 - `PDuplex.xaml.cs` `015ae5f24112fadb`
 - `PLibrary.xaml` `fa075bb95d2d52e5`
 - `PLibrary.xaml.cs` `29517ab6f4728d2d`
-- `PWing.xaml` `a9658283114831d8`
+- `PWing.xaml` `4eb791266ac60e0f`
 - `PWing.xaml.cs` `78f34d07f0471129`

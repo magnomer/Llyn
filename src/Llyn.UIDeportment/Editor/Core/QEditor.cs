@@ -99,7 +99,8 @@ internal sealed class QEditor : QChronicleHost
             editor.CEditorList,
             editor.CEditorField,
             editor.CEditorImage,
-            editor.CEditorVideo);
+            editor.CEditorVideo,
+            editor.CEditorEtymology);
         _qCategory.QCategoryIntroduce(editor.CEditorSpeech);
         _qUnit.QUnitIntroduce(editor.CEditorEntry);
         _qFreedom.QFreedomIntroduce(editor.CEditorEntry);

@@ -315,4 +315,39 @@ public sealed class TEngineLiveryPage
         Assert.True(shown >= 0 && shown < open);
         Assert.Contains("<summary>Reflex.More</summary>", body, StringComparison.Ordinal);
     }
+
+    [Fact]
+    public void LiveryFormat_LinkedAncestor_DrawsTheBorrowedMapAboveIt()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LEntry source = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "renn", "English", string.Empty, string.Empty, [TInterface.TCardCreate("a course", 1)], []) with
+        {
+            LEntryDraftAncestors = [TInterface.TAncestorDraftCreate(-1, null, null, "*bʰreg-", "Latin", null, "flow")],
+        });
+        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "run", "English", string.Empty, string.Empty, [TInterface.TCardCreate("to move fast", 1)], []) with
+        {
+            LEntryDraftAncestors = [TInterface.TAncestorDraftCreate(-1, null, source.LEntryId, string.Empty)],
+        });
+        LLiveryPage page = Assert.IsType<LLiveryPage>(engine.TLiveryRead(entry.LEntryId));
+
+        string body = TInterface.TLiveryFormat(page, static key => key).LLiveryNoteBody;
+
+        Assert.Contains(
+            "## Display.Etymology\n\n"
+                + "<div class=\"lineage\"><div class=\"tree\">\n"
+                + "<div class=\"stock\">\n"
+                + "<div class=\"etymon\"><div class=\"stock\">\n"
+                + "<div class=\"etymon\"><span class=\"tongue\">Latin</span>"
+                + "<span class=\"word borrowed\">*bʰreg-</span>"
+                + "<span class=\"gloss\">flow</span><i class=\"stem\"></i><i class=\"stem\"></i></div>\n"
+                + "</div>\n<i class=\"stem\"></i><span class=\"tongue\">English</span>"
+                + "<span class=\"word linked\"><a href=\":/" + source.LEntryId + "\">renn</a><b>↗</b></span>"
+                + "<i class=\"stem\"></i><i class=\"stem\"></i></div>\n"
+                + "</div>\n<i class=\"stem\"></i><div class=\"root\">run</div>\n</div></div>\n\n",
+            body,
+            StringComparison.Ordinal);
+    }
 }

@@ -67,6 +67,8 @@ A language with no stored flag file has no entry in the banner map.
 `LLiveryPageShown` holds one entry per paradigm row, in the same order.
 Each is the shown text and tip the view paints for that row, never held.
 The frequency rows are the stored ones, read with fetch off.
+`LLiveryPageLineage` holds the roots of the etymology tree, empty when the entry has no etymon.
+`LLiveryPageRelation` lists the relations, so a box's relation id finds its key or name.
 
 ## `LLiveryStem`
 
@@ -89,10 +91,10 @@ Categories come as initials, then rimes, then tones, and are empty without a fan
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `LLivery.cs` `791b17789a18977b`
 - `LLiveryDiwei.cs` `cead8ec76bdbd658`
 - `LLiveryLanguage.cs` `8bfba9621043bb14`
 - `LLiveryNote.cs` `82844d79aa7a10fe`
-- `LLiveryPage.cs` `634bf57597a8ae9f`
+- `LLiveryPage.cs` `84e31e75aa129c8d`
 - `LLiveryStem.cs` `94c0be6ac23776ec`

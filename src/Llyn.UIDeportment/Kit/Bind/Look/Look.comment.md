@@ -32,6 +32,7 @@ The presenter lookup also asks a template selector, so selected item templates r
 
 An empty combo box is judged by its text rather than its item count.
 An image without a source and a content control holding an empty string also receive `Empty`.
+A text block or a text box without text receives `Empty` as well.
 Null content receives `Mute`, keeping it distinct from an empty string.
 A missing icon receives `Bare`, independently of content.
 
@@ -86,7 +87,9 @@ Contents rows use the supplied `Chosen` cue rather than deciding the current sec
 ## `QLookInput`
 
 Choice rows relay dropdown state to the button and popup, keeping those parts tied to their owner.
-The popup width follows the choice box's actual width.
+The popup's minimum width follows the choice box's actual width, so a wider option can widen the popup.
+An empty `Theme.Input.Caret` field drops its minimum width and takes `Theme.Input.CaretMargin`.
+Focus clears both again, so a field being typed in keeps its style's room.
 Bin buttons use warning resources, while disabled rows replace their border and ink.
 The search helper hides a bare mark or muted label and selects matching inset resources.
 
@@ -107,6 +110,7 @@ A recycled container drops its old item's property-change handler before attachi
 Unload removes every rostered container's item subscription.
 
 `QLookItemShow` pairs each draft with the first unclaimed row carrying its id, preserving repeated ids one-to-one.
+An id is a number or a string compared ordinally, and both overloads share one body.
 An unmatched draft is created, and an update may replace the paired object.
 Rows are retained by identity while they match the next requested object.
 Other keyed rows are removed, and the remaining requested objects are appended.
@@ -126,13 +130,13 @@ The order of the spread is load-bearing, since a later row wins on the same part
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `QLook.cs` `df5650773bd5b635`
+Commit: `c6e60141a172`
+- `QLook.cs` `5175b5af4fad7616`
 - `QLookControl.cs` `f8e1fe06320adcd7`
 - `QLookCue.cs` `6b9a3fd8e550a325`
 - `QLookDisplay.cs` `17249a7d68d91dee`
-- `QLookInput.cs` `09eda193c2f517a7`
-- `QLookItem.cs` `f8c9e109a8bdd2c5`
-- `QLookSheet.cs` `27eb51f1c0379994`
+- `QLookInput.cs` `317591fa67165b39`
+- `QLookItem.cs` `7b4cd30d0e67e04f`
+- `QLookSheet.cs` `ab30b22de94aff93`
 - `QLookSound.cs` `369c1c12b487a6e6`
 - `QLookValue.cs` `e4dda57669786dd7`

@@ -36,7 +36,7 @@ internal static class QLookInput
         new("Theme.Input.Choice", QLookCue.QLookCueBase, "PART_Popup",
             Popup.IsOpenProperty, ComboBox.IsDropDownOpenProperty),
         new("Theme.Input.Choice", QLookCue.QLookCueBase, "PART_Popup",
-            FrameworkElement.WidthProperty, FrameworkElement.ActualWidthProperty),
+            FrameworkElement.MinWidthProperty, FrameworkElement.ActualWidthProperty),
         new("Theme.Input.Choice", QLookCue.QLookCueHover, "PChoiceSurface", Border.BorderBrushProperty, "Theme.Accent"),
         new("Theme.Input.Choice", QLookCue.QLookCueFocus, "PChoiceSurface", Border.BorderBrushProperty, "Theme.Accent"),
 

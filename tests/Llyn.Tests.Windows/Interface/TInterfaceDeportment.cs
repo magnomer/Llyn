@@ -69,13 +69,15 @@ internal static class TInterfaceDeportment
 
     internal static ToggleButton TScriptSwitchRead(this QScript box) => box.QScriptSwitch;
 
-    internal static void TEtymologySourceShow(this QEtymology etymology, bool linked) =>
-        etymology.QEtymologySourceShow([], linked);
+    internal static void TEtymologyItemShow(
+        ObservableCollection<QEtymologyItem> items, IReadOnlyList<CAncestor> rows) =>
+        QEtymologyItem.QEtymologyItemShow(items, new CEtymologyState(rows, [], []));
 
-    internal static (Visibility, Visibility) TEtymologyFaceRead(this QEtymology etymology)
+    internal static void TLecternEtymologyApply(FrameworkElement container, CAncestor row, CAncestorChoice relation)
     {
-        UIElementCollection faces = ((Panel)((Panel)((Border)etymology.Child).Child).Children[1]).Children;
-        return (faces[0].Visibility, faces[1].Visibility);
+        ObservableCollection<QEtymologyItem> items = [];
+        QEtymologyItem.QEtymologyItemShow(items, new CEtymologyState([row], [relation], []));
+        QLecternEtymology.QLecternEtymologyApply(container, items[0], null);
     }
 
     internal static void TReflexTypeRefine(QReflexItem row, CReflexField field, string text) =>

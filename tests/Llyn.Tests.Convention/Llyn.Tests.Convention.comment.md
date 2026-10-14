@@ -30,7 +30,7 @@ A no-hit that no switch-off turns red only guards against over-breadth.
 
 Holds the generation this checkout of the convention tests applies.
 A generation names the set of checks the audits apply, not a count of edits.
-Every audit and every settings sidecar share one number, so a report from any of them compares across projects.
+Every audit and every settings file share one number, so a report from any of them compares across projects.
 Raise `TAuditGeneration` only when a check is added, removed, or changed in what it reports.
 The first line of every audit report is `<AUDIT> - AUDIT GENERATION <n>`, the form the scripts print on launch.
 The generation of the generated registry and of each hand-written setting that numbers one is compared with this one.
@@ -138,9 +138,9 @@ Roots, segments, files and suffixes compare without case, as the audit scripts d
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `Llyn.Tests.Convention.csproj` `ce887e848efbe5d9`
-- `TAuditConvention.cs` `465ed8297275f851`
+- `TAuditConvention.cs` `245168a09fe624f4`
 - `TAuditHit.cs` `695336cb3b584873`
 - `TAuditLedger.cs` `3bf02bd2a94ba410`
 - `TAuditRatchet.cs` `5c3a1d13f6f273e7`

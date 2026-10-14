@@ -53,6 +53,7 @@ It is built after the catalog, claim and language groups.
 The card and inflection clerks are built here and kept only inside the meaning and entry clerks.
 The entry and citation clerks stamp through the shared revision clerk, so history stays one list.
 The fold clerk keeps card folds, per-entry "More readings" state and editor-box state.
+The ancestor clerk keeps the relation and tongue lists, and the lineage clerk reads an entry's etymology tree.
 
 ## `LLanguageStaff`
 
@@ -76,9 +77,10 @@ The reflex fetch is reached through the reflex clerk that holds it.
 The group of clerks for workspace state, markup, portraits, print settings and the Joplin push.
 It is built last, since it reads every other group.
 The markup entry clerk receives the reflex clerk, so an exported entry lists its reflexes in the pack's order.
-One markup example clerk serves both the card and the entry clerk, so both name entries alike.
+One markup ancestor clerk serves both the entry and the draft clerk, so both translate an etymology map alike.
 The portrait clerk receives the entry group's fold clerk, so a portrait reads each card's stored fold.
-The markup link clerk is built here and shared by the intake and its draft clerk.
+It also receives the lineage and ancestor clerks, so a portrait draws the etymology band.
+The markup link clerk is built here and shared by the intake, its draft clerk and the ancestor clerk.
 The courier records its failures through the workspace clerk, so a failed push leaves a trace.
 The courier takes no portrait clerk, since `LCourierFacade` hands it each Livery page at send time.
 The courier searches through the query clerk, never through the entry lifecycle.
@@ -244,13 +246,13 @@ So a subscriber can detach without disturbing iteration.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `LBulletinRoster.cs` `089b003a16e92876`
 - `LCatalogStaff.cs` `23816a2bb79aced1`
 - `LClaimStaff.cs` `fc2ed893e2af6438`
-- `LEngine.cs` `7784f7df746d2a06`
+- `LEngine.cs` `636e6b879da26c0c`
 - `LEngineHearth.cs` `4e01284d73088905`
 - `LEngineStaff.cs` `1282514bb49cde5e`
-- `LEntryStaff.cs` `1a9f50bd21fe012e`
+- `LEntryStaff.cs` `769d85bf0ae2afca`
 - `LLanguageStaff.cs` `599e9aed32f045b6`
-- `LWorkspaceStaff.cs` `2224ad986d49a941`
+- `LWorkspaceStaff.cs` `864353d4bae6311d`

@@ -28,7 +28,7 @@ public sealed class CEditor
 
         CEditorDesk = new CDesk(drafts, settings, "Input", envoy);
         CEditorDisplay = new CDisplay(drafts, entries, phonology, settings, media, envoy, noticed);
-        CEditorCard = new CCard(CEditorDesk, drafts, entries.CEntryBundleReference, settings, envoy);
+        CEditorCard = new CCard(CEditorDesk, entries.CEntryBundleReference, settings, envoy);
         CEditorCaret = new CCaret(CEditorDesk, CEditorCard);
         CEditorSentence = new CSentence(
             CEditorDesk, phonology.CPhonologyBundleSentence, drafts, settings, envoy, noticed);
@@ -47,6 +47,8 @@ public sealed class CEditor
         CEditorTimbre = new CTimbre(CEditorDesk, phonology.CPhonologyBundleLanguage, settings, envoy);
         CEditorKindred = new CKindred(
             CEditorDesk, phonology.CPhonologyBundleReflex, CEditorDisplay.LDisplayRule, drafts, settings, envoy);
+        CEditorEtymology = new CEtymology(
+            CEditorDesk, entries.CEntryBundleAncestor, settings, envoy, noticed);
         CEditorPlayback = new CPlayback(CEditorDesk, media);
         CEditorSpeech = new CCardSpeech(CEditorDesk);
         CEditorDesk.CDeskFinished += CEditorStoredShow;
@@ -106,6 +108,8 @@ public sealed class CEditor
     public CTimbre CEditorTimbre { get; }
 
     public CKindred CEditorKindred { get; }
+
+    public CEtymology CEditorEtymology { get; }
 
     public CPlayback CEditorPlayback { get; }
 

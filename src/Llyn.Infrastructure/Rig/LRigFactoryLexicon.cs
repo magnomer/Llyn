@@ -6,7 +6,7 @@ public static class LRigFactoryLexicon
 {
     public static LRigLexicon LRigLexiconBuild(LDatabase database) =>
         new(
-            new LEtymologyArchive(database),
+            new LAncestorArchive(database),
             new LCollocationArchive(database),
             new LGlossArchive(database),
             new LInflectionArchive(database),

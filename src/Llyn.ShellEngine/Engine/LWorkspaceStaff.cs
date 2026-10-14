@@ -27,20 +27,23 @@ internal sealed record LWorkspaceStaff(
         LWorkspaceClerk workspace = new(
             rig, cache, language.LLanguageStaffReflex, language.LLanguageStaffParadigm);
         LMarkupClerkExample markupExample = new(rig);
+        LMarkupClerkLink link = new(
+            rig, catalog.LCatalogStaffReference, catalog.LCatalogStaffAuthor, language.LLanguageStaffTrail);
+        LMarkupClerkAncestor markupAncestor = new(rig, entry.LEntryStaffAncestor, link);
         LMarkupClerk markup = new(
             rig,
             new LMarkupClerkEntry(
-                rig, language.LLanguageStaffReflex, new LMarkupClerkCard(rig, markupExample), markupExample));
-        LMarkupClerkLink link = new(
-            rig, catalog.LCatalogStaffReference, catalog.LCatalogStaffAuthor, language.LLanguageStaffTrail);
+                rig, language.LLanguageStaffReflex, new LMarkupClerkCard(rig, markupExample), markupAncestor));
         LMarkupClerkIntake intake = new(
             rig, claim.LClaimStaffClaim, entry.LEntryStaffEntry, revision, entry.LEntryStaffQuery,
-            language.LLanguageStaffLacuna, language.LLanguageStaffFrequency, link, new LMarkupClerkDraft(rig, link));
+            language.LLanguageStaffLacuna, language.LLanguageStaffFrequency, link,
+            new LMarkupClerkDraft(rig, link, markupAncestor));
         LPortraitClerk portrait = new(
             language.LLanguageStaffLanguage, entry.LEntryStaffEntry, language.LLanguageStaffVocabulary,
             catalog.LCatalogStaffTranslation, catalog.LCatalogStaffReference, catalog.LCatalogStaffFavorite,
             entry.LEntryStaffFold, language.LLanguageStaffFanqie, language.LLanguageStaffFrequency,
-            language.LLanguageStaffParadigm, language.LLanguageStaffScript, settings);
+            language.LLanguageStaffParadigm, language.LLanguageStaffScript, entry.LEntryStaffLineage,
+            entry.LEntryStaffAncestor, settings);
         LPortraitClerkPress press = new(rig);
         LPressClerk galley = new(rig);
         LCourierClerk courier = new(

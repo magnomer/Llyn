@@ -18,7 +18,9 @@ internal static class TAuditNameRegistry
     public static readonly string[] TAuditBases =
     [
         "Accent",
+        "Album",
         "Anatomy",
+        "Ancestor",
         "Anchor",
         "Answer",
         "Anthology",
@@ -105,7 +107,6 @@ internal static class TAuditNameRegistry
         "Establishment",
         "Esteem",
         "Etymology",
-        "Etymon",
         "Example",
         "Excerpt",
         "Exemplar",
@@ -179,6 +180,7 @@ internal static class TAuditNameRegistry
         "Lens",
         "Library",
         "Line",
+        "Lineage",
         "Link",
         "Listener",
         "Livery",
@@ -217,6 +219,7 @@ internal static class TAuditNameRegistry
         "Panel",
         "Paradigm",
         "Parcel",
+        "Pedigree",
         "Phonetician",
         "Phonograph",
         "Phonology",

@@ -183,26 +183,6 @@ public sealed class LCardFacade : LCardPort
         return targets;
     }
 
-    public IReadOnlyList<LTranslationTarget> LEngineEtymonRead(LEntryDraft draft)
-    {
-        ArgumentNullException.ThrowIfNull(draft);
-
-        IReadOnlyList<long> etymons = draft.LEntryDraftEtymology.LEtymologyDraftEtymons;
-        Dictionary<long, LTranslationTarget> found = [];
-        foreach (LTranslationTarget target in LEngineTargetRead(etymons))
-        {
-            found[target.LTranslationTargetId] = target;
-        }
-
-        return [.. etymons.Where(found.ContainsKey).Select(id => found[id])];
-    }
-
-    public LEtymologyResult LEngineEtymologyRead(LEntryDraft draft)
-    {
-        bool narrated = draft.LEntryDraftEtymology.LEtymologyDraftNarrated;
-        return new LEtymologyResult(LEngineEtymonRead(draft), narrated);
-    }
-
     public IReadOnlyList<LTranslationTarget> LEngineTargetRead(long ownerId, IReadOnlyList<long> ids)
     {
         lock (_lCardFacadeGate)

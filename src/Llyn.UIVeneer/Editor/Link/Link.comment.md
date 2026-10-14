@@ -29,10 +29,10 @@ The fill sets the unlink icon, since an icon is drawn by code.
 The field's panel seats the caret among the chips rather than holding it as one of them.
 It answers the key before the text box does, because a text box keeps the arrow keys for itself.
 Otherwise the down arrow could never reach the dropdown of offered entries.
-It shares the ordinary input style, so its placeholder behaves as every other field's does.
+It takes the caret input style, a bare field that takes no room while it is empty and unfocused.
 It carries no border, because the surface around the whole field is the border.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `PLinkTemplate.xaml` `4f784be00c60a68e`
+Commit: `c6e60141a172`
+- `PLinkTemplate.xaml` `f79a6de4c1275440`

@@ -108,10 +108,6 @@ A typed gloss text and then a chosen language both land on the same Gloss.
 An added Gloss is dropped by its id.
 A field left empty whose held value is unknown stays unknown, while the typed title lands.
 The scenario's three edits are sent one field at a time, as the form types them.
-A typed narrative lands on the held entry's etymology.
-A source added at position zero goes ahead of one appended at the end.
-It is dropped by its entry id.
-A span of the narrative links to the given entry at the given offset.
 A failing court delete after a translation removal reaches the caller instead of leaving an orphan unseen.
 The chip runs over a fake draft port whose court delete throws.
 `TQuillEntrySave` stores an English Entry with one sense, and no fact calls it.
@@ -131,12 +127,12 @@ A typed phonetic reading and a typed respelling land on the primary pronunciatio
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `TEasel.cs` `f85c1bca81bff00c`
 - `TEngineGloss.cs` `c1402f7638e6237b`
 - `TEngineTenure.cs` `ac07d8236f6f41a4`
 - `TEngineTenureSubject.cs` `f6a05df885035ad7`
 - `TForay.cs` `c61708681cad4fd0`
 - `TForayFailure.cs` `039821f324ec1d94`
-- `TQuill.cs` `4d5a62840b1fac55`
+- `TQuill.cs` `e27ad009e3e388e8`
 - `TTenureField.cs` `b93c929cdeed7a0c`

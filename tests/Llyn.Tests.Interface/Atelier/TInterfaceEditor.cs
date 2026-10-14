@@ -36,6 +36,16 @@ internal static class TInterfaceEditor
         new CLedgerNoticed(),
         static run => run());
 
+    internal static CEditor TEditorCreate(LEngine engine, CEntryBundle entries, CEnvoy envoy) => new(
+        new LDraftOutlet(engine),
+        entries,
+        TInterfaceConduct.TPhonologyBundleCreate(engine),
+        new LSettingsOutlet(engine),
+        new LMediaOutlet(engine),
+        envoy,
+        new CLedgerNoticed(),
+        static run => run());
+
     internal static CEditor TEditorCreate(LEngine engine, CPhonologyBundle phonology) =>
         TEditorCreate(
             new LDraftOutlet(engine),

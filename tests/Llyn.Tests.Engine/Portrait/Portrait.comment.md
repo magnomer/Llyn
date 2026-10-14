@@ -37,9 +37,11 @@ A stored fold reaches the collocation's row, which still carries its meaning.
 
 With respelling on, the reading line prints each respelling in place of its IPA.
 The page follows the setting at read time, so one entry shows either form without a new save.
-A linked etymology prints as links under one heading and no line of its own.
-A narrated etymology prints as a line, with the entries its spans name beside it.
-An entry that says nothing about its origin gets no heading.
+A linked Ancestor box prints as an up-arrow line with its language and the linked headword.
+The linked entry's own box nests beneath it behind a borrowed arrow, with its language and gloss.
+A closing line points to the linked entry.
+The entry sheet draws the same ancestry as a tree, the borrowed box stacked above the linked one.
+The headword closes it as the root, and the sheet prints no `⇡` mark.
 An entry that no longer stands is an error, not an empty page.
 
 ## `TCitationPage`
@@ -93,6 +95,7 @@ The HTML body follows view mode, so it skips what the view never shows as such.
 The glyph, frequency, form and paradigm bands drop whole, since the view draws them in shapes of its own.
 Two joined lines of the reflex drop too, its label line and its text line.
 The view splits each of them into cells.
+Two joined etymology lines drop as well, since the tree writes each part of a box apart.
 The Markdown and Word checks pass no list, so they still answer for every text.
 
 The PDF export hands the press the entry sheet, not the portrait sheet, so the PDF follows view mode.
@@ -147,11 +150,11 @@ A selected Example in the corpus view opens the press over the Example text.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `TCitationPage.cs` `bbba4a3d7bb84873`
 - `TPortraitClerk.cs` `c69cf83f9713e596`
-- `TPortraitEntry.cs` `6dcee7664ac19656`
-- `TPortraitExporting.cs` `e1a07bb6c4535443`
+- `TPortraitEntry.cs` `23342f25a464518f`
+- `TPortraitExporting.cs` `bc7bcef2e8061fb9`
 - `TPortraitFolio.cs` `071815c59fc69cd2`
 - `TPortraitOutline.cs` `48efe478fabf24ad`
 - `TPortraitPage.cs` `6bb628aabbfd96d7`

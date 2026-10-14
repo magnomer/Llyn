@@ -92,6 +92,7 @@ Mismatching holds no rows, since it only informs while Demeanor has no code.
 Once Demeanor holds a source, every mismatching hit fails.
 Puppeteering holds no rows, since no control type requests logic.
 Zeroing holds no rows, since no driver sends a literal zero toward a gate.
+Gatekeeping and Replaying hold no rows either, so every kind stands at zero in every file.
 A file missing from a kind has a ceiling of zero.
 `TAuditRatchet` holds every ceiling against the committed copy, and a new generation baselines it afresh.
 When a count falls, the truth ledger fact writes the lowered ledger under `temp/audit` to copy here.
@@ -336,13 +337,13 @@ A hit through a ref parameter names that parameter, as a hit through a local nam
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `TAuditTruth.cs` `bb581b1016b16e37`
-- `TAuditTruthField.cs` `0d1c890b1259ddb3`
-- `TAuditTruthLedger.json` `4b291338fd9adcbc`
+- `TAuditTruthField.cs` `bda475280d6b7bcb`
+- `TAuditTruthLedger.json` `c50bb25b609b47e9`
 - `TAuditTruthLocal.cs` `4baaaa83b0678024`
 - `TAuditTruthReference.cs` `3c96dcfa5aa99002`
 - `TAuditTruthSequence.cs` `a5a77f14c0b84d98`
-- `TAuditTruthSetting.cs` `fe1b429ead784519`
+- `TAuditTruthSetting.cs` `6423852722d78021`
 - `TAuditTruthTampering.cs` `78e63b421c0ee57e`
-- `TAuditTruthWalker.cs` `c6d4f7595d1cd452`
+- `TAuditTruthWalker.cs` `6f9d273d1926e234`

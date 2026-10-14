@@ -11,8 +11,20 @@ One entry as a markup file carries it, with no id anywhere in it.
 Metadata such as grasp, frequency, favorite and timestamps is not content and never travels.
 The headword and language are required for the entry to enter a workspace.
 Meaning cards may nest, and collocation cards never nest.
+Ancestor boxes stand in the order the entry lists them, and equality compares them in sequence.
 Unit and freedom are unchosen when the element is absent or unknown.
 `LMarkupEntryLine` is the line the entry opened on, and zero for an entry built in memory.
+
+## `LMarkupAncestor`
+
+One box of the etymology map as a markup file carries it.
+A box names itself by a key and its child by the child's key, so no database id travels.
+A box with no child feeds the headword itself.
+The position orders co-sources under one child.
+A linked box is named by headword and language, and a text box by its text and language.
+The relation travels as its name, so a user relation needs no id to survive a move.
+Boxes carry keys, because the map is a tree.
+List order alone cannot name a child.
 
 ## `LMarkupEntryName`
 
@@ -46,17 +58,6 @@ The local spelling is null when none is given.
 
 A translation link naming its target entry by natural key.
 On import the target is looked up among stored entries and entries the same file creates.
-
-## `LMarkupEtymology`
-
-The narrative etymology of an entry.
-Each span inside the text names a source entry by headword and language.
-The text is kept as written, untrimmed.
-
-## `LMarkupEtymon`
-
-One direct link from an entry to the entry it comes from.
-The order of these links in the file is the order they are stored in.
 
 ## `LMarkupCardReader`
 
@@ -109,12 +110,11 @@ A reference writes the kind by its format name and each author on its own elemen
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
+- `LMarkupAncestor.cs` `68890876e68e5602`
 - `LMarkupCard.cs` `4f245dcabda5b7bc`
 - `LMarkupCardReader.cs` `773e779971f1dbc9`
 - `LMarkupCardWriter.cs` `a95a3eaaa5a1915e`
-- `LMarkupEntry.cs` `390bb6350a78abd4`
-- `LMarkupEtymology.cs` `c81d407310e96677`
-- `LMarkupEtymon.cs` `6f1dbcfb517f40f7`
+- `LMarkupEntry.cs` `37de61a6aa336535`
 - `LMarkupInflection.cs` `801a88cc6598dcb6`
 - `LMarkupTranslation.cs` `38e82c598b03d683`

@@ -46,7 +46,7 @@ It then clears its values so this style rules again.
 ## Chips
 
 `Theme.Card.Pellet` is a translation as a chip tinted in the soft accent.
-A link and an etymon take the same chip.
+A link takes the same chip.
 `Theme.Card.Badge` is a tag as an outlined chip with no fill.
 A label and a mention take the same outline.
 Beside the filled translation and situation chips, its outline marks a different kind.
@@ -123,18 +123,30 @@ Deportment lights hover and press and sets the padding through `QLook` rows on t
 
 ## Etymology styles
 
-`Theme.Etymology.Item` draws one source link as a chip, or the entry a source word is typed into.
-The chip holds the flag, the headword and its language.
-Its unlink button shows only while the field is editable, and the entry takes the word on Return.
-The field fills the named parts, the commands and the key through `QLookItemAttach`.
-`Theme.Etymology.Field` wraps the chips and the entry as one line of words.
-`Theme.Etymology.Text` is the narrative as the reading view prints it.
-`Theme.Etymology.Prose` is the narrative as the editor takes it, in the size the printed one uses.
-`Theme.Etymology.Menu` offers link and unlink over the narrative, beside the usual clipboard items.
-Each command is a `QLook` row on the named item.
-`Theme.Etymology.Read` is the card frame the reading view draws, its heading standing above it.
-`Theme.Etymology.Card` is the editor's frame, with its heading inside the head strip as the note card has it.
-`Theme.Etymology.Head` is that strip, bordered below and rounded on top, and `Theme.Etymology.Body` insets the body below it.
+The etymology map is a tree of boxes, drawn the same way in the editor and the reading view.
+Each box is a centred column of its tongue, its word and its gloss.
+The boxes it descends from stand in a row above it, joined to it by a trunk rule.
+Under the box a stem carries its relation word down to the fork of its siblings.
+`Theme.Etymology.Sources` lays the source boxes out as a centred row aligned to the foot of their line.
+`Theme.Etymology.Item` is the editor's box.
+It holds a tongue choice, the word field, a gloss field and the box tools.
+It also holds a restore note and a relation choice.
+`Theme.Etymology.Reading` is the reading view's box, with the same parts as plain text and no tools.
+Both templates name their parts alike, so each driver fills the same names.
+Each template nests its own sources list, so the tree needs no flattening in markup.
+`PEtymologyTrunk` is the rule between a box and its sources, and a driver hides it while there are none.
+`PEtymologyPrior` and `PEtymologyNext` are the left and right half-bars along the foot of a box.
+A driver hides the left half on the first sibling and the right half on the last.
+So a row of siblings draws one bar from the first box's centre to the last box's centre.
+`Theme.Etymology.Bar` fills those half-bars in the line colour.
+`Theme.Etymology.Frame` rings a box that is its own, and `Theme.Etymology.Trace` is the dashed ring of a borrowed box.
+The trace starts collapsed, so a driver shows it only when a box is borrowed from another entry.
+`Theme.Etymology.Stem` is the short upright rule of the trunk and of the relation's two links.
+`Theme.Etymology.Tool` is the small square button for insert, add and remove, and it is never focusable.
+`Theme.Etymology.Note` is the link-like restore button, centred under the tools.
+`Theme.Etymology.Root` is the accent-ringed box the entry's headword stands in at the foot of the map.
+`Theme.Etymology.Headword` is that headword, centred and in the accent colour.
+The part rests on the palette and the input part.
 
 ## Gloss styles
 
@@ -243,11 +255,11 @@ That is because it reports a link and is not the link itself.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `PThemeCaption.xaml` `3e87659ad411aeea`
 - `PThemeCard.xaml` `17b0761c837fc22b`
 - `PThemeCategory.xaml` `331d3745f7a12209`
-- `PThemeEtymology.xaml` `5098abe7f950ddd8`
+- `PThemeEtymology.xaml` `419b0cb30ad13b63`
 - `PThemeGloss.xaml` `7069508ab866d557`
 - `PThemeGlyph.xaml` `340069918a46ca84`
 - `PThemeMarker.xaml` `9d4e0f67fd3de81e`

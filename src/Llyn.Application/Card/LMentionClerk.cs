@@ -56,14 +56,6 @@ public sealed class LMentionClerk
             LDraftClerkMention.LMentionRead(row.LSentenceDraftMention));
     }
 
-    public LMentionResult LMentionEtymologyFind(LEntryDraft shown, int offset)
-    {
-        ArgumentNullException.ThrowIfNull(shown);
-
-        return LMentionClerkFind(
-            shown.LEntryDraftEtymology.LEtymologyDraftText, shown.LEntryDraftLanguage, offset, []);
-    }
-
     public LMentionResult LMentionClerkFind(
         string text, string language, int offset, IReadOnlyList<LMention> mentions)
     {
@@ -126,12 +118,6 @@ public sealed class LMentionClerk
     public static LMentionDraft LMentionSpanRead(string text, int start, int length)
     {
         return LMentionSpan.LMentionSpanRead(text, start, length);
-    }
-
-    public static LMentionDraft? LMentionEtymologyFind(LDraft? draft, LMentionDraft span)
-    {
-        ArgumentNullException.ThrowIfNull(span);
-        return draft?.LDraftEtymologyFind(span);
     }
 
     public static LMentionDraft? LMentionSpanFind(LDraft? draft, long cardId, long sentenceId, LMentionDraft span)
@@ -206,14 +192,6 @@ public sealed class LMentionClerk
     public IReadOnlyList<LMentionLabel> LMentionClerkResolve(LDraft? draft, long cardId, long sentenceId)
     {
         return LMentionClerkResolve(draft?.LDraftExampleRead(cardId, sentenceId));
-    }
-
-    public IReadOnlyList<LMentionLabel> LMentionEtymologyResolve(LDraft? draft)
-    {
-        LEtymologyDraft? etymology = draft?.LDraftContent.LEntryDraftEtymology;
-        return etymology is null
-            ? []
-            : LMentionClerkResolve(etymology.LEtymologyDraftText, etymology.LEtymologyDraftMentions);
     }
 
     private IReadOnlyList<LMentionLabel> LMentionClerkResolve(LExampleDraft? example)

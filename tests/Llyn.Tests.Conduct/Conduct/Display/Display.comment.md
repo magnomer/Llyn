@@ -135,7 +135,7 @@ The atelier's media port only answers a stop, since closing the view stops its p
 
 ## `TDisplayCard`
 
-Covers the reading view's card, media, etymology and chip reads and click gates.
+Covers the reading view's card, media and chip reads and click gates.
 Most cases run on a real workspace, where the wing opens the entry and the display's area answers.
 The media cases call the card reads directly with a real or fake media port.
 A Meaning card arrives ready, and the Meaning section shows.
@@ -156,13 +156,6 @@ Over the real media outlet, a hosted location padded with spaces still resolves 
 A plain web file carries no film id, and a workspace path that reaches no file carries no screen.
 A blank location carries no screen.
 With no entry chosen, no usage is listed.
-A source link alone shows the etymology field, the row of links and the section, aimed at its source Entry.
-Its read narrative stays hidden, since no words stand.
-Two source links show the row of links with both targets.
-A narrative alone shows the field, its read face and the section, with its text.
-The row of links stays hidden, since no link stands.
-The read face shows only a narrative with words in it, so blank text keeps it hidden.
-An entry with no etymology hides the field, its read face, its row of links and the section.
 A stored situation, register or tag raises its own tab.
 A link chip raises its entry in the library tab.
 A record never saved, a link to no entry and an empty click open nothing.
@@ -200,8 +193,6 @@ That holds when the word starts in a Mention piece before the clicked piece.
 A word nobody holds offers an empty menu.
 A stored Mention opens its entry and raises its sense.
 A row the shown entry does not hold offers an empty menu.
-A word of the etymology prose is read in the shown entry's language.
-The etymology gate answers nothing while nothing is shown.
 A failed find reports `Mention.FindFailed` and offers nothing.
 
 ## `TDisplayPlayback`
@@ -264,14 +255,14 @@ Saves an English noun whose paradigm asks for a plural nothing stores.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `TCardSense.cs` `9221ebe024afd394`
 - `TDisplay.cs` `6cdb274190221f27`
 - `TDisplayAccent.cs` `5ee40ff6798ed4f6`
 - `TDisplayArea.cs` `a27204159e3bc5ec`
-- `TDisplayCard.cs` `c58f8af1cd2d89f5`
-- `TDisplayGrasp.cs` `933aa7157e1b6c5d`
-- `TDisplayMention.cs` `c3cfe0e5e95f19c9`
-- `TDisplayPlayback.cs` `8e945dbdedbaccf3`
+- `TDisplayCard.cs` `583a594c599ffbf4`
+- `TDisplayGrasp.cs` `02d2dd52a323976b`
+- `TDisplayMention.cs` `718d56e9487cb408`
+- `TDisplayPlayback.cs` `4841acad0b56316f`
 - `TDisplaySound.cs` `e3c7541e8bb50b19`
 - `TDisplaySoundBlock.cs` `e6ddde544553127d`

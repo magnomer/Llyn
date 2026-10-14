@@ -20,7 +20,8 @@ internal sealed class CEntryBundle
         LReferencePort references,
         LAuthorPort authors,
         LMarkdownPort markdown,
-        LPronunciationPort pronunciations)
+        LPronunciationPort pronunciations,
+        LAncestorPort ancestors)
     {
         ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(grasps);
@@ -37,6 +38,7 @@ internal sealed class CEntryBundle
         ArgumentNullException.ThrowIfNull(authors);
         ArgumentNullException.ThrowIfNull(markdown);
         ArgumentNullException.ThrowIfNull(pronunciations);
+        ArgumentNullException.ThrowIfNull(ancestors);
 
         CEntryBundleEntry = entries;
         CEntryBundleGrasp = grasps;
@@ -53,6 +55,7 @@ internal sealed class CEntryBundle
         CEntryBundleAuthor = authors;
         CEntryBundleMarkdown = markdown;
         CEntryBundlePronunciation = pronunciations;
+        CEntryBundleAncestor = ancestors;
     }
 
     internal LEntryPort CEntryBundleEntry { get; }
@@ -84,4 +87,6 @@ internal sealed class CEntryBundle
     internal LMarkdownPort CEntryBundleMarkdown { get; }
 
     internal LPronunciationPort CEntryBundlePronunciation { get; }
+
+    internal LAncestorPort CEntryBundleAncestor { get; }
 }

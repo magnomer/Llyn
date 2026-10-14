@@ -187,68 +187,6 @@ public sealed class TPortraitEntry
     }
 
     [Fact]
-    public void PortraitRead_LinkedEtymology_CarriesOneBandOfSourceLinks()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        long source = TPortraitEntryCreate(engine, "rinnan");
-        long entryId = TPortraitEntryCreate(engine, "run");
-
-        LDraft held = engine.TEngineDraftStart("Input", entryId);
-        engine.TEngineRequestApply(TInterface.TEtymonAdditionCreate(held.LDraftId, source, 0));
-        engine.TEngineDraftCommit(held.LDraftId);
-
-        LPortraitPage page = engine.TEnginePortraitRead(entryId, TInterface.TPortraitLabelRead());
-
-        LPortraitSection band = Assert.Single(
-            page.LPortraitPageSection,
-            static row => row.LPortraitSectionHeading == "Etymology");
-        Assert.Empty(band.LPortraitSectionLine);
-        Assert.Equal("rinnan", Assert.Single(band.LPortraitSectionLink).LPortraitLinkHeadword);
-    }
-
-    [Fact]
-    public void PortraitRead_NarratedEtymology_CarriesTheProseAndItsSpans()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        long source = TPortraitEntryCreate(engine, "rinnan");
-        long entryId = TPortraitEntryCreate(engine, "run");
-
-        LDraft held = engine.TEngineDraftStart("Input", entryId);
-        engine.TEngineRequestApply(TInterface.TEtymologyTextCreate(held.LDraftId, "From rinnan."));
-        engine.TEngineRequestApply(TInterface.TEtymologyMentionCreate(held.LDraftId, 5, 6, source));
-        engine.TEngineDraftCommit(held.LDraftId);
-
-        LPortraitPage page = engine.TEnginePortraitRead(entryId, TInterface.TPortraitLabelRead());
-
-        LPortraitSection band = Assert.Single(
-            page.LPortraitPageSection,
-            static row => row.LPortraitSectionHeading == "Etymology");
-        Assert.Equal("From rinnan.", Assert.Single(band.LPortraitSectionLine).LPortraitLineText);
-        Assert.Equal("rinnan", Assert.Single(band.LPortraitSectionLink).LPortraitLinkHeadword);
-    }
-
-    [Fact]
-    public void PortraitRead_NoEtymology_AddsNoBand()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        long entryId = TPortraitEntryCreate(engine, "run");
-
-        LPortraitPage page = engine.TEnginePortraitRead(entryId, TInterface.TPortraitLabelRead());
-
-        Assert.DoesNotContain(
-            page.LPortraitPageSection, static row => row.LPortraitSectionHeading == "Etymology");
-    }
-
-    private static long TPortraitEntryCreate(LEngine engine, string headword)
-    {
-        return engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
-            headword, "English", string.Empty, string.Empty, [], [])).LEntryId;
-    }
-
-    [Fact]
     public void PortraitRead_MissingEntry_Throws()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -256,5 +194,66 @@ public sealed class TPortraitEntry
 
         Assert.Throws<InvalidOperationException>(() =>
             engine.TEnginePortraitRead(99, TInterface.TPortraitLabelRead()));
+    }
+
+    [Fact]
+    public void PortraitRead_LinkedAncestor_DrawsTheBorrowedMapAboveIt()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LEntry source = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "renn", "English", string.Empty, string.Empty, [TInterface.TCardCreate("a course", 1)], []) with
+        {
+            LEntryDraftAncestors = [TInterface.TAncestorDraftCreate(-1, null, null, "rinnan", "Latin", null, "flow")],
+        });
+        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "run", "English", string.Empty, string.Empty, [TInterface.TCardCreate("to move fast", 1)], []) with
+        {
+            LEntryDraftAncestors = [TInterface.TAncestorDraftCreate(-1, null, source.LEntryId, string.Empty)],
+        });
+
+        string page = TInterface.TOutlineFormat(
+            engine.TEnginePortraitRead(entry.LEntryId, TInterface.TPortraitLabelRead()));
+
+        Assert.Contains(
+            "- run\n- ↑ English renn\n- · ⇡ Latin rinnan ‘flow’\n\n→ renn (English)\n\n",
+            page,
+            System.StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void SheetEntryFormat_LinkedAncestor_DrawsTheTreeAboveTheHeadword()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LEntry source = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "renn", "English", string.Empty, string.Empty, [TInterface.TCardCreate("a course", 1)], []) with
+        {
+            LEntryDraftAncestors = [TInterface.TAncestorDraftCreate(-1, null, null, "rinnan", "Latin", null, "flow")],
+        });
+        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "run", "English", string.Empty, string.Empty, [TInterface.TCardCreate("to move fast", 1)], []) with
+        {
+            LEntryDraftAncestors = [TInterface.TAncestorDraftCreate(-1, null, source.LEntryId, string.Empty)],
+        });
+
+        string sheet = TInterface.TSheetEntryFormat(
+            Assert.IsType<LLiveryPage>(engine.TLiveryRead(entry.LEntryId)),
+            engine.TEnginePortraitRead(entry.LEntryId, TInterface.TPortraitLabelRead()),
+            static key => key);
+
+        Assert.Contains(
+            "<div class=\"lineage\"><div class=\"tree\">\n<div class=\"stock\">\n"
+                + "<div class=\"etymon\"><div class=\"stock\">\n"
+                + "<div class=\"etymon\"><span class=\"tongue\">Latin</span>"
+                + "<span class=\"word borrowed\">rinnan</span><span class=\"gloss\">flow</span>"
+                + "<i class=\"stem\"></i><i class=\"stem\"></i></div>\n</div>\n"
+                + "<i class=\"stem\"></i><span class=\"tongue\">English</span>"
+                + "<span class=\"word linked\">renn<b>↗</b></span>"
+                + "<i class=\"stem\"></i><i class=\"stem\"></i></div>\n</div>\n"
+                + "<i class=\"stem\"></i><div class=\"root\">run</div>\n</div></div>",
+            sheet,
+            System.StringComparison.Ordinal);
+        Assert.DoesNotContain("⇡", sheet, System.StringComparison.Ordinal);
     }
 }

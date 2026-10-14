@@ -7,7 +7,7 @@
   ],
   "ceilings": {
     "Llyn.Application": 10,
-    "Llyn.ShellEngine": 19
+    "Llyn.ShellEngine": 18
   },
   "exempt": [
     "src/Llyn.Application/Workspace/LWorkspaceClerk.cs:LWorkspacePostureRead",

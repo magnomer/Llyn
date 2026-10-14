@@ -37,14 +37,6 @@ public sealed class LMentionFacade : LMentionPort
         }
     }
 
-    public LMentionResult LEngineEtymologyFind(LEntryDraft shown, int offset)
-    {
-        lock (_lMentionFacadeGate)
-        {
-            return LMentionFacadeStaff.LEngineStaffCatalog.LCatalogStaffMention.LMentionEtymologyFind(shown, offset);
-        }
-    }
-
     public long? LEngineLinkRead(long? link)
     {
         return link is long id && id != 0 ? id : null;
@@ -68,17 +60,6 @@ public sealed class LMentionFacade : LMentionPort
     public bool LEngineSpanCheck(string text, int start, int length)
     {
         return LEngineSpanRead(text, start, length).LMentionDraftLength > 0;
-    }
-
-    public IReadOnlyList<LMentionLabel> LEngineEtymologyResolve(LTenure held)
-    {
-        ArgumentNullException.ThrowIfNull(held);
-
-        LDraft? draft = held.LTenureRead();
-        lock (_lMentionFacadeGate)
-        {
-            return LMentionFacadeStaff.LEngineStaffCatalog.LCatalogStaffMention.LMentionEtymologyResolve(draft);
-        }
     }
 
     public IReadOnlyList<LMentionLabel> LEngineMentionResolve(LTenure held, long card, long sentence)

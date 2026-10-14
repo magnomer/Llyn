@@ -1,7 +1,7 @@
 # Markup
 
 The Markup folder translates an entry to and from markup.
-Each clerk takes one part of the work: export, cards, examples, draft resolving, links, merge and import.
+Each clerk takes one part of the work: export, cards, ancestors, examples, draft resolving, links, merge and import.
 No clerk opens a database of its own, so a test can hand in in-memory ports.
 Names replace ids in a file, and names are resolved back to ids on import.
 
@@ -21,6 +21,35 @@ Only entries of one language are twins.
 
 The entries are loaded in one session, formatted as one tree and written through the markup port.
 An id no entry carries refuses the export.
+
+## `LMarkupClerkAncestor`
+
+The etymology map of an entry, translated to markup boxes and back.
+Markup carries no ids, so the boxes name each other by keys that count from one.
+
+### `LMarkupAncestorCreate`
+
+Writes the draft boxes breadth-first from the headword, each key being its place in that order.
+A box names its child by the child's key and keeps its position among co-sources.
+A linked box is written by its entry's headword and language, with no text.
+A linked box whose entry is gone is written as a text box.
+A text box is written with its text, and its language is the tongue's name when it holds a tongue.
+The relation is written by name, so a custom relation survives a move to another workspace.
+A box id met twice is written once, and a box not reachable from the headword is not written.
+
+### `LMarkupAncestorResolve`
+
+Rebuilds draft boxes from markup, one tree level at a time, with negative ids that are the keys negated.
+A key that is zero, negative or repeated is omitted and noted.
+So is a box whose child chain never reaches the headword, noted after the walk.
+A box with a headword is linked to the entry that headword and language name.
+A box that has sources of its own is never linked.
+A linked box has none above it in its own map.
+When a box has sources or its entry is not found, the loss is noted.
+The box then keeps the headword as plain text.
+A text box language not yet known becomes a tongue through the ancestor clerk.
+A relation not yet known is created there too.
+A language that matches an app language stays as text and makes no tongue.
 
 ## `LMarkupClerkCard`
 
@@ -51,8 +80,8 @@ The draft of one entry comes with its held mentions and cited references gathere
 A speech the workspace does not know stays as a named draft.
 An inflection's unknown speech is omitted.
 A recording whose location cannot stand loses the recording.
-The etymology is resolved beside the rest, both shapes at once.
 The lexical unit and freedom pass through as the file names them.
+The ancestor boxes are resolved through the ancestor clerk, against the entries already prepared.
 When a collocation names meaning paths, the meanings are first given temporary negative ids.
 Each path is then looked up in the meaning tree, and the collocation links the ids found.
 A path that finds no meaning is omitted, and a repeated one links once.
@@ -80,8 +109,8 @@ The ids cannot clash with the held mentions and cited references, which count do
 
 ## `LMarkupClerkEntry`
 
-One entry translated into markup, with its inflections, etymology and etymons.
-Cards go through the card clerk and etymology mentions through the example clerk.
+One entry translated into markup, with its inflections.
+Cards go through the card clerk.
 The engine's reflex clerk is kept so an export lists reflex rows in the pack's declared order.
 
 ### `LMarkupLoad`
@@ -92,20 +121,10 @@ Draft ids and positions are dropped, because list order carries the positions.
 A collocation's meaning links travel as meaning paths, resolved against the draft's meanings.
 Reflex rows are written in the order the pack declares, through `LReflexClerkSort`, never in storage order.
 The lexical unit and freedom are carried as the draft holds them.
+The ancestor boxes are written through the ancestor clerk.
 Grasp, frequency, favorite and timestamps are never read.
 Forms pass whole, since they hold no id worth hiding.
 A reflex also drops its anatomy and anchors, since the receiving engine derives the one and owns the other.
-
-### `LMarkupEtymologyCreate`
-
-The narrative etymology comes with each span's target named by headword and language.
-It is nothing when the etymology is not narrated, since only one shape travels.
-A span whose target no longer stands is left out, since an etymology span always names an entry.
-
-### `LMarkupEtymonCreate`
-
-The direct source links are named by headword and language, in the order the draft holds them.
-A link whose target no longer stands is left out.
 
 ### `LMarkupInflectionCreate`
 
@@ -115,7 +134,7 @@ A morphology that no longer exists is skipped rather than written as a number.
 ## `LMarkupClerkExample`
 
 The example side of an export: example texts, mentions, sense paths and cited references.
-Cards and etymologies both name entries through it, so one instance serves both.
+The card clerk names entries through it.
 
 ### `LMarkupExampleCreate`
 
@@ -203,7 +222,7 @@ Its reference then stays untouched.
 ## `LMarkupClerkLink`
 
 The links an import resolves: entries by headword, senses by path, references by title and locations by path.
-The draft resolver and the intake both lean on it.
+The draft resolver, the ancestor clerk and the intake lean on it.
 
 ### `LMarkupEntryFind`
 
@@ -217,13 +236,6 @@ A mention with a sense is held for settling once the entries stand, its draft id
 A referenced example is cited under its own negative draft id, its source left unspecified.
 The source is found or created only once the example is stored, so a dropped example leaves no reference.
 Both holds draw from one counter, so their slots never collide in the shared identity map.
-
-### `LMarkupEtymologyResolve`
-
-The etymology draft comes with both shapes resolved against the entries the import knows.
-A source link that names no entry is omitted, and a repeated one is taken once.
-A span out of range, overlapping another, or naming no entry is omitted.
-The engine keeps only one shape when it writes, so both may be read.
 
 ### `LMarkupEntryResolve`
 
@@ -258,8 +270,8 @@ Rows are matched on normalized text, so a retyped row with the same words is one
 ### `LMarkupUnionRead`
 
 The loaded draft comes back with every parsed list appended and the cards re-placed.
-The stored etymology stands, and the file's is taken only when the entry has none.
-The stored lexical unit and freedom each stand the same way.
+The stored lexical unit and freedom each stand, and the file's is taken only when the entry has none.
+The stored ancestor boxes stand whole, and the file's are taken only when the entry has none.
 Transcriptions are matched on their scheme, because the save allows one row per scheme.
 The stored row of a scheme wins, since a merge never removes.
 A pronunciation without ipa is matched on its audio location, so a re-merged recording is one row.
@@ -315,12 +327,13 @@ The cards are renumbered from one, children in turn.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `LMarkupClerk.cs` `ee9d329322a31da0`
+- `LMarkupClerkAncestor.cs` `b8814c456369959a`
 - `LMarkupClerkCard.cs` `b1babad16a7ece73`
-- `LMarkupClerkDraft.cs` `0ed89ae6e3f331ae`
-- `LMarkupClerkEntry.cs` `23db0d114404e1e7`
+- `LMarkupClerkDraft.cs` `d98929a0b3e1f2b9`
+- `LMarkupClerkEntry.cs` `3a306752127d0bb2`
 - `LMarkupClerkExample.cs` `2d5f8f0e1a7e4106`
 - `LMarkupClerkIntake.cs` `a7b87b94b3d4cf6d`
-- `LMarkupClerkLink.cs` `c278f6c613892669`
-- `LMarkupClerkUnion.cs` `663125810b61179a`
+- `LMarkupClerkLink.cs` `4abee0ef45d9bcf4`
+- `LMarkupClerkUnion.cs` `7b58bd0ced5f8755`

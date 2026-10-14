@@ -152,6 +152,15 @@ Linked collocations show inside their home meaning, so this section lists only t
 They are the same folding rows as under a meaning, in one bordered list.
 It collapses when every collocation is linked.
 
+### PDisplay.xaml: `PDisplayEtymologySection`
+
+It draws the map of boxes the entry descends from, in the same card the editor's map stands in.
+The map scrolls sideways only, so a tall tree never adds a second vertical scroll.
+The boxes take `Theme.Etymology.Reading`, so they keep the editor's shape without its tools.
+The headword stands in the blue `Theme.Etymology.Root` box at the foot, under one stem rule.
+That stem is never hidden, because the whole section collapses while the entry has no box.
+`QLecternEtymology` fills the boxes and the headword.
+
 ### PDisplay.xaml: `PDisplayStampSection`
 
 It shows the creation and last update times, closing the page beneath one hairline.
@@ -172,6 +181,6 @@ The lectern shows the flag or the globe, so no trigger here watches the image.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `PDisplay.xaml` `9187c7b59e6b8a37`
+Commit: `c6e60141a172`
+- `PDisplay.xaml` `787f7119df3e349a`
 - `PDisplay.xaml.cs` `bc75ac1cd4702294`

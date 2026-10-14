@@ -77,6 +77,7 @@ It calls no read that starts a fetch.
 The frequency rows come from `LFrequencyClerkRead` with fetch off.
 The reading line comes from `LFanqieClerkFormat`, the rule `LEngineReadingRead` applies, minus that read's fanqie start.
 The folded card ids come from `LFoldClerkRead`, inside the same lock.
+The etymology tree comes from `LLineageClerkRead` over the stored draft's boxes, with the relation list beside it.
 The flags come from `LLanguageFlagFind` and `LVarietyFlagScan`, which read stored files only.
 The accent sheet is read once and passed to both the page and `LVarietyFlagScan`.
 The builder is handed `LLanguageFlagFind` itself and asks it once per named language.
@@ -262,10 +263,10 @@ It answers empty while neither exists.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `LCourierFacade.cs` `316cb119faa9202c`
 - `LFanqieFacade.cs` `19ca044c7f98d17f`
-- `LLiveryFacade.cs` `ada8bba382f1d148`
+- `LLiveryFacade.cs` `930588ef8cfd2c99`
 - `LMarkupFacade.cs` `68847305501ca292`
 - `LPortraitFacade.cs` `77018d523cca1d13`
 - `LPronunciationFacade.cs` `665456dd10052ea4`

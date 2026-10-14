@@ -74,9 +74,9 @@ public sealed class QLectern
         QLecternIncoming incoming = new(surface, display.CDisplayCard, atelier.CAtelierNavigation);
         display.CDisplayOpened += incoming.QLecternIncomingRefine;
         display.CDisplayClosed += incoming.QLecternIncomingRefine;
-        QLecternEtymology = new QLecternEtymology(surface, display.CDisplayCard, display.CDisplayRoute);
-        display.CDisplayOpened += QLecternEtymology.QLecternEtymologyRefine;
-        display.CDisplayClosed += QLecternEtymology.QLecternEtymologyRefine;
+        QLecternEtymology etymology = new(surface, display.CDisplayCard, display.CDisplayRoute);
+        display.CDisplayOpened += etymology.QLecternEtymologyRefine;
+        display.CDisplayClosed += etymology.QLecternEtymologyRefine;
 
         QLecternCompass = new QCompass(display.CDisplayCompass, surface);
         QLecternCard.QLecternSeeNotice += QLecternCompass.QCompassSpotlightRefine;
@@ -91,8 +91,6 @@ public sealed class QLectern
     }
 
     public QLecternCard QLecternCard { get; }
-
-    public QLecternEtymology QLecternEtymology { get; }
 
     public QCompass QLecternCompass { get; }
 

@@ -37,6 +37,8 @@ internal sealed class TEditorFixture
 
     internal CKindred TEditorFixtureKindred => TEditorFixtureEditor.CEditorKindred;
 
+    internal CEtymology TEditorFixtureEtymology => TEditorFixtureEditor.CEditorEtymology;
+
     internal CPlayback TEditorFixturePlayback => TEditorFixtureEditor.CEditorPlayback;
 
     internal CTranscription TEditorFixtureTranscription => TEditorFixtureEditor.CEditorTranscription;

@@ -43,6 +43,12 @@ Line breaks become spaces, so a value never splits a table row or a heading.
 Markdown characters get a backslash first, then HTML characters are encoded.
 `LLiverySound` writes every stored value through it too.
 
+### `LLiveryHtmlFormat`
+
+It HTML-encodes text for a raw HTML block, with no Markdown backslash.
+Line breaks become spaces first, as in `LLiveryTextFormat`.
+The etymology tree writes every text through it, since Joplin parses no Markdown inside HTML.
+
 ### Flags and pictures
 
 `LLiveryFlagFormat` is `LLiveryPictureFormat` with class `llyn-flag`.
@@ -180,7 +186,7 @@ An image without epoch or caption writes no caption.
 
 ## `LLiveryCard`
 
-It writes the meanings, collocations and incoming usages of an entry body.
+It writes the meanings, collocations, incoming usages and stored note of an entry body.
 It reads only `LLiveryPage`, the `note` map and the `lookup` it is handed.
 
 ### `LLiveryCardAppend`
@@ -264,6 +270,13 @@ Each usage is one paragraph linking its name to the note of its entry.
 The epithet, owner chip and language follow, the language opening with its flag.
 No usages write nothing, not even the heading.
 
+### `LLiveryAnnotationAppend`
+
+A stored note writes its `Display.Note` heading and its stored Markdown.
+An empty or blank note writes nothing, not even its heading.
+The sheet calls it apart from `LLiveryCardAppend`, so a section can stand between the usages and the note.
+It shares the portrait's `Annotation` word, since `LLiveryNote` already names the whole Joplin note.
+
 ### Address helpers
 
 `LLiveryAddressFormat` percent-encodes angle brackets in the address, so the link target cannot close early.
@@ -305,23 +318,37 @@ The export prints no unknown mark, so a phrase marked unknown gives way to the t
 
 ## `LLiveryEtymology`
 
-It writes the etymology, the note and the stamps of an entry body.
-It reads only `LLiveryPage`, the `note` map and the `lookup` it is handed.
+It writes the etymology section of an entry body, the full tree of the page's Lineage.
+A page with no Lineage writes nothing, not even the `Display.Etymology` heading.
+The tree repeats the entry sheet's lineage as one HTML block, `div.lineage > div.tree`.
+The block has no blank line inside, so Joplin keeps it whole.
+A `div.stock` holds one `div.etymon` per box.
+A box with sources nests a stock of them above itself, joined by `i.stem`.
+Sources are written depth-first in list order, `LLiveryStockAppend` recursing per level.
+Each box writes its `span.tongue` language, its `span.word`, its `span.gloss` and its `span.relation`, in that order.
+Each span but the word is written only when it has text.
+A relation with a key shows that key worded through `lookup`, and one without a key shows its name.
+A box with no relation, or one the page does not list, writes no relation span.
+A `span.word` carries `linked` when the box points at an entry.
+It carries `borrowed` when the box is read from another entry's map.
+A linked word is an HTML anchor through `LLiveryLink.LLiveryEtymonFormat`, followed by an arrow in a `b`.
+The anchor is HTML because Joplin parses no Markdown inside HTML.
+Every text in the block is HTML-encoded only, through `LLiveryHtmlFormat` and `LLiveryEtymonFormat`, never the Markdown escaper.
+`LLiveryPieceAppend` writes one optional span.
+The headword closes the tree in `div.root` under a last `i.stem`.
+The `## ` heading line stays above the block, and the style rules sit in `LLiveryStyle` under `.llyn`.
 
-### `LLiveryEtymologyAppend`
+## `LLiveryLink`
 
-It runs last, right before the closing div.
-An etymology with text or etymons writes its heading first.
-The text and its mentions follow, then one list line per etymon with its language chip.
-A stored note writes its heading and its stored Markdown.
-The stamps are written last.
-An empty etymology or note writes nothing, not even its heading.
+It writes the links an entry body makes to other notes.
+`LLiveryCard`, `LLiveryEtymology` and `LLiveryXiesheng` share it, so every note link has one shape.
 
 ### Link writers
 
 `LLiveryLinkFormat` writes the escaped text as a Markdown `:/` link to the Joplin note id.
 `LLiveryAnchorFormat` writes an HTML anchor, for raw HTML lines such as a card `<summary>`.
 Joplin parses no Markdown there.
+`LLiveryEtymonFormat` writes the same anchor with the text HTML-encoded only, for the etymology tree.
 An empty note id keeps the text plain, so a target outside the workspace stays plain text.
 `LLiveryTargetRead` reads an id of zero or less, or a missing note id, as empty.
 
@@ -337,19 +364,15 @@ Cards hand it meanings with no mentions and examples with their mentions.
 Each line is escaped and joined with Markdown backslash breaks.
 So a stored line break survives inside one paragraph without inline HTML.
 
-### `LLiveryStampAppend`
-
-A rule, then the created and updated stamps in one paragraph split by a backslash break.
-An empty stamp is left out, and two empty stamps write no rule.
-
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `LLiveryCard.cs` `240587df8d35a9c1`
+Commit: `c6e60141a172`
+- `LLiveryCard.cs` `2ce8b8cbd4fcb572`
 - `LLiveryCollocation.cs` `05c6d5672c67b022`
-- `LLiveryEtymology.cs` `8d8006b6037c31e0`
-- `LLiveryHeader.cs` `fe042a92f569e64a`
+- `LLiveryEtymology.cs` `8037c0b43dfd6fec`
+- `LLiveryHeader.cs` `afa6aec7733c89de`
 - `LLiveryInflection.cs` `41638ef2745a54c8`
+- `LLiveryLink.cs` `fe209a81b5072d60`
 - `LLiveryRime.cs` `4db006890840f32c`
 - `LLiveryScript.cs` `ff9a864059db6a9f`
 - `LLiverySound.cs` `288e1a48cfec5345`

@@ -101,7 +101,7 @@ public sealed class TMarkupCargo
     [Theory]
     [InlineData(1001, 2)]
     [InlineData(999, 3)]
-    public void MarkupImport_OmissionsPastCeiling_EndsWithOneEllipsis(int origins, int etymons)
+    public void MarkupImport_OmissionsPastCeiling_EndsWithOneEllipsis(int origins, int morphologies)
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -112,11 +112,11 @@ public sealed class TMarkupCargo
             extra.Append("<origin>x</origin>");
         }
 
-        for (int index = 0; index < etymons; index++)
+        for (int index = 0; index < morphologies; index++)
         {
-            extra.Append("<etymon><headword>none")
+            extra.Append("<inflection><text>x</text><morphology>none")
                 .Append(index.ToString(CultureInfo.InvariantCulture))
-                .Append("</headword><language>English</language></etymon>");
+                .Append("</morphology></inflection>");
         }
 
         string path = workspace.TWorkspaceMarkupSave(TMarkupTwo.Replace(

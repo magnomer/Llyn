@@ -44,17 +44,6 @@ internal static class LMarkupWriter
             element.Add(LMarkupReflexFormat(reflex));
         }
 
-        foreach (LMarkupEtymon etymon in entry.LMarkupEntryEtymon)
-        {
-            element.Add(LMarkupEtymonFormat(etymon));
-        }
-
-        if (entry.LMarkupEntryEtymology is LMarkupEtymology etymology
-            && etymology.LMarkupEtymologyText.Length > 0)
-        {
-            element.Add(LMarkupEtymologyFormat(etymology));
-        }
-
         foreach (LMarkupCard card in entry.LMarkupEntryMeaning)
         {
             element.Add(LMarkupCardWriter.LMarkupCardFormat(card, "meaning"));
@@ -65,29 +54,35 @@ internal static class LMarkupWriter
             element.Add(LMarkupCardWriter.LMarkupCardFormat(card, "collocation"));
         }
 
+        foreach (LMarkupAncestor ancestor in entry.LMarkupEntryAncestor)
+        {
+            element.Add(LMarkupAncestorFormat(ancestor));
+        }
+
         LMarkup.LMarkupTextFormat(element, "note", entry.LMarkupEntryNote);
         return LMarkupNode.LMarkupNodeCreate("entry", element);
     }
 
-    private static LMarkupNode LMarkupEtymonFormat(LMarkupEtymon etymon)
+    private static LMarkupNode LMarkupAncestorFormat(LMarkupAncestor ancestor)
     {
-        List<LMarkupNode> element = [];
-        LMarkup.LMarkupTextFormat(element, "headword", etymon.LMarkupEtymonHeadword);
-        LMarkup.LMarkupTextFormat(element, "language", etymon.LMarkupEtymonLanguage);
-        return LMarkupNode.LMarkupNodeCreate("etymon", element);
-    }
-
-    private static LMarkupNode LMarkupEtymologyFormat(LMarkupEtymology etymology)
-    {
-        List<LMarkupNode> element = [];
-        LMarkup.LMarkupTextFormat(element, "text", etymology.LMarkupEtymologyText);
-
-        foreach (LMarkupMention mention in etymology.LMarkupEtymologyMention)
+        List<LMarkupNode> element =
+        [
+            LMarkupNode.LMarkupNodeCreate(
+                "key", ancestor.LMarkupAncestorKey.ToString(CultureInfo.InvariantCulture)),
+        ];
+        if (ancestor.LMarkupAncestorChild is int child)
         {
-            element.Add(LMarkupCardWriter.LMarkupMentionFormat(mention));
+            element.Add(LMarkupNode.LMarkupNodeCreate("child", child.ToString(CultureInfo.InvariantCulture)));
         }
 
-        return LMarkupNode.LMarkupNodeCreate("etymology", element);
+        element.Add(LMarkupNode.LMarkupNodeCreate(
+            "position", ancestor.LMarkupAncestorPosition.ToString(CultureInfo.InvariantCulture)));
+        LMarkup.LMarkupTextFormat(element, "headword", ancestor.LMarkupAncestorHeadword);
+        LMarkup.LMarkupTextFormat(element, "text", ancestor.LMarkupAncestorText);
+        LMarkup.LMarkupTextFormat(element, "language", ancestor.LMarkupAncestorLanguage);
+        LMarkup.LMarkupTextFormat(element, "gloss", ancestor.LMarkupAncestorGloss);
+        LMarkup.LMarkupTextFormat(element, "relation", ancestor.LMarkupAncestorRelation);
+        return LMarkupNode.LMarkupNodeCreate("ancestor", element);
     }
 
     private static LMarkupNode LMarkupFormFormat(LForm form)

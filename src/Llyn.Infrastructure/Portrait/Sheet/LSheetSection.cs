@@ -303,6 +303,7 @@ public static class LSheetSection
         for (int index = start; index < lines.Count; index++)
         {
             sheet.Append("<div class=\"line\">");
+            sheet.Append(LSheet.LSheetNormalize(lines[index].LPortraitLineOpener));
             LSheetTagAppend(sheet, lines[index].LPortraitLineLabel);
             sheet.Append("<span>")
                 .Append(LSheet.LSheetNormalize(lines[index].LPortraitLineText))

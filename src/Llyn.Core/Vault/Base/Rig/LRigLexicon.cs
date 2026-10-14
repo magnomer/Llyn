@@ -1,7 +1,7 @@
 namespace Llyn.Core;
 
 public sealed record LRigLexicon(
-    LEtymologyVault LRigLexiconEtymologies,
+    LAncestorVault LRigLexiconAncestors,
     LCollocationVault LRigLexiconCollocations,
     LGlossVault LRigLexiconGlosses,
     LInflectionVault LRigLexiconInflections,

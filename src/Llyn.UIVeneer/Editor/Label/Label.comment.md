@@ -33,11 +33,11 @@ The fill sets the close icon, since an icon is drawn by code.
 The field's panel seats the caret among the chips rather than holding it as one of them.
 It answers the key before the text box does, because a text box keeps the arrow keys for itself.
 Otherwise the down arrow could never reach the dropdown of stored tags.
-It shares the ordinary input style, so its placeholder behaves as every other field's does.
+It takes the caret input style, a bare field that takes no room while it is empty and unfocused.
 It carries no border, because the surface around the whole field is the border.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `PCategoryTemplate.xaml` `2925083bcf2f8563`
-- `PLabelTemplate.xaml` `5d27ba0fa4b2105f`
+- `PLabelTemplate.xaml` `c12bcfba4633590c`

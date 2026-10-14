@@ -20,9 +20,6 @@ internal static class TInterfaceMentionSpan
     internal static LMentionDraft TMentionSpanRead(string text, int start, int length) =>
         LMentionSpan.LMentionSpanRead(text, start, length);
 
-    internal static LMentionDraft? TEtymologyDraftFind(LEtymologyDraft etymology, LMentionDraft span) =>
-        etymology.LEtymologyDraftFind(span);
-
     internal static LMentionDraft? TExampleDraftFind(LExampleDraft example, LMentionDraft span) =>
         example.LExampleDraftFind(span);
 

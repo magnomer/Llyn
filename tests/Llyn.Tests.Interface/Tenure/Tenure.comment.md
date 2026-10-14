@@ -48,7 +48,7 @@ This is how a test written against the old whole-draft save is ported without lo
 Headword, language and note are sent only when they differ, and speeches only when the fixture has some.
 Every card, pronunciation and transcription the draft holds is removed before the fixture's own are added.
 The fixture's rows therefore land where the fixture puts them.
-Syllables, forms, inflections, reflexes, etymology, unit and freedom are not sent, so they stay as held.
+Syllables, forms, inflections, reflexes, Ancestor boxes, unit and freedom are not sent, so they stay as held.
 The ids the engine mints differ from the fixture's.
 So a test reads them from the answer and not from the fixture.
 
@@ -122,10 +122,10 @@ The trove is internal to the engine assembly, which opens its internals to this 
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `TInterfaceEasel.cs` `03424a4497abcd42`
 - `TInterfaceForay.cs` `c27bc21fc41ef185`
-- `TInterfaceQuill.cs` `565717f108633c88`
+- `TInterfaceQuill.cs` `62f423482e6d2d31`
 - `TInterfaceRequest.cs` `e69e88557559ec73`
 - `TInterfaceRequestApply.cs` `d699bb7ec75eb444`
 - `TInterfaceTenure.cs` `fa9db281b7d12282`

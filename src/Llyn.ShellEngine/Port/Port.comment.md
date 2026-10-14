@@ -46,7 +46,6 @@ The held draft names the Source the sentence cites now, so an unchanged title ke
 `LEngineMentionResolve` gives the chip line of every sentence row on every card of the held draft, keyed by the row.
 Each chip carries the words it covers, the linked headword and the chosen sense.
 The card and sentence overload addresses one Example, and card 0 with sentence 0 addresses the draft's own Example.
-`LEngineEtymologyResolve` gives the chip line of the held draft's etymology.
 `LEngineMentionDivide` is static, since Conduct divides a row's text while it maps the row and no port is at hand.
 Mention spans count code points while a text box counts UTF-16 units, so the engine converts.
 `LEngineUnitRead` gives the UTF-16 index of a code-point offset, and `LEngineOffsetRead` is its inverse.
@@ -186,9 +185,9 @@ A blank variety has no flag, so its key is empty and finds nothing.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `LDraftOutlet.cs` `bf2e26fd7d6f7135`
-- `LDraftPort.cs` `0b4d195f35d9bf53`
+Commit: `c6e60141a172`
+- `LDraftOutlet.cs` `3c00d5a269978c47`
+- `LDraftPort.cs` `b5d61d945bfd7907`
 - `LMediaOutlet.cs` `cc595890330f42a2`
 - `LMediaPort.cs` `ba9007f05060ea3d`
 - `LPortraitOutlet.cs` `4b7d31ff3f0aa3c2`

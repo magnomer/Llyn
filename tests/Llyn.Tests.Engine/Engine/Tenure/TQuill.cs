@@ -139,67 +139,6 @@ public sealed class TQuill
     }
 
     [Fact]
-    public void EtymologySet_TextTyped_WritesNarrative()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        LTenure tenure = TQuillEntryStart(engine);
-
-        tenure.TQuillEtymologyCreate().TQuillEtymologySet("from Latin");
-
-        Assert.Equal("from Latin", tenure.TTenureRead()!.LDraftContent.LEntryDraftEtymology.LEtymologyDraftText);
-    }
-
-    [Fact]
-    public void EtymonAdd_TwoSources_KeepsTheGivenOrder()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        long cat = engine.TEngineTranslationCreate("cattus", "Latin").LEntryId;
-        long dog = engine.TEngineTranslationCreate("canis", "Latin").LEntryId;
-        LTenure tenure = TQuillEntryStart(engine);
-        LQuillEtymology quill = tenure.TQuillEtymologyCreate();
-
-        quill.TQuillEtymonAdd(cat, int.MaxValue);
-        quill.TQuillEtymonAdd(dog, 0);
-
-        Assert.Equal([dog, cat], tenure.TTenureRead()!.LDraftContent.LEntryDraftEtymology.LEtymologyDraftEtymons);
-    }
-
-    [Fact]
-    public void EtymonRemove_AddedSource_DropsIt()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        long cat = engine.TEngineTranslationCreate("cattus", "Latin").LEntryId;
-        LTenure tenure = TQuillEntryStart(engine);
-        LQuillEtymology quill = tenure.TQuillEtymologyCreate();
-        quill.TQuillEtymonAdd(cat, int.MaxValue);
-
-        quill.TQuillEtymonRemove(cat);
-
-        Assert.Empty(tenure.TTenureRead()!.LDraftContent.LEntryDraftEtymology.LEtymologyDraftEtymons);
-    }
-
-    [Fact]
-    public void MentionSave_SpanOverEntry_LinksNarrativeSpan()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        long cat = engine.TEngineTranslationCreate("cattus", "Latin").LEntryId;
-        LTenure tenure = TQuillEntryStart(engine);
-        LQuillEtymology quill = tenure.TQuillEtymologyCreate();
-        quill.TQuillEtymologySet("from cattus");
-
-        quill.TQuillMentionSave(5, 6, cat);
-
-        LMentionDraft linked = Assert.Single(
-            tenure.TTenureRead()!.LDraftContent.LEntryDraftEtymology.LEtymologyDraftMentions);
-        Assert.Equal(cat, linked.LMentionDraftEntry);
-        Assert.Equal(5, linked.LMentionDraftOffset);
-    }
-
-    [Fact]
     public void CitationSet_SourcePicked_CitesSentence()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

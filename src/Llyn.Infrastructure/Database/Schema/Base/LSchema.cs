@@ -12,7 +12,7 @@ public static class LSchema
         LSchemaRealm.LSchemaRealmCreate(connection);
         LSchemaEntry.LSchemaEntryCreate(connection);
         LSchemaInflection.LSchemaInflectionCreate(connection);
-        LSchemaEtymology.LSchemaEtymologyCreate(connection);
+        LSchemaAncestor.LSchemaAncestorCreate(connection);
         LSchemaMeaning.LSchemaMeaningCreate(connection);
         LSchemaPronunciation.LSchemaPronunciationCreate(connection);
         LSchemaTranscription.LSchemaTranscriptionCreate(connection);

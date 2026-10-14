@@ -192,11 +192,7 @@ Storage failures propagate to the caller's failure boundary.
 The static `LEngineTranslationResolve` over cards keeps each card's link order and omits targets absent from the read.
 The supplied cards receive dictionary keys even when no links resolve.
 
-`LEngineEtymonRead` keeps the draft's link order.
 Missing stored targets are omitted, preventing blank chips.
-
-`LEngineEtymologyRead` forms one answer from the source links and the draft's narrative verdict.
-Link-read failures propagate to the caller's failure boundary.
 
 `LEngineIncomingRead` gives both incoming card kinds the hearth's current epithet setting.
 
@@ -382,7 +378,6 @@ Resolves over a held draft read the draft before the gate is taken, as the other
 
 `LEngineMentionFind` runs the clerk's find over a stored Example.
 It can also run over one sentence row of the entry the reading view shows.
-`LEngineEtymologyFind` runs it over the etymology prose of that entry.
 
 `LEngineSpanRead` gives a field's selection as the span a Mention request carries.
 The engine measures it so the shell never counts.
@@ -390,8 +385,6 @@ The engine measures it so the shell never counts.
 `LEngineSpanCheck` says whether a selection spans any code point, so a link command may run.
 
 `LEngineUnitRead` and `LEngineOffsetRead` convert between a code-point offset and a UTF-16 index.
-
-`LEngineEtymologyResolve` gives the clerk's mention line for the held draft's etymology.
 
 `LEngineMentionResolve` gives the clerk's mention line for one Example of the held draft.
 Card 0 and sentence 0 address the draft's own Example.
@@ -402,13 +395,13 @@ A link names its entry only through a stored id, so an empty id names nothing.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `LAuthorFacade.cs` `bb117bf8bbd2f55c`
-- `LCardFacade.cs` `d3420af8bd7430c2`
+- `LCardFacade.cs` `fd835262e150b403`
 - `LCatalogFacade.cs` `8545ab05f0c69039`
 - `LEntryFacade.cs` `4a9aa0f176bb76e2`
 - `LExampleFacade.cs` `f20eb09a45abf04e`
-- `LMentionFacade.cs` `dfc607b754a42320`
+- `LMentionFacade.cs` `2cfb6578c504b8a7`
 - `LReferenceFacade.cs` `b73762c75a1cefad`
 - `LSituationFacade.cs` `534a19d43f1ba0ba`
 - `LVistaFacade.cs` `55e366ddf38ab66f`

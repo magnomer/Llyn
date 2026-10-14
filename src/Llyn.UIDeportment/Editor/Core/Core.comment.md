@@ -68,8 +68,9 @@ Gloss language choices use one shared collection.
 The card driver receives one example filler assembled from sentence, Gloss and citation drivers.
 The sentence driver is exposed so the editor can order frame and mention redraws around card rendering.
 The prospect driver is exposed for translation and mention offers beyond the card fields.
+The etymology driver takes the etymology gate when introduced and shares that prospect driver for its box words.
 The list driver holds no card collections, since order and position are Conduct's.
-The link and prospect drivers receive the caret gate when introduced.
+Every chip field, the proffer, the prospect, the slate and the card driver take the caret gate when introduced.
 
 ### `QEditorStartRefine`
 
@@ -232,12 +233,12 @@ A click glides, and a layout change places the pill outright.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `QCadence.cs` `c49dba67646f341c`
-- `QEditor.cs` `a07f19805ea5f505`
-- `QEditorCard.cs` `cd2dfa32d33dc7f6`
+- `QEditor.cs` `5c3d48d48e2189bd`
+- `QEditorCard.cs` `d8bc3c212ef354d9`
 - `QEditorFont.cs` `4da791778932c52b`
 - `QEditorSound.cs` `d7e823badab64ad6`
 - `QInput.cs` `3268e212c7a17a65`
-- `QRegard.cs` `b1a82d4aa292f7ef`
-- `QStack.cs` `012671148ee4a618`
+- `QRegard.cs` `5f523b459f306d3c`
+- `QStack.cs` `5302ff128811c7a8`

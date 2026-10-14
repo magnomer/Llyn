@@ -277,10 +277,7 @@ The row's Example text is the text the line shows whenever the line shows words.
 An Example that names no language is read in the language of the shown entry.
 A row that is gone or quotes no Example answers the bare offset with no word.
 
-The etymology find reads the shown entry's etymology text in that entry's language.
-It passes no Mentions, so a click always resolves the word under it.
-
-The text find is the one all three ask.
+The text find is the one both ask.
 A Mention covering the offset wins.
 The form navigates on it, or does nothing for a word standing for nothing.
 Otherwise the word is resolved.
@@ -300,11 +297,10 @@ Offsets count code points, and this maps a code-point offset to a UTF-16 index.
 
 ## `LMentionClerk.LMentionSpanFind`
 
-Both span finds are static.
-So the tenure can call them under its own gate and never take the engine gate.
-The etymology find answers the span of the draft's etymology that the given span lies inside.
-The sentence find answers the Mention the span lies inside, in the Example one sentence field holds.
-Both answer none without a draft.
+The span find is static.
+So the tenure can call it under its own gate and never take the engine gate.
+It answers the Mention the span lies inside, in the Example one sentence field holds.
+It answers none without a draft.
 
 ## `LMentionClerk.LMentionClerkResolve`
 
@@ -317,7 +313,7 @@ The draft form answers the mention line of every sentence row on every card, key
 A row with no Example yet answers an empty line, so its chips are cleared.
 A missing draft answers no rows.
 The card and sentence form answers one Example's line, where card 0 and sentence 0 address the draft's own Example.
-A missing draft or Example answers an empty line, and so does a missing draft for the etymology line.
+A missing draft or Example answers an empty line.
 
 ## `LMentionClerk.LMentionSenseRead`
 
@@ -521,13 +517,13 @@ The rows are twinned and given their epithet when `epithet` asks for it.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `LCardClerk.cs` `bdb3cac0e6820774`
 - `LCardClerkField.cs` `9bb3e1536c7cc7cd`
 - `LCardEquality.cs` `7b2fe6cd813afde8`
 - `LFoldClerk.cs` `9d2f0fde4a8aa1e1`
 - `LMeaningClerk.cs` `598fe8f393d8d254`
-- `LMentionClerk.cs` `0d1e655b9b9f5135`
+- `LMentionClerk.cs` `262a4d4f6fe0e0b4`
 - `LRegisterClerk.cs` `8a24d2adadc14ffc`
 - `LTagClerk.cs` `ddc8ee276f94f7fd`
 - `LTranslationClerk.cs` `b6bfa9297962f513`

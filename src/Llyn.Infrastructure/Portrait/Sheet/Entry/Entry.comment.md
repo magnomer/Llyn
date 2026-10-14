@@ -16,6 +16,9 @@ The stars mask `star` over their colour, as `QGraspStar` draws it as an opacity 
 The heart paints `favorite` or `favorite-marked`, the images `Theme.Favorite.Mark` swaps.
 The card hinge, box switch, reflex fold and collocation chevron paint `expand` with their own colour.
 Colours are always theme keys, so the sheet follows whichever theme the display shows.
+The etymology tree copies `PThemeEtymology.xaml`: line-coloured stems and bars, framed boxes and the accent root.
+Its card scrolls sideways on screen, as the view's does.
+Its boxes wrap their text, so the tree narrows to fit the page.
 
 ### `LSheetCascadePaper`
 
@@ -125,7 +128,35 @@ A meaning card peeks its meaning, the first sense line, empty when the card has 
 
 It writes the incoming, etymology and note sections of an exported entry body.
 They follow the decks in the order of `PDisplay.xaml`.
-Their content and frame are the portrait bands as they are.
+Incoming and note are the portrait bands as they are.
+
+### `LSheetEtymologyAppend`
+
+It draws the etymology band as the view's tree, `Theme.Etymology.Reading`, in HTML and CSS alone, so print keeps it.
+A section without `LPortraitSectionLineage` falls back to its portrait band.
+The markup nests as the view does:
+
+```
+section.band > h2
+  div.lineage > div.tree
+    div.stock                 one row of sibling sources
+      div.etymon              one column, repeated per source
+        div.stock             its own sources, when it has any
+        i.stem                the trunk under them
+        span.tongue           language, left out when empty
+        span.word             the word, .linked adds b "↗" and .borrowed dashes the frame
+        span.gloss            left out when empty
+        i.stem
+        span.relation         left out when empty
+        i.stem
+    i.stem
+    div.root                  the headword
+```
+
+Each column's half-bars are its `::before` and `::after`, meeting at its centre.
+The first column hides the left half and the last the right, so one source draws no bar.
+Each relation comes from the band's lines, in the order `LPortraitEtymologyAdd` writes them.
+The linked words are marked on their boxes, so the band writes no bridge of links.
 `LSheetAnnotationAppend` writes the note band whole, with its heading and card.
 It has its own name because `LSheetNote.LSheetNoteAppend` writes only one Markdown body.
 `LSheetEntry` calls it straight after etymology, where the view places the note.
@@ -276,14 +307,14 @@ An unknown role throws, so a new Core role cannot pass uncoloured.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `LSheetBox.cs` `b32b74e843b28e08`
-- `LSheetCascade.cs` `5d9066015c0e4e88`
+- `LSheetCascade.cs` `6db19790830d547e`
 - `LSheetDeck.cs` `b6f318017bcde83c`
 - `LSheetEnsign.cs` `27a403c779ddd2cc`
 - `LSheetEntry.cs` `450e69ebb2151aca`
 - `LSheetHeader.cs` `51370f27bc7b37bc`
 - `LSheetInflection.cs` `e0cadba77db7f1cb`
-- `LSheetLineage.cs` `06b6b6a43367472e`
+- `LSheetLineage.cs` `e1c16782c82b9d2c`
 - `LSheetParadigm.cs` `210fb09dca0eec79`
 - `LSheetSound.cs` `3f14e81fa423e9f4`

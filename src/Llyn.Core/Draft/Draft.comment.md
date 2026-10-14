@@ -36,7 +36,6 @@ An author draft carries no source and no credits, because an author is a shared 
 A new one has id zero.
 `LDraftCreditRead` gives the credits as editor rows knowing their place and whether they can move.
 The source editor splices its own blank row in, so it never counts the credits itself.
-`LDraftEtymologyFind` gives the etymology span the given span lies inside, or null.
 `LDraftMentionFind` gives the Mention the span lies inside, in the example the ids name, or none.
 `LDraftExampleRead` gives the example a Mention request with these ids would edit.
 Card and sentence both zero name the example the draft holds itself, as the corpus panel sends.
@@ -68,9 +67,9 @@ It is a record, so two readings compare by value and a tenure raises its bulleti
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `LClaim.cs` `4bf25b6887736f62`
 - `LCourt.cs` `9660b9f2ce0f287e`
-- `LDraft.cs` `81fc63ccf63b77dc`
+- `LDraft.cs` `0a01948b8927be6d`
 - `LOutcome.cs` `a1f449a024fa30b3`
 - `LTenureState.cs` `cf447781d6e742b6`

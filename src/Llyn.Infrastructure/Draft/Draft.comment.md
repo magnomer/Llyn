@@ -41,6 +41,7 @@ The save refuses a draft in which any item still carries id zero.
 Positive means a stored row and negative means an id the engine minted, so zero is never a saved state.
 Only the engine mints, and this guard means no caller can slip past it.
 A credited author is an item too, and so are the image and video rows of a held Situation.
+The ancestor boxes of an entry draft are items too, so a box of id zero refuses the save.
 The Meaning ids a collocation card links to are checked the same way.
 The entry id of the draft itself may be zero, because that names a new record rather than an item.
 
@@ -53,6 +54,8 @@ Version three made the pronunciation a list and added the transcriptions beside 
 Version five added the etymology an entry draft carries, with its spans and its links.
 Version six follows the migration that gave Meanings and Collocations one id space.
 An older draft may name a Collocation by the number it had before, so it is set aside.
+Version seven replaced the entry draft's etymology with its list of ancestor boxes.
+An older draft is set aside rather than loaded without them.
 
 ## `LDraftRead`
 
@@ -184,7 +187,7 @@ Taking it would break a write the other copy of the program is making.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `LClaimArchive.cs` `551b48a3edb9dbff`
 - `LCourtArchive.cs` `53d5d3156cd48a56`
-- `LDraftArchive.cs` `ed3beb7b8f9059df`
+- `LDraftArchive.cs` `a51003910d1a4557`

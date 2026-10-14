@@ -10,8 +10,6 @@ internal static partial class TInterface
 
     internal static LQuillSentence TQuillSentenceCreate(this LTenure tenure) => new(tenure);
 
-    internal static LQuillEtymology TQuillEtymologyCreate(this LTenure tenure) => new(tenure);
-
     internal static void TQuillAuthorSet(this LQuillAuthor quill, string name)
     {
         quill.LQuillAuthorSet(name);
@@ -41,26 +39,6 @@ internal static partial class TInterface
     internal static void TQuillGlossSet(this LQuillSentence quill, long gloss, string? language, string? text)
     {
         quill.LSentenceGlossSet(0, 0, gloss, language, text);
-    }
-
-    internal static void TQuillEtymologySet(this LQuillEtymology quill, string text)
-    {
-        quill.LQuillEtymologySet(text);
-    }
-
-    internal static void TQuillEtymonAdd(this LQuillEtymology quill, long entry, int position)
-    {
-        quill.LEtymonAdd(entry, position);
-    }
-
-    internal static void TQuillEtymonRemove(this LQuillEtymology quill, long entry)
-    {
-        quill.LEtymonRemove(entry);
-    }
-
-    internal static void TQuillMentionSave(this LQuillEtymology quill, int offset, int length, long entry)
-    {
-        quill.LEtymologyMentionSave(offset, length, entry);
     }
 
     internal static void TQuillCitationSet(this LQuillSentence quill, long card, long sentence, long reference)

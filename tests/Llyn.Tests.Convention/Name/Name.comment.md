@@ -161,10 +161,10 @@ A malformed name is a violation, never a silent pass, so `L_foo` or `LDraft_` ca
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `TAuditName.cs` `c9b8090ffd62da90`
 - `TAuditNameFilter.cs` `94d5e4f62b0c181b`
-- `TAuditNameSetting.cs` `f3c072aa65a25a79`
+- `TAuditNameSetting.cs` `da27451554ae44d3`
 - `TAuditNameWalker.cs` `9b6199c38f7bf330`
 - `TAuditRegistry.cs` `27c74af9a11890bb`
 - `TSpecimen.cs` `0b6da9e6a472965e`

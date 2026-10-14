@@ -17,6 +17,8 @@ public sealed class LPortraitClerk
     private readonly LFrequencyClerk _lPortraitClerkFrequencies;
     private readonly LParadigmClerk _lPortraitClerkParadigms;
     private readonly LScriptClerk _lPortraitClerkScripts;
+    private readonly LLineageClerk _lPortraitClerkLineage;
+    private readonly LAncestorClerk _lPortraitClerkAncestors;
     private readonly Func<LSettings> _lPortraitClerkSettings;
 
     public LPortraitClerk(
@@ -31,6 +33,8 @@ public sealed class LPortraitClerk
         LFrequencyClerk frequencies,
         LParadigmClerk paradigms,
         LScriptClerk scripts,
+        LLineageClerk lineage,
+        LAncestorClerk ancestors,
         Func<LSettings> settings)
     {
         ArgumentNullException.ThrowIfNull(languages);
@@ -44,6 +48,8 @@ public sealed class LPortraitClerk
         ArgumentNullException.ThrowIfNull(frequencies);
         ArgumentNullException.ThrowIfNull(paradigms);
         ArgumentNullException.ThrowIfNull(scripts);
+        ArgumentNullException.ThrowIfNull(lineage);
+        ArgumentNullException.ThrowIfNull(ancestors);
         ArgumentNullException.ThrowIfNull(settings);
         _lPortraitClerkLanguages = languages;
         _lPortraitClerkEntries = entries;
@@ -56,6 +62,8 @@ public sealed class LPortraitClerk
         _lPortraitClerkFrequencies = frequencies;
         _lPortraitClerkParadigms = paradigms;
         _lPortraitClerkScripts = scripts;
+        _lPortraitClerkLineage = lineage;
+        _lPortraitClerkAncestors = ancestors;
         _lPortraitClerkSettings = settings;
     }
 
@@ -73,7 +81,6 @@ public sealed class LPortraitClerk
         List<long> ids = [];
         LPortraitLink.LPortraitLinkRead(draft.LEntryDraftMeanings, ids);
         LPortraitLink.LPortraitLinkRead(draft.LEntryDraftCollocations, ids);
-        ids.AddRange(draft.LEntryDraftSources);
 
         IReadOnlyDictionary<long, LPortraitLink> targets = LPortraitTargetScan(ids);
         IReadOnlyDictionary<long, string> sources = LPortraitSourceScan();
@@ -114,7 +121,12 @@ public sealed class LPortraitClerk
                 targets,
                 sources,
                 folds));
-        LPortraitClerkCard.LPortraitEtymologyAdd(sections, draft, targets, label);
+        LPortraitClerkCard.LPortraitEtymologyAdd(
+            sections,
+            draft.LEntryDraftHeadword,
+            _lPortraitClerkLineage.LLineageClerkRead(entryId, draft.LEntryDraftAncestors),
+            _lPortraitClerkAncestors.LAncestorRelationRead(),
+            label);
         LPortraitClerkCard.LPortraitIncomingAdd(sections, LPortraitIncomingScan(entryId), label);
         LPortraitClerkCard.LPortraitNoteAdd(sections, draft, label);
         LPortraitClerkCrest.LPortraitScriptAdd(sections, LPortraitScriptScan(entryId, language), label);

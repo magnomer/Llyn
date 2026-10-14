@@ -35,22 +35,49 @@ internal static partial class TInterface
     internal static LEntryQueryArchive TEntryQueryCreate(LDatabase database) =>
         new(database);
 
-    internal static LEtymologyArchive TEtymologyArchiveCreate(LDatabase database) =>
+    internal static LAncestorArchive TAncestorArchiveCreate(LDatabase database) =>
         new(database);
 
-    internal static LEtymology? TEtymologyRead(this LEtymologyVault etymologyVault, long entryId) =>
-        etymologyVault.LEtymologyRead(entryId);
+    internal static IReadOnlyList<LAncestor> TAncestorRead(this LAncestorVault ancestorVault, long entryId) =>
+        ancestorVault.LAncestorRead(entryId);
 
-    internal static LEtymology? TEtymologySave(
-        this LEtymologyVault etymologyVault, long entryId, LEtymology? etymology) =>
-        etymologyVault.LEtymologySave(entryId, etymology);
+    internal static IReadOnlyList<LAncestor> TAncestorSave(
+        this LAncestorVault ancestorVault, long entryId, IReadOnlyList<LAncestor> ancestors) =>
+        ancestorVault.LAncestorSave(entryId, ancestors);
 
-    internal static IReadOnlyList<LEtymon> TEtymonRead(this LEtymologyVault etymologyVault, long entryId) =>
-        etymologyVault.LEtymologyEtymonRead(entryId);
+    internal static IReadOnlyList<LAncestorRelation> TAncestorRelationRead(this LAncestorVault ancestorVault) =>
+        ancestorVault.LAncestorRelationRead();
 
-    internal static IReadOnlyList<LEtymon> TEtymonSet(
-        this LEtymologyVault etymologyVault, long entryId, IReadOnlyList<long> targetIds) =>
-        etymologyVault.LEtymologyEtymonSet(entryId, targetIds);
+    internal static LAncestorRelation TAncestorRelationCreate(this LAncestorVault ancestorVault, string name) =>
+        ancestorVault.LAncestorRelationCreate(name);
+
+    internal static bool TAncestorRelationDelete(this LAncestorVault ancestorVault, long relationId) =>
+        ancestorVault.LAncestorRelationDelete(relationId);
+
+    internal static IReadOnlyList<LAncestorTongue> TAncestorTongueRead(this LAncestorVault ancestorVault) =>
+        ancestorVault.LAncestorTongueRead();
+
+    internal static LAncestorTongue TAncestorTongueCreate(this LAncestorVault ancestorVault, string name) =>
+        ancestorVault.LAncestorTongueCreate(name);
+
+    internal static bool TAncestorTongueDelete(this LAncestorVault ancestorVault, long tongueId) =>
+        ancestorVault.LAncestorTongueDelete(tongueId);
+
+    internal static LAncestorDraft TAncestorDraftCreate(
+        long id,
+        long? child,
+        long? target,
+        string text,
+        string language = "",
+        long? tongue = null,
+        string gloss = "") =>
+        new(id, child, target, text, language, tongue, gloss);
+
+    internal static IReadOnlyList<LAncestorDraft> TAncestorDraftCreate(IReadOnlyList<LAncestor> ancestors) =>
+        LAncestorDraft.LAncestorDraftCreate(ancestors);
+
+    internal static IReadOnlyList<LAncestor> TAncestorDraftResolve(IReadOnlyList<LAncestorDraft> drafts) =>
+        LAncestorDraft.LAncestorDraftResolve(drafts);
 
     internal static LShengfuArchive TShengfuArchiveCreate(LDatabase database) =>
         new(database);

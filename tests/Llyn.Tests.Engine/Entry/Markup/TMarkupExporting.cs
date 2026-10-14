@@ -182,7 +182,7 @@ public sealed class TMarkupExporting
         engine.TEngineMarkupExport(ids, path);
         string text = File.ReadAllText(path);
 
-        foreach (string typed in TExemplar.TExemplarTextRead(draft))
+        foreach (string typed in TExemplarText.TExemplarTextRead(draft))
         {
             Assert.Contains(typed, text);
         }

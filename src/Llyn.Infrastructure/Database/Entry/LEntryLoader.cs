@@ -38,7 +38,8 @@ public sealed class LEntryLoader
         IReadOnlyList<LPronunciationDraft> pronunciations = readings.LEntrySoundRead(id);
         IReadOnlyList<LTranscriptionDraft> transcriptions = readings.LEntrySpellingRead(id);
         IReadOnlyList<LReflexDraft> reflexes = readings.LEntryReflexRead(id);
-        LEtymologyDraft etymology = LEntryEtymologyRead(id);
+        IReadOnlyList<LAncestorDraft> ancestors = LAncestorDraft.LAncestorDraftCreate(
+            new LAncestorArchive(_lEntryLoaderDatabase).LAncestorRead(id));
 
         IReadOnlyList<LCardDraft> meaningCards = cards.LEntryMeaningRead(id);
         IReadOnlyList<LCardDraft> collocationCards = cards.LEntryCollocationRead(id);
@@ -55,21 +56,9 @@ public sealed class LEntryLoader
             inflections,
             transcriptions,
             reflexes,
-            etymology,
             entry.LEntryUnit,
-            entry.LEntryFreedom);
-    }
-
-    private LEtymologyDraft LEntryEtymologyRead(long id)
-    {
-        LEtymologyArchive etymologies = new(_lEntryLoaderDatabase);
-        List<long> targets = [];
-        foreach (LEtymon etymon in etymologies.LEtymologyEtymonRead(id))
-        {
-            targets.Add(etymon.LEtymonTargetId);
-        }
-
-        return LEtymologyDraft.LEtymologyDraftCreate(etymologies.LEtymologyRead(id), targets);
+            entry.LEntryFreedom,
+            ancestors);
     }
 
     private IReadOnlyList<LSpeechDraft> LEntrySpeechFormat(IReadOnlyList<LSpeech> speeches)

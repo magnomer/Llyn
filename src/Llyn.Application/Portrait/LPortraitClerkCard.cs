@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Llyn.Core;
 
 namespace Llyn.Application;
@@ -53,51 +54,65 @@ public static class LPortraitClerkCard
 
     public static void LPortraitEtymologyAdd(
         List<LPortraitSection> sections,
-        LEntryDraft draft,
-        IReadOnlyDictionary<long, LPortraitLink> targets,
+        string headword,
+        IReadOnlyList<LLineage> lineage,
+        IReadOnlyList<LAncestorRelation> relations,
         LPortraitLabel label)
     {
         ArgumentNullException.ThrowIfNull(sections);
-        ArgumentNullException.ThrowIfNull(draft);
-        ArgumentNullException.ThrowIfNull(targets);
+        ArgumentNullException.ThrowIfNull(headword);
+        ArgumentNullException.ThrowIfNull(lineage);
+        ArgumentNullException.ThrowIfNull(relations);
         ArgumentNullException.ThrowIfNull(label);
 
-        LEtymologyDraft etymology = draft.LEntryDraftEtymology;
-        List<LPortraitLine> lines = [];
-        List<LPortraitLink> links = [];
-
-        if (etymology.LEtymologyDraftNarrated)
-        {
-            lines.Add(new LPortraitLine(string.Empty, etymology.LEtymologyDraftText));
-            foreach (LMentionDraft mention in etymology.LEtymologyDraftMentions)
-            {
-                LPortraitEtymologyAdd(links, targets, mention.LMentionDraftEntry);
-            }
-        }
-        else
-        {
-            foreach (long id in etymology.LEtymologyDraftEtymons)
-            {
-                LPortraitEtymologyAdd(links, targets, id);
-            }
-        }
-
-        if (lines.Count == 0 && links.Count == 0)
+        if (lineage.Count == 0)
         {
             return;
         }
 
-        sections.Add(new LPortraitSection(
-            label.LPortraitLabelEtymology, lines, string.Empty, [], [], LPortraitSectionLink: links));
-    }
-
-    private static void LPortraitEtymologyAdd(
-        List<LPortraitLink> links, IReadOnlyDictionary<long, LPortraitLink> targets, long id)
-    {
-        if (targets.TryGetValue(id, out LPortraitLink? link) && !links.Contains(link))
+        Dictionary<long, string> names = relations.ToDictionary(
+            static relation => relation.LAncestorRelationId, static relation => relation.LAncestorRelationName);
+        List<LPortraitLine> lines = [new LPortraitLine(string.Empty, headword)];
+        List<LPortraitLink> links = [];
+        Stack<(LLineage, int)> pending = new();
+        for (int index = lineage.Count - 1; index >= 0; index--)
         {
-            links.Add(link);
+            pending.Push((lineage[index], 0));
         }
+
+        while (pending.TryPop(out (LLineage, int) held))
+        {
+            (LLineage box, int depth) = held;
+            string relation = box.LLineageRelationId is long id
+                ? names.GetValueOrDefault(id, string.Empty)
+                : string.Empty;
+            string gloss = box.LLineageGloss.Length > 0 ? "‘" + box.LLineageGloss + "’" : string.Empty;
+            string text = string.Join(
+                " ", new[] { box.LLineageLanguage, box.LLineageText, gloss }.Where(static part => part.Length > 0));
+            string opener = string.Concat(Enumerable.Repeat("· ", depth)) + (box.LLineageBorrowed ? "⇡ " : "↑ ");
+            lines.Add(new LPortraitLine(relation, text, opener));
+
+            LPortraitLink link = new(box.LLineageText, box.LLineageLanguage);
+            if (box.LLineageEntryId is not null && !links.Contains(link))
+            {
+                links.Add(link);
+            }
+
+            for (int index = box.LLineageSources.Count - 1; index >= 0; index--)
+            {
+                pending.Push((box.LLineageSources[index], depth + 1));
+            }
+        }
+
+        LLineage root = new(0, null, headword, string.Empty, string.Empty, null, false, lineage);
+        sections.Add(new LPortraitSection(
+            label.LPortraitLabelEtymology,
+            lines,
+            string.Empty,
+            [],
+            [],
+            LPortraitSectionLink: links,
+            LPortraitSectionLineage: root));
     }
 
     public static void LPortraitNoteAdd(List<LPortraitSection> sections, LEntryDraft draft, LPortraitLabel label)

@@ -15,7 +15,8 @@ public sealed record LPortraitSection(
     IReadOnlyList<LPortraitLink>? LPortraitSectionLink = null,
     IReadOnlyList<LPortraitSection>? LPortraitSectionChild = null,
     LPortraitRole LPortraitSectionRole = LPortraitRole.LPortraitRoleBand,
-    bool LPortraitSectionFold = false)
+    bool LPortraitSectionFold = false,
+    LLineage? LPortraitSectionLineage = null)
 {
     public IReadOnlyList<string> LPortraitSectionChip { get; init; } = LPortraitSectionChip ?? [];
 

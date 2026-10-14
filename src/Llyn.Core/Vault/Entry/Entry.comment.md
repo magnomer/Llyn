@@ -1,10 +1,19 @@
 # Entry
 
 This folder holds the persistence ports for entries and everything an entry owns.
-That covers entry records and queries, etymology, lacunae, folds and history.
+That covers entry records and queries, the etymology map, lacunae, folds and history.
 Each port lists exactly what the engine asks of its storage, and nothing about how rows are kept.
 Every adapter is a `{Base}Archive` in Infrastructure over the workspace database.
 A test may answer from a dictionary, which is how the engine is proved to need no database.
+
+## `LAncestorVault`
+
+The persistence port for an entry's etymology map and for the two lists its boxes draw from.
+`LAncestorRead` gives the boxes of one entry, and `LAncestorSave` replaces them all.
+A save answers the boxes as stored, with the ids the store gave them.
+The relation list and the tongue list are read with a usage count of the boxes that hold each value.
+Deleting a relation or tongue answers whether a row was removed.
+A builtin relation is never removed.
 
 ## `LEntryVault`
 
@@ -63,34 +72,6 @@ The find and scan methods match headwords, tags, registers, situations, examples
 ## `LEntryCountRead`
 
 Counts every entry in the workspace.
-
-## `LEtymologyVault`
-
-The persistence port for the etymology of an entry, in both of its shapes.
-One shape is a narrative with spans, and the other is a list of direct links.
-
-## `LEtymologyRead`
-
-Reads the entry's narrative, or null when it keeps none.
-The spans come back in offset order, as every Mention read does.
-
-## `LEtymologyEtymonRead`
-
-Reads the entry's direct links in position order, empty when it has none.
-
-## `LEtymologySave`
-
-Makes the given etymology the whole narrative of the entry, spans and all.
-A null or blank narrative deletes the stored one and returns null.
-The stored spans are written fresh each time, so their ids do not survive the save.
-It throws when a span falls outside the text, overlaps another, or names no Entry.
-Otherwise it returns the stored narrative with its ids filled in.
-
-## `LEtymologyEtymonSet`
-
-Makes the target ids the whole list of the entry's direct links, in the order given.
-A repeated target, a nonpositive id and the entry itself are dropped rather than refused.
-It returns the stored links in their stored order.
 
 ## `LLacunaVault`
 
@@ -171,10 +152,10 @@ Records that the entry was deleted under a revision and returns the stored tombs
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
+- `LAncestorVault.cs` `51212f51c2784511`
 - `LEntryQueryVault.cs` `ee319777555535de`
 - `LEntryVault.cs` `1458c8742f54fbad`
-- `LEtymologyVault.cs` `5a5ef80155a96f0f`
 - `LFoldVault.cs` `d3f0ea93d9525715`
 - `LLacunaVault.cs` `bc31ece851bb9230`
 - `LRevisionVault.cs` `39a90a8856170c2c`

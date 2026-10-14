@@ -4,6 +4,24 @@ Tests of the SQLite stores and the recovery of an unopenable database.
 They stand apart because they pin what must survive a rebuild, a repeated launch or a failed write.
 Fixtures that need the built schema take their workspace from `TWorkspace.TWorkspacePrepare`.
 
+## `TAncestorArchive.cs`
+
+Covers the stored ancestor map of an entry, its relations and its tongues.
+A map saved with unsaved keys reads back as a tree, each source pointing at its child's stored id.
+Sources keep their position under a child, and the root keeps its language and gloss.
+Saving an empty list clears the map.
+A box naming a missing child, or a ring of boxes, throws, since no tree can store it.
+Deleting a linked entry keeps the box that named it, with its text and no link.
+A map saved after its linked entry was deleted keeps that box as text too.
+Deleting the owner entry takes its whole map away.
+Deleting a child box takes its sources away.
+A fresh workspace holds five built-in relations that cannot be deleted.
+A new relation name is trimmed, and creating it again answers the same relation.
+A used custom relation or tongue reports its box count.
+Deleting it clears it from each box and keeps the boxes.
+A draft saved with an already deleted relation or tongue stores it cleared and loses no box.
+The entry load and the draft archive both give the map back as it was written.
+
 ## `TDatabaseSession.cs`
 
 Covers the unit of work and the ordering it makes possible.
@@ -47,16 +65,6 @@ The fault passes through and nothing is set aside, since the file was never show
 Corrupt and not-a-database errors rescue, while busy, full and read errors do not.
 A busy or locked file is reported as such, so the launch can tell the user which program to close.
 
-## `TEtymologyArchive.cs`
-
-Covers the etymology store, holding the narrative row with its spans and the ordered source links.
-Spans come back sorted by offset whatever order they were saved in.
-Saving blank text drops the row, and its spans go with it.
-A span must fit the text, name an entry, and overlap no other, and a broken one writes nothing.
-Repeats, the entry itself and an empty id are skipped, and the rest keep their given order.
-An empty list is how the links are dropped.
-Deleting an entry takes every link and span naming it away, leaving the narrative standing.
-
 ## `TLacunaCell.cs`
 
 Covers the cell column of the lacuna store.
@@ -99,11 +107,11 @@ The outermost one never does.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
+- `TAncestorArchive.cs` `b0f2c0f0c1f050fa`
 - `TDatabaseSession.cs` `1fa6062d74eacb4d`
 - `TDiweiArchive.cs` `7ff34907ce49c7c7`
 - `TDoctor.cs` `24949bade3a5f5ab`
-- `TEtymologyArchive.cs` `978f595216e4bddc`
 - `TLacunaCell.cs` `7987b0edee4d5f16`
 - `TStemArchive.cs` `90ac6e65c0a258ff`
 - `TVocabulary.cs` `ec13137bc408eab1`

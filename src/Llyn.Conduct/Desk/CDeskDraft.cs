@@ -63,9 +63,6 @@ public sealed class CDeskDraft
     internal LQuillTranscription? CDeskDraftTranscription =>
         !CDeskDraftFilling && _cDeskDraftTenure is LTenure held ? new LQuillTranscription(held) : null;
 
-    internal LQuillEtymology? CDeskDraftEtymology =>
-        !CDeskDraftFilling && _cDeskDraftTenure is LTenure held ? new LQuillEtymology(held) : null;
-
     internal LEasel? CDeskDraftEasel => CDeskDraftFilling ? null : _cDeskDraftEasel;
 
     internal LQuillChip? CDeskDraftChip => CDeskDraftFilling ? null : _cDeskDraftChip;

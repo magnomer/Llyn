@@ -90,7 +90,7 @@ internal static class LLiveryCard
         string meaning = card.LCardDraftMeaning.LStateValueShow();
         if (meaning.Length > 0)
         {
-            sheet.Append(LLiveryEtymology.LLiveryMentionFormat(meaning, [], note)).Append("\n\n");
+            sheet.Append(LLiveryLink.LLiveryMentionFormat(meaning, [], note)).Append("\n\n");
         }
 
         LLiveryFieldAppend(sheet, page, card, note);
@@ -187,7 +187,7 @@ internal static class LLiveryCard
         LExampleDraft? example = sentence.LSentenceDraftExample;
         if (example is not null)
         {
-            sheet.Append(LLiveryEtymology.LLiveryMentionFormat(
+            sheet.Append(LLiveryLink.LLiveryMentionFormat(
                 example.LExampleDraftText.LStateValueShow(), example.LExampleDraftMention, note));
             long reference = example.LExampleDraftReference.LStateAnchorShow();
             if (page.LLiveryPageSource.TryGetValue(reference, out string? byline) && byline.Length > 0)
@@ -225,7 +225,7 @@ internal static class LLiveryCard
         {
             string flag = LLiveryHeader.LLiveryBannerFormat(page, target.LTranslationTargetLanguage);
             sheet.Append("<span class=\"llyn-target\">").Append(flag.Length > 0 ? flag + " " : string.Empty)
-                .Append(LLiveryEtymology.LLiveryLinkFormat(
+                .Append(LLiveryLink.LLiveryLinkFormat(
                     target.LTranslationTargetHeadword, target.LTranslationTargetId, note));
             if (target.LTranslationTargetLanguage.Length > 0)
             {
@@ -311,7 +311,7 @@ internal static class LLiveryCard
             .Append("\n\n<div class=\"llyn-card\">\n\n");
         foreach (LUsage usage in page.LLiveryPageIncoming)
         {
-            sheet.Append(LLiveryEtymology.LLiveryLinkFormat(usage.LUsageName, usage.LUsageEntry, note));
+            sheet.Append(LLiveryLink.LLiveryLinkFormat(usage.LUsageName, usage.LUsageEntry, note));
             if (usage.LUsageEpithet.Length > 0)
             {
                 sheet.Append(" <span class=\"llyn-epithet\">")
@@ -355,5 +355,19 @@ internal static class LLiveryCard
     {
         return location.StartsWith("http://", StringComparison.OrdinalIgnoreCase)
             || location.StartsWith("https://", StringComparison.OrdinalIgnoreCase);
+    }
+
+    public static void LLiveryAnnotationAppend(StringBuilder sheet, LLiveryPage page, Func<string, string> lookup)
+    {
+        ArgumentNullException.ThrowIfNull(sheet);
+        ArgumentNullException.ThrowIfNull(page);
+        ArgumentNullException.ThrowIfNull(lookup);
+
+        string stored = page.LLiveryPageDraft.LEntryDraftNote ?? string.Empty;
+        if (stored.Trim().Length > 0)
+        {
+            sheet.Append("## ").Append(LLiveryHeader.LLiveryTextFormat(lookup("Display.Note"))).Append("\n\n")
+                .Append(stored.Replace("\r\n", "\n", StringComparison.Ordinal).Trim('\n')).Append("\n\n");
+        }
     }
 }

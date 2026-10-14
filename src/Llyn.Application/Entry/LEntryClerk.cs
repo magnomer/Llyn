@@ -8,7 +8,7 @@ public sealed class LEntryClerk
 {
     private readonly LVault _lEntryClerkVault;
     private readonly LEntryVault _lEntryClerkEntries;
-    private readonly LEtymologyVault _lEntryClerkEtymologies;
+    private readonly LAncestorVault _lEntryClerkAncestors;
     private readonly LFrequencyClerk _lEntryClerkFrequencies;
     private readonly LNoteVault _lEntryClerkNotes;
     private readonly LTombstoneVault _lEntryClerkTombstones;
@@ -51,7 +51,7 @@ public sealed class LEntryClerk
         ArgumentNullException.ThrowIfNull(revisions);
         _lEntryClerkVault = rig.LRigVault;
         _lEntryClerkEntries = rig.LRigEntries;
-        _lEntryClerkEtymologies = rig.LRigLexicon.LRigLexiconEtymologies;
+        _lEntryClerkAncestors = rig.LRigLexicon.LRigLexiconAncestors;
         _lEntryClerkFrequencies = frequencies;
         _lEntryClerkNotes = rig.LRigKeeping.LRigKeepingNotes;
         _lEntryClerkTombstones = rig.LRigKeeping.LRigKeepingTombstones;
@@ -153,7 +153,7 @@ public sealed class LEntryClerk
             identity);
         _lEntryClerkReflexes.LReflexClerkSync(
             entry.LEntryId, language, LReflexClerk.LReflexClerkReset(draft.LEntryDraftReflexes), changes, identity);
-        LEntryClerkEtymology.LEtymologyUpdate(_lEntryClerkEtymologies, entry.LEntryId, draft, changes);
+        LEntryClerkAncestor.LAncestorUpdate(_lEntryClerkAncestors, entry.LEntryId, draft, changes);
         _lEntryClerkParadigms.LParadigmClerkUpdate(entry);
 
         _lEntryClerkRevisions.LRevisionClerkRecord(changes);
@@ -230,7 +230,7 @@ public sealed class LEntryClerk
         _lEntryClerkPronunciations.LPronunciationClerkSync(id, draft.LEntryDraftPronunciations, changes, identity);
         _lEntryClerkTranscriptions.LTranscriptionClerkSync(id, draft.LEntryDraftTranscriptions, changes, identity);
         _lEntryClerkReflexes.LReflexClerkSync(id, language, draft.LEntryDraftReflexes, changes, identity);
-        LEntryClerkEtymology.LEtymologyUpdate(_lEntryClerkEtymologies, id, draft, changes);
+        LEntryClerkAncestor.LAncestorUpdate(_lEntryClerkAncestors, id, draft, changes);
 
         LEntry updated = _lEntryClerkEntries.LEntryRead(id) ?? stored;
         _lEntryClerkParadigms.LParadigmClerkUpdate(updated);

@@ -10,13 +10,13 @@ public sealed class LDraftClerk
     private readonly LDraftClerkChip _lDraftClerkChip;
     private readonly LSituationChip _lDraftClerkSituation;
     private readonly LRegisterChip _lDraftClerkRegister;
-    private readonly LDraftClerkEtymology _lDraftClerkEtymology;
     private readonly LDraftClerkGloss _lDraftClerkGloss;
     private readonly LDraftClerkMedia _lDraftClerkMedia;
     private readonly LDraftClerkMention _lDraftClerkMention;
     private readonly LDraftClerkPanel _lDraftClerkPanel;
     private readonly LDraftClerkReading _lDraftClerkReading;
     private readonly LDraftClerkReflex _lDraftClerkReflex;
+    private readonly LDraftClerkAncestor _lDraftClerkAncestor;
     private readonly LDraftClerkSentence _lDraftClerkSentence;
     private readonly LDraftClerkMint _lDraftClerkMint;
 
@@ -30,7 +30,6 @@ public sealed class LDraftClerk
         _lDraftClerkChip = new LDraftClerkChip(rig.LRigContext.LRigContextTags, identity);
         _lDraftClerkSituation = new LSituationChip(rig.LRigContext.LRigContextSituations, identity);
         _lDraftClerkRegister = new LRegisterChip(rig.LRigContext.LRigContextRegisters, identity);
-        _lDraftClerkEtymology = new LDraftClerkEtymology(rig.LRigEntries, identity);
         _lDraftClerkGloss = new LDraftClerkGloss(identity);
         _lDraftClerkMedia = new LDraftClerkMedia(
             rig.LRigCitation.LRigCitationImages,
@@ -40,6 +39,8 @@ public sealed class LDraftClerk
         _lDraftClerkPanel = new LDraftClerkPanel(rig.LRigCitation.LRigCitationAuthors, identity);
         _lDraftClerkReading = new LDraftClerkReading(languages, identity);
         _lDraftClerkReflex = new LDraftClerkReflex(languages, identity);
+        _lDraftClerkAncestor = new LDraftClerkAncestor(
+            rig.LRigEntries, rig.LRigLexicon.LRigLexiconAncestors, identity);
         _lDraftClerkSentence = new LDraftClerkSentence(rig.LRigSentence.LRigSentenceExamples, identity);
         _lDraftClerkMint = new LDraftClerkMint(identity);
     }
@@ -71,7 +72,7 @@ public sealed class LDraftClerk
             ?? LDraftClerkCard.LCardApply(content, request, _lDraftClerkIdentity)
             ?? _lDraftClerkReading.LReadingApply(content, request)
             ?? _lDraftClerkReflex.LReflexApply(content, request)
-            ?? _lDraftClerkEtymology.LEtymologyApply(content, request)
+            ?? _lDraftClerkAncestor.LAncestorApply(content, request)
             ?? LDraftListApply(content, request);
     }
 

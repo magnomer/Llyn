@@ -124,6 +124,17 @@ A `unit` element is read through `LUnitKeyParse`, so an unknown value leaves the
 A `freedom` element is read through `LFreedomKeyParse` the same way.
 A unit or freedom word the parser does not know is also reported, so the user sees it was dropped.
 The report lives here, not in the parsers, because the speech loader also calls `LUnitKeyParse`.
+An `etymology` or `etymon` element from an older file is no longer read.
+It falls to the unknown-name branch, so it is reported and the rest of the entry still loads.
+
+## `LMarkupAncestorParse`
+
+Reads one `ancestor` element, a box of the etymology map, with its key, child and position numbers.
+A number that does not read is reported and left at its default, and the box is still kept.
+So a bad child number makes the box feed the headword.
+A bad key leaves key zero.
+The resolver later omits a key of zero, so nothing with a bad key reaches the draft.
+Headword, text, language, gloss and relation are read as text, and any other child is reported.
 
 ## `LMarkupTranscriptionAdd`
 
@@ -131,11 +142,6 @@ Keeps one `transcription` element unless its scheme is blank or already read in 
 Such a row is reported and skipped, so the rest of the file still imports.
 The scheme compare is the save's, trimmed and ordinal.
 The save refuses those rows, and that refusal guards the editor, so the file is cleaned here.
-
-## `LMarkupEtymologyParse`
-
-Reads text with the spans that name an entry.
-A span carries no sense, so a `sense` child is an omission.
 
 ## `LMarkupPronunciationReader`
 
@@ -165,9 +171,15 @@ Card-level records are written by `LMarkupCardWriter`.
 ## `LMarkupEntryFormat`
 
 Writes one `entry` element with its repeated rows.
-An etymology with empty text is left out, even when it holds mentions.
 The `unit` element is left out when no unit is chosen.
 The `freedom` element follows it, left out the same way.
+
+## `LMarkupAncestorFormat`
+
+Writes one `ancestor` element with its key, and its child only when the box has one.
+The position follows, always written, then headword, text, language, gloss and relation.
+An empty text field writes nothing, so a text box carries no headword and a linked box no text.
+Boxes are written after the collocations and before the note, in list order.
 
 ## `LMarkupLocalFormat`
 
@@ -189,11 +201,11 @@ Writes empty `owned` and `main` elements when their flags are marked.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `LMarkup.cs` `f1a4662e9be0ea86`
 - `LMarkupCargo.cs` `814d8aeee9c7370b`
 - `LMarkupNode.cs` `0772124e410ccc3b`
 - `LMarkupOmission.cs` `40e39dad503436c1`
 - `LMarkupPronunciationReader.cs` `f10ade4a00de35ba`
-- `LMarkupReader.cs` `3965a6bf1dc54305`
-- `LMarkupWriter.cs` `fd2234f30a75c478`
+- `LMarkupReader.cs` `06d827f7714cb011`
+- `LMarkupWriter.cs` `1d1b519d4a2dcc43`

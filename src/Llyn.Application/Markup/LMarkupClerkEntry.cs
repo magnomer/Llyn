@@ -11,20 +11,20 @@ public sealed class LMarkupClerkEntry
     private readonly LMorphologyVault _lMarkupEntryMorphologies;
     private readonly LReflexClerk _lMarkupEntryReflexes;
     private readonly LMarkupClerkCard _lMarkupEntryCard;
-    private readonly LMarkupClerkExample _lMarkupEntryExample;
+    private readonly LMarkupClerkAncestor _lMarkupEntryAncestor;
 
-    public LMarkupClerkEntry(LRig rig, LReflexClerk reflexes, LMarkupClerkCard card, LMarkupClerkExample example)
+    public LMarkupClerkEntry(LRig rig, LReflexClerk reflexes, LMarkupClerkCard card, LMarkupClerkAncestor ancestor)
     {
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(reflexes);
         ArgumentNullException.ThrowIfNull(card);
-        ArgumentNullException.ThrowIfNull(example);
+        ArgumentNullException.ThrowIfNull(ancestor);
         _lMarkupEntryRows = rig.LRigEntries;
         _lMarkupEntrySpeeches = rig.LRigLexicon.LRigLexiconSpeeches;
         _lMarkupEntryMorphologies = rig.LRigLexicon.LRigLexiconMorphologies;
         _lMarkupEntryReflexes = reflexes;
         _lMarkupEntryCard = card;
-        _lMarkupEntryExample = example;
+        _lMarkupEntryAncestor = ancestor;
     }
 
     public LMarkupEntry? LMarkupLoad(long id)
@@ -85,44 +85,9 @@ public sealed class LMarkupClerkEntry
             _lMarkupEntryCard.LMarkupCardCreate(draft.LEntryDraftCollocations, draft.LEntryDraftMeanings),
             draft.LEntryDraftNote,
             0,
-            LMarkupEtymologyCreate(draft.LEntryDraftEtymology),
-            LMarkupEtymonCreate(draft.LEntryDraftEtymology),
             draft.LEntryDraftUnit,
-            draft.LEntryDraftFreedom);
-    }
-
-    private LMarkupEtymology? LMarkupEtymologyCreate(LEtymologyDraft etymology)
-    {
-        if (!etymology.LEtymologyDraftNarrated)
-        {
-            return null;
-        }
-
-        List<LMarkupMention> mentions = new(etymology.LEtymologyDraftMentions.Count);
-        foreach (LMentionDraft mention in etymology.LEtymologyDraftMentions)
-        {
-            LMarkupMention written = _lMarkupEntryExample.LMarkupMentionCreate(mention with { LMentionDraftSense = 0 });
-            if (written.LMarkupMentionHeadword.Length > 0)
-            {
-                mentions.Add(written);
-            }
-        }
-
-        return new LMarkupEtymology(etymology.LEtymologyDraftText, mentions);
-    }
-
-    private IReadOnlyList<LMarkupEtymon> LMarkupEtymonCreate(LEtymologyDraft etymology)
-    {
-        List<LMarkupEtymon> etymons = new(etymology.LEtymologyDraftEtymons.Count);
-        foreach (long id in etymology.LEtymologyDraftEtymons)
-        {
-            if (_lMarkupEntryRows.LEntryRead(id) is LEntry entry)
-            {
-                etymons.Add(new LMarkupEtymon(entry.LEntryHeadword, entry.LEntryLanguage));
-            }
-        }
-
-        return etymons;
+            draft.LEntryDraftFreedom,
+            _lMarkupEntryAncestor.LMarkupAncestorCreate(draft.LEntryDraftAncestors));
     }
 
     private LMarkupInflection LMarkupInflectionCreate(LInflection inflection)

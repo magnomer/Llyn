@@ -48,7 +48,7 @@ public static class LDraftClerkEquality
             && LPronunciationMatch(one.LEntryDraftPronunciations, other.LEntryDraftPronunciations)
             && LTranscriptionMatch(one.LEntryDraftTranscriptions, other.LEntryDraftTranscriptions)
             && LReflexMatch(one.LEntryDraftReflexes, other.LEntryDraftReflexes)
-            && LEntryClerkEtymology.LEtymologyMatch(one.LEntryDraftEtymology, other.LEntryDraftEtymology)
+            && LEntryClerkAncestor.LAncestorMatch(one.LEntryDraftAncestors, other.LEntryDraftAncestors)
             && string.Equals(
                 LMarkdown.LMarkdownNormalize(one.LEntryDraftNote),
                 LMarkdown.LMarkdownNormalize(other.LEntryDraftNote),

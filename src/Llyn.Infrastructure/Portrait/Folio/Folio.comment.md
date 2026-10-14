@@ -68,6 +68,7 @@ The folio reads no fold, so a folded row prints open.
 
 A band is a heading, the chips as one sound line, one row per line, then the shared body.
 The chips take the sound style because the only band chips are parts of speech and characters.
+Each line starts with its opener, so an etymology line keeps its depth dots and arrow.
 
 ### `LFolioCardAppend`
 
@@ -113,11 +114,11 @@ Spacing after a paragraph carries the panel's vertical rhythm, which the format 
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `LFolio.cs` `0a4966817b9beb2f`
 - `LFolioBody.cs` `f6b99d3695b0cd1d`
 - `LFolioBond.cs` `464c860803671ef2`
 - `LFolioLine.cs` `47a15cb22bc534ba`
 - `LFolioNote.cs` `a0a3e168b71cc3fa`
-- `LFolioSection.cs` `1ac0fe1b757c64fb`
+- `LFolioSection.cs` `4df34e40e6e3c439`
 - `LFolioStyle.cs` `8bda335bbda1784a`

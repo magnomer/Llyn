@@ -114,6 +114,11 @@ internal static class LLiveryHeader
         return WebUtility.HtmlEncode(escaped.ToString());
     }
 
+    internal static string LLiveryHtmlFormat(string text)
+    {
+        return WebUtility.HtmlEncode((text ?? string.Empty).ReplaceLineEndings(" "));
+    }
+
     internal static string LLiveryFlagFormat(string? path)
     {
         return LLiveryPictureFormat(path, "llyn-flag");

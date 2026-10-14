@@ -50,6 +50,9 @@ The tab style sets no tag, so the editor tags each tab when its strip attaches.
 So the headword stands still when the reader turns to writing.
 `Theme.Input.Bare` is a field with no frame, for writing straight over what the reading side draws.
 Its frame is drawn outward on hover and focus by `Theme.Input.Field.Bare`, so the text never moves.
+`Theme.Input.Caret` is a bare field that takes no room while it is empty and unfocused.
+`QLook` then zeroes its width and sets `Theme.Input.CaretMargin`, whose negative right side cancels the left one.
+On focus `QLook` drops both values, so the field's own width and margin return.
 `Theme.Text.Reading` collapses a reading with no text, through `QLook`.
 
 ## `PThemeNavigation`
@@ -145,10 +148,10 @@ That is because the fold is a state and not an action.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `PTheme.xaml` `80319431283b47c1`
 - `PThemeDefault.xaml` `f10311a6336a0666`
-- `PThemeInput.xaml` `d34f51cd8be0ce0b`
+- `PThemeInput.xaml` `ab744099ece5f95a`
 - `PThemeNavigation.xaml` `117b631efd938fd7`
 - `PThemePalette.xaml` `be59d4de986fccd8`
 - `PThemePanel.xaml` `ab2e3967da3cb3d9`

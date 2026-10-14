@@ -61,7 +61,8 @@ Thread thread = new(() =>
                     engine.LEngineReference,
                     engine.LEngineAuthor,
                     engine.LEngineDraft,
-                    engine.LEnginePronunciation),
+                    engine.LEnginePronunciation,
+                    engine.LEngineAncestor),
                 settings,
                 new CPhonologyBundle(
                     engine.LEngineFanqie,

@@ -102,7 +102,6 @@ A line for a sentence outside the draft is dropped, since no row shows it.
 
 Copies the engine's labels field for field, with no rule of its own.
 The label's own key names an unlinked chip, so no silent word is written here.
-The card's etymology read shares it.
 
 ## `CMentionLabel`
 

@@ -119,6 +119,6 @@ The side only passes the draft across, so it never keeps it.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `CLibrary.cs` `ede46618cd86a457`
-- `CWing.cs` `055df8485ba928fd`
+- `CWing.cs` `25aed62b0c831786`

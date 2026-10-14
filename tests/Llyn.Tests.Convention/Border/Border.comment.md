@@ -156,7 +156,7 @@ It holds the offer for `Llyn.Conduct>Llyn.ShellEngine` alone.
 No script writes this file.
 `AuditStructure.json` holds its own copy, kept in step by hand as scripts/principles.md asks.
 The border facts read it together with the other offer settings.
-Conduct names ShellEngine through 27 `L*Port` interfaces, which ShellEngine declares, and 27 other `L` types.
+Conduct names ShellEngine through 28 `L*Port` interfaces, which ShellEngine declares, and 27 other `L` types.
 Every other engine type is a helper Conduct may not name.
 Each name stands as a literal, so the ratchet can read every entry.
 
@@ -172,14 +172,14 @@ The exempt check fails when an exempt row matches no hit, so a fixed break delet
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `TAssayBorder.cs` `7a21fc1ac676ed8f`
 - `TAuditBorder.cs` `0027b680a1d1279d`
 - `TAuditBorderDrift.cs` `80233353cf79d45a`
 - `TAuditBorderLinger.cs` `e55f695a547e6456`
-- `TAuditBorderSetting.cs` `25129190db1b65a4`
+- `TAuditBorderSetting.cs` `3d8100483444c636`
 - `TAuditBorderWalker.cs` `24d841dbc314714b`
-- `TAuditDemeanorSetting.cs` `d29a8057d748b1f0`
-- `TAuditDeportmentSetting.cs` `9f2b310c69a00e16`
-- `TAuditEngineSetting.cs` `9860884e36fe09b1`
+- `TAuditDemeanorSetting.cs` `1a315fde18f2ae43`
+- `TAuditDeportmentSetting.cs` `644a84d42896a939`
+- `TAuditEngineSetting.cs` `e20f3f43dd884b28`
 - `TAuditPair.cs` `cdbe97589a6f74fb`

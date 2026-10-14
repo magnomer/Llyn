@@ -43,7 +43,6 @@ internal sealed class QDisplay
         display.CDisplayClosed += QDisplaySwath.PSwathClear;
         QLectern lectern = new(_qDisplaySurface, display, atelier, envoy);
         QDisplayLectern = lectern;
-        lectern.QLecternEtymology.QLecternEtymologyNotice += mentionMenu.QMentionOfferRefine;
         lectern.QLecternCard.QLecternMentionNotice += mentionMenu.QMentionOfferRefine;
 
         volume.QVolumeSliderAttach(_qDisplaySurface);

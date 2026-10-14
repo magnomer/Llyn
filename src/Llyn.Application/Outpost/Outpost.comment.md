@@ -261,7 +261,8 @@ It hands each answer unchanged to the `LLiveryPage` constructor, except the flag
 It builds `LLiveryPageShown` with `LParadigmClerk.LParadigmClerkCheck`, one per paradigm row in row order.
 Each check passes pending and enabled and keeps held off, since a page never holds a fill.
 That is the check the view's `LEngineParadigmCheck` makes, so both show the same row text.
-It collects every language the page names, from the draft, its reflexes, targets, usages, etymons and glosses.
+It collects every language the page names, from the draft, its reflexes, targets, usages and glosses.
+The lineage and the relation list pass through unchanged, and no lineage language is collected.
 Glosses are read from every card and every nested child card.
 It asks the flag function once per distinct language and keeps each path it answers as `LLiveryPageBanner`.
 A language the function answers null for gets no entry.
@@ -282,9 +283,9 @@ The switched, tallied and localize arguments pass unchanged to `LDiweiPageRead`,
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `LCourierClerk.cs` `eef468b0b538d2a2`
 - `LCourierLanguage.cs` `30d6bd5fcaad5e62`
 - `LCourierNote.cs` `d978ffb8d947f5b3`
 - `LCourierWarrant.cs` `f0cbd592b106bcaa`
-- `LLiveryClerk.cs` `be40808ecb01245b`
+- `LLiveryClerk.cs` `5168fadb8f47bc2e`

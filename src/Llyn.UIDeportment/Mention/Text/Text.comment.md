@@ -28,7 +28,7 @@ It draws nothing, so a change to it redraws nothing.
 ### `PMentionPiece`
 
 It is the control's only content input, so every host hands pieces and no host hands a bare text.
-A placeholder word or an etymology prose arrives as one plain piece at code point zero.
+A placeholder word arrives as one plain piece at code point zero.
 So it still reports a click.
 Null draws nothing.
 
@@ -128,7 +128,7 @@ A Sense-mode pick reads only the sense, so these rows carry no Entry.
 ## `PMentionLine`
 
 The chip line one editor row shows its Mentions on.
-A card row, the etymology field and the corpus scribe each keep one.
+A card row and the corpus scribe each keep one.
 It holds the chips alone and paints the ready chips its owner's driver built through `QMentionChip`.
 
 ### `PMentionLineRefine`
@@ -164,7 +164,7 @@ The link state is null for plain text.
 
 The conversion only copies, so the driver neither cuts nor judges a span.
 A whole text without Mentions becomes one plain run at code point zero.
-The corpus placeholder word and the etymology prose come through there, so the mention text takes only pieces.
+The corpus placeholder word comes through there, so the mention text takes only pieces.
 
 ## Stamp
 

@@ -19,7 +19,7 @@ The plus is enabled from the free verdict the last paint stored.
 So it never offers a row the engine would refuse.
 A minus goes to the remove gate, and the engine's draft bulletin takes the row off the screen.
 Lookup opens the editor's one menu under the row's own button.
-The start request carries only the row id, and the engine finds the row's scheme.
+The start request carries only the row id, and Conduct reads the row's scheme from the held draft.
 The menu opens before the search observe, so the old search closes first.
 Rows are rendered as a diff on each draft bulletin, so a row being typed into is left alone.
 The row keeps the draft's text until the draft returns with the typed one.
@@ -90,9 +90,9 @@ So readings at the same place in every source row line up.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `QNotation.cs` `a365d17064fc01b0`
 - `QNotationItem.cs` `8a72ca494c1fb157`
 - `QNotationReading.cs` `3d289fd0b9fc5b84`
-- `QTranscription.cs` `a65918dc4ef4ceba`
+- `QTranscription.cs` `9f2dc2844a058e9f`
 - `QTranscriptionCommand.cs` `3d3b1bce6453b585`

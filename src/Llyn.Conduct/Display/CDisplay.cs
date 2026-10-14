@@ -90,6 +90,7 @@ public sealed class CDisplay
             entries.CEntryBundleReference,
             entries.CEntryBundleExample,
             phonology.CPhonologyBundleSentence,
+            entries.CEntryBundleAncestor,
             settings,
             envoy);
         CDisplayRoute = new CDisplayRoute(LDisplayRule, entries.CEntryBundleMention, settings, envoy);

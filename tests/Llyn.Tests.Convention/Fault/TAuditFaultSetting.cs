@@ -13,7 +13,7 @@ internal static class TAuditFaultSetting
     public static readonly IReadOnlyDictionary<string, int> TAuditFaultCeiling = new Dictionary<string, int>
     {
         ["Llyn.Application"] = 10,
-        ["Llyn.ShellEngine"] = 19,
+        ["Llyn.ShellEngine"] = 18,
     };
 
     public static readonly string[] TAuditFaultExempt =

@@ -114,13 +114,6 @@ public sealed class CEntry
             : string.Empty;
     }
 
-    public IReadOnlyList<CTranslationTarget> CEntryEtymonRead()
-    {
-        return _cEntryDesk.CDeskDraft.CDeskDraftTenure is LTenure held
-            ? CFolio.CFolioTargetRead(new LQuillEtymology(held).LQuillEtymonRead())
-            : [];
-    }
-
     public void CEntryHeadwordSet(string text)
     {
         if (CEntryTenure is LTenure held)

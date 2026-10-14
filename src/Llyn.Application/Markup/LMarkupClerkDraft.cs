@@ -10,14 +10,17 @@ public sealed class LMarkupClerkDraft
     private readonly LSpeechVault _lMarkupDraftSpeeches;
     private readonly LMorphologyVault _lMarkupDraftMorphologies;
     private readonly LMarkupClerkLink _lMarkupDraftLink;
+    private readonly LMarkupClerkAncestor _lMarkupDraftAncestor;
 
-    public LMarkupClerkDraft(LRig rig, LMarkupClerkLink link)
+    public LMarkupClerkDraft(LRig rig, LMarkupClerkLink link, LMarkupClerkAncestor ancestor)
     {
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(link);
+        ArgumentNullException.ThrowIfNull(ancestor);
         _lMarkupDraftSpeeches = rig.LRigLexicon.LRigLexiconSpeeches;
         _lMarkupDraftMorphologies = rig.LRigLexicon.LRigLexiconMorphologies;
         _lMarkupDraftLink = link;
+        _lMarkupDraftAncestor = ancestor;
     }
 
     public LEntryDraft LMarkupDraftResolve(
@@ -107,9 +110,10 @@ public sealed class LMarkupClerkDraft
             inflections,
             entry.LMarkupEntryTranscription,
             entry.LMarkupEntryReflex,
-            _lMarkupDraftLink.LMarkupEtymologyResolve(entry, prepared, omissions),
-            entry.LMarkupEntryUnit,
-            entry.LMarkupEntryFreedom);
+            LEntryDraftUnit: entry.LMarkupEntryUnit,
+            LEntryDraftFreedom: entry.LMarkupEntryFreedom,
+            LEntryDraftAncestors: _lMarkupDraftAncestor.LMarkupAncestorResolve(
+                entry.LMarkupEntryAncestor, prepared, omissions));
     }
 
     private LSpeechValue? LMarkupSpeechResolve(string language, string name, List<LMarkupOmission> omissions)

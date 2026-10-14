@@ -1,10 +1,30 @@
 # Entry
 
 This folder holds the stores for an Entry and everything it owns.
-It covers entries with their forms and speeches, lacunae, etymology, folds, the note, queries and the draft loaders.
+It covers entries with their forms and speeches, the etymology map, lacunae, folds, the note, queries and the draft loaders.
 It stands apart from Context because these rows belong to one Entry and go with it when it is deleted.
 Every method runs inside a `LDatabaseSession`, so a caller's session around several stores gives one transaction.
 Each store binds to the workspace `database` it opens sessions through.
+
+## `LAncestorArchive`
+
+It persists the etymology map of an entry, and the relation and tongue lists the boxes draw from.
+`LAncestorSave` replaces the whole map of the entry inside one session.
+Its boxes are written breadth-first from the headword, so a child is stored before its sources.
+Each box's position is renumbered from zero among its siblings, in the order of the given positions.
+A box with no key, or a key another box holds, is refused with an exception, and nothing is written.
+So is a box that feeds a box the map lacks, or boxes that feed one another in a ring.
+The ids the store gives replace the draft ids, and the child links are rewritten to match.
+A target, tongue or relation id that no longer exists is stored as none.
+So a stale pick never fails a save.
+The table also keeps `language` empty whenever a tongue is set, by a check.
+Deleting the entry removes its boxes by cascade.
+Deleting an entry that a box links to leaves the box as text.
+The link is set to none, and the text holds the old headword.
+Deleting a tongue or a custom relation clears it on every box that holds it.
+Builtin relations are seeded by the schema and cannot be deleted.
+Creating a name already in the list changes nothing and returns the held row.
+The name match here is exact, and the clerk above it matches ignoring case.
 
 ## `LEntryArchive`
 
@@ -57,6 +77,7 @@ Only the rows linking them to this entry disappear.
 It reads a stored entry back into the `LEntryDraft` the input form saved.
 It owns no SQL of its own.
 The cards come from `LEntryLoaderCard` and the pronunciations, transcriptions and reflexes from `LEntryLoaderReading`.
+The ancestor boxes come from `LAncestorArchive`, as drafts with their stored ids.
 The draft is the shape a draft commit consumes, so a save and a load are inverses.
 Everything arrives in stored order, and the entry's lexical unit and freedom are read off the entry row.
 
@@ -76,8 +97,7 @@ Each card carries the id of the row it came from.
 So a loaded, edited and committed draft updates that row.
 A card the user adds afterwards has no id and is created.
 
-`LEntryEtymologyRead` reads both etymology shapes into one draft.
-An entry that declares no origin gives an empty draft rather than null.
+An entry with no etymology gives an empty box list rather than null.
 
 `LEntrySpeechFormat` keeps the value link and the custom name apart, and carries the name to show beside them.
 A custom row shows its text.
@@ -183,27 +203,6 @@ An empty list leaves no rows, and every row is stamped with the same fetch time.
 `LLacunaDelete` drops the rows, so a hand-edited entry is asked afresh.
 `LLacunaClear` empties them inside the caller's session.
 
-## `LEtymologyArchive`
-
-It is the workspace-database adapter for `LEtymologyVault`.
-It keeps the narrative in `etymology` with its spans in `etymology_mention`, and the links in `etymon`.
-It never decides which of the two shapes an entry keeps, which the clerk decides.
-
-`LEtymologyRead` answers `null` when the entry has no row.
-`LEtymologyEtymonRead` gives the direct links in position order.
-
-`LEtymologySave` writes the whole narrative in one transaction.
-A null or blank narrative deletes the row, and its spans go with it by cascade.
-The old row is deleted before the new one is written, so span ids are minted fresh.
-The spans are checked against the text before anything is written.
-
-`LEtymologyEtymonSet` rewrites the links as the ids given, numbering from zero.
-A zero, a repeat and the entry itself are skipped rather than refused.
-
-`LEtymologyValidate` refuses a span that names no Entry, falls outside the text, or overlaps another.
-The text is measured in code points, as the offsets are.
-The private readers and savers handle spans in offset order and delete the narrative with its spans.
-
 ## `LFoldArchive`
 
 Fold tables keep view-state marks separate from lexical rows.
@@ -258,13 +257,13 @@ So a draft handed back to the engine updates that row rather than reading as a n
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
+- `LAncestorArchive.cs` `190e9703f2a0033d`
 - `LEntryArchive.cs` `b6b08d8105ccbbba`
-- `LEntryLoader.cs` `bbb5412e621d7d71`
+- `LEntryLoader.cs` `b31b67e2a6b3587e`
 - `LEntryLoaderCard.cs` `8f7544d1b4dd3a83`
 - `LEntryLoaderReading.cs` `d637332d8f11d2c5`
 - `LEntryQueryArchive.cs` `ed0a6c5e048971e1`
-- `LEtymologyArchive.cs` `5022616c2cc1b090`
 - `LFoldArchive.cs` `f066ca03fb72b2a4`
 - `LLacunaArchive.cs` `a55a2ef1f0c5bbbf`
 - `LNoteArchive.cs` `74e55e205494b7b9`

@@ -14,12 +14,19 @@ The theme is taken once, so no push re-reads the embedded resource.
 The style import from `LLiveryMarkFormat` opens the body, since Joplin's import plugin only sees an opening import.
 The `.llyn` wrapper follows with a blank line after it, so Joplin reads the Markdown inside.
 The writers then run in view mode's order.
-  - Header, then sound, then chips, then rime, then script, then cards, then etymology.
+  - Header, then sound, then chips, then rime, then script, then cards, then etymology, then the stored note, then the stamps.
 
 Only the rime writer takes `link`, since only its chips point at reconstruction notes.
 The sound writer takes the theme, since its contour chart images carry their own colours.
 Every fixed word comes through `lookup`, and every other word is stored page data.
 `note` maps an entry id to its Joplin note id.
+
+### `LLiveryStampAppend`
+
+The stamps close the entry body, right before the closing div.
+A rule, then the created and updated stamps in one paragraph split by a backslash break.
+An empty stamp is left out, and two empty stamps write no rule.
+They live with the sheet, since they describe the stored page, not a section of the entry.
 
 ### Media passes
 
@@ -154,6 +161,11 @@ That rule is scoped to `llyn-collocations`, so every other heading keeps the pil
 Each `llyn-collocation` row is ruled from the one above.
 Its summary leads with a small chevron, pointing right while closed and down while open.
 
+### Etymology tree
+
+A `.lineage` block draws the etymology tree with the lineage rules of `LSheetCascade`, scoped under `.llyn`.
+Its colours come from the palette.
+
 ### Reconstruction notes
 
 A `llyn-vacant` span is the muted text for an empty part.
@@ -241,8 +253,8 @@ The empty cell keeps the marks in the column the characters use.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `LLiverySheet.cs` `8668bec83c78091f`
-- `LLiveryStyle.cs` `2634b6a664c70f6d`
-- `LLiveryXiesheng.cs` `d2a4e7de51e3aac9`
+Commit: `c6e60141a172`
+- `LLiverySheet.cs` `960715135a175c55`
+- `LLiveryStyle.cs` `8007253a1e6a9822`
+- `LLiveryXiesheng.cs` `7fe0c4fa2c46ae6e`
 - `LLiveryYunjing.cs` `fdb8c41af05a7c10`

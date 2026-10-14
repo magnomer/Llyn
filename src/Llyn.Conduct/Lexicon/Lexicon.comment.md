@@ -78,7 +78,7 @@ The state verdicts arrive from the engine on the value, so only the choice of ke
 
 ## `CTranslationTarget`
 
-One entry a card or an etymology links to, as its chip shows it.
+One entry a card or a mention offer links to, as its chip shows it.
 It holds the linked entry's id, headword and language.
 
 ## `CUsage`

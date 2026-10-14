@@ -86,6 +86,7 @@ The miss Refine is subscribed before the pick Observe, so each hears the press i
 ### `QSlatePickObserve`
 
 The Tag lands at the caret of the card whose Tag entry has focus, as Enter on a row does.
+The caret gate places it from its own trail, so no position is read here.
 The press is heard before focus moves, so that entry is still the one the list was opened for.
 The clerk skips a Tag the card already carries, by id or by text.
 
@@ -137,12 +138,12 @@ It follows `QFreedomItem` in everything.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `PMarkerChip.cs` `a140997f5eb7a142`
 - `PSlateItem.cs` `994494d60631fe1c`
 - `QFreedom.cs` `5a8c8788e06e7771`
 - `QFreedomItem.cs` `27469f2726afbac9`
 - `QMarker.cs` `ea44857a68abf2d6`
-- `QSlate.cs` `525de4286a88bcfa`
+- `QSlate.cs` `2387b8e70f5eec37`
 - `QUnit.cs` `65408138208702ba`
 - `QUnitItem.cs` `47f0e19bc6379784`

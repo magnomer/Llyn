@@ -236,9 +236,9 @@ The amount is written with one decimal in megabytes and as a whole number in kil
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `CAtelier.cs` `f47a17e14661cb82`
-- `CEntryBundle.cs` `bf4bf14472f5898b`
+- `CEntryBundle.cs` `558218ec80be6f8e`
 - `CEnvoy.cs` `ba575c886117535b`
 - `CPhonologyBundle.cs` `c969d9a57ef9c34d`
 - `CScreen.cs` `060eb21146468883`

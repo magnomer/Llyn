@@ -1,11 +1,10 @@
 # Leaf
 
 This folder holds the reading view's card area with the cards, their chips and example lines.
-It also holds the etymology the area reads beside them.
 
 ## `CDisplayCard`
 
-The card area reads the cards, the usages pointing at the entry and the etymology.
+The card area reads the cards, the usages pointing at the entry and the etymology map.
 It also folds or unfolds one card of the chosen entry.
 It holds no state.
 It takes the rules whole, since the shown draft and the chosen entry change after it is built.
@@ -44,10 +43,18 @@ No entry chosen answers an empty set, which keeps the cards drawable.
 `CDisplayIncomingRead` has the engine name each usage and its epithet in one read.
 Each usage maps through `COeuvre.COeuvreUsageRead`, the one map the vita's citations share.
 A refused read shows `Display.IncomingFailed` once until the user acts, and answers no usages.
-`CDisplayEtymologyRead` has the engine answer one record naming the links and saying whether a narrative or a link stands.
-Whether the narrative holds words is the etymology draft's rule, so no trim happens here.
-A refused read shows `Display.EtymologyFailed` once until the user acts.
-It answers no links, and the field then shows by its narrative alone.
+
+### `CDisplayEtymologyRead`
+
+It answers the etymology map of the shown draft as the state the editor's gate also answers.
+The map is read from the shown draft's own boxes.
+The read needs the chosen entry's id as well, since the lineage walk starts its cycle guard there.
+No shown draft or no chosen entry answers an empty state.
+The relation list is read for the relation words.
+The language choices stay empty, since the reading view offers no picker.
+The state carries the shown headword, which stands at the foot of the map.
+No box is restorable here, since the reading view edits nothing.
+A refused read shows `Display.AncestryFailed` through repaint memory and answers an empty state.
 
 ## `CLecternCard`
 
@@ -56,15 +63,6 @@ The cards of the reading view, ready to paint, with whether their sections show.
 `CLecternCardCollocated` is whether that list holds any card, which shows the Other collocations section.
 Linked collocations show inside the leaf of the top-level meaning above their home instead.
 `CLecternCardDefined` is whether the entry has a Meaning, which shows the Meaning section.
-
-## `CLecternEtymology`
-
-The etymology of the shown entry, ready to show.
-The targets are the source links whose entries still stand, named and in order.
-`CLecternEtymologyShown` is whether the field has a narrative or a link to show.
-`CLecternEtymologyNarrated` is whether the narrative holds words, which shows its read face.
-`CLecternEtymologyLinked` is whether a source link still stands, which shows the row of links.
-`CLecternEtymologyDerived` is whether the entry has an etymology at all, which shows its section.
 
 ## `CLeaf`
 
@@ -141,10 +139,9 @@ A row quoting no Example has no text to divide and no Source line.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `CDisplayCard.cs` `34833f92d482bf8e`
+Commit: `c6e60141a172`
+- `CDisplayCard.cs` `aa31921ed809e737`
 - `CLeaf.cs` `00a7c9c3e7c4b2b8`
 - `CLeafChip.cs` `d604e4f1c5b56d4f`
 - `CLeafLine.cs` `6e7cb04876fe7741`
 - `CLecternCard.cs` `4f3140b154d29b23`
-- `CLecternEtymology.cs` `0fc451bebb59080d`

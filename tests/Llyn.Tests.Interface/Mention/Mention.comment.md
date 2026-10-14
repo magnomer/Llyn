@@ -65,12 +65,12 @@ A test hands rows to check the map and the key, or a throw to check the failure 
 
 The relays for mentions and the text spans they cover.
 They build mentions and mention drafts, and resolve, divide and read the spans a test checks.
-The span finds on an etymology or example draft are relayed here too.
+The span finds on an example draft are relayed here too.
 The example read off a whole draft is relayed here too.
 Each relay is transparent.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `TInterfaceMention.cs` `7a9bb306c8c6edcc`
-- `TInterfaceMentionSpan.cs` `3e7ce9b2f62e1583`
+- `TInterfaceMentionSpan.cs` `412ff102b50a4db0`

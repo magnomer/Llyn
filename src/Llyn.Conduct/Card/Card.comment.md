@@ -4,12 +4,12 @@ Card holds the gates of the entry editor's cards, which hold meanings and colloc
 It is split by role, so each class keeps one kind of field or row.
 The gates hold the interaction only, and the draft rules live below in the Application clerks.
 `CFolio` holds the maps from engine drafts to the shapes every driver shows.
-Every gate does nothing while the desk is filling a draft, so an echoed field writes nothing back.
+Every gate that edits the draft does nothing while the desk fills it, so an echoed field writes nothing back.
 
 ## `CCard`
 
 The gates of what a card's fields ask while the user types.
-That covers translation, situation, source, register, tag and etymology fields.
+That covers translation, situation, source, register and tag fields.
 It holds only the desk and the ports it was given, and the editor owns one.
 A failed translation shows through the envoy with the ready notice the settings port reads.
 
@@ -30,7 +30,7 @@ A failed resolve shows `Input.TranslationFailed`, keeps the text as typed and of
 Enter answers the dropdown, with one whole-headword match already chosen, so one keystroke confirms it.
 Leaving links one whole-headword match without asking.
 That choice between showing and linking is the interaction this gate holds.
-A failed search or link shows `Input.TranslationFailed` and leaves the word in the entry.
+A failed search or link shows `Input.TranslationFailed` and leaves the word in the field.
 
 `CCardTranslationInsert` is the one gate for any row picked from the dropdown.
 A stored Entry id links that Entry to the card at once.
@@ -57,25 +57,14 @@ The register name goes through `CFolio.CFolioStateRead`.
 
 ### Tags, situations and registers
 
-The three typed gates are shaped alike and hold no rule of their own.
-They answer the kept text and the dropdown of stored rows that text matches.
-The field hands every change unsettled, and Enter or leaving hands the text settled.
-A card with no chip quill answers the text and no dropdown.
-For tags and registers any failure reaches the caller, and a refused search is caught lower, in `LQuillChip`.
-The held draft's language seeds the register search, so the driver passes none.
+`CCardTagRemove`, `CCardSituationRemove` and `CCardRegisterRemove` drop one chip and hold no rule of their own.
+The typed gates of those rows live in `CCaret`, which places each chip at the caret.
 
-### Citation and etymology
+### Citation
 
 `CCardCitationSet` points the sentence's citation at the Reference the engine resolves the typed title to.
 One chip quill call resolves and cites, since the order of those steps is a data rule.
 A failure shows the create failure and leaves the citation as it was.
-
-`CCardEtymologySet` defers the narrative like every typed field, so one keystroke is not one request.
-`CCardEtymologyRead` answers no chips for an empty desk and adds no failure notice.
-`CCardEtymonAdd` and `CCardMentionSave` take the raw pick, with a null id for a fresh row.
-The engine has no new Entry path for a source link or a span.
-So a null id shows `Refusal.TargetMissing` and links nothing, and the pick is never silently lost.
-`CCardMentionDelete` names entry zero over the span's whole length, and a selection inside no span sends nothing.
 
 ## `CCaret`
 
@@ -85,6 +74,11 @@ The editor builds it over its desk and its `CCard`.
 The add, settle and insert gates read the insert position from the row's trail, so the view sends none.
 A settle differs from an add only in handing the text as settled.
 With no chip quill the gates answer the text and an empty, closed dropdown.
+The situation, tag and register gates are shaped alike and hold no rule of their own.
+They answer the kept text and the dropdown of stored rows that text matches.
+The field hands every change unsettled, and Enter or leaving hands the text settled.
+Any failure of those gates reaches the caller, and a refused search is caught lower, in `LQuillChip`.
+The held draft's language seeds the register search, so the driver passes none.
 The translation gates forward to `CCard` with the trail's position, and keep that gate's failure notices.
 
 ## `CCaretTrail`
@@ -98,7 +92,7 @@ So a chip added or removed elsewhere leaves the caret before the same chip.
 When every kept id has gone, the caret falls to the row's end.
 `CCaretTrailMove` answers false when the step would leave the row, and keeps the caret.
 Its anchor is the chip right of the caret, or null at the end.
-`CCaretTrailDelete` removes the chip left of the caret for a negative step and the one right of it otherwise.
+`CCaretTrailDelete` removes the chip left of the caret for a negative step and right of it for a positive one.
 It sends nothing outside the row.
 
 ## `CCardField`
@@ -109,7 +103,7 @@ The ports and envoy serve only the sense list read.
 `CCardSenseAttach` and `CCardSenseDetach` edit the links of a collocation card and take no edit on an empty or filling desk.
 `CCardSenseRead` lists the held entry's meanings at any depth for the link picker.
 An unnamed meaning is worded `Display.Unknown`.
-A refused scan shows `Input.LoadFailed` and answers an empty list, so the picker still opens.
+A failed scan shows `Input.LoadFailed` and answers an empty list, so the picker still opens.
 
 ## `CCardList`
 
@@ -125,7 +119,7 @@ The port raises the fold bulletin, and `CEntryDraftChanged` then hands every car
 True means the port returned without throwing, not that a stored row changed.
 A draft never stored and a throwing port call both answer false, and the caller puts its chevron back.
 The verdict comes from the one call alone, with no read-back.
-A refused write shows `Fold.SaveFailed` every time, since the user acted.
+A failed write shows `Fold.SaveFailed` every time, since the user acted.
 
 The two `CCardMove` overloads are one action heard in two raw forms, so the view parses nothing.
 A drag hands a place, the index in the list `CEntryDraftChanged` last handed out.
@@ -160,10 +154,10 @@ The unit and freedom rows are worded through static port members, so no port is 
 
 The one map from an engine entry draft to the shape every driver shows.
 It is split from `CCard` since the gates and the maps change for different reasons.
-`CFolioTargetRead`, `CFolioGlossRead`, `CFolioImageRead` and `CFolioVideoRead` are shared with the lectern, repertoire and reading view.
+`CFolioTargetRead`, `CFolioGlossRead`, `CFolioImageRead` and `CFolioVideoRead` are shared with the reading view, repertoire and mention map.
 `CFolioEntryRead` receives link targets keyed by card and folded card ids from one store read.
-It also receives image addresses through `media`, and the meaning scan.
-So each card carries its links, fold and pictures ready.
+It also receives picture and video addresses through `media`, and the meaning scan.
+So each card carries its links, fold and media ready.
 
 `CFolioStateRead` carries the engine's text and verdicts, so no driver judges a state.
 The empty text for a value with nothing legible is the engine's own, so the map keeps no fallback.
@@ -174,7 +168,7 @@ Only the collocation sheet passes `expressed` as true, so a meaning card shows i
 A card's situation link carries no media, so its picture and video lists stay empty.
 Links join the linked sense ids to `senses`, so a link to a vanished meaning is dropped.
 A linked meaning carries depth zero, since the chip shows only its name and path.
-Fold state comes from `folds`, while fold eligibility comes from the card draft's stored rule.
+Fold state comes from `folds`, while fold eligibility comes from `LCardDraftStored`, true for a stored card.
 
 `CFolioOrderRead` is the one order, by the engine's position with ties kept in the engine's order.
 The sheet map, the place map, the reading view and the contents share it, so those paths agree.
@@ -189,17 +183,6 @@ A sentence row with no example yet words the empty text, so its field shows the 
 Images and videos carry the engine's empty verdict, so a reading card folds a picture nobody located.
 The address or screen comes from `media`, and videos carry the moments the engine reads from the span.
 The engine settles what may be reached, and the map only hands it the plain text.
-
-## `CImage` and `CVideo`
-
-The picture and video rows of the held draft's cards.
-They keep no state, so the editor and the playwright each build them fresh over their desk.
-Typed locations and spans are deferred like every typed field.
-Add under a Situation's rows passes a null card, which Conduct maps to the engine's card 0.
-So the driver never sends a magic id.
-The row lands after the rows held.
-A chosen file is sent at once rather than deferred, and a cancelled dialog hands null and sends nothing.
-Remove needs no card, since the engine finds the card holding the row.
 
 ## `CSentence`
 
@@ -218,7 +201,7 @@ A typed title is `CCard.CCardCitationSet`'s action instead.
 Gloss text is deferred, a gloss language pick is sent at once, and the engine picks a new gloss's language.
 
 `CSentenceMentionAdd` takes the raw pick, and a null id shows `Refusal.TargetMissing` and links nothing.
-Null no longer means silence, since a fresh pick and a silence are different user actions.
+Null never means silence, since a fresh pick and a silence are different user actions.
 The span rule and request are ShellEngine's, shared with the corpus transcript's gate.
 `CSentenceSilenceSet` has its own gate.
 So Conduct maps the silence to the engine's Entry 0, and the driver never sends it.
@@ -243,13 +226,13 @@ Its lists are empty when none are known.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `CCard.cs` `d8994356f833f832`
+Commit: `c6e60141a172`
+- `CCard.cs` `66120c7195823368`
 - `CCardField.cs` `1c45a2b59a846aaf`
-- `CCardList.cs` `672d5101b0d437b9`
+- `CCardList.cs` `676fda163fb37d36`
 - `CCardSpeech.cs` `662538c4d0cc794c`
-- `CFolio.cs` `f01e3dd62cd8856c`
-- `CImage.cs` `3945020400f272c3`
+- `CCaret.cs` `6482e300cee4c1b7`
+- `CCaretTrail.cs` `0ac8e0459942d0a7`
+- `CFolio.cs` `9146a2e633f8019f`
 - `CSentence.cs` `b12bafb3bfc396ed`
 - `CSentenceFrame.cs` `dcb9e108a9b63eb9`
-- `CVideo.cs` `9a6acb191ec7945e`

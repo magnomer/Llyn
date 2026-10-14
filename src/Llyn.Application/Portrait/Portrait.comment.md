@@ -34,7 +34,7 @@ Every private scan throws on a failing read.
 
 ## `LPortraitClerkCard`
 
-The card-side sections of the entry page: the meaning and collocation bands, the incoming links and the note.
+The card-side sections of the entry page: the meaning and collocation bands, the etymology, the incoming links and the note.
 
 ### `LPortraitBandAdd`
 
@@ -46,10 +46,18 @@ One usage row per entry that translates into this one, each linking back to its 
 
 ### `LPortraitEtymologyAdd`
 
-Adds the etymology band, the narrative as a line and its spans as links.
-A linked etymology shows its source entries as links and no line.
-An etymology with nothing to show adds no band.
-The private overload adds one resolved target once, skipping an id no read could resolve.
+The etymology band, added only when the entry has an ancestor.
+It carries the tree as `LPortraitSectionLineage` and the same tree as an outline in its lines.
+The first line is the headword, then one line per etymon, depth first, siblings in their stored position order.
+Each line's label is the relation.
+Its text is language, word and quoted gloss, and an empty part leaves no gap.
+Its opener is one `· ` per level below the roots, then `↑`.
+A box borrowed from a linked entry's own map takes `⇡` instead.
+Visible dots stand in for indentation because Markdown strips leading spaces and reads four as code.
+Word and Markdown draw these lines as any band's lines.
+The sheet pairs the lines after the first with the tree's boxes in that order.
+It takes each box's relation from its line.
+A linked etymon also adds one link, once per word and language.
 
 ### `LPortraitNoteAdd`
 
@@ -125,7 +133,7 @@ It composes no page itself, so the entry page and the catalog pages share it.
 
 The catalog overload sends a PDF through the press as rendered sheet HTML, with every collocation row open.
 Every other format is saved through the portrait port.
-The entry overload reads the Livery page beside the portrait page.
+The entry overload takes the Livery page beside the portrait page.
 HTML is saved through the portrait port's entry sheet, and PDF prints that same sheet through the press.
 The HTML keeps the stored row folds.
 The PDF opens every row first through `LPortraitPage.LPortraitPageOpen`, since paper cannot unfold one.
@@ -161,9 +169,9 @@ HTML is the default.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `LPortraitClerk.cs` `eb575a3acb3e5217`
-- `LPortraitClerkCard.cs` `8c5336f3ebd775ec`
+Commit: `c6e60141a172`
+- `LPortraitClerk.cs` `34c2d6ec5d6de04c`
+- `LPortraitClerkCard.cs` `4fb506393af6c1af`
 - `LPortraitClerkCrest.cs` `e60a2a1605f5294c`
 - `LPortraitClerkLabel.cs` `2d3cf92501455e97`
 - `LPortraitClerkPress.cs` `f9f3944e31e417f1`

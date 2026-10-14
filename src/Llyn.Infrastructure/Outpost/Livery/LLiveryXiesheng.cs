@@ -75,7 +75,7 @@ internal static class LLiveryXiesheng
             }
         }
 
-        return "<span class=\"llyn-stem\">" + LLiveryEtymology.LLiveryAnchorFormat(character, id, note) + "</span>";
+        return "<span class=\"llyn-stem\">" + LLiveryLink.LLiveryAnchorFormat(character, id, note) + "</span>";
     }
 
     internal static void LLiveryEntryAppend(
@@ -97,7 +97,7 @@ internal static class LLiveryXiesheng
         foreach (LEntry entry in entries)
         {
             sheet.Append("- ")
-                .Append(LLiveryEtymology.LLiveryLinkFormat(entry.LEntryHeadword, entry.LEntryId, note)).Append('\n');
+                .Append(LLiveryLink.LLiveryLinkFormat(entry.LEntryHeadword, entry.LEntryId, note)).Append('\n');
         }
 
         sheet.Append('\n');

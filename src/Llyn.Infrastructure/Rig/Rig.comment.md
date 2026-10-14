@@ -88,14 +88,14 @@ Cambridge and some Wiktionary edge caches reject requests without a browser-like
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `LRigFactory.cs` `413643bc53c82c1b`
 - `LRigFactoryAsset.cs` `1b0e0e9d6cf95305`
 - `LRigFactoryCitation.cs` `df638484473ad0ef`
 - `LRigFactoryContext.cs` `e3d3902dfb5cc9d9`
 - `LRigFactoryDraft.cs` `dce49fea44c85c7d`
 - `LRigFactoryKeeping.cs` `d2b3c98cc215a0a2`
-- `LRigFactoryLexicon.cs` `3611aceaf4aa85c7`
+- `LRigFactoryLexicon.cs` `222aad69e5594ba2`
 - `LRigFactorySentence.cs` `476cf0db15cd6c04`
 - `LRigFactorySound.cs` `d903e45a869d5e10`
 - `LRigFactorySource.cs` `53b6af5940676cc4`

@@ -17,8 +17,6 @@ internal sealed class QProspect
 
     private readonly QSentence _qProspectSentence;
 
-    private CCard _cCard = null!;
-
     private CCaret _cCaret = null!;
 
     private CSentence _cSentence = null!;
@@ -40,9 +38,8 @@ internal sealed class QProspect
 
     private Border QProspectContents => QContract.QContractFind<Border>(_qProspectSurface, "PContents");
 
-    internal void QProspectIntroduce(CCard card, CCaret caret, CSentence sentence, QLink link)
+    internal void QProspectIntroduce(CCaret caret, CSentence sentence, QLink link)
     {
-        _cCard = card;
         _cCaret = caret;
         _cSentence = sentence;
         _qProspectLink = link;
@@ -117,10 +114,6 @@ internal sealed class QProspect
                 }
 
                 return;
-            case TextBox { DataContext: PEtymon caret }:
-                _cCard.CCardEtymonAdd(item.PProspectItemId);
-                QEtymologyEditor.QEtymologyCaretRefine(caret);
-                break;
             case TextBox { DataContext: PSentence row } box:
                 if (_qProspectSentence.QSentenceCardFind(row) is PCard card)
                 {
@@ -173,9 +166,7 @@ internal sealed class QProspect
 
     internal void QProspectKeyObserve(object sender, KeyEventArgs e)
     {
-        if (e.Key != Key.Enter
-            || sender is not FrameworkElement { DataContext: PCaret<QLinkChip> row }
-            || _qProspectLink.QLinkCardFind(row) is not PCard card)
+        if (e.Key != Key.Enter)
         {
             return;
         }
@@ -185,11 +176,25 @@ internal sealed class QProspect
             return;
         }
 
-        _cCaret.CCaretTranslationInsert(
-            card.PCardId, item.PProspectItemId, item.PProspectItemHeadword, item.PProspectItemLanguage);
-        e.Handled = true;
-        QProspectShutRefine();
-        row.PCaretClear();
+        switch (sender)
+        {
+            case FrameworkElement { DataContext: PCaret<QLinkChip> row }:
+                if (_qProspectLink.QLinkCardFind(row) is PCard card)
+                {
+                    _cCaret.CCaretTranslationInsert(
+                        card.PCardId, item.PProspectItemId, item.PProspectItemHeadword, item.PProspectItemLanguage);
+                    e.Handled = true;
+                    QProspectShutRefine();
+                    row.PCaretClear();
+                }
+
+                return;
+            case TextBox box:
+                PMentionCommand.PMentionCommandPick.Execute(item.PProspectItemId, box);
+                e.Handled = true;
+                QProspectShutRefine();
+                return;
+        }
     }
 
     internal void QProspectPlaceRefine(FrameworkElement anchor, Rect place)

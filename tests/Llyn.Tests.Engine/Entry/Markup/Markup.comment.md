@@ -1,7 +1,7 @@
 # Markup
 
 This folder holds the tests of markup import and export of entries.
-They cover cargo, the intake clerk, etymology, links, merge, references, replace and targets.
+They cover cargo, the intake clerk, the etymology map, links, merge, references, replace and targets.
 
 ## `TMarkupCargo.cs`
 
@@ -15,7 +15,7 @@ Two intakes on one target are refused, since the second write would erase the fi
 A Replace and a Merge on one entry make the refusal about the target and not the mode.
 What the read skipped rides in the cargo and comes out of the import unchanged.
 The whole import report stops at the omission ceiling and ends with one `...` row.
-Each unknown `origin` is a read row and each unlinked `etymon` an import row.
+Each unknown `origin` is a read row and each inflection with an unknown morphology an import row.
 The first case passes the read cap too, so the two caps must not leave two `...` rows.
 The second case stays under the read cap, so only the outcome clamp can stop the list.
 
@@ -25,22 +25,20 @@ It covers the markup intake clerk composed over a real rig.
 Two linked entries parsed from markup, imported and loaded back format to the same markup.
 `TMarkupIntakeCreate` makes one fresh intake per parsed entry.
 
-## `TMarkupEtymology.cs`
+## `TMarkupAncestor.cs`
 
-It covers the etymology crossing a markup file.
+It covers the etymology map crossing a markup file.
 That is what the writer emits, what the reader resolves, and the round trip.
-The narrative travels with its spans, each naming its entry by headword and language and no sense.
-Only the stored shape is written, with links in stored order.
-A file may carry both shapes, and the engine stores the narrative alone.
-A link the workspace cannot resolve is dropped and named.
-A span past the text, a span naming no entry, and a sense on a span are each reported.
-Merge never overwrites what the entry already says about its origin.
-An exported entry read back as new carries the same text and the same span.
-`TEtymologyExport` writes the entry to a file and hands back the parsed record beside the text.
-A test may then assert on either.
-`TEtymologyImport` wraps one entry body in a file and imports it as new.
-`TEtymologyProseSave` stores a narrative with one span through the request flow.
-`TEtymologySourceSave` stores the linked shape, each source appended after the last.
+Each Ancestor box is written with its key, its child's key, its position and its relation by name.
+A box linked to an entry carries that entry's headword and language.
+A text box carries its text, language and gloss.
+An exported entry read back as new stores the same tree shape.
+The shape compare ignores the row keys, since the import mints new ones.
+The old `<etymon>` and `<etymology>` elements still read.
+The import loads the entry, stores no box, and reports one omission for each element.
+A link the workspace cannot resolve keeps its headword as the box text and reports one omission.
+`TMarkupAncestorSave` stores one map of three boxes, and `TMarkupAncestorExport` hands back the parsed record beside the text.
+`TMarkupAncestorRead` reads the map as the store gives it back.
 
 ## `TMarkupExporting.cs`
 
@@ -151,11 +149,11 @@ The counts are what a replacement would drop, nested cards included.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `TMarkupCargo.cs` `026cdcc245dabbfc`
+Commit: `c6e60141a172`
+- `TMarkupAncestor.cs` `64b1d4fafbcd9164`
+- `TMarkupCargo.cs` `4d32e994f2b00697`
 - `TMarkupClerkImporting.cs` `9bb3ac18987a3b9b`
-- `TMarkupEtymology.cs` `fbcd097c4eebf1c7`
-- `TMarkupExporting.cs` `2be8cb426b7007e7`
+- `TMarkupExporting.cs` `21b4ed675ba53237`
 - `TMarkupImporting.cs` `8d86de7909f3b53d`
 - `TMarkupLink.cs` `3c865b1d6a8a9897`
 - `TMarkupMerge.cs` `1334450da1c9ffff`

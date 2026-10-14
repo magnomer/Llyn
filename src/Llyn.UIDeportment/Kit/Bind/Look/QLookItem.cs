@@ -66,15 +66,42 @@ internal static class QLookItem
         Func<QLookItemDraft, QLookItemRow> create,
         Func<QLookItemRow, QLookItemDraft, QLookItemRow> update)
     {
+        QLookItemShow(rows, drafts, (row, draft) => key(row) == id(draft), row => key(row) is null, create, update);
+    }
+
+    internal static void QLookItemShow<QLookItemRow, QLookItemDraft>(
+        ObservableCollection<QLookItemRow> rows,
+        IReadOnlyList<QLookItemDraft> drafts,
+        Func<QLookItemRow, string?> key,
+        Func<QLookItemDraft, string> id,
+        Func<QLookItemDraft, QLookItemRow> create,
+        Func<QLookItemRow, QLookItemDraft, QLookItemRow> update)
+    {
+        QLookItemShow(
+            rows,
+            drafts,
+            (row, draft) => string.Equals(key(row), id(draft), StringComparison.Ordinal),
+            row => key(row) is null,
+            create,
+            update);
+    }
+
+    private static void QLookItemShow<QLookItemRow, QLookItemDraft>(
+        ObservableCollection<QLookItemRow> rows,
+        IReadOnlyList<QLookItemDraft> drafts,
+        Func<QLookItemRow, QLookItemDraft, bool> paired,
+        Func<QLookItemRow, bool> kept,
+        Func<QLookItemDraft, QLookItemRow> create,
+        Func<QLookItemRow, QLookItemDraft, QLookItemRow> update)
+    {
         List<QLookItemRow> shown = [];
         bool[] taken = new bool[rows.Count];
         foreach (QLookItemDraft draft in drafts)
         {
-            long wanted = id(draft);
             int found = -1;
             for (int index = 0; index < rows.Count && found < 0; index++)
             {
-                if (!taken[index] && key(rows[index]) == wanted)
+                if (!taken[index] && paired(rows[index], draft))
                 {
                     found = index;
                 }
@@ -94,7 +121,7 @@ internal static class QLookItem
         int next = 0;
         foreach (QLookItemRow row in standing)
         {
-            if (key(row) is null)
+            if (kept(row))
             {
                 continue;
             }

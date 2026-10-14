@@ -65,6 +65,7 @@ The slate driver is held too, since it finds its card through this one and canno
 ### `QLabelShow`
 
 The caret knows only chips, so this driver is the one place a Tag draft is read.
+The anchor comes from Conduct's caret trail, so the entry stands where the trail placed it.
 
 ### `QLabelTextObserve`
 
@@ -79,10 +80,12 @@ It never trims or checks the text, since the clerk owns that rule.
 ### `QLabelEraseObserve`
 
 The key is taken at the edge even with no chip there.
+The deletion is requested from the caret trail, which finds the chip and removes it.
 
 ### `QLabelCaretRefine`
 
-The arrows only walk the empty entry past a chip and ask no gate.
+The arrows ask the caret trail to step past a chip, and the screen only redraws the anchor it names.
+A refused step reports no move, so the key falls through to the box.
 
 ### `QLabelBlurRefine`
 
@@ -108,9 +111,9 @@ It answers null when no shown card holds the chip or caret.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c6e60141a172`
 - `PCategoryItem.cs` `71ea20d738839356`
 - `PLabelChip.cs` `3c01944c105038fd`
 - `PLabelSelector.cs` `60d91ff153e11579`
 - `QCategory.cs` `f15ccd018c275318`
-- `QLabel.cs` `37e2970d28fb1233`
+- `QLabel.cs` `9f2004ac8e710a60`
