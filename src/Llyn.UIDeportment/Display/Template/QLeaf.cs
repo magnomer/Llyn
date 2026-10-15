@@ -1,0 +1,281 @@
+using System;
+using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Media;
+
+namespace Llyn.UIDeportment;
+
+internal static class QLeaf
+{
+    internal static void QLeafCardRefine(FrameworkElement container, object item, string? _)
+    {
+        if (item is not QLeafItem card)
+        {
+            return;
+        }
+
+        if (QLook.QLookPartFind<TextBlock>(container, "PCardRank") is TextBlock rank)
+        {
+            rank.Text = card.QLeafItemRank;
+        }
+
+        if (QLook.QLookPartFind<TextBlock>(container, "PCardTitle") is TextBlock heading)
+        {
+            heading.Text = card.QLeafItemTitle;
+            heading.Visibility = QLook.QLookVisibleRead(card.QLeafItemTitled);
+        }
+
+        if (QLook.QLookPartFind<TextBlock>(container, "PCardCaption") is TextBlock caption)
+        {
+            caption.Visibility = QLook.QLookVisibleRead(!card.QLeafItemTitled && !card.QLeafItemFolded);
+        }
+
+        if (QLook.QLookPartFind<TextBlock>(container, "PCardPeek") is TextBlock peek)
+        {
+            peek.Text = card.QLeafItemPeek;
+            peek.Visibility = QLook.QLookVisibleRead(!card.QLeafItemTitled && card.QLeafItemFolded);
+        }
+
+        QCardFold.QCardFoldRefine(container, card.QLeafItemFolded, card.QLeafItemStored);
+
+        if (QLook.QLookPartFind<TextBlock>(container, "PCardMeaning") is TextBlock meaning)
+        {
+            meaning.Text = card.QLeafItemMeaning;
+            meaning.Visibility = QLook.QLookVisibleRead(card.QLeafItemDefined);
+        }
+
+        QLeafBodyRefine(container, card);
+        if (QLook.QLookPartFind<TextBlock>(container, "PCardHeading") is TextBlock homes)
+        {
+            homes.Text = card.QLeafItemHeading;
+            homes.Visibility = QLook.QLookVisibleRead(card.QLeafItemHome.Count > 0);
+        }
+
+        QLeafListRefine(container, "PCardHome", card.QLeafItemHome, QLeafRowRefine);
+        QLeafListRefine(container, "PCardSee", card.QLeafItemSee, QLeafSeeRefine);
+    }
+
+    internal static void QLeafRowRefine(FrameworkElement container, object item, string? _)
+    {
+        if (item is not QLeafItem row)
+        {
+            return;
+        }
+
+        QCardFold.QCardFoldRefine(container, row.QLeafItemFolded, row.QLeafItemStored);
+        if (QLook.QLookPartFind<TextBlock>(container, "PCardPhrase") is TextBlock phrase)
+        {
+            phrase.Text = row.QLeafItemPhrase;
+        }
+
+        if (QLook.QLookPartFind<TextBlock>(container, "PCardMeaning") is TextBlock meaning)
+        {
+            meaning.Text = row.QLeafItemMeaning;
+            meaning.Visibility = QLook.QLookVisibleRead(row.QLeafItemDefined);
+            meaning.TextWrapping = QLook.QLookFirstRead(row.QLeafItemFolded, TextWrapping.NoWrap, TextWrapping.Wrap);
+        }
+
+        if (QLook.QLookPartFind<ItemsControl>(container, "PCardFlag") is ItemsControl flags)
+        {
+            flags.ItemsSource = row.QLeafItemFlag;
+            flags.Visibility = QLook.QLookVisibleRead(row.QLeafItemFolded && row.QLeafItemFlag.Count > 0);
+            QLookItem.QLookItemAttach(flags, QLeafFlagRefine);
+        }
+
+        if (QLook.QLookPartFind<TextBlock>(container, "PCardCount") is TextBlock count)
+        {
+            count.Text = row.QLeafItemExample;
+            count.Visibility = QLook.QLookVisibleRead(row.QLeafItemFolded && row.QLeafItemQuoted);
+        }
+
+        if (QLook.QLookPartFind<TextBlock>(container, "PCardAlso") is TextBlock also)
+        {
+            also.Text = row.QLeafItemAlso;
+            also.Visibility = QLook.QLookVisibleRead(row.QLeafItemFolded && row.QLeafItemShared);
+        }
+
+        QLeafBodyRefine(container, row);
+    }
+
+    private static void QLeafBodyRefine(FrameworkElement container, QLeafItem card)
+    {
+        if (QLook.QLookPartFind<ContentControl>(container, "PCardContents") is not ContentControl body)
+        {
+            return;
+        }
+
+        body.Content = card;
+        QLeafListRefine(body, "PCardSituation", card.QLeafItemSituation, QLeafSituationRefine);
+        QLeafListRefine(body, "PCardRegister", card.QLeafItemRegister, QLeafRegisterRefine);
+        QLeafListRefine(body, "PCardTag", card.QLeafItemTag, QLeafTagRefine);
+        if (QLook.QLookPartFind<ItemsControl>(body, "PCardTranslation") is ItemsControl translation)
+        {
+            translation.ItemsSource = card.QLeafItemTranslation;
+            translation.Visibility = QLook.QLookVisibleRead(card.QLeafItemTranslation.Count > 0);
+            if (card.QLeafItemSituation.Count == 0)
+            {
+                translation.SetResourceReference(FrameworkElement.MarginProperty, "Theme.Card.ChipMargin");
+            }
+            else
+            {
+                translation.ClearValue(FrameworkElement.MarginProperty);
+            }
+
+            QLookItem.QLookItemAttach(translation, QLeafLinkRefine);
+        }
+
+        if (QLook.QLookPartFind<Border>(body, "PCardExample") is Border example)
+        {
+            example.Visibility = QLook.QLookVisibleRead(card.QLeafItemSentence.Count > 0);
+        }
+
+        if (QLook.QLookPartFind<ItemsControl>(body, "PCardSentence") is ItemsControl sentences)
+        {
+            sentences.ItemsSource = card.QLeafItemSentence;
+            QLookItem.QLookItemAttach(sentences, QLeafSentenceRefine);
+        }
+
+        if (QLook.QLookPartFind<ItemsControl>(body, "PCardImage") is ItemsControl images)
+        {
+            images.ItemsSource = card.QLeafItemImage;
+            QLookItem.QLookItemAttach(images, QImageItem.QImageItemApply);
+        }
+
+        if (QLook.QLookPartFind<ItemsControl>(body, "PCardVideo") is ItemsControl videos)
+        {
+            videos.ItemsSource = card.QLeafItemVideo;
+            QLookItem.QLookItemAttach(videos, QVideoItem.QVideoItemApply);
+        }
+    }
+
+    private static void QLeafListRefine<QLeafRow>(
+        FrameworkElement body,
+        string name,
+        IReadOnlyList<QLeafRow> rows,
+        Action<FrameworkElement, object, string?> fill)
+    {
+        if (QLook.QLookPartFind<ItemsControl>(body, name) is not ItemsControl list)
+        {
+            return;
+        }
+
+        list.ItemsSource = rows;
+        list.Visibility = QLook.QLookVisibleRead(rows.Count > 0);
+        QLookItem.QLookItemAttach(list, fill);
+    }
+
+    private static void QLeafSeeRefine(FrameworkElement container, object item, string? _)
+    {
+        if (item is QLeafSee see && QLook.QLookPartFind<TextBlock>(container, "PCardSeeLabel") is TextBlock label)
+        {
+            label.Text = see.QLeafSeeText;
+        }
+    }
+
+    private static void QLeafSentenceRefine(FrameworkElement container, object item, string? _)
+    {
+        if (item is not QLeafLine line)
+        {
+            return;
+        }
+
+        TextBlock? frame = QLook.QLookPartFind<TextBlock>(container, "PExampleFrame");
+        if (frame is not null)
+        {
+            frame.Text = line.QLeafLineHead;
+        }
+
+        if (QLook.QLookPartFind<QMention>(container, "PExampleText") is not QMention text)
+        {
+            return;
+        }
+
+        text.QMentionSentence = line.QLeafLineSentence;
+        text.QMentionPieces = line.QLeafLinePiece;
+        if (frame is not null)
+        {
+            MultiBinding margin = new() { Converter = new QFontConverter() };
+            margin.Bindings.Add(new Binding(nameof(TextBlock.FontFamily)) { Source = frame });
+            margin.Bindings.Add(new Binding(nameof(TextBlock.FontSize)) { Source = frame });
+            margin.Bindings.Add(new Binding(nameof(QMention.FontFamily)) { Source = text });
+            margin.Bindings.Add(new Binding(nameof(QMention.FontSize)) { Source = text });
+            text.SetBinding(FrameworkElement.MarginProperty, margin);
+        }
+
+        if (QLook.QLookPartFind<TextBlock>(container, "PExampleCitation") is TextBlock citation)
+        {
+            citation.Text = line.QLeafLineCitation;
+            citation.SetBinding(
+                FrameworkElement.MarginProperty, new Binding(nameof(QMention.Margin)) { Source = text });
+            citation.SetBinding(
+                TextBlock.FontFamilyProperty, new Binding(nameof(QMention.FontFamily)) { Source = text });
+            citation.SetBinding(
+                TextBlock.FontSizeProperty, new Binding(nameof(QMention.FontSize)) { Source = text });
+        }
+
+        if (QLook.QLookPartFind<ItemsControl>(container, "PExampleGloss") is ItemsControl gloss)
+        {
+            gloss.ItemsSource = line.QLeafLineGloss;
+            QLookItem.QLookItemAttach(gloss, QRendition.QRenditionRowApply);
+        }
+    }
+
+    private static void QLeafFlagRefine(FrameworkElement container, object item, string? _)
+    {
+        if (item is ImageSource flag && QLook.QLookPartFind<Image>(container, "PCardEnsign") is Image ensign)
+        {
+            ensign.Source = flag;
+        }
+    }
+
+    private static void QLeafSituationRefine(FrameworkElement container, object item, string? _)
+    {
+        if (item is QLeafChip situation
+            && QLook.QLookPartFind<TextBlock>(container, "PSituationTitle") is TextBlock title)
+        {
+            title.Text = situation.QLeafChipText;
+        }
+    }
+
+    private static void QLeafRegisterRefine(FrameworkElement container, object item, string? _)
+    {
+        if (item is QLeafChip register
+            && QLook.QLookPartFind<TextBlock>(container, "PRegisterLabel") is TextBlock label)
+        {
+            label.Text = register.QLeafChipText;
+        }
+    }
+
+    private static void QLeafTagRefine(FrameworkElement container, object item, string? _)
+    {
+        if (item is QLeafChip tag && QLook.QLookPartFind<TextBlock>(container, "PTagLabel") is TextBlock label)
+        {
+            label.Text = tag.QLeafChipText;
+        }
+    }
+
+    private static void QLeafLinkRefine(FrameworkElement container, object item, string? _)
+    {
+        if (item is not QLinkChip chip)
+        {
+            return;
+        }
+
+        if (QLook.QLookPartFind<Image>(container, "PLinkFlag") is Image flag)
+        {
+            flag.Source = chip.QLinkChipFlag;
+        }
+
+        if (QLook.QLookPartFind<TextBlock>(container, "PLinkHeadword") is TextBlock headword)
+        {
+            headword.Text = chip.QLinkChipHeadword;
+        }
+
+        if (QLook.QLookPartFind<TextBlock>(container, "PLinkLanguage") is TextBlock language)
+        {
+            language.Text = chip.QLinkChipLanguage;
+        }
+    }
+}

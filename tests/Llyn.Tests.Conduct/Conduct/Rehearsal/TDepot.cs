@@ -44,7 +44,9 @@ public sealed class TDepot
         await depot.CDepotExport(1, TEnvoyFake.TEnvoyCreate(false, asked));
 
         Assert.Equal(["Deck.ExportFailed"], asked);
-        Assert.Equal([new CDepotState(false, string.Empty), new CDepotState(false, string.Empty)], shown);
+        Assert.Equal(
+            [new CDepotState(false, engine.TEngineTextRead("Deck.Exporting")), new CDepotState(false, string.Empty)],
+            shown);
     }
 
     [Fact]
@@ -74,9 +76,9 @@ public sealed class TDepot
         Assert.Equal(
             TDepotFolder,
             atelier.CAtelierLedger.CLedgerDepotSave(TDepotFolder, TEnvoyFake.TEnvoyCreate(false, [])));
-        LDeckOutlet port = new(engine);
-        long deck = port.LEngineDeckCreate("Banks", null, LGrain.LGrainEntry);
-        port.LEngineCueCreate(deck, [TInterface.TCueCellCreate(LCueColumn.LCueColumnText, 1, "bank")]);
+        LDeckOutlet port = TInterface.TDeckOutletCreate(engine);
+        long deck = port.TEngineDeckCreate("Banks", null, LGrain.LGrainEntry);
+        port.TEngineCueCreate(deck, [TInterface.TCueCellCreate(LCueColumn.LCueColumnText, 1, "bank")]);
         return deck;
     }
 }

@@ -130,13 +130,13 @@ The order of the spread is load-bearing, since a later row wins on the same part
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `2f9a06b8eb95`
 - `QLook.cs` `5175b5af4fad7616`
 - `QLookControl.cs` `f8e1fe06320adcd7`
 - `QLookCue.cs` `6b9a3fd8e550a325`
 - `QLookDisplay.cs` `17249a7d68d91dee`
 - `QLookInput.cs` `317591fa67165b39`
 - `QLookItem.cs` `7b4cd30d0e67e04f`
-- `QLookSheet.cs` `ab30b22de94aff93`
+- `QLookSheet.cs` `3a3b88410d4a3703`
 - `QLookSound.cs` `369c1c12b487a6e6`
 - `QLookValue.cs` `e4dda57669786dd7`

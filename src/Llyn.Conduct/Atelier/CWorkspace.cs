@@ -26,6 +26,10 @@ public sealed class CWorkspace
 
     private Exception? _cWorkspaceUnshown;
 
+    private Action<Exception>? _cWorkspaceReadFailure;
+
+    private Exception? _cWorkspaceReadUnshown;
+
     internal CWorkspace(CAtelier atelier)
     {
         ArgumentNullException.ThrowIfNull(atelier);
@@ -102,6 +106,19 @@ public sealed class CWorkspace
             _cWorkspaceUnshown = exception;
         });
         posture.LPostureSaveFailed += _cWorkspaceFailure;
+
+        posture.LPostureReadFailed -= _cWorkspaceReadFailure;
+        _cWorkspaceReadFailure = exception => marshal(() =>
+        {
+            if (_cWorkspaceEnvoy is CEnvoy envoy)
+            {
+                envoy.CEnvoyFailureShow("Layout.ReadFailed");
+                return;
+            }
+
+            _cWorkspaceReadUnshown = exception;
+        });
+        posture.LPostureReadFailed += _cWorkspaceReadFailure;
     }
 
     internal void LWorkspaceOpen(CWorkspaceState state, CEnvoy envoy)
@@ -114,6 +131,12 @@ public sealed class CWorkspace
         {
             _cWorkspaceUnshown = null;
             envoy.CEnvoyFailureShow("Layout.SaveFailed");
+        }
+
+        if (_cWorkspaceReadUnshown is not null)
+        {
+            _cWorkspaceReadUnshown = null;
+            envoy.CEnvoyFailureShow("Layout.ReadFailed");
         }
 
         if (!_cWorkspaceHeard)
@@ -190,6 +213,7 @@ public sealed class CWorkspace
         }
 
         _cWorkspaceAtelier.CAtelierPosture.LPostureSaveFailed -= _cWorkspaceFailure;
+        _cWorkspaceAtelier.CAtelierPosture.LPostureReadFailed -= _cWorkspaceReadFailure;
     }
 
     internal void LWorkspaceFailureShow(string key, Exception exception)

@@ -90,6 +90,8 @@ internal static partial class TInterface
 
     internal static string TTrailPathValidate(this LTrailClerk clerk, string path) => clerk.LTrailPathValidate(path);
 
+    internal static Uri? TTrailFileResolve(this LTrailClerk clerk, string path) => clerk.LTrailFileResolve(path);
+
     internal static string? TTrailResolve(this LTrail trail, string root, string path) =>
         trail.LTrailResolve(root, path);
 

@@ -25,6 +25,8 @@ public sealed class CAnthology
 
     private readonly CMention _cAnthologyMention;
 
+    private readonly CLedger _cAnthologyLedger;
+
     private string _cAnthologyTextShown = string.Empty;
 
     internal CAnthology(
@@ -38,7 +40,8 @@ public sealed class CAnthology
         Func<bool> shownSeam,
         CEnvoy envoy,
         Func<bool, bool> finishSeam,
-        CMention mention)
+        CMention mention,
+        CLedger ledger)
     {
         ArgumentNullException.ThrowIfNull(examples);
         ArgumentNullException.ThrowIfNull(mentions);
@@ -48,6 +51,7 @@ public sealed class CAnthology
         ArgumentNullException.ThrowIfNull(desk);
         ArgumentNullException.ThrowIfNull(envoy);
         ArgumentNullException.ThrowIfNull(mention);
+        ArgumentNullException.ThrowIfNull(ledger);
 
         _cAnthologyExamplePort = examples;
         _cAnthologyMentionPort = mentions;
@@ -57,6 +61,7 @@ public sealed class CAnthology
         _cAnthologyEnvoy = envoy;
         _cAnthologySettingsPort = settings;
         _cAnthologyMention = mention;
+        _cAnthologyLedger = ledger;
         CAnthologyPanel = new CPanel(
             envoy,
             settings,
@@ -80,7 +85,8 @@ public sealed class CAnthology
             shownSeam,
             envoy,
             finishSeam,
-            atelier.CAtelierMention);
+            atelier.CAtelierMention,
+            atelier.CAtelierLedger);
     }
 
     public CPanel CAnthologyPanel { get; }
@@ -176,9 +182,13 @@ public sealed class CAnthology
     {
         ArgumentNullException.ThrowIfNull(word);
 
-        return _cAnthologyDesk.CDeskDraft.CDeskDraftChip?.LQuillReferenceFind(0, 0, word) is LReferenceOffer offer
-            ? CCard.LCardProfferRead(offer)
-            : new CProffer(word, [], false);
+        return _cAnthologyDesk.LDeskRepaintRead(
+            _cAnthologyLedger.LLedgerRepaint,
+            () => _cAnthologyDesk.CDeskDraft.CDeskDraftChip?.LQuillReferenceFind(0, 0, word) is LReferenceOffer offer
+                ? CCard.LCardProfferRead(offer)
+                : new CProffer(word, [], false),
+            new CProffer(word, [], false),
+            ".FindFailed");
     }
 
     public void CAnthologyCitationSet(long referenceId)

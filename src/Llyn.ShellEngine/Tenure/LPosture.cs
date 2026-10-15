@@ -27,6 +27,8 @@ public sealed class LPosture : IDisposable
 
     private Exception? _lPostureFault;
 
+    private Exception? _lPostureReadFault;
+
     public LPosture(LEngine engine)
     {
         ArgumentNullException.ThrowIfNull(engine);
@@ -37,6 +39,8 @@ public sealed class LPosture : IDisposable
     }
 
     public event Action<Exception>? LPostureSaveFailed;
+
+    public event Action<Exception>? LPostureReadFailed;
 
     public LPostureState LPostureRead()
     {
@@ -235,8 +239,10 @@ public sealed class LPosture : IDisposable
         lock (_lPostureGate)
         {
             _lPostureFailed = false;
-            if (!_lEngine.LEngineSettings.LEnginePostureLoad(LPostureName, out LPostureState? kept))
+            LSettingsFacade settings = _lEngine.LEngineSettings;
+            if (!settings.LEnginePostureLoad(LPostureName, out LPostureState? kept, out Exception? fault))
             {
+                _lPostureReadFault = fault;
                 return;
             }
 
@@ -247,8 +253,9 @@ public sealed class LPosture : IDisposable
                 return;
             }
 
-            if (!_lEngine.LEngineSettings.LEnginePostureLoad(LPostureLegacy, out LPostureState? legacy))
+            if (!settings.LEnginePostureLoad(LPostureLegacy,out LPostureState? legacy, out fault))
             {
+                _lPostureReadFault = fault;
                 return;
             }
 
@@ -303,10 +310,18 @@ public sealed class LPosture : IDisposable
         }
 
         Exception? fault;
+        Exception? unread;
         lock (_lPostureGate)
         {
             fault = _lPostureFault;
             _lPostureFault = null;
+            unread = _lPostureReadFault;
+            _lPostureReadFault = null;
+        }
+
+        if (unread is not null)
+        {
+            LPostureReadFailed?.Invoke(unread);
         }
 
         if (fault is not null)

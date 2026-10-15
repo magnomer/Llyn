@@ -148,9 +148,9 @@ public sealed class CTimbre
 
     internal void LTimbreObserverAttach(Action<Action> marshal)
     {
-        _cTimbreDesk.CDeskVigil.LVigilEntryAttach(
+        _cTimbreDesk.CDeskVigil.CVigilEntryAttach(
             CSubject.CSubjectInflection, _ => marshal(() => CTimbreParadigmChanged?.Invoke()));
-        _cTimbreDesk.CDeskVigil.LVigilObserverAttach(
+        _cTimbreDesk.CDeskVigil.CVigilObserverAttach(
             CSubject.CSubjectInflection,
             bulletin =>
             {
@@ -159,7 +159,7 @@ public sealed class CTimbre
                     marshal(() => CTimbreParadigmChanged?.Invoke());
                 }
             });
-        _cTimbreDesk.CDeskVigil.LVigilObserverAttach(
+        _cTimbreDesk.CDeskVigil.CVigilObserverAttach(
             CSubject.CSubjectScript, _ => marshal(() => CTimbreScriptChanged?.Invoke()));
     }
 

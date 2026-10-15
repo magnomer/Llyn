@@ -39,6 +39,7 @@ The state is raised even when nothing was recorded, so the buttons always read r
 
 `LNavigationTabAdd` is how each panel area registers its tab when it is built.
 A tab without an `allowed` hook is always offered.
+A tab with no leave question, station or arrival registers nothing, as the study and scoreboard tabs do.
 
 ## `CNavigationPanel`
 
@@ -74,8 +75,8 @@ Whether each trail holds a station, which lights the retreat and advance buttons
 
 ## Stamp
 
-Commit: `f6dae2392935`
-- `CNavigation.cs` `38cc54e7cbec5a7a`
+Commit: `2f9a06b8eb95`
+- `CNavigation.cs` `8315257f9a86dcbf`
 - `CNavigationPanel.cs` `269271317524a145`
 - `CNavigationState.cs` `1c11754f58b51511`
 - `CVoyage.cs` `a3937490b66ec360`

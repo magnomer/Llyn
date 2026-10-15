@@ -115,7 +115,7 @@ public sealed class TCardTranslation
         long gato = engine.TEngineTranslationCreate("gato", "Spanish").LEntryId;
         long hund = engine.TEngineTranslationCreate("Hund", "German").LEntryId;
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
         caret.CCaretTranslationInsert(sheet, chat, string.Empty, string.Empty);
         caret.CCaretTranslationInsert(sheet, gato, string.Empty, string.Empty);

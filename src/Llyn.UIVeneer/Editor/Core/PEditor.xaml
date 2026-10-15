@@ -105,7 +105,7 @@
                             ToolTip="{DynamicResource Favorite.Mark}">
                             <local:QIconImage x:Name="PFavoriteMark" Style="{StaticResource Theme.Favorite.Icon}" />
                         </ToggleButton>
-                        <local:PGrasp x:Name="PEditorGrasp" Style="{StaticResource Theme.Grasp.Mark}" />
+                        <local:QGrasp x:Name="PEditorGrasp" Style="{StaticResource Theme.Grasp.Mark}" />
                         <TextBlock x:Name="PEditorGraspLabel" Style="{StaticResource Theme.Grasp.Label}" />
                     </StackPanel>
 
@@ -220,7 +220,7 @@
                             <ColumnDefinition Width="Auto" SharedSizeGroup="PReadingLabel" />
                             <ColumnDefinition Width="Auto" SharedSizeGroup="PReadingSpan" />
                         </Grid.ColumnDefinitions>
-                        <local:PContour x:Name="PContour" Grid.Column="1" Style="{StaticResource Theme.Contour.Box}" />
+                        <local:QContour x:Name="PContour" Grid.Column="1" Style="{StaticResource Theme.Contour.Box}" />
                     </Grid>
                     <ItemsControl x:Name="PAccent" ItemTemplate="{StaticResource Theme.Accent.Row}" />
                     <ItemsControl x:Name="PTranscription" ItemTemplate="{StaticResource Theme.Transcription.Row}" Visibility="Collapsed" />

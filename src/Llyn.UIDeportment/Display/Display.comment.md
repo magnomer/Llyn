@@ -138,14 +138,14 @@ The label column joins the shared `PReadingLabel` width only while its section s
 
 ## Stamp
 
-Commit: `aae5349dbb94`
+Commit: `2f9a06b8eb95`
 - `QGraspStar.cs` `b96249bbb783b9db`
 - `QLectern.cs` `f44b838e37fa2538`
-- `QLecternCard.cs` `e28c8917b89e8475`
+- `QLecternCard.cs` `9286e5946ef4540e`
 - `QLecternEntry.cs` `f13d612b00f01fd0`
 - `QLecternEtymology.cs` `db6f54cdb8b0c4f2`
 - `QLecternFrequency.cs` `557735b484228775`
-- `QLecternGrasp.cs` `419a09bfaccb2698`
+- `QLecternGrasp.cs` `b3a3e33c2b56fe4c`
 - `QLecternHeader.cs` `129c98ee22f19ead`
 - `QLecternIncoming.cs` `2013dfbcd1cfc565`
 - `QLecternLead.cs` `f744babc1ea40def`

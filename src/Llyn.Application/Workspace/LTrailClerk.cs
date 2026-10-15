@@ -98,14 +98,7 @@ public sealed class LTrailClerk
             return null;
         }
 
-        try
-        {
-            return new Uri(full, UriKind.Absolute);
-        }
-        catch (Exception exception) when (exception is ArgumentException or UriFormatException)
-        {
-            return null;
-        }
+        return Uri.TryCreate(full, UriKind.Absolute, out Uri? made) ? made : null;
     }
 
     public Uri? LTrailClerkRead(string? location)

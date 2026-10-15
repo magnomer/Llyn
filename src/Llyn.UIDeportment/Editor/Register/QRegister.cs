@@ -12,9 +12,9 @@ internal sealed class QRegister
 {
     private readonly FrameworkElement _qRegisterSurface;
 
-    private readonly ObservableCollection<PCard> _qRegisterMeaning;
+    private readonly ObservableCollection<QPlacard> _qRegisterMeaning;
 
-    private readonly ObservableCollection<PCard> _qRegisterCollocation;
+    private readonly ObservableCollection<QPlacard> _qRegisterCollocation;
 
     private CCard _cCard = null!;
 
@@ -23,7 +23,7 @@ internal sealed class QRegister
     private QProffer _qRegisterProffer = null!;
 
     internal QRegister(
-        FrameworkElement surface, ObservableCollection<PCard> meaning, ObservableCollection<PCard> collocation)
+        FrameworkElement surface, ObservableCollection<QPlacard> meaning, ObservableCollection<QPlacard> collocation)
     {
         _qRegisterSurface = surface;
         _qRegisterMeaning = meaning;
@@ -38,41 +38,41 @@ internal sealed class QRegister
         _qRegisterProffer = proffer;
     }
 
-    internal static void QRegisterShow(PCard card, IReadOnlyList<CRegisterDraft> drafts, long? anchor)
+    internal static void QRegisterShow(QPlacard card, IReadOnlyList<CRegisterDraft> drafts, long? anchor)
     {
-        List<PRegister> chips = [];
+        List<QRegisterChip> chips = [];
         foreach (CRegisterDraft draft in drafts)
         {
-            chips.Add(new PRegister(draft.CRegisterDraftName, draft.CRegisterDraftId));
+            chips.Add(new QRegisterChip(draft.CRegisterDraftName, draft.CRegisterDraftId));
         }
 
-        card.PCardRegister.PCaretRowShow(chips);
+        card.QPlacardRegister.QInletRowShow(chips);
         QRegisterAnchorShow(card, anchor);
     }
 
-    private static void QRegisterAnchorShow(PCard card, long? anchor)
+    private static void QRegisterAnchorShow(QPlacard card, long? anchor)
     {
-        PRegister? paired = null;
-        foreach (PRegister chip in card.PCardRegister.PCaretRow)
+        QRegisterChip? paired = null;
+        foreach (QRegisterChip chip in card.QPlacardRegister.QInletRow)
         {
-            if (chip.PRegisterId == anchor)
+            if (chip.QRegisterChipId == anchor)
             {
                 paired = chip;
                 break;
             }
         }
 
-        card.PCardRegister.PCaretAnchorShow(paired);
+        card.QPlacardRegister.QInletAnchorShow(paired);
     }
 
     internal void QRegisterApply(FrameworkElement container, object item, string? _)
     {
-        if (item is PCaret<PRegister> caret)
+        if (item is QInlet<QRegisterChip> caret)
         {
             if (QLook.QLookPartFind<TextBox>(container, "PRegisterEntry") is TextBox entry)
             {
-                entry.SetValue(QField.QFieldHintProperty, caret.PCaretHint);
-                entry.Text = caret.PCaretText;
+                entry.SetValue(QField.QFieldHintProperty, caret.QInletHint);
+                entry.Text = caret.QInletText;
                 entry.PreviewKeyDown -= _qRegisterProffer.QProfferKeyRefine;
                 entry.PreviewKeyDown -= _qRegisterProffer.QProfferKeyObserve;
                 entry.PreviewKeyDown -= QRegisterCommitObserve;
@@ -92,14 +92,14 @@ internal sealed class QRegister
             return;
         }
 
-        if (item is not PRegister chip)
+        if (item is not QRegisterChip chip)
         {
             return;
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PRegisterName") is TextBlock name)
         {
-            QStateConverter.QStateTextRefine(name, TextBlock.TextProperty, chip.PRegisterText);
+            QStateConverter.QStateTextRefine(name, TextBlock.TextProperty, chip.QRegisterChipText);
         }
 
         if (QLook.QLookPartFind<Button>(container, "PRegisterEraser") is Button eraser)
@@ -113,19 +113,19 @@ internal sealed class QRegister
         }
     }
 
-    internal void QRegisterFieldApply(ItemsControl list, PCard card)
+    internal void QRegisterFieldApply(ItemsControl list, QPlacard card)
     {
-        list.ItemTemplateSelector ??= new PRegisterSelector
+        list.ItemTemplateSelector ??= new QRegisterSelector
         {
-            PRegisterSelectorChip = QContract.QContractSheetFind<DataTemplate>(
+            QRegisterSelectorChip = QContract.QContractSheetFind<DataTemplate>(
                 _qRegisterSurface, "Theme.Register.Chip"),
-            PRegisterSelectorCaret = QContract.QContractSheetFind<DataTemplate>(
+            QRegisterSelectorCaret = QContract.QContractSheetFind<DataTemplate>(
                 _qRegisterSurface, "Theme.Register.Entry"),
         };
         QLookItem.QLookItemAttach(list, QRegisterApply);
         QLookItem.QLookItemAttach(
             QBerth.QBerthBuild(
-                list, card.PCardRegister, nameof(PCaret<PRegister>.PCaretAnchor)),
+                list, card.QPlacardRegister, nameof(QInlet<QRegisterChip>.QInletAnchor)),
             QRegisterApply);
         if (QLook.QLookPartFind<Border>(list, "PRegisterFrame") is Border frame)
         {
@@ -136,38 +136,38 @@ internal sealed class QRegister
 
     private void QRegisterTextObserve(object sender, TextChangedEventArgs e)
     {
-        if (e.OriginalSource is TextBox { DataContext: PCaret<PRegister> caret } box
-            && QRegisterCardFind(caret) is PCard card)
+        if (e.OriginalSource is TextBox { DataContext: QInlet<QRegisterChip> caret } box
+            && QRegisterCardFind(caret) is QPlacard card)
         {
-            _qRegisterProffer.QProfferRegisterRefine(card, _cCaret.CCaretRegisterAdd(card.PCardId, box.Text));
+            _qRegisterProffer.QProfferRegisterRefine(card, _cCaret.CCaretRegisterAdd(card.QPlacardId, box.Text));
         }
     }
 
     internal void QRegisterChipObserve(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PRegister chip } && QRegisterCardFind(chip) is PCard card)
+        if (sender is FrameworkElement { DataContext: QRegisterChip chip } && QRegisterCardFind(chip) is QPlacard card)
         {
-            _cCard.CCardRegisterRemove(card.PCardId, chip.PRegisterId);
+            _cCard.CCardRegisterRemove(card.QPlacardId, chip.QRegisterChipId);
         }
     }
 
     internal void QRegisterCommitObserve(object sender, KeyEventArgs e)
     {
         if (e.Key != Key.Enter
-            || sender is not TextBox { DataContext: PCaret<PRegister> row } box
-            || QRegisterCardFind(row) is not PCard card)
+            || sender is not TextBox { DataContext: QInlet<QRegisterChip> row } box
+            || QRegisterCardFind(row) is not QPlacard card)
         {
             return;
         }
 
         e.Handled = true;
-        _qRegisterProffer.QProfferRegisterRefine(card, _cCaret.CCaretRegisterSettle(card.PCardId, box.Text));
+        _qRegisterProffer.QProfferRegisterRefine(card, _cCaret.CCaretRegisterSettle(card.QPlacardId, box.Text));
     }
 
     internal void QRegisterEraseObserve(object sender, KeyEventArgs e)
     {
-        if (sender is not TextBox { DataContext: PCaret<PRegister> row } box
-            || QRegisterCardFind(row) is not PCard card)
+        if (sender is not TextBox { DataContext: QInlet<QRegisterChip> row } box
+            || QRegisterCardFind(row) is not QPlacard card)
         {
             return;
         }
@@ -177,13 +177,13 @@ internal sealed class QRegister
             box.CaretIndex,
             box.Text.Length,
             box.SelectionLength,
-            step => _cCaret.CCaretRegister.CCaretTrailDelete(card.PCardId, step));
+            step => _cCaret.CCaretRegister.CCaretTrailDelete(card.QPlacardId, step));
     }
 
     internal void QRegisterCaretRefine(object sender, KeyEventArgs e)
     {
-        if (sender is not TextBox { DataContext: PCaret<PRegister> row } box
-            || QRegisterCardFind(row) is not PCard card)
+        if (sender is not TextBox { DataContext: QInlet<QRegisterChip> row } box
+            || QRegisterCardFind(row) is not QPlacard card)
         {
             return;
         }
@@ -194,7 +194,7 @@ internal sealed class QRegister
             box.SelectionLength,
             step =>
             {
-                (bool moved, long? anchor) = _cCaret.CCaretRegister.CCaretTrailMove(card.PCardId, step);
+                (bool moved, long? anchor) = _cCaret.CCaretRegister.CCaretTrailMove(card.QPlacardId, step);
                 QRegisterAnchorShow(card, anchor);
                 return moved;
             },
@@ -208,10 +208,10 @@ internal sealed class QRegister
 
     internal void QRegisterCloseObserve(object sender, RoutedEventArgs e)
     {
-        if (sender is TextBox { DataContext: PCaret<PRegister> row } box
-            && QRegisterCardFind(row) is PCard card)
+        if (sender is TextBox { DataContext: QInlet<QRegisterChip> row } box
+            && QRegisterCardFind(row) is QPlacard card)
         {
-            _qRegisterProffer.QProfferRegisterRefine(card, _cCaret.CCaretRegisterSettle(card.PCardId, box.Text));
+            _qRegisterProffer.QProfferRegisterRefine(card, _cCaret.CCaretRegisterSettle(card.QPlacardId, box.Text));
         }
     }
 
@@ -233,21 +233,21 @@ internal sealed class QRegister
         e.Handled = true;
     }
 
-    internal PCard? QRegisterCardFind(object row)
+    internal QPlacard? QRegisterCardFind(object row)
     {
-        foreach (PCard card in _qRegisterMeaning)
+        foreach (QPlacard card in _qRegisterMeaning)
         {
-            if ((row is PRegister chip && card.PCardRegister.PCaretRow.Contains(chip))
-                || ReferenceEquals(card.PCardRegister, row))
+            if ((row is QRegisterChip chip && card.QPlacardRegister.QInletRow.Contains(chip))
+                || ReferenceEquals(card.QPlacardRegister, row))
             {
                 return card;
             }
         }
 
-        foreach (PCard card in _qRegisterCollocation)
+        foreach (QPlacard card in _qRegisterCollocation)
         {
-            if ((row is PRegister chip && card.PCardRegister.PCaretRow.Contains(chip))
-                || ReferenceEquals(card.PCardRegister, row))
+            if ((row is QRegisterChip chip && card.QPlacardRegister.QInletRow.Contains(chip))
+                || ReferenceEquals(card.QPlacardRegister, row))
             {
                 return card;
             }

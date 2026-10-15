@@ -93,7 +93,7 @@ public sealed class LEngine : IDisposable
             LEngineVocabulary);
         LEnginePortrait = new LPortraitFacade(LEngineHearth, LEngineLivery, LEngineSettings);
         LEngineCourier = new LCourierFacade(LEngineHearth, LEngineLivery, LEngineSettings);
-        LEngineDeck = new LDeckFacade(LEngineHearth);
+        LEngineDeck = new LDeckFacade(LEngineHearth, LEngineEntry, LEngineVistaRow);
         LEngineTenure = new LTenureFacade(this);
         LEngineHearth.LEngineWorkspaceOpen();
     }

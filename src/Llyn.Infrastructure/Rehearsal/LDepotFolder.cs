@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -30,18 +29,6 @@ public sealed class LDepotFolder : LDepot
         Directory.CreateDirectory(folder);
         byte[] content = new UTF8Encoding(false).GetBytes(LDepotFolderFormat(sheet, basic));
         await LWorkspaceRoot.LWorkspaceFileSave(path, content, cancellation).ConfigureAwait(false);
-    }
-
-    public LDeckSheet? LDepotRead(string folder, string code)
-    {
-        string? path = LDepotFolderResolve(folder, code);
-        if (path is null || !File.Exists(path))
-        {
-            return null;
-        }
-
-        using StreamReader reader = new(path, Encoding.UTF8, true);
-        return LDepotFolderParse(reader.ReadToEnd());
     }
 
     public string? LDepotDigestRead(string folder, string code)
@@ -109,41 +96,6 @@ public sealed class LDepotFolder : LDepot
         }
 
         return builder.ToString();
-    }
-
-    public static LDeckSheet LDepotFolderParse(string text)
-    {
-        ArgumentNullException.ThrowIfNull(text);
-
-        List<(string, string)> settings = [];
-        List<string>? header = null;
-        List<IReadOnlyList<string>> rows = [];
-        int index = 0;
-        while (index < text.Length)
-        {
-            List<string> cells = LDepotLineParse(text, ref index);
-            if (cells.Count == 1 && cells[0].Length == 0)
-            {
-                continue;
-            }
-
-            if (header is null && cells[0] == LDepotFolderSetting)
-            {
-                settings.Add((
-                    cells.ElementAtOrDefault(1) ?? string.Empty,
-                    cells.ElementAtOrDefault(2) ?? string.Empty));
-            }
-            else if (header is null)
-            {
-                header = cells;
-            }
-            else
-            {
-                rows.Add(cells);
-            }
-        }
-
-        return new LDeckSheet(settings, header ?? [], rows);
     }
 
     private static string? LDepotFolderResolve(string folder, string code)
@@ -231,52 +183,5 @@ public sealed class LDepotFolder : LDepot
         }
 
         return "\"" + cell.Replace("\"", "\"\"", StringComparison.Ordinal) + "\"";
-    }
-
-    private static List<string> LDepotLineParse(string text, ref int index)
-    {
-        List<string> cells = [];
-        StringBuilder cell = new();
-        bool quoted = false;
-        while (index < text.Length)
-        {
-            char current = text[index++];
-            if (quoted)
-            {
-                if (current != '"')
-                {
-                    cell.Append(current);
-                }
-                else if (index < text.Length && text[index] == '"')
-                {
-                    cell.Append('"');
-                    index++;
-                }
-                else
-                {
-                    quoted = false;
-                }
-            }
-            else if (current == '"' && cell.Length == 0)
-            {
-                quoted = true;
-            }
-            else if (current == '\t')
-            {
-                cells.Add(cell.ToString());
-                cell.Clear();
-            }
-            else if (current == '\n')
-            {
-                break;
-            }
-            else if (current != '\r')
-            {
-                cell.Append(current);
-            }
-        }
-
-        cells.Add(cell.ToString());
-        return cells;
     }
 }

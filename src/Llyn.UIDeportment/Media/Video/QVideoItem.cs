@@ -117,7 +117,7 @@ internal sealed class QVideoItem : INotifyPropertyChanged
 
         if (ItemsControl.ItemsControlFromItemContainer(container) is ItemsControl list)
         {
-            PMedia.PMediaRevealAttach(list);
+            QMedia.QMediaRevealAttach(list);
         }
     }
 
@@ -142,7 +142,7 @@ internal sealed class QVideoItem : INotifyPropertyChanged
             new Binding(nameof(QVideoItemPlaying)) { Source = row, Mode = BindingMode.TwoWay });
         screen.SetBinding(
             QScreen.QScreenVolumeProperty,
-            new Binding(nameof(PVolumeCatalog.PVolumeCatalogLevel)) { Source = PVolumeCatalog.PVolumeCatalogCurrent });
+            new Binding(nameof(QVolumeCatalog.QVolumeCatalogLevel)) { Source = QVolumeCatalog.QVolumeCatalogCurrent });
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

@@ -10,7 +10,7 @@ internal sealed class QTranscriptMention
 {
     private readonly UserControl _qTranscriptMentionScope;
 
-    private readonly PMentionLine _qTranscriptChip = new();
+    private readonly QMentionLine _qTranscriptChip = new();
 
     private CTranscript _cTranscript = null!;
 
@@ -27,15 +27,15 @@ internal sealed class QTranscriptMention
         _qTranscriptMentionScope = scope;
 
         QTranscriptView.CommandBindings.Add(new CommandBinding(
-            PMentionCommand.PMentionCommandLink, QTranscriptLinkObserve, QTranscriptSpanRefine));
+            QMentionCommand.QMentionCommandLink, QTranscriptLinkObserve, QTranscriptSpanRefine));
         QTranscriptView.CommandBindings.Add(new CommandBinding(
-            PMentionCommand.PMentionCommandChoose, QTranscriptMeaningRefine, QTranscriptSenseRefine));
+            QMentionCommand.QMentionCommandChoose, QTranscriptMeaningRefine, QTranscriptSenseRefine));
         QTranscriptView.CommandBindings.Add(new CommandBinding(
-            PMentionCommand.PMentionCommandSilence, QTranscriptSilenceObserve, QTranscriptSpanRefine));
+            QMentionCommand.QMentionCommandSilence, QTranscriptSilenceObserve, QTranscriptSpanRefine));
         QTranscriptView.CommandBindings.Add(new CommandBinding(
-            PMentionCommand.PMentionCommandUnlink, QTranscriptUnlinkObserve, QTranscriptUnlinkRefine));
+            QMentionCommand.QMentionCommandUnlink, QTranscriptUnlinkObserve, QTranscriptUnlinkRefine));
         QTranscriptView.CommandBindings.Add(new CommandBinding(
-            PMentionCommand.PMentionCommandPick, QTranscriptPickObserve));
+            QMentionCommand.QMentionCommandPick, QTranscriptPickObserve));
     }
 
     private Grid QTranscriptView => QContract.QContractFind<Grid>(_qTranscriptMentionScope, "PTranscript");
@@ -58,8 +58,8 @@ internal sealed class QTranscriptMention
         _qTranscriptMentionProspect = prospect;
         _qTranscriptMentionMenu = mentionMenu;
 
-        QTranscriptMentionLine.ItemsSource = _qTranscriptChip.PMentionLineChip;
-        QLookItem.QLookItemAttach(QTranscriptMentionLine, PMentionChip.PMentionChipRefine);
+        QTranscriptMentionLine.ItemsSource = _qTranscriptChip.QMentionLineChip;
+        QLookItem.QLookItemAttach(QTranscriptMentionLine, QMentionChip.QMentionChipRefine);
         corpus.CCorpusTranscriptChanged += QTranscriptMentionRefine;
         _cTranscript.CTranscriptDraftChanged += QTranscriptMentionRefine;
         _cTranscript.CTranscriptMentionOffered += prospect.QProspectOpenRefine;
@@ -72,7 +72,7 @@ internal sealed class QTranscriptMention
             return;
         }
 
-        _qTranscriptMentionProspect.QProspectPlaceRefine(box, PMentionSelection.PMentionSelectionPlace(box));
+        _qTranscriptMentionProspect.QProspectPlaceRefine(box, QMentionSelection.QMentionSelectionPlace(box));
         _cTranscript.CTranscriptMentionOpen(box.SelectedText);
     }
 
@@ -92,7 +92,7 @@ internal sealed class QTranscriptMention
             is CMentionSense sense)
         {
             QMentionAsk ask = _qTranscriptMentionMenu.QMentionMeaningRefine(
-                QTranscriptText, PMentionSelection.PMentionSelectionPlace(QTranscriptText), sense);
+                QTranscriptText, QMentionSelection.QMentionSelectionPlace(QTranscriptText), sense);
             ask.QMentionAskChosen += QTranscriptSenseObserve;
         }
     }
@@ -115,9 +115,9 @@ internal sealed class QTranscriptMention
 
     private void QTranscriptUnlinkObserve(object sender, ExecutedRoutedEventArgs e)
     {
-        if (e.Parameter is PMentionChip chip)
+        if (e.Parameter is QMentionChip chip)
         {
-            _cTranscript.CTranscriptMentionRemove(chip.PMentionChipId);
+            _cTranscript.CTranscriptMentionRemove(chip.QMentionChipId);
         }
         else if (e.Source is TextBox)
         {
@@ -141,7 +141,7 @@ internal sealed class QTranscriptMention
 
     private void QTranscriptUnlinkRefine(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = e.Parameter is PMentionChip
+        e.CanExecute = e.Parameter is QMentionChip
             || (e.Source is TextBox
                 && _cTranscript.CTranscriptMentionCheck(
                     QTranscriptText.Text, QTranscriptText.SelectionStart, QTranscriptText.SelectionLength));
@@ -149,6 +149,6 @@ internal sealed class QTranscriptMention
 
     private void QTranscriptMentionRefine(CExample _)
     {
-        _qTranscriptChip.PMentionLineRefine(QMentionChip.QMentionChipCreate(_cTranscript.CTranscriptMentionRead()));
+        _qTranscriptChip.QMentionLineRefine(QMentionChip.QMentionChipCreate(_cTranscript.CTranscriptMentionRead()));
     }
 }

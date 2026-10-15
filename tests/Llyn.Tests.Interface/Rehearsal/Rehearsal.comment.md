@@ -17,10 +17,17 @@ So an archive test names only what it checks.
 The slot fixture builds a template of one slot at index one, so a face test names only the body.
 Its three-part overload builds one slot alone, and the cell relay builds one cell alone, each as given.
 The default relay reads a grain's default template through the Core rule.
+The body relays reach the Core rules that edit and check a slot body.
+The stencil clerk relays reach its list read, field edits and media move.
+The line relay reaches the cue clerk's listing read.
+The schedule relay builds a default deck schedule.
 The stencil clerk is built over the same clerks the entry relay builds.
 The deck and cue clerks are built over the test rig, as the stencil clerk is.
-Both resolve overloads cross here, the one with a stored card and the one with a card id.
-The depot relays build the folder adapter and drive its save and read with no cancellation.
+The cue clerk takes the same clerks the stencil clerk takes, for its listing line.
+The resolve relay crosses here with a stored cue, a template and the portrait label.
+The deck outlet is built over an engine, and its deck, folder, cue and template calls pass through unchanged.
+So a gate test prepares its decks through the deck port without asking the user.
+The depot relays build the folder adapter, relay its digest read and drive its save with no cancellation.
 The sheet relay builds a sheet from settings, a header and rows, so a test writes cells inline.
 The manifest file is built over a keep file in a given folder, and its read and save are relayed.
 A manifest is built from a deck map as given, and a save on any manifest store is relayed too.
@@ -47,7 +54,7 @@ A save replaces the stored manifest whole, as the file store does.
 
 ## Stamp
 
-Commit: `f6dae2392935`
+Commit: `2f9a06b8eb95`
 - `TDeckManifestFake.cs` `3fab1686919043f2`
-- `TDepotFake.cs` `961f9dc912e1dc22`
-- `TInterfaceRehearsal.cs` `89fea26388d538c6`
+- `TDepotFake.cs` `af48a461923f322d`
+- `TInterfaceRehearsal.cs` `061d0df9405facca`

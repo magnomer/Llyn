@@ -1,0 +1,156 @@
+<UserControl
+    x:Class="Llyn.UIVeneer.PCharter"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    >
+
+    <UserControl.Resources>
+        <Style x:Key="Theme.Charter.Heading" TargetType="TextBlock">
+            <Setter Property="Height" Value="34" />
+            <Setter Property="Margin" Value="2,0,2,8" />
+            <Setter Property="Padding" Value="0,5,0,0" />
+            <Setter Property="FontSize" Value="19" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+
+        <Style x:Key="Theme.Charter.Caption" TargetType="TextBlock">
+            <Setter Property="Margin" Value="2,0,12,8" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style x:Key="Theme.Charter.Field" TargetType="TextBox" BasedOn="{StaticResource Theme.Input.Bare}">
+            <Setter Property="Margin" Value="2,0,2,8" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="AcceptsReturn" Value="False" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style x:Key="Theme.Charter.Choice" TargetType="ComboBox" BasedOn="{StaticResource Theme.Input.Choice}">
+            <Setter Property="Margin" Value="0,0,0,8" />
+            <Setter Property="MinWidth" Value="120" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+        </Style>
+
+        <Style x:Key="Theme.Charter.Side" TargetType="CheckBox">
+            <Setter Property="Margin" Value="0,0,10,0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="{StaticResource Theme.Catalog.HeaderMargin}" Orientation="Horizontal">
+            <Button x:Name="PCharterStore" Content="{DynamicResource Deck.Save}" />
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" Style="{StaticResource Theme.Catalog.Scroll}" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="0,0,10,20">
+                <ItemsControl x:Name="PBearing">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="0,0,0,10">
+                                <TextBlock x:Name="PBearingCaption" Style="{StaticResource Theme.Charter.Heading}" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource Theme.Charter.Caption}" Text="{DynamicResource Bearing.Front}" />
+                                    <StackPanel x:Name="PBearingFront" Grid.Row="0" Grid.Column="1" Margin="2,0,2,8" Orientation="Horizontal">
+                                        <CheckBox Content="1" Style="{StaticResource Theme.Charter.Side}" />
+                                        <CheckBox Content="2" Style="{StaticResource Theme.Charter.Side}" />
+                                        <CheckBox Content="3" Style="{StaticResource Theme.Charter.Side}" />
+                                        <CheckBox Content="4" Style="{StaticResource Theme.Charter.Side}" />
+                                        <CheckBox Content="5" Style="{StaticResource Theme.Charter.Side}" />
+                                    </StackPanel>
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource Theme.Charter.Caption}" Text="{DynamicResource Bearing.Back}" />
+                                    <StackPanel x:Name="PBearingBack" Grid.Row="1" Grid.Column="1" Margin="2,0,2,8" Orientation="Horizontal">
+                                        <CheckBox Content="1" Style="{StaticResource Theme.Charter.Side}" />
+                                        <CheckBox Content="2" Style="{StaticResource Theme.Charter.Side}" />
+                                        <CheckBox Content="3" Style="{StaticResource Theme.Charter.Side}" />
+                                        <CheckBox Content="4" Style="{StaticResource Theme.Charter.Side}" />
+                                        <CheckBox Content="5" Style="{StaticResource Theme.Charter.Side}" />
+                                    </StackPanel>
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource Theme.Charter.Caption}" Text="{DynamicResource Bearing.Set}" />
+                                    <TextBox x:Name="PBearingStatistics" Grid.Row="2" Grid.Column="1" Style="{StaticResource Theme.Charter.Field}" />
+                                </Grid>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource Theme.Charter.Caption}" Text="{DynamicResource Bearing.ShowFirst}" />
+                    <ComboBox x:Name="PCharterLead" Grid.Row="0" Grid.Column="1" Style="{StaticResource Theme.Charter.Choice}">
+                        <ComboBoxItem Content="{DynamicResource Bearing.LeadOne}" />
+                        <ComboBoxItem Content="{DynamicResource Bearing.LeadTwo}" />
+                        <ComboBoxItem Content="{DynamicResource Bearing.Alternate}" />
+                    </ComboBox>
+
+                    <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="2,18,2,8" Style="{StaticResource Theme.Charter.Heading}" Text="{DynamicResource Schedule.Title}" />
+                    <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource Theme.Charter.Caption}" Text="{DynamicResource Schedule.Sequence}" />
+                    <ComboBox x:Name="PCharterSequence" Grid.Row="2" Grid.Column="1" Style="{StaticResource Theme.Charter.Choice}">
+                        <ComboBoxItem Content="{DynamicResource Schedule.Ordered}" />
+                        <ComboBoxItem Content="{DynamicResource Schedule.Random}" />
+                        <ComboBoxItem Content="{DynamicResource Schedule.Goal}" />
+                        <ComboBoxItem Content="{DynamicResource Schedule.Spaced}" />
+                    </ComboBox>
+                    <TextBlock Grid.Row="3" Grid.Column="0" Style="{StaticResource Theme.Charter.Caption}" Text="{DynamicResource Schedule.RoundGoal}" />
+                    <TextBox x:Name="PCharterGoal" Grid.Row="3" Grid.Column="1" Style="{StaticResource Theme.Charter.Field}" />
+                    <TextBlock Grid.Row="4" Grid.Column="0" Style="{StaticResource Theme.Charter.Caption}" Text="{DynamicResource Schedule.RoundSpaced}" />
+                    <TextBox x:Name="PCharterSpaced" Grid.Row="4" Grid.Column="1" Style="{StaticResource Theme.Charter.Field}" />
+                    <TextBlock Grid.Row="5" Grid.Column="0" Style="{StaticResource Theme.Charter.Caption}" Text="{DynamicResource Schedule.Pool}" />
+                    <TextBox x:Name="PCharterPool" Grid.Row="5" Grid.Column="1" Style="{StaticResource Theme.Charter.Field}" />
+                    <TextBlock Grid.Row="6" Grid.Column="0" Style="{StaticResource Theme.Charter.Caption}" Text="{DynamicResource Schedule.Streak}" />
+                    <TextBox x:Name="PCharterStreak" Grid.Row="6" Grid.Column="1" Style="{StaticResource Theme.Charter.Field}" />
+                    <TextBlock Grid.Row="7" Grid.Column="0" Style="{StaticResource Theme.Charter.Caption}" Text="{DynamicResource Schedule.Interval}" />
+                    <TextBox x:Name="PCharterInterval" Grid.Row="7" Grid.Column="1" Style="{StaticResource Theme.Charter.Field}" />
+                    <TextBlock Grid.Row="8" Grid.Column="0" Style="{StaticResource Theme.Charter.Caption}" Text="{DynamicResource Schedule.Quorum}" />
+                    <TextBox x:Name="PCharterQuorum" Grid.Row="8" Grid.Column="1" Style="{StaticResource Theme.Charter.Field}" />
+
+                    <TextBlock Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" Margin="2,18,2,8" Style="{StaticResource Theme.Charter.Heading}" Text="{DynamicResource Deck.Export}" />
+                    <TextBlock Grid.Row="10" Grid.Column="0" Style="{StaticResource Theme.Charter.Caption}" Text="{DynamicResource Deck.Code}" />
+                    <TextBox x:Name="PCharterCode" Grid.Row="10" Grid.Column="1" Style="{StaticResource Theme.Charter.Field}" />
+                    <CheckBox
+                        x:Name="PCharterBasic"
+                        Grid.Row="11"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        Margin="2,0,2,8"
+                        Content="{DynamicResource Deck.Basic}"
+                        ToolTip="{DynamicResource Deck.BasicHelper}" />
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

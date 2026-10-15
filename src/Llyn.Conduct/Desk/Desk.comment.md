@@ -62,11 +62,15 @@ The key is the suffix after the scope, such as `.RecordingFailed`, so each area'
 It answers a user act, so every failure shows.
 `LDeskRepaintShow` serves repaint reads and merges a shown key until the user acts.
 The memory belongs to the atelier, not the desk, so the helper hands it in.
+`LDeskRepaintRead` runs a read through that memory.
+A failure shows the scope's key once and answers the fallback it was given.
+A refused typing read thus shows `.FindFailed`, while an absent draft is no fault and answers empty.
 
 ### Observers
 
 `CDeskObserverAttach` decides which bulletins refresh the desk, for every tenure it starts.
 A tenure bulletin runs the chronicle's resonate, and a draft bulletin runs the `drafted` action.
+A draft bulletin that carries a refusal first shows the scope's `.UpdateFailed` notice every time.
 Both run through the driver's marshal.
 The overload without `drafted` rereads and announces the draft through `CDeskDraft.CDeskDraftResonate`.
 The errand takes the same marshal for the steps of its recording search.
@@ -159,6 +163,7 @@ A fold is not an edit, so the bulletin never touches the tenure or its undo.
 `LEntryFoldRead` reads every folded card id in one read.
 A draft never stored answers an empty set.
 A refused read shows `Fold.ReadFailed` once until the user acts, and answers an empty set so the cards still draw.
+A refused read of the link targets shows `Input.FindFailed` the same way and draws the cards without targets.
 
 `CEntryUnitSet` and `CEntryFreedomSet` clear the value already held, a rule the entry quill keeps.
 Their menus are read with the part-of-speech field.
@@ -232,7 +237,7 @@ It only supplies the stored id, and a refusal reaches the window through the dis
 
 Favourite and grasp read false and zero for a fresh draft or a failed read.
 The grasp is never negative and never above `CEsteemGraspStep`, since the stars draw only that range.
-`CEsteemGraspStep` is never negative, since `LDisplay` raises a negative engine limit to zero.
+`CEsteemGraspStep` is never negative, since `CRule` raises a negative engine limit to zero.
 It is the star control's limit, so the control names no engine constant.
 The fill, unrated and hit tables are handed to the control once, so drawing and pointing request no logic.
 
@@ -272,7 +277,7 @@ Each desk shows its own failed step, so the session catches nothing.
 `LSessionLeaveConfirm` asks only when a panel holds unsaved changes.
 A cancelled question answers false, and so does a store the ready seam or the desk refuses.
 
-## `LVigil`
+## `CVigil`
 
 The observers one desk keeps by subject and puts on every tenure it starts.
 A driver registers once and never sees the tenure.
@@ -280,17 +285,17 @@ The vigil re-attaches its observers on every start, and a tenure already held ge
 There is one attach for the tenure-wide, draft-level and entry-level subjects.
 An observer is a delegate over a Conduct bulletin, which the vigil copies from each engine bulletin.
 The subject maps through `CCatalog.LCatalogSubjectRead`, so a subject it does not list throws.
-`LVigilApply` puts every observer on the tenure before the desk announces the start.
+`CVigilApply` puts every observer on the tenure before the desk announces the start.
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `CDesk.cs` `c78c6c751713c474`
+Commit: `2f9a06b8eb95`
+- `CDesk.cs` `9f036c7e380e9b97`
 - `CDeskChronicle.cs` `fc6b9a85af7d4b71`
 - `CDeskDraft.cs` `bf7d16d5e2c74ad0`
-- `CEditor.cs` `5d1bfba5d2ae835e`
-- `CEntry.cs` `55889cc7f93cf067`
+- `CEditor.cs` `aaf454c649d52566`
+- `CEntry.cs` `07aadff922c69653`
 - `CErrand.cs` `8f73391eb2be162b`
-- `CEsteem.cs` `51426f8b6a69a0fd`
+- `CEsteem.cs` `b08f4e56adee1280`
 - `CSession.cs` `b50233150aac7538`
-- `LVigil.cs` `0f184a43ea348fd4`
+- `CVigil.cs` `d5d70700eb8084d2`

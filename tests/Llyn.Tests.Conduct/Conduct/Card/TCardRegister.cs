@@ -15,7 +15,7 @@ public sealed class TCardRegister
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
 
         string rest = caret.CCaretRegisterAdd(sheet, "formal,  slang, fo").CProfferText;
@@ -35,7 +35,7 @@ public sealed class TCardRegister
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LRegister formal = engine.TEngineRegisterCreate("formal");
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
         long other = TCard.TCardSheetAdd(desk);
 
@@ -57,7 +57,7 @@ public sealed class TCardRegister
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
         caret.CCaretRegisterSettle(sheet, "formal, slang");
         IReadOnlyList<LRegisterDraft> linked = TCardRegisterRead(desk, sheet);
@@ -76,7 +76,7 @@ public sealed class TCardRegister
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LRegister slang = engine.TEngineRegisterCreate("slangy");
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
 
         CProffer offer = caret.CCaretRegisterAdd(0, " LAN");
 
@@ -92,7 +92,7 @@ public sealed class TCardRegister
         using LEngine engine = workspace.TWorkspaceEngineStart();
         engine.TEngineRegisterCreate("slangy");
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
 
         CProffer blank = caret.CCaretRegisterAdd(0, "   ");
         CProffer unmatched = caret.CCaretRegisterAdd(0, "zzq");
@@ -115,7 +115,7 @@ public sealed class TCardRegister
         }
 
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
 
         CProffer offer = caret.CCaretRegisterAdd(0, "zone");
 
@@ -129,7 +129,7 @@ public sealed class TCardRegister
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
         desk.TDeskDefer(TInterface.TRequestLanguageCreate(desk.CDeskId, "English"));
 
         CProffer offer = caret.CCaretRegisterAdd(0, "polit");
@@ -146,7 +146,7 @@ public sealed class TCardRegister
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LRegister stored = engine.TEngineRegisterCreate("formal");
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
         caret.CCaretRegisterSettle(sheet, "slang, wild");
         caret.CCaretRegister.CCaretTrailMove(sheet, -1);
@@ -164,7 +164,7 @@ public sealed class TCardRegister
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
         caret.CCaretRegisterSettle(sheet, "slang, wild");
         caret.CCaretRegister.CCaretTrailMove(sheet, -1);
@@ -183,7 +183,7 @@ public sealed class TCardRegister
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
         caret.CCaretRegisterSettle(sheet, "slang, wild, formal");
         caret.CCaretRegister.CCaretTrailMove(sheet, -1);

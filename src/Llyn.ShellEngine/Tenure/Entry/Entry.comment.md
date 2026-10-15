@@ -35,10 +35,10 @@ Structural edits apply immediately, while typed title, expression and meaning va
 Chip edits and searches share the draft port used to resolve stored records and selected spans.
 List parsing can build several requests from one typed value, rather than one request per edit.
 Completed parts advance the requested insertion position before the remaining text is searched.
+The tag, situation and register adds answer the kept text, and each find is a separate call.
 
-Refused tag, situation, register and reference searches answer empty offers.
-Other failures are not caught here.
-Translation and mention searches requested directly do not catch failures here.
+Tag, situation, register, reference, translation and mention searches catch nothing here.
+A stale draft refuses the search, and the refusal reaches the Conduct caller that shows it.
 
 Citation resolution precedes its request in one method, so callers cannot reverse those operations.
 Card sentences and the held Example use different reference requests.
@@ -49,8 +49,7 @@ A new translation court inherits the owner draft's origin before its target is l
 Removal unlinks first, then deletes any matching court and its target draft.
 
 Translation target reads combine meaning and collocation links into one distinct-id engine read.
-A refused target read supplies an empty result to the card facade.
-Other target read failures reach the caller.
+A target read failure, a refusal included, reaches the caller.
 
 Sense changes and span-based mention removals persist pending typing before finding the Mention.
 Both share `LQuillMention.LQuillMentionFind`, avoiding separate interpretations of the selected span.
@@ -81,8 +80,8 @@ Visibility depends on available reflex rules or the draft's reflected flag, not 
 Lookup starts only for a stored draft whose reflected flag is false.
 
 Anchor scans use the stored entry, draft language, reflex language and row tone together.
-A missing stored identity, missing row or refused scan answers empty.
-Other scan failures reach the caller.
+A missing stored identity or missing row answers empty.
+Every scan failure, a refusal included, reaches the caller.
 
 ## `LQuillSentence`
 
@@ -98,9 +97,10 @@ The quill keeps pending speech-chip state alongside the tenure, rather than maki
 Chip settlement, parsing and offer matching belong to the speech clerk.
 
 Speech creation uses the draft language's vocabulary before sending the updated chips.
-A refused vocabulary read supplies an empty catalog to offer matching.
-A refused vocabulary write answers no catalog value.
-Other vocabulary failures reach the caller.
+The chip edits read the held draft, so a stale draft's refusal reaches the caller.
+The repaint read and the offer read use the present draft, which a stale or ended draft leaves empty.
+Then the repaint shows no chips and the offer is empty.
+Every vocabulary failure, a refusal included, reaches the caller.
 
 ## `LQuillTranscription`
 
@@ -110,14 +110,14 @@ Typed text defers, while scheme picks apply immediately.
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `2f9a06b8eb95`
 - `LEasel.cs` `d253cf368264ecad`
 - `LQuillAncestor.cs` `9a383e8186246a3b`
 - `LQuillCard.cs` `53194206db46ddde`
-- `LQuillChip.cs` `ccf49aacacdd2de8`
+- `LQuillChip.cs` `5e694dcede2881cb`
 - `LQuillEntry.cs` `923cb6b552ca3f64`
 - `LQuillPronunciation.cs` `705a829d2b1a3d36`
-- `LQuillReflex.cs` `0a80a427f2224a5c`
+- `LQuillReflex.cs` `0f96dbb24c7d79be`
 - `LQuillSentence.cs` `0015d1ed21b5f7f1`
-- `LQuillSpeech.cs` `1dd744211b040b7c`
+- `LQuillSpeech.cs` `ea93b024c490dca1`
 - `LQuillTranscription.cs` `a15074db3fbc86b6`

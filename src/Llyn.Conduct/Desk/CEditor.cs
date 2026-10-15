@@ -28,8 +28,8 @@ public sealed class CEditor
 
         CEditorDesk = new CDesk(drafts, settings, "Input", envoy);
         CEditorDisplay = new CDisplay(drafts, entries, phonology, settings, media, envoy, noticed);
-        CEditorCard = new CCard(CEditorDesk, entries.CEntryBundleReference, settings, envoy);
-        CEditorCaret = new CCaret(CEditorDesk, CEditorCard);
+        CEditorCard = new CCard(CEditorDesk, entries.CEntryBundleReference, settings, envoy, noticed);
+        CEditorCaret = new CCaret(CEditorDesk, CEditorCard, noticed);
         CEditorSentence = new CSentence(
             CEditorDesk, phonology.CPhonologyBundleSentence, drafts, settings, envoy, noticed);
         CEditorSounding = new CSounding(
@@ -46,11 +46,17 @@ public sealed class CEditor
         CEditorEsteem = new CEsteem(CEditorDesk, CEditorDisplay.LDisplayRule);
         CEditorTimbre = new CTimbre(CEditorDesk, phonology.CPhonologyBundleLanguage, settings, envoy);
         CEditorKindred = new CKindred(
-            CEditorDesk, phonology.CPhonologyBundleReflex, CEditorDisplay.LDisplayRule, drafts, settings, envoy);
+            CEditorDesk,
+            phonology.CPhonologyBundleReflex,
+            CEditorDisplay.LDisplayRule,
+            drafts,
+            settings,
+            envoy,
+            noticed);
         CEditorEtymology = new CEtymology(
             CEditorDesk, entries.CEntryBundleAncestor, settings, envoy, noticed);
         CEditorPlayback = new CPlayback(CEditorDesk, media);
-        CEditorSpeech = new CCardSpeech(CEditorDesk);
+        CEditorSpeech = new CCardSpeech(CEditorDesk, noticed);
         CEditorDesk.CDeskFinished += CEditorStoredShow;
         CEditorEntry = new CEntry(
             CEditorDesk, drafts, entries.CEntryBundleCard, media, settings, envoy, noticed);
@@ -63,7 +69,7 @@ public sealed class CEditor
         CEditorSounding.LSoundingObserverAttach(marshal);
         CEditorSentence.LSentenceObserverAttach(marshal);
         CEditorEntry.LEntryObserverAttach(marshal);
-        CEditorDesk.CDeskVigil.LVigilObserverAttach(
+        CEditorDesk.CDeskVigil.CVigilObserverAttach(
             CSubject.CSubjectSettings, _ => marshal(CEditorDesk.CDeskDraft.CDeskDraftResonate));
     }
 

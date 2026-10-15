@@ -43,7 +43,7 @@ internal sealed class QTaxonomy
         surface.CommandBindings.Add(
             new CommandBinding(ApplicationCommands.Print, QTaxonomyPressObserve, QTaxonomyPressRefine));
         surface.CommandBindings.Add(new CommandBinding(
-            PDisplayCommand.PDisplayCommandPortrait, QTaxonomyPortraitObserve, QTaxonomyPressRefine));
+            QDisplayCommand.QDisplayCommandPortrait, QTaxonomyPortraitObserve, QTaxonomyPressRefine));
         _qTaxonomyRail = new QPanelRail(
             QContract.QContractFind<UserControl>(surface, "PTaxonomyRail"),
             QTaxonomyBin,

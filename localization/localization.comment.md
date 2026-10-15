@@ -25,7 +25,7 @@ The imperfect, future and conditional terms exist so inflection labels can share
 The sync term names the push to Joplin, shared by the sync button and the Sync settings page.
 The print, cancel, color and custom terms are shared within the print window.
 The print term also labels the Scribe print button, and the cancel term the Leave, Coinage and Customs dialogs.
-The deck, flashcard and study terms name the flashcard feature.
+The deck, flashcard, study and statistics terms name the flashcard feature.
 The deck-sync term names the export to the phone app, apart from the sync term that names the Joplin push.
 It labels the deck export button and the Depot setting.
 
@@ -57,19 +57,40 @@ The setting title is the deck-sync term, as `Settings.Sync` is the sync term.
 `Deck.*` labels the deck list, its folders, the delete dialog and the export to the phone app.
 `Deck.DeleteCount` is the label before the flashcard tally that the delete dialog prints under its question.
 `Deck.LoadFailed` heads the failure notice when the deck list or a deck's flashcard count cannot be read.
+`Layout.ReadFailed` is the notice when the stored layout cannot be read at open.
+`Input.FindFailed` and `Example.FindFailed` are the notices when a field's suggestions or the anchor choices cannot be looked up.
+`Input.SpeechFailed` is the notice when a part of speech cannot be added to the entry.
+`Guild.UpdateFailed`, `Source.UpdateFailed`, `Example.UpdateFailed` and `Situation.UpdateFailed` head the notice when a queued change to that desk's record is refused.
 `Deck.SaveFailed` heads the failure notice when a deck or folder change is refused or fails.
 `Deck.Grain` captions the choice of unit a deck's flashcards are made from, and `Grain.*` names those units.
+`Deck.MoveTop` names the top level in a deck's move menu, beside the folders.
+`Deck.OrderUp` and `Deck.OrderDown` label the buttons that move a deck one place up or down in its folder.
 `Deck.Basic` and `Deck.BasicHelper` switch the export to the Basic text style.
 `Deck.ExportReceipt` words the four counts of one export: flashcards written, files copied, files removed and failed.
-`Deck.Count`, `Deck.CountOne`, `Deck.RoleWarning` and `Deck.SplitOffer` wait for the phases that show them.
+`Deck.Exporting` is the export line while the deck files are being written, as `Courier.Sending` is the push line.
 `Coinage.Deck` and `Coinage.DeckFolder` prompt for the name of a new deck and a new deck folder.
+`Navigation.Study` and `Navigation.Scoreboard` label the study and statistics tabs beside the deck tab.
+`Study.Empty` and `Scoreboard.Empty` are the empty lines of those two placeholder panels.
+`CStudy` and `CScoreboard` name each key, and the driver looks it up.
 `Coinage.Stencil` prompts for the name a template is saved under.
 `Cue.*` labels one flashcard, its flag, its exclusion from study and its orphaned state.
 `Cue.Cell` captions one editable cell of a free flashcard, and `Cue.Pick` the button that picks its picture or sound file.
 `Stencil.*` labels the template editor.
-It holds the side and column names, one `Slot*` per field a slot can cite, and the three join choices.
+It holds the side and column names, one `Slot*` per field a slot can cite, and the two join choices.
 `Stencil.Picture` and `Stencil.Sound` also title the file dialogs of the picked cells.
+`Stencil.FieldAdd` and `Stencil.FieldRemove` label the field chips of a side.
+`Stencil.Custom` marks a side whose text no chip row can show.
+`Stencil.AsText` switches the sides to their plain text.
+`Stencil.PictureSide` and `Stencil.SoundSide` caption the side each picks, and `Stencil.MediaNone` is the choice of no side.
 `Bearing.*` labels the direction, lead side and statistics set of a deck.
+`Bearing.Front` and `Bearing.Back` caption the sides each face of a direction shows, and `Bearing.LeadOne` and `Bearing.LeadTwo` name the lead sides.
+`Schedule.*` labels the card-order options of the deck editor.
+`Schedule.Interval` counts hours, as the stored target does.
+`Deck.Code` captions the export file name, and `Deck.Save` the button that stores the deck editor's draft.
+`Deck.ViewAdd`, `Deck.ViewCard` and `Deck.ViewDeck` label the three views of the deck management column.
+`Accession.*` labels the view that adds library entries to the chosen deck.
+It holds the search field, the in-deck mark and both add buttons.
+`Accession.Empty`, `Accession.Unmatched` and `Accession.LoadFailed` are its empty, no-match and failure lines.
 Each `Refusal.Deck*`, `Refusal.Cue*` and `Refusal.Depot*` text says what the user can do next.
 `Xiesheng.ReadingsShow` and `Xiesheng.ReadingsHide` label the series member hinge that shows or hides all its readings.
 `Settings.Inflection` names the settings page that holds the `Analysis.*` switch and its hint.
@@ -104,6 +125,6 @@ The person headers spell out person and number instead of the English abbreviati
 
 ## Stamp
 
-Commit: `f6dae2392935`
-- `en.json` `fa6b8bf2e07b1e0b`
-- `ko.json` `668f58ce06234a89`
+Commit: `2f9a06b8eb95`
+- `en.json` `fdf6c801d58b9f56`
+- `ko.json` `c82aaaf152b59d10`

@@ -12,14 +12,15 @@ public sealed class LReflexClerk
     private readonly LLanguageCache _lReflexClerkLanguages;
 
     public LReflexClerk(
-        LRig rig, LLanguageCache languages, LClaimClerk claims, object gate, Action<LSubject, long> raise)
+        LRig rig, LLanguageCache languages, LClaimClerk claims, object gate, Action<LSubject, long> raise,
+        Action<Exception> fault)
     {
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(languages);
         _lReflexClerkEntries = rig.LRigEntries;
         _lReflexClerkReflexes = rig.LRigSound.LRigSoundReflexes;
         _lReflexClerkLanguages = languages;
-        LReflexClerkFetch = new LReflexFetch(rig, this, languages, claims, gate, raise);
+        LReflexClerkFetch = new LReflexFetch(rig, this, languages, claims, gate, raise, fault);
     }
 
     public LReflexFetch LReflexClerkFetch { get; }

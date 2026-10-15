@@ -13,7 +13,7 @@ internal sealed class QProspect
 {
     private readonly FrameworkElement _qProspectSurface;
 
-    private readonly ObservableCollection<PProspectItem> _qProspectItem = [];
+    private readonly ObservableCollection<QProspectItem> _qProspectItem = [];
 
     private readonly QSentence _qProspectSentence;
 
@@ -47,34 +47,34 @@ internal sealed class QProspect
 
     private void QProspectApply(FrameworkElement container, object item, string? _)
     {
-        if (item is not PProspectItem row)
+        if (item is not QProspectItem row)
         {
             return;
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PProspectMark") is TextBlock mark)
         {
-            mark.Visibility = QLook.QLookVisibleRead(row.PProspectItemFresh);
+            mark.Visibility = QLook.QLookVisibleRead(row.QProspectItemFresh);
         }
 
         if (QLook.QLookPartFind<Run>(container, "PProspectName") is Run name)
         {
-            name.Text = row.PProspectItemName;
+            name.Text = row.QProspectItemName;
         }
 
         if (QLook.QLookPartFind<Run>(container, "PProspectEpithet") is Run epithet)
         {
-            epithet.Text = QLook.QLookEpithetRead(row.PProspectItemEpithet);
+            epithet.Text = QLook.QLookEpithetRead(row.QProspectItemEpithet);
         }
 
         if (QLook.QLookPartFind<Image>(container, "PProspectFlag") is Image flag)
         {
-            flag.Source = row.PProspectItemFlag;
+            flag.Source = row.QProspectItemFlag;
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PProspectLanguage") is TextBlock language)
         {
-            language.Text = row.PProspectItemLanguage;
+            language.Text = row.QProspectItemLanguage;
         }
 
         if (QLook.QLookPartFind<Grid>(container, "PProspectRow") is Grid surface)
@@ -88,7 +88,7 @@ internal sealed class QProspect
 
     private void QProspectMissRefine(object sender, MouseButtonEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: PProspectItem })
+        if (sender is not FrameworkElement { DataContext: QProspectItem })
         {
             QProspectShutRefine();
         }
@@ -96,7 +96,7 @@ internal sealed class QProspect
 
     private void QProspectPickObserve(object sender, MouseButtonEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: PProspectItem item })
+        if (sender is not FrameworkElement { DataContext: QProspectItem item })
         {
             return;
         }
@@ -104,31 +104,31 @@ internal sealed class QProspect
         e.Handled = true;
         switch (QProspectPopup.PlacementTarget)
         {
-            case TextBox { DataContext: PCaret<QLinkChip> caret }:
-                if (_qProspectLink.QLinkCardFind(caret) is PCard owner)
+            case TextBox { DataContext: QInlet<QLinkChip> caret }:
+                if (_qProspectLink.QLinkCardFind(caret) is QPlacard owner)
                 {
                     _cCaret.CCaretTranslationInsert(
-                        owner.PCardId, item.PProspectItemId, item.PProspectItemHeadword, item.PProspectItemLanguage);
+                        owner.QPlacardId, item.QProspectItemId, item.QProspectItemHeadword, item.QProspectItemLanguage);
                     QProspectShutRefine();
-                    caret.PCaretClear();
+                    caret.QInletClear();
                 }
 
                 return;
-            case TextBox { DataContext: PSentence row } box:
-                if (_qProspectSentence.QSentenceCardFind(row) is PCard card)
+            case TextBox { DataContext: QPassage row } box:
+                if (_qProspectSentence.QSentenceCardFind(row) is QPlacard card)
                 {
                     _cSentence.CSentenceMentionAdd(
-                        card.PCardId,
-                        row.PSentenceRow,
+                        card.QPlacardId,
+                        row.QPassageRow,
                         box.Text,
                         box.SelectionStart,
                         box.SelectionLength,
-                        item.PProspectItemId);
+                        item.QProspectItemId);
                 }
 
                 break;
             case TextBox box:
-                PMentionCommand.PMentionCommandPick.Execute(item.PProspectItemId, box);
+                QMentionCommand.QMentionCommandPick.Execute(item.QProspectItemId, box);
                 break;
         }
 
@@ -171,26 +171,26 @@ internal sealed class QProspect
             return;
         }
 
-        if (QProspectList.SelectedItem is not PProspectItem item)
+        if (QProspectList.SelectedItem is not QProspectItem item)
         {
             return;
         }
 
         switch (sender)
         {
-            case FrameworkElement { DataContext: PCaret<QLinkChip> row }:
-                if (_qProspectLink.QLinkCardFind(row) is PCard card)
+            case FrameworkElement { DataContext: QInlet<QLinkChip> row }:
+                if (_qProspectLink.QLinkCardFind(row) is QPlacard card)
                 {
                     _cCaret.CCaretTranslationInsert(
-                        card.PCardId, item.PProspectItemId, item.PProspectItemHeadword, item.PProspectItemLanguage);
+                        card.QPlacardId, item.QProspectItemId, item.QProspectItemHeadword, item.QProspectItemLanguage);
                     e.Handled = true;
                     QProspectShutRefine();
-                    row.PCaretClear();
+                    row.QInletClear();
                 }
 
                 return;
             case TextBox box:
-                PMentionCommand.PMentionCommandPick.Execute(item.PProspectItemId, box);
+                QMentionCommand.QMentionCommandPick.Execute(item.QProspectItemId, box);
                 e.Handled = true;
                 QProspectShutRefine();
                 return;
@@ -219,7 +219,7 @@ internal sealed class QProspect
 
         foreach (CVistaRow entry in prospect.CProspectRows)
         {
-            _qProspectItem.Add(new PProspectItem(
+            _qProspectItem.Add(new QProspectItem(
                 entry.CVistaRowId,
                 entry.CVistaRowHeadword,
                 entry.CVistaRowLanguage,
@@ -228,14 +228,14 @@ internal sealed class QProspect
 
         foreach (string language in prospect.CProspectLanguages)
         {
-            _qProspectItem.Add(new PProspectItem(null, prospect.CProspectWord, language));
+            _qProspectItem.Add(new QProspectItem(null, prospect.CProspectWord, language));
         }
 
         QProspectPopup.IsOpen = true;
         QProspectList.SelectedIndex = prospect.CProspectChosen ? 0 : -1;
     }
 
-    internal void QProspectTranslationRefine(PCard card, CProspect prospect)
+    internal void QProspectTranslationRefine(QPlacard card, CProspect prospect)
     {
         QProspectPopup.HorizontalOffset = 0;
         QProspectPopup.VerticalOffset = 0;

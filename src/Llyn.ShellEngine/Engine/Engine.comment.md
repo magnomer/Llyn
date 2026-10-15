@@ -62,6 +62,7 @@ All six fetching clerks sit here, so one call cancels them together.
 It is built after the claim group.
 Fetch clerks receive the gate and the bulletin raiser supplied by the engine.
 The frequency and lacuna fetches also receive the settings reader.
+The fetch clerks also receive one fault owner, which records a background fault in the audit log.
 The paradigm clerk receives the language cache, so it reads the same rule books as the lacuna fetch.
 The recording, reflex and lacuna clerks read the claim clerk, so they see which drafts this engine holds.
 The stem clerk receives the reflex clerk, so a series member orders its reflex rows by the pack's rule.
@@ -87,6 +88,7 @@ The courier searches through the query clerk, never through the entry lifecycle.
 The deck, cue and stencil clerks are built here for `LDeckFacade`.
 The deck clerk receives the trail clerk, which normalizes a name before the deck code is derived.
 The cue clerk receives the entry clerk, which loads each entry an add scans.
+It receives the translation, reference and trail clerks too, which the listing line reads.
 The stencil clerk receives the entry, translation, reference and trail clerks its fields read.
 The depot latch is built once per workspace and handed to the depot clerk.
 The depot clerk shares the stencil clerk, so an export reads the faces the deck view shows.
@@ -137,6 +139,7 @@ The hearth comes first, building the clerks and reading the settings.
 The row facade follows it, so every facade that builds vista rows finds it.
 The facades come last, so none of them can ever see an engine without its staff.
 Each facade is built after the siblings it takes, so its constructor needs no engine.
+The deck facade takes the entry and row facades, so its accession find lists catalog rows.
 The stem and reflex facades take no settings facade, since the language clerk owns every row's guise.
 The tenure facade comes last and alone takes the engine, since its tenures reach every facade.
 The workspace opens at the very end, after the workspace facade has created the database.
@@ -219,6 +222,7 @@ The phonetic series of every pack that declares a series source are built again.
 `LLanguageStaff.LLanguageStaffApply` runs those two steps on the language group.
 Stored respellings derived by older pack rules are then derived again through the workspace clerk.
 A workspace rebuilt from an older schema has its derived strings filled once through the workspace clerk.
+A failure on one entry is recorded in the audit log, and the scan goes on with the next entry.
 
 ## `LEngineRigApply`
 
@@ -228,7 +232,8 @@ The new rig's settings are read through the clerk's static open step before anyt
 A folder that cannot be opened therefore leaves the old clerks and caches untouched.
 A workspace that already holds a settings file is opened on its own settings.
 One without any receives the current settings and has them written.
-That write goes through the clerk's `LWorkspaceFallbackSave`, which records a vault fault and swallows it.
+That write goes through the clerk's `LWorkspaceFallbackSave`, which records a vault fault and hands it back.
+The engine needs no use for the fault.
 So the switch never stops halfway, and the next settings save tries again.
 The drafts this engine claimed are forgotten with the old folder and each id is marked stale.
 The old recording clerk stops its playback, since the shared phonograph outlives it.
@@ -250,19 +255,20 @@ Detach stops announcing, so a closed surface is never called again.
 ## `LEngineBulletinRaise`
 
 It announces one stored change to every subscriber.
+A bulletin may carry a refusal, which only a refused queued draft request sets.
 The revision moves first, even with nobody listening, because a tenure reads it whether or not it subscribed.
 The `LBulletinRoster` is copied under the gate, then dispatched outside it.
 So a subscriber can detach without disturbing iteration.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
+Commit: `2f9a06b8eb95`
 - `LBulletinRoster.cs` `089b003a16e92876`
 - `LCatalogStaff.cs` `23816a2bb79aced1`
 - `LClaimStaff.cs` `fc2ed893e2af6438`
-- `LEngine.cs` `756ad32eb4843300`
-- `LEngineHearth.cs` `6d2bc7cbc8f929e2`
+- `LEngine.cs` `70e0ba46ed5cc982`
+- `LEngineHearth.cs` `17ccd1f0c9342b91`
 - `LEngineStaff.cs` `1282514bb49cde5e`
 - `LEntryStaff.cs` `769d85bf0ae2afca`
-- `LLanguageStaff.cs` `599e9aed32f045b6`
-- `LWorkspaceStaff.cs` `8cf3350b651dcf0f`
+- `LLanguageStaff.cs` `dcce9d9280b1adad`
+- `LWorkspaceStaff.cs` `06182aadb64ca9b8`

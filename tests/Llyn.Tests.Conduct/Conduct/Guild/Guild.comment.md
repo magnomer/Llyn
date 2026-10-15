@@ -18,7 +18,7 @@ Enter with no lit row credits the typed name, and closes the byline.
 Escape over an offered byline only closes it, and a second Escape reverts the field.
 Picking the Author the field already credits only reverts the typed text, and a press on no row reverts nothing.
 A find that fails shows `Source.FindFailed` once and offers nothing.
-A search over a draft the workspace change made stale shows no notice and offers nothing.
+A search over a draft the workspace change made stale shows `Source.FindFailed` once and offers nothing.
 The two notice tests build the imprint over a fake envoy that records each notice.
 
 ## `TGuild`
@@ -109,8 +109,8 @@ Most tests build the oeuvre over a fresh roll vista and oeuvre vista, as the gui
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `TByline.cs` `c42372c296c3d088`
+Commit: `2f9a06b8eb95`
+- `TByline.cs` `56eade5948ec66cb`
 - `TGuild.cs` `0a14cdf002b0278e`
 - `TGuildAutograph.cs` `b6c5e2ce42a02875`
 - `TGuildMode.cs` `8274056122aa7caa`

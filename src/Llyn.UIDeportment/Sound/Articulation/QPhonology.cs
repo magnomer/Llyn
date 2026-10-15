@@ -45,7 +45,7 @@ internal sealed class QPhonology
         surface.CommandBindings.Add(
             new CommandBinding(ApplicationCommands.Print, QPhonologyPressObserve, QPhonologyPressRefine));
         surface.CommandBindings.Add(new CommandBinding(
-            PDisplayCommand.PDisplayCommandPortrait, QPhonologyPortraitObserve, QPhonologyPressRefine));
+            QDisplayCommand.QDisplayCommandPortrait, QPhonologyPortraitObserve, QPhonologyPressRefine));
         _qPhonologyRail = new QPanelRail(
             QContract.QContractFind<UserControl>(surface, "PPhonologyRail"),
             QPhonologyBin,

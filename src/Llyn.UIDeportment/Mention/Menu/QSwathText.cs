@@ -11,11 +11,11 @@ namespace Llyn.UIDeportment;
 
 public sealed class QSwathText
 {
-    private readonly PSwath _qSwathTextOwner;
+    private readonly QSwath _qSwathTextOwner;
 
     private readonly List<FrameworkElement> _qSwathTextList = [];
 
-    public QSwathText(PSwath owner)
+    public QSwathText(QSwath owner)
     {
         ArgumentNullException.ThrowIfNull(owner);
         _qSwathTextOwner = owner;
@@ -35,7 +35,7 @@ public sealed class QSwathText
             return;
         }
 
-        if (node is TextBlock or Image or Rectangle or PContour || QScreen.QScreenFind(node) is not null)
+        if (node is TextBlock or Image or Rectangle or QContour || QScreen.QScreenFind(node) is not null)
         {
             FrameworkElement item = (FrameworkElement)node;
             if (item.ActualWidth > 0 && item.ActualHeight > 0)
@@ -55,13 +55,13 @@ public sealed class QSwathText
 
     public Rect QSwathTextPlace(FrameworkElement item)
     {
-        Rect local = item is PContour
+        Rect local = item is QContour
             ? VisualTreeHelper.GetContentBounds(item)
             : new Rect(0, 0, item.ActualWidth, item.ActualHeight);
         return item.TransformToVisual(_qSwathTextOwner).TransformBounds(local);
     }
 
-    public PSwathSeam? QSwathTextFind(Point point)
+    public QSwathSeam? QSwathTextFind(Point point)
     {
         int best = -1;
         double nearest = double.MaxValue;
@@ -92,42 +92,42 @@ public sealed class QSwathText
 
         if (_qSwathTextList[best] is not TextBlock block)
         {
-            return new PSwathSeam(best, null);
+            return new QSwathSeam(best, null);
         }
 
         if (point.Y < bound.Top || (point.X < bound.Left && point.Y <= bound.Bottom))
         {
-            return new PSwathSeam(best, block.ContentStart);
+            return new QSwathSeam(best, block.ContentStart);
         }
 
         if (point.Y > bound.Bottom || point.X > bound.Right)
         {
-            return new PSwathSeam(best, block.ContentEnd);
+            return new QSwathSeam(best, block.ContentEnd);
         }
 
         try
         {
             Point local = _qSwathTextOwner.TransformToVisual(block).Transform(point);
             TextPointer? caret = block.GetPositionFromPoint(local, true);
-            return new PSwathSeam(best, caret ?? block.ContentStart);
+            return new QSwathSeam(best, caret ?? block.ContentStart);
         }
         catch (InvalidOperationException)
         {
-            return new PSwathSeam(best, block.ContentStart);
+            return new QSwathSeam(best, block.ContentStart);
         }
     }
 
-    public string QSwathTextRead(PSwathSeam? start, PSwathSeam? finish)
+    public string QSwathTextRead(QSwathSeam? start, QSwathSeam? finish)
     {
-        if (start is not PSwathSeam head || finish is not PSwathSeam tail)
+        if (start is not QSwathSeam head || finish is not QSwathSeam tail)
         {
             return string.Empty;
         }
 
         StringBuilder text = new();
         Rect previous = Rect.Empty;
-        for (int index = head.PSwathSeamIndex;
-            index <= tail.PSwathSeamIndex && index < _qSwathTextList.Count;
+        for (int index = head.QSwathSeamIndex;
+            index <= tail.QSwathSeamIndex && index < _qSwathTextList.Count;
             index++)
         {
             if (_qSwathTextList[index] is not TextBlock block)
@@ -136,7 +136,7 @@ public sealed class QSwathText
             }
 
             string piece = new TextRange(
-                head.PSwathSeamStart(index, block), tail.PSwathSeamFinish(index, block)).Text;
+                head.QSwathSeamStart(index, block), tail.QSwathSeamFinish(index, block)).Text;
             if (piece.Length == 0)
             {
                 continue;
@@ -157,11 +157,11 @@ public sealed class QSwathText
 
     private static string QSwathTextFormat(Rect previous, Rect bound)
     {
-        if (previous.IsEmpty || bound.Top >= previous.Bottom - PSwath.PSwathRowSlack)
+        if (previous.IsEmpty || bound.Top >= previous.Bottom - QSwath.QSwathRowSlack)
         {
             return Environment.NewLine;
         }
 
-        return bound.Left - previous.Right <= PSwath.PSwathRowSlack ? string.Empty : " ";
+        return bound.Left - previous.Right <= QSwath.QSwathRowSlack ? string.Empty : " ";
     }
 }

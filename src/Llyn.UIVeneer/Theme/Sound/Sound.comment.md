@@ -361,9 +361,9 @@ The hinge keeps its place folded or opened, because the rows unfold below it.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
+Commit: `2f9a06b8eb95`
 - `PThemeAccent.xaml` `9c0e30ae29c4e71f`
-- `PThemeContour.xaml` `5d453453e0924ed5`
+- `PThemeContour.xaml` `6e5ffcecc58e636f`
 - `PThemeDiwei.xaml` `3bc509521e75d83f`
 - `PThemeFanqie.xaml` `9617690fd799a490`
 - `PThemePronunciation.xaml` `786bf25f1d301c65`

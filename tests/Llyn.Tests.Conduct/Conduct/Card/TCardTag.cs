@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Llyn.Conduct;
@@ -16,7 +17,7 @@ public sealed class TCardTag
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LTag tag = engine.TEngineTagCreate("animal");
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
 
         CSlate slate = caret.CCaretTagAdd(0, " ani");
 
@@ -26,13 +27,42 @@ public sealed class TCardTag
     }
 
     [Fact]
+    public void TagAdd_AddFailure_ShowsUpdateFailure()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineDelaySet(0);
+        List<string> asked = [];
+        CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, asked);
+        CDesk desk = TInterfaceConductDesk.TDeskCreate(engine, "Input", envoy, "Input", CSubject.CSubjectEntry);
+        desk.CDeskStart(null);
+        CCaret caret = new(desk, TInterfaceConductCard.TCardCreate(engine, desk, envoy), new CLedgerNoticed());
+        long sheet = TCard.TCardSheetAdd(desk);
+        TCard.TCardSheetAdd(desk);
+        desk.CDeskChronicle.CDeskChronicleUndo();
+        bool failing = true;
+        engine.TEngineObserverAttach(bulletin =>
+        {
+            if (failing && bulletin.LBulletinSubject == LSubject.LSubjectTenure)
+            {
+                throw new InvalidOperationException("The tenure observer failed.");
+            }
+        });
+
+        caret.CCaretTagAdd(sheet, "animal, ");
+        failing = false;
+
+        Assert.Equal(["Input.UpdateFailed"], asked);
+    }
+
+    [Fact]
     public void TagAdd_BlankOrUnmatchedText_OffersNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         engine.TEngineTagCreate("animal");
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
 
         CSlate blank = caret.CCaretTagAdd(0, "   ");
         CSlate unmatched = caret.CCaretTagAdd(0, "zz");
@@ -55,7 +85,7 @@ public sealed class TCardTag
         }
 
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
 
         CSlate slate = caret.CCaretTagAdd(0, "tag");
 
@@ -69,7 +99,7 @@ public sealed class TCardTag
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
 
         caret.CCaretTagSettle(sheet, "  animal ");
@@ -87,7 +117,7 @@ public sealed class TCardTag
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LTag stored = engine.TEngineTagCreate("animal");
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
 
         caret.CCaretTagInsert(sheet, stored.LTagId);
@@ -103,7 +133,7 @@ public sealed class TCardTag
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
         caret.CCaretTagSettle(sheet, "animal");
 
@@ -118,7 +148,7 @@ public sealed class TCardTag
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
 
         string kept = caret.CCaretTagAdd(sheet, " ani").CSlateText;
@@ -136,7 +166,7 @@ public sealed class TCardTag
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LTag tag = engine.TEngineTagCreate("animal");
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
         long other = TCard.TCardSheetAdd(desk);
         caret.CCaretTagInsert(sheet, tag.LTagId);
@@ -153,7 +183,7 @@ public sealed class TCardTag
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LTag stored = engine.TEngineTagCreate("animal");
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
         caret.CCaretTagSettle(sheet, "plant, wild");
         caret.CCaretTag.CCaretTrailMove(sheet, -1);
@@ -172,7 +202,7 @@ public sealed class TCardTag
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
         caret.CCaretTagSettle(sheet, "plant, wild");
         caret.CCaretTag.CCaretTrailMove(sheet, -1);
@@ -190,7 +220,7 @@ public sealed class TCardTag
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
         caret.CCaretTagSettle(sheet, "plant, wild, animal");
         caret.CCaretTag.CCaretTrailMove(sheet, -1);

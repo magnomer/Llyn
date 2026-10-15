@@ -17,13 +17,14 @@ Immediate edits flush pending typing first, so an earlier typed change is not ap
 Readiness and change checks also persist pending typing before reading the gauge.
 
 Cancel closes the queue before discarding the draft, so a failed discard cannot leave the tenure accepting edits.
-Refused discards are swallowed, while other failures reach the caller.
+A discard failure, a refusal included, reaches the caller.
 The gauge is raised in `finally`, including when discard throws.
 
 Finish without storage cancels without applying pending requests.
 A storage attempt dispatches them first and rethrows any retained queue fault with its original stack.
 An unchanged draft cancels instead of committing.
 An accepted unreadable-value seam sweeps and retries with a seam that cannot accept another retry.
+A declined seam rethrows the commit's own refusal with its stack.
 Searches stop and observers detach only after a successful commit or during cancellation.
 
 Entry preparation repeats completion requests for at most three rounds.
@@ -32,7 +33,7 @@ The herald suppresses the held draft's notices during preparation because the re
 Preparation cleanup runs even if its action fails.
 
 Stored identity reads do not persist pending edits.
-A refused read answers null, while other read failures propagate.
+The read answers null for an ended tenure or a stale draft id, and other read failures propagate.
 
 ## `LTenureQueue`
 
@@ -42,7 +43,7 @@ Its live state requires both an unended lifetime and no retained fault.
 Deferred dispatch takes requests and checks live state in one gate hold.
 Application happens after releasing that gate, while the caller holds the turn.
 Refused requests do not stop later requests in the batch.
-One draft bulletin follows a batch containing refusals, allowing observers to reread the draft.
+Each refused request raises a draft bulletin carrying its refusal, so observers reread the draft.
 Other failures retain the first fault and stop application.
 Suspension also drops pending requests at the chronicle clerk.
 
@@ -75,7 +76,7 @@ Preparation suppresses only draft bulletins naming the held draft.
 Finishing preparation clears the kept draft and advances its round.
 A draft read racing a round change is returned but not cached.
 This prevents later Mention checks from reusing that raced read.
-A refused kept-draft read answers null.
+The kept-draft read answers null for a stale draft id.
 Cancel and successful finish detach the hearth subscription and clear the roster.
 
 ## `LErrand`
@@ -100,6 +101,8 @@ Non-primary targets are checked against the draft's current rows before a reques
 A foray keeps the word, language, target and scheme of one search.
 Cancellation is guarded and disposes its source only once.
 The search is started without requiring the caller to await it.
+A search fault goes to the injected `fault` owner, which records it.
+So does a fault of the unstarted callback.
 
 Recording saves check the draft's current word and language both before and after download.
 Those checks persist pending typing, so delayed keystrokes participate in the comparison.
@@ -169,13 +172,13 @@ Session clearing removes every transcription scheme along with candidate and rec
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `LErrand.cs` `3142b5b72fa7a6a1`
-- `LForay.cs` `8a42cc5bb1840b57`
-- `LPosture.cs` `ee7910eb61c46b82`
-- `LTenure.cs` `016dd4d269f2faef`
+Commit: `2f9a06b8eb95`
+- `LErrand.cs` `c61ceb9f8ddc5692`
+- `LForay.cs` `eb0b0946abaaf6ee`
+- `LPosture.cs` `4590b7b4d15449e9`
+- `LTenure.cs` `e482dc12cd6bda4f`
 - `LTenureGauge.cs` `05df6162da764173`
-- `LTenureHerald.cs` `8aa200e2ae6fc5db`
-- `LTenureQueue.cs` `d38a1a407da7b071`
+- `LTenureHerald.cs` `f36aae6150e1b18d`
+- `LTenureQueue.cs` `31568e59a98da620`
 - `LTrove.cs` `3ee760245e6b7943`
 - `LVista.cs` `6e86b081ea0753e2`

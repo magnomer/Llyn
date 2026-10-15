@@ -236,6 +236,19 @@ public sealed class LDraftFacade : LMarkdownPort
         }
     }
 
+    internal LDraft? LEnginePresentRead(long id)
+    {
+        lock (_lDraftFacadeGate)
+        {
+            if (_lDraftFacadeHearth.LEngineDraftStale.Contains(id))
+            {
+                return null;
+            }
+
+            return LEngineDraftRead(id);
+        }
+    }
+
     internal void LEngineDraftValidate(long id)
     {
         lock (_lDraftFacadeGate)

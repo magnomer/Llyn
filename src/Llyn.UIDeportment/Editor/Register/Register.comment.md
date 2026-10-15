@@ -3,14 +3,14 @@
 Register holds the Register field of a card, written the same way as the Tag and Situation fields.
 A Register is a stored row the chip marks, so its chip carries the id the reference is written by.
 
-## `PRegister`
+## `QRegisterChip`
 
 This is one committed Register chip.
 A chip made from typed text carries a fresh id, because the row it will become does not exist yet.
 The wording is the engine's value, state and all, and the template's converter reads its mark.
 Whether a pack names the Register is read from the stored row, so the chip carries no mark for it.
 
-## `PRegisterSelector`
+## `QRegisterSelector`
 
 The field's chips and the one-item entry list `QBerth` builds beside them share this selector.
 The caret is the one row typed into, so it alone takes the entry template.
@@ -63,7 +63,7 @@ The entry is built by `QBerth` beside the chips and stands where the card's care
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `PRegister.cs` `78f4581e696a5ffe`
-- `PRegisterSelector.cs` `33a0ab2dc7c6bc68`
-- `QRegister.cs` `d3c1bd19d9abcd7f`
+Commit: `2f9a06b8eb95`
+- `QRegister.cs` `5cdca8325c982fd7`
+- `QRegisterChip.cs` `4bd6be4435d3fe84`
+- `QRegisterSelector.cs` `6460ec5400d0447e`

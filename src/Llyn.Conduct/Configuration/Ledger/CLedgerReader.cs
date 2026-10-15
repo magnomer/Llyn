@@ -22,7 +22,7 @@ internal sealed class CLedgerReader
         [
             "Frequency.Switch", "Frequency.Helper", "Morphology.Switch", "Morphology.Helper"
         ]),
-        ("Sync", ["Notebook.Name", "Notebook.Helper"]),
+        ("Sync", ["Notebook.Name", "Notebook.Helper", "Settings.Depot", "Settings.DepotHelper"]),
         ("Layout", ["Layout.Linked", "Layout.LinkedHelper"]),
     ];
 
@@ -102,7 +102,8 @@ internal sealed class CLedgerReader
             settings.LSettingsMorphology,
             settings.LSettingsEpithet,
             settings.LSettingsOnline,
-            settings.LSettingsNotebook);
+            settings.LSettingsNotebook,
+            settings.LSettingsDepot);
     }
 
     private string CLedgerMetaRead(string child, CSettings settings)

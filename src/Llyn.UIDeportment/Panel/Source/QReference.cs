@@ -94,7 +94,7 @@ internal sealed class QReference : QChronicleHost
         _qReferenceSurface.CommandBindings.Add(
             new CommandBinding(ApplicationCommands.Print, QReferencePressObserve, QReferencePressRefine));
         _qReferenceSurface.CommandBindings.Add(
-            new CommandBinding(PDisplayCommand.PDisplayCommandPortrait, QReferencePortraitObserve,
+            new CommandBinding(QDisplayCommand.QDisplayCommandPortrait, QReferencePortraitObserve,
             QReferencePortraitRefine));
     }
 

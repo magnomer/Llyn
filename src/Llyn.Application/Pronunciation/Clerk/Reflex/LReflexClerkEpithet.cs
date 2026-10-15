@@ -65,14 +65,8 @@ public static class LReflexClerkEpithet
 
         if (!string.IsNullOrEmpty(rule.LReflexRuleClip))
         {
-            try
-            {
-                piece = Regex.Replace(
-                    piece, rule.LReflexRuleClip, string.Empty, RegexOptions.CultureInvariant, LReflexEpithetPatience);
-            }
-            catch (Exception exception) when (exception is ArgumentException or RegexMatchTimeoutException)
-            {
-            }
+            piece = Regex.Replace(
+                piece, rule.LReflexRuleClip, string.Empty, RegexOptions.CultureInvariant, LReflexEpithetPatience);
         }
 
         return string.Join(' ', piece.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));

@@ -4,7 +4,7 @@ Context holds the Situation field of a card.
 It is separate from the other chip fields.
 A Situation is stored under an id and written again, not edited.
 
-## `PContext`
+## `QContextChip`
 
 This is one committed Situation, the boxed wording the user sees.
 It carries the id the Situation is stored under, so a card keeps naming the same Situation across saves.
@@ -14,7 +14,7 @@ A Situation the store could not read back is marked rather than shown.
 The mark stands until the user closes the chip and writes the wording again.
 So nothing unknown is quietly turned into nothing at all.
 
-## `PContextSelector`
+## `QContextSelector`
 
 The field draws committed Situations and one open entry as a single run of items.
 They wrap together as one run, which needs the item template chosen per item.
@@ -79,7 +79,7 @@ The dropdown asks it too, since a pick on a Situation caret lands on that card.
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `PContext.cs` `90e338f58d6b0c27`
-- `PContextSelector.cs` `1633b5000b4cae23`
-- `QContext.cs` `11c61e2422088d31`
+Commit: `2f9a06b8eb95`
+- `QContext.cs` `ef1eb3f8f4dbe71b`
+- `QContextChip.cs` `b695c0bf977b4a31`
+- `QContextSelector.cs` `6ed10ad72c8e19f4`

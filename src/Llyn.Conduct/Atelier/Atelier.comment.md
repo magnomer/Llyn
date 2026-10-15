@@ -227,6 +227,7 @@ Only `CAtelier.CAtelierClose` calls it, before the leftover sweep.
 The driver's marshal puts the notice on the driver's thread whichever thread saved.
 The posture raises it once per open workspace, so a drag that keeps failing shows one notice.
 The clerk already recorded the fault, so the notice goes to `CEnvoyFailureShow` with its key alone.
+It likewise shows the posture's `LPostureReadFailed`, raised when the stored layout cannot be read, as `Layout.ReadFailed`.
 A second attach replaces the first, so the notice is never heard twice.
 In product code only `CAtelierOpen` calls it.
 
@@ -242,10 +243,10 @@ The amount is written with one decimal in megabytes and as a whole number in kil
 
 ## Stamp
 
-Commit: `f6dae2392935`
+Commit: `2f9a06b8eb95`
 - `CAtelier.cs` `f47a17e14661cb82`
 - `CEntryBundle.cs` `5a3f6144e85000d5`
 - `CEnvoy.cs` `54422ae5955ae73f`
 - `CPhonologyBundle.cs` `c969d9a57ef9c34d`
 - `CScreen.cs` `060eb21146468883`
-- `CWorkspace.cs` `e3533e69d610ae75`
+- `CWorkspace.cs` `569bc06686780096`

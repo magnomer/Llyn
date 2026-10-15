@@ -52,6 +52,13 @@ public sealed class LDeckOutlet : LDeckPort
     public IReadOnlyList<LCue> LEngineCueRead(long deckId) =>
         _lDeckOutletEngine.LEngineDeck.LEngineCueRead(deckId);
 
+    public IReadOnlyList<(LCue LCueStored, string LCueLine)> LEngineLineRead(long deckId, LPortraitLabel label) =>
+        _lDeckOutletEngine.LEngineDeck.LEngineLineRead(deckId, label);
+
+    public IReadOnlyList<(LVistaRow LAccessionRow, bool LAccessionBound)> LEngineAccessionFind(
+        LVista vista, long deckId) =>
+        _lDeckOutletEngine.LEngineDeck.LEngineAccessionFind(vista, deckId);
+
     public int LEngineCueAdd(long deckId, IReadOnlyList<long> entryIds) =>
         _lDeckOutletEngine.LEngineDeck.LEngineCueAdd(deckId, entryIds);
 
@@ -67,9 +74,6 @@ public sealed class LDeckOutlet : LDeckPort
     public void LEngineCueSet(long cueId, int flag, bool excluded) =>
         _lDeckOutletEngine.LEngineDeck.LEngineCueSet(cueId, flag, excluded);
 
-    public LCueFace LEngineFaceRead(long cueId, LPortraitLabel label) =>
-        _lDeckOutletEngine.LEngineDeck.LEngineFaceRead(cueId, label);
-
     public Task<LDeckReceipt> LEngineDeckExport(long deckId, LPortraitLabel label, CancellationToken cancellation) =>
         _lDeckOutletEngine.LEngineDeck.LEngineDeckExport(deckId, label, cancellation);
 
@@ -82,11 +86,26 @@ public sealed class LDeckOutlet : LDeckPort
     public void LEngineCellSave(long cueId, IReadOnlyList<LCueCell> cells) =>
         _lDeckOutletEngine.LEngineDeck.LEngineCellSave(cueId, cells);
 
+    public IReadOnlyList<LStencil> LEngineStencilRead() =>
+        _lDeckOutletEngine.LEngineDeck.LEngineStencilRead();
+
     public LStencil LEngineStencilRead(long deckId) =>
         _lDeckOutletEngine.LEngineDeck.LEngineStencilRead(deckId);
 
     public void LEngineSlotSet(long deckId, LStencilSlot slot) =>
         _lDeckOutletEngine.LEngineDeck.LEngineSlotSet(deckId, slot);
+
+    public void LEngineFieldAppend(long deckId, int index, LStencilField field) =>
+        _lDeckOutletEngine.LEngineDeck.LEngineFieldAppend(deckId, index, field);
+
+    public void LEngineFieldRemove(long deckId, int index, int place) =>
+        _lDeckOutletEngine.LEngineDeck.LEngineFieldRemove(deckId, index, place);
+
+    public void LEngineJoinSet(long deckId, int index, int place, bool all) =>
+        _lDeckOutletEngine.LEngineDeck.LEngineJoinSet(deckId, index, place, all);
+
+    public void LEngineMediaSet(long deckId, LCueColumn column, int index) =>
+        _lDeckOutletEngine.LEngineDeck.LEngineMediaSet(deckId, column, index);
 
     public void LEngineStencilSave(long deckId, string name) =>
         _lDeckOutletEngine.LEngineDeck.LEngineStencilSave(deckId, name);

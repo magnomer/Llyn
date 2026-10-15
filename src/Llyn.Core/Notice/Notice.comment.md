@@ -11,6 +11,7 @@ It carries no content, because a subscriber re-reads what it needs through the e
 It names no origin, because a subscriber that acted on its own change is announced to like any other.
 An id of zero or less means the kind changed as a whole rather than one named record.
 That is an import, a rename across cards, or the workspace moving.
+It carries a refusal, the exception of a queued draft request the workspace refused, and null otherwise.
 
 ## `LSubject`
 
@@ -39,6 +40,6 @@ It is apart from the plain fold, so entry and card folds leave the series page a
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `LBulletin.cs` `2688781444381d03`
+Commit: `2f9a06b8eb95`
+- `LBulletin.cs` `30cb003d68104baa`
 - `LSubject.cs` `2b599722433caba7`

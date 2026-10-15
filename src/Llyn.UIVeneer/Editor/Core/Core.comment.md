@@ -193,8 +193,8 @@ The editor shows it with the block and sets its `Pending` cue to turn the icon w
 
 ## Stamp
 
-Commit: `aae5349dbb94`
-- `PEditor.xaml` `3314af49b6913ed9`
+Commit: `2f9a06b8eb95`
+- `PEditor.xaml` `5d829b82573cd287`
 - `PEditor.xaml.cs` `29ffbc2c15f8f19d`
 - `PEditorCard.xaml` `ac6c941e70bc9e7e`
 - `PEditorDropdown.xaml` `1fb3025a80aa0ef9`

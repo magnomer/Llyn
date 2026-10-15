@@ -6,7 +6,7 @@ Only one field is typed into at a time.
 The popup is retargeted at the caret that opened it.
 A card built at runtime could not declare a popup of its own.
 
-## `PProfferItem`
+## `QProfferItem`
 
 This is one stored row offered in the dropdown, with the wording shown and the id it is stored under.
 The id is what the pick carries.
@@ -16,7 +16,7 @@ A register row carries an empty count, so it shows none.
 The wording comes in three pieces, split by Core's `LCatalog.LCatalogMarkFind` before the row arrives.
 The row draws the middle piece in weight, so a reader sees why the row is offered.
 
-## `PProspectItem`
+## `QProspectItem`
 
 This is one row of the dropdown that opens when typed text matches more than one Entry.
 Most rows stand for an existing Entry and carry its id.
@@ -171,8 +171,8 @@ A data trigger and a string format stood there before.
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `PProfferItem.cs` `2c61e99019035e61`
-- `PProspectItem.cs` `0db2c8c692a1358d`
-- `QProffer.cs` `7febc9bc46af3d60`
-- `QProspect.cs` `2c16bce7d731bba8`
+Commit: `2f9a06b8eb95`
+- `QProffer.cs` `875c85b3480be680`
+- `QProfferItem.cs` `6f1e3475b8b807f2`
+- `QProspect.cs` `66d7ea4b8766e3f4`
+- `QProspectItem.cs` `b3438f13d3fd6256`

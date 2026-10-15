@@ -25,12 +25,12 @@ internal sealed class LSettingsFacade
         return _lSettingsFacadeHearth.LEngineSettingsRead();
     }
 
-    internal bool LEnginePostureLoad(string name, out LPostureState? state)
+    internal bool LEnginePostureLoad(string name, out LPostureState? state, out Exception? fault)
     {
         lock (_lSettingsFacadeGate)
         {
             return LSettingsFacadeStaff.LEngineStaffWorkspace.LWorkspaceStaffWorkspace
-                .LWorkspacePostureRead(name, out state);
+                .LWorkspacePostureRead(name, out state, out fault);
         }
     }
 

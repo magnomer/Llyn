@@ -13,7 +13,7 @@ public sealed class LLacunaClerk
     private readonly LInflectionVault _lLacunaClerkInflections;
     private readonly LLacunaVault _lLacunaClerkLacunae;
     private readonly LSourceFactory _lLacunaClerkFactory;
-    private readonly LAuditVault _lLacunaClerkAudit;
+    private readonly Action<Exception> _lLacunaClerkFault;
     private readonly LLanguageCache _lLacunaClerkLanguages;
     private readonly LParadigmClerk _lLacunaClerkParadigms;
     private readonly LClaimClerk _lLacunaClerkClaims;
@@ -31,7 +31,8 @@ public sealed class LLacunaClerk
         LClaimClerk claims,
         object gate,
         Func<LSettings> settings,
-        Action<LSubject, long> raise)
+        Action<LSubject, long> raise,
+        Action<Exception> fault)
     {
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(languages);
@@ -40,11 +41,12 @@ public sealed class LLacunaClerk
         ArgumentNullException.ThrowIfNull(gate);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(raise);
+        ArgumentNullException.ThrowIfNull(fault);
         _lLacunaClerkEntries = rig.LRigEntries;
         _lLacunaClerkInflections = rig.LRigLexicon.LRigLexiconInflections;
         _lLacunaClerkLacunae = rig.LRigLexicon.LRigLexiconLacunae;
         _lLacunaClerkFactory = rig.LRigSource.LRigSourceFactory;
-        _lLacunaClerkAudit = rig.LRigAudit;
+        _lLacunaClerkFault = fault;
         _lLacunaClerkLanguages = languages;
         _lLacunaClerkParadigms = paradigms;
         _lLacunaClerkClaims = claims;
@@ -321,7 +323,7 @@ public sealed class LLacunaClerk
         }
         catch (Exception exception)
         {
-            _lLacunaClerkAudit.LAuditRecord(exception);
+            _lLacunaClerkFault(exception);
         }
         finally
         {

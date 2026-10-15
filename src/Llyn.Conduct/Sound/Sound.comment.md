@@ -126,7 +126,7 @@ The flag key comes from the engine, so the ensign's key format has one owner.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `2f9a06b8eb95`
 - `CFold.cs` `1d4f1209ad356aac`
 - `CFont.cs` `505e7e889f713f67`
 - `CFontRole.cs` `4f4b9a9bc58621ca`
@@ -135,5 +135,5 @@ Commit: `c2f335c331fe`
 - `CFrequencyTier.cs` `817eb221e8ae0c18`
 - `CRespelling.cs` `ece0c93bdb9fa88a`
 - `CRespellingMark.cs` `0e039bb6dba672d3`
-- `CSounding.cs` `e59be986f3b94b4f`
+- `CSounding.cs` `354882e02eb08b7c`
 - `CVariety.cs` `16ce6347974fd167`

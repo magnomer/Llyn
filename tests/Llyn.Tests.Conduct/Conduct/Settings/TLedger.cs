@@ -160,6 +160,22 @@ public sealed class TLedger
     }
 
     [Fact]
+    public void LedgerDepotSave_RelativeFolder_ShowsTheStoredFolder()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        List<CLedgerState> shown = TInterfaceConduct.TLedgerShowRead(atelier);
+
+        string? stored = atelier.CAtelierLedger.CLedgerDepotSave(
+            Path.Combine("Decks", "Phone"), TEnvoyFake.TEnvoyCreate(false, []));
+
+        CLedgerState last = shown[^1];
+        Assert.Equal(Path.Combine("Decks", "Phone"), stored);
+        Assert.Equal(Path.Combine("Decks", "Phone"), last.CLedgerStateSettings.CSettingsDepot);
+    }
+
+    [Fact]
     public void LedgerDepotChange_FolderInWorkspace_StoresRelativePath()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

@@ -7,7 +7,7 @@ namespace Llyn.Conduct;
 
 public sealed class CDisplayPlayback
 {
-    private readonly LDisplaySound _cDisplayPlaybackVoice;
+    private readonly CVoice _cDisplayPlaybackVoice;
 
     private readonly CLedgerNoticed _cDisplayPlaybackNoticed;
 
@@ -17,21 +17,21 @@ public sealed class CDisplayPlayback
 
     private readonly LSettingsPort _cDisplayPlaybackSettings;
 
-    internal CDisplayPlayback(LDisplay display, LMediaPort media, LSettingsPort settings, CEnvoy envoy)
+    internal CDisplayPlayback(CRule display, LMediaPort media, LSettingsPort settings, CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(display);
         ArgumentNullException.ThrowIfNull(media);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(envoy);
 
-        _cDisplayPlaybackVoice = display.LDisplaySound;
-        _cDisplayPlaybackNoticed = display.LDisplayNoticed;
+        _cDisplayPlaybackVoice = display.CVoice;
+        _cDisplayPlaybackNoticed = display.CRuleNoticed;
         _cDisplayPlaybackMedia = media;
         _cDisplayPlaybackEnvoy = envoy;
         _cDisplayPlaybackSettings = settings;
     }
 
-    private LEntryDraft? LDisplayPlaybackShown => _cDisplayPlaybackVoice.LDisplayShown;
+    private LEntryDraft? LDisplayPlaybackShown => _cDisplayPlaybackVoice.CVoiceShown;
 
     public CLecternPlayback CDisplayPlaybackRead()
     {
@@ -79,7 +79,7 @@ public sealed class CDisplayPlayback
     {
         try
         {
-            _cDisplayPlaybackVoice.LDisplayTicket = play();
+            _cDisplayPlaybackVoice.CVoiceTicket = play();
         }
         catch (Exception exception)
         {
@@ -90,6 +90,6 @@ public sealed class CDisplayPlayback
 
     public void CDisplayPlaybackCancel()
     {
-        _cDisplayPlaybackVoice.LDisplayPlaybackStop();
+        _cDisplayPlaybackVoice.CVoicePlaybackStop();
     }
 }

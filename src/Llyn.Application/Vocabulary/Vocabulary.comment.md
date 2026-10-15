@@ -315,10 +315,10 @@ A pack that declares no vocabulary contributes nothing and is not an error.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `2f9a06b8eb95`
 - `LFreedomClerk.cs` `6ec52b4723d6fc17`
 - `LInflectionClerk.cs` `12e79993ef68b91e`
-- `LLacunaClerk.cs` `0edf452de718c310`
+- `LLacunaClerk.cs` `3426b17a02088857`
 - `LParadigmClerk.cs` `b0cc836f2362ab02`
 - `LUnitClerk.cs` `338cd4c7dbfba260`
 - `LVocabularyClerk.cs` `3886e24328b42f7c`

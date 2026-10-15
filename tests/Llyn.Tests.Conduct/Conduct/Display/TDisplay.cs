@@ -15,13 +15,13 @@ public sealed class TDisplay
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        LDisplaySound sound = TInterfaceConductSound.TDisplaySoundCreate(engine);
+        CVoice sound = TInterfaceConductSound.TDisplaySoundCreate(engine);
         sound.TDisplaySoundShow(7, TDisplayDraftCreate([]));
 
         sound.TDisplaySoundClear();
 
-        Assert.Null(sound.LDisplayShown);
-        Assert.Null(sound.LDisplayEntry);
+        Assert.Null(sound.CVoiceShown);
+        Assert.Null(sound.CVoiceEntry);
     }
 
     [Fact]
@@ -29,7 +29,7 @@ public sealed class TDisplay
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        LDisplaySound sound = TInterfaceConductSound.TDisplaySoundCreate(engine);
+        CVoice sound = TInterfaceConductSound.TDisplaySoundCreate(engine);
         LEntryDraft draft = TDisplayDraftCreate([TInterface.TReflexDraftCreate("Korean", "", "a")]);
         long id = TExemplar.TExemplarSave(engine, draft)[0];
         sound.TDisplaySoundShow(id, TDisplayDraftCreate([]));
@@ -78,7 +78,7 @@ public sealed class TDisplay
                     LStateValue.LStateValueUnknown, string.Empty, "a spark", [], [], [], [], [], 3),
             ],
             [TInterface.TCardDraftCreate(string.Empty, string.Empty, "a fire", [], [], [], [], [], 1)]);
-        display.LDisplayRule.LDisplaySound.TDisplaySoundShow(7, draft);
+        display.LDisplayRule.CVoice.TDisplaySoundShow(7, draft);
 
         IReadOnlyList<CCompassRow> rows = display.CDisplayCompass.CCompassRead(
             [CCompassPart.CCompassPartSpeech, CCompassPart.CCompassPartMeaning, CCompassPart.CCompassPartCollocation],

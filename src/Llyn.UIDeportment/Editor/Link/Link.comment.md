@@ -3,7 +3,7 @@
 Link holds the Translation field of a card and the reflex anchor dropdown.
 Both are popups or fields that are retargeted at whatever asked for them.
 
-## `PLinkSelector`
+## `QLinkSelector`
 
 The field's chips and the one-item entry list `QBerth` builds beside them share this selector.
 So the template is chosen per item, the entry template for the caret and the chip template otherwise.
@@ -89,18 +89,18 @@ The entry is built by `QBerth` beside the chips and stands where the card's care
 
 ### Inline notes
 
-### QLink.cs: `internal TextBox? QLinkBoxFind(PCard card)`
+### QLink.cs: `internal TextBox? QLinkBoxFind(QPlacard card)`
 
 The dropdown hangs off the caret it was opened from.
 The caret has no name to bind to, so the focused box is asked whether it is that card's.
 
-### QLink.cs: `internal PCard? QLinkCardFind(object row)`
+### QLink.cs: `internal QPlacard? QLinkCardFind(object row)`
 
 The Translation dropdown asks it too, since a pick on a Translation caret links on that card.
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `PLinkSelector.cs` `d070f64083422ea2`
+Commit: `2f9a06b8eb95`
 - `QAnchor.cs` `942ece4b06597d3d`
-- `QLink.cs` `aa3d59d46da4d415`
+- `QLink.cs` `9a214d7c1db64364`
+- `QLinkSelector.cs` `ef1213a6712922a0`

@@ -124,10 +124,10 @@ An unknown field is dressed as the placeholder the edit side shows, so the two s
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `2f9a06b8eb95`
 - `QColophon.cs` `e705a093da63a352`
 - `QFootnote.cs` `0659f4f617103495`
 - `QFootnoteItem.cs` `4a667633a340bc4f`
-- `QReference.cs` `53c16810e2c9f1c7`
+- `QReference.cs` `b6a15814313a1584`
 - `QShelf.cs` `d249657b23c1f4b4`
 - `QShelfItem.cs` `b3332826cebe73ac`

@@ -177,6 +177,35 @@ public sealed class TQuill
         Assert.Equal("The court delete failed.", failure.Message);
     }
 
+    [Fact]
+    public void ReferenceFind_StaleDraft_ThrowsTheRefusal()
+    {
+        using TWorkspace first = TWorkspace.TWorkspacePrepare();
+        using TWorkspace second = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = first.TWorkspaceEngineStart();
+        LTenure tenure = TQuillEntryStart(engine);
+        LQuillChip chip = tenure.TQuillChipCreate(engine);
+        engine.TEngineWorkspaceOpen(second.TWorkspaceFolder);
+
+        LRefusal refusal = Assert.Throws<LRefusal>(() => chip.TQuillReferenceFind("Field"));
+
+        Assert.Equal(LRefusal.LRefusalStale, refusal.LRefusalReason);
+    }
+
+    [Fact]
+    public void ReferenceFind_EndedTenure_OffersNoneWithoutRefusing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LTenure tenure = TQuillEntryStart(engine);
+        LQuillChip chip = tenure.TQuillChipCreate(engine);
+        tenure.TTenureCancel();
+
+        LReferenceOffer offer = chip.TQuillReferenceFind("Field");
+
+        Assert.Empty(offer.LReferenceOfferRows);
+    }
+
     private static LTenure TQuillEntryStart(LEngine engine)
     {
         engine.TEngineDelaySet(0);

@@ -289,7 +289,7 @@ public sealed class TFold
             water,
             TInterfaceConduct.TPhonologyBundleCreate(engine, "LReflexPort.LEngineBoxSpread", true),
             asked);
-        display.LDisplayRule.LDisplaySound.TDisplaySoundShow(water, engine.TEngineEntryLoad(water)!);
+        display.LDisplayRule.CVoice.TDisplaySoundShow(water, engine.TEngineEntryLoad(water)!);
 
         bool fanqie = display.CDisplayFold.CFoldFanqieSpread(true);
         bool script = display.CDisplayFold.CFoldScriptSpread(true);

@@ -229,12 +229,12 @@ One reversal is shared between hiding and restoring.
 
 ## Stamp
 
-Commit: `f6dae2392935`
+Commit: `2f9a06b8eb95`
 - `TClockFake.cs` `dffa2b2fcf999593`
 - `TEngineFake.cs` `364e90d7a21a82f8`
 - `TEngineFault.cs` `deab7d5e61cdcbfb`
 - `TEnvoyFake.cs` `6d5bffee0960fa06`
-- `TInterfaceClerk.cs` `d709eb341150b4ef`
+- `TInterfaceClerk.cs` `c1569f8257bd37db`
 - `TPhonographFake.cs` `af34df5efbe42d1c`
 - `TPostureFake.cs` `85c13ab0bfe0439a`
 - `TRigFake.cs` `c83bd318f58f76b1`

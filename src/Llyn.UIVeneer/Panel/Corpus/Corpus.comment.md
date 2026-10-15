@@ -232,8 +232,8 @@ The driver's own fill wires `PGlossAddition`, `PGlossRemoval`, the text and the 
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `PCorpus.xaml` `715672aa9f20a8be`
+Commit: `2f9a06b8eb95`
+- `PCorpus.xaml` `ef2d336e5e27d519`
 - `PCorpus.xaml.cs` `edacad6453b8037f`
 - `PCorpusExcerpt.xaml` `4767f2cc016f085c`
 - `PCorpusTranscript.xaml` `0971b525a138f847`

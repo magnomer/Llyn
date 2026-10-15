@@ -61,7 +61,7 @@ Bases, verbs, and exemptions reach the tests only through the three generated re
 The tests read no script configuration, so no json or ps1 can change what they check.
 They do read the untracked sources Git lists, since an unstaged file is still source.
 The prefix ceiling is the number of types whose prefix lies outside their turf.
-It only falls, and the script holds the same number as `naming.prefixCeiling`.
+It only falls and now stands at zero, and the script holds the same number as `naming.prefixCeiling`.
 Prefixes are listed longest first, so `PS` is read before `P`.
 `P` marks a surface, `Q` a driver, `C` Conduct, `L` every other project and `T` a test.
 An `S` after the first letter marks a subwindow, and a lowercase form marks a private field.
@@ -161,10 +161,10 @@ A malformed name is a violation, never a silent pass, so `L_foo` or `LDraft_` ca
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `2f9a06b8eb95`
 - `TAuditName.cs` `c9b8090ffd62da90`
 - `TAuditNameFilter.cs` `94d5e4f62b0c181b`
-- `TAuditNameSetting.cs` `da27451554ae44d3`
+- `TAuditNameSetting.cs` `8bb28cd3251ee523`
 - `TAuditNameWalker.cs` `9b6199c38f7bf330`
 - `TAuditRegistry.cs` `27c74af9a11890bb`
 - `TSpecimen.cs` `0b6da9e6a472965e`

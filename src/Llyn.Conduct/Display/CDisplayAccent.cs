@@ -18,7 +18,7 @@ public sealed class CDisplayAccent
         [],
         false);
 
-    private readonly LDisplaySound _cDisplayAccentVoice;
+    private readonly CVoice _cDisplayAccentVoice;
 
     private readonly CLedgerNoticed _cDisplayAccentNoticed;
 
@@ -28,15 +28,15 @@ public sealed class CDisplayAccent
 
     private readonly LSettingsPort _cDisplayAccentSettings;
 
-    internal CDisplayAccent(LDisplay display, LLanguagePort languages, LSettingsPort settings, CEnvoy envoy)
+    internal CDisplayAccent(CRule display, LLanguagePort languages, LSettingsPort settings, CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(display);
         ArgumentNullException.ThrowIfNull(languages);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(envoy);
 
-        _cDisplayAccentVoice = display.LDisplaySound;
-        _cDisplayAccentNoticed = display.LDisplayNoticed;
+        _cDisplayAccentVoice = display.CVoice;
+        _cDisplayAccentNoticed = display.CRuleNoticed;
         _cDisplayAccentLanguage = languages;
         _cDisplayAccentEnvoy = envoy;
         _cDisplayAccentSettings = settings;
@@ -44,7 +44,7 @@ public sealed class CDisplayAccent
 
     public IReadOnlyList<int> CDisplayAccentScale => _cDisplayAccentLanguage.LEngineContourScale;
 
-    private LEntryDraft? LDisplayAccentShown => _cDisplayAccentVoice.LDisplayShown;
+    private LEntryDraft? LDisplayAccentShown => _cDisplayAccentVoice.CVoiceShown;
 
     public CLecternAccent CDisplayAccentRead()
     {

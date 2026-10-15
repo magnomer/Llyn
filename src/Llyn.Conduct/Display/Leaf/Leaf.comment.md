@@ -139,8 +139,8 @@ A row quoting no Example has no text to divide and no Source line.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
-- `CDisplayCard.cs` `aa31921ed809e737`
+Commit: `2f9a06b8eb95`
+- `CDisplayCard.cs` `842395c868a88dde`
 - `CLeaf.cs` `19d7e62dbe91e5d6`
 - `CLeafChip.cs` `d604e4f1c5b56d4f`
 - `CLeafLine.cs` `6e7cb04876fe7741`

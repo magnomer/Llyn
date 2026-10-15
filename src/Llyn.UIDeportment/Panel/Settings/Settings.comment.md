@@ -10,20 +10,22 @@ Each named part of the markup is pulled by its contract ID, which keeps the mark
 The settings panel's driver.
 It owns the group catalog and the stored choices it opens on.
 Showing the chosen group's page is the job of its `QDial`.
+So is driving the card controls that no choice driver owns.
 Most choices are driven by their own driver in `Panel/Choice`, which hears and paints that choice's controls.
-The listing switch is driven here, and the linked-panels switch by the window's `QLayout`.
+The listing switch is driven by the dial, and the linked-panels switch by the window's `QLayout`.
 What each choice costs, such as a catalog swap or a whole different workspace, lives in those drivers.
 The constructor takes the veneer's page, which the window pulls by contract ID.
 It builds one choice driver per concern over the surface, and each wires its own controls.
 It builds the page dial over the same surface.
 The linked-panels switch is an exception, since it is a setting on the window's one `QLayout`.
 That keeper is handed in, and it wires the switch when the panel introduces it.
-The window's GUI-only posture is handed in too, read for the linked summary and cleared by the width reset.
+The window's GUI-only posture is handed in too, read for the linked summary.
+The dial gets the same posture for the width reset.
 Nothing else is wired before the window introduces it.
-`QSettingsIntroduce` keeps the atelier, whose gates every settings file calls, and the envoy.
-It sets the search hint and the two page icons, and subscribes the panel's own events.
-It introduces each choice driver to only the Conduct area it calls.
-Each settings switch also receives the window's envoy, for a failed save.
+`QSettingsIntroduce` keeps the atelier, whose gates every settings file calls, and keeps no field for the envoy.
+It sets the search hint and subscribes the search field.
+It introduces the dial and each choice driver to only the Conduct area it calls.
+Each of them also receives the window's envoy, for a failed save.
 This happens before `CLedgerChanged` is subscribed, so the first state finds them ready.
 It also subscribes the posture's linked switch, so the summary row follows a tick.
 The ledger raises the state on every open and after every settings or workspace change.
@@ -31,21 +33,10 @@ The ledger rows get their fill through `QLookItemAttach` before the first state 
 It then shows the first card.
 `QSettingsRefine` paints the whole panel from one ledger state.
 The interface texts are applied first, so everything painted after reads in the stored language.
-Each choice driver is handed its own value from the state, and the linked switch reads the posture.
+Each choice driver and the dial are handed their own values from the state.
+The linked switch reads the posture.
 The custom analysis driver reads its value from the ledger, since the state does not carry it.
-The switches listen on `Click`, which setting `IsChecked` in code does not raise.
-So a painted switch writes nothing back at all.
-Ticking the listing switch makes the ledger save the raw switch.
-The window's envoy goes with it, so a failed save is shown.
-Enter in the notebook field hands the typed title to the ledger and shows the title it stored.
-Every other key is left to the field.
-Leaving the notebook field saves the typed title the same way Enter does.
-A title that did not change raises no bulletin, so leaving an untouched field costs nothing.
-`QSettingsNotebookRefine` shows the stored title, trimmed and with a blank one already turned into `Llyn`.
-A failed save answers null and leaves the field alone, since the ledger has already repainted it.
 `QSettingsDialRefine` marks one group's row chosen, and has the dial show that group's card.
-The folder button makes the ledger open the workspace folder.
-The width button makes the posture drop the stored panel widths.
 `QSettingsLedgerRefine` paints the catalog from one ledger state.
 That covers every page's row, the narrowing the state carries, and the Layout summary.
 The narrowing rides on the state, so a settings change keeps a narrowed catalog narrowed.
@@ -70,11 +61,32 @@ Conduct keeps the text and matches it, so a console searches the same way.
 
 The settings panel's card dial, which shows the page of one group and hides the others.
 It owns the table that pairs each group's name with the page the markup draws for it.
+It also drives the card controls no choice driver owns.
+Those are the listing switch, the notebook and depot fields, the depot picker, and the folder and width buttons.
 Marking the chosen row in the catalog stays with `QSettings`, which calls the dial.
+The constructor takes the veneer's page and the window's GUI-only posture, which the width reset clears.
+`QDialIntroduce` keeps the ledger those controls call and the window's envoy, for a failed save.
+It sets the folder, width and depot picker icons and subscribes the controls' events.
 `QDialRefine` shows the page of the named group and collapses every other page.
 A name the table lacks collapses every page.
 `QDialTableRead` pairs the names with the pages in the catalog's order.
 The Sync group draws the page named `PDialOutpost`, since `Sync` is a verb and names no page.
+`QDialSettingsRefine` paints the listing switch, the notebook title and the depot folder from the stored settings.
+The switches listen on `Click`, which setting `IsChecked` in code does not raise.
+So a painted switch writes nothing back at all.
+Ticking the listing switch makes the ledger save the raw switch.
+The window's envoy goes with it, so a failed save is shown.
+Enter in the notebook field hands the typed title to the ledger and shows the title it stored.
+Every other key is left to the field.
+Leaving the notebook field saves the typed title the same way Enter does.
+A title that did not change raises no bulletin, so leaving an untouched field costs nothing.
+`QDialNotebookRefine` shows the stored title, trimmed and with a blank one already turned into `Llyn`.
+A failed save answers null and leaves the field alone, since the ledger has already repainted it.
+Enter in the depot field, or leaving it, saves the typed folder through `CLedgerDepotSave` and shows the folder it stored.
+The depot picker button makes the ledger ask for a folder through `CLedgerDepotChange`, and `QDialDepotRefine` shows the folder it answers.
+A null answer, a refusal or a cancelled dialog leaves the field alone.
+The folder button makes the ledger open the workspace folder.
+The width button makes the posture drop the stored panel widths.
 
 ## `QLedgerItem`
 
@@ -95,13 +107,13 @@ The panel sets it on every row when a card is shown, so exactly one row carries 
 
 One row item per settings page, kept across states so a row keeps its chosen mark.
 
-### QSettings.cs: `private CEnvoy _cEnvoy = null!;`
+### QDial.cs: `private CEnvoy _qDialEnvoy = null!;`
 
 The window's envoy, which reports a failed epithet save or folder open.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `QDial.cs` `7d06c7dba2fb4048`
+Commit: `2f9a06b8eb95`
+- `QDial.cs` `14cbb17d73ece180`
 - `QLedgerItem.cs` `24868b3c638df739`
-- `QSettings.cs` `435bae241852f481`
+- `QSettings.cs` `4fbb19ea101a923b`

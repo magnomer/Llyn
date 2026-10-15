@@ -50,7 +50,7 @@ That property is attached only in code and needs no accessors.
 A row already holding its handles, or whose slot names no template, is left as it is.
 The slot's content is bound to its own data, so the handles follow the row when its data is replaced.
 
-## `PContour`
+## `QContour`
 
 The tone contour box drawn under an IPA reading of a tonal language.
 It draws one cell per syllable, on one guide line per level of the scale it is handed.
@@ -58,7 +58,7 @@ Each cell carries the syllable's pitch line and the syllable as written beneath.
 A level tone is a flat line and a contour tone bends at every level the marks spell.
 A line between two levels fades from one colour to the other.
 Each turning point pins its brush's colour at its horizontal position in a gradient in absolute coordinates.
-Every level arrives with its theme brush, resolved by the Q driver from the role Core picked.
+Every level arrives with its theme brush, resolved by `QContourInk` from the role Core picked.
 The box hides itself while the language is not tonal or the reading carries no tone.
 It starts collapsed and never takes the pointer, so a press lands on what lies beneath.
 Its brushes and font are theme references, so a theme change repaints it.
@@ -94,10 +94,8 @@ It places guides, cells, pitch points and labels from the scale and the syllable
 The box builds one per measure and per drawing, so a plot never outlives the values it read.
 The cell width caps the syllable text, so a long syllable is trimmed inside its own cell.
 The top padding is wider than the sides, because the dots and axis digits rise above the top line.
-It matches the Joplin chart `LLiverySound.LLiveryContourFormat` writes, whose top line sits 17 pixels in.
 The bottom padding is narrower.
-The label row is one 15-pixel line with its baseline about 4 pixels above its foot.
-So a baseline sits 14 pixels above the edge, as on the Joplin chart.
+The label row is 20 pixels high and holds one line of 15-pixel text.
 The size has room for at least one cell.
 The origin is the plot's left edge in its slot, half the width the plot lacks or spares.
 It is negative when the plot is wider than the slot.
@@ -110,11 +108,11 @@ So a level tone is a flat line across the same span.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
-- `PContour.cs` `c8dbbe44118731d8`
+Commit: `2f9a06b8eb95`
 - `QAccent.cs` `171a48d1f55c07b3`
 - `QAccentCommand.cs` `a63197563f21dece`
 - `QAccentControl.cs` `12df01bae289db01`
+- `QContour.cs` `8ddceb0e2b0610c7`
 - `QContourInk.cs` `89725f62a4ae583b`
 - `QContourItem.cs` `819e805c0669a089`
 - `QContourPlot.cs` `2e5337eba06fc119`

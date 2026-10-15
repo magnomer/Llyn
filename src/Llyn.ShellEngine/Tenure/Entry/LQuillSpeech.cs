@@ -22,7 +22,8 @@ public sealed class LQuillSpeech
     public (IReadOnlyList<string> LSpeechNames, string LSpeechTyped, LSpeechOffer LSpeechFound) LQuillSpeechRead(
         string typed)
     {
-        IReadOnlyList<LSpeechDraft> shown = _lQuillSpeechTenure.LTenureRead()?.LDraftContent.LEntryDraftSpeeches ?? [];
+        IReadOnlyList<LSpeechDraft> shown =
+            _lQuillSpeechTenure.LTenurePresentRead()?.LDraftContent.LEntryDraftSpeeches ?? [];
         (IReadOnlyList<LSpeechDraft> held, string kept) =
             LSpeechClerk.LSpeechSettle(shown, LSpeechClerk.LSpeechChipRead(shown, _lQuillSpeechPending), typed);
         if (kept.Length == 0)
@@ -79,29 +80,19 @@ public sealed class LQuillSpeech
 
     private LSpeechOffer LQuillSpeechFind(IReadOnlyList<LSpeechDraft> held, string typed)
     {
-        IReadOnlyList<LSpeechValue> values;
-        try
+        LDraft? present = _lQuillSpeechTenure.LTenurePresentRead();
+        if (present is null)
         {
-            values = _lQuillSpeechTenure.LTenureEngine.LEngineVocabulary.LEngineSpeechRead(
-                _lQuillSpeechTenure.LTenureLanguageRead());
-        }
-        catch (Exception exception) when (LWorkspaceClerk.LWorkspaceRefusedCheck(exception))
-        {
-            values = [];
+            return new LSpeechOffer([], false, false, false);
         }
 
+        IReadOnlyList<LSpeechValue> values = _lQuillSpeechTenure.LTenureEngine.LEngineVocabulary.LEngineSpeechRead(
+            present.LDraftContent.LEntryDraftLanguage);
         return LSpeechClerk.LSpeechFind(values, held, typed);
     }
 
     private LSpeechValue? LQuillSpeechCreate(string language, string name)
     {
-        try
-        {
-            return _lQuillSpeechTenure.LTenureEngine.LEngineVocabulary.LEngineSpeechAdd(language, name);
-        }
-        catch (Exception exception) when (LWorkspaceClerk.LWorkspaceRefusedCheck(exception))
-        {
-            return null;
-        }
+        return _lQuillSpeechTenure.LTenureEngine.LEngineVocabulary.LEngineSpeechAdd(language, name);
     }
 }

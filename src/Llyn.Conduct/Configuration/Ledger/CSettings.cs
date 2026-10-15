@@ -7,4 +7,5 @@ public sealed record CSettings(
     bool CSettingsMorphology,
     bool CSettingsEpithet,
     int CSettingsOnline,
-    string CSettingsNotebook);
+    string CSettingsNotebook,
+    string CSettingsDepot);

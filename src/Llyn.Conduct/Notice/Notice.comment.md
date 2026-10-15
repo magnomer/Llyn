@@ -8,6 +8,7 @@ It stands apart from the engine's notices, because values are copied so the rule
 One notice as a driver's observer receives it, copied from the engine's notice by the controller.
 It carries no subject, because the observer attached for one subject already knows it.
 Its stored flag is copied from the engine, so the rule stays there.
+Its refusal is the engine's, null unless a queued draft request was refused, and the desk shows it.
 
 ## `CSubject`
 
@@ -20,6 +21,6 @@ So the editor and the display of that entry repaint after any of those writes.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `CBulletin.cs` `d122721226e47bd9`
+Commit: `2f9a06b8eb95`
+- `CBulletin.cs` `6ccb743a020f94a6`
 - `CSubject.cs` `25c25fef7483041c`

@@ -1,0 +1,10 @@
+<UserControl
+    x:Class="Llyn.UIVeneer.PScoreboard"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    >
+
+    <Grid Margin="34,20,34,38">
+        <TextBlock x:Name="PScoreboardEmpty" Style="{StaticResource Theme.Catalog.Empty}" />
+    </Grid>
+</UserControl>

@@ -8,7 +8,7 @@ internal sealed record QLeafLine(
     long QLeafLineSentence,
     IReadOnlyList<QMentionPiece> QLeafLinePiece,
     string QLeafLineCitation,
-    IReadOnlyList<PGloss> QLeafLineGloss)
+    IReadOnlyList<QRendition> QLeafLineGloss)
 {
     internal static IReadOnlyList<QLeafLine> QLeafLineCreate(IReadOnlyList<CLeafLine> lines)
     {
@@ -20,7 +20,7 @@ internal sealed record QLeafLine(
                 line.CLeafLineSentence,
                 QMentionPiece.QMentionPieceCreate(line.CLeafLinePiece),
                 line.CLeafLineCitation,
-                PGlossConverter.PGlossConverterCreate(line.CLeafLineGloss)));
+                QGlossConverter.QGlossConverterCreate(line.CLeafLineGloss)));
         }
 
         return rows;

@@ -72,7 +72,7 @@ internal sealed class QEditorSound
     private TextBlock QEditorSoundCloser =>
         QContract.QContractFind<TextBlock>(_qEditorSoundSurface, "PPronunciationCloser");
 
-    private PContour QEditorSoundContour => QContract.QContractFind<PContour>(_qEditorSoundSurface, "PContour");
+    private QContour QEditorSoundContour => QContract.QContractFind<QContour>(_qEditorSoundSurface, "PContour");
 
     internal void QEditorSoundIntroduce(CEditor editor, QVolume volume, CLedger ledger, CEnvoy envoy)
     {
@@ -139,9 +139,9 @@ internal sealed class QEditorSound
 
     private void QEditorContourRefine(IReadOnlyList<CContour> syllables)
     {
-        PContour contour = QEditorSoundContour;
-        contour.PContourScale = _cEditor.CEditorDisplay.CDisplayAccent.CDisplayAccentScale;
-        contour.PContourSyllables = QContourInk.QContourInkBuild(syllables, contour);
+        QContour contour = QEditorSoundContour;
+        contour.QContourScale = _cEditor.CEditorDisplay.CDisplayAccent.CDisplayAccentScale;
+        contour.QContourSyllables = QContourInk.QContourInkBuild(syllables, contour);
     }
 
     private void QEditorPronunciationObserve(object sender, TextChangedEventArgs e)

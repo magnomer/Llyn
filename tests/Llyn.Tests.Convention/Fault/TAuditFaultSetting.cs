@@ -12,13 +12,9 @@ internal static class TAuditFaultSetting
 
     public static readonly IReadOnlyDictionary<string, int> TAuditFaultCeiling = new Dictionary<string, int>
     {
-        ["Llyn.Application"] = 10,
-        ["Llyn.ShellEngine"] = 18,
+        ["Llyn.Application"] = 0,
+        ["Llyn.ShellEngine"] = 0,
     };
 
-    public static readonly string[] TAuditFaultExempt =
-    [
-        "src/Llyn.Application/Workspace/LWorkspaceClerk.cs:LWorkspacePostureRead",
-        "src/Llyn.Application/Workspace/LWorkspaceClerk.cs:LWorkspaceFallbackSave",
-    ];
+    public static readonly string[] TAuditFaultExempt = [];
 }

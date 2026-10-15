@@ -14,7 +14,7 @@ public sealed class TReflexOpening
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         long water = TReflexOpeningPrepare(engine, "water");
-        LDisplaySound sound = TInterfaceConductSound.TDisplaySoundCreate(engine);
+        CVoice sound = TInterfaceConductSound.TDisplaySoundCreate(engine);
 
         engine.TEngineReflexSpread(water, true);
         engine.TEngineReflexSpread(water, true);
@@ -94,7 +94,7 @@ public sealed class TReflexOpening
             water,
             TInterfaceConduct.TPhonologyBundleCreate(engine, "LReflexPort.LEngineReflexSpread", true),
             asked);
-        display.LDisplayRule.LDisplaySound.TDisplaySoundShow(water, engine.TEngineEntryLoad(water)!);
+        display.LDisplayRule.CVoice.TDisplaySoundShow(water, engine.TEngineEntryLoad(water)!);
 
         bool taken = display.CDisplaySound.CDisplayReflexToggle(true);
 

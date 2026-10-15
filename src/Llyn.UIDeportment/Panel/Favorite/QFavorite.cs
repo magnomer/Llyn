@@ -42,7 +42,7 @@ internal sealed class QFavorite
         surface.CommandBindings.Add(
             new CommandBinding(ApplicationCommands.Print, QFavoritePressObserve, QFavoritePressCheck));
         surface.CommandBindings.Add(new CommandBinding(
-            PDisplayCommand.PDisplayCommandPortrait, QFavoritePortraitObserve, QFavoritePressCheck));
+            QDisplayCommand.QDisplayCommandPortrait, QFavoritePortraitObserve, QFavoritePressCheck));
         _qFavoriteRail = new QPanelRail(
             QContract.QContractFind<UserControl>(surface, "PFavoriteRail"),
             QFavoriteBin, QFavoriteBinIcon, false, true);

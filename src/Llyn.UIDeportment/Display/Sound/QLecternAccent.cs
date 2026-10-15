@@ -24,7 +24,7 @@ public sealed class QLecternAccent
 
     private readonly TextBlock _qLecternAccentCloser;
 
-    private readonly PContour _qLecternAccentContour;
+    private readonly QContour _qLecternAccentContour;
 
     public QLecternAccent(FrameworkElement surface, CDisplayAccent area)
     {
@@ -40,10 +40,10 @@ public sealed class QLecternAccent
         _qLecternAccentOpener = QContract.QContractFind<TextBlock>(surface, "PDisplayPronunciationOpener");
         _qLecternAccentPronunciation = QContract.QContractFind<TextBlock>(surface, "PDisplayPronunciation");
         _qLecternAccentCloser = QContract.QContractFind<TextBlock>(surface, "PDisplayPronunciationCloser");
-        _qLecternAccentContour = QContract.QContractFind<PContour>(surface, "PDisplayContour");
+        _qLecternAccentContour = QContract.QContractFind<QContour>(surface, "PDisplayContour");
         ItemsControl accents = QContract.QContractFind<ItemsControl>(surface, "PDisplayAccent");
 
-        _qLecternAccentContour.PContourScale = _qLecternAccentArea.CDisplayAccentScale;
+        _qLecternAccentContour.QContourScale = _qLecternAccentArea.CDisplayAccentScale;
         accents.ItemsSource = _qLecternAccentRow;
         QLookItem.QLookItemAttach(accents, QAccentItem.QAccentItemRefine);
     }
@@ -53,7 +53,7 @@ public sealed class QLecternAccent
         CLecternAccent accent = _qLecternAccentArea.CDisplayAccentRead();
         _qLecternAccentOpener.Text = accent.CLecternAccentMark.CRespellingMarkOpener;
         _qLecternAccentCloser.Text = accent.CLecternAccentMark.CRespellingMarkCloser;
-        _qLecternAccentContour.PContourSyllables =
+        _qLecternAccentContour.QContourSyllables =
             QContourInk.QContourInkBuild(accent.CLecternAccentContour, _qLecternAccentContour);
         _qLecternAccentPronunciation.Text = accent.CLecternAccentText;
         _qLecternAccentLead.QLecternLeadRefine(accent.CLecternAccentSpoken);

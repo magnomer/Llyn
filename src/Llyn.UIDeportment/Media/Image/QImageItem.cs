@@ -129,7 +129,7 @@ internal sealed class QImageItem : INotifyPropertyChanged, QImagePending
 
         if (ItemsControl.ItemsControlFromItemContainer(container) is ItemsControl list)
         {
-            PMedia.PMediaRevealAttach(list);
+            QMedia.QMediaRevealAttach(list);
         }
     }
 

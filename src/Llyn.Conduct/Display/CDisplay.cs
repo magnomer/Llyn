@@ -42,7 +42,7 @@ public sealed class CDisplay
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(envoy);
 
-        LDisplayRule = new LDisplay(
+        LDisplayRule = new CRule(
             drafts,
             entries.CEntryBundleEntry,
             entries.CEntryBundleFavorite,
@@ -76,11 +76,11 @@ public sealed class CDisplay
             settings,
             envoy);
         CDisplayFold = new CFold(
-            () => LDisplayRule.LDisplaySound.LDisplayEntry,
+            () => LDisplayRule.CVoice.CVoiceEntry,
             phonology.CPhonologyBundleReflex,
             settings,
             envoy,
-            LDisplayRule.LDisplayNoticed);
+            LDisplayRule.CRuleNoticed);
         CDisplayAccent = new CDisplayAccent(LDisplayRule, phonology.CPhonologyBundleLanguage, settings, envoy);
         CDisplayPlayback = new CDisplayPlayback(LDisplayRule, media, settings, envoy);
         CDisplayGrasp = new CDisplayGrasp(LDisplayRule);
@@ -143,7 +143,7 @@ public sealed class CDisplay
 
     public CCompass CDisplayCompass { get; }
 
-    internal LDisplay LDisplayRule { get; }
+    internal CRule LDisplayRule { get; }
 
     internal void LDisplayNavigationAttach(CNavigation navigation, CMention mention)
     {
@@ -159,23 +159,23 @@ public sealed class CDisplay
 
     internal void LDisplayVistaRestore(LVista vista)
     {
-        LDisplayRule.LDisplayVistaRestore(vista);
-        LDisplayRule.LDisplayChosenAttach(
+        LDisplayRule.CRuleVistaRestore(vista);
+        LDisplayRule.CRuleChosenAttach(
             CSubject.CSubjectFavorite, bulletin => CDisplayFavoriteChanged?.Invoke(bulletin));
         CDisplayGrasp.LDisplayGraspAttach();
-        LDisplayRule.LDisplayChosenAttach(
+        LDisplayRule.CRuleChosenAttach(
             CSubject.CSubjectFrequency, bulletin => CDisplayFrequencyChanged?.Invoke(bulletin));
-        LDisplayRule.LDisplayChosenAttach(
+        LDisplayRule.CRuleChosenAttach(
             CSubject.CSubjectInflection, bulletin => CDisplayParadigmChanged?.Invoke(bulletin));
-        LDisplayRule.LDisplayChosenAttach(
+        LDisplayRule.CRuleChosenAttach(
             CSubject.CSubjectReflex, bulletin => CDisplayReflexChanged?.Invoke(bulletin));
-        LDisplayRule.LDisplayChosenAttach(CSubject.CSubjectEntry, bulletin => CDisplayEntryChanged?.Invoke(bulletin));
-        LDisplayRule.LDisplayChosenAttach(CSubject.CSubjectFold, bulletin => CDisplayFoldChanged?.Invoke(bulletin));
-        LDisplayRule.LDisplayObserverAttach(
+        LDisplayRule.CRuleChosenAttach(CSubject.CSubjectEntry, bulletin => CDisplayEntryChanged?.Invoke(bulletin));
+        LDisplayRule.CRuleChosenAttach(CSubject.CSubjectFold, bulletin => CDisplayFoldChanged?.Invoke(bulletin));
+        LDisplayRule.CRuleObserverAttach(
             CSubject.CSubjectScript, bulletin => CDisplayScriptChanged?.Invoke(bulletin));
-        LDisplayRule.LDisplayObserverAttach(
+        LDisplayRule.CRuleObserverAttach(
             CSubject.CSubjectFanqie, bulletin => CDisplayFanqieChanged?.Invoke(bulletin));
-        LDisplayRule.LDisplayObserverAttach(
+        LDisplayRule.CRuleObserverAttach(
             CSubject.CSubjectWorkspace, bulletin => CDisplayWorkspaceChanged?.Invoke(bulletin));
         foreach (CSubject subject in (CSubject[])
                  [
@@ -188,7 +188,7 @@ public sealed class CDisplay
                      CSubject.CSubjectSettings,
                  ])
         {
-            LDisplayRule.LDisplayObserverAttach(subject, bulletin => CDisplayEntryChanged?.Invoke(bulletin));
+            LDisplayRule.CRuleObserverAttach(subject, bulletin => CDisplayEntryChanged?.Invoke(bulletin));
         }
     }
 
@@ -207,13 +207,13 @@ public sealed class CDisplay
 
     internal void LDisplayEntryOpen(LEntryDraft? draft)
     {
-        if (draft is null || LDisplayRule.LDisplayChosen is not long id)
+        if (draft is null || LDisplayRule.CRuleChosen is not long id)
         {
             CDisplayEntryClose();
             return;
         }
 
-        LDisplayRule.LDisplaySound.LDisplaySoundShow(id, draft);
+        LDisplayRule.CVoice.CVoiceShow(id, draft);
         (bool, string, string) stamp = LDisplayStampRead(id);
         CDisplayShown = new CLectern(
             draft.LEntryDraftHeadword,
@@ -238,7 +238,7 @@ public sealed class CDisplay
         }
         catch (Exception exception)
         {
-            LDisplayRule.LDisplayNoticed.LLedgerRepaintShow(
+            LDisplayRule.CRuleNoticed.LLedgerRepaintShow(
                 _cDisplayEnvoy, _cDisplaySettings, "Display.StampFailed", exception);
             return (false, string.Empty, string.Empty);
         }
@@ -246,19 +246,19 @@ public sealed class CDisplay
 
     public void CDisplayEntryClose()
     {
-        LDisplayRule.LDisplaySound.LDisplaySoundClear();
+        LDisplayRule.CVoice.CVoiceClear();
         CDisplayShown = _cDisplayBlank;
         CDisplayClosed?.Invoke();
     }
 
     public void CDisplayEntryResonate()
     {
-        if (LDisplayRule.LDisplayChosen is null)
+        if (LDisplayRule.CRuleChosen is null)
         {
             return;
         }
 
-        LDisplayRule.LDisplayDraftLoad(LDisplayEntryOpen);
+        LDisplayRule.CRuleDraftLoad(LDisplayEntryOpen);
     }
 
     public void CDisplayWorkspaceResonate()
@@ -268,12 +268,12 @@ public sealed class CDisplay
 
     public bool CDisplayFavoriteRead()
     {
-        return LDisplayRule.LDisplayFavoriteRead(LDisplayRule.LDisplayChosen);
+        return LDisplayRule.CRuleFavoriteRead(LDisplayRule.CRuleChosen);
     }
 
     public bool CDisplayFavoriteToggle(bool marked)
     {
-        LDisplayRule.LDisplayFavoriteSave(LDisplayRule.LDisplayChosen, marked);
+        LDisplayRule.CRuleFavoriteSave(LDisplayRule.CRuleChosen, marked);
         return CDisplayFavoriteRead();
     }
 
@@ -281,6 +281,6 @@ public sealed class CDisplay
     {
         ArgumentNullException.ThrowIfNull(lookup);
 
-        return LDisplayRule.LDisplayFrequencyRead(LDisplayRule.LDisplayChosen, lookup("Frequency.Once"));
+        return LDisplayRule.CRuleFrequencyRead(LDisplayRule.CRuleChosen, lookup("Frequency.Once"));
     }
 }

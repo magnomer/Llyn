@@ -3,13 +3,13 @@
 Video rows for the editor's cards and the repertoire's situations, and the reading view's film frames.
 It stands apart from Image because a video is never kept or copied, and its preview plays on a screen.
 
-## `PMedia`
+## `QMedia`
 
 The reveal of a media list's row handles, shared by the editor and the reading view.
 Attaching twice is harmless, since each handler is removed before it is added.
 Hiding clears the values, so the theme's hidden base shows again.
 
-## `PVideoFrame`
+## `QVideoFrame`
 
 The element that unwraps a reading view's film line into the row the Screen plays.
 A line arriving as the element's data is unwrapped here, and any other data is left alone.
@@ -103,8 +103,8 @@ The playing flag is bound both ways, since the screen's own switch changes it.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `PMedia.cs` `5fa76a2c6ba83acb`
-- `PVideoFrame.cs` `669bc595be841abb`
-- `QVideo.cs` `587915ceeca724ef`
-- `QVideoItem.cs` `21134000039ae78c`
+Commit: `2f9a06b8eb95`
+- `QMedia.cs` `321762919a3d50ca`
+- `QVideo.cs` `4893de8374e2efa7`
+- `QVideoFrame.cs` `035e9d17ffed88d5`
+- `QVideoItem.cs` `fbaade6a8cab3d7e`

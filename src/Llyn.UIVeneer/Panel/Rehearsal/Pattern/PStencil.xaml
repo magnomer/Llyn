@@ -1,0 +1,113 @@
+<UserControl
+    x:Class="Llyn.UIVeneer.PStencil"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    >
+
+    <UserControl.Resources>
+        <Style x:Key="Theme.Stencil.Caption" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style x:Key="Theme.Stencil.Field" TargetType="TextBox" BasedOn="{StaticResource Theme.Input.Bare}">
+            <Setter Property="Margin" Value="2,0,2,8" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="AcceptsReturn" Value="False" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style x:Key="Theme.Stencil.Chip" TargetType="Border">
+            <Setter Property="Margin" Value="0,2,6,2" />
+            <Setter Property="Padding" Value="8,1,2,1" />
+            <Setter Property="BorderBrush" Value="{StaticResource Theme.Muted}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="12" />
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" Style="{StaticResource Theme.Catalog.Scroll}" VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="0,0,10,20">
+            <StackPanel Margin="{StaticResource Theme.Catalog.HeaderMargin}" Orientation="Horizontal">
+                <TextBlock Margin="2,0,6,0" Style="{StaticResource Theme.Stencil.Caption}" Text="{DynamicResource Deck.Grain}" />
+                <TextBlock x:Name="PStencilGrain" FontSize="14" VerticalAlignment="Center" />
+            </StackPanel>
+
+            <ItemsControl x:Name="PStencilSides" Grid.IsSharedSizeScope="True">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="PStencilLabel" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Margin="2,0,12,0" VerticalAlignment="Center" Orientation="Horizontal">
+                                <TextBlock Margin="0,0,4,0" Style="{StaticResource Theme.Stencil.Caption}" Text="{DynamicResource Stencil.Side}" />
+                                <TextBlock x:Name="PStencilNumber" Style="{StaticResource Theme.Stencil.Caption}" />
+                            </StackPanel>
+                            <WrapPanel Grid.Column="1" Orientation="Horizontal">
+                                <TextBlock x:Name="PStencilCustom" Margin="0,0,8,0" Style="{StaticResource Theme.Stencil.Caption}" Text="{DynamicResource Stencil.Custom}" />
+                                <ItemsControl x:Name="PStencilChips">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel Orientation="Horizontal" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Style="{StaticResource Theme.Stencil.Chip}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock x:Name="PStencilCaption" Margin="0,0,4,0" FontSize="14" VerticalAlignment="Center" />
+                                                    <ComboBox x:Name="PStencilJoin" Margin="0,0,2,0" Style="{StaticResource Theme.Input.Choice}" />
+                                                    <Button x:Name="PStencilRemoval" Padding="4,0" Content="×" ToolTip="{DynamicResource Stencil.FieldRemove}" />
+                                                </StackPanel>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                <Grid Margin="0,2,0,2">
+                                    <ComboBox x:Name="PStencilField" MinWidth="100" Style="{StaticResource Theme.Input.Choice}" />
+                                    <TextBlock Margin="8,0,24,0" IsHitTestVisible="False" Style="{StaticResource Theme.Stencil.Caption}" Text="{DynamicResource Stencil.FieldAdd}" />
+                                </Grid>
+                            </WrapPanel>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <StackPanel Margin="2,4,0,8" Orientation="Horizontal">
+                <TextBlock Margin="0,0,6,0" Style="{StaticResource Theme.Stencil.Caption}" Text="{DynamicResource Stencil.PictureSide}" />
+                <ComboBox x:Name="PStencilPicture" MinWidth="60" Margin="0,0,16,0" Style="{StaticResource Theme.Input.Choice}" />
+                <TextBlock Margin="0,0,6,0" Style="{StaticResource Theme.Stencil.Caption}" Text="{DynamicResource Stencil.SoundSide}" />
+                <ComboBox x:Name="PStencilSound" MinWidth="60" Style="{StaticResource Theme.Input.Choice}" />
+            </StackPanel>
+
+            <StackPanel Margin="0,0,0,8" Orientation="Horizontal">
+                <ComboBox x:Name="PStencilSaved" MinWidth="120" Margin="0,0,8,0" Style="{StaticResource Theme.Input.Choice}" />
+                <Button x:Name="PStencilApplication" Margin="0,0,8,0" Content="{DynamicResource Stencil.Apply}" />
+                <Button x:Name="PStencilStore" Content="{DynamicResource Stencil.Save}" />
+            </StackPanel>
+
+            <ToggleButton x:Name="PStencilText" Margin="0,0,0,8" HorizontalAlignment="Left" Content="{DynamicResource Stencil.AsText}" />
+
+            <ItemsControl x:Name="PStencilSlots" Grid.IsSharedSizeScope="True">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="PStencilLabel" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Margin="2,0,12,8" VerticalAlignment="Center" Orientation="Horizontal">
+                                <TextBlock x:Name="PStencilCaption" Margin="0,0,4,0" Style="{StaticResource Theme.Stencil.Caption}" />
+                                <TextBlock x:Name="PStencilNumber" Style="{StaticResource Theme.Stencil.Caption}" />
+                            </StackPanel>
+                            <TextBox x:Name="PStencilBody" Grid.Column="1" Style="{StaticResource Theme.Stencil.Field}" />
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

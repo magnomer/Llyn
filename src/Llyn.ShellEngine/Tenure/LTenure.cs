@@ -52,6 +52,19 @@ public sealed class LTenure
         return _lEngine.LEngineDraft.LEngineDraftRead(LTenureId);
     }
 
+    internal LDraft? LTenurePresentRead()
+    {
+        lock (_lTenureGate)
+        {
+            if (_lTenureQueue.LTenureQueueEnded)
+            {
+                return null;
+            }
+        }
+
+        return _lEngine.LEngineDraft.LEnginePresentRead(LTenureId);
+    }
+
     public string LTenureLanguageRead()
     {
         return LTenureRead()?.LDraftContent.LEntryDraftLanguage ?? string.Empty;
@@ -150,9 +163,6 @@ public sealed class LTenure
             LTenureHerald.LTenureObserverClear();
             _lEngine.LEngineDraft.LEngineDraftCancel(LTenureId);
         }
-        catch (Exception exception) when (LWorkspaceClerk.LWorkspaceRefusedCheck(exception))
-        {
-        }
         finally
         {
             LTenureGauge.LTenureGaugeRaise();
@@ -198,8 +208,13 @@ public sealed class LTenure
             {
                 stored = _lEngine.LEngineTenure.LEngineTenureCommit(_lTenureSubject, LTenureId);
             }
-            catch (Exception exception) when (LWorkspaceClerk.LWorkspaceIllegibleCheck(exception) && unreadableSeam())
+            catch (Exception exception) when (LWorkspaceClerk.LWorkspaceIllegibleCheck(exception))
             {
+                if (!unreadableSeam())
+                {
+                    throw;
+                }
+
                 LTenureSweep();
                 return LTenureFinish(store, static () => false);
             }
@@ -294,14 +309,7 @@ public sealed class LTenure
 
     public long? LTenureStoredRead()
     {
-        try
-        {
-            return LTenureRead()?.LDraftStored;
-        }
-        catch (Exception exception) when (LWorkspaceClerk.LWorkspaceRefusedCheck(exception))
-        {
-            return null;
-        }
+        return LTenurePresentRead()?.LDraftStored;
     }
 
 }

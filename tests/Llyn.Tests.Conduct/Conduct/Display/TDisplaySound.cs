@@ -144,7 +144,7 @@ public sealed class TDisplaySound
         CDisplay display = new TEditorFixture(TInterfaceEditor.TEditorCreate(engine)).TEditorFixtureDisplay;
         LEntry kindle = engine.TEngineEntrySave(
             TDisplayDraftCreate("kindle", "English", [TInterface.TReflexDraftCreate("Korean", string.Empty, "a")]));
-        display.LDisplayRule.LDisplaySound.TDisplaySoundShow(
+        display.LDisplayRule.CVoice.TDisplaySoundShow(
             kindle.LEntryId, TDisplayDraftCreate("kindle", "English", []));
         CLecternReflex shown = display.CDisplaySound.CDisplayReflexRead();
 

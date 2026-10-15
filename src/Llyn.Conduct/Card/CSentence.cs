@@ -47,7 +47,7 @@ public sealed class CSentence
 
     internal void LSentenceObserverAttach(Action<Action> marshal)
     {
-        _cSentenceDesk.CDeskVigil.LVigilObserverAttach(
+        _cSentenceDesk.CDeskVigil.CVigilObserverAttach(
             CSubject.CSubjectReference, _ => marshal(() => CSentenceReferenceChanged?.Invoke()));
     }
 

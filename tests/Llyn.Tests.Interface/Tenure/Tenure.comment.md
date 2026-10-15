@@ -22,6 +22,8 @@ The save and the preview fetch pass on the foray's null for an outside failure.
 The relays for the per-subject quills, each built over a tenure.
 The gloss relays name card zero and sentence zero, as the held Example does.
 The chip relays build the chip edits over a tenure and a draft port a test may fake.
+A second chip relay builds the chip over an engine's own draft outlet.
+The reference find relay asks the chip for a source offer by text at place zero.
 The situation relays build a situation quill over a tenure and set its title, kind and description.
 Each relay is transparent.
 
@@ -104,6 +106,7 @@ The relays for a tenure, the engine's hold on one draft.
 The starts and the delay seam are relayed over the engine, and every step over the tenure itself.
 The linked starts of a fresh occurrence, quotation, footnote, membership and cohort are relayed beside the plain start.
 The change check and the storable verdict are relayed beside the ready check.
+The kept read goes through the tenure's herald, and the speech read builds a speech quill over the tenure.
 The entry field edits are relayed over the tenure too.
 The read, scan and set of the lexical unit and of the freedom are relayed with them.
 Each relay is transparent.
@@ -112,6 +115,7 @@ Each relay is transparent.
 
 The attach relays forward a subject, draft-identity or stored-Entry-identity filtered subscription to the tenure API.
 The prepare relay exposes the tenure's prepare scope and returns its resulting draft.
+The stored-id relay passes on the tenure's own answer.
 The bulletin raise goes through the engine, so observer tests exercise normal event delivery.
 
 ## `TInterfaceTrove`
@@ -122,12 +126,12 @@ The trove is internal to the engine assembly, which opens its internals to this 
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `2f9a06b8eb95`
 - `TInterfaceEasel.cs` `03424a4497abcd42`
 - `TInterfaceForay.cs` `c27bc21fc41ef185`
-- `TInterfaceQuill.cs` `62f423482e6d2d31`
+- `TInterfaceQuill.cs` `b786e2b50c587e5e`
 - `TInterfaceRequest.cs` `e69e88557559ec73`
 - `TInterfaceRequestApply.cs` `d699bb7ec75eb444`
-- `TInterfaceTenure.cs` `fa9db281b7d12282`
+- `TInterfaceTenure.cs` `5d5b7864d0136076`
 - `TInterfaceTenureObserver.cs` `67d3fb0c717acc3b`
 - `TInterfaceTrove.cs` `235f0018d4f4689c`

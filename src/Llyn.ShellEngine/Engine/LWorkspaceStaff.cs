@@ -55,7 +55,9 @@ internal sealed record LWorkspaceStaff(
             rig, entry.LEntryStaffQuery, gate, settings, exception => workspace.LWorkspaceAuditRecord(exception));
 
         LDeckClerk deck = new(rig, language.LLanguageStaffTrail);
-        LCueClerk cue = new(rig, entry.LEntryStaffEntry);
+        LCueClerk cue = new(
+            rig, entry.LEntryStaffEntry, catalog.LCatalogStaffTranslation, catalog.LCatalogStaffReference,
+            language.LLanguageStaffTrail);
         LStencilClerk stencil = new(
             rig, entry.LEntryStaffEntry, catalog.LCatalogStaffTranslation, catalog.LCatalogStaffReference,
             language.LLanguageStaffTrail);

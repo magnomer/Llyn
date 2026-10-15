@@ -4,21 +4,21 @@ Label holds the Tag field of a card and the part-of-speech menu.
 Tags and parts of speech are both labels the user may write anew.
 So each field offers a menu but still accepts anything typed.
 
-## `PCategoryItem`
+## `QCategoryItem`
 
-This is one row of the `PCategory` menu, immutable because the menu is rebuilt rather than edited.
+This is one row of the `QCategory` menu, immutable because the menu is rebuilt rather than edited.
 Its name is the one it hands the speech gate when clicked.
 It also carries the engine's verdict that the entry already wears that name as a chip.
 The row draws a check on that, so the menu and the chips read as one state.
 
-## `PLabelChip`
+## `QLabelChip`
 
 This is one committed Tag as the boxed label the user sees.
 The id is 0 when the chip is text the user typed.
 The engine names it on the next draft save.
 A Tag whose text should change is closed and written again rather than edited in place.
 
-## `PLabelSelector`
+## `QLabelSelector`
 
 The field holds committed Tags and one open entry in a single collection, so they wrap as one run.
 That needs the item template chosen per item.
@@ -111,9 +111,9 @@ It answers null when no shown card holds the chip or caret.
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `PCategoryItem.cs` `71ea20d738839356`
-- `PLabelChip.cs` `3c01944c105038fd`
-- `PLabelSelector.cs` `60d91ff153e11579`
-- `QCategory.cs` `f15ccd018c275318`
-- `QLabel.cs` `9f2004ac8e710a60`
+Commit: `2f9a06b8eb95`
+- `QCategory.cs` `960340e0bfc6cf17`
+- `QCategoryItem.cs` `97487f23cb2cc503`
+- `QLabel.cs` `39674e06beef5314`
+- `QLabelChip.cs` `2d54f1d4412aa557`
+- `QLabelSelector.cs` `a5c4bf2fefa4493a`

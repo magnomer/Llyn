@@ -13,7 +13,7 @@ internal sealed class QMentionMenu
 {
     private readonly CNavigation _qMentionMenuNavigation;
 
-    private readonly ObservableCollection<PMentionItem> _qMentionItem = [];
+    private readonly ObservableCollection<QMentionItem> _qMentionItem = [];
 
     private QMentionAsk? _qMentionMeaningAsk;
 
@@ -27,7 +27,7 @@ internal sealed class QMentionMenu
         QMentionList = (ListBox)surface.FindName("PMentionList");
         _qMentionMenuNavigation = navigation;
 
-        surface.SetValue(PMention.PMentionHostProperty, this);
+        surface.SetValue(QMention.QMentionHostProperty, this);
         QMentionList.ItemsSource = _qMentionItem;
         QLookItem.QLookItemAttach(QMentionList, QMentionRowRefine);
         QMentionPopup.Closed += (_, _) => QMentionMenuHide();
@@ -42,7 +42,7 @@ internal sealed class QMentionMenu
 
     private ListBox QMentionList { get; }
 
-    internal void QMentionOfferRefine(PMention anchor, CMentionOffer? offer)
+    internal void QMentionOfferRefine(QMention anchor, CMentionOffer? offer)
     {
         ArgumentNullException.ThrowIfNull(anchor);
 
@@ -51,7 +51,7 @@ internal sealed class QMentionMenu
             return;
         }
 
-        QMentionEntryRefine(anchor, anchor.PMentionPlaceRead(offer.CMentionOfferUnit), offer);
+        QMentionEntryRefine(anchor, anchor.QMentionPlaceRead(offer.CMentionOfferUnit), offer);
     }
 
     internal QMentionAsk QMentionMeaningRefine(FrameworkElement anchor, Rect place, CMentionSense sense)
@@ -62,7 +62,7 @@ internal sealed class QMentionMenu
             anchor,
             place,
             sense.CMentionSenseKey,
-            PMentionItem.PMentionItemCreate(sense.CMentionSenseRow));
+            QMentionItem.QMentionItemCreate(sense.CMentionSenseRow));
         QMentionAsk ask = new(anchor);
         _qMentionMeaningAsk = ask;
         return ask;
@@ -74,47 +74,47 @@ internal sealed class QMentionMenu
             anchor,
             place,
             offer.CMentionOfferKey,
-            PMentionItem.PMentionItemCreate(offer.CMentionOfferEntry));
+            QMentionItem.QMentionItemCreate(offer.CMentionOfferEntry));
     }
 
     private void QMentionRowRefine(FrameworkElement container, object item, string? _)
     {
-        if (item is not PMentionItem mention)
+        if (item is not QMentionItem mention)
         {
             return;
         }
 
         if (QLook.QLookPartFind<Grid>(container, "PMentionRow") is Grid row)
         {
-            row.Margin = mention.PMentionItemIndent;
+            row.Margin = mention.QMentionItemIndent;
             row.MouseLeftButtonUp -= QMentionMenuObserve;
             row.MouseLeftButtonUp += QMentionMenuObserve;
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PMentionName") is TextBlock name)
         {
-            name.Text = mention.PMentionItemName;
+            name.Text = mention.QMentionItemName;
         }
 
         if (QLook.QLookPartFind<Image>(container, "PMentionFlag") is Image flag)
         {
-            flag.Source = mention.PMentionItemFlag;
+            flag.Source = mention.QMentionItemFlag;
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PMentionLanguage") is TextBlock language)
         {
-            language.Text = mention.PMentionItemLanguage;
+            language.Text = mention.QMentionItemLanguage;
         }
 
         if (QLook.QLookPartFind<StackPanel>(container, "PMentionOrigin") is StackPanel origin)
         {
-            origin.Visibility = QLook.QLookVisibleRead(mention.PMentionItemLanguage.Length > 0);
+            origin.Visibility = QLook.QLookVisibleRead(mention.QMentionItemLanguage.Length > 0);
         }
     }
 
     private void QMentionMenuObserve(object sender, MouseButtonEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: PMentionItem item })
+        if (sender is not FrameworkElement { DataContext: QMentionItem item })
         {
             QMentionMenuHide();
             return;
@@ -132,12 +132,12 @@ internal sealed class QMentionMenu
         _qMentionMeaningAsk = null;
     }
 
-    private void QMentionMenuRefine(FrameworkElement anchor, Rect place, string key, IReadOnlyList<PMentionItem> rows)
+    private void QMentionMenuRefine(FrameworkElement anchor, Rect place, string key, IReadOnlyList<QMentionItem> rows)
     {
         ArgumentNullException.ThrowIfNull(anchor);
 
         QMentionMenuHide();
-        foreach (PMentionItem row in rows)
+        foreach (QMentionItem row in rows)
         {
             _qMentionItem.Add(row);
         }
@@ -182,7 +182,7 @@ internal sealed class QMentionMenu
             return;
         }
 
-        if (QMentionList.SelectedItem is not PMentionItem item)
+        if (QMentionList.SelectedItem is not QMentionItem item)
         {
             return;
         }
@@ -191,18 +191,18 @@ internal sealed class QMentionMenu
         e.Handled = true;
     }
 
-    private void QMentionMenuSelect(PMentionItem item)
+    private void QMentionMenuSelect(QMentionItem item)
     {
         QMentionAsk? ask = _qMentionMeaningAsk;
         QMentionMenuHide();
 
         if (ask is null)
         {
-            _qMentionMenuNavigation.CNavigationEntryOpen(item.PMentionItemEntry);
+            _qMentionMenuNavigation.CNavigationEntryOpen(item.QMentionItemEntry);
             return;
         }
 
-        ask.QMentionAskSettle(item.PMentionItemSense);
+        ask.QMentionAskSettle(item.QMentionItemSense);
     }
 
     private void QMentionLeaveRefine(object? sender, EventArgs e)

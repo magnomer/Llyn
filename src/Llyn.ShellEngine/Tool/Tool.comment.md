@@ -31,7 +31,7 @@ A settings bulletin follows either only for a real change, so an unchanged token
 The facade for decks, their folders, their cues and their stencils.
 Each member takes the gate and relays one call of the deck, cue or stencil clerk.
 It decides nothing, so every rule, refusal and order stays with the clerks.
-It calls no sibling facade, so it takes the hearth alone.
+Only the accession find calls a sibling, the entry facade and the vista row facade.
 `LDeckPort` is its face, through `LDeckOutlet`, as `LPortraitPort` faces the courier.
 
 `LEngineDeckRead()` reads the folders and the decks under one gate, so the roll comes from one moment.
@@ -47,14 +47,24 @@ A code another deck holds comes back as the clerk's refusal, untouched.
 `LEngineDeckCreate`, `LEngineFolderCreate` and `LEngineCueCreate` answer the new row's id.
 `LEngineCueAdd` answers how many cues the add made, after the clerk skips rows the deck already binds.
 
-`LEngineFaceRead` takes the label from its caller, as `LEnginePortraitRead` does.
-The stencil clerk finds the card and its deck's template, so the facade gathers nothing.
+`LEngineLineRead` takes the label from its caller, as `LEnginePortraitRead` does.
+It builds every line of the listing under one gate.
+`LEngineCueRead` stays for the delete count and the free-card check, which need no line.
 `LEngineStencilRead` and `LEngineSlotSet` read and edit the deck's owned template.
+`LEngineStencilRead` with no deck lists the saved templates, so the driver can offer them.
+`LEngineFieldAppend`, `LEngineFieldRemove` and `LEngineJoinSet` edit the field chips of one text side.
+`LEngineMediaSet` moves the picture or sound slot to a side, and side zero removes it.
+`LEngineCellRead` and `LEngineCellSave` read and write the cells of one free card.
+
+`LEngineAccessionFind` marks each catalog row with whether the deck already binds its entry.
+It finds the entries by the vista, builds the vista rows, and reads the bound set, all under one gate.
+A blank vista with a blank query answers no rows and takes no gate.
 
 `LEngineDeckExport` takes no gate, since the depot clerk takes it around its own reads.
-It takes the label from its caller, as `LEngineFaceRead` does.
+It takes the label from its caller, as `LEnginePortraitRead` does.
 `LEngineDepotCheck` reads the workspace latch, so the export and the import gates show one busy state.
 
+## `LFanqieFacade`
 
 The facade for fanqie, wrapping the fanqie, diwei and tally reads of the fanqie and diwei clerks.
 It implements the fanqie and diwei ports itself.
@@ -291,9 +301,9 @@ It answers empty while neither exists.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
+Commit: `2f9a06b8eb95`
 - `LCourierFacade.cs` `316cb119faa9202c`
-- `LDeckFacade.cs` `19db7f673eea2312`
+- `LDeckFacade.cs` `eebaed3e40ae52ef`
 - `LFanqieFacade.cs` `19ca044c7f98d17f`
 - `LLiveryFacade.cs` `930588ef8cfd2c99`
 - `LMarkupFacade.cs` `68847305501ca292`

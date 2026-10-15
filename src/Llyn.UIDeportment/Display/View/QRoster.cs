@@ -19,9 +19,9 @@ internal sealed class QRoster
         QLookItem.QLookItemAttach(
             QContract.QContractFind<ItemsControl>(surface, "PDisplaySpeech"), QRosterSpeechRefine);
         QLookItem.QLookItemAttach(
-            QContract.QContractFind<ItemsControl>(surface, "PDisplayMeaning"), PLeaf.PLeafCardRefine);
+            QContract.QContractFind<ItemsControl>(surface, "PDisplayMeaning"), QLeaf.QLeafCardRefine);
         QLookItem.QLookItemAttach(
-            QContract.QContractFind<ItemsControl>(surface, "PDisplayCollocation"), PLeaf.PLeafRowRefine);
+            QContract.QContractFind<ItemsControl>(surface, "PDisplayCollocation"), QLeaf.QLeafRowRefine);
         QLookItem.QLookItemAttach(
             QContract.QContractFind<ItemsControl>(surface, "PDisplayIncoming"), QRosterUsageRefine);
         QLookItem.QLookItemAttach(

@@ -45,7 +45,7 @@ internal static class TInterfaceDeportment
         QCaret.QCaretStepApply(key, length, selection, move, place);
 
     internal static void TDisplayEntryShow(this CDisplay display, long id, LEntryDraft draft) =>
-        display.LDisplayRule.LDisplaySound.LDisplaySoundShow(id, draft);
+        display.LDisplayRule.CVoice.CVoiceShow(id, draft);
 
     internal static void TReflexCreate(FrameworkElement surface, CEditor editor) =>
         new QReflex(surface, new QAnchor(surface)).QReflexIntroduce(
@@ -86,13 +86,13 @@ internal static class TInterfaceDeportment
     internal static object TCardCreate()
     {
         CStateWording blank = new(string.Empty, null, false, null);
-        return new PCard(
+        return new QPlacard(
             string.Empty,
             [],
             [],
             [],
             [],
-            static card => card.PCardDefinition,
+            static card => card.QPlacardDefinition,
             new CCardDraft(0, 0, blank, blank, blank, [], [], [], [], [], [], [], false, false, []));
     }
 
@@ -112,26 +112,26 @@ internal static class TInterfaceDeportment
         list.Arrange(new Rect(0, 0, 400, 400));
         list.UpdateLayout();
         QLookItem.QLookItemAttach(
-            list, (container, item, changed) => QCard.QCardRowRefine(container, (PCard)item, changed));
+            list, (container, item, changed) => QCard.QCardRowRefine(container, (QPlacard)item, changed));
         FrameworkElement row = (FrameworkElement)list.ItemContainerGenerator.ContainerFromIndex(0);
         return QLook.QLookPartFind<TextBox>(row, "PCardPositionText")!;
     }
 
-    internal static void TCardPositionShow(object card) => ((PCard)card).PCardPositionActive = true;
+    internal static void TCardPositionShow(object card) => ((QPlacard)card).QPlacardPositionActive = true;
 
-    internal static void TCardPositionHide(object card) => ((PCard)card).PCardPositionHide();
+    internal static void TCardPositionHide(object card) => ((QPlacard)card).QPlacardPositionHide();
 
-    internal static void TCardPositionSet(object card, int position) => ((PCard)card).PCardPosition = position;
+    internal static void TCardPositionSet(object card, int position) => ((QPlacard)card).QPlacardPosition = position;
 
     internal static object TCardFoldCreate(CCardDraft draft)
     {
-        PCard card = new(string.Empty, [], [], [], [], static row => row.PCardDefinition, draft);
-        card.PCardFoldShow(draft.CCardDraftFolded);
+        QPlacard card = new(string.Empty, [], [], [], [], static row => row.QPlacardDefinition, draft);
+        card.QPlacardFoldShow(draft.CCardDraftFolded);
         return card;
     }
 
     internal static void TCardRowRefine(FrameworkElement container, object card) =>
-        QCard.QCardRowRefine(container, (PCard)card, null);
+        QCard.QCardRowRefine(container, (QPlacard)card, null);
 
     internal static void TCardHingeAttach(ItemsControl list, CEditor editor)
     {
@@ -154,10 +154,10 @@ internal static class TInterfaceDeportment
     internal static object TLeafItemCreate(CLeaf leaf, CStateWording peek) => new QLeafItem(leaf, peek);
 
     internal static void TLeafCardRefine(FrameworkElement container, object card) =>
-        PLeaf.PLeafCardRefine(container, card, null);
+        QLeaf.QLeafCardRefine(container, card, null);
 
     internal static void TLeafRowRefine(FrameworkElement container, object row) =>
-        PLeaf.PLeafRowRefine(container, row, null);
+        QLeaf.QLeafRowRefine(container, row, null);
 
     internal static QLecternCard TLecternCardCreate(CDisplay display, FrameworkElement surface) =>
         new(surface, display.CDisplayCard, display.CDisplayRoute, display.CDisplaySound);

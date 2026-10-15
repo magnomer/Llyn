@@ -68,17 +68,19 @@ public sealed class LWorkspaceClerk
         _lWorkspaceClerkSettings.LSettingsSave(settings);
     }
 
-    public void LWorkspaceFallbackSave(LSettings settings)
+    public Exception? LWorkspaceFallbackSave(LSettings settings)
     {
         ArgumentNullException.ThrowIfNull(settings);
 
         try
         {
             _lWorkspaceClerkSettings.LSettingsSave(settings);
+            return null;
         }
         catch (LVaultFault exception)
         {
             _lWorkspaceClerkAudit.LAuditRecord(exception);
+            return exception;
         }
     }
 
@@ -88,6 +90,13 @@ public sealed class LWorkspaceClerk
     {
         ArgumentNullException.ThrowIfNull(exception);
         return _lWorkspaceClerkAudit.LAuditRecord(exception);
+    }
+
+    public static void LWorkspaceFaultRecord(LRig rig, Exception exception)
+    {
+        ArgumentNullException.ThrowIfNull(rig);
+        ArgumentNullException.ThrowIfNull(exception);
+        _ = rig.LRigAudit.LAuditRecord(exception);
     }
 
     public static string? LWorkspaceNoticeRead(Exception exception)
@@ -121,13 +130,6 @@ public sealed class LWorkspaceClerk
         return exception is LRefusal refusal && refusal.LRefusalReason != LRefusal.LRefusalDraft;
     }
 
-    public static bool LWorkspaceStaleCheck(Exception exception)
-    {
-        ArgumentNullException.ThrowIfNull(exception);
-
-        return exception is LRefusal { LRefusalReason: LRefusal.LRefusalStale };
-    }
-
     public IReadOnlyDictionary<string, string> LWorkspaceLocalizationLoad(string language)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(language);
@@ -155,19 +157,21 @@ public sealed class LWorkspaceClerk
         return _lWorkspaceClerkWorkspaces.LWorkspaceSizeRead();
     }
 
-    public bool LWorkspacePostureRead(string name, out LPostureState? state)
+    public bool LWorkspacePostureRead(string name, out LPostureState? state, out Exception? fault)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
 
         try
         {
             state = _lWorkspaceClerkPosture.LPostureRead(name);
+            fault = null;
             return true;
         }
         catch (LVaultFault exception)
         {
             _lWorkspaceClerkAudit.LAuditRecord(exception);
             state = null;
+            fault = exception;
             return false;
         }
     }
@@ -191,19 +195,28 @@ public sealed class LWorkspaceClerk
         }
     }
 
-    public void LWorkspaceClerkUpdate()
+    public void LWorkspaceClerkUpdate(Action<Exception> fault)
     {
-        LWorkspaceEntryScan(entry =>
-        {
-            LRespellingUpdate(entry);
-            _lWorkspaceClerkEpithets.LReflexEpithetSave(entry.LEntryId);
-            _lWorkspaceClerkParadigms.LParadigmClerkUpdate(entry);
-        });
+        ArgumentNullException.ThrowIfNull(fault);
+
+        LWorkspaceEntryScan(
+            entry =>
+            {
+                LRespellingUpdate(entry);
+                _lWorkspaceClerkEpithets.LReflexEpithetSave(entry.LEntryId);
+                _lWorkspaceClerkParadigms.LParadigmClerkUpdate(entry);
+            },
+            fault);
     }
 
-    public void LWorkspaceRespellingUpdate() => LWorkspaceEntryScan(LRespellingStaleUpdate);
+    public void LWorkspaceRespellingUpdate(Action<Exception> fault)
+    {
+        ArgumentNullException.ThrowIfNull(fault);
 
-    private void LWorkspaceEntryScan(Action<LEntry> step)
+        LWorkspaceEntryScan(LRespellingStaleUpdate, fault);
+    }
+
+    private void LWorkspaceEntryScan(Action<LEntry> step, Action<Exception> fault)
     {
         using LVaultSession session = _lWorkspaceClerkVault.LVaultSessionStart();
         foreach (LEntry entry in _lWorkspaceClerkEntries.LEntryFind(string.Empty))
@@ -214,7 +227,7 @@ public sealed class LWorkspaceClerk
             }
             catch (Exception exception) when (exception is not OutOfMemoryException)
             {
-                _lWorkspaceClerkAudit.LAuditRecord(exception);
+                fault(exception);
             }
         }
 

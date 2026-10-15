@@ -5,9 +5,9 @@ namespace Llyn.Conduct;
 
 public sealed class CDisplayGrasp
 {
-    private readonly LDisplay _cDisplayGraspRule;
+    private readonly CRule _cDisplayGraspRule;
 
-    internal CDisplayGrasp(LDisplay rule)
+    internal CDisplayGrasp(CRule rule)
     {
         ArgumentNullException.ThrowIfNull(rule);
 
@@ -16,41 +16,41 @@ public sealed class CDisplayGrasp
 
     public event Action<CBulletin>? CDisplayGraspChanged;
 
-    public int CDisplayGraspStep => _cDisplayGraspRule.LDisplayGraspStep;
+    public int CDisplayGraspStep => _cDisplayGraspRule.CRuleGraspStep;
 
-    public IReadOnlyList<IReadOnlyList<int>> CDisplayGraspFill => _cDisplayGraspRule.LDisplayGraspStar.LGraspStarFill;
+    public IReadOnlyList<IReadOnlyList<int>> CDisplayGraspFill => _cDisplayGraspRule.CRuleGraspStar.LGraspStarFill;
 
-    public IReadOnlyList<bool> CDisplayGraspUnrated => _cDisplayGraspRule.LDisplayGraspStar.LGraspStarUnrated;
+    public IReadOnlyList<bool> CDisplayGraspUnrated => _cDisplayGraspRule.CRuleGraspStar.LGraspStarUnrated;
 
-    public IReadOnlyList<IReadOnlyList<int>> CDisplayGraspHit => _cDisplayGraspRule.LDisplayGraspStar.LGraspStarHit;
+    public IReadOnlyList<IReadOnlyList<int>> CDisplayGraspHit => _cDisplayGraspRule.CRuleGraspStar.LGraspStarHit;
 
     internal void LDisplayGraspAttach()
     {
-        _cDisplayGraspRule.LDisplayChosenAttach(
+        _cDisplayGraspRule.CRuleChosenAttach(
             CSubject.CSubjectGrasp, bulletin => CDisplayGraspChanged?.Invoke(bulletin));
     }
 
     public CGrasp CDisplayGraspRead()
     {
-        int step = _cDisplayGraspRule.LDisplayGraspRead(_cDisplayGraspRule.LDisplayChosen);
+        int step = _cDisplayGraspRule.CRuleGraspRead(_cDisplayGraspRule.CRuleChosen);
         return new CGrasp(step, CDisplayGraspRead(step));
     }
 
     public string CDisplayGraspRead(int step)
     {
-        return _cDisplayGraspRule.LDisplayGraspFormat(_cDisplayGraspRule.LDisplayChosen, step);
+        return _cDisplayGraspRule.CRuleGraspFormat(_cDisplayGraspRule.CRuleChosen, step);
     }
 
     public CGrasp CDisplayGraspSet(int step)
     {
-        _cDisplayGraspRule.LDisplayGraspSave(_cDisplayGraspRule.LDisplayChosen, step);
+        _cDisplayGraspRule.CRuleGraspSave(_cDisplayGraspRule.CRuleChosen, step);
         return CDisplayGraspRead();
     }
 
     public CGrasp CDisplayGraspMove(int move)
     {
-        long? chosen = _cDisplayGraspRule.LDisplayChosen;
-        int kept = _cDisplayGraspRule.LDisplayGraspRead(chosen);
+        long? chosen = _cDisplayGraspRule.CRuleChosen;
+        int kept = _cDisplayGraspRule.CRuleGraspRead(chosen);
         int step = Math.Clamp(kept + move, 0, CDisplayGraspStep);
         return step == kept ? CDisplayGraspRead() : CDisplayGraspSet(step);
     }

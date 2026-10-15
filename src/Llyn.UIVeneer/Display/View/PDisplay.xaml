@@ -60,7 +60,7 @@
                                 ToolTip="{DynamicResource Favorite.Mark}">
                                 <local:QIconImage x:Name="PFavoriteMark" Style="{StaticResource Theme.Favorite.Icon}" />
                             </ToggleButton>
-                            <local:PGrasp
+                            <local:QGrasp
                                 x:Name="PDisplayGrasp"
                                 Style="{StaticResource Theme.Grasp.Mark}" />
                             <TextBlock x:Name="PDisplayGraspLabel" Style="{StaticResource Theme.Grasp.Label}" />
@@ -123,7 +123,7 @@
                                 <ColumnDefinition Width="Auto" SharedSizeGroup="PReadingLabel" />
                                 <ColumnDefinition Width="Auto" SharedSizeGroup="PReadingSpan" />
                             </Grid.ColumnDefinitions>
-                            <local:PContour x:Name="PDisplayContour" Grid.Column="1" Style="{StaticResource Theme.Contour.Box}" />
+                            <local:QContour x:Name="PDisplayContour" Grid.Column="1" Style="{StaticResource Theme.Contour.Box}" />
                         </Grid>
                         <ItemsControl x:Name="PDisplayAccent" ItemTemplate="{StaticResource Theme.Accent.Display}" />
                         <ItemsControl x:Name="PDisplayTranscription" ItemTemplate="{StaticResource Theme.Transcription.Display}" />
@@ -285,7 +285,7 @@
                         </Grid>
                     </StackPanel>
                 </StackPanel>
-                <local:PSwath x:Name="PDisplaySwath" />
+                <local:QSwath x:Name="PDisplaySwath" />
             </Grid>
         </ScrollViewer>
 

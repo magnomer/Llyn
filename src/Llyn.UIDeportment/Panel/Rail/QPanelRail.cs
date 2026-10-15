@@ -25,7 +25,7 @@ internal sealed class QPanelRail
         _qPanelRailScope = rail;
         _qPanelRailBin = bin;
 
-        QPanelRailPortrait.Command = PDisplayCommand.PDisplayCommandPortrait;
+        QPanelRailPortrait.Command = QDisplayCommand.QDisplayCommandPortrait;
         QPanelRailPress.Command = ApplicationCommands.Print;
 
         binIcon.QIconSource = QIcon.QIconResolve("delete", 24);

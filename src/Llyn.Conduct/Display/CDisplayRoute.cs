@@ -6,7 +6,7 @@ namespace Llyn.Conduct;
 
 public sealed class CDisplayRoute
 {
-    private readonly LDisplaySound _cDisplayVoice;
+    private readonly CVoice _cDisplayVoice;
 
     private readonly LMentionPort _cDisplayMentionPort;
 
@@ -16,14 +16,14 @@ public sealed class CDisplayRoute
 
     private CMention? _cDisplayMention;
 
-    internal CDisplayRoute(LDisplay display, LMentionPort mentions, LSettingsPort settings, CEnvoy envoy)
+    internal CDisplayRoute(CRule display, LMentionPort mentions, LSettingsPort settings, CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(display);
         ArgumentNullException.ThrowIfNull(mentions);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(envoy);
 
-        _cDisplayVoice = display.LDisplaySound;
+        _cDisplayVoice = display.CVoice;
         _cDisplayMentionPort = mentions;
         _cDisplaySettings = settings;
         _cDisplayEnvoy = envoy;
@@ -75,7 +75,7 @@ public sealed class CDisplayRoute
     private CMentionOffer? LDisplayMentionOpen(
         string text, int unit, Func<LEntryDraft, int, LMentionResult> find)
     {
-        if (_cDisplayMention is not CMention mention || _cDisplayVoice.LDisplayShown is not LEntryDraft shown)
+        if (_cDisplayMention is not CMention mention || _cDisplayVoice.CVoiceShown is not LEntryDraft shown)
         {
             return null;
         }

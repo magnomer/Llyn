@@ -142,8 +142,8 @@ A row already loaded does nothing on a repeat load.
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `QImage.cs` `5e54f6591523a696`
-- `QImageItem.cs` `a4c9dd4dc28c2594`
+Commit: `2f9a06b8eb95`
+- `QImage.cs` `55e72165eb5d301b`
+- `QImageItem.cs` `ccbbde9b396cd359`
 - `QImageLazy.cs` `1ff9279b6097bd60`
 - `QImagePending.cs` `0cdc26e686b37582`

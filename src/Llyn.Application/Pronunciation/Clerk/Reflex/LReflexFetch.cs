@@ -13,7 +13,7 @@ public sealed class LReflexFetch
     private readonly LReflexVault _lReflexFetchReflexes;
     private readonly LReflexSource _lReflexFetchSource;
     private readonly LClock _lReflexFetchClock;
-    private readonly LAuditVault _lReflexFetchAudit;
+    private readonly Action<Exception> _lReflexFetchFault;
     private readonly LLanguageCache _lReflexFetchLanguages;
     private readonly LClaimClerk _lReflexFetchClaims;
     private readonly object _lReflexFetchGate;
@@ -26,7 +26,8 @@ public sealed class LReflexFetch
 
     public LReflexFetch(
         LRig rig, LReflexClerk clerk, LLanguageCache languages, LClaimClerk claims, object gate,
-        Action<LSubject, long> raise)
+        Action<LSubject, long> raise,
+        Action<Exception> fault)
     {
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(clerk);
@@ -34,12 +35,13 @@ public sealed class LReflexFetch
         ArgumentNullException.ThrowIfNull(claims);
         ArgumentNullException.ThrowIfNull(gate);
         ArgumentNullException.ThrowIfNull(raise);
+        ArgumentNullException.ThrowIfNull(fault);
         _lReflexFetchClerk = clerk;
         _lReflexFetchEntries = rig.LRigEntries;
         _lReflexFetchReflexes = rig.LRigSound.LRigSoundReflexes;
         _lReflexFetchSource = rig.LRigSource.LRigSourceReflex;
         _lReflexFetchClock = rig.LRigClock;
-        _lReflexFetchAudit = rig.LRigAudit;
+        _lReflexFetchFault = fault;
         _lReflexFetchLanguages = languages;
         _lReflexFetchClaims = claims;
         _lReflexFetchGate = gate;
@@ -231,7 +233,7 @@ public sealed class LReflexFetch
         catch (Exception exception)
         {
             raised = !fetch.IsCancellationRequested;
-            _lReflexFetchAudit.LAuditRecord(exception);
+            _lReflexFetchFault(exception);
         }
         finally
         {

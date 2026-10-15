@@ -9,7 +9,7 @@ No element here names a handler, a command or a binding.
 ## `PDisplay`
 
 The C# shell only calls `InitializeComponent()`.
-The card shapes merge from [PDisplayCard.xaml](../Template/PDisplayCard.comment.md), the incoming rows and stamps from [PDisplayUsage.xaml](../Template/PDisplayUsage.comment.md), and the contents row from [PDisplayCompass.xaml](../Compass/PDisplayCompass.comment.md).
+The card shapes merge from `PDisplayCard.xaml`, the incoming rows and stamps from `PDisplayUsage.xaml`, and the contents row from `PDisplayCompass.xaml`.
 The merge is declared here, so the list reads the row template dynamically.
 A Meaning and a Collocation are one card, so the meaning card and the collocation row share their body.
 A field the card left empty collapses rather than leaving a blank line.
@@ -147,7 +147,7 @@ Floating also lets the comparison panel carry one on each side without either ha
 The toggle stays above it, because a fold the reader cannot undo is a feature they have lost.
 It stands at the left edge, because the right edge belongs to the delete button every Display panel carries.
 The column keeps its width while folded, so the toggle does not slide under that button.
-The behaviour lives in [QCompass](../../../Llyn.UIDeportment/Display/QCompass.comment.md).
+The behaviour lives in `QCompass`.
 
 ### PDisplay.xaml: `PDisplayCollocationSection`
 
@@ -185,6 +185,6 @@ The lectern shows the flag or the globe, so no trigger here watches the image.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
-- `PDisplay.xaml` `9c7683142db4c4b0`
+Commit: `2f9a06b8eb95`
+- `PDisplay.xaml` `9002c6f24438d4c0`
 - `PDisplay.xaml.cs` `bc75ac1cd4702294`

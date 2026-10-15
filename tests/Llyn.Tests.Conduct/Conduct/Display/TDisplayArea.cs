@@ -47,7 +47,7 @@ public sealed class TDisplayArea
         Assert.True(shown.CLecternStamped);
         Assert.NotEmpty(shown.CLecternAdded);
         Assert.NotEmpty(shown.CLecternUpdated);
-        Assert.Equal("water", wing.CWingDisplay.LDisplayRule.LDisplaySound.LDisplayShown?.LEntryDraftHeadword);
+        Assert.Equal("water", wing.CWingDisplay.LDisplayRule.CVoice.CVoiceShown?.LEntryDraftHeadword);
     }
 
     [Fact]
@@ -68,7 +68,7 @@ public sealed class TDisplayArea
         Assert.Equal((0, 1), (opened, closed));
         Assert.Empty(area.CDisplayShown.CLecternHeadword);
         Assert.False(area.CDisplayShown.CLecternStamped);
-        Assert.Null(wing.CWingDisplay.LDisplayRule.LDisplaySound.LDisplayShown);
+        Assert.Null(wing.CWingDisplay.LDisplayRule.CVoice.CVoiceShown);
     }
 
     [Fact]
@@ -88,7 +88,7 @@ public sealed class TDisplayArea
 
         Assert.Equal(1, closed);
         Assert.Empty(area.CDisplayShown.CLecternHeadword);
-        Assert.Null(wing.CWingDisplay.LDisplayRule.LDisplaySound.LDisplayShown);
+        Assert.Null(wing.CWingDisplay.LDisplayRule.CVoice.CVoiceShown);
     }
 
     [Fact]
@@ -170,7 +170,7 @@ public sealed class TDisplayArea
         area.CDisplayWorkspaceResonate();
 
         Assert.Equal(1, closed);
-        Assert.Null(wing.CWingDisplay.LDisplayRule.LDisplaySound.LDisplayShown);
+        Assert.Null(wing.CWingDisplay.LDisplayRule.CVoice.CVoiceShown);
     }
 
     [Fact]

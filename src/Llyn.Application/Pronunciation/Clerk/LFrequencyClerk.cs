@@ -15,7 +15,7 @@ public sealed class LFrequencyClerk
     private readonly LEntryVault _lFrequencyClerkEntries;
     private readonly LFrequencyVault _lFrequencyClerkFrequencies;
     private readonly LSourceFactory _lFrequencyClerkFactory;
-    private readonly LAuditVault _lFrequencyClerkAudit;
+    private readonly Action<Exception> _lFrequencyClerkFault;
     private readonly LLanguageCache _lFrequencyClerkLanguages;
     private readonly object _lFrequencyClerkGate;
     private readonly Func<LSettings> _lFrequencyClerkSettings;
@@ -30,17 +30,19 @@ public sealed class LFrequencyClerk
         LLanguageCache languages,
         object gate,
         Func<LSettings> settings,
-        Action<LSubject, long> raise)
+        Action<LSubject, long> raise,
+        Action<Exception> fault)
     {
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(languages);
         ArgumentNullException.ThrowIfNull(gate);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(raise);
+        ArgumentNullException.ThrowIfNull(fault);
         _lFrequencyClerkEntries = rig.LRigEntries;
         _lFrequencyClerkFrequencies = rig.LRigSound.LRigSoundFrequencies;
         _lFrequencyClerkFactory = rig.LRigSource.LRigSourceFactory;
-        _lFrequencyClerkAudit = rig.LRigAudit;
+        _lFrequencyClerkFault = fault;
         _lFrequencyClerkLanguages = languages;
         _lFrequencyClerkGate = gate;
         _lFrequencyClerkSettings = settings;
@@ -272,14 +274,7 @@ public sealed class LFrequencyClerk
 
     private static bool LBandMatch(string raw, string pattern)
     {
-        try
-        {
-            return Regex.IsMatch(raw, pattern, RegexOptions.CultureInvariant, LFrequencyClerkPatience);
-        }
-        catch (RegexMatchTimeoutException)
-        {
-            return false;
-        }
+        return Regex.IsMatch(raw, pattern, RegexOptions.CultureInvariant, LFrequencyClerkPatience);
     }
 
     private async Task LFrequencyClerkRun(LEntry entry, CancellationTokenSource fetch)
@@ -327,7 +322,7 @@ public sealed class LFrequencyClerk
         }
         catch (Exception exception)
         {
-            _lFrequencyClerkAudit.LAuditRecord(exception);
+            _lFrequencyClerkFault(exception);
         }
         finally
         {

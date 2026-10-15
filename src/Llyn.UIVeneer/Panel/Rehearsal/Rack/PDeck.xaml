@@ -1,0 +1,138 @@
+<UserControl
+    x:Class="Llyn.UIVeneer.PDeck"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Llyn.UIDeportment;assembly=Llyn.UIDeportment"
+    xmlns:veneer="clr-namespace:Llyn.UIVeneer"
+    >
+
+    <Grid Margin="34,20,34,38">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="360" />
+        </Grid.ColumnDefinitions>
+
+        <Rectangle Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Margin="-34,0,-34,0" Style="{StaticResource Theme.Panel.SeamRow}" />
+        <local:QSeam Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Margin="-16,0,0,-38" Style="{StaticResource Theme.Panel.SeamColumn}" />
+
+        <StackPanel Grid.Row="0" Grid.Column="0" Margin="{StaticResource Theme.Catalog.HeaderMargin}" Orientation="Horizontal">
+            <ComboBox x:Name="PDeckKind" MinWidth="110" Margin="0,0,8,0" ToolTip="{DynamicResource Deck.Grain}" />
+            <Button x:Name="PDeckFresh" Margin="0,0,8,0" Content="{DynamicResource Deck.New}" />
+            <Button x:Name="PDeckFolder" Content="{DynamicResource Deck.FolderNew}" />
+        </StackPanel>
+
+        <Grid Grid.Row="1" Grid.Column="0" Style="{StaticResource Theme.Catalog.Frame}">
+            <ScrollViewer Style="{StaticResource Theme.Catalog.Scroll}">
+                <ItemsControl x:Name="PDeckShelf">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Button x:Name="PDeckRow" Grid.Column="0" Style="{StaticResource Theme.Catalog.Row}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <local:QIconImage
+                                            x:Name="PDeckIcon"
+                                            Grid.Column="0"
+                                            Width="16"
+                                            Height="16"
+                                            Margin="0,0,8,0"
+                                            VerticalAlignment="Center" />
+                                        <TextBlock x:Name="PDeckText" Grid.Column="1" Style="{StaticResource Theme.Catalog.Title}" />
+                                        <TextBox x:Name="PDeckName" Grid.Column="1" Visibility="Collapsed" />
+                                    </Grid>
+                                </Button>
+                                <Button x:Name="PDeckEarlier" Grid.Column="1" ToolTip="{DynamicResource Deck.OrderUp}">
+                                    <local:QIconImage x:Name="PDeckEarlierIcon" Width="12" Height="12" />
+                                </Button>
+                                <Button x:Name="PDeckLater" Grid.Column="2" ToolTip="{DynamicResource Deck.OrderDown}">
+                                    <local:QIconImage x:Name="PDeckLaterIcon" Width="12" Height="12" />
+                                </Button>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+            <TextBlock
+                x:Name="PDeckEmpty"
+                Style="{StaticResource Theme.Catalog.Empty}"
+                Text="{DynamicResource Deck.Empty}" />
+        </Grid>
+
+        <StackPanel Grid.Row="0" Grid.Column="1" Margin="{StaticResource Theme.Catalog.HeaderMargin}" Orientation="Horizontal">
+            <Button x:Name="PCueFresh" Margin="0,0,8,0" Content="{DynamicResource Cue.Free}" />
+            <Button x:Name="PCueRemoval" Content="{DynamicResource Cue.Remove}" />
+        </StackPanel>
+
+        <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource Theme.Catalog.Middle}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <ScrollViewer Grid.Row="0" Style="{StaticResource Theme.Catalog.Scroll}">
+                <ListBox x:Name="PCue" BorderThickness="0" SelectionMode="Extended">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <CheckBox x:Name="PCueMark" Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Center" ToolTip="{DynamicResource Cue.Flag}" />
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock x:Name="PCueText" Style="{StaticResource Theme.Catalog.Title}" />
+                                    <TextBlock x:Name="PCueOrphan" Style="{StaticResource Theme.Catalog.Meta}" Text="{DynamicResource Cue.Orphan}" />
+                                </StackPanel>
+                                <CheckBox x:Name="PCueExclusion" Grid.Column="2" Margin="8,0,8,0" VerticalAlignment="Center" ToolTip="{DynamicResource Cue.Exclude}" />
+                                <Button x:Name="PCueEarlier" Grid.Column="3" ToolTip="{DynamicResource Deck.OrderUp}">
+                                    <local:QIconImage x:Name="PCueEarlierIcon" Width="12" Height="12" />
+                                </Button>
+                                <Button x:Name="PCueLater" Grid.Column="4" ToolTip="{DynamicResource Deck.OrderDown}">
+                                    <local:QIconImage x:Name="PCueLaterIcon" Width="12" Height="12" />
+                                </Button>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </ScrollViewer>
+            <veneer:PJotter x:Name="PJotter" Grid.Row="1" MaxHeight="360" Margin="0,16,0,0" Visibility="Collapsed" />
+        </Grid>
+
+        <local:QSeam Grid.Row="1" Grid.RowSpan="2" Grid.Column="2" Margin="-16,0,0,-38" Style="{StaticResource Theme.Panel.SeamColumn}" />
+        <StackPanel Grid.Row="0" Grid.Column="2" Margin="16,0,0,0" Orientation="Horizontal">
+            <Button x:Name="PDeckAccession" Content="{DynamicResource Deck.ViewAdd}" Style="{StaticResource Theme.Input.Tab}" />
+            <Button x:Name="PDeckStencil" Content="{DynamicResource Deck.ViewCard}" Style="{StaticResource Theme.Input.Tab}" />
+            <Button x:Name="PDeckCharter" Content="{DynamicResource Deck.ViewDeck}" Style="{StaticResource Theme.Input.Tab}" />
+        </StackPanel>
+
+        <Grid Grid.Row="1" Grid.RowSpan="2" Grid.Column="2" Margin="16,16,0,0">
+            <Grid x:Name="PDeckAccessionSheet">
+                <veneer:PAccession x:Name="PAccession" />
+            </Grid>
+            <Grid x:Name="PDeckStencilSheet" Visibility="Collapsed">
+                <veneer:PStencil x:Name="PStencil" Visibility="Collapsed" />
+            </Grid>
+            <Grid x:Name="PDeckCharterSheet" Visibility="Collapsed">
+                <veneer:PCharter x:Name="PCharter" Visibility="Collapsed" />
+            </Grid>
+        </Grid>
+
+        <TextBlock x:Name="PDeckLine" Grid.Row="2" Grid.Column="0" Margin="0,8,0,0" Style="{StaticResource Theme.Catalog.Meta}" />
+    </Grid>
+</UserControl>

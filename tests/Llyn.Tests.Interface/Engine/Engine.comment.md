@@ -180,7 +180,7 @@ Each relay is transparent.
 ## `TInterfaceEngineWorkspace`
 
 The relays for the engine's workspace, its rig and its state.
-That is the workspace start, open, read and format, the folder open and the location reads.
+That is the workspace start, open, change, read and format, the folder open and the location reads.
 The rescue read, the status bar's establishment read and the revision and state reads are relayed here too.
 The observer attach and detach and the recording sweep are relayed here as well.
 The rig apply, the usher swap and the three record builders sit here too.
@@ -195,6 +195,7 @@ The clock is set to a `TClockFake`, which reads the real time until a test sets 
 ## `TBulletinCreate`
 
 Builds a bulletin for a subject and id, so a conduct test can send one to the observers it holds.
+The bulletin carries no refusal.
 
 ## TInterfaceReference
 
@@ -205,7 +206,7 @@ Each relay is transparent, except that the author create and update also raise t
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `2f9a06b8eb95`
 - `TInterfaceContent.cs` `2f1032ea1bb4d887`
 - `TInterfaceEngine.cs` `c7b8e4962b114404`
 - `TInterfaceEngineFanqie.cs` `3e7c158c1c15322e`
@@ -213,5 +214,5 @@ Commit: `c2f335c331fe`
 - `TInterfaceEngineMarkup.cs` `26a61d688b58bff1`
 - `TInterfaceEnginePortrait.cs` `0b846a638698dde8`
 - `TInterfaceEngineSettings.cs` `86ffacd21d12d364`
-- `TInterfaceEngineWorkspace.cs` `8db0e579695f9d19`
+- `TInterfaceEngineWorkspace.cs` `6983c82028cff3ca`
 - `TInterfaceReference.cs` `33defb3a50ab83aa`

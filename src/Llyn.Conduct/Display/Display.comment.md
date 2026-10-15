@@ -3,7 +3,7 @@
 This folder is Conduct for the reading view of one entry, the lectern.
 It stands apart from the editor folders because it only reads and paints, and edits nothing.
 Each record is ready to paint, so a driver draws it and asks for no logic.
-Engine types never cross into Deportment, so every `L` type here is internal.
+Engine types never cross into Deportment, so the shared rules here are internal.
 One display per editor or wing builds its rules and its areas once, so every driver hears the same events.
 
 ## `CDisplay`
@@ -17,7 +17,7 @@ The area keeps the shown header, and the blank header stands while nothing is sh
 The lectern names the entry's lexical unit and freedom by the keys the static `LEntryPort` formats give.
 The rime-book and script box openings stand on `CFold`, built over the shown entry.
 `CFold` shares the rules' repaint memory, so its notices share the lectern's memory.
-The rules stay internal, so no driver names an `L` type.
+The rules stay internal, so no driver names them.
 The editor's esteem, sound sheet and sound facts take the rules from here, so all share one shown draft.
 
 The favourite, frequency, paradigm and reflex events count only for the chosen entry.
@@ -80,7 +80,7 @@ A failed load shows `Sound.LoadFailed` once and answers null.
 ## `CDisplayPlayback`
 
 The playback area is split from the sound area by concern, since playback reads through the media port alone.
-It holds no state, and the shown draft and the latest play stay in `LDisplaySound`.
+It holds no state, and the shown draft and the latest play stay in `CVoice`.
 The read shows its failure through repaint memory, since it runs on every repaint.
 The play gates answer a user act, so they show every failure.
 `CDisplayPlaybackRead` has the engine answer the button and volume tray verdicts, so Conduct reads no audio field.
@@ -94,8 +94,8 @@ An id with no accent in the shown draft, or no shown draft, plays nothing and sh
 
 The grasp area is split from the header by concern, since the grasp touches no other part of the header.
 It holds no state, and every member works on the entry the rules say is chosen.
-The grasp rule and the chosen entry both stay in `LDisplay`.
-`CDisplayGraspStep` is never negative, since `LDisplay` raises a negative engine limit to zero.
+The grasp rule and the chosen entry both stay in `CRule`.
+`CDisplayGraspStep` is never negative, since `CRule` raises a negative engine limit to zero.
 The star control takes it as its limit, so it names no engine constant.
 `CDisplayGraspFill`, `CDisplayGraspUnrated` and `CDisplayGraspHit` are ready tables.
 The driver hands them to the control once, so drawing and pointing request no logic.
@@ -161,60 +161,60 @@ The grasp stars of the chosen entry, ready to show.
 The step is zero when nothing is chosen or the read fails, and never above the limit.
 The label is the engine's wording of that step, empty when nothing is chosen.
 
-## `LDisplay`
+## `CRule`
 
 The rules the display's areas share, holding their state, decisions and engine reads.
-It is internal, so no driver names it and no `L` type crosses into Deportment.
+It is internal, so no driver names it and no engine type crosses into Deportment.
 Most members forward one read or one mark request to the ports, so the view never holds an engine.
 A refused read or mark reaches the user through the envoy the panel handed over.
 It builds the sound half once, so the area and the sound area over it share one shown draft.
 The sound half's read failures go through the atelier's repaint memory, and its failed sends show every time.
-No vista is held yet, so the display stands on no entry until `LDisplayVistaRestore`.
-`LDisplayChosen` is null before a vista is restored.
-`LDisplayMediaPort` is read by `CDisplayCard`, which resolves every picture and video address of the lectern's cards through it.
-`LDisplayChosenAttach` hands an observer the vista's bulletins about a subject that name the chosen entry or no entry.
+No vista is held yet, so the display stands on no entry until `CRuleVistaRestore`.
+`CRuleChosen` is null before a vista is restored.
+`CRuleMediaPort` is read by `CDisplayCard`, which resolves every picture and video address of the lectern's cards through it.
+`CRuleChosenAttach` hands an observer the vista's bulletins about a subject that name the chosen entry or no entry.
 The subject maps through `CCatalog.LCatalogSubjectRead`, by name, so an unknown subject throws.
-`LDisplayObserverAttach` hands every bulletin about a subject the vista hears.
-`LDisplayGraspStep` raises a negative engine limit to zero, since a star row cannot count below none.
-`LDisplayGraspStar` is read once, since the limit never changes while the app runs.
+`CRuleObserverAttach` hands every bulletin about a subject the vista hears.
+`CRuleGraspStep` raises a negative engine limit to zero, since a star row cannot count below none.
+`CRuleGraspStar` is read once, since the limit never changes while the app runs.
 It passes the engine's answers on unread and computes no fill, count or hit itself.
-`LDisplayGraspFormat` words a step, or answers empty when no entry is given.
-`LDisplayDraftLoad` reloads the chosen entry's draft from the vista and hands it on, or null once the entry is gone.
+`CRuleGraspFormat` words a step, or answers empty when no entry is given.
+`CRuleDraftLoad` reloads the chosen entry's draft from the vista and hands it on, or null once the entry is gone.
 A refused load calls nothing and shows `Sound.LoadFailed` once through the repaint memory.
 The page keeps what it shows, so no draft is paired with an id it was not loaded for.
-`LDisplayEntryLoad` loads one entry for a pick, chooses it on the vista, and answers its draft.
+`CRuleEntryLoad` loads one entry for a pick, chooses it on the vista, and answers its draft.
 The wing opens that draft in the area, since this class no longer knows the area.
 A gone entry chooses nothing and answers null, so the side stands on no entry and the area closes.
 A refused load throws before anything changes, so the caller can report it.
-`LDisplayFavoriteRead` answers false when no entry is given.
+`CRuleFavoriteRead` answers false when no entry is given.
 A failed read shows `Favorite.ReadFailed` once until the user acts, and answers false.
 The area passes the chosen entry and the editor's esteem the stored one, so both share this rule.
-`LDisplayFavoriteSave` shows a refused mark as `Favorite.MarkFailed` through the envoy every time.
+`CRuleFavoriteSave` shows a refused mark as `Favorite.MarkFailed` through the envoy every time.
 The heart then redraws from the stored value.
-`LDisplayGraspRead` holds the engine's step between zero and `LDisplayGraspStep`.
+`CRuleGraspRead` holds the engine's step between zero and `CRuleGraspStep`.
 A failed read shows `Grasp.ReadFailed` once until the user acts, and answers zero.
-The step it answers is held with its entry in `_lDisplayGrasp`, since that is the step the stars now show.
-`LDisplayGraspSave` clears the grasp when the step already stands, so one press unrates.
+The step it answers is held with its entry in `_cRuleGrasp`, since that is the step the stars now show.
+`CRuleGraspSave` clears the grasp when the step already stands, so one press unrates.
 Only the step held for the same entry counts, so another entry's step never clears this one.
 The area's gate and the editor's esteem both store through it, so the rule has one owner.
 A refused save shows `Grasp.MarkFailed` through the envoy every time, and the stars redraw from the stored value.
-`LDisplayFrequencyRead` reshapes the engine's chip, since the draft does not carry the frequency.
+`CRuleFrequencyRead` reshapes the engine's chip, since the draft does not carry the frequency.
 It raises a negative band or spare count to zero, since a count below zero has no star row.
 A failed read shows `Frequency.ReadFailed` once until the user acts, and answers no chip.
 It answers null when no entry is given, the entry has no frequency, or the read fails.
-`LDisplayTierRead` matches the engine rank name to a tier by name.
+`CRuleTierRead` matches the engine rank name to a tier by name.
 Any other name is the unknown tier, so the chip always finds a brush and a name.
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `CDisplay.cs` `39bf40eb3a593f09`
-- `CDisplayAccent.cs` `9fddfe5a415f4f7e`
-- `CDisplayGrasp.cs` `0acd77ec4e934a75`
-- `CDisplayPlayback.cs` `bde1c68e992d1856`
-- `CDisplayRoute.cs` `53fe8dbcb726393d`
+Commit: `2f9a06b8eb95`
+- `CDisplay.cs` `f0e4b88ada337da3`
+- `CDisplayAccent.cs` `63df02164d2dda07`
+- `CDisplayGrasp.cs` `f1de44be2fed43a2`
+- `CDisplayPlayback.cs` `7fd2ed66c09e90e7`
+- `CDisplayRoute.cs` `2b36821ac6c75d95`
 - `CGrasp.cs` `726f35d01c119673`
 - `CLectern.cs` `fed67f5c9720b3bf`
 - `CLecternAccent.cs` `92ed38553d3d9914`
 - `CLecternPlayback.cs` `182378266a721075`
-- `LDisplay.cs` `b24c48447e0db118`
+- `CRule.cs` `ee6981c7e406fc01`

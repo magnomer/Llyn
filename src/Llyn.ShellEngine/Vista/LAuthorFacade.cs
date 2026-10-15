@@ -205,15 +205,7 @@ public sealed class LAuthorFacade : LAuthorPort
             return [];
         }
 
-        IReadOnlyList<LAuthor> credited;
-        try
-        {
-            credited = _lAuthorFacadeDraft.LEngineDraftRead(draft)?.LDraftAuthor ?? [];
-        }
-        catch (Exception exception) when (LWorkspaceClerk.LWorkspaceStaleCheck(exception))
-        {
-            return [];
-        }
+        IReadOnlyList<LAuthor> credited = _lAuthorFacadeDraft.LEngineDraftRead(draft)?.LDraftAuthor ?? [];
 
         lock (_lAuthorFacadeGate)
         {

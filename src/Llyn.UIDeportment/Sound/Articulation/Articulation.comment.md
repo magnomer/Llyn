@@ -107,7 +107,7 @@ So a changed reading or a late flag refills the list, and otherwise containers s
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `2f9a06b8eb95`
 - `QArticulation.cs` `3604f1f3de45e235`
 - `QInventoryItem.cs` `b544669a3ae33bbd`
-- `QPhonology.cs` `a36e6314213cc2e1`
+- `QPhonology.cs` `2300aa261f9a5e08`

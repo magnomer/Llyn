@@ -30,13 +30,6 @@ A missing value reads empty.
 A bar inside a text value is escaped first, so it never reads as a join.
 Picture and Sound values are locations and stay unescaped.
 
-### `LStencilClerkResolve(long, LPortraitLabel)`
-
-The face read by card id finds the card and its deck, then resolves it against that deck's template.
-It lives beside the resolve it completes, since this clerk already reads decks, cards and templates.
-So the facade relays one call and gathers nothing.
-A card id that no deck holds refuses with `Refusal.CueMissing`.
-
 ### `LStencilClerkRead` and `LStencilSlotSet`
 
 The read answers a deck's owned template, the one its cards resolve against.
@@ -44,6 +37,7 @@ A missing deck refuses with `Refusal.DeckMissing`.
 Slot set writes one slot of the owned template, keyed by column and index.
 A slot already held takes the new body in place, and a new slot is appended.
 Save and apply read the owned template through the same read.
+The overload with no deck lists the saved templates as the store keeps them.
 
 ### `LStencilClerkSave` and `LStencilClerkApply`
 
@@ -52,6 +46,27 @@ Save copies the owned template into a new saved row under the given name.
 Apply copies a saved row's slots into the deck's owned row.
 Later edits to either row leave the other as it was.
 Apply takes only a saved row.
+
+### `LStencilClerkCheck` and `LStencilClerkParse`
+
+The check says whether a slot body is built only of stencil tokens.
+The parse splits a body into its tokens.
+Both are static, since they read only the body the caller holds.
+
+### `LStencilFieldAppend`, `LStencilFieldRemove` and `LStencilJoinSet`
+
+Each edits the field chips of one Text side of the owned template, through `LStencilBody`.
+The side is a Text index from one up, and zero or less throws.
+A side the template lacks reads as an empty body, and the edit stores it as a new slot.
+A place with no field token throws.
+
+### `LStencilMediaSet`
+
+Moves the Picture or Sound slot of the owned template to a side.
+Any other column throws, and so does a negative side.
+Side zero removes the slot, so that media leaves the face.
+A positive side keeps the slot's body, or the default body when the template held none.
+The moved slot keeps the first old place, and a new one goes last.
 
 ## `LStencilReader`
 
@@ -121,11 +136,31 @@ The deck list reads its folders here.
 ## `LCueClerk`
 
 The clerk reads entries through the entry clerk, so a card sees the saved draft.
+It takes the translation, reference and trail clerks only to build the reader of the listing line.
 
 ### `LCueClerkRead`
 
 Reads one deck's cards straight from the cue vault, in their stored order.
 A deck never stored reads no cards.
+The deck delete counts these rows, so the count loads no entry.
+
+### `LCueLineRead`
+
+Reads one deck's cards with the line a listing shows for each, in one call.
+A bound card's line is the first text of the field naming what it binds.
+  The fields are headword, definition, expression, sentence and target, by grain.
+  The text comes from `LStencilReader`, so the field rule keeps one owner.
+A free card's line is its first non-empty Text cell, by index.
+An orphaned card, or one whose entry no longer loads, reads an empty line.
+Each holder entry loads once per read, however many cards it holds.
+The holder is still asked once per bound card through `LCueHolderRead`.
+  A batch holder read would need a new vault member.
+
+### `LCueEntryRead`
+
+Reads the entry ids a deck's bound cards hold, for the accession find to mark bound rows.
+A free card and an orphaned card hold none.
+The holder is asked per card through `LCueHolderRead`, and no entry loads.
 
 ### `LCueClerkScan`
 
@@ -225,10 +260,10 @@ Wrong answers and statistics stay out in phase 1.
 
 ## Stamp
 
-Commit: `f6dae2392935`
-- `LCueClerk.cs` `afe1228a6db37fca`
+Commit: `2f9a06b8eb95`
+- `LCueClerk.cs` `885e824f6e29a437`
 - `LDeckClerk.cs` `78691b90d1a74996`
 - `LDepotClerk.cs` `efa9a9dc0d991ae9`
 - `LDepotLatch.cs` `fc94d5346f3c0f68`
-- `LStencilClerk.cs` `b1ddc9a051d8e835`
+- `LStencilClerk.cs` `8a66420a3829cfa5`
 - `LStencilReader.cs` `e300f7e601e1ca04`

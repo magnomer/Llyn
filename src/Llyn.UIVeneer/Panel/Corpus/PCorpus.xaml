@@ -150,7 +150,7 @@
                         Style="{StaticResource Theme.Scroll.Gutter}"
                         VerticalScrollBarVisibility="Auto">
                         <StackPanel x:Name="PExcerptBody" Margin="0,0,60,30" Visibility="Collapsed">
-                            <local:PMention
+                            <local:QMention
                                 x:Name="PExcerptText"
                                 FontFamily="{DynamicResource Theme.Font}"
                                 FontSize="28"

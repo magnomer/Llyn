@@ -156,7 +156,7 @@ The line arrives ready on the Example, so the field looks nothing up.
 ### `QCitationTextObserve`
 
 Which rows, how many, how each is split and whether the drawer opens are the engine's to say.
-A failing search answers an empty offer, so the drawer shuts rather than showing an error on every keystroke.
+A failing search shows its failure once and answers an empty offer, so the drawer shuts.
 
 ### `QCitationKeyRefine`
 
@@ -283,7 +283,7 @@ The notice's Example is not read, since the transcript answers the draft's Menti
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `2f9a06b8eb95`
 - `QCitationItem.cs` `b0bb21eefb49ff43`
 - `QDrawer.cs` `f37ab7da12554317`
 - `QDrawerItem.cs` `3faf6e5db0d974be`
@@ -291,5 +291,5 @@ Commit: `c6e60141a172`
 - `QQuotation.cs` `19aa8cfe966fbd31`
 - `QQuotationItem.cs` `90d64fd4af9f9ef3`
 - `QTranscriptCitation.cs` `84af282473993067`
-- `QTranscriptGloss.cs` `721f6bb7610c05b6`
-- `QTranscriptMention.cs` `6930521213e35ccd`
+- `QTranscriptGloss.cs` `2eed3e28daabb324`
+- `QTranscriptMention.cs` `3ecc1fb7f3615c4d`

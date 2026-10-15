@@ -11,7 +11,7 @@ internal sealed class QSpeaker
 {
     private readonly FrameworkElement _qSpeakerSurface;
 
-    private readonly ObservableCollection<PLanguageItem> _qSpeakerLanguage;
+    private readonly ObservableCollection<QLanguageItem> _qSpeakerLanguage;
 
     private readonly QLink _qSpeakerLink;
 
@@ -21,7 +21,7 @@ internal sealed class QSpeaker
 
     private CEnvoy _qSpeakerEnvoy = null!;
 
-    internal QSpeaker(FrameworkElement surface, ObservableCollection<PLanguageItem> language, QLink link)
+    internal QSpeaker(FrameworkElement surface, ObservableCollection<QLanguageItem> language, QLink link)
     {
         _qSpeakerSurface = surface;
         _qSpeakerLanguage = language;
@@ -60,7 +60,7 @@ internal sealed class QSpeaker
 
     private async void QSpeakerLanguageRefine()
     {
-        PLanguageItem.PLanguageItemReset(
+        QLanguageItem.QLanguageItemReset(
             _qSpeakerLanguage,
             await _cAtelier.CAtelierCatalog.CCatalogEnsignLoad(_qSpeakerEnvoy, QEnsignImage.QEnsignDraw));
         QSpeakerEnsignRefine();
@@ -69,7 +69,7 @@ internal sealed class QSpeaker
 
     private void QSpeakerObserve(object sender, RoutedEventArgs e)
     {
-        _cEntry.CEntryLanguageSet(PLanguageItem.PLanguageNameRead(sender));
+        _cEntry.CEntryLanguageSet(QLanguageItem.PLanguageNameRead(sender));
         QSpeakerChoiceRefine();
     }
 
@@ -91,12 +91,12 @@ internal sealed class QSpeaker
 
     private void QSpeakerApply(FrameworkElement container, object item, string? change)
     {
-        PLanguageItem.PLanguageItemApply(container, item, change);
+        QLanguageItem.QLanguageItemApply(container, item, change);
 
-        if (item is PLanguageItem language
+        if (item is QLanguageItem language
             && QLook.QLookPartFind<Ellipse>(container, "PSpeakerGlobe") is Ellipse globe)
         {
-            globe.Visibility = QLook.QLookVisibleRead(language.PLanguageItemFlag is null);
+            globe.Visibility = QLook.QLookVisibleRead(language.QLanguageItemFlag is null);
         }
 
         if (QLook.QLookPartFind<Button>(container, "PSpeakerChoice") is Button choice)

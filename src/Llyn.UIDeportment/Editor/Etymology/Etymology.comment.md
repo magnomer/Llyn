@@ -61,7 +61,7 @@ The relation and tongue lists are shared by every row of one read.
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `QEtymology.cs` `eb17122fc4bff02b`
+Commit: `2f9a06b8eb95`
+- `QEtymology.cs` `4d4d758bca7e3a63`
 - `QEtymologyChoice.cs` `81ca0bacab667286`
 - `QEtymologyItem.cs` `25e81f18626dce6f`

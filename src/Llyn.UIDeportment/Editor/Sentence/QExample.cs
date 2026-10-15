@@ -26,7 +26,7 @@ internal sealed class QExample
 
     internal void QExampleRefine(FrameworkElement container, object item)
     {
-        if (item is not PSentence row)
+        if (item is not QPassage row)
         {
             return;
         }
@@ -40,7 +40,7 @@ internal sealed class QExample
 
     internal void QExampleIntroduce(FrameworkElement container, object item)
     {
-        if (item is not PSentence row)
+        if (item is not QPassage row)
         {
             return;
         }
@@ -49,19 +49,19 @@ internal sealed class QExample
         if (QLook.QLookPartFind<Grid>(container, "PSentenceReach") is Grid reach && reach.CommandBindings.Count == 0)
         {
             reach.CommandBindings.Add(new CommandBinding(
-                PMentionCommand.PMentionCommandLink, sentence.QSentenceLinkRefine, sentence.QSentenceSpanRefine));
+                QMentionCommand.QMentionCommandLink, sentence.QSentenceLinkRefine, sentence.QSentenceSpanRefine));
             reach.CommandBindings.Add(new CommandBinding(
-                PMentionCommand.PMentionCommandChoose, sentence.QSentenceMeaningRefine, sentence.QSentenceSenseRefine));
+                QMentionCommand.QMentionCommandChoose, sentence.QSentenceMeaningRefine, sentence.QSentenceSenseRefine));
             reach.CommandBindings.Add(new CommandBinding(
-                PMentionCommand.PMentionCommandSilence,
+                QMentionCommand.QMentionCommandSilence,
                 sentence.QSentenceSilenceObserve,
                 sentence.QSentenceSpanRefine));
             reach.CommandBindings.Add(new CommandBinding(
-                PMentionCommand.PMentionCommandUnlink,
+                QMentionCommand.QMentionCommandUnlink,
                 sentence.QSentenceUnlinkObserve,
                 sentence.QSentenceUnlinkRefine));
             reach.CommandBindings.Add(new CommandBinding(
-                PGlossCommand.PGlossCommandRemoval, _qExampleGloss.QGlossRemoveObserve));
+                QGlossCommand.QGlossCommandRemoval, _qExampleGloss.QGlossRemoveObserve));
         }
 
         if (QLook.QLookPartFind<ToggleButton>(container, "PSentenceOpening") is ToggleButton opening)
@@ -114,14 +114,14 @@ internal sealed class QExample
 
         if (QLook.QLookPartFind<ItemsControl>(container, "PSentenceMentionLine") is ItemsControl mention)
         {
-            mention.ItemsSource = row.PSentenceChip.PMentionLineChip;
-            QLookItem.QLookItemAttach(mention, PMentionChip.PMentionChipRefine);
+            mention.ItemsSource = row.QPassageChip.QMentionLineChip;
+            QLookItem.QLookItemAttach(mention, QMentionChip.QMentionChipRefine);
         }
 
         if (QLook.QLookPartFind<ItemsControl>(container, "PSentenceGlossLine") is ItemsControl glosses)
         {
-            glosses.ItemsSource = row.PSentenceGloss;
-            QLookItem.QLookItemAttach(glosses, PGloss.PGlossRowApply);
+            glosses.ItemsSource = row.QPassageGloss;
+            QLookItem.QLookItemAttach(glosses, QRendition.QRenditionRowApply);
         }
     }
 
@@ -174,75 +174,75 @@ internal sealed class QExample
                 }
             }
 
-            if (item is PSentence row
+            if (item is QPassage row
                 && QLook.QLookPartFind<TextBox>(container, "PSentenceCitation") is TextBox citation)
             {
-                citation.Opacity = QLook.QLookFirstRead(shown || row.PSentenceCited, 1.0, 0.0);
+                citation.Opacity = QLook.QLookFirstRead(shown || row.QPassageCited, 1.0, 0.0);
             }
         }
     }
 
     private void QExampleOpeningRefine(object sender, RoutedEventArgs e)
     {
-        if (sender is ToggleButton { DataContext: PSentence row } opening)
+        if (sender is ToggleButton { DataContext: QPassage row } opening)
         {
-            row.PSentenceFrame.PSentenceFrameVisible = QLook.QLookCheckedRead(opening.IsChecked);
+            row.QSentenceFrame.QSentenceFrameVisible = QLook.QLookCheckedRead(opening.IsChecked);
         }
     }
 
-    private static void QExampleRowRefine(FrameworkElement container, PSentence row)
+    private static void QExampleRowRefine(FrameworkElement container, QPassage row)
     {
         ArgumentNullException.ThrowIfNull(row);
 
-        PSentenceFrame frame = row.PSentenceFrame;
+        QSentenceFrame frame = row.QSentenceFrame;
         if (QLook.QLookPartFind<ToggleButton>(container, "PSentenceOpening") is ToggleButton opening)
         {
-            opening.IsChecked = frame.PSentenceFrameVisible;
-            opening.Visibility = QLook.QLookVisibleRead(!frame.PSentenceFrameWritten);
+            opening.IsChecked = frame.QSentenceFrameVisible;
+            opening.Visibility = QLook.QLookVisibleRead(!frame.QSentenceFrameWritten);
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PSentenceSign") is TextBlock sign)
         {
-            sign.Text = QLook.QLookFirstRead(frame.PSentenceFrameVisible, "−", "+");
+            sign.Text = QLook.QLookFirstRead(frame.QSentenceFrameVisible, "−", "+");
         }
 
         if (QLook.QLookPartFind<StackPanel>(container, "PSentenceFrame") is StackPanel panel)
         {
-            panel.Visibility = QLook.QLookVisibleRead(frame.PSentenceFrameVisible);
+            panel.Visibility = QLook.QLookVisibleRead(frame.QSentenceFrameVisible);
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PSentenceGap") is TextBlock gap)
         {
-            gap.Text = frame.PSentenceFrameGap;
+            gap.Text = frame.QSentenceFrameGap;
         }
 
         QExampleChoiceRefine(
-            container, "PSentenceParticle", frame.PSentenceFrameParticle, row.PSentenceParticleCatalog);
+            container, "PSentenceParticle", frame.QSentenceFrameParticle, row.QPassageParticleCatalog);
         QExampleChoiceRefine(
             container,
             "PSentenceDependence",
-            frame.PSentenceFrameDependence,
-            row.PSentenceDependenceCatalog);
+            frame.QSentenceFrameDependence,
+            row.QPassageDependenceCatalog);
         if (QLook.QLookPartFind<Grid>(container, "PSentenceParticleField") is Grid particle)
         {
-            Grid.SetColumn(particle, frame.PSentenceFrameOrder.CSentenceOrderParticle * 2);
+            Grid.SetColumn(particle, frame.QSentenceFrameOrder.CSentenceOrderParticle * 2);
         }
 
         if (QLook.QLookPartFind<Grid>(container, "PSentenceDependenceField") is Grid dependence)
         {
-            Grid.SetColumn(dependence, frame.PSentenceFrameOrder.CSentenceOrderDependence * 2);
+            Grid.SetColumn(dependence, frame.QSentenceFrameOrder.CSentenceOrderDependence * 2);
         }
 
         if (QLook.QLookPartFind<TextBox>(container, "PSentenceText") is TextBox text)
         {
-            text.Text = row.PSentenceText.CStateWordingText;
-            QStateConverter.QStateHintRefine(text, QField.QFieldHintProperty, row.PSentenceText);
+            text.Text = row.QPassageText.CStateWordingText;
+            QStateConverter.QStateHintRefine(text, QField.QFieldHintProperty, row.QPassageText);
             QExampleLayoutRefine(container, text);
         }
 
         if (QLook.QLookPartFind<TextBox>(container, "PSentenceCitation") is TextBox citation)
         {
-            citation.Text = PSentence.PSentenceCitationFind(row.PSentenceCitationCatalog, row.PSentenceCitation);
+            citation.Text = QPassage.QPassageCitationFind(row.QPassageCitationCatalog, row.QPassageCitation);
         }
 
         if (QLook.QLookPartFind<QIconImage>(container, "PSentenceGlossIcon") is QIconImage gloss)

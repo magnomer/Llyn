@@ -93,7 +93,6 @@ internal sealed class LTenureQueue
 
     internal void LTenureQueueApply(IReadOnlyList<LRequest> requests)
     {
-        bool refused = false;
         foreach (LRequest request in requests)
         {
             lock (_lTenureQueueGate)
@@ -110,18 +109,14 @@ internal sealed class LTenureQueue
             }
             catch (Exception exception) when (LWorkspaceClerk.LWorkspaceRefusedCheck(exception))
             {
-                refused = true;
+                _lTenureQueueEngine.LEngineHearth.LEngineBulletinRaise(
+                    LSubject.LSubjectDraft, _lTenureQueueId, exception);
             }
             catch (Exception exception)
             {
                 LTenureQueueSuspend(exception);
                 return;
             }
-        }
-
-        if (refused)
-        {
-            _lTenureQueueEngine.LEngineHearth.LEngineBulletinRaise(LSubject.LSubjectDraft, _lTenureQueueId);
         }
 
         _lTenureQueueObserver();

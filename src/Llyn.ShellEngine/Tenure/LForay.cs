@@ -18,6 +18,8 @@ public sealed class LForay
 
     private readonly LQuillPronunciation _lForayPronunciation;
 
+    private readonly Action<Exception> _lForayFault;
+
     private bool _lForayCancelled;
 
     internal LForay(
@@ -27,8 +29,12 @@ public sealed class LForay
         string word,
         string language,
         long target,
-        string scheme)
+        string scheme,
+        Action<Exception> fault)
     {
+        ArgumentNullException.ThrowIfNull(fault);
+
+        _lForayFault = fault;
         _lEngine = engine;
         _lForayTenure = tenure;
         _lForayPronunciation = pronunciation;
@@ -176,7 +182,7 @@ public sealed class LForay
         }
         catch (Exception exception)
         {
-            _lEngine.LEngineWorkspace.LEngineAuditRecord(exception);
+            _lForayFault(exception);
             if (!token.IsCancellationRequested)
             {
                 try
@@ -185,7 +191,7 @@ public sealed class LForay
                 }
                 catch (Exception ending)
                 {
-                    _lEngine.LEngineWorkspace.LEngineAuditRecord(ending);
+                    _lForayFault(ending);
                 }
             }
         }

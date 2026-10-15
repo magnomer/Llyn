@@ -5,7 +5,7 @@ Both lists share one card renderer and one set of handlers.
 Card identity is independent of list position.
 Gestures reach Conduct gates, and ready draft values drive presentation.
 
-## `PCardGhost`
+## `QCardGhost`
 
 The ghost is a dimmed copy of the dragged card painted above the list.
 The card itself stays on screen and keeps its place until the drag moves it.
@@ -14,7 +14,7 @@ Its size and left edge are fixed at the start, so it moves only up and down.
 
 ### Inline notes
 
-### PCardGhost.cs: `_pCardGhostFace = new VisualBrush(card) { Stretch = Stretch.None }`
+### QCardGhost.cs: `_qCardGhostFace = new VisualBrush(card) { Stretch = Stretch.None }`
 
 A brush of the live card rather than a snapshot keeps the card's own look.
 
@@ -275,14 +275,14 @@ The card arrives through the bulletin, already named and placed, so the form nev
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `PCardGhost.cs` `11d4107967115302`
-- `QBond.cs` `d88c00794d12fc9c`
+Commit: `2f9a06b8eb95`
+- `QBond.cs` `884c7c93369269b3`
 - `QBondItem.cs` `91b81f9342fbd78b`
-- `QCard.cs` `d44c1765649144c7`
-- `QCardDrag.cs` `02db6c80c5a91e0c`
+- `QCard.cs` `0d49c2111824076a`
+- `QCardDrag.cs` `92a726938dbd6e90`
 - `QCardFold.cs` `e15e8aeeda7c7de4`
-- `QCardGesture.cs` `58709ec8b5d4eafe`
-- `QCardPosition.cs` `8ca4a94d9bc198a7`
-- `QCollocation.cs` `3f18052e6475fa98`
-- `QMeaning.cs` `d6f0fefdea6d93fc`
+- `QCardGesture.cs` `aadadf014410a661`
+- `QCardGhost.cs` `a8d2e5cedb6f2ce5`
+- `QCardPosition.cs` `58c299a080be75f9`
+- `QCollocation.cs` `5c35cece54f82067`
+- `QMeaning.cs` `2a619d7b05708280`

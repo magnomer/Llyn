@@ -6,13 +6,10 @@
     "Llyn.ShellEngine"
   ],
   "ceilings": {
-    "Llyn.Application": 10,
-    "Llyn.ShellEngine": 18
+    "Llyn.Application": 0,
+    "Llyn.ShellEngine": 0
   },
-  "exempt": [
-    "src/Llyn.Application/Workspace/LWorkspaceClerk.cs:LWorkspacePostureRead",
-    "src/Llyn.Application/Workspace/LWorkspaceClerk.cs:LWorkspaceFallbackSave"
-  ],
+  "exempt": [],
   "helper": {
     "framework": "net10.0"
   },

@@ -118,6 +118,6 @@ The chosen mark is left aside.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `QFavorite.cs` `2c99312f1184aed4`
+Commit: `2f9a06b8eb95`
+- `QFavorite.cs` `a697381d4473e6af`
 - `QRosterItem.cs` `ccf3353eb6ac254d`

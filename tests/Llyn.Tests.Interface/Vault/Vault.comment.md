@@ -55,16 +55,6 @@ The query find is the exception and answers every stored row.
 `TRigFake` seats it as both the entry port and the entry query port of a rig built from fakes.
 The add stores an entry under the next id, as an archive would, and returns it with that id.
 
-## `TVaultFakeAncestor`
-
-An in-memory Ancestor store that keeps one map per entry, as a fake rig needs.
-A save mints a new id for each box and rewrites each child id to match, as an archive would.
-The five built-in relations are seeded and cannot be deleted.
-A create returns the item already held under the trimmed name, so a name never repeats.
-A listed relation or tongue counts the boxes that use it across every map.
-A delete of a custom item clears it from every box and keeps the boxes.
-It then reports whether a row went.
-
 ## `TVaultFakeCue`
 
 An in-memory cue store with cells per cue, keyed from one past a hundred.
@@ -92,18 +82,6 @@ A folder delete sets its decks to the top level through the deck port.
 So the deck fake stays the only writer of a deck.
 A create appends the folder after the last one.
 
-## `TVaultFakePronunciation`
-
-An in-memory pronunciation store keyed from one, so a clerk save can run without SQLite.
-Rows are kept by id and read back by entry, and the order set is accepted and ignored.
-A recording save is refused, since no clerk test writes audio through it.
-
-## `TVaultFakeReflex`
-
-An in-memory reflex store, so an entry clerk save can run its reflex sync without SQLite.
-Rows are kept per entry and a set replaces the list, numbering the rows from one.
-The anchor scan answers nothing, since no clerk test tallies anchors.
-
 ## `TVaultFakeRevision`
 
 An in-memory revision log keyed from one, so a clerk test can read back what a delete recorded.
@@ -123,11 +101,6 @@ An in-memory tombstone shelf keyed by entry id, so a clerk test can prove a dele
 The read answers the tombstone filed for the entry, or null when none was.
 No production seam reads a tombstone back, so only the fake answers.
 
-## `TVaultFakeTranscription`
-
-An in-memory transcription store, so an entry clerk save can run its transcription sync without SQLite.
-Rows are kept per entry and a set replaces the list, numbering the rows from one.
-
 ## `TVaultFakeWorkspace`
 
 An in-memory workspace row, so an identity issuer and a revision pointer work without a database.
@@ -141,14 +114,10 @@ Commit: `aae5349dbb94`
 - `TInterfaceDatabase.cs` `da6742d17a5b907e`
 - `TInterfaceVault.cs` `77bad45b5f2ce34c`
 - `TVaultFake.cs` `7d9c55a8e3e857fb`
-- `TVaultFakeAncestor.cs` `c045bd98f192efe5`
 - `TVaultFakeCue.cs` `458fbecacde3fc62`
 - `TVaultFakeDeck.cs` `47f068bafbd3bf0e`
 - `TVaultFakeFolder.cs` `04b2a4e56b6ba408`
-- `TVaultFakePronunciation.cs` `23fc443861d386b7`
-- `TVaultFakeReflex.cs` `f5c05bb32d9f3a49`
 - `TVaultFakeRevision.cs` `6f60bed6da1e60c5`
 - `TVaultFakeStencil.cs` `80d9b2203f0acc6f`
 - `TVaultFakeTombstone.cs` `00e6cc058522a937`
-- `TVaultFakeTranscription.cs` `76c3478e6a91afcf`
 - `TVaultFakeWorkspace.cs` `4823df3b3751b6f0`

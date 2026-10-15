@@ -1,0 +1,69 @@
+<UserControl
+    x:Class="Llyn.UIVeneer.PAccession"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Llyn.UIDeportment;assembly=Llyn.UIDeportment"
+    >
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Margin="0,0,0,12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Border Grid.Column="0" Margin="0,0,8,0" Style="{StaticResource Theme.Search.Bar}">
+                <TextBox x:Name="PTrawl" Style="{StaticResource Theme.Search.Field}" />
+            </Border>
+            <Button x:Name="PAccessionBulk" Grid.Column="1" Content="{DynamicResource Accession.AddAll}" />
+        </Grid>
+
+        <Grid Grid.Row="1" Style="{StaticResource Theme.Catalog.Frame}">
+            <ScrollViewer Style="{StaticResource Theme.Catalog.Scroll}">
+                <ItemsControl x:Name="PAccessionRows">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid x:Name="PAccessionRow" Margin="8,4,0,4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock x:Name="PAccessionText" Grid.Column="0" Style="{StaticResource Theme.Catalog.Title}" />
+                                <TextBlock
+                                    x:Name="PAccessionEpithet"
+                                    Grid.Column="1"
+                                    Margin="10,0,0,0"
+                                    VerticalAlignment="Center"
+                                    TextTrimming="CharacterEllipsis"
+                                    Style="{StaticResource Theme.Catalog.Meta}" />
+                                <TextBlock
+                                    x:Name="PAccessionBound"
+                                    Grid.Column="2"
+                                    Margin="8,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Style="{StaticResource Theme.Catalog.Meta}"
+                                    Text="{DynamicResource Accession.Bound}" />
+                                <Button
+                                    x:Name="PAccessionAddition"
+                                    Grid.Column="2"
+                                    Margin="8,0,0,0"
+                                    ToolTip="{DynamicResource Accession.Add}">
+                                    <local:QIconImage x:Name="PAccessionAdditionIcon" Width="12" Height="12" />
+                                </Button>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+            <TextBlock x:Name="PAccessionEmpty" Style="{StaticResource Theme.Catalog.Empty}" />
+        </Grid>
+
+        <TextBlock x:Name="PAccessionTally" Grid.Row="2" Margin="0,8,0,0" Style="{StaticResource Theme.Catalog.Meta}" />
+    </Grid>
+</UserControl>

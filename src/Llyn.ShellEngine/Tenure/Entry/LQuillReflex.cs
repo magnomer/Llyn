@@ -133,21 +133,14 @@ public sealed class LQuillReflex
             return [];
         }
 
-        try
-        {
-            return LDraftClerkReflex.LReflexFind(held.LDraftContent, reflex) is LReflexDraft row
-                ? _lQuillReflexTenure.LTenureEngine.LEngineReflex.LEngineAnchorScan(
-                    stored,
-                    row.LReflexDraftAnchors,
-                    held.LDraftContent.LEntryDraftLanguage,
-                    row.LReflexDraftLanguage,
-                    row.LReflexDraftAnatomy.LAnatomyToneIpa)
-                : [];
-        }
-        catch (Exception exception) when (LWorkspaceClerk.LWorkspaceRefusedCheck(exception))
-        {
-            return [];
-        }
+        return LDraftClerkReflex.LReflexFind(held.LDraftContent, reflex) is LReflexDraft row
+            ? _lQuillReflexTenure.LTenureEngine.LEngineReflex.LEngineAnchorScan(
+                stored,
+                row.LReflexDraftAnchors,
+                held.LDraftContent.LEntryDraftLanguage,
+                row.LReflexDraftLanguage,
+                row.LReflexDraftAnatomy.LAnatomyToneIpa)
+            : [];
     }
 
     private bool LQuillRespellingCheck(long reflex)

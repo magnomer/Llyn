@@ -72,7 +72,7 @@ public sealed class TEtymologyDisplay
         long aqua = TEtymologyAquaSave(engine);
         List<string> asked = [];
         CDisplay display = new TEditorFixture(TEtymologyFaultPrepare(engine, asked)).TEditorFixtureDisplay;
-        display.LDisplayRule.LDisplaySound.TDisplaySoundShow(aqua, engine.TEngineEntryLoad(aqua)!);
+        display.LDisplayRule.CVoice.TDisplaySoundShow(aqua, engine.TEngineEntryLoad(aqua)!);
 
         Assert.Empty(display.CDisplayCard.CDisplayEtymologyRead().CEtymologyStateAncestors);
         Assert.Equal(["Display.AncestryFailed"], asked);

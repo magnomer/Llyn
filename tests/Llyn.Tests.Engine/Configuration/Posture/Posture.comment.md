@@ -38,10 +38,11 @@ A workspace moved onto keeps its own posture, and one without any inherits the p
 One moved onto with only the legacy settings file yields its mode and volume.
 A posture file that will not read leaves the posture held and the file as it was.
 A failing save after a workspace opens raises `LPostureSaveFailed` again, since each open clears the failed flag.
+A failing read at start is recorded once and raised once as `LPostureReadFailed` with the first fault.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `2f9a06b8eb95`
 - `TPosture.cs` `57c7fc16ea6b3bf0`
 - `TPostureFile.cs` `b37706d39b7c30e7`
-- `TPostureWorkspace.cs` `37bc217c5bd76de7`
+- `TPostureWorkspace.cs` `6904557928566577`

@@ -281,7 +281,7 @@ By owner it reads the Authors credited on a Reference, in that Reference's own a
 `LEngineBylineFind` lists the byline rows a typed credit may already name.
 The draft is read here by its id, so the editor never carries the credits it holds back down.
 No draft offers nothing, and neither does a blank word or a draft raised in a workspace no longer open.
-Only the stale refusal is caught, and every other failure reaches the caller.
+Nothing is caught, so the stale refusal reaches the Conduct gate that shows it.
 
 `LEngineCreditRead` gives the credit rows of the held draft, after its deferred requests are applied.
 No held draft has none.
@@ -395,8 +395,8 @@ A link names its entry only through a stored id, so an empty id names nothing.
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `LAuthorFacade.cs` `bb117bf8bbd2f55c`
+Commit: `2f9a06b8eb95`
+- `LAuthorFacade.cs` `a7c57e4576ed1f96`
 - `LCardFacade.cs` `fd835262e150b403`
 - `LCatalogFacade.cs` `8545ab05f0c69039`
 - `LEntryFacade.cs` `4a9aa0f176bb76e2`

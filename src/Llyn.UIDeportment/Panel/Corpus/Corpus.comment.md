@@ -259,11 +259,11 @@ It runs on every transcript and draft notice, since painting the same language c
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `2f9a06b8eb95`
 - `QAnthology.cs` `a770dbcc55e7ffd8`
 - `QAnthologyItem.cs` `b1316675b6391a64`
 - `QCorpus.cs` `627d781c19c24a28`
-- `QCorpusPortrait.cs` `2f360e25db81a22c`
-- `QExcerpt.cs` `63a34235d8c793b4`
+- `QCorpusPortrait.cs` `cfe29836ed70f4cf`
+- `QExcerpt.cs` `7f4c70cd37f6e033`
 - `QTranscript.cs` `045f9f0e592d2d31`
-- `QTranscriptSpeaker.cs` `a66bc4dc56d5712b`
+- `QTranscriptSpeaker.cs` `106962427c901ebd`

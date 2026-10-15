@@ -40,7 +40,7 @@ internal sealed class QXiesheng
         surface.CommandBindings.Add(
             new CommandBinding(ApplicationCommands.Print, QXieshengPressObserve, QXieshengPressRefine));
         surface.CommandBindings.Add(new CommandBinding(
-            PDisplayCommand.PDisplayCommandPortrait, QXieshengPortraitObserve, QXieshengPressRefine));
+            QDisplayCommand.QDisplayCommandPortrait, QXieshengPortraitObserve, QXieshengPressRefine));
         _qXieshengRail = new QPanelRail(
             QContract.QContractFind<UserControl>(surface, "PXieshengRail"),
             QXieshengBin,

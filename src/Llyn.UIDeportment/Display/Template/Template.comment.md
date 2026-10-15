@@ -6,49 +6,49 @@ The fills only paint them, so no template fill resolves lexical state or holds a
 Texts are looked up under the keys Conduct chose, and a worded text shows its key's looked-up text.
 Any other text shows as written.
 
-## `PLeaf`
+## `QLeaf`
 
 Named parts keep template presentation separate from Conduct gates.
 Only ready items receive presentation.
 
-### `PLeafCardRefine`
+### `QLeafCardRefine`
 
 An untitled open card uses its kind caption, and an untitled folded card uses its peek.
 `QCardFold` gives writing and reading cards one fold shape.
 The heading collapses with the homed list when nothing homes on the card.
 The "see" list collapses when the card has no "see" lines.
 
-### `PLeafRowRefine`
+### `QLeafRowRefine`
 
 A collocation row takes the same fold shape, so its hinge, stored fold and body follow the cards' rule.
 The hinge stays the lectern's hinge gate, since the row's hinge carries the item like a card's.
 A closed row cuts its meaning at the line end and shows only Conduct's filled markers.
 An open row wraps its meaning and hides the markers, since its body then shows the fields they summarise.
 
-### `PLeafBodyRefine`
+### `QLeafBodyRefine`
 
 A card and a row share one body fill.
 A template without a contents part is left untouched.
 Empty chip and example sections collapse rather than leaving blank rows.
 Translations gain the chip margin when no situation row precedes them.
 
-### `PLeafListRefine`
+### `QLeafListRefine`
 
 All chip lists, homed rows and "see" lines share one empty-row visibility policy.
 Missing named lists are left untouched.
 
-### `PLeafSeeRefine`
+### `QLeafSeeRefine`
 
 The line is a button whose item the lectern's see gate reads, so the fill adds no click.
 
-### `PLeafSentenceRefine`
+### `QLeafSentenceRefine`
 
 Sentence identity and mention pieces are kept so the click gate keeps its context.
 A margin binding follows both the frame and sentence fonts, keeping their baseline relationship live.
 The byline follows the sentence's margin and typography.
 Gloss rows reuse the editor's Gloss filler.
 
-### `PLeafLinkRefine`
+### `QLeafLinkRefine`
 
 Flag, headword and language arrive ready together, avoiding a target lookup during rendering.
 
@@ -117,7 +117,7 @@ Lines keep the order Conduct gave them.
 
 One example line, carrying plain copies so the fill never holds a Conduct record.
 The sentence id is what a click hands back to the find gate.
-Glosses are wrapped through `PGlossConverter`, so both modes share one flag resolver.
+Glosses are wrapped through `QGlossConverter`, so both modes share one flag resolver.
 It only copies, so the driver neither cuts nor judges a line.
 
 ## `QLeafSee`
@@ -133,11 +133,11 @@ Each film row is built as the vignette builds its own.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `PLeaf.cs` `7777b51a5a8b0889`
+Commit: `2f9a06b8eb95`
+- `QLeaf.cs` `28197bbac0cf4167`
 - `QLeafChip.cs` `afe238a03dea2f47`
 - `QLeafImage.cs` `ebc626cc614700b7`
 - `QLeafItem.cs` `4a9ff3986e30777d`
-- `QLeafLine.cs` `4560569bbd433ef9`
+- `QLeafLine.cs` `40a0d4aad94c015f`
 - `QLeafSee.cs` `19c10c485fdc4d46`
 - `QLeafVideo.cs` `84c2368cbae3d081`

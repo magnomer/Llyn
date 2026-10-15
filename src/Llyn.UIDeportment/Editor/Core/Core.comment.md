@@ -233,12 +233,12 @@ A click glides, and a layout change places the pill outright.
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `2f9a06b8eb95`
 - `QCadence.cs` `c49dba67646f341c`
 - `QEditor.cs` `5c3d48d48e2189bd`
-- `QEditorCard.cs` `d8bc3c212ef354d9`
+- `QEditorCard.cs` `716553e0e476c435`
 - `QEditorFont.cs` `4da791778932c52b`
-- `QEditorSound.cs` `d7e823badab64ad6`
+- `QEditorSound.cs` `37d1a4f52e9d1a42`
 - `QInput.cs` `3268e212c7a17a65`
-- `QRegard.cs` `5f523b459f306d3c`
+- `QRegard.cs` `b9602ef19076b185`
 - `QStack.cs` `5302ff128811c7a8`

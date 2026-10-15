@@ -93,6 +93,42 @@ public sealed class TPostureWorkspace
     }
 
     [Fact]
+    public void PostureStart_ReadFault_RaisesReadFailedWithTheFault()
+    {
+        List<Exception> thrown = [];
+        List<Exception> failed = [];
+        LPostureVault faulting = TEngineFake.TEngineCreate<LPostureVault>(
+            new Dictionary<string, Func<object?[]?, object?>>
+            {
+                ["LPostureRead"] = _ =>
+                {
+                    LVaultFault fault = new(new IOException("The disk is gone."));
+                    thrown.Add(fault);
+                    throw fault;
+                },
+                ["LPostureSave"] = _ => null,
+            });
+        List<Exception> recorded = [];
+        LAuditVault audit = TEngineFake.TEngineCreate<LAuditVault>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["LAuditRecord"] = args =>
+            {
+                recorded.Add((Exception)args![0]!);
+                return null;
+            },
+        });
+        using LEngine engine = TRigFake.TRigFakeStart(
+            TRigFake.TRigFakeBuild() with { LRigPosture = faulting, LRigAudit = audit });
+        LPosture posture = engine.TPostureStart();
+        posture.LPostureReadFailed += failed.Add;
+
+        posture.TPostureModeSave("Corpus");
+
+        Assert.Equal(Assert.Single(thrown), Assert.Single(failed));
+        Assert.Equal(thrown, recorded);
+    }
+
+    [Fact]
     public void PostureSave_FaultAfterWorkspaceOpens_RaisesTheFailureAgain()
     {
         List<Exception> thrown = [];

@@ -199,10 +199,10 @@ It is the same announcement whether the store happened in this panel's editor or
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `2f9a06b8eb95`
 - `QDuplex.cs` `ca987539dd4da4cd`
 - `QIndex.cs` `c11007a0de35b95b`
 - `QIndexItem.cs` `f2e8778b89af3698`
-- `QLibrary.cs` `96e599628a33dafe`
+- `QLibrary.cs` `4a192cc1f0241228`
 - `QMarkup.cs` `2a6d5e1d2cf25221`
 - `QWing.cs` `cd859f18f3ed85d6`

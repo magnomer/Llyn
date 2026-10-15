@@ -18,7 +18,7 @@ internal sealed class QBond
 
     internal void QBondApply(FrameworkElement container, object item, string? _)
     {
-        if (item is PCard card)
+        if (item is QPlacard card)
         {
             if (QLook.QLookPartFind<ItemsControl>(container, "PCardBond") is not ItemsControl bond)
             {
@@ -26,7 +26,7 @@ internal sealed class QBond
             }
 
             QLookItem.QLookItemAttach(bond, QBondApply);
-            bond.ItemsSource = card.PCardBond;
+            bond.ItemsSource = card.QPlacardBond;
             if (QLook.QLookPartFind<Button>(bond, "PBondChooser") is Button chooser)
             {
                 chooser.Click -= QBondChooserObserve;
@@ -71,11 +71,11 @@ internal sealed class QBond
         }
     }
 
-    internal static void QBondRefine(PCard card, IReadOnlyList<CMeaning> senses)
+    internal static void QBondRefine(QPlacard card, IReadOnlyList<CMeaning> senses)
     {
         QLookItem.QLookItemShow(
-            card.PCardBond,
-            QBondItem.QBondItemCreate(card.PCardId, senses),
+            card.QPlacardBond,
+            QBondItem.QBondItemCreate(card.QPlacardId, senses),
             static row => row.QBondItemSense,
             static bond => bond.QBondItemSense,
             static bond => bond,
@@ -117,9 +117,9 @@ internal sealed class QBond
 
     private void QBondChooserObserve(object sender, RoutedEventArgs e)
     {
-        if (sender is Button { DataContext: PCard card, TemplatedParent: ItemsControl bond })
+        if (sender is Button { DataContext: QPlacard card, TemplatedParent: ItemsControl bond })
         {
-            QBondMenuRefine(bond, QBondItem.QBondItemCreate(card.PCardId, _cCardField.CCardSenseRead()));
+            QBondMenuRefine(bond, QBondItem.QBondItemCreate(card.QPlacardId, _cCardField.CCardSenseRead()));
         }
     }
 

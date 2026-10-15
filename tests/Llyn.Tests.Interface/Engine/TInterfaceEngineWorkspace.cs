@@ -20,6 +20,9 @@ internal static class TInterfaceEngineWorkspace
     internal static string TEngineWorkspaceRead(this LEngine engine) =>
         engine.LEngineWorkspace.LEngineWorkspaceRead();
 
+    internal static LWorkspaceState TEngineWorkspaceChange(this LEngine engine, string chosen) =>
+        engine.LEngineWorkspace.LEngineWorkspaceChange(chosen);
+
     internal static void TEngineFolderOpen(this LEngine engine)
     {
         new LSettingsOutlet(engine).LEngineFolderOpen();
@@ -56,7 +59,7 @@ internal static class TInterfaceEngineWorkspace
 
     internal static LWorkspaceState TWorkspaceStateCreate() => new(1);
 
-    internal static LBulletin TBulletinCreate(LSubject subject, long id) => new(subject, id);
+    internal static LBulletin TBulletinCreate(LSubject subject, long id) => new(subject, id, null);
 
     internal static void TEngineObserverAttach(this LEngine engine, Action<LBulletin> observer)
     {

@@ -4,7 +4,7 @@ Audio playback and recording download for the editor and the reading views.
 It stands apart from Image and Video because its drivers share one MediaPlayer and one loudness.
 Every driver here only paints ready state and hands raw values to gates.
 
-## `PVolumeCatalog`
+## `QVolumeCatalog`
 
 The one loudness the program plays at, held where anything that plays can reach it.
 The slider lives in the pronunciation's tray, and a video card knows nothing of that tray.
@@ -12,7 +12,7 @@ So both are wired to this value instead of to each other.
 The level is a mirror, not the truth.
 The truth is the workspace's audio level in the posture, which `QVolume` sets as it moves.
 
-### `PVolumeCatalogLevel`
+### `QVolumeCatalogLevel`
 
 The level is taken as given, with no clamp.
 Conduct promises a finite level between silence and full, and the slider cannot leave it.
@@ -180,10 +180,10 @@ Each grip is unheard while painted, so a painted grip makes no second request.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `PVolumeCatalog.cs` `41e6d4d87a7a028c`
+Commit: `2f9a06b8eb95`
 - `QClip.cs` `73c0340db4b50623`
 - `QClipItem.cs` `fcd2539c79608e01`
 - `QClipReading.cs` `3a7de531b7f11376`
 - `QPlayback.cs` `490b1f668fbb68ec`
-- `QVolume.cs` `68712cce92dbc4ed`
+- `QVolume.cs` `e6cdd3ecad5136ff`
+- `QVolumeCatalog.cs` `34c57b0f4686524a`

@@ -29,12 +29,6 @@ The rule for a quote without a break is an inference until the phone probe.
 In Basic style nothing is quoted, and each line break becomes `|`.
 A TAB becomes a space, since Basic has no quoting to keep it inside a cell.
 
-### `LDepotRead`
-
-The read detects a byte order mark, so a phone file in UTF-8 or UTF-16 reads alike.
-It undoes the TSV quoting and skips blank lines.
-Leading `*` lines are settings, and the first other line is the header.
-
 ### `LDepotDigestRead`
 
 The digest is the lowercase SHA-256 of the file bytes.
@@ -60,6 +54,6 @@ A file fault becomes an `LVaultFault`.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
+Commit: `2f9a06b8eb95`
 - `LDeckManifestFile.cs` `50773590e8e51a53`
-- `LDepotFolder.cs` `a9ae910fc9888561`
+- `LDepotFolder.cs` `7eb55dc305e789eb`

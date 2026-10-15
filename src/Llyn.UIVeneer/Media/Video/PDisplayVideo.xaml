@@ -9,10 +9,10 @@
     </Style>
 
     <DataTemplate x:Key="Display.Card.VideoLine">
-        <local:PVideoFrame>
+        <local:QVideoFrame>
             <Border HorizontalAlignment="Stretch" Style="{DynamicResource Theme.Card.Preview}">
                 <veneer:PScreen x:Name="PVideoScreen" />
             </Border>
-        </local:PVideoFrame>
+        </local:QVideoFrame>
     </DataTemplate>
 </ResourceDictionary>

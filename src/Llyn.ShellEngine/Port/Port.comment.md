@@ -17,9 +17,15 @@ The slice the conduct sees for decks, deck folders, cues and stencils.
 It is a realm of its own, so `LPortraitPort` does not grow with it.
 Each member behaves as `LDeckFacade` documents it.
 The deck read carries the folders, so one call fills the deck list.
-The face read takes the label from the conduct, as the portrait read does.
+The line read takes the label from the conduct, as the portrait read does.
+It answers each cue with its listing line.
 The deck export takes the label the same way, and the busy check reads the workspace latch.
+`LEngineBodyCheck` says whether a slot body is built only of stencil tokens.
+`LEngineTokenParse` splits a body into its tokens.
+Both are static, since they read only the body the caller holds.
+The accession find answers each catalog row with whether the deck already binds it.
 
+## `LDraftOutlet`
 
 The engine's face for `LDraftPort`, handed by the host to the conduct in place of the engine itself.
 Every member forwards to the engine part that owns it and holds no state.
@@ -201,9 +207,9 @@ A blank variety has no flag, so its key is empty and finds nothing.
 
 ## Stamp
 
-Commit: `f6dae2392935`
-- `LDeckOutlet.cs` `6323b17583bacd57`
-- `LDeckPort.cs` `381d2ffec28a8eb9`
+Commit: `2f9a06b8eb95`
+- `LDeckOutlet.cs` `0369871f4aa6b0ab`
+- `LDeckPort.cs` `853c07ac3cea9a51`
 - `LDraftOutlet.cs` `3c00d5a269978c47`
 - `LDraftPort.cs` `b5d61d945bfd7907`
 - `LMediaOutlet.cs` `cc595890330f42a2`

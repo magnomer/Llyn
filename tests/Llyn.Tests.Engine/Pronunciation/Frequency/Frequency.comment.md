@@ -3,6 +3,10 @@
 This folder holds the tests of frequency values.
 They cover the engine fetch, bands, entry, order, session and gauge.
 
+## `TEngineFrequencyFault`
+
+A frequency fetch whose source throws hands that fault to the owner once.
+
 ## `TEngineFrequency`
 
 Covers the engine's frequency fill over a fixture pack with three sources.
@@ -95,10 +99,11 @@ A row with a once interval shows the interval in the given pattern, and a plain 
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `2f9a06b8eb95`
 - `TEngineFrequency.cs` `1d4be01c6335f7b0`
 - `TEngineFrequencyBand.cs` `fd58ade5d27080e7`
 - `TEngineFrequencyEntry.cs` `7c9da840e11489cf`
+- `TEngineFrequencyFault.cs` `f91334488e09dc46`
 - `TEngineFrequencyOrder.cs` `7b50311f228195d8`
 - `TEngineFrequencySession.cs` `0c059ea184e978ba`
 - `TFrequency.cs` `9bf0396b5536deed`

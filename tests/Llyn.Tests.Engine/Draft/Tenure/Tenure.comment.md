@@ -1,7 +1,7 @@
 # Tenure
 
 This folder holds the tests of a held draft from start to commit or cancel.
-They cover commit, cancel, refused rounds, chronicle, language, observers and the status bar count.
+They cover commit, cancel, refused rounds, chronicle, language, observers, the request queue, stale drafts and the status bar count.
 
 ## `TChronicle.cs`
 
@@ -121,9 +121,27 @@ So the engine and workspace dispose over a sound tree.
 Nested preparation suppresses matching notices through the outermost scope, even when it throws.
 Later notices still arrive.
 
+## `TTenureQueue.cs`
+
+Covers the queue of deferred requests when one of them is refused.
+The refused request raises one draft bulletin carrying the card refusal and the tenure id.
+The next deferred request still applies, so the headword lands.
+The tenure is not halted by the refusal.
+
+## `TTenureStale.cs`
+
+Covers a held draft whose workspace was switched away.
+Most facts first check that reading the tenure throws the refusal.
+The first fact switches the workspace through the engine's change relay and the others through its open call.
+The stored-id read answers null instead of throwing, and answers null for a live blank entry.
+Cancelling a stale tenure ends it without a refusal, and its read then answers null.
+Starting a recording or a transcription errand answers null.
+The speech read answers no names and empty typed text.
+The kept read answers null.
+
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `2f9a06b8eb95`
 - `TChronicle.cs` `47fd8579113e846b`
 - `TDraft.cs` `8490b5283bb57a47`
 - `TDraftCancelling.cs` `8e5113e3e3f1289b`
@@ -131,3 +149,5 @@ Commit: `c2f335c331fe`
 - `TEstablishment.cs` `7c95814d06051070`
 - `TTenureLanguage.cs` `e4c5c6b4324fd3df`
 - `TTenureObserver.cs` `48226af69615022a`
+- `TTenureQueue.cs` `902b2ee7b18c788a`
+- `TTenureStale.cs` `c52bd3cb1c5726cc`

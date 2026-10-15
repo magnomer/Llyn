@@ -20,7 +20,7 @@ internal sealed class QCorpusPortrait
         _qCorpusPortraitScope.CommandBindings.Add(
             new CommandBinding(ApplicationCommands.Print, QCorpusPressObserve, QCorpusPressCheck));
         _qCorpusPortraitScope.CommandBindings.Add(new CommandBinding(
-            PDisplayCommand.PDisplayCommandPortrait, QCorpusPortraitObserve, QCorpusPortraitCheck));
+            QDisplayCommand.QDisplayCommandPortrait, QCorpusPortraitObserve, QCorpusPortraitCheck));
     }
 
     internal void QCorpusPortraitIntroduce(CCorpus corpus)

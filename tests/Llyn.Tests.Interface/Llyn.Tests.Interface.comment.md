@@ -46,7 +46,7 @@ A folder counts as the root only when it holds every behaviour project.
 The relays that build a desk, an imprint and a card over engine ports whose Source or Author call fails.
 It also reads the corpus list's internal draft map.
 Each relay is transparent.
-The fail desks have a real tenure but a title resolve that throws.
+The fail desks have a real tenure but a title resolve and a source find that throw.
 The corpus tests build an Example desk with the scoped overload.
 The imprint relay builds a Source imprint over the atelier's ports and repaint memory, as the shelf does.
 So the byline and imprint tests never call the internal constructor.
@@ -159,11 +159,11 @@ A file the operating system has not released yet is not a test failure.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
+Commit: `2f9a06b8eb95`
 - `Llyn.Tests.Interface.csproj` `5a64ed92eefef899`
 - `TEditorFixture.cs` `a42623dacfe4b6f9`
 - `TInterfaceBoundary.cs` `c098561a2150175f`
-- `TInterfaceCitation.cs` `e5b81a7ec75e2151`
+- `TInterfaceCitation.cs` `9d8e4559d46b091b`
 - `TInterfaceMarkdown.cs` `e3d48d9e8ac783fa`
-- `TInterfaceSettings.cs` `dfe037625e43f9ba`
+- `TInterfaceSettings.cs` `56f6b9af791d9e96`
 - `TWorkspace.cs` `2cc686a2ca627691`

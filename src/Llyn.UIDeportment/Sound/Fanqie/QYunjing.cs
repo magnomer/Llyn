@@ -95,7 +95,7 @@ internal sealed class QYunjing
         _qYunjingSurface.CommandBindings.Add(
             new CommandBinding(ApplicationCommands.Print, QYunjingPressObserve, QYunjingPressRefine));
         _qYunjingSurface.CommandBindings.Add(
-            new CommandBinding(PDisplayCommand.PDisplayCommandPortrait, QYunjingPortraitObserve, QYunjingPressRefine));
+            new CommandBinding(QDisplayCommand.QDisplayCommandPortrait, QYunjingPortraitObserve, QYunjingPressRefine));
     }
 
     private void QYunjingStoreRefine()

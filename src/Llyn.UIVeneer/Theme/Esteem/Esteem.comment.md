@@ -46,7 +46,7 @@ So the stars stay the mark and the words the gloss.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `2f9a06b8eb95`
 - `PThemeFavorite.xaml` `09326dc14eb43c83`
 - `PThemeFrequency.xaml` `8eb759c9eefdc88d`
-- `PThemeGrasp.xaml` `0e8eaf94c43d71f6`
+- `PThemeGrasp.xaml` `e8206b66874f48ca`

@@ -27,8 +27,6 @@ public sealed class TDepotFake : LDepot
         return Task.CompletedTask;
     }
 
-    public LDeckSheet? LDepotRead(string folder, string code) => TDepotFakeFiles.GetValueOrDefault(code);
-
     public string? LDepotDigestRead(string folder, string code) => TDepotFakeDigest.GetValueOrDefault(code);
 
     public string? LDepotMediaResolve(string source) => TDepotFakeNames.GetValueOrDefault(source);

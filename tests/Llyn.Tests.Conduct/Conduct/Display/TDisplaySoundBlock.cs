@@ -174,7 +174,7 @@ public sealed class TDisplaySoundBlock
                 },
             }))).TEditorFixtureDisplay;
         display.CDisplaySound.CDisplayFanqieSet(3, 1, false);
-        display.LDisplayRule.LDisplaySound.TDisplaySoundShow(
+        display.LDisplayRule.CVoice.TDisplaySoundShow(
             7, TDisplaySound.TDisplayDraftCreate("國", "Korean", []));
 
         display.CDisplaySound.CDisplayFanqieSet(3, 2, true);

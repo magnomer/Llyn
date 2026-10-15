@@ -43,8 +43,8 @@ A count above its ceiling fails the fact, and a ceiling above the count is stale
 Lower a ceiling when a catch hands its fault out or is removed.
 Never raise one to admit a new one.
 Exempt rows are `path:EnclosingMethod` whose catch clauses swallow by design and count against no ceiling.
-`LWorkspacePostureRead` reads an unreadable posture as none.
-`LWorkspaceFallbackSave` is a best-effort save that records its fault and goes on.
+Both ceilings are zero.
+The list is empty, since no catch swallows by design.
 A row that matches no hit fails, so no row outlives its catch.
 
 ## `TAuditFaultWalker`
@@ -80,8 +80,8 @@ A call result never holds the variable, since the callee decides what it returns
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `2f9a06b8eb95`
 - `TAssayFault.cs` `07914153c6c07a41`
 - `TAuditFault.cs` `b6f2ce6aeb4ab086`
-- `TAuditFaultSetting.cs` `1b4bb431fc4b6fcf`
+- `TAuditFaultSetting.cs` `af8e938145cfe90b`
 - `TAuditFaultWalker.cs` `a9c101c8ddd998bc`

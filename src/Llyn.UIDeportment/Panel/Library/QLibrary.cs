@@ -40,7 +40,7 @@ internal sealed class QLibrary
         surface.CommandBindings.Add(
             new CommandBinding(ApplicationCommands.Print, QLibraryPressObserve, QLibraryPressRefine));
         surface.CommandBindings.Add(new CommandBinding(
-            PDisplayCommand.PDisplayCommandPortrait, QLibraryPortraitObserve, QLibraryPressRefine));
+            QDisplayCommand.QDisplayCommandPortrait, QLibraryPortraitObserve, QLibraryPressRefine));
         _qLibraryRail = new QPanelRail(
             QContract.QContractFind<UserControl>(surface, "PLibraryRail"), QLibraryBin, QLibraryBinIcon, true, true);
         _qLibraryOrder = new QChoiceOrder(QContract.QContractFind<UserControl>(surface, "PLibraryOrder"), QOrder);

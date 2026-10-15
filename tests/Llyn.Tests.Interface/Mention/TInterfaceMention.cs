@@ -62,7 +62,8 @@ internal static class TInterfaceMention
             static () => true,
             envoy,
             static _ => true,
-            atelier.CAtelierMention);
+            atelier.CAtelierMention,
+            atelier.CAtelierLedger);
         anthology.LAnthologyVistaRestore(engine.TEngineVistaStart("corpus", LCatalogOrder.LCatalogOrderText));
         return anthology.LAnthologyRowsRead();
     }
@@ -89,7 +90,8 @@ internal static class TInterfaceMention
             static () => true,
             envoy,
             static _ => true,
-            atelier.CAtelierMention);
+            atelier.CAtelierMention,
+            atelier.CAtelierLedger);
         LVista vista = engine.TEngineVistaStart("corpus", LCatalogOrder.LCatalogOrderText);
         anthology.LAnthologyVistaRestore(vista);
         vista.LVistaSelect(chosen);
@@ -149,7 +151,7 @@ internal static class TInterfaceMention
             envoy,
             new CLedgerNoticed());
         display.LDisplayNavigationAttach(atelier.CAtelierNavigation, atelier.CAtelierMention);
-        display.LDisplayRule.LDisplaySound.LDisplaySoundShow(shown, engine.TEngineEntryLoad(shown)!);
+        display.LDisplayRule.CVoice.CVoiceShow(shown, engine.TEngineEntryLoad(shown)!);
         return display;
     }
 

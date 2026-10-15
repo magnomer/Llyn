@@ -9,11 +9,11 @@ namespace Llyn.UIDeportment;
 
 internal sealed class QEditorCard
 {
-    private readonly ObservableCollection<PCard> _qEditorCardMeaning = [];
+    private readonly ObservableCollection<QPlacard> _qEditorCardMeaning = [];
 
-    private readonly ObservableCollection<PCard> _qEditorCardCollocation = [];
+    private readonly ObservableCollection<QPlacard> _qEditorCardCollocation = [];
 
-    private readonly ObservableCollection<PLanguageItem> _qEditorCardLanguage = [];
+    private readonly ObservableCollection<QLanguageItem> _qEditorCardLanguage = [];
 
     private readonly QImage _qImage = new();
 
@@ -134,7 +134,7 @@ internal sealed class QEditorCard
     internal void QEditorMeaningRefine(CEntryDraft draft)
     {
         _qCard.QCardRefine(
-            _qEditorCardMeaning, "Meaning", draft.CEntryDraftMeanings, static card => card.PCardDefinition);
+            _qEditorCardMeaning, "Meaning", draft.CEntryDraftMeanings, static card => card.QPlacardDefinition);
     }
 
     internal void QEditorCollocationRefine(CEntryDraft draft)
@@ -143,12 +143,12 @@ internal sealed class QEditorCard
             _qEditorCardCollocation,
             "Collocation",
             draft.CEntryDraftCollocations,
-            static card => card.PCardExpression);
+            static card => card.QPlacardExpression);
     }
 
     private void QEditorTextObserve(object sender, TextChangedEventArgs e)
     {
-        if (e.OriginalSource is TextBox { DataContext: PGloss or QImageItem } box)
+        if (e.OriginalSource is TextBox { DataContext: QRendition or QImageItem } box)
         {
             QEditorFieldObserve(box);
         }
@@ -163,7 +163,7 @@ internal sealed class QEditorCard
 
         switch (box.DataContext)
         {
-            case PGloss gloss:
+            case QRendition gloss:
                 _qGloss.QGlossTextObserve(gloss, box.Text);
                 break;
             case QImageItem row:

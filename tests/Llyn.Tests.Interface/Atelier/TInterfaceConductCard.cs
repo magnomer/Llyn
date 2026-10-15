@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 internal static class TInterfaceConductCard
 {
     internal static CCard TCardCreate(LEngine engine, CDesk desk, CEnvoy envoy) => new(
-        desk, engine.LEngineReference, new LSettingsOutlet(engine), envoy);
+        desk, engine.LEngineReference, new LSettingsOutlet(engine), envoy, new CLedgerNoticed());
 
     internal static CCardList TCardListCreate(CDesk desk) => new(
         desk,

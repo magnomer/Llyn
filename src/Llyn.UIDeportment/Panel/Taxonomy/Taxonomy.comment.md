@@ -148,8 +148,8 @@ The kept envoy goes with that load, so a failure is shown.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `2f9a06b8eb95`
 - `QDirectoryItem.cs` `832f9a698b828323`
 - `QMembership.cs` `09cb1443c1a738b5`
 - `QMembershipItem.cs` `ce3c25bec96a4c5b`
-- `QTaxonomy.cs` `1afc33e14b053fa9`
+- `QTaxonomy.cs` `04f6c3508ba9fa35`

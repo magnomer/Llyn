@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using Llyn.Core;
 
 namespace Llyn.Infrastructure;
@@ -80,7 +81,7 @@ internal static class LReflexLoader
             LPack.LPackNumberRead(row, "interval"),
             LEnvelope.LEnvelopeHeaderRead(row),
             LPack.LPackTextRead(row, "epithet"),
-            LPack.LPackTextRead(row, "clip"),
+            LReflexClipRead(LPack.LPackTextRead(row, "clip")),
             LPack.LPackBooleanRead(row, "first"),
             LRespellingLoader.LRespellingRewriteScan(row),
             LPack.LPackTextRead(row, "region")?.Trim(),
@@ -90,5 +91,24 @@ internal static class LReflexLoader
             LPack.LPackBooleanRead(row, "folded"),
             LRespellingLoader.LRespellingRewriteScan(row, LReflexRecast),
             LPack.LPackBooleanRead(row, "superscript"));
+    }
+
+    private static string? LReflexClipRead(string? pattern)
+    {
+        if (string.IsNullOrEmpty(pattern))
+        {
+            return pattern;
+        }
+
+        try
+        {
+            _ = new Regex(pattern);
+        }
+        catch (ArgumentException)
+        {
+            return null;
+        }
+
+        return pattern;
     }
 }

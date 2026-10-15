@@ -12,7 +12,7 @@ internal sealed class QCategory
 
     private readonly QMarker _qCategoryMarker;
 
-    private readonly ObservableCollection<PCategoryItem> _qCategoryItem = [];
+    private readonly ObservableCollection<QCategoryItem> _qCategoryItem = [];
 
     private CCardSpeech _cCardSpeech = null!;
 
@@ -44,7 +44,7 @@ internal sealed class QCategory
         _qCategoryItem.Clear();
         foreach (CCategoryRow row in category.CCategoryRows)
         {
-            _qCategoryItem.Add(new PCategoryItem(row.CCategoryRowName, row.CCategoryRowTaken));
+            _qCategoryItem.Add(new QCategoryItem(row.CCategoryRowName, row.CCategoryRowTaken));
         }
 
         if (category.CCategoryHint is string hint)
@@ -59,20 +59,20 @@ internal sealed class QCategory
 
     private void QCategoryApply(FrameworkElement container, object item, string? _)
     {
-        if (item is not PCategoryItem row)
+        if (item is not QCategoryItem row)
         {
             return;
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PCategoryName") is TextBlock name)
         {
-            name.Text = row.PCategoryItemName;
+            name.Text = row.QCategoryItemName;
         }
 
         if (QLook.QLookPartFind<QIconImage>(container, "PCategoryIcon") is QIconImage icon)
         {
             icon.QIconSource = QIcon.QIconResolve("check", 12);
-            icon.Visibility = QLook.QLookVisibleRead(row.PCategoryItemTaken);
+            icon.Visibility = QLook.QLookVisibleRead(row.QCategoryItemTaken);
         }
 
         if (QLook.QLookPartFind<Button>(container, "PCategoryChoice") is Button choice)
@@ -84,9 +84,9 @@ internal sealed class QCategory
 
     private void QCategoryObserve(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PCategoryItem item })
+        if (sender is FrameworkElement { DataContext: QCategoryItem item })
         {
-            _cCardSpeech.CCardSpeechAdd(item.PCategoryItemName);
+            _cCardSpeech.CCardSpeechAdd(item.QCategoryItemName);
             QCategoryPickRefine();
         }
     }

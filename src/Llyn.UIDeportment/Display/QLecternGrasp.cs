@@ -9,7 +9,7 @@ public sealed class QLecternGrasp
 {
     private readonly CDisplayGrasp _qLecternGraspArea;
 
-    private readonly PGrasp _qLecternGrasp;
+    private readonly QGrasp _qLecternGrasp;
 
     private readonly TextBlock _qLecternGraspLabel;
 
@@ -19,17 +19,17 @@ public sealed class QLecternGrasp
         ArgumentNullException.ThrowIfNull(area);
 
         _qLecternGraspArea = area;
-        _qLecternGrasp = QContract.QContractFind<PGrasp>(surface, "PDisplayGrasp");
+        _qLecternGrasp = QContract.QContractFind<QGrasp>(surface, "PDisplayGrasp");
         _qLecternGraspLabel = QContract.QContractFind<TextBlock>(surface, "PDisplayGraspLabel");
-        _qLecternGrasp.PGraspLimit = _qLecternGraspArea.CDisplayGraspStep;
-        _qLecternGrasp.PGraspStar.QGraspStarRefine(
+        _qLecternGrasp.QGraspLimit = _qLecternGraspArea.CDisplayGraspStep;
+        _qLecternGrasp.QGraspStar.QGraspStarRefine(
             _qLecternGraspArea.CDisplayGraspFill,
             _qLecternGraspArea.CDisplayGraspUnrated,
             _qLecternGraspArea.CDisplayGraspHit);
 
-        _qLecternGrasp.PGraspPressed += QLecternGraspObserve;
-        _qLecternGrasp.PGraspMoved += QLecternMoveObserve;
-        _qLecternGrasp.PGraspHovered += QLecternHoverRefine;
+        _qLecternGrasp.QGraspPressed += QLecternGraspObserve;
+        _qLecternGrasp.QGraspMoved += QLecternMoveObserve;
+        _qLecternGrasp.QGraspHovered += QLecternHoverRefine;
         _qLecternGraspArea.CDisplayGraspChanged += QObserver.QObserverCreate<CBulletin>(surface, QLecternGraspRefine);
     }
 
@@ -57,7 +57,7 @@ public sealed class QLecternGrasp
 
     private void QLecternGraspRefine(CGrasp grasp)
     {
-        _qLecternGrasp.PGraspStep = grasp.CGraspStep;
+        _qLecternGrasp.QGraspStep = grasp.CGraspStep;
         _qLecternGraspLabel.Text = grasp.CGraspLabel;
     }
 }

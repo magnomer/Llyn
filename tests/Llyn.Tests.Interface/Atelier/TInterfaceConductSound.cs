@@ -16,7 +16,7 @@ internal static class TInterfaceConductSound
     internal static IReadOnlyList<CStemMember> TStemMemberRead(IReadOnlyList<LStemMember> members) =>
         CStemMember.LStemMemberRead(members);
 
-    internal static LDisplaySound TDisplaySoundCreate(LEngine engine) => new(
+    internal static CVoice TDisplaySoundCreate(LEngine engine) => new(
         engine.LEngineEntry,
         engine.LEngineLanguage,
         engine.LEngineReflex,
@@ -26,17 +26,17 @@ internal static class TInterfaceConductSound
         new LMediaOutlet(engine),
         new LSettingsOutlet(engine));
 
-    internal static bool TDisplaySpreadCheck(this LDisplaySound sound, long? id) => sound.LDisplaySpreadCheck(id);
+    internal static bool TDisplaySpreadCheck(this CVoice sound, long? id) => sound.CVoiceSpreadCheck(id);
 
-    internal static void TDisplaySoundShow(this LDisplaySound sound, long? id, LEntryDraft draft) =>
-        sound.LDisplaySoundShow(id, draft);
+    internal static void TDisplaySoundShow(this CVoice sound, long? id, LEntryDraft draft) =>
+        sound.CVoiceShow(id, draft);
 
-    internal static void TDisplaySoundClear(this LDisplaySound sound) => sound.LDisplaySoundClear();
+    internal static void TDisplaySoundClear(this CVoice sound) => sound.CVoiceClear();
 
-    internal static void TDisplayReflexLoad(this LDisplaySound sound) => sound.LDisplayReflexLoad();
+    internal static void TDisplayReflexLoad(this CVoice sound) => sound.CVoiceReflexLoad();
 
-    internal static IReadOnlyList<LReflexDraft> TDisplayReflexRead(this LDisplaySound sound) =>
-        sound.LDisplayReflexRead();
+    internal static IReadOnlyList<LReflexDraft> TDisplayReflexRead(this CVoice sound) =>
+        sound.CVoiceReflexRead();
 
     internal static CDisplay TDisplayChosenCreate(
         LEngine engine,
@@ -60,13 +60,13 @@ internal static class TInterfaceConductSound
     }
 
     internal static CFrequency? TDisplayFrequencyRead(this CDisplay display, long? entry, string once) =>
-        display.LDisplayRule.LDisplayFrequencyRead(entry, once);
+        display.LDisplayRule.CRuleFrequencyRead(entry, once);
 
     internal static int TDisplayGraspRead(this CDisplay display, long? entry) =>
-        display.LDisplayRule.LDisplayGraspRead(entry);
+        display.LDisplayRule.CRuleGraspRead(entry);
 
     internal static bool TDisplayFavoriteRead(this CDisplay display, long? entry) =>
-        display.LDisplayRule.LDisplayFavoriteRead(entry);
+        display.LDisplayRule.CRuleFavoriteRead(entry);
 
     internal static Task<CLecternAccent?> TDisplayAccentLoad(
         this CDisplayAccent accent, Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action> store) =>
@@ -83,7 +83,7 @@ internal static class TInterfaceConductSound
             phonology.CPhonologyBundleScript,
             phonology.CPhonologyBundleParadigm,
             settings,
-            new LDisplay(
+            new CRule(
                 TEngineFake.TEngineStubCreate<LDraftPort>(),
                 TEngineFake.TEngineStubCreate<LEntryPort>(),
                 TEngineFake.TEngineStubCreate<LFavoritePort>(),
@@ -126,5 +126,6 @@ internal static class TInterfaceConductSound
             editor.TEditorFixtureDisplay.LDisplayRule,
             drafts,
             TInterfaceConduct.TSettingsCreate(),
-            TEnvoyFake.TEnvoyCreate(false, asked ?? []));
+            TEnvoyFake.TEnvoyCreate(false, asked ?? []),
+            new CLedgerNoticed());
 }

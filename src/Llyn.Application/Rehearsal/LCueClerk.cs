@@ -11,20 +11,64 @@ public sealed class LCueClerk
     private readonly LDeckVault _lCueClerkDecks;
     private readonly LCueVault _lCueClerkCues;
     private readonly LEntryClerk _lCueClerkEntries;
+    private readonly LTranslationClerk _lCueClerkTranslations;
+    private readonly LReferenceClerk _lCueClerkReferences;
+    private readonly LTrailClerk _lCueClerkTrail;
 
-    public LCueClerk(LRig rig, LEntryClerk entries)
+    public LCueClerk(
+        LRig rig,
+        LEntryClerk entries,
+        LTranslationClerk translations,
+        LReferenceClerk references,
+        LTrailClerk trail)
     {
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(entries);
+        ArgumentNullException.ThrowIfNull(translations);
+        ArgumentNullException.ThrowIfNull(references);
+        ArgumentNullException.ThrowIfNull(trail);
         _lCueClerkVault = rig.LRigVault;
         _lCueClerkDecks = rig.LRigRehearsal.LRigRehearsalDecks;
         _lCueClerkCues = rig.LRigRehearsal.LRigRehearsalCues;
         _lCueClerkEntries = entries;
+        _lCueClerkTranslations = translations;
+        _lCueClerkReferences = references;
+        _lCueClerkTrail = trail;
     }
 
     public IReadOnlyList<LCue> LCueClerkRead(long deckId)
     {
         return _lCueClerkCues.LCueRead(deckId);
+    }
+
+    public IReadOnlyList<(LCue LCueStored, string LCueLine)> LCueLineRead(long deckId, LPortraitLabel label)
+    {
+        ArgumentNullException.ThrowIfNull(label);
+
+        LStencilReader reader = new(_lCueClerkTranslations, _lCueClerkReferences, _lCueClerkTrail, label);
+        Dictionary<long, LEntryDraft?> drafts = [];
+        List<(LCue LCueStored, string LCueLine)> lines = [];
+        foreach (LCue cue in _lCueClerkCues.LCueRead(deckId))
+        {
+            lines.Add((cue, LCueLineResolve(reader, drafts, cue)));
+        }
+
+        return lines;
+    }
+
+    public IReadOnlySet<long> LCueEntryRead(long deckId)
+    {
+        HashSet<long> entries = [];
+        foreach (LCue cue in _lCueClerkCues.LCueRead(deckId))
+        {
+            if (cue.LCueGrain != LGrain.LGrainFree && !cue.LCueOrphaned
+                && _lCueClerkCues.LCueHolderRead(cue) is long entryId)
+            {
+                entries.Add(entryId);
+            }
+        }
+
+        return entries;
     }
 
     public IReadOnlyList<LCue> LCueClerkAdd(long deckId, IReadOnlyList<long> entryIds)
@@ -178,6 +222,41 @@ public sealed class LCueClerk
         }
 
         return null;
+    }
+
+    private string LCueLineResolve(LStencilReader reader, Dictionary<long, LEntryDraft?> drafts, LCue cue)
+    {
+        if (cue.LCueGrain == LGrain.LGrainFree)
+        {
+            return _lCueClerkCues.LCueCellRead(cue.LCueId)
+                .Where(static cell => cell.LCueCellColumn == LCueColumn.LCueColumnText)
+                .OrderBy(static cell => cell.LCueCellIndex)
+                .Select(static cell => cell.LCueCellValue)
+                .FirstOrDefault(static value => value.Length > 0) ?? string.Empty;
+        }
+
+        if (cue.LCueOrphaned || _lCueClerkCues.LCueHolderRead(cue) is not long entryId)
+        {
+            return string.Empty;
+        }
+
+        if (!drafts.TryGetValue(entryId, out LEntryDraft? draft))
+        {
+            draft = _lCueClerkEntries.LEntryClerkLoad(entryId);
+            drafts[entryId] = draft;
+        }
+
+        LStencilField field = cue.LCueGrain switch
+        {
+            LGrain.LGrainMeaning => LStencilField.LStencilFieldDefinition,
+            LGrain.LGrainCollocation => LStencilField.LStencilFieldExpression,
+            LGrain.LGrainExample => LStencilField.LStencilFieldSentence,
+            LGrain.LGrainPair => LStencilField.LStencilFieldTarget,
+            _ => LStencilField.LStencilFieldHeadword,
+        };
+        return draft is null
+            ? string.Empty
+            : reader.LStencilReaderRead(draft, cue, field).FirstOrDefault() ?? string.Empty;
     }
 
     private static LCue LCueRowCreate(LGrain grain)

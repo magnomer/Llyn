@@ -25,7 +25,7 @@ public sealed class CSoundingAnchor
     public CAnchor CSoundingAnchorOpen(long reflex)
     {
         _cSoundingAnchorReflex = reflex;
-        IReadOnlyList<CAnchorRow> rows = (_cSoundingAnchorKindred.LKindredQuill?.LQuillAnchorScan(reflex) ?? [])
+        IReadOnlyList<CAnchorRow> rows = _cSoundingAnchorKindred.LKindredAnchorRead(reflex)
             .Select(static row => new CAnchorRow(
                 row.LAnchorRowFanqie.LFanqieRowId,
                 row.LAnchorRowFanqie.LFanqieRowSummary,

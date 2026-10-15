@@ -42,6 +42,12 @@ internal sealed class QNavigation
 
     private Button QNavigationTaxonomy => (Button)_qNavigationSurface.FindName("PNavigationTaxonomy");
 
+    private Button QNavigationStudy => (Button)_qNavigationSurface.FindName("PNavigationStudy");
+
+    private Button QNavigationDeck => (Button)_qNavigationSurface.FindName("PNavigationDeck");
+
+    private Button QNavigationScoreboard => (Button)_qNavigationSurface.FindName("PNavigationScoreboard");
+
     private Button QNavigationCorpus => (Button)_qNavigationSurface.FindName("PNavigationCorpus");
 
     private Button QNavigationSource => (Button)_qNavigationSurface.FindName("PNavigationSource");
@@ -78,6 +84,9 @@ internal sealed class QNavigation
         QNavigationRepertoire.Click += QNavigationObserve;
         QNavigationTenor.Click += QNavigationObserve;
         QNavigationTaxonomy.Click += QNavigationObserve;
+        QNavigationStudy.Click += QNavigationObserve;
+        QNavigationDeck.Click += QNavigationObserve;
+        QNavigationScoreboard.Click += QNavigationObserve;
         QNavigationCorpus.Click += QNavigationObserve;
         QNavigationSource.Click += QNavigationObserve;
         QNavigationGuild.Click += QNavigationObserve;
@@ -175,6 +184,12 @@ internal sealed class QNavigation
                 "Taxonomy",
                 QNavigationTaxonomy,
                 QContract.QContractFind<UserControl>(_qNavigationSurface, "PTaxonomy")),
+            new QTab("Study", QNavigationStudy, QContract.QContractFind<UserControl>(_qNavigationSurface, "PStudy")),
+            new QTab("Deck", QNavigationDeck, QContract.QContractFind<UserControl>(_qNavigationSurface, "PDeck")),
+            new QTab(
+                "Scoreboard",
+                QNavigationScoreboard,
+                QContract.QContractFind<UserControl>(_qNavigationSurface, "PScoreboard")),
             new QTab("Tenor", QNavigationTenor, QContract.QContractFind<UserControl>(_qNavigationSurface, "PTenor")),
             new QTab(
                 "Repertoire",

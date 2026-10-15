@@ -77,8 +77,14 @@ The gate's failure policy records the fault, so it is recorded once.
 
 ### `LWorkspaceFallbackSave`
 
-A vault fault is recorded in the audit and swallowed, so the open goes on.
+A vault fault is recorded in the audit and handed back, so the open goes on.
 The engine keeps the fallback in memory, so the session goes on with it.
+Null means the save succeeded.
+
+### `LWorkspaceFaultRecord`
+
+It records a fault in the rig's audit without a clerk, for a caller built before the clerk exists.
+The language staff hands it to the clerks it builds as their fault owner.
 
 ### `LWorkspaceNoticeRead`
 
@@ -102,16 +108,11 @@ It tells whether the exception is a refused edit rather than a lost draft.
 The shell skips it and goes on.
 A refusal saying the draft is gone is left out, since that is a lost hold and halts the tenure.
 
-### `LWorkspaceStaleCheck`
-
-It tells whether the exception is the refusal of a stale draft, and nothing else.
-A recording search, a reading search or a byline find over such a draft answers nothing.
-A stale draft is no failure, so the shell shows no notice for it.
-
 ### `LWorkspacePostureRead`
 
 It answers false on a vault fault, after recording it, so the caller keeps what it has.
-No user action triggers a read, so a failure is recorded and shows no notice.
+The fault is handed back as `fault`, like the save's, and null when the read succeeds.
+The posture raises it, and the shell shows `Layout.ReadFailed`.
 
 ### `LWorkspacePostureSave`
 
@@ -125,7 +126,7 @@ So the posture decides how to tell the user, and the clerk only reports.
 
 This is the refill a migration needs.
 Every entry gets its respellings, anatomies, epithet and paradigm recomputed in one session.
-One entry that fails is recorded and skipped, so one bad row never blocks the workspace.
+One entry that fails is handed to the `fault` owner and skipped, so one bad row never blocks the workspace.
 
 ### `LRespellingUpdate`
 
@@ -141,7 +142,8 @@ Every entry is passed through `LRespellingStaleUpdate` in one session.
 ### `LWorkspaceEntryScan`
 
 The one loop both passes share, every entry through one step inside one session.
-One entry that fails is recorded and skipped, so one bad row never blocks the workspace.
+One entry that fails goes to the injected `fault` owner and is skipped.
+So one bad row never blocks the workspace.
 Keeping one loop keeps one catch, so the failure policy has one owner.
 
 ### `LRespellingStaleUpdate`
@@ -153,6 +155,6 @@ Blank and hand-written respellings are left as they are.
 
 ## Stamp
 
-Commit: `f6dae2392935`
-- `LTrailClerk.cs` `5ce5ee6c557bf595`
-- `LWorkspaceClerk.cs` `bb20fd730734af55`
+Commit: `2f9a06b8eb95`
+- `LTrailClerk.cs` `8ef4054bb5faf578`
+- `LWorkspaceClerk.cs` `43f8b3d7fedc8307`

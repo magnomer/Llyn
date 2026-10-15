@@ -64,9 +64,9 @@ internal sealed class QImage
 
     internal void QImageAddObserve(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PCard card })
+        if (sender is FrameworkElement { DataContext: QPlacard card })
         {
-            _cImage.CImageAdd(card.PCardId);
+            _cImage.CImageAdd(card.QPlacardId);
         }
     }
 

@@ -12,7 +12,7 @@ public sealed class CDisplaySound
 
     private static readonly CLecternAnchor _cDisplayUnanchored = new(false, new Dictionary<long, string>());
 
-    private readonly LDisplaySound _cDisplayVoice;
+    private readonly CVoice _cDisplayVoice;
 
     private readonly CLedgerNoticed _cDisplayNoticed;
 
@@ -39,7 +39,7 @@ public sealed class CDisplaySound
     private readonly CEnvoy _cDisplayEnvoy;
 
     internal CDisplaySound(
-        LDisplay display,
+        CRule display,
         CDisplay header,
         LDraftPort drafts,
         LEntryPort entries,
@@ -65,8 +65,8 @@ public sealed class CDisplaySound
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(envoy);
 
-        _cDisplayVoice = display.LDisplaySound;
-        _cDisplayNoticed = display.LDisplayNoticed;
+        _cDisplayVoice = display.CVoice;
+        _cDisplayNoticed = display.CRuleNoticed;
         _cDisplayHeader = header;
         _cDisplayDraft = drafts;
         _cDisplayEntryPort = entries;
@@ -86,11 +86,11 @@ public sealed class CDisplaySound
 
     internal event Action<string, string?>? CDisplayStemChosen;
 
-    public bool CDisplayFoldOpened => _cDisplayVoice.LDisplaySpreadCheck(LDisplayEntry);
+    public bool CDisplayFoldOpened => _cDisplayVoice.CVoiceSpreadCheck(LDisplayEntry);
 
-    private LEntryDraft? LDisplayShown => _cDisplayVoice.LDisplayShown;
+    private LEntryDraft? LDisplayShown => _cDisplayVoice.CVoiceShown;
 
-    private long? LDisplayEntry => _cDisplayVoice.LDisplayEntry;
+    private long? LDisplayEntry => _cDisplayVoice.CVoiceEntry;
 
     public CLecternGlyph CDisplayGlyphRead()
     {
@@ -169,7 +169,7 @@ public sealed class CDisplaySound
         return new CLecternReflex(
             rows,
             LDisplayAnchorRead(rows),
-            _cDisplayVoice.LDisplayReflexCheck(LDisplayEntry),
+            _cDisplayVoice.CVoiceReflexCheck(LDisplayEntry),
             CReflex.LReflexFoldCheck(rows));
     }
 
@@ -177,7 +177,7 @@ public sealed class CDisplaySound
     {
         if (LDisplayShown is not null)
         {
-            _cDisplayVoice.LDisplayReflexLoad();
+            _cDisplayVoice.CVoiceReflexLoad();
         }
 
         return CDisplayReflexRead();
@@ -211,9 +211,9 @@ public sealed class CDisplaySound
 
         string headword = _cDisplayHeader.CDisplayShown.CLecternHeadword;
         return new CLecternFanqie(
-            CSounding.CSoundingFanqieRead(_cDisplayVoice.LDisplayListRead(
+            CSounding.CSoundingFanqieRead(_cDisplayVoice.CVoiceListRead(
                 _cDisplayFanqie.LEngineFanqieDivide, "Display.FanqieReadFailed")),
-            _cDisplayVoice.LDisplayFanqieCheck(id),
+            _cDisplayVoice.CVoiceFanqieCheck(id),
             _cDisplayNoticed.LLedgerRepaintRead(_cDisplayEnvoy, _cDisplaySettings,
                 () => _cDisplayFanqie.LEngineReadingRead(id, headword), string.Empty, "Display.ReadingFailed"),
             CDisplayFontRead(CFontRole.CFontRoleGlyph));
@@ -268,9 +268,9 @@ public sealed class CDisplaySound
 
         return new CLecternScript(
             CSounding.CSoundingScriptRead(
-                _cDisplayVoice.LDisplayListRead(_cDisplayScript.LEngineScriptDivide, "Display.ScriptReadFailed"),
+                _cDisplayVoice.CVoiceListRead(_cDisplayScript.LEngineScriptDivide, "Display.ScriptReadFailed"),
                 _cDisplaySettings),
-            _cDisplayVoice.LDisplayScriptCheck(id),
+            _cDisplayVoice.CVoiceScriptCheck(id),
             CDisplayFontRead(CFontRole.CFontRoleGlyph));
     }
 
@@ -283,10 +283,10 @@ public sealed class CDisplaySound
 
         string language = _cDisplayNoticed.LLedgerRepaintRead(_cDisplayEnvoy, _cDisplaySettings,
             () => _cDisplayParadigm.LEngineLanguageResolve(id), string.Empty, "Display.LanguageFailed");
-        IReadOnlyList<LParadigmRow> rows = _cDisplayVoice.LDisplayListRead(
+        IReadOnlyList<LParadigmRow> rows = _cDisplayVoice.CVoiceListRead(
             _cDisplayParadigm.LEngineParadigmScan, "Display.ParadigmReadFailed");
-        bool pending = _cDisplayVoice.LDisplayParadigmCheck(id);
-        bool enabled = _cDisplayVoice.LDisplayMorphologyRead();
+        bool pending = _cDisplayVoice.CVoiceParadigmCheck(id);
+        bool enabled = _cDisplayVoice.CVoiceMorphologyRead();
         LParadigmView? view = _cDisplayNoticed.LLedgerRepaintRead<LParadigmView?>(_cDisplayEnvoy, _cDisplaySettings,
             () => _cDisplayParadigm.LEngineInflectionRead(id, pending, enabled, false),
             null, "Display.ParadigmReadFailed");
@@ -303,7 +303,7 @@ public sealed class CDisplaySound
             return CRespelling.LRespellingReflexScan(
                 _cDisplayReflex,
                 _cDisplayHeader.CDisplayShown.CLecternLanguage,
-                _cDisplayVoice.LDisplayReflexRead());
+                _cDisplayVoice.CVoiceReflexRead());
         }
         catch (Exception exception)
         {

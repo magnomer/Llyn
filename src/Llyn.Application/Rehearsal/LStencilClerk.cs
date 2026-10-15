@@ -65,19 +65,9 @@ public sealed class LStencilClerk
         return new LCueFace(cells);
     }
 
-    public LCueFace LStencilClerkResolve(long cueId, LPortraitLabel label)
+    public IReadOnlyList<LStencil> LStencilClerkRead()
     {
-        ArgumentNullException.ThrowIfNull(label);
-
-        foreach (LDeck deck in _lStencilClerkDecks.LDeckRead())
-        {
-            if (_lStencilClerkCues.LCueRead(deck.LDeckId).FirstOrDefault(cue => cue.LCueId == cueId) is LCue cue)
-            {
-                return LStencilClerkResolve(cue, LStencilOwnedRead(deck), label);
-            }
-        }
-
-        throw new LRefusal(LRefusal.LRefusalCue);
+        return _lStencilClerkStencils.LStencilRead();
     }
 
     public LStencil LStencilClerkRead(long deckId)
@@ -91,7 +81,63 @@ public sealed class LStencilClerk
         ArgumentNullException.ThrowIfNull(slot);
         ArgumentNullException.ThrowIfNull(slot.LStencilSlotBody);
 
+        LStencilSlotSet(LStencilClerkRead(deckId), slot);
+    }
+
+    public static bool LStencilClerkCheck(string body)
+    {
+        return LStencilBody.LStencilBodyCheck(body);
+    }
+
+    public static IReadOnlyList<LStencilToken> LStencilClerkParse(string body)
+    {
+        return LStencilToken.LStencilTokenParse(body);
+    }
+
+    public void LStencilFieldAppend(long deckId, int index, LStencilField field) =>
+        LStencilSlotSet(deckId, index, body => LStencilBody.LStencilBodyAppend(body, field));
+
+    public void LStencilFieldRemove(long deckId, int index, int place) =>
+        LStencilSlotSet(deckId, index, body => LStencilBody.LStencilBodyRemove(body, place));
+
+    public void LStencilJoinSet(long deckId, int index, int place, bool all) =>
+        LStencilSlotSet(deckId, index, body => LStencilBody.LStencilBodySet(body, place, all));
+
+    public void LStencilMediaSet(long deckId, LCueColumn column, int index)
+    {
+        if (column is not (LCueColumn.LCueColumnPicture or LCueColumn.LCueColumnSound))
+        {
+            throw new ArgumentOutOfRangeException(nameof(column), column, "Only a picture or sound slot moves sides.");
+        }
+
+        ArgumentOutOfRangeException.ThrowIfNegative(index);
+
         LStencil owned = LStencilClerkRead(deckId);
+        List<LStencilSlot> slots = [.. owned.LStencilSlots];
+        int first = slots.FindIndex(kept => kept.LStencilSlotColumn == column);
+        string body = first < 0 ? LStencilDefault.LStencilDefaultRead(column) : slots[first].LStencilSlotBody;
+        slots.RemoveAll(kept => kept.LStencilSlotColumn == column);
+        if (index > 0)
+        {
+            slots.Insert(first < 0 ? slots.Count : first, new LStencilSlot(column, index, body));
+        }
+
+        _lStencilClerkStencils.LStencilUpdate(owned with { LStencilSlots = slots });
+    }
+
+    private void LStencilSlotSet(long deckId, int index, Func<string, string> rule)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(index);
+
+        LStencil owned = LStencilClerkRead(deckId);
+        string body = owned.LStencilSlots.FirstOrDefault(kept =>
+            kept.LStencilSlotColumn == LCueColumn.LCueColumnText && kept.LStencilSlotIndex == index)
+            ?.LStencilSlotBody ?? string.Empty;
+        LStencilSlotSet(owned, new LStencilSlot(LCueColumn.LCueColumnText, index, rule(body)));
+    }
+
+    private void LStencilSlotSet(LStencil owned, LStencilSlot slot)
+    {
         List<LStencilSlot> slots = [.. owned.LStencilSlots];
         int taken = slots.FindIndex(kept =>
             kept.LStencilSlotColumn == slot.LStencilSlotColumn && kept.LStencilSlotIndex == slot.LStencilSlotIndex);

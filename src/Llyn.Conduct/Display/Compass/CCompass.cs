@@ -9,7 +9,7 @@ namespace Llyn.Conduct;
 
 public sealed class CCompass
 {
-    private readonly LDisplaySound _cCompassVoice;
+    private readonly CVoice _cCompassVoice;
 
     private readonly CLedgerNoticed _cCompassNoticed;
 
@@ -24,7 +24,7 @@ public sealed class CCompass
     private readonly CEnvoy _cCompassEnvoy;
 
     internal CCompass(
-        LDisplay display,
+        CRule display,
         LEntryPort entries,
         LVistaPort vistas,
         LCardPort cards,
@@ -38,8 +38,8 @@ public sealed class CCompass
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(envoy);
 
-        _cCompassVoice = display.LDisplaySound;
-        _cCompassNoticed = display.LDisplayNoticed;
+        _cCompassVoice = display.CVoice;
+        _cCompassNoticed = display.CRuleNoticed;
         _cCompassEntryPort = entries;
         _cCompassVistaPort = vistas;
         _cCompassCardPort = cards;
@@ -49,7 +49,7 @@ public sealed class CCompass
 
     public (CCompassPart, int)? CCompassCardFind(long id)
     {
-        if (_cCompassVoice.LDisplayShown is not LEntryDraft shown
+        if (_cCompassVoice.CVoiceShown is not LEntryDraft shown
             || _cCompassEntryPort.LEngineCardFind(shown, id) is not (LOwner owner, _))
         {
             return null;
@@ -86,7 +86,7 @@ public sealed class CCompass
         ArgumentNullException.ThrowIfNull(parts);
         ArgumentNullException.ThrowIfNull(lookup);
 
-        LEntryDraft? shown = _cCompassVoice.LDisplayShown;
+        LEntryDraft? shown = _cCompassVoice.CVoiceShown;
         LCollocationLayout? layout = shown is null
             ? null
             : _cCompassCardPort.LEngineCollocationRead(

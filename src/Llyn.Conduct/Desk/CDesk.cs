@@ -35,7 +35,7 @@ public sealed class CDesk
         CDeskChronicle = new CDeskChronicle(CDeskDraft, settings, scope, envoy);
         CDeskChronicle.CDeskChronicleChanged += () => CDeskStateChanged?.Invoke();
         CDeskErrand = new CErrand(this);
-        CDeskVigil = new LVigil(this);
+        CDeskVigil = new CVigil(this);
     }
 
     internal CDesk(
@@ -60,7 +60,7 @@ public sealed class CDesk
 
     public CErrand CDeskErrand { get; }
 
-    internal LVigil CDeskVigil { get; }
+    internal CVigil CDeskVigil { get; }
 
     public bool CDeskHeld => CDeskDraft.CDeskDraftTenure is not null;
 
@@ -78,8 +78,16 @@ public sealed class CDesk
         ArgumentNullException.ThrowIfNull(marshal);
         ArgumentNullException.ThrowIfNull(drafted);
 
-        CDeskVigil.LVigilDraftAttach(CSubject.CSubjectTenure, _ => marshal(CDeskChronicle.CDeskChronicleResonate));
-        CDeskVigil.LVigilDraftAttach(CSubject.CSubjectDraft, _ => marshal(drafted));
+        CDeskVigil.CVigilDraftAttach(CSubject.CSubjectTenure, _ => marshal(CDeskChronicle.CDeskChronicleResonate));
+        CDeskVigil.CVigilDraftAttach(CSubject.CSubjectDraft, bulletin => marshal(() =>
+        {
+            if (bulletin.CBulletinRefusal is Exception refusal)
+            {
+                LDeskFailureShow(".UpdateFailed", refusal);
+            }
+
+            drafted();
+        }));
         CDeskErrand.LErrandObserverAttach(marshal);
     }
 
@@ -135,7 +143,7 @@ public sealed class CDesk
             LTenure started = start();
             CDeskDraft.LDeskDraftSet(started);
             CDeskChronicle.LDeskChronicleClear();
-            CDeskVigil.LVigilApply(started);
+            CDeskVigil.CVigilApply(started);
             CDeskStarted?.Invoke();
         }
         catch (Exception exception)
@@ -220,6 +228,15 @@ public sealed class CDesk
         ArgumentNullException.ThrowIfNull(exception);
 
         noticed.LLedgerRepaintShow(_cDeskEnvoy, _cDeskSettings, _cDeskScope + key, exception);
+    }
+
+    internal LDeskAnswer LDeskRepaintRead<LDeskAnswer>(
+        CLedgerNoticed noticed, Func<LDeskAnswer> read, LDeskAnswer fallback, string key)
+    {
+        ArgumentNullException.ThrowIfNull(noticed);
+        ArgumentException.ThrowIfNullOrWhiteSpace(key);
+
+        return noticed.LLedgerRepaintRead(_cDeskEnvoy, _cDeskSettings, read, fallback, _cDeskScope + key);
     }
 
     public void CDeskCancel()

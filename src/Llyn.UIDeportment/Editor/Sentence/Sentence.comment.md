@@ -3,7 +3,7 @@
 Sentence holds the Example rows of a card, with their frame, citation and Gloss lines.
 The engine holds the rows, and these classes render them by id and report what the user does.
 
-## `PSentence`
+## `QPassage`
 
 This is one Example row, carrying the id of the row itself.
 So a sentence the user rewrites stays the same row.
@@ -17,62 +17,62 @@ It re-raises every change its frame announces, so a list watching the row repain
 The catalogs of Sources, languages, particles and dependences are shared by every row.
 Nothing ships a particle or a dependence, so those lists stay empty until a user writes one.
 
-### `PSentenceCited`
+### `QPassageCited`
 
 It is Conduct's verdict, which the list driver reads to keep a cited row's citation box shown while idle.
 
-### `PSentenceFrame`
+### `QSentenceFrame`
 
 The frame is built once from the row's first draft.
-Later drafts reach it through `PSentenceShow`, so it is never replaced.
+Later drafts reach it through `QPassageShow`, so it is never replaced.
 
-### `PSentenceChip`
+### `QPassageChip`
 
 The editor paints the chips from the sentence area's ready read after each redraw.
 The row never resolves a Mention itself.
 Every change goes out through a gate and comes back through the redraw.
 
-### `PSentenceShow`
+### `QPassageShow`
 
 The row id is not taken, since it was fixed at construction.
 A field already reading what the engine holds is left alone, so the caret survives its own echo.
 
-### `PSentenceCitation`
+### `QPassageCitation`
 
 The field shows its byline through a lookup made when it is drawn, so the row keeps no name.
 
-### `PSentenceCitationShow`
+### `QPassageCitationShow`
 
 It is for when the list of Sources changed underneath the row.
 
-## `PSentenceFrame`
+## `QSentenceFrame`
 
 This is the frame a sentence row is read under, a marker and a role.
 Which of the two is written first is the language pack's to say and never the frame's.
 The frame holds only what it was told and starts in the default order, marker first.
 
-### `PSentenceFrameVisible`
+### `QSentenceFrameVisible`
 
 A row that carries a marker or a role always shows the frame, because the reading view draws it.
 A row carrying neither shows one only when the card has been asked for it.
 
-### `PSentenceFrameWritten`
+### `QSentenceFrameWritten`
 
 The card's switch stands down while the frame stands on what the row holds.
 A frame already written cannot be opened or closed by asking.
 A frame field says something unless Conduct words it muted.
 
-### `PSentenceFrameGap`
+### `QSentenceFrameGap`
 
 It is one space when both fields are written and nothing otherwise.
 So the writing view spaces the frame exactly as the reading view does.
 
-### `PSentenceFrameOrder`
+### `QSentenceFrameOrder`
 
 The row painter turns each slot into a grid column, so the frame holds no column of its own.
 Until the pack's order arrives it holds the plain order, so the frame states no order itself.
 
-### `PSentenceFrameShow`
+### `QSentenceFrameShow`
 
 A change also announces visibility, the written verdict and the gap, since all three read both fields.
 
@@ -111,7 +111,7 @@ The card's row fill calls it before `QExampleIntroduce` on every fill and refill
 ### `QExampleRevealRefine`
 
 An uncited row's citation field dims while the list is neither hovered nor focused.
-Whether a row is cited is the ready verdict `PSentenceCited`, and the driver adds only its own hover state.
+Whether a row is cited is the ready verdict `QPassageCited`, and the driver adds only its own hover state.
 
 ### `QExampleRowRefine`
 
@@ -177,9 +177,9 @@ The silence gate is its own, so no magic id is sent for a mention with no target
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `PSentence.cs` `d4f86a343103aa9f`
-- `PSentenceFrame.cs` `9666ee246efc010d`
-- `QCitation.cs` `7dee7a05a62658f5`
-- `QExample.cs` `5f90d6603b8d3066`
-- `QSentence.cs` `fe52c754a27a97b9`
+Commit: `2f9a06b8eb95`
+- `QCitation.cs` `e6b98c5149776382`
+- `QExample.cs` `bf40c0f67bf2e9b8`
+- `QPassage.cs` `7cf8c797dde53c41`
+- `QSentence.cs` `0dd40a6d937addc6`
+- `QSentenceFrame.cs` `9af5d661b1716af6`

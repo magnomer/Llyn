@@ -27,9 +27,9 @@ public sealed class TLookPart
                     {
                         VisualTree = new FrameworkElementFactory(typeof(ItemsPresenter)),
                     },
-                    ItemTemplateSelector = new PRegisterSelector
+                    ItemTemplateSelector = new QRegisterSelector
                     {
-                        PRegisterSelectorChip = new DataTemplate { VisualTree = chip },
+                        QRegisterSelectorChip = new DataTemplate { VisualTree = chip },
                     },
                     ItemsSource = new[] { "situation" },
                 };

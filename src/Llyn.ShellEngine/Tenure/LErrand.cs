@@ -32,24 +32,23 @@ public sealed class LErrand
         ArgumentNullException.ThrowIfNull(sink);
 
         _lErrandTenure.LTenurePersist();
-        string word;
-        string language;
-        try
-        {
-            word = LForay.LForayWordRead(_lErrandTenure.LTenureRead());
-            language = word.Length == 0 ? string.Empty : _lErrandTenure.LTenureLanguageRead();
-        }
-        catch (Exception exception) when (LWorkspaceClerk.LWorkspaceStaleCheck(exception))
-        {
-            return null;
-        }
-
+        LDraft? held = _lErrandTenure.LTenurePresentRead();
+        string word = LForay.LForayWordRead(held);
         if (word.Length == 0)
         {
             return null;
         }
 
-        LForay foray = new(_lEngine, _lErrandTenure, _lErrandPronunciation, word, language, target, string.Empty);
+        string language = held?.LDraftContent.LEntryDraftLanguage ?? string.Empty;
+        LForay foray = new(
+            _lEngine,
+            _lErrandTenure,
+            _lErrandPronunciation,
+            word,
+            language,
+            target,
+            string.Empty,
+            exception => _lEngine.LEngineWorkspace.LEngineAuditRecord(exception));
         lock (_lErrandGate)
         {
             _lErrandRecording?.LForayCancel();
@@ -76,24 +75,23 @@ public sealed class LErrand
         ArgumentNullException.ThrowIfNull(sink);
 
         _lErrandTenure.LTenurePersist();
-        string word;
-        string language;
-        try
-        {
-            word = LForay.LForayWordRead(_lErrandTenure.LTenureRead());
-            language = word.Length == 0 ? string.Empty : _lErrandTenure.LTenureLanguageRead();
-        }
-        catch (Exception exception) when (LWorkspaceClerk.LWorkspaceStaleCheck(exception))
-        {
-            return null;
-        }
-
+        LDraft? held = _lErrandTenure.LTenurePresentRead();
+        string word = LForay.LForayWordRead(held);
         if (word.Length == 0)
         {
             return null;
         }
 
-        LForay foray = new(_lEngine, _lErrandTenure, _lErrandPronunciation, word, language, target, scheme);
+        string language = held?.LDraftContent.LEntryDraftLanguage ?? string.Empty;
+        LForay foray = new(
+            _lEngine,
+            _lErrandTenure,
+            _lErrandPronunciation,
+            word,
+            language,
+            target,
+            scheme,
+            exception => _lEngine.LEngineWorkspace.LEngineAuditRecord(exception));
         LReceiverRelay receiver = new(step => sink(foray, step));
         lock (_lErrandGate)
         {

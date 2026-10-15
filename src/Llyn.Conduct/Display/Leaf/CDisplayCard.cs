@@ -8,7 +8,7 @@ namespace Llyn.Conduct;
 
 public sealed class CDisplayCard
 {
-    private readonly LDisplay _cDisplayRule;
+    private readonly CRule _cDisplayRule;
 
     private readonly LCardPort _cDisplayCardPort;
 
@@ -25,7 +25,7 @@ public sealed class CDisplayCard
     private readonly CEnvoy _cDisplayEnvoy;
 
     internal CDisplayCard(
-        LDisplay display,
+        CRule display,
         LCardPort cards,
         LReferencePort references,
         LExamplePort examples,
@@ -53,9 +53,9 @@ public sealed class CDisplayCard
         _cDisplayEnvoy = envoy;
     }
 
-    private LEntryDraft? LDisplayShown => _cDisplayRule.LDisplaySound.LDisplayShown;
+    private LEntryDraft? LDisplayShown => _cDisplayRule.CVoice.CVoiceShown;
 
-    private CLedgerNoticed LDisplayNoticed => _cDisplayRule.LDisplayNoticed;
+    private CLedgerNoticed LDisplayNoticed => _cDisplayRule.CRuleNoticed;
 
     public CLecternCard CDisplayCardRead()
     {
@@ -74,7 +74,7 @@ public sealed class CDisplayCard
         string also = _cDisplaySettings.LEngineTextRead("Display.CollocationAlso");
         string heading = _cDisplaySettings.LEngineTextRead("Display.CollocationHeading");
         IReadOnlySet<long> folds = LDisplayFoldRead();
-        LMediaPort media = _cDisplayRule.LDisplayMediaPort;
+        LMediaPort media = _cDisplayRule.CRuleMediaPort;
         LCollocationLayout layout = _cDisplayCardPort.LEngineCollocationRead(shown, targets);
         IReadOnlyList<CLeaf> others = CLeaf.LLeafRead(
             layout.LCollocationLayoutOther, layout, order, mark, stub, example, exampleOne, also, heading, citations,
@@ -90,7 +90,7 @@ public sealed class CDisplayCard
 
     public bool CDisplayFoldToggle(long cardId, bool folded)
     {
-        if (_cDisplayRule.LDisplayChosen is not long id)
+        if (_cDisplayRule.CRuleChosen is not long id)
         {
             return false;
         }
@@ -118,7 +118,7 @@ public sealed class CDisplayCard
 
     private IReadOnlySet<long> LDisplayFoldRead()
     {
-        if (_cDisplayRule.LDisplayChosen is not long id)
+        if (_cDisplayRule.CRuleChosen is not long id)
         {
             return new HashSet<long>();
         }
@@ -176,7 +176,7 @@ public sealed class CDisplayCard
 
     public IReadOnlyList<CUsage> CDisplayIncomingRead()
     {
-        if (_cDisplayRule.LDisplayChosen is not long id)
+        if (_cDisplayRule.CRuleChosen is not long id)
         {
             return [];
         }
@@ -194,7 +194,7 @@ public sealed class CDisplayCard
 
     public CEtymologyState CDisplayEtymologyRead()
     {
-        if (LDisplayShown is not LEntryDraft shown || _cDisplayRule.LDisplaySound.LDisplayEntry is not long id)
+        if (LDisplayShown is not LEntryDraft shown || _cDisplayRule.CVoice.CVoiceEntry is not long id)
         {
             return new CEtymologyState([], [], []);
         }

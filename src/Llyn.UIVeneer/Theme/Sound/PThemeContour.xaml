@@ -27,7 +27,7 @@
 
     <SolidColorBrush x:Key="Theme.Contour.Edge" Color="{DynamicResource Theme.Line.Color}" />
 
-    <Style x:Key="Theme.Contour.Box" TargetType="local:PContour">
+    <Style x:Key="Theme.Contour.Box" TargetType="local:QContour">
         <Setter Property="Margin" Value="0,6,0,2" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="SnapsToDevicePixels" Value="True" />

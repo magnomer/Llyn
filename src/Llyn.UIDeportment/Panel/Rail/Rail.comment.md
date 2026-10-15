@@ -26,5 +26,5 @@ The navigation owns the trail, so the rail only shows what it is told.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `QPanelRail.cs` `5c8013bac30477c3`
+Commit: `2f9a06b8eb95`
+- `QPanelRail.cs` `c84dd564c308a7aa`

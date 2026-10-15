@@ -95,6 +95,6 @@ The reading view then reads the rime-book box closed and the script box open.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `2f9a06b8eb95`
 - `TCardFold.cs` `d4147bcd78f235d5`
-- `TFold.cs` `fe40ab6c01eaecf0`
+- `TFold.cs` `f6b04c2122dd3ec1`

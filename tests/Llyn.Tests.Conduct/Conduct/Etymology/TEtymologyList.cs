@@ -209,7 +209,7 @@ public sealed class TEtymologyList
     internal static IReadOnlyList<CAncestor> TEtymologyStoredRead(LEngine engine, long entry)
     {
         CDisplay display = new TEditorFixture(TInterfaceEditor.TEditorCreate(engine)).TEditorFixtureDisplay;
-        display.LDisplayRule.LDisplaySound.TDisplaySoundShow(entry, engine.TEngineEntryLoad(entry)!);
+        display.LDisplayRule.CVoice.TDisplaySoundShow(entry, engine.TEngineEntryLoad(entry)!);
         return display.CDisplayCard.CDisplayEtymologyRead().CEtymologyStateAncestors;
     }
 

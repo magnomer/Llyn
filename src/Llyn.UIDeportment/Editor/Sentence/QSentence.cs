@@ -9,9 +9,9 @@ namespace Llyn.UIDeportment;
 
 internal sealed class QSentence
 {
-    private readonly ObservableCollection<PCard> _qSentenceMeaning;
+    private readonly ObservableCollection<QPlacard> _qSentenceMeaning;
 
-    private readonly ObservableCollection<PCard> _qSentenceCollocation;
+    private readonly ObservableCollection<QPlacard> _qSentenceCollocation;
 
     private CMention _cMention = null!;
 
@@ -23,7 +23,7 @@ internal sealed class QSentence
 
     private QProspect _qSentenceProspect = null!;
 
-    internal QSentence(ObservableCollection<PCard> meaning, ObservableCollection<PCard> collocation)
+    internal QSentence(ObservableCollection<QPlacard> meaning, ObservableCollection<QPlacard> collocation)
     {
         _qSentenceMeaning = meaning;
         _qSentenceCollocation = collocation;
@@ -45,19 +45,19 @@ internal sealed class QSentence
         _qSentenceProspect = prospect;
     }
 
-    internal PCard? QSentenceCardFind(PSentence row)
+    internal QPlacard? QSentenceCardFind(QPassage row)
     {
-        foreach (PCard card in _qSentenceMeaning)
+        foreach (QPlacard card in _qSentenceMeaning)
         {
-            if (card.PCardSentence.PCardSentenceRow.Contains(row))
+            if (card.QCardSentence.QCardSentenceRow.Contains(row))
             {
                 return card;
             }
         }
 
-        foreach (PCard card in _qSentenceCollocation)
+        foreach (QPlacard card in _qSentenceCollocation)
         {
-            if (card.PCardSentence.PCardSentenceRow.Contains(row))
+            if (card.QCardSentence.QCardSentenceRow.Contains(row))
             {
                 return card;
             }
@@ -73,14 +73,14 @@ internal sealed class QSentence
         QSentenceListRefine(QSentenceParticle, frame.CSentenceFrameParticle);
         QSentenceListRefine(QSentenceDependence, frame.CSentenceFrameDependence);
 
-        foreach (PCard card in _qSentenceMeaning)
+        foreach (QPlacard card in _qSentenceMeaning)
         {
-            card.PCardSentence.PCardSentenceApply(frame.CSentenceFrameOrder);
+            card.QCardSentence.QCardSentenceApply(frame.CSentenceFrameOrder);
         }
 
-        foreach (PCard card in _qSentenceCollocation)
+        foreach (QPlacard card in _qSentenceCollocation)
         {
-            card.PCardSentence.PCardSentenceApply(frame.CSentenceFrameOrder);
+            card.QCardSentence.QCardSentenceApply(frame.CSentenceFrameOrder);
         }
     }
 
@@ -92,40 +92,40 @@ internal sealed class QSentence
         QSentenceChipRefine(_qSentenceCollocation, lines);
     }
 
-    internal void QSentenceGlossObserve(PSentence row, PGloss gloss, string language)
+    internal void QSentenceGlossObserve(QPassage row, QRendition gloss, string language)
     {
-        if (QSentenceCardFind(row) is PCard card)
+        if (QSentenceCardFind(row) is QPlacard card)
         {
-            _cSentence.CSentenceLanguageSet(card.PCardId, row.PSentenceRow, gloss.PGlossId, language);
+            _cSentence.CSentenceLanguageSet(card.QPlacardId, row.QPassageRow, gloss.QRenditionId, language);
         }
     }
 
     internal void QSentenceTextObserve(object sender, TextChangedEventArgs e)
     {
-        if (sender is TextBox { IsKeyboardFocusWithin: true, DataContext: PSentence row } box
-            && QSentenceCardFind(row) is PCard card)
+        if (sender is TextBox { IsKeyboardFocusWithin: true, DataContext: QPassage row } box
+            && QSentenceCardFind(row) is QPlacard card)
         {
-            _cSentence.CSentenceTextSet(card.PCardId, row.PSentenceRow, box.Text);
+            _cSentence.CSentenceTextSet(card.QPlacardId, row.QPassageRow, box.Text);
         }
     }
 
     internal void QSentenceParticleObserve(object sender, TextChangedEventArgs e)
     {
-        if (sender is ComboBox { IsKeyboardFocusWithin: true, DataContext: PSentence row }
+        if (sender is ComboBox { IsKeyboardFocusWithin: true, DataContext: QPassage row }
             && e.OriginalSource is TextBox box
-            && QSentenceCardFind(row) is PCard card)
+            && QSentenceCardFind(row) is QPlacard card)
         {
-            _cSentence.CSentenceParticleSet(card.PCardId, row.PSentenceRow, box.Text);
+            _cSentence.CSentenceParticleSet(card.QPlacardId, row.QPassageRow, box.Text);
         }
     }
 
     internal void QSentenceDependenceObserve(object sender, TextChangedEventArgs e)
     {
-        if (sender is ComboBox { IsKeyboardFocusWithin: true, DataContext: PSentence row }
+        if (sender is ComboBox { IsKeyboardFocusWithin: true, DataContext: QPassage row }
             && e.OriginalSource is TextBox box
-            && QSentenceCardFind(row) is PCard card)
+            && QSentenceCardFind(row) is QPlacard card)
         {
-            _cSentence.CSentenceDependenceSet(card.PCardId, row.PSentenceRow, box.Text);
+            _cSentence.CSentenceDependenceSet(card.QPlacardId, row.QPassageRow, box.Text);
         }
     }
 
@@ -139,109 +139,109 @@ internal sealed class QSentence
     }
 
     private static void QSentenceChipRefine(
-        IReadOnlyList<PCard> cards, IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> lines)
+        IReadOnlyList<QPlacard> cards, IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> lines)
     {
-        foreach (PCard card in cards)
+        foreach (QPlacard card in cards)
         {
-            foreach (PSentence row in card.PCardSentence.PCardSentenceRow)
+            foreach (QPassage row in card.QCardSentence.QCardSentenceRow)
             {
-                row.PSentenceChip.PMentionLineRefine(QMentionChip.QMentionChipCreate(
-                    lines.TryGetValue(row.PSentenceRow, out IReadOnlyList<CMentionLabel>? labels) ? labels : []));
+                row.QPassageChip.QMentionLineRefine(QMentionChip.QMentionChipCreate(
+                    lines.TryGetValue(row.QPassageRow, out IReadOnlyList<CMentionLabel>? labels) ? labels : []));
             }
         }
     }
 
     internal void QSentenceAddObserve(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: PSentence row }
-            || QSentenceCardFind(row) is not PCard card)
+        if (sender is not FrameworkElement { DataContext: QPassage row }
+            || QSentenceCardFind(row) is not QPlacard card)
         {
             return;
         }
 
-        _cSentence.CSentenceAdd(card.PCardId, card.PCardSentence.PCardSentenceFind(row));
+        _cSentence.CSentenceAdd(card.QPlacardId, card.QCardSentence.QCardSentenceFind(row));
     }
 
     internal void QSentenceRemoveObserve(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: PSentence row }
-            || QSentenceCardFind(row) is not PCard card)
+        if (sender is not FrameworkElement { DataContext: QPassage row }
+            || QSentenceCardFind(row) is not QPlacard card)
         {
             return;
         }
 
-        _cSentence.CSentenceRemove(card.PCardId, row.PSentenceRow);
+        _cSentence.CSentenceRemove(card.QPlacardId, row.QPassageRow);
     }
 
     internal void QSentenceLinkRefine(object sender, ExecutedRoutedEventArgs e)
     {
-        if (e.Source is not TextBox { DataContext: PSentence } box)
+        if (e.Source is not TextBox { DataContext: QPassage } box)
         {
             return;
         }
 
-        _qSentenceProspect.QProspectPlaceRefine(box, PMentionSelection.PMentionSelectionPlace(box));
+        _qSentenceProspect.QProspectPlaceRefine(box, QMentionSelection.QMentionSelectionPlace(box));
         _qSentenceProspect.QProspectOpenRefine(_cCard.CCardMentionRead(box.SelectedText));
     }
 
     internal void QSentenceMeaningRefine(object sender, ExecutedRoutedEventArgs e)
     {
-        if (e.Source is not TextBox { DataContext: PSentence row } box
-            || QSentenceCardFind(row) is not PCard card)
+        if (e.Source is not TextBox { DataContext: QPassage row } box
+            || QSentenceCardFind(row) is not QPlacard card)
         {
             return;
         }
 
         if (_cSentence.CSentenceSenseRead(
-                card.PCardId, row.PSentenceRow, box.Text, box.SelectionStart, box.SelectionLength)
+                card.QPlacardId, row.QPassageRow, box.Text, box.SelectionStart, box.SelectionLength)
             is CMentionSense sense)
         {
             QMentionAsk ask = _qMentionMenu.QMentionMeaningRefine(
-                box, PMentionSelection.PMentionSelectionPlace(box), sense);
+                box, QMentionSelection.QMentionSelectionPlace(box), sense);
             ask.QMentionAskChosen += QSentenceSenseObserve;
         }
     }
 
     private void QSentenceSenseObserve(FrameworkElement anchor, long sense)
     {
-        if (anchor is not TextBox { DataContext: PSentence row } box
-            || QSentenceCardFind(row) is not PCard card)
+        if (anchor is not TextBox { DataContext: QPassage row } box
+            || QSentenceCardFind(row) is not QPlacard card)
         {
             return;
         }
 
         _cSentence.CSentenceSenseSet(
-            card.PCardId, row.PSentenceRow, box.Text, box.SelectionStart, box.SelectionLength, sense);
+            card.QPlacardId, row.QPassageRow, box.Text, box.SelectionStart, box.SelectionLength, sense);
     }
 
     internal void QSentenceSilenceObserve(object sender, ExecutedRoutedEventArgs e)
     {
-        if (e.Source is not TextBox { DataContext: PSentence row } box
-            || QSentenceCardFind(row) is not PCard card)
+        if (e.Source is not TextBox { DataContext: QPassage row } box
+            || QSentenceCardFind(row) is not QPlacard card)
         {
             return;
         }
 
         _cSentence.CSentenceSilenceSet(
-            card.PCardId, row.PSentenceRow, box.Text, box.SelectionStart, box.SelectionLength);
+            card.QPlacardId, row.QPassageRow, box.Text, box.SelectionStart, box.SelectionLength);
     }
 
     internal void QSentenceUnlinkObserve(object sender, ExecutedRoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: PSentence row }
-            || QSentenceCardFind(row) is not PCard card)
+        if (sender is not FrameworkElement { DataContext: QPassage row }
+            || QSentenceCardFind(row) is not QPlacard card)
         {
             return;
         }
 
-        if (e.Parameter is PMentionChip chip)
+        if (e.Parameter is QMentionChip chip)
         {
-            _cSentence.CSentenceMentionRemove(card.PCardId, row.PSentenceRow, chip.PMentionChipId);
+            _cSentence.CSentenceMentionRemove(card.QPlacardId, row.QPassageRow, chip.QMentionChipId);
         }
         else if (e.Source is TextBox box)
         {
             _cSentence.CSentenceMentionRemove(
-                card.PCardId, row.PSentenceRow, box.Text, box.SelectionStart, box.SelectionLength);
+                card.QPlacardId, row.QPassageRow, box.Text, box.SelectionStart, box.SelectionLength);
         }
     }
 
@@ -254,18 +254,18 @@ internal sealed class QSentence
 
     internal void QSentenceSenseRefine(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = e.Source is TextBox { DataContext: PSentence row } box
-            && QSentenceCardFind(row) is PCard card
+        e.CanExecute = e.Source is TextBox { DataContext: QPassage row } box
+            && QSentenceCardFind(row) is QPlacard card
             && _cSentence.CSentenceSenseCheck(
-                card.PCardId, row.PSentenceRow, box.Text, box.SelectionStart, box.SelectionLength);
+                card.QPlacardId, row.QPassageRow, box.Text, box.SelectionStart, box.SelectionLength);
     }
 
     internal void QSentenceUnlinkRefine(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = e.Parameter is PMentionChip
-            || (e.Source is TextBox { DataContext: PSentence row } box
-                && QSentenceCardFind(row) is PCard card
+        e.CanExecute = e.Parameter is QMentionChip
+            || (e.Source is TextBox { DataContext: QPassage row } box
+                && QSentenceCardFind(row) is QPlacard card
                 && _cSentence.CSentenceMentionCheck(
-                    card.PCardId, row.PSentenceRow, box.Text, box.SelectionStart, box.SelectionLength));
+                    card.QPlacardId, row.QPassageRow, box.Text, box.SelectionStart, box.SelectionLength));
     }
 }

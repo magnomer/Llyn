@@ -124,6 +124,25 @@ public sealed class TCardReference
     }
 
     [Fact]
+    public void ReferenceFind_EngineFails_ShowsTheFindFailureOnceAndOffersNone()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineDelaySet(0);
+        List<string> asked = [];
+        CDesk desk = TInterfaceCitation.TDeskFailCreate(engine, TEnvoyFake.TEnvoyCreate(false, asked));
+        desk.CDeskStart(null);
+        CCard card = TInterfaceConductCard.TCardCreate(engine, desk, TEnvoyFake.TEnvoyCreate(false, []));
+
+        CProffer first = card.CCardReferenceFind(0, 0, "Field");
+        CProffer second = card.CCardReferenceFind(0, 0, "Field");
+
+        Assert.Equal(["Input.FindFailed"], asked);
+        Assert.Empty(first.CProfferRows);
+        Assert.Empty(second.CProfferRows);
+    }
+
+    [Fact]
     public void CitationSet_TypedTitle_CitesTheResolvedSource()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

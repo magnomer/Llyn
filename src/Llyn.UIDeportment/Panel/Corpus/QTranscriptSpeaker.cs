@@ -29,7 +29,7 @@ internal sealed class QTranscriptSpeaker
         QLookItem.QLookItemAttach(QLanguageList, QSpeakerApply);
     }
 
-    internal ObservableCollection<PLanguageItem> QTranscriptSpeakerLanguage { get; } = [];
+    internal ObservableCollection<QLanguageItem> QTranscriptSpeakerLanguage { get; } = [];
 
     private ToggleButton QSpeaker => QContract.QContractFind<ToggleButton>(_qTranscriptSpeakerScope, "PSpeaker");
 
@@ -75,17 +75,17 @@ internal sealed class QTranscriptSpeaker
 
     internal void QSpeakerRefine(IReadOnlyList<string> languages)
     {
-        PLanguageItem.PLanguageItemReset(QTranscriptSpeakerLanguage, languages);
+        QLanguageItem.QLanguageItemReset(QTranscriptSpeakerLanguage, languages);
     }
 
     private void QSpeakerObserve(object sender, RoutedEventArgs e)
     {
-        if (QSender.QSenderItemRead<PLanguageItem>(sender) is not PLanguageItem item)
+        if (QSender.QSenderItemRead<QLanguageItem>(sender) is not QLanguageItem item)
         {
             return;
         }
 
-        _cCorpus.CCorpusAnthology.CAnthologySpeakerSet(item.PLanguageItemName);
+        _cCorpus.CCorpusAnthology.CAnthologySpeakerSet(item.QLanguageItemName);
         QSpeakerDropperRefine();
     }
 
@@ -96,7 +96,7 @@ internal sealed class QTranscriptSpeaker
 
     private void QSpeakerApply(FrameworkElement container, object item, string? change)
     {
-        PLanguageItem.PLanguageItemApply(container, item, change);
+        QLanguageItem.QLanguageItemApply(container, item, change);
 
         if (QLook.QLookPartFind<Button>(container, "PSpeakerChoice") is Button choice)
         {

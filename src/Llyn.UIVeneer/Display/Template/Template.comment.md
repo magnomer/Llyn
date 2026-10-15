@@ -3,7 +3,7 @@
 This folder holds the read-only card shapes of the entry page.
 They live apart from `PDisplay.xaml` because the card is its own shape, not part of the page around it.
 Every `Theme.` reference here is dynamic, since a loose dictionary is parsed before the theme is in reach.
-[PLeaf](../../../Llyn.UIDeportment/Display/Template/PLeaf.comment.md) fills every named part, so no template here names a handler.
+`QLeaf` fills every named part, so no template here names a handler.
 `QLookDisplay` holds the hover, press and empty states as rows, not triggers.
 
 ## `PDisplayCard.xaml`
@@ -144,7 +144,7 @@ A row carrying no frame drops it whole.
 ### `PExampleText`
 
 The control that knows its words draws the sentence, so a reader can click one.
-[PLeaf](../../../Llyn.UIDeportment/Display/Template/PLeaf.comment.md) sets its text, language and Mentions and keeps the frame out of the sentence.
+`QLeaf` sets its text, language and Mentions and keeps the frame out of the sentence.
 Its language is the Example's own, because the sentence may be written in a language the entry is not.
 Examples use the typography the language pack declares for them.
 The fallback for a pack that declares none is written once, with the rest of a card's measurements.
@@ -235,10 +235,10 @@ The stamp label is muted and small, because the stamps are a footnote.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
+Commit: `2f9a06b8eb95`
 - `PDisplayCard.xaml` `9189158db876e2c7`
 - `PDisplayCollocation.xaml` `3319fa918b8df9eb`
-- `PDisplayExample.xaml` `c3a66be3055d55b1`
+- `PDisplayExample.xaml` `57c0a5213712f0db`
 - `PDisplayMeaning.xaml` `f965dfe515ea48aa`
 - `PDisplayRegister.xaml` `d128fa6b868d9cb7`
 - `PDisplaySituation.xaml` `da80ba1cee6b4e0f`

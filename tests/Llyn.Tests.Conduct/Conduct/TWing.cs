@@ -24,7 +24,7 @@ public sealed class TWing
         wing.CWingEntryOpen(water.LEntryId);
 
         Assert.Equal(1, loaded);
-        Assert.Equal(water.LEntryId, wing.CWingDisplay.LDisplayRule.LDisplayChosen);
+        Assert.Equal(water.LEntryId, wing.CWingDisplay.LDisplayRule.CRuleChosen);
         Assert.Equal(new CWorkspaceState(water.LEntryId, null), atelier.TAtelierStateOpen());
     }
 
@@ -82,8 +82,8 @@ public sealed class TWing
         Assert.Equal(new CWorkspaceState(water.LEntryId, null), opened);
         Assert.Equal(1, loaded);
         Assert.Equal(0, blank);
-        Assert.Equal(water.LEntryId, left.CWingDisplay.LDisplayRule.LDisplayChosen);
-        Assert.Null(right.CWingDisplay.LDisplayRule.LDisplayChosen);
+        Assert.Equal(water.LEntryId, left.CWingDisplay.LDisplayRule.CRuleChosen);
+        Assert.Null(right.CWingDisplay.LDisplayRule.CRuleChosen);
         Assert.Equal(opened, atelier.TAtelierStateOpen());
     }
 

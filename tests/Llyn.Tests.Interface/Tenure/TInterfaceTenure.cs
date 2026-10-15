@@ -31,6 +31,9 @@ internal static partial class TInterface
     internal static LDraft? TTenureRead(this LTenure tenure) =>
         tenure.LTenureRead();
 
+    internal static LDraft? TTenureKeptRead(this LTenure tenure) =>
+        tenure.LTenureHerald.LTenureKeptRead();
+
     internal static LTenureState TTenureStateRead(this LTenure tenure) =>
         tenure.LTenureGauge.LTenureGaugeRead();
 
@@ -99,6 +102,10 @@ internal static partial class TInterface
 
     internal static LSpeechOffer TTenureSpeechSet(this LTenure tenure, string typed) =>
         new LQuillSpeech(tenure).LQuillSpeechSet(typed);
+
+    internal static (IReadOnlyList<string> LSpeechNames, string LSpeechTyped, LSpeechOffer LSpeechFound)
+        TTenureSpeechRead(this LTenure tenure, string typed) =>
+        new LQuillSpeech(tenure).LQuillSpeechRead(typed);
 
     internal static LUnit TTenureUnitRead(this LTenure tenure) => new LQuillEntry(tenure).LQuillUnitRead();
 

@@ -13,22 +13,24 @@ public sealed class LScriptClerk
     private readonly LScriptSource _lScriptClerkSource;
     private readonly LLanguageCache _lScriptClerkLanguages;
     private readonly object _lScriptClerkGate;
-    private readonly LAuditVault _lScriptClerkAudit;
+    private readonly Action<Exception> _lScriptClerkFault;
     private readonly Action<LSubject, long> _lScriptClerkBulletin;
     private readonly SemaphoreSlim _lScriptClerkAdmission = new(2, 2);
     private readonly Dictionary<string, CancellationTokenSource> _lScriptClerkPending = new(StringComparer.Ordinal);
     private readonly HashSet<string> _lScriptClerkMissed = new(StringComparer.Ordinal);
 
-    public LScriptClerk(LRig rig, LLanguageCache languages, object gate, Action<LSubject, long> raise)
+    public LScriptClerk(
+        LRig rig, LLanguageCache languages, object gate, Action<LSubject, long> raise, Action<Exception> fault)
     {
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(languages);
         ArgumentNullException.ThrowIfNull(gate);
         ArgumentNullException.ThrowIfNull(raise);
+        ArgumentNullException.ThrowIfNull(fault);
         _lScriptClerkEntries = rig.LRigEntries;
         _lScriptClerkScripts = rig.LRigSound.LRigSoundScripts;
         _lScriptClerkSource = rig.LRigSource.LRigSourceScript;
-        _lScriptClerkAudit = rig.LRigAudit;
+        _lScriptClerkFault = fault;
         _lScriptClerkLanguages = languages;
         _lScriptClerkGate = gate;
         _lScriptClerkBulletin = raise;
@@ -266,7 +268,7 @@ public sealed class LScriptClerk
         catch (Exception exception)
         {
             raised = !fetch.IsCancellationRequested;
-            _lScriptClerkAudit.LAuditRecord(exception);
+            _lScriptClerkFault(exception);
         }
         finally
         {

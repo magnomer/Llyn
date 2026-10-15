@@ -112,15 +112,7 @@ internal sealed class LTenureHerald
             round = _lTenureHeraldRound;
         }
 
-        LDraft? read;
-        try
-        {
-            read = _lTenureHeraldDraft.LEngineDraftRead(_lTenureHeraldId);
-        }
-        catch (Exception exception) when (LWorkspaceClerk.LWorkspaceRefusedCheck(exception))
-        {
-            return null;
-        }
+        LDraft? read = _lTenureHeraldDraft.LEnginePresentRead(_lTenureHeraldId);
 
         lock (_lTenureHeraldGate)
         {

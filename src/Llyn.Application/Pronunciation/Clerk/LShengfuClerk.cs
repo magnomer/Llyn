@@ -16,26 +16,28 @@ public sealed class LShengfuClerk
     private readonly LClock _lShengfuClerkClock;
     private readonly LLanguageCache _lShengfuClerkLanguages;
     private readonly object _lShengfuClerkGate;
-    private readonly LAuditVault _lShengfuClerkAudit;
+    private readonly Action<Exception> _lShengfuClerkFault;
     private readonly Action<LSubject, long> _lShengfuClerkBulletin;
     private readonly SemaphoreSlim _lShengfuClerkAdmission = new(1, 1);
     private readonly Dictionary<string, CancellationTokenSource> _lShengfuClerkPending = new(StringComparer.Ordinal);
     private readonly HashSet<string> _lShengfuClerkMissed = new(StringComparer.Ordinal);
     private DateTimeOffset _lShengfuClerkStamp = DateTimeOffset.MinValue;
 
-    public LShengfuClerk(LRig rig, LLanguageCache languages, object gate, Action<LSubject, long> raise)
+    public LShengfuClerk(
+        LRig rig, LLanguageCache languages, object gate, Action<LSubject, long> raise, Action<Exception> fault)
     {
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(languages);
         ArgumentNullException.ThrowIfNull(gate);
         ArgumentNullException.ThrowIfNull(raise);
+        ArgumentNullException.ThrowIfNull(fault);
         _lShengfuClerkEntries = rig.LRigEntries;
         _lShengfuClerkShengfu = rig.LRigSound.LRigSoundShengfu;
         _lShengfuClerkStems = rig.LRigSound.LRigSoundStems;
         _lShengfuClerkPacks = rig.LRigLanguages;
         _lShengfuClerkSource = rig.LRigSource.LRigSourceShengfu;
         _lShengfuClerkClock = rig.LRigClock;
-        _lShengfuClerkAudit = rig.LRigAudit;
+        _lShengfuClerkFault = fault;
         _lShengfuClerkLanguages = languages;
         _lShengfuClerkGate = gate;
         _lShengfuClerkBulletin = raise;
@@ -251,7 +253,7 @@ public sealed class LShengfuClerk
         catch (Exception exception)
         {
             raised = !fetch.IsCancellationRequested;
-            _lShengfuClerkAudit.LAuditRecord(exception);
+            _lShengfuClerkFault(exception);
         }
         finally
         {

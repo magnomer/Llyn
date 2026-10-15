@@ -21,7 +21,7 @@ internal sealed class QDisplay
     private ScrollViewer QDisplayContents =>
         QContract.QContractFind<ScrollViewer>(_qDisplaySurface, "PDisplayContents");
 
-    private PSwath QDisplaySwath => QContract.QContractFind<PSwath>(_qDisplaySurface, "PDisplaySwath");
+    private QSwath QDisplaySwath => QContract.QContractFind<QSwath>(_qDisplaySurface, "PDisplaySwath");
 
     internal void QDisplayVisibleRefine(Visibility visible)
     {
@@ -38,9 +38,9 @@ internal sealed class QDisplay
 
         QLook.QLookStyleAttach(_qDisplaySurface);
 
-        QDisplaySwath.PSwathAttach(QDisplayContents);
-        display.CDisplayOpened += QDisplaySwath.PSwathClear;
-        display.CDisplayClosed += QDisplaySwath.PSwathClear;
+        QDisplaySwath.QSwathAttach(QDisplayContents);
+        display.CDisplayOpened += QDisplaySwath.QSwathClear;
+        display.CDisplayClosed += QDisplaySwath.QSwathClear;
         QLectern lectern = new(_qDisplaySurface, display, atelier, envoy);
         QDisplayLectern = lectern;
         lectern.QLecternCard.QLecternMentionNotice += mentionMenu.QMentionOfferRefine;

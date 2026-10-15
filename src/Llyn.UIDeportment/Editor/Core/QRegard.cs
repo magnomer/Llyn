@@ -17,14 +17,14 @@ internal sealed class QRegard
     {
         _qRegardSurface = surface;
         QRegardFavorite.Click += QRegardFavoriteObserve;
-        QRegardGrasp.PGraspPressed += QRegardGraspObserve;
-        QRegardGrasp.PGraspMoved += QRegardMoveObserve;
-        QRegardGrasp.PGraspHovered += QRegardHoverRefine;
+        QRegardGrasp.QGraspPressed += QRegardGraspObserve;
+        QRegardGrasp.QGraspMoved += QRegardMoveObserve;
+        QRegardGrasp.QGraspHovered += QRegardHoverRefine;
     }
 
     private ToggleButton QRegardFavorite => QContract.QContractFind<ToggleButton>(_qRegardSurface, "PEditorFavorite");
 
-    private PGrasp QRegardGrasp => QContract.QContractFind<PGrasp>(_qRegardSurface, "PEditorGrasp");
+    private QGrasp QRegardGrasp => QContract.QContractFind<QGrasp>(_qRegardSurface, "PEditorGrasp");
 
     private TextBlock QRegardGraspLabel => QContract.QContractFind<TextBlock>(_qRegardSurface, "PEditorGraspLabel");
 
@@ -48,8 +48,8 @@ internal sealed class QRegard
         desk.CDeskStarted += QRegardFavoriteRefine;
         desk.CDeskStarted += QRegardGraspRefine;
         desk.CDeskStarted += QRegardFrequencyRefine;
-        QRegardGrasp.PGraspLimit = esteem.CEsteemGraspStep;
-        QRegardGrasp.PGraspStar.QGraspStarRefine(
+        QRegardGrasp.QGraspLimit = esteem.CEsteemGraspStep;
+        QRegardGrasp.QGraspStar.QGraspStarRefine(
             esteem.CEsteemGraspFill, esteem.CEsteemGraspUnrated, esteem.CEsteemGraspHit);
     }
 
@@ -68,7 +68,7 @@ internal sealed class QRegard
     {
         QRegardGrasp.IsEnabled = _cDesk.CDeskStored;
         CGrasp grasp = _cEsteem.CEsteemGraspRead();
-        QRegardGrasp.PGraspStep = grasp.CGraspStep;
+        QRegardGrasp.QGraspStep = grasp.CGraspStep;
         QRegardGraspLabel.Text = grasp.CGraspLabel;
     }
 

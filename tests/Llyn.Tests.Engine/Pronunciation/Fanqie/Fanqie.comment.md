@@ -33,6 +33,12 @@ A division section is headed by the localized pattern, filled with the division 
 Without a pattern the raw division heads the section.
 The localizer is handed in, so the label never depends on the catalog another test loaded.
 
+## `TEngineFanqieFault`
+
+A fetch whose source throws hands that fault to the owner once.
+The owner records it in the audit log.
+Its audit-log reader serves the sibling fault tests.
+
 ## `TEngineFanqie`
 
 Covers the engine's fanqie fetch over a fixture pack with two books behind stubbed rime tables.
@@ -90,9 +96,10 @@ A place ranks its initials in pack order across all places, and an unplaced init
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `2f9a06b8eb95`
 - `TDiwei.cs` `a4edda17d7808789`
 - `TEngineFanqie.cs` `e5892350f0571261`
+- `TEngineFanqieFault.cs` `7b5037970ff82b1a`
 - `TEngineFanqieRank.cs` `2640d00b351d0c49`
 - `TEngineFanqieSource.cs` `04c73d65ec8a727d`
 - `TFanqieRow.cs` `848333a15eb2c3e4`

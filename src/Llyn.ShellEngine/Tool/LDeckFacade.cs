@@ -10,12 +10,18 @@ namespace Llyn.ShellEngine;
 internal sealed class LDeckFacade
 {
     private readonly LEngineHearth _lDeckFacadeHearth;
+    private readonly LEntryFacade _lDeckFacadeEntry;
+    private readonly LVistaRowFacade _lDeckFacadeRow;
     private readonly object _lDeckFacadeGate;
 
-    public LDeckFacade(LEngineHearth hearth)
+    public LDeckFacade(LEngineHearth hearth, LEntryFacade entry, LVistaRowFacade row)
     {
         ArgumentNullException.ThrowIfNull(hearth);
+        ArgumentNullException.ThrowIfNull(entry);
+        ArgumentNullException.ThrowIfNull(row);
         _lDeckFacadeHearth = hearth;
+        _lDeckFacadeEntry = entry;
+        _lDeckFacadeRow = row;
         _lDeckFacadeGate = hearth.LEngineGate;
     }
 
@@ -118,6 +124,40 @@ internal sealed class LDeckFacade
         }
     }
 
+    public IReadOnlyList<(LCue LCueStored, string LCueLine)> LEngineLineRead(long deckId, LPortraitLabel label)
+    {
+        lock (_lDeckFacadeGate)
+        {
+            return LDeckFacadeStaff.LWorkspaceStaffCue.LCueLineRead(deckId, label);
+        }
+    }
+
+    public IReadOnlyList<(LVistaRow LAccessionRow, bool LAccessionBound)> LEngineAccessionFind(
+        LVista vista, long deckId)
+    {
+        ArgumentNullException.ThrowIfNull(vista);
+
+        if (vista.LVistaBlank && string.IsNullOrWhiteSpace(vista.LVistaQuery))
+        {
+            return [];
+        }
+
+        lock (_lDeckFacadeGate)
+        {
+            IReadOnlyList<LEntry> entries = _lDeckFacadeEntry.LEngineEntryFind(
+                vista.LVistaQuery, vista.LVistaOrder, vista.LVistaFilter);
+            IReadOnlySet<long> bound = LDeckFacadeStaff.LWorkspaceStaffCue.LCueEntryRead(deckId);
+            IReadOnlyList<LVistaRow> rows = _lDeckFacadeRow.LEngineVistaBuild(entries, vista.LVistaChosen);
+            List<(LVistaRow LAccessionRow, bool LAccessionBound)> found = new(rows.Count);
+            foreach (LVistaRow row in rows)
+            {
+                found.Add((row, bound.Contains(row.LVistaRowId)));
+            }
+
+            return found;
+        }
+    }
+
     public int LEngineCueAdd(long deckId, IReadOnlyList<long> entryIds)
     {
         lock (_lDeckFacadeGate)
@@ -158,14 +198,6 @@ internal sealed class LDeckFacade
         }
     }
 
-    public LCueFace LEngineFaceRead(long cueId, LPortraitLabel label)
-    {
-        lock (_lDeckFacadeGate)
-        {
-            return LDeckFacadeStaff.LWorkspaceStaffStencil.LStencilClerkResolve(cueId, label);
-        }
-    }
-
     public Task<LDeckReceipt> LEngineDeckExport(long deckId, LPortraitLabel label, CancellationToken cancellation)
     {
         return LDeckFacadeStaff.LWorkspaceStaffDepot.LDepotClerkExport(deckId, label, cancellation);
@@ -192,6 +224,14 @@ internal sealed class LDeckFacade
         }
     }
 
+    public IReadOnlyList<LStencil> LEngineStencilRead()
+    {
+        lock (_lDeckFacadeGate)
+        {
+            return LDeckFacadeStaff.LWorkspaceStaffStencil.LStencilClerkRead();
+        }
+    }
+
     public LStencil LEngineStencilRead(long deckId)
     {
         lock (_lDeckFacadeGate)
@@ -205,6 +245,38 @@ internal sealed class LDeckFacade
         lock (_lDeckFacadeGate)
         {
             LDeckFacadeStaff.LWorkspaceStaffStencil.LStencilSlotSet(deckId, slot);
+        }
+    }
+
+    public void LEngineFieldAppend(long deckId, int index, LStencilField field)
+    {
+        lock (_lDeckFacadeGate)
+        {
+            LDeckFacadeStaff.LWorkspaceStaffStencil.LStencilFieldAppend(deckId, index, field);
+        }
+    }
+
+    public void LEngineFieldRemove(long deckId, int index, int place)
+    {
+        lock (_lDeckFacadeGate)
+        {
+            LDeckFacadeStaff.LWorkspaceStaffStencil.LStencilFieldRemove(deckId, index, place);
+        }
+    }
+
+    public void LEngineJoinSet(long deckId, int index, int place, bool all)
+    {
+        lock (_lDeckFacadeGate)
+        {
+            LDeckFacadeStaff.LWorkspaceStaffStencil.LStencilJoinSet(deckId, index, place, all);
+        }
+    }
+
+    public void LEngineMediaSet(long deckId, LCueColumn column, int index)
+    {
+        lock (_lDeckFacadeGate)
+        {
+            LDeckFacadeStaff.LWorkspaceStaffStencil.LStencilMediaSet(deckId, column, index);
         }
     }
 

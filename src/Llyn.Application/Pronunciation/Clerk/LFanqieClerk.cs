@@ -19,19 +19,21 @@ public sealed class LFanqieClerk
     private readonly LClock _lFanqieClerkClock;
     private readonly LLanguageCache _lFanqieClerkLanguages;
     private readonly object _lFanqieClerkGate;
-    private readonly LAuditVault _lFanqieClerkAudit;
+    private readonly Action<Exception> _lFanqieClerkFault;
     private readonly Action<LSubject, long> _lFanqieClerkBulletin;
     private readonly SemaphoreSlim _lFanqieClerkAdmission = new(1, 1);
     private readonly Dictionary<string, CancellationTokenSource> _lFanqieClerkPending = new(StringComparer.Ordinal);
     private readonly HashSet<string> _lFanqieClerkMissed = new(StringComparer.Ordinal);
     private DateTimeOffset _lFanqieClerkStamp = DateTimeOffset.MinValue;
 
-    public LFanqieClerk(LRig rig, LLanguageCache languages, object gate, Action<LSubject, long> raise)
+    public LFanqieClerk(
+        LRig rig, LLanguageCache languages, object gate, Action<LSubject, long> raise, Action<Exception> fault)
     {
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(languages);
         ArgumentNullException.ThrowIfNull(gate);
         ArgumentNullException.ThrowIfNull(raise);
+        ArgumentNullException.ThrowIfNull(fault);
         _lFanqieClerkEntries = rig.LRigEntries;
         _lFanqieClerkFanqie = rig.LRigSound.LRigSoundFanqie;
         _lFanqieClerkShengfu = rig.LRigSound.LRigSoundShengfu;
@@ -39,7 +41,7 @@ public sealed class LFanqieClerk
         _lFanqieClerkSource = rig.LRigSource.LRigSourceFanqie;
         _lFanqieClerkPacks = rig.LRigLanguages;
         _lFanqieClerkClock = rig.LRigClock;
-        _lFanqieClerkAudit = rig.LRigAudit;
+        _lFanqieClerkFault = fault;
         _lFanqieClerkLanguages = languages;
         _lFanqieClerkGate = gate;
         _lFanqieClerkBulletin = raise;
@@ -347,7 +349,7 @@ public sealed class LFanqieClerk
         catch (Exception exception)
         {
             raised = !fetch.IsCancellationRequested;
-            _lFanqieClerkAudit.LAuditRecord(exception);
+            _lFanqieClerkFault(exception);
         }
         finally
         {

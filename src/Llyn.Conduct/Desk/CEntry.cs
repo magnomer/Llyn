@@ -65,7 +65,7 @@ public sealed class CEntry
     {
         ArgumentNullException.ThrowIfNull(marshal);
 
-        _cEntryDesk.CDeskVigil.LVigilEntryAttach(CSubject.CSubjectFold, _ => marshal(LEntryDraftShow));
+        _cEntryDesk.CDeskVigil.CVigilEntryAttach(CSubject.CSubjectFold, _ => marshal(LEntryDraftShow));
     }
 
     internal CEntryDraft LEntryDraftRead(LTenure held, LDraft draft)
@@ -75,7 +75,11 @@ public sealed class CEntry
 
         return CFolio.CFolioEntryRead(
             draft.LDraftContent,
-            new LQuillChip(held, _cEntryDraftPort).LQuillTranslationRead(draft.LDraftContent),
+            _cEntryDesk.LDeskRepaintRead(
+                _cEntryNoticed,
+                () => new LQuillChip(held, _cEntryDraftPort).LQuillTranslationRead(draft.LDraftContent),
+                new Dictionary<long, IReadOnlyList<LTranslationTarget>>(),
+                ".FindFailed"),
             LEntryFoldRead(),
             _cEntryMediaPort,
             _cEntryDraftPort.LEngineMeaningScan(held, "Display.Unknown"));

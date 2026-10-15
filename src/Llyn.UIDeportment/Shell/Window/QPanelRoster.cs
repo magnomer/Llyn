@@ -15,6 +15,8 @@ internal sealed class QPanelRoster
 
     private readonly QTaxonomy _qTaxonomy;
 
+    private readonly QDeck _qDeck;
+
     private readonly QTenor _qTenor;
 
     private readonly QRepertoire _qRepertoire;
@@ -49,6 +51,7 @@ internal sealed class QPanelRoster
 
         _qInput = new QInput(QInputSurface);
         _qTaxonomy = new QTaxonomy(QTaxonomySurface);
+        _qDeck = new QDeck(QDeckSurface);
         _qTenor = new QTenor(QTenorSurface);
         _qRepertoire = new QRepertoire(QRepertoireSurface);
         _qCorpus = new QCorpus(QCorpusSurface);
@@ -74,6 +77,12 @@ internal sealed class QPanelRoster
     private UserControl QYunjingSurface => QContract.QContractFind<UserControl>(_qPanelRosterSurface, "PYunjing");
 
     private UserControl QTaxonomySurface => QContract.QContractFind<UserControl>(_qPanelRosterSurface, "PTaxonomy");
+
+    private UserControl QStudySurface => QContract.QContractFind<UserControl>(_qPanelRosterSurface, "PStudy");
+
+    private UserControl QDeckSurface => QContract.QContractFind<UserControl>(_qPanelRosterSurface, "PDeck");
+
+    private UserControl QScoreboardSurface => QContract.QContractFind<UserControl>(_qPanelRosterSurface, "PScoreboard");
 
     private UserControl QTenorSurface => QContract.QContractFind<UserControl>(_qPanelRosterSurface, "PTenor");
 
@@ -101,6 +110,9 @@ internal sealed class QPanelRoster
         _qXiesheng.QXieshengIntroduce(atelier, envoy, volume, mentionMenu);
         _qYunjing.QYunjingIntroduce(atelier, envoy, volume, mentionMenu);
         _qTaxonomy.QTaxonomyIntroduce(atelier, envoy, volume, mentionMenu);
+        new QStudy(QStudySurface).QStudyIntroduce();
+        _qDeck.QDeckIntroduce(atelier, envoy);
+        new QScoreboard(QScoreboardSurface).QScoreboardIntroduce();
         _qTenor.QTenorIntroduce(atelier, envoy, volume, mentionMenu);
         _qRepertoire.QRepertoireIntroduce(atelier, envoy, volume, mentionMenu);
         _qCorpus.QCorpusIntroduce(atelier, envoy, volume, mentionMenu);

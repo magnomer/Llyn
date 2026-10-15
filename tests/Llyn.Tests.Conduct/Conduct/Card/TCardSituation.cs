@@ -15,7 +15,7 @@ public sealed class TCardSituation
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
 
         string rest = caret.CCaretSituationAdd(sheet, "Hearth, ,  Kitchen, Ga").CProfferText;
@@ -37,7 +37,7 @@ public sealed class TCardSituation
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LSituation hearth = engine.TEngineSituationCreate(TInterface.TSituationCreate(0, "Hearth", null, null));
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
 
         caret.CCaretSituationInsert(sheet, hearth.LSituationId);
@@ -57,7 +57,7 @@ public sealed class TCardSituation
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LSituation hearth = engine.TEngineSituationCreate(TInterface.TSituationCreate(0, "Hearth", null, null));
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
         long other = TCard.TCardSheetAdd(desk);
         caret.CCaretSituationInsert(sheet, hearth.LSituationId);
@@ -78,7 +78,7 @@ public sealed class TCardSituation
         LSituation hearth = engine.TEngineSituationCreate(
             TInterface.TSituationCreate(0, "Hearth", null, LStateValue.LStateValueUnknown));
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
 
         CProffer offer = caret.CCaretSituationAdd(0, " HEAR ");
 
@@ -94,7 +94,7 @@ public sealed class TCardSituation
         using LEngine engine = workspace.TWorkspaceEngineStart();
         engine.TEngineSituationCreate(TInterface.TSituationCreate(0, "Hearth", null, null));
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
 
         CProffer blank = caret.CCaretSituationAdd(0, "   ");
         CProffer unmatched = caret.CCaretSituationAdd(0, "zzq");
@@ -117,7 +117,7 @@ public sealed class TCardSituation
         }
 
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
 
         CProffer offer = caret.CCaretSituationAdd(0, "room");
 
@@ -131,7 +131,7 @@ public sealed class TCardSituation
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
         caret.CCaretSituationSettle(sheet, "Hearth, Kitchen");
         caret.CCaretSituation.CCaretTrailMove(sheet, -1);
@@ -151,7 +151,7 @@ public sealed class TCardSituation
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
         caret.CCaretSituationSettle(sheet, "Hearth, Kitchen, Garden");
         caret.CCaretSituation.CCaretTrailMove(sheet, -1);

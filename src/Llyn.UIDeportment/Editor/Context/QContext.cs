@@ -12,9 +12,9 @@ internal sealed class QContext
 {
     private readonly FrameworkElement _qContextSurface;
 
-    private readonly ObservableCollection<PCard> _qContextMeaning;
+    private readonly ObservableCollection<QPlacard> _qContextMeaning;
 
-    private readonly ObservableCollection<PCard> _qContextCollocation;
+    private readonly ObservableCollection<QPlacard> _qContextCollocation;
 
     private CCard _cCard = null!;
 
@@ -23,7 +23,7 @@ internal sealed class QContext
     private QProffer _qContextProffer = null!;
 
     internal QContext(
-        FrameworkElement surface, ObservableCollection<PCard> meaning, ObservableCollection<PCard> collocation)
+        FrameworkElement surface, ObservableCollection<QPlacard> meaning, ObservableCollection<QPlacard> collocation)
     {
         _qContextSurface = surface;
         _qContextMeaning = meaning;
@@ -38,41 +38,41 @@ internal sealed class QContext
         _qContextProffer = proffer;
     }
 
-    internal void QContextShow(PCard card, CCardDraft draft, long? anchor)
+    internal void QContextShow(QPlacard card, CCardDraft draft, long? anchor)
     {
-        List<PContext> chips = [];
+        List<QContextChip> chips = [];
         foreach (CSituationDraft situation in draft.CCardDraftSituation)
         {
-            chips.Add(new PContext(situation.CSituationDraftWording, situation.CSituationDraftId));
+            chips.Add(new QContextChip(situation.CSituationDraftWording, situation.CSituationDraftId));
         }
 
-        card.PCardContext.PCaretRowShow(chips);
+        card.QPlacardContext.QInletRowShow(chips);
         QContextAnchorShow(card, anchor);
     }
 
-    private static void QContextAnchorShow(PCard card, long? anchor)
+    private static void QContextAnchorShow(QPlacard card, long? anchor)
     {
-        PContext? paired = null;
-        foreach (PContext chip in card.PCardContext.PCaretRow)
+        QContextChip? paired = null;
+        foreach (QContextChip chip in card.QPlacardContext.QInletRow)
         {
-            if (chip.PContextId == anchor)
+            if (chip.QContextChipId == anchor)
             {
                 paired = chip;
                 break;
             }
         }
 
-        card.PCardContext.PCaretAnchorShow(paired);
+        card.QPlacardContext.QInletAnchorShow(paired);
     }
 
     internal void QContextApply(FrameworkElement container, object item, string? _)
     {
-        if (item is PCaret<PContext> caret)
+        if (item is QInlet<QContextChip> caret)
         {
             if (QLook.QLookPartFind<TextBox>(container, "PContextEntry") is TextBox entry)
             {
-                entry.SetValue(QField.QFieldHintProperty, caret.PCaretHint);
-                entry.Text = caret.PCaretText;
+                entry.SetValue(QField.QFieldHintProperty, caret.QInletHint);
+                entry.Text = caret.QInletText;
                 entry.PreviewKeyDown -= _qContextProffer.QProfferKeyRefine;
                 entry.PreviewKeyDown -= _qContextProffer.QProfferKeyObserve;
                 entry.PreviewKeyDown -= QContextCommitObserve;
@@ -92,14 +92,14 @@ internal sealed class QContext
             return;
         }
 
-        if (item is not PContext chip)
+        if (item is not QContextChip chip)
         {
             return;
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PContextName") is TextBlock name)
         {
-            QStateConverter.QStateTextRefine(name, TextBlock.TextProperty, chip.PContextText);
+            QStateConverter.QStateTextRefine(name, TextBlock.TextProperty, chip.QContextChipText);
         }
 
         if (QLook.QLookPartFind<Button>(container, "PContextEraser") is Button eraser)
@@ -113,19 +113,19 @@ internal sealed class QContext
         }
     }
 
-    internal void QContextFieldApply(ItemsControl list, PCard card)
+    internal void QContextFieldApply(ItemsControl list, QPlacard card)
     {
-        list.ItemTemplateSelector ??= new PContextSelector
+        list.ItemTemplateSelector ??= new QContextSelector
         {
-            PContextSelectorChip = QContract.QContractSheetFind<DataTemplate>(
+            QContextSelectorChip = QContract.QContractSheetFind<DataTemplate>(
                 _qContextSurface, "Theme.Context.Chip"),
-            PContextSelectorCaret = QContract.QContractSheetFind<DataTemplate>(
+            QContextSelectorCaret = QContract.QContractSheetFind<DataTemplate>(
                 _qContextSurface, "Theme.Context.Entry"),
         };
         QLookItem.QLookItemAttach(list, QContextApply);
         QLookItem.QLookItemAttach(
             QBerth.QBerthBuild(
-                list, card.PCardContext, nameof(PCaret<PContext>.PCaretAnchor)),
+                list, card.QPlacardContext, nameof(QInlet<QContextChip>.QInletAnchor)),
             QContextApply);
         if (QLook.QLookPartFind<Border>(list, "PContextFrame") is Border frame)
         {
@@ -136,40 +136,40 @@ internal sealed class QContext
 
     private void QContextTextObserve(object sender, TextChangedEventArgs e)
     {
-        if (e.OriginalSource is TextBox { DataContext: PCaret<PContext> caret } box
-            && QContextCardFind(caret) is PCard card)
+        if (e.OriginalSource is TextBox { DataContext: QInlet<QContextChip> caret } box
+            && QContextCardFind(caret) is QPlacard card)
         {
-            _qContextProffer.QProfferSituationRefine(card, _cCaret.CCaretSituationAdd(card.PCardId, box.Text));
+            _qContextProffer.QProfferSituationRefine(card, _cCaret.CCaretSituationAdd(card.QPlacardId, box.Text));
         }
     }
 
     internal void QContextChipObserve(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PContext chip } && QContextCardFind(chip) is PCard card)
+        if (sender is FrameworkElement { DataContext: QContextChip chip } && QContextCardFind(chip) is QPlacard card)
         {
-            _cCard.CCardSituationRemove(card.PCardId, chip.PContextId);
+            _cCard.CCardSituationRemove(card.QPlacardId, chip.QContextChipId);
         }
     }
 
     internal void QContextCommitObserve(object sender, KeyEventArgs e)
     {
         if (e.Key != Key.Enter
-            || sender is not TextBox { DataContext: PCaret<PContext> row } box
-            || QContextCardFind(row) is not PCard card)
+            || sender is not TextBox { DataContext: QInlet<QContextChip> row } box
+            || QContextCardFind(row) is not QPlacard card)
         {
             return;
         }
 
-        _cCaret.CCaretSituationSettle(card.PCardId, box.Text);
+        _cCaret.CCaretSituationSettle(card.QPlacardId, box.Text);
         e.Handled = true;
         _qContextProffer.QProfferShutRefine();
-        card.PCardContext.PCaretClear();
+        card.QPlacardContext.QInletClear();
     }
 
     internal void QContextEraseObserve(object sender, KeyEventArgs e)
     {
-        if (sender is not TextBox { DataContext: PCaret<PContext> row } box
-            || QContextCardFind(row) is not PCard card)
+        if (sender is not TextBox { DataContext: QInlet<QContextChip> row } box
+            || QContextCardFind(row) is not QPlacard card)
         {
             return;
         }
@@ -179,13 +179,13 @@ internal sealed class QContext
             box.CaretIndex,
             box.Text.Length,
             box.SelectionLength,
-            step => _cCaret.CCaretSituation.CCaretTrailDelete(card.PCardId, step));
+            step => _cCaret.CCaretSituation.CCaretTrailDelete(card.QPlacardId, step));
     }
 
     internal void QContextCaretRefine(object sender, KeyEventArgs e)
     {
-        if (sender is not TextBox { DataContext: PCaret<PContext> row } box
-            || QContextCardFind(row) is not PCard card)
+        if (sender is not TextBox { DataContext: QInlet<QContextChip> row } box
+            || QContextCardFind(row) is not QPlacard card)
         {
             return;
         }
@@ -196,7 +196,7 @@ internal sealed class QContext
             box.SelectionLength,
             step =>
             {
-                (bool moved, long? anchor) = _cCaret.CCaretSituation.CCaretTrailMove(card.PCardId, step);
+                (bool moved, long? anchor) = _cCaret.CCaretSituation.CCaretTrailMove(card.QPlacardId, step);
                 QContextAnchorShow(card, anchor);
                 return moved;
             },
@@ -210,11 +210,11 @@ internal sealed class QContext
 
     internal void QContextCloseObserve(object sender, RoutedEventArgs e)
     {
-        if (sender is TextBox { DataContext: PCaret<PContext> row } box
-            && QContextCardFind(row) is PCard card)
+        if (sender is TextBox { DataContext: QInlet<QContextChip> row } box
+            && QContextCardFind(row) is QPlacard card)
         {
-            _cCaret.CCaretSituationSettle(card.PCardId, box.Text);
-            card.PCardContext.PCaretClear();
+            _cCaret.CCaretSituationSettle(card.QPlacardId, box.Text);
+            card.QPlacardContext.QInletClear();
         }
     }
 
@@ -236,21 +236,21 @@ internal sealed class QContext
         e.Handled = true;
     }
 
-    internal PCard? QContextCardFind(object row)
+    internal QPlacard? QContextCardFind(object row)
     {
-        foreach (PCard card in _qContextMeaning)
+        foreach (QPlacard card in _qContextMeaning)
         {
-            if ((row is PContext chip && card.PCardContext.PCaretRow.Contains(chip))
-                || ReferenceEquals(card.PCardContext, row))
+            if ((row is QContextChip chip && card.QPlacardContext.QInletRow.Contains(chip))
+                || ReferenceEquals(card.QPlacardContext, row))
             {
                 return card;
             }
         }
 
-        foreach (PCard card in _qContextCollocation)
+        foreach (QPlacard card in _qContextCollocation)
         {
-            if ((row is PContext chip && card.PCardContext.PCaretRow.Contains(chip))
-                || ReferenceEquals(card.PCardContext, row))
+            if ((row is QContextChip chip && card.QPlacardContext.QInletRow.Contains(chip))
+                || ReferenceEquals(card.QPlacardContext, row))
             {
                 return card;
             }

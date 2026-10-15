@@ -74,9 +74,9 @@ The tray shows when the own recording or any accent row has audio.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `2f9a06b8eb95`
 - `CPlayback.cs` `91617d371b5019f5`
-- `CTimbre.cs` `b8355282ea3e753f`
+- `CTimbre.cs` `5c0a0d1031381e5d`
 - `CTimbreAccent.cs` `d8db05a6ce76e326`
 - `CTimbreGlyph.cs` `effdd102dadc3581`
 - `CTimbrePlayback.cs` `2aea6bb0d1a8aaf4`

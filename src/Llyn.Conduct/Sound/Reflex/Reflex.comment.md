@@ -94,6 +94,7 @@ It borrows the reflex block's quill rather than building a reflex port.
 
 `CSoundingAnchorOpen` makes the row the selection and answers the readings it may anchor to.
 The rows stay empty while the desk fills its view or holds nothing stored.
+A refused scan shows `Input.FindFailed` once until the user acts, through `CKindred.LKindredAnchorRead`, and the rows stay empty.
 The menu then shows its notice.
 `CSoundingAnchorSet` does nothing while the menu is closed or the desk fills.
 The row repaints from the draft change, so the gate answers nothing.
@@ -111,13 +112,13 @@ The block shows when the pack declares a rule or the draft holds a row.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `2f9a06b8eb95`
 - `CAnchor.cs` `35297b8cb4f7d0b6`
 - `CAnchorRow.cs` `285a2303c7372f60`
-- `CKindred.cs` `4bce30ea5c1ff94a`
+- `CKindred.cs` `4fa083c4e3854388`
 - `CReflex.cs` `96b4b23bb1dc93dd`
 - `CReflexField.cs` `c82285178f656b0b`
 - `CReflexHead.cs` `c080539fc6f40a2c`
 - `CReflexTyped.cs` `5ebe59ff82f5b3d2`
-- `CSoundingAnchor.cs` `e74df300b44bd469`
+- `CSoundingAnchor.cs` `d4e710aec3622a7d`
 - `CTimbreReflex.cs` `822e57a2173be39b`

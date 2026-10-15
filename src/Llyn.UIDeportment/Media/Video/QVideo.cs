@@ -46,9 +46,9 @@ internal sealed class QVideo
 
     internal void QVideoAddObserve(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PCard card })
+        if (sender is FrameworkElement { DataContext: QPlacard card })
         {
-            _cVideo.CVideoAdd(card.PCardId);
+            _cVideo.CVideoAdd(card.QPlacardId);
         }
     }
 

@@ -11,7 +11,7 @@ internal sealed class QMarker
 {
     private readonly FrameworkElement _qMarkerSurface;
 
-    private readonly ObservableCollection<PMarkerChip> _qMarkerChip = [];
+    private readonly ObservableCollection<QMarkerChip> _qMarkerChip = [];
 
     private CCardSpeech _cCardSpeech = null!;
 
@@ -55,14 +55,14 @@ internal sealed class QMarker
 
     private void QMarkerApply(FrameworkElement container, object item, string? _)
     {
-        if (item is not PMarkerChip chip)
+        if (item is not QMarkerChip chip)
         {
             return;
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PMarkerName") is TextBlock name)
         {
-            name.Text = chip.PMarkerChipName;
+            name.Text = chip.QMarkerChipName;
         }
 
         if (QLook.QLookPartFind<QIconImage>(container, "PMarkerIcon") is QIconImage icon)
@@ -79,9 +79,9 @@ internal sealed class QMarker
 
     private void QMarkerEraseObserve(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PMarkerChip chip })
+        if (sender is FrameworkElement { DataContext: QMarkerChip chip })
         {
-            _cCardSpeech.CCardSpeechRemove(chip.PMarkerChipName);
+            _cCardSpeech.CCardSpeechRemove(chip.QMarkerChipName);
         }
     }
 
@@ -128,7 +128,7 @@ internal sealed class QMarker
         _qMarkerChip.Clear();
         foreach (string speech in marker.CMarkerSpeeches)
         {
-            _qMarkerChip.Add(new PMarkerChip(speech));
+            _qMarkerChip.Add(new QMarkerChip(speech));
         }
 
         QField.QFieldTextShow(QMarkerField, marker.CMarkerTyped);

@@ -36,7 +36,9 @@ No driver calls it, since `CCorpusPortraitPrint` chooses which side prints.
 
 The Sources the transcript's citation drawer offers for the typed word, ready to show.
 It is the card sentence's citation find over the draft's own Example, so both fields offer alike.
-The engine trims, splits, caps and counts, and answers no rows on a failed search.
+The engine trims, splits, caps and counts.
+A failed search shows `Example.FindFailed` once until the user acts, through the repaint memory.
+It then answers the typed word with no rows.
 No held transcript offers nothing, and typing a citation writes nothing.
 
 ## `CAnthologyCitationSet`
@@ -309,8 +311,8 @@ A failed read shows `Mention.FindFailed`, through the shared read in `CMention`.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `CAnthology.cs` `aa126d79d151118e`
+Commit: `2f9a06b8eb95`
+- `CAnthology.cs` `d17fa57beb2ce7e8`
 - `CCorpus.cs` `28fd61a422f56c0c`
 - `CQuotation.cs` `42aa5e1b796518f8`
 - `CTranscript.cs` `9f53a43104122ddb`

@@ -30,6 +30,7 @@ internal sealed record LLanguageStaff(
         Func<LSettings> settings,
         LClaimStaff claim)
     {
+        Action<Exception> fault = exception => LWorkspaceClerk.LWorkspaceFaultRecord(rig, exception);
         LVocabularyClerk vocabulary = new(rig);
         LParadigmClerk paradigm = new(rig, cache);
         LPronunciationClerk pronunciation = new(rig);
@@ -37,14 +38,14 @@ internal sealed record LLanguageStaff(
         LLanguageClerk language = new(rig, cache, trail);
         LRecordingClerk recording = new(rig, cache, trail, claim.LClaimStaffClaim);
         LTranscriptionClerk transcription = new(rig, cache);
-        LReflexClerk reflex = new(rig, cache, claim.LClaimStaffClaim, gate, raise);
-        LFrequencyClerk frequency = new(rig, cache, gate, settings, raise);
-        LLacunaClerk lacuna = new(rig, cache, paradigm, claim.LClaimStaffClaim, gate, settings, raise);
-        LFanqieClerk fanqie = new(rig, cache, gate, raise);
-        LShengfuClerk shengfu = new(rig, cache, gate, raise);
+        LReflexClerk reflex = new(rig, cache, claim.LClaimStaffClaim, gate, raise, fault);
+        LFrequencyClerk frequency = new(rig, cache, gate, settings, raise, fault);
+        LLacunaClerk lacuna = new(rig, cache, paradigm, claim.LClaimStaffClaim, gate, settings, raise, fault);
+        LFanqieClerk fanqie = new(rig, cache, gate, raise, fault);
+        LShengfuClerk shengfu = new(rig, cache, gate, raise, fault);
         LStemClerk stem = new(rig, reflex, language);
         LDiweiClerk diwei = new(rig, cache);
-        LScriptClerk script = new(rig, cache, gate, raise);
+        LScriptClerk script = new(rig, cache, gate, raise, fault);
         LEnsign ensign = new(rig.LRigUsher);
 
         return new LLanguageStaff(

@@ -61,7 +61,7 @@ One row of the floating contents, ready to show.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
-- `CCompass.cs` `79aeda0895b429aa`
+Commit: `2f9a06b8eb95`
+- `CCompass.cs` `f7cbeae6562a563d`
 - `CCompassPart.cs` `8ca6c8843e2b6a56`
 - `CCompassRow.cs` `55e13f23dc73ca46`

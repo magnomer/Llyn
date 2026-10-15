@@ -3,6 +3,10 @@
 This folder holds the tests of the Han-character facts.
 They cover the glyph, script styles and their epochs, and the phonetic series.
 
+## `TEngineScriptFault`
+
+A script fetch whose source throws hands that fault to the owner once.
+
 ## `TEngineScript`
 
 Covers the engine's script fetch over a fixture pack with two styles behind stubbed pages.
@@ -83,8 +87,9 @@ So it reaches product code only through the relay.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `2f9a06b8eb95`
 - `TEngineScript.cs` `6a91e6d779c08fe6`
+- `TEngineScriptFault.cs` `3344baab7502ba88`
 - `TEngineShengfu.cs` `2c50687e1b2839b6`
 - `TEngineStem.cs` `007dc5a5a957da60`
 - `TEpoch.cs` `36c2d103a0f377c7`

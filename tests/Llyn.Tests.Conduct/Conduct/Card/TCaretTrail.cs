@@ -15,7 +15,7 @@ public sealed class TCaretTrail
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
         caret.CCaretRegisterSettle(sheet, "slang, wild");
         long slang = TCaretTrailRead(desk, sheet)[0];
@@ -36,7 +36,7 @@ public sealed class TCaretTrail
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
         caret.CCaretRegisterSettle(sheet, "slang, wild, formal");
         IReadOnlyList<long> held = TCaretTrailRead(desk, sheet);
@@ -54,8 +54,8 @@ public sealed class TCaretTrail
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
-        CCaret other = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
+        CCaret other = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
         caret.CCaretRegisterSettle(sheet, "slang, wild");
         long wild = TCaretTrailRead(desk, sheet)[1];
@@ -76,7 +76,7 @@ public sealed class TCaretTrail
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
         caret.CCaretRegisterSettle(sheet, "slang, wild");
         IReadOnlyList<long> held = TCaretTrailRead(desk, sheet);
@@ -95,7 +95,7 @@ public sealed class TCaretTrail
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        CCaret caret = new(desk, card);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
         caret.CCaretRegisterSettle(sheet, "slang, wild");
         caret.CCaretRegister.CCaretTrailMove(sheet, -1);

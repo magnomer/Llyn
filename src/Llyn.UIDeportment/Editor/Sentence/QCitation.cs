@@ -9,9 +9,9 @@ namespace Llyn.UIDeportment;
 
 internal sealed class QCitation
 {
-    private readonly ObservableCollection<PCard> _qCitationMeaning;
+    private readonly ObservableCollection<QPlacard> _qCitationMeaning;
 
-    private readonly ObservableCollection<PCard> _qCitationCollocation;
+    private readonly ObservableCollection<QPlacard> _qCitationCollocation;
 
     private readonly QSentence _qCitationSentence;
 
@@ -20,8 +20,8 @@ internal sealed class QCitation
     private CCard _cCard = null!;
 
     internal QCitation(
-        ObservableCollection<PCard> meaning,
-        ObservableCollection<PCard> collocation,
+        ObservableCollection<QPlacard> meaning,
+        ObservableCollection<QPlacard> collocation,
         QSentence sentence,
         QProffer proffer)
     {
@@ -61,11 +61,11 @@ internal sealed class QCitation
 
     private void QCitationFieldRefine(object sender, TextChangedEventArgs e)
     {
-        if (sender is TextBox { IsKeyboardFocusWithin: true, DataContext: PSentence row } box
-            && _qCitationSentence.QSentenceCardFind(row) is PCard card)
+        if (sender is TextBox { IsKeyboardFocusWithin: true, DataContext: QPassage row } box
+            && _qCitationSentence.QSentenceCardFind(row) is QPlacard card)
         {
             _qCitationProffer.QProfferCitationRefine(
-                box, _cCard.CCardReferenceFind(card.PCardId, row.PSentenceRow, box.Text));
+                box, _cCard.CCardReferenceFind(card.QPlacardId, row.QPassageRow, box.Text));
         }
     }
 
@@ -77,11 +77,11 @@ internal sealed class QCitation
             QCitationCatalog.Add(QCitationItem.QCitationItemCreate(row));
         }
 
-        foreach (PCard card in _qCitationMeaning.Concat(_qCitationCollocation))
+        foreach (QPlacard card in _qCitationMeaning.Concat(_qCitationCollocation))
         {
-            foreach (PSentence row in card.PCardSentence.PCardSentenceRow)
+            foreach (QPassage row in card.QCardSentence.QCardSentenceRow)
             {
-                row.PSentenceCitationShow();
+                row.QPassageCitationShow();
             }
         }
     }
@@ -89,21 +89,21 @@ internal sealed class QCitation
     private void QCitationCommitObserve(object sender, KeyEventArgs e)
     {
         if (e.Key != Key.Enter
-            || sender is not TextBox { DataContext: PSentence row } box
-            || _qCitationSentence.QSentenceCardFind(row) is not PCard card)
+            || sender is not TextBox { DataContext: QPassage row } box
+            || _qCitationSentence.QSentenceCardFind(row) is not QPlacard card)
         {
             return;
         }
 
         e.Handled = true;
-        _cCard.CCardCitationSet(card.PCardId, row.PSentenceRow, box.Text);
+        _cCard.CCardCitationSet(card.QPlacardId, row.QPassageRow, box.Text);
         _qCitationProffer.QProfferShutRefine();
         QCitationTextRefine(box);
     }
 
     private void QCitationEscapeRefine(object sender, KeyEventArgs e)
     {
-        if (e.Key != Key.Escape || sender is not TextBox { DataContext: PSentence } box)
+        if (e.Key != Key.Escape || sender is not TextBox { DataContext: QPassage } box)
         {
             return;
         }
@@ -114,7 +114,7 @@ internal sealed class QCitation
 
     private void QCitationLeaveRefine(object sender, KeyboardFocusChangedEventArgs e)
     {
-        if (sender is not TextBox { DataContext: PSentence } box)
+        if (sender is not TextBox { DataContext: QPassage } box)
         {
             return;
         }
@@ -125,9 +125,9 @@ internal sealed class QCitation
 
     private static void QCitationTextRefine(TextBox box)
     {
-        if (box.DataContext is PSentence row)
+        if (box.DataContext is QPassage row)
         {
-            box.Text = PSentence.PSentenceCitationFind(row.PSentenceCitationCatalog, row.PSentenceCitation);
+            box.Text = QPassage.QPassageCitationFind(row.QPassageCitationCatalog, row.QPassageCitation);
         }
     }
 }

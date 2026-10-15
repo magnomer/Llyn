@@ -22,7 +22,7 @@ public sealed class CSounding
 
     private readonly LSettingsPort _cSoundingSettingsPort;
 
-    private readonly LDisplaySound _cSoundingVoice;
+    private readonly CVoice _cSoundingVoice;
 
     private readonly CLedgerNoticed _cSoundingNoticed;
 
@@ -33,7 +33,7 @@ public sealed class CSounding
         LScriptPort scripts,
         LParadigmPort paradigms,
         LSettingsPort settings,
-        LDisplay display,
+        CRule display,
         CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(desk);
@@ -52,8 +52,8 @@ public sealed class CSounding
         _cSoundingParadigmPort = paradigms;
         _cSoundingEnvoy = envoy;
         _cSoundingSettingsPort = settings;
-        _cSoundingVoice = display.LDisplaySound;
-        _cSoundingNoticed = display.LDisplayNoticed;
+        _cSoundingVoice = display.CVoice;
+        _cSoundingNoticed = display.CRuleNoticed;
     }
 
     public event Action? CSoundingChanged;
@@ -62,7 +62,7 @@ public sealed class CSounding
 
     internal void LSoundingObserverAttach(Action<Action> marshal)
     {
-        _cSoundingDesk.CDeskVigil.LVigilObserverAttach(
+        _cSoundingDesk.CDeskVigil.CVigilObserverAttach(
             CSubject.CSubjectFanqie, _ => marshal(() => CSoundingChanged?.Invoke()));
     }
 
@@ -77,7 +77,7 @@ public sealed class CSounding
         return new CSoundingFanqie(
             CSoundingFanqieRead(LSoundingListRead(
                 _cSoundingFanqiePort.LEngineFanqieRead, "Display.FanqieReadFailed")),
-            _cSoundingVoice.LDisplayFanqieCheck(entry),
+            _cSoundingVoice.CVoiceFanqieCheck(entry),
             entry is not null
             && _cSoundingNoticed.LLedgerRepaintRead(_cSoundingEnvoy, _cSoundingSettingsPort,
                 () => _cSoundingFanqiePort.LEngineBookCheck(LSoundingLanguage), false, "Display.BookFailed"),
@@ -119,7 +119,7 @@ public sealed class CSounding
             CSoundingScriptRead(
                 LSoundingListRead(_cSoundingScriptPort.LEngineScriptRead, "Display.ScriptReadFailed"),
                 _cSoundingSettingsPort),
-            _cSoundingVoice.LDisplayScriptCheck(entry),
+            _cSoundingVoice.CVoiceScriptCheck(entry),
             entry is not null
             && _cSoundingNoticed.LLedgerRepaintRead(_cSoundingEnvoy, _cSoundingSettingsPort,
                 () => _cSoundingScriptPort.LEngineStyleCheck(LSoundingLanguage), false, "Display.StyleFailed"),
@@ -139,8 +139,8 @@ public sealed class CSounding
             : string.Empty;
         IReadOnlyList<LParadigmRow> rows =
             LSoundingListRead(_cSoundingParadigmPort.LEngineParadigmScan, "Display.ParadigmReadFailed");
-        bool pending = _cSoundingVoice.LDisplayParadigmCheck(LSoundingEntry);
-        bool enabled = _cSoundingVoice.LDisplayMorphologyRead();
+        bool pending = _cSoundingVoice.CVoiceParadigmCheck(LSoundingEntry);
+        bool enabled = _cSoundingVoice.CVoiceMorphologyRead();
         LParadigmView? view = LSoundingEntry is long entry
             ? _cSoundingNoticed.LLedgerRepaintRead<LParadigmView?>(_cSoundingEnvoy, _cSoundingSettingsPort,
                 () => _cSoundingParadigmPort.LEngineInflectionRead(entry, pending, enabled, true),

@@ -61,6 +61,45 @@ public sealed class TAnthologyCitation
     }
 
     [Fact]
+    public void AnthologyCitationRead_EngineFails_ShowsTheFindFailureAndOffersNone()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineDelaySet(0);
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        List<string> asked = [];
+        CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, asked);
+        CDesk desk = TInterfaceCitation.TDeskFailCreate(engine, envoy, "Example", "Corpus", CSubject.CSubjectExample);
+        desk.CDeskStart(null);
+        CAnthology anthology = TInterfaceConductPanel.TAnthologyCreate(atelier, desk, envoy);
+
+        CProffer offer = anthology.CAnthologyCitationRead("Field");
+
+        Assert.Equal(["Example.FindFailed"], asked);
+        Assert.Empty(offer.CProfferRows);
+    }
+
+    [Fact]
+    public void AnthologyCitationRead_RepeatedFailure_ShowsOnce()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineDelaySet(0);
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        List<string> asked = [];
+        CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, asked);
+        CDesk desk = TInterfaceCitation.TDeskFailCreate(engine, envoy, "Example", "Corpus", CSubject.CSubjectExample);
+        desk.CDeskStart(null);
+        CAnthology anthology = TInterfaceConductPanel.TAnthologyCreate(atelier, desk, envoy);
+
+        anthology.CAnthologyCitationRead("F");
+        anthology.CAnthologyCitationRead("Fi");
+        anthology.CAnthologyCitationRead("Field");
+
+        Assert.Equal(["Example.FindFailed"], asked);
+    }
+
+    [Fact]
     public void AnthologyCitationRead_PartOfTitle_OffersTheSourceSplit()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

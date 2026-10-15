@@ -144,6 +144,19 @@ public sealed partial class TFault
                 CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard);
                 return Task.FromResult<Func<Task>>(() => courier.CCourierAttach(envoy));
             }),
+        new(
+            "CDepot.CDepotExport",
+            "LDeckPort.LEngineDeckExport",
+            "Deck.ExportFailed",
+            static stage =>
+            {
+                LEngine engine = TFaultEngineStart(stage);
+                CAtelier atelier = stage.TFaultStageAdd(TInterfaceConduct.TAtelierFaultCreate(
+                    engine, stage.TFaultStageMember, stage.TFaultStageThrown));
+                CDepot depot = new(atelier);
+                CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, stage.TFaultStageHeard);
+                return Task.FromResult<Func<Task>>(() => depot.CDepotExport(1, envoy));
+            }),
         .. TFaultList.TFaultListRows,
         .. TFaultPortraitRows,
     ];

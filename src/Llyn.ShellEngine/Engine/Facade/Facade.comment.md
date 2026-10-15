@@ -37,6 +37,7 @@ The tenure applies them in its prepare turn and asks again, since a new card nee
 
 It reads one held draft, or null when its file is gone or unknown.
 An id from a closed workspace is not a missing file and is refused rather than answered null.
+`LEnginePresentRead` answers null for such a stale id instead, and the tenure's present read uses it.
 
 ## `LEngineDraftDelete`
 
@@ -289,7 +290,7 @@ It calls no sibling facade, so `LEngine` builds it among the first.
 ## `LEnginePostureLoad`
 
 The posture stored under a name is read through the workspace clerk.
-False means a vault fault, recorded, and the caller keeps what it has.
+False means a vault fault, recorded and handed back as `fault`, and the caller keeps what it has.
 Save answers whether the write succeeded.
 A vault fault is recorded by the clerk and handed back as `fault`, never thrown.
 `fault` is a plain `Exception`, so the shell names no Core type.
@@ -514,12 +515,12 @@ The folder path is read there, so the caller hands nothing it gathered.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
-- `LDraftFacade.cs` `ca0ef8326da7c3ad`
+Commit: `2f9a06b8eb95`
+- `LDraftFacade.cs` `e6ad399867a18e7e`
 - `LLanguageFacade.cs` `22bf9bcec6db6495`
 - `LRequestFacade.cs` `9a08f1ac9c85e708`
 - `LScriptFacade.cs` `0868062d56c4daf9`
-- `LSettingsFacade.cs` `8af15864f028e6e9`
+- `LSettingsFacade.cs` `d58eba61fbb95693`
 - `LTenureFacade.cs` `c7d7ee4457051f6e`
 - `LVocabularyFacade.cs` `f1299bc555399645`
 - `LWorkspaceFacade.cs` `f0eb53a0cb7a7ee9`

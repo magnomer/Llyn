@@ -48,10 +48,11 @@ internal sealed class LEngineHearth
     {
         _lEngineHearthStaff.LEngineStaffLanguage.LLanguageStaffVocabulary.LLanguageImport();
         _lEngineHearthStaff.LEngineStaffLanguage.LLanguageStaffApply();
-        _lEngineHearthStaff.LEngineStaffWorkspace.LWorkspaceStaffWorkspace.LWorkspaceRespellingUpdate();
-        if (_lEngineHearthStaff.LEngineStaffWorkspace.LWorkspaceStaffWorkspace.LWorkspaceClerkMigrated)
+        LWorkspaceClerk workspace = _lEngineHearthStaff.LEngineStaffWorkspace.LWorkspaceStaffWorkspace;
+        workspace.LWorkspaceRespellingUpdate(exception => workspace.LWorkspaceAuditRecord(exception));
+        if (workspace.LWorkspaceClerkMigrated)
         {
-            _lEngineHearthStaff.LEngineStaffWorkspace.LWorkspaceStaffWorkspace.LWorkspaceClerkUpdate();
+            workspace.LWorkspaceClerkUpdate(exception => workspace.LWorkspaceAuditRecord(exception));
         }
     }
 
@@ -78,7 +79,7 @@ internal sealed class LEngineHearth
                 rig, LEngineGate, LEngineBulletinRaise, LEngineSettingsRead, LEngineDraftStale);
             if (!settled)
             {
-                _lEngineHearthStaff.LEngineStaffWorkspace.LWorkspaceStaffWorkspace.LWorkspaceFallbackSave(
+                _ = _lEngineHearthStaff.LEngineStaffWorkspace.LWorkspaceStaffWorkspace.LWorkspaceFallbackSave(
                     LEngineSettingsHeld);
             }
 
@@ -119,6 +120,11 @@ internal sealed class LEngineHearth
 
     internal void LEngineBulletinRaise(LSubject subject, long id)
     {
+        LEngineBulletinRaise(subject, id, null);
+    }
+
+    internal void LEngineBulletinRaise(LSubject subject, long id, Exception? refusal)
+    {
         (LSubject?, Action<LBulletin>, long?)[] snapshot;
         lock (LEngineGate)
         {
@@ -130,6 +136,6 @@ internal sealed class LEngineHearth
             }
         }
 
-        _lEngineHearthRoster.LBulletinRosterDispatch(new LBulletin(subject, id), snapshot);
+        _lEngineHearthRoster.LBulletinRosterDispatch(new LBulletin(subject, id, refusal), snapshot);
     }
 }

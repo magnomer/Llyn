@@ -47,17 +47,6 @@ The mirror departs from its source in two places.
   The width check then found no presentation source, and the full run failed at random.
   The width under test does not depend on this setting.
 
-## `TEtymologyItem`
-
-The etymology list shows each box as an item, and co-sources nest under the item they feed.
-Two sources of one child sit in that child's item, and a root with none has an empty source list.
-A second read keeps the item already paired with a box, so the view does not rebuild.
-The kept item takes the new box's text.
-A box missing from the next read loses its item.
-Items pair by key and not by id.
-The same id under a new key is a new item, since a borrowed row repeats its entry's id.
-These cases need no thread, since the items are plain notifying objects.
-
 ## `TIndexItem`
 
 The rows of the Library and Duplex entry lists are built by the deportment.
@@ -72,14 +61,6 @@ The opened ledger lists the Inflection page right after Listing, with its locali
 Its summary reads on, since custom analysis is on by default.
 The refine paints the toggle from the ledger's read, so it shows the stored setting.
 Each click hands the raw toggle to the gate, and no failure is shown.
-
-## `TLecternEtymology`
-
-The lectern paints one box's face from its row and its chosen relation.
-A linked, borrowed box shows its language, its text as a link, its gloss and its relation name.
-Its frame stays collapsed, and the dashed trace and the borrowed mark show.
-The face is a small template with the named parts the painter looks up, so the fact needs no window.
-It runs on its own STA thread, catches any failure there, and asserts that none was caught.
 
 ## `TLocalizationChoice`
 
@@ -104,15 +85,13 @@ This silence keeps the trays and the display from notifying each other in a loop
 
 ## Stamp
 
-Commit: `aae5349dbb94`
+Commit: `2f9a06b8eb95`
 - `TBootstrapContext.cs` `160359e5c04253c5`
 - `TCapsulePosture.cs` `56b6ed906b2a3514`
 - `TContourPlot.cs` `5cc02f9da3b00670`
 - `TDrawer.cs` `276519735ee9b51e`
-- `TEtymologyItem.cs` `044bc3bbb086afa0`
 - `TIndexItem.cs` `95431f069623230a`
 - `TInflectionSwitch.cs` `2bc53daaa347571a`
-- `TLecternEtymology.cs` `ccd2e8d29f2a024a`
 - `TLocalizationChoice.cs` `3d142b2f15fb96b3`
-- `TLookPart.cs` `acb778ddff8b2e79`
-- `TVolumeCatalog.cs` `7d8119e688ca8282`
+- `TLookPart.cs` `494007eb7fd66029`
+- `TVolumeCatalog.cs` `5837538aa2c9f706`

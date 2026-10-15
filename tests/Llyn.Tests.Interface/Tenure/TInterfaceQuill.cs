@@ -1,3 +1,4 @@
+using Llyn.Core;
 using Llyn.ShellEngine;
 
 namespace Llyn.Tests;
@@ -47,6 +48,12 @@ internal static partial class TInterface
     }
 
     internal static LQuillChip TQuillChipCreate(this LTenure tenure, LDraftPort drafts) => new(tenure, drafts);
+
+    internal static LQuillChip TQuillChipCreate(this LTenure tenure, LEngine engine) =>
+        new(tenure, new LDraftOutlet(engine));
+
+    internal static LReferenceOffer TQuillReferenceFind(this LQuillChip quill, string text) =>
+        quill.LQuillReferenceFind(0, 0, text);
 
     internal static void TQuillTranslationRemove(this LQuillChip quill, long card, long entry)
     {

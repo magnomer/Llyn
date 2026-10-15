@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Input;
 using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
@@ -35,8 +33,6 @@ internal sealed class QSettings
 
     private CAtelier _cAtelier = null!;
 
-    private CEnvoy _cEnvoy = null!;
-
     internal QSettings(FrameworkElement surface, QLayout layout, QPosture posture)
     {
         ArgumentNullException.ThrowIfNull(surface);
@@ -51,7 +47,7 @@ internal sealed class QSettings
         _qSettingsMorphology = new QMorphology(surface);
         _qSettingsInflection = new QInflection(surface);
         _qSettingsLayout = layout;
-        _qSettingsDial = new QDial(surface);
+        _qSettingsDial = new QDial(surface, posture);
         _qPosture = posture;
     }
 
@@ -61,32 +57,15 @@ internal sealed class QSettings
 
     private TextBlock QSettingsEmpty => QContract.QContractFind<TextBlock>(_qSettingsSurface, "PLedgerEmpty");
 
-    private Button QSettingsFolder => QContract.QContractFind<Button>(_qSettingsSurface, "PDialFolder");
-
-    private ToggleButton QSettingsEpithet =>
-        QContract.QContractFind<ToggleButton>(_qSettingsSurface, "PSettingsEpithet");
-
-    private Button QSettingsWidth => QContract.QContractFind<Button>(_qSettingsSurface, "PDialWidth");
-
-    private TextBox QSettingsNotebook => QContract.QContractFind<TextBox>(_qSettingsSurface, "PSettingsNotebook");
-
     internal void QSettingsIntroduce(CAtelier atelier, CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(atelier);
 
         _cAtelier = atelier;
-        _cEnvoy = envoy;
-        QSettingsWinnow.SetResourceReference(QField.QFieldHintProperty, "Settings.Search");
-        QSettingsFolder.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("folder", 24));
-        QSettingsWidth.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("sort", 24));
-        QSettingsWinnow.TextChanged += QSettingsWinnowObserve;
-        QSettingsFolder.Click += QSettingsFolderObserve;
-        QSettingsEpithet.Click += QSettingsEpithetObserve;
-        QSettingsWidth.Click += QSettingsWidthObserve;
-        QSettingsNotebook.KeyDown += QSettingsCommitObserve;
-        QSettingsNotebook.LostKeyboardFocus += QSettingsNotebookObserve;
-
         CLedger ledger = atelier.CAtelierLedger;
+        QSettingsWinnow.SetResourceReference(QField.QFieldHintProperty, "Settings.Search");
+        QSettingsWinnow.TextChanged += QSettingsWinnowObserve;
+        _qSettingsDial.QDialIntroduce(ledger, envoy);
         _qSettingsWorkspace.QWorkspaceIntroduce(atelier, envoy);
         _qSettingsLocalization.QLocalizationIntroduce(ledger, envoy);
         _qSettingsRespelling.QRespellingIntroduce(ledger, envoy);
@@ -108,42 +87,12 @@ internal sealed class QSettings
         _qSettingsWorkspace.QWorkspacePathRefine(state.CLedgerStatePath);
         _qSettingsLocalization.QLocalizationRefine(state.CLedgerStateLanguages, state.CLedgerStateLocalization);
         _qSettingsRespelling.QRespellingRefine(settings.CSettingsRespelled);
-        QSettingsEpithet.IsChecked = settings.CSettingsEpithet;
-        QSettingsNotebookRefine(settings.CSettingsNotebook);
+        _qSettingsDial.QDialSettingsRefine(settings);
         _qSettingsFrequency.QFrequencyRefine(settings.CSettingsFrequency);
         _qSettingsMorphology.QMorphologyRefine(settings.CSettingsMorphology);
         _qSettingsInflection.QInflectionRefine();
         _qSettingsLayout.QLayoutLinkedRefine();
         QSettingsLedgerRefine(state);
-    }
-
-    private void QSettingsEpithetObserve(object sender, RoutedEventArgs e)
-    {
-        _cAtelier.CAtelierLedger.CLedgerEpithetSave(QSettingsEpithet.IsChecked == true, _cEnvoy);
-    }
-
-    private void QSettingsCommitObserve(object sender, KeyEventArgs e)
-    {
-        if (e.Key != Key.Enter)
-        {
-            return;
-        }
-
-        e.Handled = true;
-        QSettingsNotebookRefine(_cAtelier.CAtelierLedger.CLedgerNotebookSave(QSettingsNotebook.Text, _cEnvoy));
-    }
-
-    private void QSettingsNotebookObserve(object sender, KeyboardFocusChangedEventArgs e)
-    {
-        QSettingsNotebookRefine(_cAtelier.CAtelierLedger.CLedgerNotebookSave(QSettingsNotebook.Text, _cEnvoy));
-    }
-
-    private void QSettingsNotebookRefine(string? notebook)
-    {
-        if (notebook is not null)
-        {
-            QSettingsNotebook.Text = notebook;
-        }
     }
 
     private void QSettingsDialRefine(string child)
@@ -154,16 +103,6 @@ internal sealed class QSettings
         }
 
         _qSettingsDial.QDialRefine(child);
-    }
-
-    private void QSettingsFolderObserve(object sender, RoutedEventArgs e)
-    {
-        _cAtelier.CAtelierLedger.CLedgerFolderOpen(_cEnvoy);
-    }
-
-    private void QSettingsWidthObserve(object sender, RoutedEventArgs e)
-    {
-        _qPosture.QPostureLayoutReset();
     }
 
     private void QSettingsLedgerRefine(CLedgerState state)

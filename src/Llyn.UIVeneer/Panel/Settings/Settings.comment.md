@@ -68,6 +68,12 @@ The title of the top Joplin notebook a sync writes, on the Sync page.
 It is a bare field the width of the language box, saved on Enter or when it loses focus.
 The page is named `PDialOutpost`, the engine's name for the Joplin side, because `Sync` is a verb.
 
+## `PSettingsDepot`
+
+The flashcard folder a phone deck is written to, on the Sync page under the notebook title.
+It is a field beside a folder picker, saved on Enter or when it loses focus.
+The picker is an icon action whose label survives as its tooltip, like `PWorkspaceDialog`.
+
 ## `PSettingsAnalysis`
 
 Whether the inflection box uses the pack's custom sheets.
@@ -90,6 +96,6 @@ Turning it on copies the last dragged tab's widths to every other tab and saves 
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `PSettings.xaml` `e65cb88b1edbdfcc`
+Commit: `2f9a06b8eb95`
+- `PSettings.xaml` `3009ea91782c46ae`
 - `PSettings.xaml.cs` `2c910be1bc87bf9d`

@@ -95,8 +95,8 @@ Open and close share one row replacement path, keeping the transcription list al
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `QLecternAccent.cs` `c85ebff88f1d4c47`
+Commit: `2f9a06b8eb95`
+- `QLecternAccent.cs` `311c6bc06317775e`
 - `QLecternGlyph.cs` `6b0375222c9ae963`
 - `QLecternPlayback.cs` `6ec02ff5268f6011`
 - `QLecternReflex.cs` `51a11764b210178b`

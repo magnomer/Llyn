@@ -47,12 +47,12 @@ public sealed class QLecternCard
         _qLecternCardCollocation.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QLecternHingeObserve));
         _qLecternCardMeaning.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(QLecternSeeObserve));
         _qLecternCardMeaning.AddHandler(
-            PMention.PMentionClickEvent, new EventHandler<PMentionArgument>(QLecternMentionObserve));
+            QMention.QMentionClickEvent, new EventHandler<QMentionArgument>(QLecternMentionObserve));
         _qLecternCardCollocation.AddHandler(
-            PMention.PMentionClickEvent, new EventHandler<PMentionArgument>(QLecternMentionObserve));
+            QMention.QMentionClickEvent, new EventHandler<QMentionArgument>(QLecternMentionObserve));
     }
 
-    internal event Action<PMention, CMentionOffer?>? QLecternMentionNotice;
+    internal event Action<QMention, CMentionOffer?>? QLecternMentionNotice;
 
     internal event Action<long>? QLecternSeeNotice;
 
@@ -116,13 +116,13 @@ public sealed class QLecternCard
         }
     }
 
-    private void QLecternMentionObserve(object? sender, PMentionArgument e)
+    private void QLecternMentionObserve(object? sender, QMentionArgument e)
     {
         ArgumentNullException.ThrowIfNull(e);
 
         QLecternMentionNotice?.Invoke(
-            e.PMentionArgumentOrigin,
+            e.QMentionArgumentOrigin,
             _qLecternCardRoute.CDisplayMentionFind(
-                e.PMentionArgumentSentence, e.PMentionArgumentText, e.PMentionArgumentUnit));
+                e.QMentionArgumentSentence, e.QMentionArgumentText, e.QMentionArgumentUnit));
     }
 }

@@ -93,7 +93,7 @@ public sealed class TCardSense
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CDisplay display = new TEditorFixture(TInterfaceEditor.TEditorCreate(engine)).TEditorFixtureDisplay;
-        display.LDisplayRule.LDisplaySound.TDisplaySoundShow(7, TCompassDraftCreate([41], [42], [42]));
+        display.LDisplayRule.CVoice.TDisplaySoundShow(7, TCompassDraftCreate([41], [42], [42]));
 
         IReadOnlyList<CCompassRow> rows = display.CDisplayCompass.CCompassRead(
             [CCompassPart.CCompassPartMeaning, CCompassPart.CCompassPartCollocation], static key => key);
@@ -114,7 +114,7 @@ public sealed class TCardSense
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CDisplay display = new TEditorFixture(TInterfaceEditor.TEditorCreate(engine)).TEditorFixtureDisplay;
-        display.LDisplayRule.LDisplaySound.TDisplaySoundShow(7, TCompassDraftCreate([41], [42]));
+        display.LDisplayRule.CVoice.TDisplaySoundShow(7, TCompassDraftCreate([41], [42]));
 
         IReadOnlyList<CCompassRow> rows = display.CDisplayCompass.CCompassRead(
             [CCompassPart.CCompassPartMeaning], static key => key);

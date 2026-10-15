@@ -93,6 +93,8 @@ The pending fetches and the entries a source answered nothing for are the clerk'
 ## `LFrequencyClerk.LFrequencyClerk`
 
 The settings are read at fetch time, so a setting turned off mid-fetch discards the answer.
+A fault of the background fetch goes to the owner given at build.
+The owner records it, and the clerk decides nothing more.
 
 ## `LFrequencyClerk.LFrequencyClerkResolve`
 
@@ -127,7 +129,8 @@ Thresholds are tried first for numeric figures, then declared patterns if no thr
 
 ## `LFrequencyClerk.LBandMatch`
 
-A pattern match has a one-second patience and is false on timeout.
+A pattern match has a one-second patience.
+A timeout reaches the catch of `LFrequencyClerkRun`, which hands it to the fault owner.
 
 ## `LFrequencyClerk.LFrequencyClerkRun`
 
@@ -407,13 +410,13 @@ Row ids, schemes and texts must all match in order, so equal ids alone never ski
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `2f9a06b8eb95`
 - `LDiweiClerk.cs` `ac530a588201a30b`
-- `LFanqieClerk.cs` `df9b2206b90d24cf`
-- `LFrequencyClerk.cs` `a06865336d9854bb`
+- `LFanqieClerk.cs` `9bb477462abde638`
+- `LFrequencyClerk.cs` `270209f96a539217`
 - `LPronunciationClerk.cs` `e2299bcbc0df24e1`
 - `LRecordingClerk.cs` `72816538b13f857b`
-- `LScriptClerk.cs` `c0d26490f4d892a3`
-- `LShengfuClerk.cs` `45dfb081edd36382`
+- `LScriptClerk.cs` `dfb8ad93fee23103`
+- `LShengfuClerk.cs` `aa18d84636cbfc5d`
 - `LStemClerk.cs` `492dc81c614a52d1`
 - `LTranscriptionClerk.cs` `54eefcb680d49b9a`

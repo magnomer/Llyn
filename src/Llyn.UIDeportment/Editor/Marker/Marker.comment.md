@@ -5,13 +5,13 @@ It has the chips already taken and the field the next one is typed into.
 The unit and freedom droppers sit at its head.
 The tag dropdown `QSlate` lives here too, since it shares the dropdown shape.
 
-## `PMarkerChip`
+## `QMarkerChip`
 
 This is one part-of-speech chip under the field.
 It is immutable, because chips are added and removed rather than edited.
 Conduct keeps the value each chip stands for, so the chip carries only the name shown.
 
-## `PSlateItem`
+## `QSlateItem`
 
 This is one stored tag offered in the dropdown, with its id and its text in three pieces.
 Choosing a row links that Tag by id, so a rename in the workspace follows the card.
@@ -138,12 +138,12 @@ It follows `QFreedomItem` in everything.
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `PMarkerChip.cs` `a140997f5eb7a142`
-- `PSlateItem.cs` `994494d60631fe1c`
+Commit: `2f9a06b8eb95`
 - `QFreedom.cs` `5a8c8788e06e7771`
 - `QFreedomItem.cs` `27469f2726afbac9`
-- `QMarker.cs` `ea44857a68abf2d6`
-- `QSlate.cs` `2387b8e70f5eec37`
+- `QMarker.cs` `bc66173895303014`
+- `QMarkerChip.cs` `a6a4933f59feee16`
+- `QSlate.cs` `9f1366df0ab88fe5`
+- `QSlateItem.cs` `c878e65582837e82`
 - `QUnit.cs` `65408138208702ba`
 - `QUnitItem.cs` `47f0e19bc6379784`

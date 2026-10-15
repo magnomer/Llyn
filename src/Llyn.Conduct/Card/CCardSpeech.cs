@@ -10,13 +10,17 @@ public sealed class CCardSpeech
 {
     private readonly CDesk _cCardSpeechDesk;
 
+    private readonly CLedgerNoticed _cCardSpeechNoticed;
+
     private string _cCardSpeechTyped = string.Empty;
 
-    internal CCardSpeech(CDesk desk)
+    internal CCardSpeech(CDesk desk, CLedgerNoticed noticed)
     {
         ArgumentNullException.ThrowIfNull(desk);
+        ArgumentNullException.ThrowIfNull(noticed);
 
         _cCardSpeechDesk = desk;
+        _cCardSpeechNoticed = noticed;
     }
 
     private LTenure? CCardSpeechTenure =>
@@ -32,7 +36,11 @@ public sealed class CCardSpeech
         }
 
         _cCardSpeechTyped = typed;
-        return LCategoryRead(speech.LQuillSpeechSet(typed));
+        return LCategoryRead(_cCardSpeechDesk.LDeskRepaintRead(
+            _cCardSpeechNoticed,
+            () => speech.LQuillSpeechSet(typed),
+            LSpeechEmpty,
+            ".FindFailed"));
     }
 
     public void CCardSpeechAdd(string name)
@@ -45,7 +53,14 @@ public sealed class CCardSpeech
         }
 
         _cCardSpeechTyped = string.Empty;
-        speech.LQuillSpeechAdd(name);
+        try
+        {
+            speech.LQuillSpeechAdd(name);
+        }
+        catch (Exception exception)
+        {
+            _cCardSpeechDesk.LDeskFailureShow(".SpeechFailed", exception);
+        }
     }
 
     public void CCardSpeechRemove(string name)
@@ -66,7 +81,12 @@ public sealed class CCardSpeech
             return new CMarker([], _cCardSpeechTyped, new CCategory([], false, false, false), [], []);
         }
 
-        (var names, _cCardSpeechTyped, LSpeechOffer found) = speech.LQuillSpeechRead(_cCardSpeechTyped);
+        string typed = _cCardSpeechTyped;
+        (var names, _cCardSpeechTyped, LSpeechOffer found) = _cCardSpeechDesk.LDeskRepaintRead(
+            _cCardSpeechNoticed,
+            () => speech.LQuillSpeechRead(typed),
+            (Array.Empty<string>(), typed, LSpeechEmpty),
+            ".FindFailed");
         LQuillEntry entry = new(held);
         return new CMarker(
             names,
@@ -108,6 +128,8 @@ public sealed class CCardSpeech
             .Select(freedom => (LEntryPort.LEngineFreedomFormat(freedom), freedom == taken))
             .ToList();
     }
+
+    private static readonly LSpeechOffer LSpeechEmpty = new([], false, false, false);
 
     private static CCategory LCategoryRead(LSpeechOffer offer)
     {

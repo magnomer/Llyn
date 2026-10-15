@@ -36,19 +36,19 @@ internal sealed class QCardPosition
 
     private void QCardPositionRefine(object sender, MouseButtonEventArgs e)
     {
-        if (e.ClickCount < 2 || sender is not FrameworkElement { DataContext: PCard card } badge)
+        if (e.ClickCount < 2 || sender is not FrameworkElement { DataContext: QPlacard card } badge)
         {
             return;
         }
 
-        bool opened = _cCardList.CCardPositionOpen(card.PCardId);
+        bool opened = _cCardList.CCardPositionOpen(card.QPlacardId);
         if (!opened)
         {
             return;
         }
 
         e.Handled = true;
-        card.PCardPositionActive = true;
+        card.QPlacardPositionActive = true;
 
         badge.Dispatcher.BeginInvoke(
             DispatcherPriority.Input,
@@ -66,23 +66,23 @@ internal sealed class QCardPosition
 
     private void QCardPositionRefine(object sender, KeyEventArgs e)
     {
-        if (e.Key is Key.Escape && sender is FrameworkElement { DataContext: PCard card })
+        if (e.Key is Key.Escape && sender is FrameworkElement { DataContext: QPlacard card })
         {
             e.Handled = true;
-            _cCardList.CCardPositionClose(card.PCardId);
-            card.PCardPositionHide();
+            _cCardList.CCardPositionClose(card.QPlacardId);
+            card.QPlacardPositionHide();
         }
     }
 
     private void QCardPositionObserve(object sender, RoutedEventArgs e)
     {
-        if (e is KeyEventArgs { Key: not Key.Enter } || sender is not TextBox { DataContext: PCard card } box)
+        if (e is KeyEventArgs { Key: not Key.Enter } || sender is not TextBox { DataContext: QPlacard card } box)
         {
             return;
         }
 
-        bool settled = _cCardList.CCardPositionSettle(card.PCardId, box.Text);
+        bool settled = _cCardList.CCardPositionSettle(card.QPlacardId, box.Text);
         e.Handled = settled && e is KeyEventArgs;
-        card.PCardPositionHide();
+        card.QPlacardPositionHide();
     }
 }

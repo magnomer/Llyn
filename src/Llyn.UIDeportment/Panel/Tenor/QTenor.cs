@@ -43,7 +43,7 @@ internal sealed class QTenor
         surface.CommandBindings.Add(
             new CommandBinding(ApplicationCommands.Print, QTenorPressObserve, QTenorPressRefine));
         surface.CommandBindings.Add(new CommandBinding(
-            PDisplayCommand.PDisplayCommandPortrait, QTenorPortraitObserve, QTenorPressRefine));
+            QDisplayCommand.QDisplayCommandPortrait, QTenorPortraitObserve, QTenorPressRefine));
         _qTenorRail = new QPanelRail(
             QContract.QContractFind<UserControl>(surface, "PTenorRail"), QTenorBin, QTenorBinIcon, true, true);
         _qTenorOrder = new QChoiceOrder(QContract.QContractFind<UserControl>(surface, "PTenorOrder"), QDegree);

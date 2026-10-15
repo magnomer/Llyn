@@ -255,14 +255,14 @@ Saves an English noun whose paradigm asks for a plural nothing stores.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
-- `TCardSense.cs` `d735c0849a13e9a1`
-- `TDisplay.cs` `6cdb274190221f27`
-- `TDisplayAccent.cs` `5ee40ff6798ed4f6`
-- `TDisplayArea.cs` `a27204159e3bc5ec`
-- `TDisplayCard.cs` `583a594c599ffbf4`
+Commit: `2f9a06b8eb95`
+- `TCardSense.cs` `1c55637cd01fb929`
+- `TDisplay.cs` `c18d439ee37ac348`
+- `TDisplayAccent.cs` `bc384431fa7b13d5`
+- `TDisplayArea.cs` `82d93e6633ae7e7b`
+- `TDisplayCard.cs` `75e0cbecc4651cb9`
 - `TDisplayGrasp.cs` `02d2dd52a323976b`
 - `TDisplayMention.cs` `718d56e9487cb408`
 - `TDisplayPlayback.cs` `4841acad0b56316f`
-- `TDisplaySound.cs` `e3c7541e8bb50b19`
-- `TDisplaySoundBlock.cs` `e6ddde544553127d`
+- `TDisplaySound.cs` `3d21b438c154a999`
+- `TDisplaySoundBlock.cs` `a7326a7b4d646a9f`

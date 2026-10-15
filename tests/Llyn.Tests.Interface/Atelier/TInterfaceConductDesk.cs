@@ -55,7 +55,7 @@ internal static class TInterfaceConductDesk
         desk.CDeskStart(stored);
         return new CEsteem(
             desk,
-            new LDisplay(
+            new CRule(
                 new LDraftOutlet(engine),
                 engine.LEngineEntry,
                 engine.LEngineCatalog,

@@ -60,7 +60,7 @@ internal sealed class QRepertoire : QChronicleHost
         surface.CommandBindings.Add(new CommandBinding(
             ApplicationCommands.Print, QRepertoirePressObserve, QRepertoirePressRefine));
         surface.CommandBindings.Add(new CommandBinding(
-            PDisplayCommand.PDisplayCommandPortrait, QRepertoirePortraitObserve, QRepertoirePortraitRefine));
+            QDisplayCommand.QDisplayCommandPortrait, QRepertoirePortraitObserve, QRepertoirePortraitRefine));
 
         _qRepertoireRail.QPanelRailCreated += QRepertoireFreshObserve;
         _qRepertoireRail.QPanelRailStored += QRepertoireStoreObserve;

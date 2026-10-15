@@ -8,7 +8,7 @@ The fanqie box shows a character's rime-book placements and is shared by the edi
 
 The panel's driver.
 It is shown only while a loaded language pack carries rime books, since without them there is no table.
-Every decision lives in [CYunjing](../../../Llyn.Conduct/Panel/CYunjing.comment.md), and this file writes controls on notice.
+Every decision lives in `CYunjing`, and this file writes controls on notice.
 It drives the Veneer page `PYunjing`, so the page holds only markup.
 The two columns have their own driver `QDiweiIndex`, and the entry list has `QXiaoyun`.
 The category page, the reader and the editor are served from this file.
@@ -48,7 +48,7 @@ Choosing a row loads it into the reader, or into the editor when that side is op
 The paint takes the rows the area answered ready, so it asks Conduct nothing.
 The parameterless form reads them, and a flag-fill refine hands in what its load answered.
 
-## `PXiaoyunItem`
+## `QXiaoyunItem`
 
 One Entry as a row of the entry list, written with a character at the chosen cell.
 It mirrors the tenor panel's row: flag, headword and the name, numbered apart when headwords twin.
@@ -58,7 +58,7 @@ The chosen mark is the one thing that changes after build.
 Match compares all but the mark, flag included, so a late flag refills the list.
 Otherwise `QSplice` keeps the held rows and their containers.
 
-## `PYunjingItem`
+## `QYunjingItem`
 
 One category as a row of the onset or rime column: its key and its entry count.
 Both columns share the row, since an initial and a rime are the same kind of thing to choose.
@@ -136,13 +136,13 @@ The placement text as fetched shows alone when the row carries no parts.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `PXiaoyunItem.cs` `69be0515189fbe50`
-- `PYunjingItem.cs` `088c374bb3ae2233`
-- `QDiweiIndex.cs` `97b9151e81a415bd`
+Commit: `2f9a06b8eb95`
+- `QDiweiIndex.cs` `c713d0b1678d32c7`
 - `QFanqie.cs` `afbea8e8cc33b7bf`
 - `QFanqieCommand.cs` `998f6295db3e54af`
 - `QFanqieItem.cs` `10e8fcc47e24b5d3`
 - `QFanqieLine.cs` `24b335be02441cde`
-- `QXiaoyun.cs` `b90f355fb2bf9c9e`
-- `QYunjing.cs` `0893207efc19de56`
+- `QXiaoyun.cs` `765c81821544a46a`
+- `QXiaoyunItem.cs` `d353867b6c0b46be`
+- `QYunjing.cs` `50a3b5e93a271c14`
+- `QYunjingItem.cs` `e4ac5133a1fbc7f7`

@@ -148,6 +148,18 @@
                                 x:Name="PNavigationTaxonomy"
                                 Content="{DynamicResource Navigation.Taxonomy}"
                                 Style="{StaticResource Theme.Navigation.Tab}" />
+                            <Button
+                                x:Name="PNavigationStudy"
+                                Content="{DynamicResource Navigation.Study}"
+                                Style="{StaticResource Theme.Navigation.Tab}" />
+                            <Button
+                                x:Name="PNavigationDeck"
+                                Content="{DynamicResource Navigation.Deck}"
+                                Style="{StaticResource Theme.Navigation.Tab}" />
+                            <Button
+                                x:Name="PNavigationScoreboard"
+                                Content="{DynamicResource Navigation.Scoreboard}"
+                                Style="{StaticResource Theme.Navigation.Tab}" />
                             <Rectangle Style="{StaticResource Theme.Navigation.Gap}" />
                             <Button
                                 x:Name="PNavigationCorpus"
@@ -193,6 +205,9 @@
                     <veneer:PXiesheng x:Name="PXiesheng" Visibility="Collapsed" />
                     <veneer:PYunjing x:Name="PYunjing" Visibility="Collapsed" />
                     <veneer:PTaxonomy x:Name="PTaxonomy" Visibility="Collapsed" />
+                    <veneer:PStudy x:Name="PStudy" Visibility="Collapsed" />
+                    <veneer:PDeck x:Name="PDeck" Visibility="Collapsed" />
+                    <veneer:PScoreboard x:Name="PScoreboard" Visibility="Collapsed" />
                     <veneer:PTenor x:Name="PTenor" Visibility="Collapsed" />
                     <veneer:PRepertoire x:Name="PRepertoire" Visibility="Collapsed" />
                     <veneer:PCorpus x:Name="PCorpus" Visibility="Collapsed" />

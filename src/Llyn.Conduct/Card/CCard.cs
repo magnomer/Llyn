@@ -16,17 +16,22 @@ public sealed class CCard
 
     private readonly CEnvoy _cCardEnvoy;
 
-    internal CCard(CDesk desk, LReferencePort references, LSettingsPort settings, CEnvoy envoy)
+    private readonly CLedgerNoticed _cCardNoticed;
+
+    internal CCard(
+        CDesk desk, LReferencePort references, LSettingsPort settings, CEnvoy envoy, CLedgerNoticed noticed)
     {
         ArgumentNullException.ThrowIfNull(desk);
         ArgumentNullException.ThrowIfNull(references);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(envoy);
+        ArgumentNullException.ThrowIfNull(noticed);
 
         _cCardDesk = desk;
         _cCardReferencePort = references;
         _cCardSettingsPort = settings;
         _cCardEnvoy = envoy;
+        _cCardNoticed = noticed;
     }
 
     public CProspect CCardMentionRead(string word)
@@ -125,10 +130,14 @@ public sealed class CCard
 
     public CProffer CCardReferenceFind(long cardId, long sentenceId, string text)
     {
-        return _cCardDesk.CDeskDraft.CDeskDraftChip?.LQuillReferenceFind(
-                cardId, sentenceId, text) is LReferenceOffer offer
-            ? LCardProfferRead(offer)
-            : new CProffer(text, [], false);
+        return _cCardDesk.LDeskRepaintRead(
+            _cCardNoticed,
+            () => _cCardDesk.CDeskDraft.CDeskDraftChip?.LQuillReferenceFind(
+                    cardId, sentenceId, text) is LReferenceOffer offer
+                ? LCardProfferRead(offer)
+                : new CProffer(text, [], false),
+            new CProffer(text, [], false),
+            ".FindFailed");
     }
 
     internal static CProffer LCardProfferRead(LReferenceOffer offer)

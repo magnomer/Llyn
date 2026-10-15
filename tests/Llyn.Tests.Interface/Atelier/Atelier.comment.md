@@ -127,6 +127,7 @@ Each relay is transparent.
 
 Builds the card gates over the desk, the engine's reference facade and a real settings outlet, as the editor does.
 The envoy is where the card gates show their failures, such as a failed translation.
+It gives the card a fresh repaint memory, as the atelier would.
 
 ## `TCardListCreate`
 
@@ -449,6 +450,7 @@ It holds its own repaint memory, so a refused read shows once per fold.
 Builds the editor's reflex block over the desk and display facets of the editor, with ports a test may fake.
 The fake draft port lets a test answer the anchor rule, and the fake bundle's reflex port the reflex guises.
 Its settings port is `TInterfaceConduct.TSettingsCreate`, so a refused anchor read reaches the envoy with a notice.
+It gives the block a fresh repaint memory, as the atelier would.
 Its envoy answers no and uses a discarded list when `asked` is absent.
 
 ## `TRespellingReflexScan`
@@ -495,14 +497,14 @@ The arrival opens relay a panel's open as the navigation runs it.
 
 ## Stamp
 
-Commit: `f6dae2392935`
+Commit: `2f9a06b8eb95`
 - `TInterfaceArea.cs` `bf5825a6e7d0f03b`
 - `TInterfaceConduct.cs` `749182a34b02a3cd`
-- `TInterfaceConductCard.cs` `c6ee6bda935fd266`
-- `TInterfaceConductDesk.cs` `0086e8d80029c5d2`
+- `TInterfaceConductCard.cs` `678838c33733ba58`
+- `TInterfaceConductDesk.cs` `85c44229ca35484b`
 - `TInterfaceConductDialog.cs` `3c2d58ee2694a179`
 - `TInterfaceConductPanel.cs` `c7d7de34ba294c4c`
 - `TInterfaceConductPortrait.cs` `c0b5da50cc1382f2`
-- `TInterfaceConductSound.cs` `1f1a6e448d7f4289`
+- `TInterfaceConductSound.cs` `c5ce10ee393a1d21`
 - `TInterfaceEditor.cs` `707ba5799d8fcb9d`
 - `TInterfaceNavigation.cs` `860a179cae6ebe17`

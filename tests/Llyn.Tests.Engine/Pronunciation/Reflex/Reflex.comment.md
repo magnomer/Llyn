@@ -33,6 +33,10 @@ Gan, Jin and Xiang contours name every matching class, including checked classes
 An unlisted contour, a blank one and a language without a row all name nothing.
 The rows also drive the anchor scan, where a reflex tone marks the fanqie rows of its class as estimated.
 
+## `TEngineReflexClip`
+
+A rule whose `clip` does not compile loads with no clip, and a valid sibling keeps its own.
+
 ## `TEngineReflex`
 
 Covers the engine's reflex find over a fixture pack with three rules behind stubbed pages.
@@ -111,11 +115,12 @@ A rime page sections its tallies by the articulatory place of the initial, so ea
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `2f9a06b8eb95`
 - `TAnatomy.cs` `1e0a9c9e99f93f07`
 - `TAnchor.cs` `abde0347a025622a`
 - `TDescent.cs` `81636d4554c609aa`
 - `TEngineReflex.cs` `a2e632174bd7534c`
+- `TEngineReflexClip.cs` `74eae8d42102ef05`
 - `TEngineReflexSource.cs` `657b16091b41c7c8`
 - `TEngineReflexStore.cs` `251d1661ea0355f0`
 - `TReflexObserver.cs` `e009b72135411401`

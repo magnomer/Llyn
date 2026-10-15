@@ -21,6 +21,7 @@ internal static class TInterfaceCitation
             ["LEngineObserverAttach"] = _ => null,
             ["LEngineObserverDetach"] = _ => null,
             ["LEngineCitationResolve"] = _ => throw new InvalidOperationException("no sources"),
+            ["LEngineReferenceFind"] = _ => throw new InvalidOperationException("no sources"),
         });
         return new CDesk(drafts, new LSettingsOutlet(engine), scope, envoy, origin, subject);
     }
@@ -67,6 +68,6 @@ internal static class TInterfaceCitation
             {
                 ["LEngineReferenceFind"] = _ => throw new InvalidOperationException("no sources"),
             });
-        return new CCard(desk, references, new LSettingsOutlet(engine), envoy);
+        return new CCard(desk, references, new LSettingsOutlet(engine), envoy, new CLedgerNoticed());
     }
 }

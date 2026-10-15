@@ -16,7 +16,7 @@ internal sealed class QCardGesture
 
     private readonly double _qCardGestureHeight;
 
-    private PCardGhost? _qCardGestureGhost;
+    private QCardGhost? _qCardGestureGhost;
 
     internal QCardGesture(object item, long id, ItemsControl host, FrameworkElement container, double origin)
     {
@@ -51,11 +51,11 @@ internal sealed class QCardGesture
             }
         }
 
-        _qCardGestureGhost.PCardGhostTop = pointer - _qCardGestureGrab;
+        _qCardGestureGhost.QCardGhostTop = pointer - _qCardGestureGrab;
         return true;
     }
 
-    private PCardGhost? QCardGestureBuild()
+    private QCardGhost? QCardGestureBuild()
     {
         ItemsControl host = _qCardGestureHost;
 
@@ -71,7 +71,7 @@ internal sealed class QCardGesture
             return null;
         }
 
-        var ghost = new PCardGhost(host, container, container.TranslatePoint(new Point(0, 0), host).X);
+        var ghost = new QCardGhost(host, container, container.TranslatePoint(new Point(0, 0), host).X);
         layer.Add(ghost);
 
         return ghost;

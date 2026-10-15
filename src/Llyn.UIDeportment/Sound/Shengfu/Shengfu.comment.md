@@ -6,7 +6,7 @@ It is the counterpart of the Yunjing panel's rime table.
 ## `QXiesheng`
 
 The panel's driver, shown only while a loaded language pack declares a series source.
-Every decision lives in [CXiesheng](../../../Llyn.Conduct/Panel/CXiesheng.comment.md), and this file writes controls on notice.
+Every decision lives in `CXiesheng`, and this file writes controls on notice.
 The series column, the reader and the editor are served from this file.
 The entry list has `QKindred`, and the series page has `QStem`.
 Only the medium knows its dispatcher, so the marshal for the area's notices is built at introduce.
@@ -77,11 +77,11 @@ The hinge shows the opened state and appears only on a foldable member, as Condu
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `2f9a06b8eb95`
 - `QGroveItem.cs` `823d0ceea72ab80c`
 - `QKindred.cs` `d2cc76085ab94811`
 - `QKindredItem.cs` `88afc38dc2aabcda`
 - `QStem.cs` `0a674cdf075c504c`
 - `QStemCommand.cs` `d6be3a8a0a6c3372`
 - `QStemItem.cs` `6bddfb5ad0f18164`
-- `QXiesheng.cs` `1702227497750344`
+- `QXiesheng.cs` `a38c095a37866ba8`

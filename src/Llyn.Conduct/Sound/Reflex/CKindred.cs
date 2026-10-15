@@ -12,7 +12,7 @@ public sealed class CKindred
 
     private readonly LReflexPort _cKindredReflexPort;
 
-    private readonly LDisplay _cKindredDisplay;
+    private readonly CRule _cKindredDisplay;
 
     private readonly LDraftPort _cKindredDraftPort;
 
@@ -20,13 +20,16 @@ public sealed class CKindred
 
     private readonly CEnvoy _cKindredEnvoy;
 
+    private readonly CLedgerNoticed _cKindredNoticed;
+
     internal CKindred(
         CDesk desk,
         LReflexPort reflexes,
-        LDisplay display,
+        CRule display,
         LDraftPort drafts,
         LSettingsPort settings,
-        CEnvoy envoy)
+        CEnvoy envoy,
+        CLedgerNoticed noticed)
     {
         ArgumentNullException.ThrowIfNull(desk);
         ArgumentNullException.ThrowIfNull(reflexes);
@@ -34,6 +37,7 @@ public sealed class CKindred
         ArgumentNullException.ThrowIfNull(drafts);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(envoy);
+        ArgumentNullException.ThrowIfNull(noticed);
 
         _cKindredDesk = desk;
         _cKindredReflexPort = reflexes;
@@ -41,16 +45,17 @@ public sealed class CKindred
         _cKindredDraftPort = drafts;
         _cKindredSettingsPort = settings;
         _cKindredEnvoy = envoy;
+        _cKindredNoticed = noticed;
         desk.CDeskDraft.CDeskDraftPrepared += LKindredStart;
     }
 
     public event Action? CKindredChanged;
 
-    public bool CKindredPending => _cKindredDisplay.LDisplaySound.LDisplayReflexCheck(LKindredEntry);
+    public bool CKindredPending => _cKindredDisplay.CVoice.CVoiceReflexCheck(LKindredEntry);
 
     public CTimbreReflex CKindredRead()
     {
-        bool opened = _cKindredDisplay.LDisplaySound.LDisplaySpreadCheck(LKindredEntry);
+        bool opened = _cKindredDisplay.CVoice.CVoiceSpreadCheck(LKindredEntry);
         if (_cKindredDesk.CDeskDraft.CDeskDraftTenure is not LTenure held || held.LTenureRead() is not { } draft)
         {
             return new CTimbreReflex(
@@ -65,7 +70,7 @@ public sealed class CKindred
             CReflex.LReflexAnchorRead(
                 _cKindredEnvoy,
                 _cKindredSettingsPort,
-                _cKindredDisplay.LDisplayNoticed,
+                _cKindredDisplay.CRuleNoticed,
                 _cKindredDraftPort,
                 LKindredEntry,
                 content.LEntryDraftHeadword,
@@ -85,7 +90,7 @@ public sealed class CKindred
 
     public void CKindredRebuild()
     {
-        _cKindredDisplay.LDisplaySound.LDisplayReflexRebuild(LKindredEntry);
+        _cKindredDisplay.CVoice.CVoiceReflexRebuild(LKindredEntry);
     }
 
     public void CKindredAdd(long? reflex)
@@ -187,7 +192,7 @@ public sealed class CKindred
 
     internal void LKindredObserverAttach(Action<Action> marshal)
     {
-        _cKindredDesk.CDeskVigil.LVigilEntryAttach(
+        _cKindredDesk.CDeskVigil.CVigilEntryAttach(
             CSubject.CSubjectReflex, _ => marshal(() => CKindredChanged?.Invoke()));
     }
 
@@ -195,6 +200,15 @@ public sealed class CKindred
 
     private LTenure? LKindredTenure =>
         _cKindredDesk.CDeskDraft.CDeskDraftFilling ? null : _cKindredDesk.CDeskDraft.CDeskDraftTenure;
+
+    internal IReadOnlyList<LAnchorRow> LKindredAnchorRead(long reflex)
+    {
+        return _cKindredDesk.LDeskRepaintRead<IReadOnlyList<LAnchorRow>>(
+            _cKindredNoticed,
+            () => LKindredQuill?.LQuillAnchorScan(reflex) ?? [],
+            [],
+            ".FindFailed");
+    }
 
     internal LQuillReflex? LKindredQuill =>
         LKindredTenure is LTenure held ? new LQuillReflex(held, _cKindredReflexPort) : null;

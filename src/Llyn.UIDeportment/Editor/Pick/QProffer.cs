@@ -24,7 +24,7 @@ internal sealed class QProffer
 
     private readonly QSentence _qProfferSentence;
 
-    private readonly ObservableCollection<PProfferItem> _qProfferItem = [];
+    private readonly ObservableCollection<QProfferItem> _qProfferItem = [];
 
     private CCaret _cCaret = null!;
 
@@ -58,29 +58,29 @@ internal sealed class QProffer
 
     private void QProfferApply(FrameworkElement container, object item, string? _)
     {
-        if (item is not PProfferItem row)
+        if (item is not QProfferItem row)
         {
             return;
         }
 
         if (QLook.QLookPartFind<Run>(container, "PProfferLead") is Run lead)
         {
-            lead.Text = row.PProfferItemLead;
+            lead.Text = row.QProfferItemLead;
         }
 
         if (QLook.QLookPartFind<Run>(container, "PProfferMark") is Run mark)
         {
-            mark.Text = row.PProfferItemMark;
+            mark.Text = row.QProfferItemMark;
         }
 
         if (QLook.QLookPartFind<Run>(container, "PProfferTail") is Run tail)
         {
-            tail.Text = row.PProfferItemTail;
+            tail.Text = row.QProfferItemTail;
         }
 
         if (QLook.QLookPartFind<TextBlock>(container, "PProfferCount") is TextBlock count)
         {
-            count.Text = row.PProfferItemCount;
+            count.Text = row.QProfferItemCount;
         }
 
         if (QLook.QLookPartFind<Grid>(container, "PProfferRow") is Grid surface)
@@ -94,7 +94,7 @@ internal sealed class QProffer
 
     private void QProfferMissRefine(object sender, MouseButtonEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: PProfferItem })
+        if (sender is not FrameworkElement { DataContext: QProfferItem })
         {
             QProfferShutRefine();
         }
@@ -102,31 +102,31 @@ internal sealed class QProffer
 
     private void QProfferPickObserve(object sender, MouseButtonEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: PProfferItem item })
+        if (sender is not FrameworkElement { DataContext: QProfferItem item })
         {
             return;
         }
 
         switch (Keyboard.FocusedElement)
         {
-            case FrameworkElement { DataContext: PCaret<PRegister> caret }
-                when _qProfferRegister.QRegisterCardFind(caret) is PCard card:
-                _cCaret.CCaretRegisterInsert(card.PCardId, item.PProfferItemId);
+            case FrameworkElement { DataContext: QInlet<QRegisterChip> caret }
+                when _qProfferRegister.QRegisterCardFind(caret) is QPlacard card:
+                _cCaret.CCaretRegisterInsert(card.QPlacardId, item.QProfferItemId);
                 e.Handled = true;
                 QProfferShutRefine();
-                card.PCardRegister.PCaretClear();
+                card.QPlacardRegister.QInletClear();
                 break;
-            case FrameworkElement { DataContext: PCaret<PContext> caret }
-                when _qProfferContext.QContextCardFind(caret) is PCard card:
-                _cCaret.CCaretSituationInsert(card.PCardId, item.PProfferItemId);
+            case FrameworkElement { DataContext: QInlet<QContextChip> caret }
+                when _qProfferContext.QContextCardFind(caret) is QPlacard card:
+                _cCaret.CCaretSituationInsert(card.QPlacardId, item.QProfferItemId);
                 e.Handled = true;
                 QProfferShutRefine();
-                card.PCardContext.PCaretClear();
+                card.QPlacardContext.QInletClear();
                 break;
-            case FrameworkElement { DataContext: PSentence row }
-                when _qProfferSentence.QSentenceCardFind(row) is PCard card:
+            case FrameworkElement { DataContext: QPassage row }
+                when _qProfferSentence.QSentenceCardFind(row) is QPlacard card:
                 _cSentence.CSentenceCitationSet(
-                    card.PCardId, row.PSentenceRow, item.PProfferItemId);
+                    card.QPlacardId, row.QPassageRow, item.QProfferItemId);
                 e.Handled = true;
                 QProfferShutRefine();
                 break;
@@ -169,40 +169,40 @@ internal sealed class QProffer
             return;
         }
 
-        if (QProfferList.SelectedItem is not PProfferItem item)
+        if (QProfferList.SelectedItem is not QProfferItem item)
         {
             return;
         }
 
         switch (sender)
         {
-            case FrameworkElement { DataContext: PCaret<PRegister> caret }
-                when _qProfferRegister.QRegisterCardFind(caret) is PCard card:
-                _cCaret.CCaretRegisterInsert(card.PCardId, item.PProfferItemId);
+            case FrameworkElement { DataContext: QInlet<QRegisterChip> caret }
+                when _qProfferRegister.QRegisterCardFind(caret) is QPlacard card:
+                _cCaret.CCaretRegisterInsert(card.QPlacardId, item.QProfferItemId);
                 e.Handled = true;
                 QProfferShutRefine();
-                card.PCardRegister.PCaretClear();
+                card.QPlacardRegister.QInletClear();
                 break;
-            case FrameworkElement { DataContext: PCaret<PContext> caret }
-                when _qProfferContext.QContextCardFind(caret) is PCard card:
-                _cCaret.CCaretSituationInsert(card.PCardId, item.PProfferItemId);
+            case FrameworkElement { DataContext: QInlet<QContextChip> caret }
+                when _qProfferContext.QContextCardFind(caret) is QPlacard card:
+                _cCaret.CCaretSituationInsert(card.QPlacardId, item.QProfferItemId);
                 e.Handled = true;
                 QProfferShutRefine();
-                card.PCardContext.PCaretClear();
+                card.QPlacardContext.QInletClear();
                 break;
-            case FrameworkElement { DataContext: PSentence row }
-                when _qProfferSentence.QSentenceCardFind(row) is PCard card:
+            case FrameworkElement { DataContext: QPassage row }
+                when _qProfferSentence.QSentenceCardFind(row) is QPlacard card:
                 _cSentence.CSentenceCitationSet(
-                    card.PCardId, row.PSentenceRow, item.PProfferItemId);
+                    card.QPlacardId, row.QPassageRow, item.QProfferItemId);
                 e.Handled = true;
                 QProfferShutRefine();
                 break;
         }
     }
 
-    internal void QProfferRegisterRefine(PCard card, CProffer offer)
+    internal void QProfferRegisterRefine(QPlacard card, CProffer offer)
     {
-        card.PCardRegister.PCaretRefine(offer.CProfferText);
+        card.QPlacardRegister.QInletRefine(offer.CProfferText);
         if (!offer.CProfferShown)
         {
             QProfferShutRefine();
@@ -217,7 +217,7 @@ internal sealed class QProffer
         _qProfferItem.Clear();
         foreach (CProfferRow row in rows)
         {
-            _qProfferItem.Add(new PProfferItem(
+            _qProfferItem.Add(new QProfferItem(
                 row.CProfferRowId,
                 row.CProfferRowLead,
                 row.CProfferRowMark,
@@ -233,9 +233,9 @@ internal sealed class QProffer
         QProfferList.SelectedIndex = -1;
     }
 
-    internal void QProfferSituationRefine(PCard card, CProffer offer)
+    internal void QProfferSituationRefine(QPlacard card, CProffer offer)
     {
-        card.PCardContext.PCaretRefine(offer.CProfferText);
+        card.QPlacardContext.QInletRefine(offer.CProfferText);
         if (!offer.CProfferShown)
         {
             QProfferShutRefine();
@@ -263,17 +263,17 @@ internal sealed class QProffer
         _qProfferItem.Clear();
     }
 
-    private TextBox? QProfferRegisterFind(PCard card)
+    private TextBox? QProfferRegisterFind(QPlacard card)
     {
-        return Keyboard.FocusedElement is TextBox { DataContext: PCaret<PRegister> row } box &&
+        return Keyboard.FocusedElement is TextBox { DataContext: QInlet<QRegisterChip> row } box &&
             _qProfferRegister.QRegisterCardFind(row) == card
             ? box
             : null;
     }
 
-    private TextBox? QProfferBoxFind(PCard card)
+    private TextBox? QProfferBoxFind(QPlacard card)
     {
-        return Keyboard.FocusedElement is TextBox { DataContext: PCaret<PContext> row } box &&
+        return Keyboard.FocusedElement is TextBox { DataContext: QInlet<QContextChip> row } box &&
             _qProfferContext.QContextCardFind(row) == card
             ? box
             : null;

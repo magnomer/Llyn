@@ -197,7 +197,7 @@ public sealed class TByline
     }
 
     [Fact]
-    public void BylineRowsRead_WorkspaceChanged_ShowsNothingAndOffersNone()
+    public void BylineRowsRead_WorkspaceChanged_ShowsTheFindFailureAndOffersNone()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -208,7 +208,7 @@ public sealed class TByline
 
         IReadOnlyList<CAuthor> rows = imprint.CImprintByline.CBylineRowsRead();
 
-        Assert.Empty(asked);
+        Assert.Equal(["Source.FindFailed"], asked);
         Assert.Empty(rows);
     }
 

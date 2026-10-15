@@ -255,7 +255,7 @@ public sealed class TDisplayCard
         CCompass area = wing.CWingDisplay.CDisplayCompass;
         Assert.Null(area.CCompassCardFind(1));
         wing.CWingEntryOpen(water.LEntryId);
-        LEntryDraft shown = wing.CWingDisplay.LDisplayRule.LDisplaySound.LDisplayShown!;
+        LEntryDraft shown = wing.CWingDisplay.LDisplayRule.CVoice.CVoiceShown!;
 
         (CCompassPart, int)? sea = area.CCompassCardFind(shown.LEntryDraftMeanings[1].LCardDraftId);
         (CCompassPart, int)? still = area.CCompassCardFind(shown.LEntryDraftCollocations[0].LCardDraftId);

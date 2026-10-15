@@ -103,6 +103,7 @@ A typed author name or example text lands and marks the draft changed.
 Typed example text lands as known even over an unknown value.
 A picked speaker language lands on the held Example.
 A picked Source becomes the held Example's citation, or a card sentence's citation.
+A source find on a stale draft throws the stale refusal, and on an ended tenure it offers no rows.
 An inserted Gloss takes the language the engine resolves for a new Gloss.
 A typed gloss text and then a chosen language both land on the same Gloss.
 An added Gloss is dropped by its id.
@@ -127,12 +128,12 @@ A typed phonetic reading and a typed respelling land on the primary pronunciatio
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `2f9a06b8eb95`
 - `TEasel.cs` `f85c1bca81bff00c`
 - `TEngineGloss.cs` `c1402f7638e6237b`
 - `TEngineTenure.cs` `ac07d8236f6f41a4`
 - `TEngineTenureSubject.cs` `f6a05df885035ad7`
 - `TForay.cs` `c61708681cad4fd0`
 - `TForayFailure.cs` `039821f324ec1d94`
-- `TQuill.cs` `e27ad009e3e388e8`
+- `TQuill.cs` `029c161022415d4b`
 - `TTenureField.cs` `b93c929cdeed7a0c`

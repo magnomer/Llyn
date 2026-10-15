@@ -4,14 +4,14 @@ View holds the shell of the shared read-only entry view.
 Every browse-style panel that shows an entry hosts it, and the panel decides which entry shows.
 Nothing here loads a draft.
 
-## `PDisplayCommand`
+## `QDisplayCommand`
 
 These routed commands are bound by every panel that shows an entry.
 A command is used rather than a click.
 So each panel enables the button by the same check it uses for print.
 The portrait command exports a portrait of the entry the panel is reading.
 
-## `PGrasp`
+## `QGrasp`
 
 The grasp row is a row of stars the user clicks to say how well they know an entry.
 Each step is half a star.
@@ -22,12 +22,12 @@ The row only maps a click to a step and raises it, and never decides what the st
 Its star driver is exposed so the host's driver can hand it the ready answers.
 The row holds no Conduct type and requests no logic.
 
-### `PGraspLimit`
+### `QGraspLimit`
 
 The host sets it once before any step is shown.
 End and Right stop at it, but the star count comes from the ready hit answers.
 
-### `PGraspStep`
+### `QGraspStep`
 
 Conduct promises a step within the limit, and the row's own pointer and keys never set it.
 So the row holds no clamp of its own.
@@ -37,17 +37,17 @@ So the row holds no clamp of its own.
 Fill, empty, unrated and preview brushes are set from theme resources.
 The draw reads them, so a theme change recolours the stars.
 
-### `PGraspPressed`
+### `QGraspPressed`
 
 It carries the step a click landed on and is raised even when that step stands.
 The row does not write the step, so the listener sends it to Conduct and Conduct sets it back.
 
-### `PGraspMoved`
+### `QGraspMoved`
 
 It carries a relative move from a key, and Home and End carry the whole limit.
 The listener sends the move to Conduct, which keeps the result within the limit.
 
-### `PGraspHovered`
+### `QGraspHovered`
 
 It carries the half-star step under the pointer, or nothing when the pointer leaves the row.
 The listener words the step beside the stars and falls back to the standing label on nothing.
@@ -74,7 +74,7 @@ The page's volume slider attaches to the window's one volume owner, so every tra
 
 ## Inline notes
 
-### QDisplay.cs: `QDisplaySwath.PSwathAttach(QDisplayContents)`
+### QDisplay.cs: `QDisplaySwath.QSwathAttach(QDisplayContents)`
 
 The band a reader drags across the page lies over the contents, inside the scroll viewer.
 It listens on the viewer, so a drag begun anywhere on the page selects.
@@ -83,7 +83,7 @@ Showing or clearing an entry drops the band, since the text it spanned is gone.
 ## `QRoster`
 
 The roster holds the item fills of the view's lists.
-The card and row fills live in `PLeaf`, with the meaning list taking the card fill.
+The card and row fills live in `QLeaf`, with the meaning list taking the card fill.
 The Other collocations list takes the row fill.
 It keeps the compass, since a contents row's click goes to it.
 
@@ -99,8 +99,8 @@ The click is subscribed once.
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `PDisplayCommand.cs` `82c7e2476f817dc9`
-- `PGrasp.cs` `24e3a8e1ad890d29`
-- `QDisplay.cs` `e69c4b2b90f3a1e7`
-- `QRoster.cs` `b2df99db6021bbc1`
+Commit: `2f9a06b8eb95`
+- `QDisplay.cs` `9710739e0393a0f5`
+- `QDisplayCommand.cs` `7955796f874e383d`
+- `QGrasp.cs` `ae1cdd497f3e620a`
+- `QRoster.cs` `6a992ddf19fac54d`

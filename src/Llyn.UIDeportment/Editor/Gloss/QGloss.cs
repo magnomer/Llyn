@@ -7,17 +7,17 @@ namespace Llyn.UIDeportment;
 
 internal sealed class QGloss
 {
-    private readonly ObservableCollection<PCard> _qGlossMeaning;
+    private readonly ObservableCollection<QPlacard> _qGlossMeaning;
 
-    private readonly ObservableCollection<PCard> _qGlossCollocation;
+    private readonly ObservableCollection<QPlacard> _qGlossCollocation;
 
     private readonly QSentence _qGlossSentence;
 
     private CSentence _cSentence = null!;
 
     internal QGloss(
-        ObservableCollection<PCard> meaning,
-        ObservableCollection<PCard> collocation,
+        ObservableCollection<QPlacard> meaning,
+        ObservableCollection<QPlacard> collocation,
         QSentence sentence)
     {
         _qGlossMeaning = meaning;
@@ -32,50 +32,50 @@ internal sealed class QGloss
 
     internal void QGlossAddObserve(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PSentence row }
-            && _qGlossSentence.QSentenceCardFind(row) is PCard card)
+        if (sender is FrameworkElement { DataContext: QPassage row }
+            && _qGlossSentence.QSentenceCardFind(row) is QPlacard card)
         {
-            _cSentence.CSentenceGlossAdd(card.PCardId, row.PSentenceRow);
+            _cSentence.CSentenceGlossAdd(card.QPlacardId, row.QPassageRow);
         }
     }
 
     internal void QGlossRemoveObserve(object sender, ExecutedRoutedEventArgs e)
     {
-        if (e.Parameter is PGloss gloss
-            && e.Source is FrameworkElement { DataContext: PSentence row }
-            && _qGlossSentence.QSentenceCardFind(row) is PCard card)
+        if (e.Parameter is QRendition gloss
+            && e.Source is FrameworkElement { DataContext: QPassage row }
+            && _qGlossSentence.QSentenceCardFind(row) is QPlacard card)
         {
-            _cSentence.CSentenceGlossRemove(card.PCardId, row.PSentenceRow, gloss.PGlossId);
+            _cSentence.CSentenceGlossRemove(card.QPlacardId, row.QPassageRow, gloss.QRenditionId);
         }
     }
 
-    internal void QGlossTextObserve(PGloss gloss, string text)
+    internal void QGlossTextObserve(QRendition gloss, string text)
     {
-        if (QGlossSentenceFind(gloss) is (PCard card, PSentence row))
+        if (QGlossSentenceFind(gloss) is (QPlacard card, QPassage row))
         {
             _cSentence.CSentenceGlossSet(
-                card.PCardId, row.PSentenceRow, gloss.PGlossId, text);
+                card.QPlacardId, row.QPassageRow, gloss.QRenditionId, text);
         }
     }
 
-    private (PCard, PSentence)? QGlossSentenceFind(PGloss gloss)
+    private (QPlacard, QPassage)? QGlossSentenceFind(QRendition gloss)
     {
-        foreach (PCard card in _qGlossMeaning)
+        foreach (QPlacard card in _qGlossMeaning)
         {
-            foreach (PSentence row in card.PCardSentence.PCardSentenceRow)
+            foreach (QPassage row in card.QCardSentence.QCardSentenceRow)
             {
-                if (row.PSentenceGloss.Contains(gloss))
+                if (row.QPassageGloss.Contains(gloss))
                 {
                     return (card, row);
                 }
             }
         }
 
-        foreach (PCard card in _qGlossCollocation)
+        foreach (QPlacard card in _qGlossCollocation)
         {
-            foreach (PSentence row in card.PCardSentence.PCardSentenceRow)
+            foreach (QPassage row in card.QCardSentence.QCardSentenceRow)
             {
-                if (row.PSentenceGloss.Contains(gloss))
+                if (row.QPassageGloss.Contains(gloss))
                 {
                     return (card, row);
                 }

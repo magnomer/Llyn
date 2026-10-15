@@ -9,7 +9,7 @@ internal sealed class QMeaning
 {
     private CCardList _cCardList = null!;
 
-    internal QMeaning(FrameworkElement surface, ObservableCollection<PCard> cards, QCard card)
+    internal QMeaning(FrameworkElement surface, ObservableCollection<QPlacard> cards, QCard card)
     {
         ItemsControl list = QContract.QContractFind<ItemsControl>(surface, "PMeaningList");
         list.ItemsSource = cards;

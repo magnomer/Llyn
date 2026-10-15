@@ -74,10 +74,10 @@ public sealed class CWing
             _cWingLeft ? "left" : "right", CSubject.CSubjectEntry, CCatalogOrder.CCatalogOrderHeadword, true);
         _cWingRows = [];
         CWingDisplay.LDisplayVistaRestore(_cWingVista);
-        CWingDisplay.LDisplayRule.LDisplayObserverAttach(CSubject.CSubjectVista, LWingBulletinSend);
-        CWingDisplay.LDisplayRule.LDisplayObserverAttach(CSubject.CSubjectEntry, LWingBulletinSend);
-        CWingDisplay.LDisplayRule.LDisplayObserverAttach(CSubject.CSubjectReflex, LWingBulletinSend);
-        CWingDisplay.LDisplayRule.LDisplayObserverAttach(CSubject.CSubjectSettings, LWingBulletinSend);
+        CWingDisplay.LDisplayRule.CRuleObserverAttach(CSubject.CSubjectVista, LWingBulletinSend);
+        CWingDisplay.LDisplayRule.CRuleObserverAttach(CSubject.CSubjectEntry, LWingBulletinSend);
+        CWingDisplay.LDisplayRule.CRuleObserverAttach(CSubject.CSubjectReflex, LWingBulletinSend);
+        CWingDisplay.LDisplayRule.CRuleObserverAttach(CSubject.CSubjectSettings, LWingBulletinSend);
     }
 
     public void CWingQuerySet(string query)
@@ -194,7 +194,7 @@ public sealed class CWing
     {
         try
         {
-            CWingDisplay.LDisplayEntryOpen(CWingDisplay.LDisplayRule.LDisplayEntryLoad(id));
+            CWingDisplay.LDisplayEntryOpen(CWingDisplay.LDisplayRule.CRuleEntryLoad(id));
         }
         catch (Exception exception)
         {

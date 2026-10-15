@@ -14,8 +14,17 @@ internal static partial class TInterface
     internal static IReadOnlyList<LStencilToken> TStencilTokenParse(string body) =>
         LStencilToken.LStencilTokenParse(body);
 
-    internal static string TCueMarkupResolve(string? markdown) =>
-        LCueMarkup.LCueMarkupResolve(markdown);
+    internal static string TStencilBodyAppend(string body, LStencilField field) =>
+        LStencilBody.LStencilBodyAppend(body, field);
+
+    internal static string TStencilBodyRemove(string body, int place) =>
+        LStencilBody.LStencilBodyRemove(body, place);
+
+    internal static string TStencilBodySet(string body, int place, bool all) =>
+        LStencilBody.LStencilBodySet(body, place, all);
+
+    internal static bool TStencilBodyCheck(string body) =>
+        LStencilBody.LStencilBodyCheck(body);
 
     internal static string TCueMarkupFormat(string text) =>
         LCueMarkup.LCueMarkupFormat(text);
@@ -51,6 +60,8 @@ internal static partial class TInterface
             0, null, 0, name, LGrain.LGrainMeaning, stencilId, LBearingLead.LBearingLeadOne,
             new LDeckSchedule(), name, false, null, string.Empty, string.Empty);
 
+    internal static LDeckSchedule TDeckScheduleCreate() => new();
+
     internal static IReadOnlyList<LCueCell> TCueFixtureCreate(LCueColumn column, int count) =>
         Enumerable.Range(1, count).Select(index => new LCueCell(column, index, $"{column} {index}")).ToList();
 
@@ -80,9 +91,6 @@ internal static partial class TInterface
     internal static LCueFace TStencilClerkResolve(
         this LStencilClerk clerk, LCue cue, LStencil stencil, LPortraitLabel label) =>
         clerk.LStencilClerkResolve(cue, stencil, label);
-
-    internal static LCueFace TStencilClerkResolve(this LStencilClerk clerk, long cueId, LPortraitLabel label) =>
-        clerk.LStencilClerkResolve(cueId, label);
 
     internal static LBearing TBearingFixtureCreate(int direction, int front, int back, int statistics) =>
         new(direction, front, back, statistics);
@@ -146,7 +154,12 @@ internal static partial class TInterface
         new(rig, new LTrailClerk(rig));
 
     internal static LCueClerk TCueClerkCreate(LRig rig) =>
-        new(rig, TEntryClerkCreate(rig));
+        new(
+            rig,
+            TEntryClerkCreate(rig),
+            TTranslationClerkCreate(rig),
+            new LReferenceClerk(rig),
+            new LTrailClerk(rig));
 
     internal static IReadOnlyList<LCue> TCueClerkScan(LEntryDraft draft, LGrain grain) =>
         LCueClerk.LCueClerkScan(draft, grain);
@@ -195,6 +208,10 @@ internal static partial class TInterface
     internal static IReadOnlyList<LCue> TCueClerkRead(this LCueClerk clerk, long deckId) =>
         clerk.LCueClerkRead(deckId);
 
+    internal static IReadOnlyList<(LCue LCueStored, string LCueLine)> TCueLineRead(
+        this LCueClerk clerk, long deckId, LPortraitLabel label) =>
+        clerk.LCueLineRead(deckId, label);
+
     internal static IReadOnlyList<LCue> TCueClerkAdd(
         this LCueClerk clerk, long deckId, IReadOnlyList<long> entryIds) =>
         clerk.LCueClerkAdd(deckId, entryIds);
@@ -210,12 +227,35 @@ internal static partial class TInterface
         clerk.LCueCellSave(cueId, cells);
     }
 
+    internal static IReadOnlyList<LStencil> TStencilClerkRead(this LStencilClerk clerk) =>
+        clerk.LStencilClerkRead();
+
     internal static LStencil TStencilClerkRead(this LStencilClerk clerk, long deckId) =>
         clerk.LStencilClerkRead(deckId);
 
     internal static void TStencilSlotSet(this LStencilClerk clerk, long deckId, LStencilSlot slot)
     {
         clerk.LStencilSlotSet(deckId, slot);
+    }
+
+    internal static void TStencilFieldAppend(this LStencilClerk clerk, long deckId, int index, LStencilField field)
+    {
+        clerk.LStencilFieldAppend(deckId, index, field);
+    }
+
+    internal static void TStencilFieldRemove(this LStencilClerk clerk, long deckId, int index, int place)
+    {
+        clerk.LStencilFieldRemove(deckId, index, place);
+    }
+
+    internal static void TStencilJoinSet(this LStencilClerk clerk, long deckId, int index, int place, bool all)
+    {
+        clerk.LStencilJoinSet(deckId, index, place, all);
+    }
+
+    internal static void TStencilMediaSet(this LStencilClerk clerk, long deckId, LCueColumn column, int index)
+    {
+        clerk.LStencilMediaSet(deckId, column, index);
     }
 
     internal static void TStencilClerkSave(this LStencilClerk clerk, long deckId, string name)
@@ -226,6 +266,41 @@ internal static partial class TInterface
     internal static void TStencilClerkApply(this LStencilClerk clerk, long deckId, long stencilId)
     {
         clerk.LStencilClerkApply(deckId, stencilId);
+    }
+
+    internal static LDeckOutlet TDeckOutletCreate(LEngine engine) => new(engine);
+
+    internal static long TEngineDeckCreate(this LDeckPort port, string name, long? folderId, LGrain grain) =>
+        port.LEngineDeckCreate(name, folderId, grain);
+
+    internal static (LDeck LDeckStored, IReadOnlyList<LBearing> LDeckBearings)? TEngineDeckRead(
+        this LDeckPort port, long deckId) =>
+        port.LEngineDeckRead(deckId);
+
+    internal static long TEngineFolderCreate(this LDeckPort port, string name) =>
+        port.LEngineFolderCreate(name);
+
+    internal static IReadOnlyList<LCue> TEngineCueRead(this LDeckPort port, long deckId) =>
+        port.LEngineCueRead(deckId);
+
+    internal static IReadOnlyList<(LVistaRow LAccessionRow, bool LAccessionBound)> TEngineAccessionFind(
+        this LDeckPort port, LVista vista, long deckId) =>
+        port.LEngineAccessionFind(vista, deckId);
+
+    internal static int TEngineCueAdd(this LDeckPort port, long deckId, IReadOnlyList<long> entryIds) =>
+        port.LEngineCueAdd(deckId, entryIds);
+
+    internal static long TEngineCueCreate(this LDeckPort port, long deckId, IReadOnlyList<LCueCell> cells) =>
+        port.LEngineCueCreate(deckId, cells);
+
+    internal static void TEngineSlotSet(this LDeckPort port, long deckId, LStencilSlot slot)
+    {
+        port.LEngineSlotSet(deckId, slot);
+    }
+
+    internal static void TEngineStencilSave(this LDeckPort port, long deckId, string name)
+    {
+        port.LEngineStencilSave(deckId, name);
     }
 
     internal static LDepotFolder TDepotFolderCreate() => new();
@@ -288,9 +363,9 @@ internal static partial class TInterface
         IReadOnlyList<(string, string)> settings, IReadOnlyList<string> header, params IReadOnlyList<string>[] rows) =>
         new(settings, header, rows);
 
+    internal static string? TDepotDigestRead(this LDepot depot, string folder, string code) =>
+        depot.LDepotDigestRead(folder, code);
+
     internal static Task TDepotSave(this LDepot depot, string folder, string code, LDeckSheet sheet, bool basic) =>
         depot.LDepotSave(folder, code, sheet, basic, CancellationToken.None);
-
-    internal static LDeckSheet? TDepotRead(this LDepot depot, string folder, string code) =>
-        depot.LDepotRead(folder, code);
 }

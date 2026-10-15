@@ -11,9 +11,9 @@ internal sealed class QExcerpt
 {
     private readonly UserControl _qExcerptScope;
 
-    private readonly ObservableCollection<PGloss> _qExcerptGloss = [];
+    private readonly ObservableCollection<QRendition> _qExcerptGloss = [];
 
-    private ObservableCollection<PLanguageItem> _qLanguageItem = [];
+    private ObservableCollection<QLanguageItem> _qLanguageItem = [];
 
     private CCorpus _cCorpus = null!;
 
@@ -23,16 +23,16 @@ internal sealed class QExcerpt
 
         _qExcerptScope = scope;
 
-        QExcerptText.PMentionClick += QExcerptMentionObserve;
+        QExcerptText.QMentionClick += QExcerptMentionObserve;
     }
 
-    internal event Action<PMention, CMentionOffer?>? QExcerptMentionOffered;
+    internal event Action<QMention, CMentionOffer?>? QExcerptMentionOffered;
 
     private Grid QExcerptView => QContract.QContractFind<Grid>(_qExcerptScope, "PExcerpt");
 
     private StackPanel QExcerptBody => QContract.QContractFind<StackPanel>(_qExcerptScope, "PExcerptBody");
 
-    private PMention QExcerptText => QContract.QContractFind<PMention>(_qExcerptScope, "PExcerptText");
+    private QMention QExcerptText => QContract.QContractFind<QMention>(_qExcerptScope, "PExcerptText");
 
     private Image QExcerptFlag => QContract.QContractFind<Image>(_qExcerptScope, "PExcerptFlag");
 
@@ -53,7 +53,7 @@ internal sealed class QExcerpt
     private TextBlock QExcerptUnselected =>
         QContract.QContractFind<TextBlock>(_qExcerptScope, "PExcerptUnselected");
 
-    internal void QExcerptIntroduce(CCorpus corpus, ObservableCollection<PLanguageItem> language)
+    internal void QExcerptIntroduce(CCorpus corpus, ObservableCollection<QLanguageItem> language)
     {
         ArgumentNullException.ThrowIfNull(corpus);
         ArgumentNullException.ThrowIfNull(language);
@@ -64,7 +64,7 @@ internal sealed class QExcerpt
         _cCorpus.CCorpusAnthology.CAnthologyPanel.CPanelAperture.CApertureRowsChanged += QExcerptTallyRefine;
 
         QExcerptGloss.ItemsSource = _qExcerptGloss;
-        QLookItem.QLookItemAttach(QExcerptGloss, PGloss.PGlossRowApply);
+        QLookItem.QLookItemAttach(QExcerptGloss, QRendition.QRenditionRowApply);
     }
 
     internal void QExcerptVisibleRefine()
@@ -91,7 +91,7 @@ internal sealed class QExcerpt
 
     private void QExcerptSentenceRefine(CExample example)
     {
-        QExcerptText.PMentionPiece = example.CExampleWording is string key
+        QExcerptText.QMentionPieces = example.CExampleWording is string key
             ? QMentionPiece.QMentionPieceCreate(QLocalizationCatalog.QLocalizationTextRead(key))
             : QMentionPiece.QMentionPieceCreate(example.CExamplePiece);
         QExcerptText.SetResourceReference(
@@ -104,7 +104,7 @@ internal sealed class QExcerpt
         _qExcerptGloss.Clear();
         foreach (CGlossDraft draft in glosses)
         {
-            _qExcerptGloss.Add(new PGloss(_qLanguageItem, draft));
+            _qExcerptGloss.Add(new QRendition(_qLanguageItem, draft));
         }
 
         QExcerptGlossSection.Visibility = glosses.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
@@ -116,10 +116,10 @@ internal sealed class QExcerpt
         QExcerptCitationSection.Visibility = example.CExampleSource is null ? Visibility.Collapsed : Visibility.Visible;
     }
 
-    private void QExcerptMentionObserve(object? sender, PMentionArgument e)
+    private void QExcerptMentionObserve(object? sender, QMentionArgument e)
     {
         QExcerptMentionOffered?.Invoke(
             QExcerptText,
-            _cCorpus.CCorpusMentionFind(e.PMentionArgumentText, e.PMentionArgumentUnit));
+            _cCorpus.CCorpusMentionFind(e.QMentionArgumentText, e.QMentionArgumentUnit));
     }
 }

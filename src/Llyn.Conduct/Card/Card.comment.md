@@ -12,6 +12,7 @@ The gates of what a card's fields ask while the user types.
 That covers translation, situation, source, register and tag fields.
 It holds only the desk and the ports it was given, and the editor owns one.
 A failed translation shows through the envoy with the ready notice the settings port reads.
+The source search shows `Input.FindFailed` once until the user acts, through the atelier's repaint memory, and offers nothing.
 
 ### Translation
 
@@ -77,7 +78,10 @@ With no chip quill the gates answer the text and an empty, closed dropdown.
 The situation, tag and register gates are shaped alike and hold no rule of their own.
 They answer the kept text and the dropdown of stored rows that text matches.
 The field hands every change unsettled, and Enter or leaving hands the text settled.
-Any failure of those gates reaches the caller, and a refused search is caught lower, in `LQuillChip`.
+A failed add shows `Input.UpdateFailed` every time and answers the typed text with an empty, closed dropdown.
+A failed search after the add shows `Input.FindFailed` once until the user acts.
+It answers the kept text with an empty, closed dropdown.
+`CCaret` takes the atelier's repaint memory at build and reads through the desk's `LDeskRepaintRead`.
 The held draft's language seeds the register search, so the driver passes none.
 The translation gates forward to `CCard` with the trail's position, and keep that gate's failure notices.
 
@@ -144,8 +148,11 @@ The chips live in the draft, below Conduct, and the speech quill reads them for 
 It holds only the raw text being typed, which the read overlays on the draft's chips.
 `CCardSpeechSet` keeps the text, defers it as a pending part, and answers the category menu.
 With no tenure held it answers an empty, closed menu.
+A failed lookup shows `Input.FindFailed` once until the user acts, and answers an empty, closed menu.
 `CCardSpeechAdd` clears the typed text, while `CCardSpeechRemove` leaves it pending.
+A failed add shows `Input.SpeechFailed` every time, and the typed text stays cleared.
 `CCardSpeechRead` shows the chips and typed text as the quill settles them.
+A failed read shows `Input.FindFailed` once and answers no chips with the typed text kept.
 A draft changed from elsewhere shows its own chips and clears the typed text.
 The unit and freedom rows are worded through static port members, so no port is held.
 `LUnitRowParse` and `LFreedomRowParse` throw on a key the menu never offered, a programming error.
@@ -226,13 +233,13 @@ Its lists are empty when none are known.
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `CCard.cs` `66120c7195823368`
+Commit: `2f9a06b8eb95`
+- `CCard.cs` `73aa7858dc403d5e`
 - `CCardField.cs` `1c45a2b59a846aaf`
 - `CCardList.cs` `676fda163fb37d36`
-- `CCardSpeech.cs` `662538c4d0cc794c`
-- `CCaret.cs` `6482e300cee4c1b7`
+- `CCardSpeech.cs` `c33bd983a66825f2`
+- `CCaret.cs` `cf2769876b6c7b6e`
 - `CCaretTrail.cs` `0ac8e0459942d0a7`
 - `CFolio.cs` `9146a2e633f8019f`
-- `CSentence.cs` `b12bafb3bfc396ed`
+- `CSentence.cs` `ea7e08ddebc389f9`
 - `CSentenceFrame.cs` `dcb9e108a9b63eb9`

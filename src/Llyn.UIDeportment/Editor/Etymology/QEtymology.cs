@@ -36,7 +36,7 @@ internal sealed class QEtymology
             });
         QEtymologyInsertion.Click += QEtymologyHeadObserve;
         QEtymologyField.CommandBindings.Add(new CommandBinding(
-            PMentionCommand.PMentionCommandPick, QEtymologyPickObserve));
+            QMentionCommand.QMentionCommandPick, QEtymologyPickObserve));
     }
 
     private FrameworkElement QEtymologyField =>
@@ -300,7 +300,7 @@ internal sealed class QEtymology
         }
 
         CProspect prospect = _cEtymology.CEtymologyTextSet(row.QEtymologyItemAncestor.CAncestorId, box.Text);
-        _qEtymologyProspect.QProspectPlaceRefine(box, PMentionSelection.PMentionSelectionPlace(box));
+        _qEtymologyProspect.QProspectPlaceRefine(box, QMentionSelection.QMentionSelectionPlace(box));
         _qEtymologyProspect.QProspectOpenRefine(prospect);
     }
 

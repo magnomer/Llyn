@@ -40,6 +40,18 @@ public sealed class TTrailClerk
     }
 
     [Fact]
+    public void TrailFileResolve_RelativePath_AnswersAbsoluteFileUri()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        LTrailClerk clerk = TInterface.TTrailClerkCreate(workspace.TWorkspaceRigCreate());
+
+        Uri? made = clerk.TTrailFileResolve(Path.Combine("sync", "phone.txt"));
+
+        Assert.NotNull(made);
+        Assert.True(made.IsAbsoluteUri);
+    }
+
+    [Fact]
     public void TrailPathValidate_RelativeEscape_Refuses()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();

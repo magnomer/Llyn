@@ -26,6 +26,7 @@ A failed save shows `Settings.SaveFailed`.
 It answers null on a failed save.
 `CLedgerDepotSave` answers the flashcard folder the engine stored, or null on a failure or a refusal.
 The engine refuses an absolute path, and the gate only shows the refusal.
+`CLedgerDepotChange` answers what `CLedgerDepotSave` answered for the chosen folder, or null on a failure or a cancelled dialog.
 `CLedgerDepotChange` asks for the folder through `CEnvoyFolderRead`, starting at the workspace root.
 The folder sits under that root, so the dialog opens there.
 A decline saves nothing, and a dialog that fails shows `Settings.SaveFailed`.
@@ -94,12 +95,12 @@ A lock guards the set, since a background read may fail while the dispatcher sho
 
 ## Stamp
 
-Commit: `f6dae2392935`
-- `CLedger.cs` `f65bd19f56db7e4d`
+Commit: `2f9a06b8eb95`
+- `CLedger.cs` `3e917fabd77b5d07`
 - `CLedgerNotice.cs` `34a2b3923db6163d`
 - `CLedgerNoticed.cs` `2f38e70b00bec262`
 - `CLedgerPage.cs` `45f2b5ab3f092932`
-- `CLedgerReader.cs` `502b05ca5bd38dab`
+- `CLedgerReader.cs` `17f075d6901963fc`
 - `CLedgerShown.cs` `8b61a9eaaf6811db`
 - `CLedgerState.cs` `a50b903fdb52a7de`
-- `CSettings.cs` `82deb205c34554dc`
+- `CSettings.cs` `b95f0474a6f0e2c1`

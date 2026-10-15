@@ -34,7 +34,7 @@ internal sealed class QCard
 
     private readonly QVideo _qCardVideo;
 
-    private readonly ObservableCollection<PLanguageItem> _qCardLanguage;
+    private readonly ObservableCollection<QLanguageItem> _qCardLanguage;
 
     private CCardField _cCardField = null!;
 
@@ -53,7 +53,7 @@ internal sealed class QCard
         QExample example,
         QImage image,
         QVideo video,
-        ObservableCollection<PLanguageItem> languages)
+        ObservableCollection<QLanguageItem> languages)
     {
         _qCardDrag = drag;
         _qCardPosition = new QCardPosition();
@@ -80,7 +80,7 @@ internal sealed class QCard
 
     internal void QCardApply(FrameworkElement container, object item, string? changed)
     {
-        if (item is not PCard card)
+        if (item is not QPlacard card)
         {
             return;
         }
@@ -139,13 +139,13 @@ internal sealed class QCard
         }
     }
 
-    internal static void QCardRowRefine(FrameworkElement container, PCard card, string? changed)
+    internal static void QCardRowRefine(FrameworkElement container, QPlacard card, string? changed)
     {
         ArgumentNullException.ThrowIfNull(card);
 
         if (QLook.QLookPartFind<Border>(container, "PCardPosition") is Border position)
         {
-            if (card.PCardPositionActive)
+            if (card.QPlacardPositionActive)
             {
                 position.SetResourceReference(Border.BorderBrushProperty, "Theme.Accent");
             }
@@ -157,12 +157,12 @@ internal sealed class QCard
 
         if (QLook.QLookPartFind<TextBox>(container, "PCardPositionText") is TextBox ordinal)
         {
-            if (changed is null or nameof(PCard.PCardPosition) or nameof(PCard.PCardPositionActive))
+            if (changed is null or nameof(QPlacard.QPlacardPosition) or nameof(QPlacard.QPlacardPositionActive))
             {
-                ordinal.Text = card.PCardPositionText;
+                ordinal.Text = card.QPlacardPositionText;
             }
 
-            if (card.PCardPositionActive)
+            if (card.QPlacardPositionActive)
             {
                 ordinal.IsReadOnly = false;
                 ordinal.IsHitTestVisible = true;
@@ -176,7 +176,7 @@ internal sealed class QCard
 
         if (QLook.QLookPartFind<TextBox>(container, "PTitle") is TextBox title)
         {
-            if (changed is null or nameof(PCard.PTitle))
+            if (changed is null or nameof(QPlacard.PTitle))
             {
                 title.Text = card.PTitle.CStateWordingText;
             }
@@ -186,30 +186,30 @@ internal sealed class QCard
 
         if (QLook.QLookPartFind<TextBlock>(container, "PCardPeek") is TextBlock peek)
         {
-            peek.Text = card.PCardPeek;
-            peek.Visibility = QLook.QLookVisibleRead(card.PCardFolded && card.PTitle.CStateWordingMuted);
+            peek.Text = card.QPlacardPeek;
+            peek.Visibility = QLook.QLookVisibleRead(card.QPlacardFolded && card.PTitle.CStateWordingMuted);
         }
 
-        QCardFold.QCardFoldRefine(container, card.PCardFolded, card.PCardStored);
+        QCardFold.QCardFoldRefine(container, card.QPlacardFolded, card.QPlacardStored);
 
         if (QLook.QLookPartFind<TextBox>(container, "PCardExpression") is TextBox expression)
         {
-            if (changed is null or nameof(PCard.PCardExpression))
+            if (changed is null or nameof(QPlacard.QPlacardExpression))
             {
-                expression.Text = card.PCardExpression.CStateWordingText;
+                expression.Text = card.QPlacardExpression.CStateWordingText;
             }
 
-            QStateConverter.QStateHintRefine(expression, QField.QFieldHintProperty, card.PCardExpression);
+            QStateConverter.QStateHintRefine(expression, QField.QFieldHintProperty, card.QPlacardExpression);
         }
 
         if (QLook.QLookPartFind<TextBox>(container, "PCardDefinition") is TextBox definition)
         {
-            if (changed is null or nameof(PCard.PCardDefinition))
+            if (changed is null or nameof(QPlacard.QPlacardDefinition))
             {
-                definition.Text = card.PCardDefinition.CStateWordingText;
+                definition.Text = card.QPlacardDefinition.CStateWordingText;
             }
 
-            QStateConverter.QStateHintRefine(definition, QField.QFieldHintProperty, card.PCardDefinition);
+            QStateConverter.QStateHintRefine(definition, QField.QFieldHintProperty, card.QPlacardDefinition);
         }
 
         if (QLook.QLookPartFind<QIconImage>(container, "PCardIcon") is QIconImage icon)
@@ -228,35 +228,35 @@ internal sealed class QCard
         }
     }
 
-    private void QCardFieldApply(FrameworkElement container, PCard card)
+    private void QCardFieldApply(FrameworkElement container, QPlacard card)
     {
         if (QLook.QLookPartFind<ItemsControl>(container, "PCardContext") is ItemsControl context)
         {
             _qCardContext.QContextFieldApply(context, card);
-            context.ItemsSource = card.PCardContext.PCaretRow;
+            context.ItemsSource = card.QPlacardContext.QInletRow;
         }
 
         if (QLook.QLookPartFind<ItemsControl>(container, "PCardRegister") is ItemsControl register)
         {
             _qCardRegister.QRegisterFieldApply(register, card);
-            register.ItemsSource = card.PCardRegister.PCaretRow;
+            register.ItemsSource = card.QPlacardRegister.QInletRow;
         }
 
         if (QLook.QLookPartFind<ItemsControl>(container, "PCardLink") is ItemsControl link)
         {
             _qCardLink.QLinkFieldApply(link, card);
-            link.ItemsSource = card.PCardLink.PCaretRow;
+            link.ItemsSource = card.QPlacardLink.QInletRow;
         }
 
         if (QLook.QLookPartFind<ItemsControl>(container, "PCardLabel") is ItemsControl label)
         {
             _qCardLabel.QLabelFieldApply(label, card);
-            label.ItemsSource = card.PCardLabel.PCaretRow;
+            label.ItemsSource = card.QPlacardLabel.QInletRow;
         }
 
         if (QLook.QLookPartFind<ItemsControl>(container, "PCardSentence") is ItemsControl sentence)
         {
-            sentence.ItemsSource = card.PCardSentence.PCardSentenceRow;
+            sentence.ItemsSource = card.QCardSentence.QCardSentenceRow;
             QLookItem.QLookItemAttach(
                 sentence,
                 (row, item, _) =>
@@ -270,41 +270,41 @@ internal sealed class QCard
 
         if (QLook.QLookPartFind<ItemsControl>(container, "PCardImage") is ItemsControl images)
         {
-            images.ItemsSource = card.PCardImage;
+            images.ItemsSource = card.QPlacardImage;
             QLookItem.QLookItemAttach(images, _qCardImage.QImageApply);
         }
 
         if (QLook.QLookPartFind<ItemsControl>(container, "PCardVideo") is ItemsControl videos)
         {
-            videos.ItemsSource = card.PCardVideo;
+            videos.ItemsSource = card.QPlacardVideo;
             QLookItem.QLookItemAttach(videos, _qCardVideo.QVideoApply);
         }
     }
 
     private void QCardRemoveObserve(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PCard card })
+        if (sender is FrameworkElement { DataContext: QPlacard card })
         {
-            _cCardList.CCardRemove(card.PCardId);
+            _cCardList.CCardRemove(card.QPlacardId);
         }
     }
 
     internal void QCardRefine(
-        ObservableCollection<PCard> cards, string prefix,
-        IReadOnlyList<CCardDraft> drafts, Func<PCard, CStateWording> peek)
+        ObservableCollection<QPlacard> cards, string prefix,
+        IReadOnlyList<CCardDraft> drafts, Func<QPlacard, CStateWording> peek)
     {
-        List<PCard> free = [.. cards];
-        List<PCard> shown = new(drafts.Count);
+        List<QPlacard> free = [.. cards];
+        List<QPlacard> shown = new(drafts.Count);
         foreach (CCardDraft draft in drafts)
         {
-            PCard? card = free.Find(row => row.PCardId == draft.CCardDraftId);
+            QPlacard? card = free.Find(row => row.QPlacardId == draft.CCardDraftId);
             if (card is not null)
             {
                 free.Remove(card);
             }
             else
             {
-                card = new PCard(
+                card = new QPlacard(
                     prefix,
                     _qCardCitation.QCitationCatalog,
                     _qCardSentence.QSentenceParticle,
@@ -312,7 +312,7 @@ internal sealed class QCard
                     _qCardLanguage,
                     peek,
                     draft);
-                card.PCardSentence.PCardSentenceNotice += _qCardSentence.QSentenceGlossObserve;
+                card.QCardSentence.QCardSentenceNotice += _qCardSentence.QSentenceGlossObserve;
             }
 
             QCardDraftRefine(card, draft);
@@ -320,8 +320,8 @@ internal sealed class QCard
         }
 
         int kept = 0;
-        List<PCard> gone = [];
-        foreach (PCard card in cards)
+        List<QPlacard> gone = [];
+        foreach (QPlacard card in cards)
         {
             if (kept < shown.Count && ReferenceEquals(card, shown[kept]))
             {
@@ -333,7 +333,7 @@ internal sealed class QCard
             }
         }
 
-        foreach (PCard card in gone)
+        foreach (QPlacard card in gone)
         {
             cards.Remove(card);
         }
@@ -344,54 +344,54 @@ internal sealed class QCard
         }
     }
 
-    private void QCardDraftRefine(PCard card, CCardDraft draft)
+    private void QCardDraftRefine(QPlacard card, CCardDraft draft)
     {
-        card.PCardTitleShow(draft.CCardDraftTitle);
-        card.PCardExpressionShow(draft.CCardDraftExpression);
-        card.PCardDefinitionShow(draft.CCardDraftMeaning);
-        card.PCardSentence.PCardSentenceShow(draft.CCardDraftSentence, _qCardSentence.QSentenceOrder);
+        card.QPlacardTitleShow(draft.CCardDraftTitle);
+        card.QPlacardExpressionShow(draft.CCardDraftExpression);
+        card.QPlacardDefinitionShow(draft.CCardDraftMeaning);
+        card.QCardSentence.QCardSentenceShow(draft.CCardDraftSentence, _qCardSentence.QSentenceOrder);
         IReadOnlyDictionary<CCaretTrail, long?> anchor = _cCaret.CCaretRead(draft.CCardDraftId);
         _qCardContext.QContextShow(card, draft, anchor[_cCaret.CCaretSituation]);
         QRegister.QRegisterShow(card, draft.CCardDraftRegister, anchor[_cCaret.CCaretRegister]);
         QLink.QLinkShow(card, draft.CCardDraftTranslation, anchor[_cCaret.CCaretTranslation]);
         QBond.QBondRefine(card, draft.CCardDraftSense);
         _qCardLabel.QLabelShow(card, draft, anchor[_cCaret.CCaretTag]);
-        card.PCardImageShow(draft.CCardDraftImage);
-        card.PCardVideoShow(draft.CCardDraftVideo);
-        card.PCardPosition = draft.CCardDraftPosition;
-        card.PCardFoldShow(draft.CCardDraftFolded);
+        card.QPlacardImageShow(draft.CCardDraftImage);
+        card.QPlacardVideoShow(draft.CCardDraftVideo);
+        card.QPlacardPosition = draft.CCardDraftPosition;
+        card.QPlacardFoldShow(draft.CCardDraftFolded);
     }
 
     private void QCardHingeObserve(object sender, RoutedEventArgs e)
     {
-        if (sender is ToggleButton { DataContext: PCard card } hinge)
+        if (sender is ToggleButton { DataContext: QPlacard card } hinge)
         {
             QLook.QLookCheckedRefine(
-                hinge, _cCardList.CCardFoldToggle(card.PCardId, QLook.QLookCheckedRead(hinge.IsChecked)));
+                hinge, _cCardList.CCardFoldToggle(card.QPlacardId, QLook.QLookCheckedRead(hinge.IsChecked)));
         }
     }
 
     private void QCardTitleObserve(object sender, TextChangedEventArgs e)
     {
-        if (sender is TextBox { IsKeyboardFocusWithin: true, DataContext: PCard card } box)
+        if (sender is TextBox { IsKeyboardFocusWithin: true, DataContext: QPlacard card } box)
         {
-            _cCardField.CCardTitleSet(card.PCardId, box.Text);
+            _cCardField.CCardTitleSet(card.QPlacardId, box.Text);
         }
     }
 
     private void QCardExpressionObserve(object sender, TextChangedEventArgs e)
     {
-        if (sender is TextBox { IsKeyboardFocusWithin: true, DataContext: PCard card } box)
+        if (sender is TextBox { IsKeyboardFocusWithin: true, DataContext: QPlacard card } box)
         {
-            _cCardField.CCardExpressionSet(card.PCardId, box.Text);
+            _cCardField.CCardExpressionSet(card.QPlacardId, box.Text);
         }
     }
 
     private void QCardDefinitionObserve(object sender, TextChangedEventArgs e)
     {
-        if (sender is TextBox { IsKeyboardFocusWithin: true, DataContext: PCard card } box)
+        if (sender is TextBox { IsKeyboardFocusWithin: true, DataContext: QPlacard card } box)
         {
-            _cCardField.CCardMeaningSet(card.PCardId, box.Text);
+            _cCardField.CCardMeaningSet(card.QPlacardId, box.Text);
         }
     }
 }

@@ -34,7 +34,7 @@ internal sealed class QCardDrag
 
     internal void QCardDragRefine(object sender, MouseButtonEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: PCard card })
+        if (sender is not FrameworkElement { DataContext: QPlacard card })
         {
             return;
         }
@@ -53,7 +53,7 @@ internal sealed class QCardDrag
             return;
         }
 
-        _qCardDragGesture = new QCardGesture(card, card.PCardId, host, container, e.GetPosition(host).Y);
+        _qCardDragGesture = new QCardGesture(card, card.QPlacardId, host, container, e.GetPosition(host).Y);
 
         host.CaptureMouse();
     }

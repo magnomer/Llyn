@@ -20,14 +20,14 @@ internal sealed class QVolume
     internal QVolume(CAtelier atelier)
     {
         _cAtelier = atelier;
-        PVolumeCatalog.PVolumeCatalogCurrent.PropertyChanged += QVolumeLevelRefine;
+        QVolumeCatalog.QVolumeCatalogCurrent.PropertyChanged += QVolumeLevelRefine;
         atelier.CAtelierWorkspace.CWorkspaceOpened += QVolumeRefine;
     }
 
     internal void QVolumeSliderAttach(FrameworkElement surface)
     {
         Slider slider = QContract.QContractFind<Slider>(surface, "PVolume");
-        slider.Value = PVolumeCatalog.PVolumeCatalogCurrent.PVolumeCatalogLevel;
+        slider.Value = QVolumeCatalog.QVolumeCatalogCurrent.QVolumeCatalogLevel;
         slider.ValueChanged += QVolumeObserve;
         slider.AddHandler(Thumb.DragCompletedEvent, new DragCompletedEventHandler(QVolumeSaveObserve));
         slider.AddHandler(UIElement.MouseUpEvent, new MouseButtonEventHandler(QVolumeSaveObserve), true);
@@ -42,13 +42,13 @@ internal sealed class QVolume
 
     private void QVolumeObserve(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
-        PVolumeCatalog.PVolumeCatalogCurrent.PVolumeCatalogLevel = e.NewValue;
+        QVolumeCatalog.QVolumeCatalogCurrent.QVolumeCatalogLevel = e.NewValue;
         _cAtelier.CAtelierVolumeSet(e.NewValue, false);
     }
 
     private void QVolumeLevelRefine(object? sender, PropertyChangedEventArgs e)
     {
-        QVolumeShow(PVolumeCatalog.PVolumeCatalogCurrent.PVolumeCatalogLevel);
+        QVolumeShow(QVolumeCatalog.QVolumeCatalogCurrent.QVolumeCatalogLevel);
     }
 
     private void QVolumeSaveObserve(object sender, RoutedEventArgs e)
@@ -59,7 +59,7 @@ internal sealed class QVolume
     private void QVolumeRefine()
     {
         double level = _cAtelier.CAtelierVolumeRead();
-        PVolumeCatalog.PVolumeCatalogCurrent.PVolumeCatalogLevel = level;
+        QVolumeCatalog.QVolumeCatalogCurrent.QVolumeCatalogLevel = level;
         QVolumeShow(level);
     }
 

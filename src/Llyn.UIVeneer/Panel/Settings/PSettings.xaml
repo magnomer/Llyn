@@ -258,6 +258,34 @@
                                 VerticalAlignment="Center"
                                 Style="{StaticResource Theme.Input.Field}" />
                         </Grid>
+                        <Grid Margin="0,22,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" MaxWidth="560" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                <TextBlock Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Settings.Depot}" />
+                                <TextBlock Style="{StaticResource Theme.Page.Note}" Text="{DynamicResource Settings.DepotHelper}" />
+                            </StackPanel>
+                            <TextBox
+                                x:Name="PSettingsDepot"
+                                Grid.Column="1"
+                                Width="200"
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                Style="{StaticResource Theme.Input.Field}" />
+                            <Button
+                                x:Name="PSettingsDepotDialog"
+                                Grid.Column="2"
+                                Margin="8,0,0,0"
+                                VerticalAlignment="Center"
+                                Style="{StaticResource Theme.Input.Action}"
+                                ToolTip="{DynamicResource Workspace.Browse}">
+                                <local:QIconImage x:Name="PSettingsDepotIcon" Width="24" Height="24" />
+                            </Button>
+                        </Grid>
                     </StackPanel>
 
                     <StackPanel x:Name="PDialLayout" Visibility="Collapsed">

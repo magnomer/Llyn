@@ -171,7 +171,7 @@ public sealed class CLedger
         }
     }
 
-    public void CLedgerDepotChange(CEnvoy envoy)
+    public string? CLedgerDepotChange(CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(envoy);
 
@@ -183,13 +183,10 @@ public sealed class CLedger
         catch (Exception exception)
         {
             LLedgerFailureShow(envoy, _cLedgerAtelier.CAtelierSettingsPort, "Settings.SaveFailed", exception);
-            return;
+            return null;
         }
 
-        if (chosen is not null)
-        {
-            CLedgerDepotSave(chosen, envoy);
-        }
+        return chosen is null ? null : CLedgerDepotSave(chosen, envoy);
     }
 
     public void CLedgerFailureShow(CEnvoy envoy, string key, Exception exception)

@@ -12,15 +12,19 @@ public sealed class CCaret
 
     private readonly CCard _cCaretCard;
 
+    private readonly CLedgerNoticed _cCaretNoticed;
+
     private readonly IReadOnlyList<CCaretTrail> _cCaretTrails;
 
-    internal CCaret(CDesk desk, CCard card)
+    internal CCaret(CDesk desk, CCard card, CLedgerNoticed noticed)
     {
         ArgumentNullException.ThrowIfNull(desk);
         ArgumentNullException.ThrowIfNull(card);
+        ArgumentNullException.ThrowIfNull(noticed);
 
         _cCaretDesk = desk;
         _cCaretCard = card;
+        _cCaretNoticed = noticed;
         CCaretSituation = new CCaretTrail(
             desk,
             static card => card.LCardDraftSituation.Select(static row => row.LSituationDraftId),
@@ -119,10 +123,27 @@ public sealed class CCaret
     private CProffer LCaretRegisterAdd(long cardId, string text, bool settled)
     {
         int position = CCaretRegister.CCaretTrailResolve(cardId);
-        return _cCaretDesk.CDeskDraft.CDeskDraftChip?.LQuillRegisterAdd(
-                cardId, text, position, settled) is LRegisterOffer offer
-            ? LCaretProfferRead(offer)
-            : new CProffer(text, [], false);
+        if (_cCaretDesk.CDeskDraft.CDeskDraftChip is not LQuillChip chip)
+        {
+            return new CProffer(text, [], false);
+        }
+
+        string kept;
+        try
+        {
+            kept = chip.LQuillRegisterAdd(cardId, text, position, settled);
+        }
+        catch (Exception exception)
+        {
+            _cCaretDesk.LDeskFailureShow(".UpdateFailed", exception);
+            return new CProffer(text, [], false);
+        }
+
+        return _cCaretDesk.LDeskRepaintRead(
+            _cCaretNoticed,
+            () => LCaretProfferRead(chip.LQuillRegisterFind(cardId, kept)),
+            new CProffer(kept, [], false),
+            ".FindFailed");
     }
 
     private static CProffer LCaretProfferRead(LRegisterOffer offer)
@@ -139,9 +160,27 @@ public sealed class CCaret
     private CSlate LCaretTagAdd(long cardId, string text, bool settled)
     {
         int position = CCaretTag.CCaretTrailResolve(cardId);
-        return _cCaretDesk.CDeskDraft.CDeskDraftChip?.LQuillTagAdd(cardId, text, position, settled) is LTagOffer offer
-            ? LCaretSlateRead(offer)
-            : new CSlate(text, [], false);
+        if (_cCaretDesk.CDeskDraft.CDeskDraftChip is not LQuillChip chip)
+        {
+            return new CSlate(text, [], false);
+        }
+
+        string kept;
+        try
+        {
+            kept = chip.LQuillTagAdd(cardId, text, position, settled);
+        }
+        catch (Exception exception)
+        {
+            _cCaretDesk.LDeskFailureShow(".UpdateFailed", exception);
+            return new CSlate(text, [], false);
+        }
+
+        return _cCaretDesk.LDeskRepaintRead(
+            _cCaretNoticed,
+            () => LCaretSlateRead(chip.LQuillTagFind(cardId, kept)),
+            new CSlate(kept, [], false),
+            ".FindFailed");
     }
 
     private static CSlate LCaretSlateRead(LTagOffer offer)
@@ -157,10 +196,27 @@ public sealed class CCaret
     private CProffer LCaretSituationAdd(long cardId, string text, bool settled)
     {
         int position = CCaretSituation.CCaretTrailResolve(cardId);
-        return _cCaretDesk.CDeskDraft.CDeskDraftChip?.LQuillSituationAdd(
-                cardId, text, position, settled) is LSituationOffer offer
-            ? LCaretProfferRead(offer)
-            : new CProffer(text, [], false);
+        if (_cCaretDesk.CDeskDraft.CDeskDraftChip is not LQuillChip chip)
+        {
+            return new CProffer(text, [], false);
+        }
+
+        string kept;
+        try
+        {
+            kept = chip.LQuillSituationAdd(cardId, text, position, settled);
+        }
+        catch (Exception exception)
+        {
+            _cCaretDesk.LDeskFailureShow(".UpdateFailed", exception);
+            return new CProffer(text, [], false);
+        }
+
+        return _cCaretDesk.LDeskRepaintRead(
+            _cCaretNoticed,
+            () => LCaretProfferRead(chip.LQuillSituationFind(cardId, kept)),
+            new CProffer(kept, [], false),
+            ".FindFailed");
     }
 
     private static CProffer LCaretProfferRead(LSituationOffer offer)

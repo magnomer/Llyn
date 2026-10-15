@@ -16,6 +16,8 @@ The shared setup builds an anthology over an Example desk through the test relay
 
 Citation tests distinguish resolving a Source from displaying its ready line.
 A failing resolve and an unopened desk check separate refusal paths.
+A failing find shows `Example.FindFailed` and offers no rows.
+Three repeated reads of a failing find show it once.
 
 ## `TAnthologyExample`
 
@@ -67,9 +69,9 @@ Query tests distinguish unmatched wording from vacant wording.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `2f9a06b8eb95`
 - `TAnthology.cs` `5f4cbaf4238e8702`
-- `TAnthologyCitation.cs` `9e6422ccd79e62ec`
+- `TAnthologyCitation.cs` `bb28477146e55d7a`
 - `TAnthologyExample.cs` `7b627fdeb76ed1de`
 - `TAnthologyGloss.cs` `9359d7893d79d281`
 - `TCorpus.cs` `0d88f7649ee45fc0`

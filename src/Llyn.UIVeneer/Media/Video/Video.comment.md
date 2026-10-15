@@ -18,6 +18,6 @@ The handle panel starts hidden and shows while the pointer or the focus is insid
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `PDisplayVideo.xaml` `bf09da006518d7fc`
+Commit: `2f9a06b8eb95`
+- `PDisplayVideo.xaml` `db7051c75d922d0c`
 - `PVideoTemplate.xaml` `730cd4c8fe81dee8`

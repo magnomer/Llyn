@@ -71,6 +71,6 @@ Each relay is transparent.
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `TInterfaceMention.cs` `7a9bb306c8c6edcc`
+Commit: `2f9a06b8eb95`
+- `TInterfaceMention.cs` `671d811149020375`
 - `TInterfaceMentionSpan.cs` `412ff102b50a4db0`

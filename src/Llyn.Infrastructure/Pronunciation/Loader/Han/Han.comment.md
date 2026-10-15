@@ -78,6 +78,8 @@ A row without a name or any initial reads `null`, and a missing or malformed arr
 It reads the `reflex` list naming one fetch rule per borrowing language.
 It also reads the `order` the rows are shown in, apart from the rules.
 `LReflexPackScan` returns every well-formed rule in written order, or an empty list.
+A `clip` that does not compile loads as no clip.
+So the rule stays, and the epithet never meets a bad pattern.
 `LReflexOrderRead` returns the order under `order`, or the empty order when the key is absent.
 Its `language` list names the borrowing languages in their order, and its `kind` object maps a language to its kinds.
 The rule list is never read for it, so reordering the rules leaves the screen alone.
@@ -113,12 +115,12 @@ The separator defaults to a middle dot, which joins the series of a character wi
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `2f9a06b8eb95`
 - `LAnatomyLoader.cs` `2815dc5b88354b1c`
 - `LDescentLoader.cs` `6074ddb4512f23f8`
 - `LFanqieLoader.cs` `eaf86e4c2be229a4`
 - `LGlyphLoader.cs` `f03c01566a0369e3`
 - `LHypothesisLoader.cs` `506d5de38b34cd71`
-- `LReflexLoader.cs` `0edad7911c0ec2e7`
+- `LReflexLoader.cs` `0ae0f57830d217cd`
 - `LScriptLoader.cs` `9059c851cfb800eb`
 - `LShengfuLoader.cs` `68404391d41adc01`

@@ -2,7 +2,7 @@
 
 These tests isolate entry card gates and draft wording from window behavior.
 Real workspace tests inspect held drafts to distinguish completed edits from pending input and suggestions.
-Typed chip cases go through a `CCaret` built over the desk and the card, as the editor builds it.
+Typed chip cases go through a `CCaret` built over the desk, the card and a `CLedgerNoticed`.
 Caret cases check that settles and picks land before the anchor and deletes take the chip beside the caret.
 
 ## `TCard`
@@ -34,6 +34,7 @@ Removal checks protect the lone meaning while allowing one of two meanings to le
 ## `TCardReference`
 
 Citation failures are isolated from suggestion matching.
+A failing source find shows `Input.FindFailed` once for two finds and offers no rows.
 Two sentences distinguish suppressing an already cited byline from excluding that Source globally.
 
 ## `TCardRegister`
@@ -53,13 +54,13 @@ Two cards check that suggestion exclusion belongs to the card holding the situat
 
 ## `TCardSpeech`
 
-Most cases open an English draft to exercise preset suggestions.
-An unopened editor supplies the empty-catalog case.
+Every case opens an English draft to exercise preset suggestions.
 Reopening and undoing the draft check that pending text cannot preserve a stale speech list.
 
 ## `TCardTag`
 
 Completed tags, pending text and stored picks are tested separately.
+A tag add whose tenure observer throws shows `Input.UpdateFailed`.
 Two cards check that suggestion exclusion belongs to the card holding the tag.
 
 ## `TCaretTrail`
@@ -79,14 +80,14 @@ A caret moved back inserts a picked row before its anchor and leaves the anchor 
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `2f9a06b8eb95`
 - `TCard.cs` `a1c183924f8ad673`
 - `TCardList.cs` `4700acc755d2cbf7`
-- `TCardReference.cs` `14ed3d1cc2cc9837`
-- `TCardRegister.cs` `3d15e4b41aed92e9`
+- `TCardReference.cs` `7b728c701dd3e0de`
+- `TCardRegister.cs` `29d5a23e7a3154ed`
 - `TCardSentence.cs` `04006230f6c0a70c`
-- `TCardSituation.cs` `fa4fc1da8387b068`
+- `TCardSituation.cs` `b2a9d424150ea278`
 - `TCardSpeech.cs` `8c3b0ecae8677f2f`
-- `TCardTag.cs` `276f014b44fa7962`
-- `TCardTranslation.cs` `b990397e938bff90`
-- `TCaretTrail.cs` `8cbc3ec4f9a7069d`
+- `TCardTag.cs` `31ae11a1a0c653f8`
+- `TCardTranslation.cs` `ddd040b0bc5727f3`
+- `TCaretTrail.cs` `5f29ea437b4b1160`

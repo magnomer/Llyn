@@ -12,9 +12,9 @@ internal sealed class QTranscriptGloss
 {
     private readonly UserControl _qTranscriptGlossScope;
 
-    private readonly ObservableCollection<PGloss> _qTranscriptGloss = [];
+    private readonly ObservableCollection<QRendition> _qTranscriptGloss = [];
 
-    private ObservableCollection<PLanguageItem> _qLanguageItem = [];
+    private ObservableCollection<QLanguageItem> _qLanguageItem = [];
 
     private CCorpus _cCorpus = null!;
 
@@ -45,7 +45,7 @@ internal sealed class QTranscriptGloss
     private QIconImage QTranscriptAdditionIcon =>
         QContract.QContractFind<QIconImage>(_qTranscriptGlossScope, "PTranscriptAdditionIcon");
 
-    internal void QTranscriptGlossIntroduce(CCorpus corpus, ObservableCollection<PLanguageItem> language)
+    internal void QTranscriptGlossIntroduce(CCorpus corpus, ObservableCollection<QLanguageItem> language)
     {
         ArgumentNullException.ThrowIfNull(corpus);
         ArgumentNullException.ThrowIfNull(language);
@@ -64,41 +64,41 @@ internal sealed class QTranscriptGloss
         QLookItem.QLookItemShow(
             _qTranscriptGloss,
             example?.CExampleGloss ?? [],
-            static row => row.PGlossId,
+            static row => row.QRenditionId,
             static draft => draft.CGlossDraftId,
             QTranscriptGlossCreate,
             (row, draft) =>
             {
-                row.PGlossShow(draft);
+                row.QRenditionShow(draft);
                 return row;
             });
 
         QTranscriptSeedShow();
     }
 
-    private PGloss QTranscriptGlossCreate(CGlossDraft draft)
+    private QRendition QTranscriptGlossCreate(CGlossDraft draft)
     {
-        PGloss row = new(_qLanguageItem, draft);
-        row.PGlossPicked += QGlossSpeakerObserve;
+        QRendition row = new(_qLanguageItem, draft);
+        row.QRenditionPicked += QGlossSpeakerObserve;
         return row;
     }
 
     private void QGlossTextObserve(object sender, TextChangedEventArgs e)
     {
-        if (sender is TextBox { DataContext: PGloss gloss } box)
+        if (sender is TextBox { DataContext: QRendition gloss } box)
         {
-            _cCorpus.CCorpusAnthology.CAnthologyGlossSet(gloss.PGlossId, box.Text);
+            _cCorpus.CCorpusAnthology.CAnthologyGlossSet(gloss.QRenditionId, box.Text);
         }
     }
 
-    private void QGlossSpeakerObserve(PGloss gloss, string language)
+    private void QGlossSpeakerObserve(QRendition gloss, string language)
     {
-        _cCorpus.CCorpusAnthology.CAnthologyLanguageSet(gloss.PGlossId, language);
+        _cCorpus.CCorpusAnthology.CAnthologyLanguageSet(gloss.QRenditionId, language);
     }
 
     private void QGlossAddObserve(object sender, RoutedEventArgs e)
     {
-        int below = QSender.QSenderItemRead<PGloss>(sender) is PGloss row
+        int below = QSender.QSenderItemRead<QRendition>(sender) is QRendition row
             ? _qTranscriptGloss.IndexOf(row)
             : _qTranscriptGloss.Count - 1;
 
@@ -107,9 +107,9 @@ internal sealed class QTranscriptGloss
 
     private void QGlossRemoveObserve(object sender, RoutedEventArgs e)
     {
-        if (QSender.QSenderItemRead<PGloss>(sender) is PGloss gloss)
+        if (QSender.QSenderItemRead<QRendition>(sender) is QRendition gloss)
         {
-            _cCorpus.CCorpusAnthology.CAnthologyGlossRemove(gloss.PGlossId);
+            _cCorpus.CCorpusAnthology.CAnthologyGlossRemove(gloss.QRenditionId);
         }
     }
 
@@ -121,7 +121,7 @@ internal sealed class QTranscriptGloss
             field.TextChanged -= QGlossTextObserve;
         }
 
-        PGloss.PGlossRowApply(container, item, change);
+        QRendition.QRenditionRowApply(container, item, change);
 
         if (field is not null)
         {

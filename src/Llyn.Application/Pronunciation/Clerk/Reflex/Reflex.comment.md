@@ -64,7 +64,8 @@ The epithet of an entry derived from its reflex rows under the rules of its lang
 Each row is formatted by every epithet rule of its language.
 Rows determine the outer order, and matching rules determine the pieces within each row.
 The caller passes rows sorted by `LReflexClerk.LReflexClerkSort`, so the epithet reads in the pack's declared order.
-A clip pattern that fails to compile or times out leaves the piece unclipped.
+A clip pattern the loader found invalid is absent, so the piece stays unclipped.
+A clip that times out fails the lookup, and the caller decides what to do with it.
 Whitespace is folded in each piece.
 
 ## `LReflexClerkRow`
@@ -154,9 +155,9 @@ The language, region, kind and text key identifies a reading across a rebuild.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `LReflexClerk.cs` `a792f584f32b011e`
-- `LReflexClerkEpithet.cs` `8095434e215e4be7`
+Commit: `2f9a06b8eb95`
+- `LReflexClerk.cs` `b8a09e66e73ae6c4`
+- `LReflexClerkEpithet.cs` `fa6a10e9388d6a66`
 - `LReflexClerkRow.cs` `e5aa7a54543a2d92`
-- `LReflexFetch.cs` `801377ca2badf7b0`
+- `LReflexFetch.cs` `0971155eb87da536`
 - `LReflexGloss.cs` `ebf49b306ca16881`

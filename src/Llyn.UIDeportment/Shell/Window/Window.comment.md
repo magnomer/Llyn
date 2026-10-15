@@ -72,6 +72,7 @@ The look sheet scans the window's resources, merged dictionaries included, for t
 The rail holds four groups parted by transparent gaps and not lines.
 The first group is entries: make one, browse all, browse curated.
 The second is the classification axes: sound, situation, register, tag.
+  The three flashcard tabs, study, deck and scoreboard, close this group.
 The third is attestation: example, source, author.
 The fourth is the two rime tools, Xiesheng and Yunjing, each with a page of its own.
 Dual panel sits with Settings below the divider because it is a mode and not a page.
@@ -144,6 +145,7 @@ Before any change arrives, the tab whose panel the markup shows is marked.
 A change hides the tabs the session does not offer, marks the open tab and shows only its panel.
 A state naming no tab leaves the open tab as it is.
 The icons are resolved here and set as the look's icon, which the tab style copies.
+The study, deck and scoreboard tabs set none.
 `Alt+Left` steps back and `Alt+Right` steps forward, each through one voyage gate.
 With Alt held the key arrives as a system key, so the arrow is read off `SystemKey`.
 The key binding is the GUI's own, so it stays here.
@@ -151,12 +153,15 @@ The two side buttons of a mouse step back and forward, as in a browser.
 
 ## `QPanelRoster`
 
-The window's fourteen panels and the shared widths of their seams.
+The window's seventeen panels and the shared widths of their seams.
 It builds each panel driver over its markup, wires it, and stops it when the window closes.
 It takes facets only and never `QWindow`, so no panel reaches the window through it.
-The panels are input, taxonomy, tenor, repertoire, corpus, reference, library, phonology, Xiesheng, Yunjing, favorite, duplex, guild and settings.
+The panels are input, taxonomy, study, deck, scoreboard, tenor, repertoire, corpus, reference, library and phonology.
+The rest are Xiesheng, Yunjing, favorite, duplex, guild and settings.
 Each is pulled from the window under its contract ID, as a plain page once moved to the veneer.
 Each driver is built at construction and wired only when the roster introduces it.
+The study and scoreboard drivers wire nothing before their introduce, so the roster builds them there.
+  It keeps no field for them, as `QDeck` keeps none for `QCue`.
 The settings panel takes the layout and the posture, since it resets the widths.
 The layout is the one owner of the seam widths, shared by every seamed tab and the settings panel.
 
@@ -176,7 +181,7 @@ The duplex panel is left out.
 Its two halves are editors sharing the window and not a catalog beside a display.
 The stored widths are applied by the open that follows, before any tab is shown, so nothing jumps.
 Close stops every panel that holds something to stop.
-The duplex and settings panels are not stopped here.
+The duplex, settings, study, deck and scoreboard panels are not stopped here.
 The window calls it before the session ends, so every panel stops before the engine goes.
 
 ## `QWindowScreen`
@@ -201,11 +206,11 @@ Device pixels become layout units first, so a scaled display still lands the win
 
 ## Stamp
 
-Commit: `f6dae2392935`
+Commit: `2f9a06b8eb95`
 - `QCaption.cs` `a94cfc236ad84fe3`
 - `QEnvoy.cs` `ce0505b274893fb3`
 - `QHeadquarter.cs` `77429c1948810be1`
-- `QNavigation.cs` `1d10c925a4904be0`
-- `QPanelRoster.cs` `bdde7d16914ce742`
+- `QNavigation.cs` `d4a071968f53aef9`
+- `QPanelRoster.cs` `b2b23292a6aad140`
 - `QWindow.cs` `2a23b08f87db77ad`
 - `QWindowScreen.cs` `eb76a072e3a88c02`

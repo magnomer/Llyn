@@ -3,7 +3,7 @@
 The word-pick menu and the drag band of the reading view.
 It stands apart from Text, which draws sentences, because these drive popups and selection over the finished page.
 
-## `PSwath`
+## `QSwath`
 
 The band of text a reader drags across in the reading view, highlighted so it can be copied.
 A text block selects nothing on its own, and one block's selection could never reach the next.
@@ -15,20 +15,20 @@ It never takes a hit, so every click still lands on the text and buttons under i
 A press on a button, link, text box, star row, slider or scroll bar is left to that control.
 A drag past the viewer's top or bottom scrolls it a step at a time, so the band grows off-screen.
 
-### `PSwathRowSlack`
+### `QSwathRowSlack`
 
 It is internal so `QSwathText` joins copied rows by the same measure the band is drawn by.
 
-### `PSwath`
+### `QSwath`
 
 It takes focus though it takes no hit, so Copy and Select All reach it from the keyboard.
 Copy is offered only while a band is drawn.
 
-### `PSwathAttach`
+### `QSwathAttach`
 
 The viewer's tunnelling mouse events are listened to, so a press anywhere on the page is seen first.
 
-### `PSwathClear`
+### `QSwathClear`
 
 A press, a new entry and an emptied view each drop the band.
 The item list in `QSwathText` is dropped with it, since the page it described is about to change.
@@ -38,45 +38,45 @@ The item list in `QSwathText` is dropped with it, since the page it described is
 The band is the system highlight colour, thinned so the text stays readable through it.
 Any item in range other than a text block is covered whole.
 
-### `PSwathBandScan`
+### `QSwathBandScan`
 
 A position's rectangle is a zero-width edge, so each is joined with the next position's back edge.
 Edges on one line merge into one rectangle.
 
-### `PSwathMoveRefine`
+### `QSwathMoveRefine`
 
 Nothing starts until the pointer has moved a drag's distance.
 A plain click therefore still opens a word on a sentence and reaches every control.
 Items are gathered at that moment, in visual order, which is reading order.
 The viewer then captures the mouse, so the band follows the pointer past the window's edge.
 
-### `PSwathControlCheck`
+### `QSwathControlCheck`
 
 A link is a content element, so the logical parent is followed until a visual is reached.
 
-### `PSwathTextCheck`
+### `QSwathTextCheck`
 
 It answers true only for text under no control.
 So the beam cursor shows over prose alone.
 
-## `PSwathSeam`
+## `QSwathSeam`
 
 One end of the band, holding a page item index and, for a text block, the position inside it.
 An item that is not text carries no position.
 It stays a value, so an end is copied rather than shared between the anchor, head and tail.
 
-### `PSwathSeamStart`
+### `QSwathSeamStart`
 
 The head's own block starts at its position, and any later block starts at its beginning.
 
-### `PSwathSeamFinish`
+### `QSwathSeamFinish`
 
 The tail's own block ends at its position, and any earlier block ends at its end.
 
 ## `QSwathText`
 
 The page items a band runs across, and the text the band covers.
-It stands apart from `PSwath`, which keeps the drag and the drawing.
+It stands apart from `QSwath`, which keeps the drag and the drawing.
 Every bound is measured against the owning swath, so the items and the highlight share one frame.
 A tone contour is bounded by what it draws, not by its slot.
 Its slot is the pronunciation's column and its box may hang past it, so the highlight covers the box.
@@ -196,9 +196,9 @@ A popup that stays open over another window would answer keys meant for that win
 
 ## Stamp
 
-Commit: `aae5349dbb94`
-- `PSwath.cs` `584dc17c6a493ecd`
-- `PSwathSeam.cs` `7d4ab1291ea7b670`
+Commit: `2f9a06b8eb95`
 - `QMentionAsk.cs` `99ebaa29f9e3be85`
-- `QMentionMenu.cs` `4e16ce165e70c6d0`
-- `QSwathText.cs` `45ea49e1d4586220`
+- `QMentionMenu.cs` `f861653f93f5f1b7`
+- `QSwath.cs` `14d3c994f95140d1`
+- `QSwathSeam.cs` `2df105d4cda9a5d4`
+- `QSwathText.cs` `cb11efaee0d0b0bc`

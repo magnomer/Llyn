@@ -4,7 +4,7 @@ Gloss holds the Gloss rows and the language picker.
 A Gloss is a rendering in another language, and its row serves both the card editor and the corpus panel.
 The row is shared so one template and one flag resolver serve every place a Gloss shows.
 
-## `PGloss`
+## `QRendition`
 
 This is one Gloss row: the language it is written in and its flag.
 The text is the engine's value, state and all, and the converter reads its mark.
@@ -14,11 +14,11 @@ So the row holds no copy of it.
 The language is set only by the draft, so a pick shows once the gate's change comes back.
 A negative id marks a row the store has not written.
 
-### `PGlossShow`
+### `QRenditionShow`
 
 A field already reading what the engine holds is left alone.
 
-### `PGlossRowApply`
+### `QRenditionRowApply`
 
 One fill serves the card row, the field, the display and the corpus line.
 So a part the template lacks is skipped.
@@ -26,26 +26,26 @@ The flag shows the language's flag, and the ring stands in while there is none.
 The picker selects by language name, a path set here so the markup holds none.
 Selection handlers are off while the fill sets the selection, so only a pick raises the notice.
 
-### `PGlossTextApply`
+### `QRenditionTextApply`
 
 The keys are read once per fill, so they do not follow a later language switch.
 
-### `PGlossPickRaise`
+### `QRenditionPickRaise`
 
 A null selection, which the list shows while the catalog reloads, raises nothing.
 The editor hears the notice through the sentence row, and the corpus hears the list itself.
 
-### `PGlossListRefine`
+### `QRenditionListRefine`
 
 A pick shuts the picker, but the shut waits for the dispatcher.
 It refills the row and would reset the selection, so every handler of the pick reads the picked language first.
 
-## `PGlossCommand`
+## `QGlossCommand`
 
 The routed removal command is bound by whichever surface hosts the row.
 The card editor and the corpus panel bind their own handlers, so one template serves both.
 
-## `PGlossConverter`
+## `QGlossConverter`
 
 The converter turns the Glosses a read-only card carries into rows it can show.
 A card stores each Gloss as language and text alone, and the display needs the flag beside it.
@@ -55,14 +55,14 @@ A value that is not a Gloss list shows no rows.
 
 ### Inline notes
 
-### PGlossConverter.cs: `private static readonly ObservableCollection<PLanguageItem> PGlossConverterCatalog = []`
+### QGlossConverter.cs: `private static readonly ObservableCollection<QLanguageItem> QGlossConverterCatalog = []`
 
 The row asks for a catalog because the editor lets a Gloss change language.
 The display never opens that picker, so every row shares one empty catalog.
 
-## `PLanguageItem`
+## `QLanguageItem`
 
-This is one row of the `PSpeaker` dropdown, with the language name and its flag image.
+This is one row of the `QSpeaker` dropdown, with the language name and its flag image.
 The flag is null when the pack declares none, and the row then shows no flag.
 It is resolved once when the list is built, so the menu paints without a per-row download.
 `PLanguageNameRead` answers empty when the sender carries no row.
@@ -99,10 +99,10 @@ It unchecks the pill, so the menu closes once a language is picked.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `PGloss.cs` `525a4fcf25be9516`
-- `PGlossCommand.cs` `6c1cd0128de1e28d`
-- `PGlossConverter.cs` `c162fd15de6b5804`
-- `PLanguageItem.cs` `17b6a97042d3cd3b`
-- `QGloss.cs` `490c78e4380ecf05`
-- `QSpeaker.cs` `298952da7f1049c7`
+Commit: `2f9a06b8eb95`
+- `QGloss.cs` `29e3b6ba402afc04`
+- `QGlossCommand.cs` `f1f508e8d22a6c14`
+- `QGlossConverter.cs` `807ab4503b57cfbf`
+- `QLanguageItem.cs` `d39f5081980f1ecd`
+- `QRendition.cs` `6d261d1d53c0aac0`
+- `QSpeaker.cs` `51169bdf8215ad55`

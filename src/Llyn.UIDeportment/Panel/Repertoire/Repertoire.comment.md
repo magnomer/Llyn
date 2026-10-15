@@ -137,7 +137,7 @@ So the list keeps its scroll position.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `2f9a06b8eb95`
 - `QAtlas.cs` `2ff8bdece4ed8a5b`
 - `QAtlasItem.cs` `593d5537a55622fd`
-- `QRepertoire.cs` `e3253b9e05bcee03`
+- `QRepertoire.cs` `b321dab582d047ab`

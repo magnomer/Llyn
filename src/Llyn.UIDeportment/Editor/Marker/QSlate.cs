@@ -20,7 +20,7 @@ internal sealed class QSlate
 
     private readonly QLabel _qSlateLabel;
 
-    private readonly ObservableCollection<PSlateItem> _qSlateItem = [];
+    private readonly ObservableCollection<QSlateItem> _qSlateItem = [];
 
     private CCaret _cCaret = null!;
 
@@ -49,24 +49,24 @@ internal sealed class QSlate
 
     private void QSlateApply(FrameworkElement container, object item, string? _)
     {
-        if (item is not PSlateItem row)
+        if (item is not QSlateItem row)
         {
             return;
         }
 
         if (QLook.QLookPartFind<Run>(container, "PSlateLead") is Run lead)
         {
-            lead.Text = row.PSlateItemLead;
+            lead.Text = row.QSlateItemLead;
         }
 
         if (QLook.QLookPartFind<Run>(container, "PSlateMark") is Run mark)
         {
-            mark.Text = row.PSlateItemMark;
+            mark.Text = row.QSlateItemMark;
         }
 
         if (QLook.QLookPartFind<Run>(container, "PSlateTail") is Run tail)
         {
-            tail.Text = row.PSlateItemTail;
+            tail.Text = row.QSlateItemTail;
         }
 
         if (QLook.QLookPartFind<Grid>(container, "PSlateRow") is Grid surface)
@@ -80,7 +80,7 @@ internal sealed class QSlate
 
     private void QSlateMissRefine(object sender, MouseButtonEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: PSlateItem })
+        if (sender is not FrameworkElement { DataContext: QSlateItem })
         {
             QSlateShutRefine();
         }
@@ -88,17 +88,17 @@ internal sealed class QSlate
 
     private void QSlatePickObserve(object sender, MouseButtonEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: PSlateItem item }
-            || Keyboard.FocusedElement is not FrameworkElement { DataContext: PCaret<PLabelChip> row }
-            || _qSlateLabel.QLabelCardFind(row) is not PCard card)
+        if (sender is not FrameworkElement { DataContext: QSlateItem item }
+            || Keyboard.FocusedElement is not FrameworkElement { DataContext: QInlet<QLabelChip> row }
+            || _qSlateLabel.QLabelCardFind(row) is not QPlacard card)
         {
             return;
         }
 
-        _cCaret.CCaretTagInsert(card.PCardId, item.PSlateItemId);
+        _cCaret.CCaretTagInsert(card.QPlacardId, item.QSlateItemId);
         e.Handled = true;
         QSlateShutRefine();
-        row.PCaretClear();
+        row.QInletClear();
     }
 
     internal void QSlateKeyRefine(object sender, KeyEventArgs e)
@@ -133,26 +133,26 @@ internal sealed class QSlate
     internal void QSlateKeyObserve(object sender, KeyEventArgs e)
     {
         if (e.Key != Key.Enter
-            || sender is not FrameworkElement { DataContext: PCaret<PLabelChip> row }
-            || _qSlateLabel.QLabelCardFind(row) is not PCard card)
+            || sender is not FrameworkElement { DataContext: QInlet<QLabelChip> row }
+            || _qSlateLabel.QLabelCardFind(row) is not QPlacard card)
         {
             return;
         }
 
-        if (QSlateList.SelectedItem is not PSlateItem item)
+        if (QSlateList.SelectedItem is not QSlateItem item)
         {
             return;
         }
 
-        _cCaret.CCaretTagInsert(card.PCardId, item.PSlateItemId);
+        _cCaret.CCaretTagInsert(card.QPlacardId, item.QSlateItemId);
         e.Handled = true;
         QSlateShutRefine();
-        row.PCaretClear();
+        row.QInletClear();
     }
 
-    internal void QSlateRefine(PCard card, CSlate slate)
+    internal void QSlateRefine(QPlacard card, CSlate slate)
     {
-        card.PCardLabel.PCaretRefine(slate.CSlateText);
+        card.QPlacardLabel.QInletRefine(slate.CSlateText);
         if (slate.CSlateShown)
         {
             QSlateOpenRefine(card, slate.CSlateRows);
@@ -162,12 +162,12 @@ internal sealed class QSlate
         QSlateShutRefine();
     }
 
-    private void QSlateOpenRefine(PCard card, IReadOnlyList<CSlateRow> rows)
+    private void QSlateOpenRefine(QPlacard card, IReadOnlyList<CSlateRow> rows)
     {
         _qSlateItem.Clear();
         foreach (CSlateRow row in rows)
         {
-            _qSlateItem.Add(new PSlateItem(row.CSlateRowId, row.CSlateRowLead, row.CSlateRowMark, row.CSlateRowTail));
+            _qSlateItem.Add(new QSlateItem(row.CSlateRowId, row.CSlateRowLead, row.CSlateRowMark, row.CSlateRowTail));
         }
 
         TextBox? box = QSlateBoxFind(card);
@@ -187,9 +187,9 @@ internal sealed class QSlate
         _qSlateItem.Clear();
     }
 
-    private TextBox? QSlateBoxFind(PCard card)
+    private TextBox? QSlateBoxFind(QPlacard card)
     {
-        return Keyboard.FocusedElement is TextBox { DataContext: PCaret<PLabelChip> row } box &&
+        return Keyboard.FocusedElement is TextBox { DataContext: QInlet<QLabelChip> row } box &&
             _qSlateLabel.QLabelCardFind(row) == card
             ? box
             : null;
