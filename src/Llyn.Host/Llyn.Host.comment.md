@@ -4,6 +4,17 @@ The composition root that builds the engine and hands it to a UI.
 It builds the executable `Llyn.exe`, so the installed program keeps its name.
 It stands apart because it is the only project that may name every project and every Windows twin.
 
+## Two launchers
+
+The user decided on one program with two launchers for the same `Llyn.dll`.
+`Llyn.exe` has the window subsystem and opens the GUI with no console behind it.
+`Llyn.com` has the console subsystem and opens the CUI in the terminal that typed it.
+Windows tries `.COM` before `.EXE` in `PATHEXT`, so `llyn` typed in a terminal reaches `Llyn.com`.
+A double click or a shortcut names `Llyn.exe`, so the desktop keeps the window.
+One assembly means one build, one set of settings and one version for both surfaces.
+The subsystem is fixed in the launcher's header, so the process cannot change it once started.
+So the launcher is the choice, and Guestroom reads which one started it.
+
 ## `Llyn.Host.csproj`
 
 It holds no behaviour, and each UI's entry point adds only what depends on its medium.
@@ -11,13 +22,37 @@ It takes the veneer's framework, runtime identifiers and icon, since it is now t
 It uses WPF because it starts the veneer's application on its own thread.
 The Release publish is precompiled with ReadyToRun.
 Precompiled code removes first-use JIT from launch and first clicks.
+It references both UI families, since one assembly runs behind both launchers.
+It references Guestroom, which picks the UI a start opens.
+
+## `LHostLauncherCreate`
+
+Makes `Llyn.com`, the console launcher, right after the SDK makes `Llyn.exe`.
+It calls the SDK's own `CreateAppHost` task with the same inputs, so both launchers come from one template.
+Only the subsystem differs, so `Llyn.com` carries the same icon, version and target `Llyn.dll`.
+It writes into the intermediate folder, as the SDK does for `Llyn.exe`.
+A `None` item copies it from there beside `Llyn.exe`, in the build output and in the publish folder.
+So the build script needs no step, and a clean removes it with the rest.
 
 ## `LHost.cs`
 
 The file uses top-level statements, since a method named `Main` fails the name audit.
-The exit code stays 1 unless the application runs, so a failed start exits with 1.
+The host builds the console start and the window start, and hands both to Guestroom with the process path.
+Guestroom picks the one that runs, so the host holds no branch.
+The choice reads no console and no operating system, since the launcher alone carries the user's intent.
+Demeanor never sees the choice, so neither UI family knows the other exists.
+
+The console path runs on the calling thread, with no STA and no WPF object.
+`BBootstrap` takes the same rig seams `QBootstrap` takes and returns the exit code itself.
+The client is disposed once the bootstrap returns, as on the GUI path.
+
+The atelier is composed in one place for both paths, so the two UIs wire the same ports.
+Each path hands in its own marshal, built on its own UI thread.
+Each path builds its own rig on its own UI thread, so the GUI builds its adapters as before.
+
+The GUI exit code stays 1 unless the application runs, so a failed start exits with 1.
 WPF needs a single-threaded apartment, and top-level statements cannot carry `[STAThread]`.
-So the whole run happens on one STA thread the entry point starts and joins.
+So the whole GUI run happens on one STA thread the entry point starts and joins.
 
 The client is built once and handed to every rig of the session.
 It is disposed in one place at the end, whether or not the start went through.
@@ -55,7 +90,8 @@ The settings outlet is built before the window, because the catalog step reads t
 The atelier then takes this same outlet.
 The catalog step runs before the rescue consult, so the rescue notice speaks the stored language.
 
-The host builds Conduct's root and hands it to the deportment's window, so `QBootstrap` builds nothing.
+The host builds Conduct's root and hands it to the deportment's window or to `BBootstrap`.
+So neither bootstrap builds it.
 The root takes the posture and one outlet per port, all over the one engine.
 The entry ports and the sound ports are the engine's own facades, gathered in two bundles with no outlet between.
 The deportment receives the root and never sees the engine itself.
@@ -65,6 +101,6 @@ The host then disposes the engine the window ran over.
 
 ## Stamp
 
-Commit: `f6dae2392935`
-- `LHost.cs` `186d792f9fda3adc`
-- `Llyn.Host.csproj` `e789063a5fe25eef`
+Commit: `ed7d18d90760`
+- `LHost.cs` `6dbd9622b43df849`
+- `Llyn.Host.csproj` `227db85934ecef45`

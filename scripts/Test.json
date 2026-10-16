@@ -3,7 +3,7 @@
   "tests": "tests",
   "convention": "Llyn.Tests.Convention",
   "platforms": {
-    "Internal": ["Llyn.Tests.Interface", "Llyn.Tests.Engine", "Llyn.Tests.Conduct"],
+    "Internal": ["Llyn.Tests.Interface", "Llyn.Tests.Engine", "Llyn.Tests.Conduct", "Llyn.Tests.Console"],
     "Windows": "Llyn.Tests.Windows"
   }
 }

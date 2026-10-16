@@ -39,7 +39,7 @@ internal static class TAuditTruthSetting
     public static readonly Dictionary<string, string> TAuditControlPrefix = new(StringComparer.Ordinal)
     {
         ["src/Llyn.UIDeportment"] = "P",
-        ["src/Llyn.UIDemeanor"] = "P",
+        ["src/Llyn.UIDemeanor"] = "A",
     };
 
     public static readonly string[] TAuditFrameworkPacks =

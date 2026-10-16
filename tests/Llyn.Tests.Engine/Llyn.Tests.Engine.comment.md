@@ -1,6 +1,6 @@
 # Llyn.Tests.Engine
 
-Builds the portable behaviour tests of Core, Application, Infrastructure and ShellEngine.
+Builds the portable behaviour tests of Core, Application, Infrastructure, ShellEngine and Guestroom.
 The tests reach production code only through the relays, fakes and workspace of the relay project.
 
 ## `Llyn.Tests.Engine.csproj`

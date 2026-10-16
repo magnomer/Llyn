@@ -12,8 +12,9 @@ internal static class TAuditCharterSetting
         ["Llyn.Core.Windows"] = ["Llyn.Core"],
         ["Llyn.Host"] =
         [
-            "Llyn.Core", "Llyn.Application", "Llyn.Infrastructure", "Llyn.Core.Windows", "Llyn.ShellEngine",
-            "Llyn.Conduct", "Llyn.UIDeportment", "Llyn.UIVeneer", "Llyn.UIDemeanor", "Llyn.UITerminal",
+            "Llyn.Core", "Llyn.Application", "Llyn.Infrastructure", "Llyn.Core.Windows", "Llyn.Guestroom",
+            "Llyn.ShellEngine", "Llyn.Conduct", "Llyn.UIDeportment", "Llyn.UIVeneer", "Llyn.UIDemeanor",
+            "Llyn.UITerminal",
         ],
         ["Llyn.UITerminal"] = ["Llyn.UIDemeanor"],
         ["Llyn.UIDemeanor"] = ["Llyn.Conduct"],
@@ -21,6 +22,7 @@ internal static class TAuditCharterSetting
         ["Llyn.Conduct"] = ["Llyn.ShellEngine"],
         ["Llyn.UIDeportment"] = ["Llyn.Conduct", "Llyn.UIDeportment.Capsule"],
         ["Llyn.UIDeportment.Capsule"] = [],
+        ["Llyn.Guestroom"] = [],
         ["Llyn.UIVeneer"] = ["Llyn.UIDeportment"],
     };
 

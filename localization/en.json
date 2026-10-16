@@ -995,6 +995,25 @@
     "Autograph.Name": "Author name",
     "Autograph.Union": "Merge into another author",
     "Autograph.UnionSearch": "Type the name of the author to keep",
-    "Autograph.UnionUnsaved": "Save the author before merging it into another"
+    "Autograph.UnionUnsaved": "Save the author before merging it into another",
+    "Invocation.Usage": "Name one verb as an option, in the form -name or -name:value.",
+    "Invocation.Malformed": "The argument {0} is not an option. Write each option as a dash and a lowercase name, such as -help or -workspace:value.",
+    "Invocation.Unknown": "The option {0} is unknown. Run llyn -help to list the options.",
+    "Invocation.ValueMissing": "The option {0} needs a value after a colon.",
+    "Invocation.ValueForbidden": "The option {0} takes no value.",
+    "Invocation.ValueUnknown": "The option {0} does not accept the value {1}.",
+    "Invocation.Repeat": "The option {0} may be given only once.",
+    "Invocation.VerbSecond": "The options {0} and {1} are both verbs, and only one verb may be given.",
+    "Invocation.Conflict": "The options -yes and -no cannot be given together.",
+    "Invocation.Help": "Run llyn with one verb and any further options, each written as -name or -name:value.",
+    "Invocation.HelpHelp": "Lists every option, or only the options of the verb given as its value.",
+    "Invocation.HelpVersion": "Prints the version line.",
+    "Invocation.HelpWorkspace": "Prints the {terms.workspace} folder, or moves the {terms.workspace} to the folder given as its value.",
+    "Invocation.HelpYes": "Answers yes to every question.",
+    "Invocation.HelpNo": "Answers no to every question.",
+    "Invocation.HelpQuiet": "Keeps the diagnostics to failures.",
+    "Invocation.HelpColor": "Colours the output with the value auto, always or never.",
+    "Invocation.HelpFormat": "Names the output or file format with a value such as text, tsv, json, html or pdf.",
+    "Window.Unbuilt": "The full-screen console window is not built yet."
   }
 }

@@ -20,6 +20,7 @@
     <ProjectReference Include="..\Llyn.Application\Llyn.Application.csproj" />
     <ProjectReference Include="..\Llyn.Infrastructure\Llyn.Infrastructure.csproj" />
     <ProjectReference Include="..\Llyn.Core.Windows\Llyn.Core.Windows.csproj" />
+    <ProjectReference Include="..\Llyn.Guestroom\Llyn.Guestroom.csproj" />
     <ProjectReference Include="..\Llyn.ShellEngine\Llyn.ShellEngine.csproj" />
     <ProjectReference Include="..\Llyn.Conduct\Llyn.Conduct.csproj" />
     <ProjectReference Include="..\Llyn.UIDeportment\Llyn.UIDeportment.csproj" />
@@ -27,4 +28,32 @@
     <ProjectReference Include="..\Llyn.UIDemeanor\Llyn.UIDemeanor.csproj" />
     <ProjectReference Include="..\Llyn.UITerminal\Llyn.UITerminal.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Include="$(IntermediateOutputPath)$(AssemblyName).com"
+          Link="$(AssemblyName).com"
+          CopyToOutputDirectory="PreserveNewest"
+          CopyToPublishDirectory="PreserveNewest"
+          Visible="false" />
+  </ItemGroup>
+
+  <Target Name="LHostLauncherCreate"
+          AfterTargets="_CreateAppHost"
+          Inputs="@(IntermediateAssembly);$(AppHostSourcePath)"
+          Outputs="$(IntermediateOutputPath)$(AssemblyName).com"
+          Condition="'$(AppHostSourcePath)' != '' and
+                     Exists('@(IntermediateAssembly)') and
+                     Exists('$(AppHostSourcePath)')">
+    <CreateAppHost AppHostSourcePath="$(AppHostSourcePath)"
+                   AppHostDestinationPath="$([System.IO.Path]::GetFullPath('$(IntermediateOutputPath)$(AssemblyName).com'))"
+                   AppBinaryName="$(AssemblyName)$(TargetExt)"
+                   IntermediateAssembly="@(IntermediateAssembly->'%(FullPath)')"
+                   WindowsGraphicalUserInterface="false"
+                   Retries="$(CopyRetryCount)"
+                   RetryDelayMilliseconds="$(CopyRetryDelayMilliseconds)"
+                   DisableCetCompat="$(_DisableCetCompat)" />
+    <ItemGroup>
+      <FileWrites Include="$(IntermediateOutputPath)$(AssemblyName).com" />
+    </ItemGroup>
+  </Target>
 </Project>

@@ -1,6 +1,6 @@
 # Interface
 
-The relays that let the Windows tests reach Deportment's internals.
+The relays that let the Windows tests reach Deportment's internals and Core.Windows.
 They carry no test logic of their own, so a test keeps its arrange and assert beside them.
 
 ## `[assembly: CollectionBehavior(DisableTestParallelization = true)]`
@@ -71,6 +71,12 @@ It returns null when no row holds, or when the winner is no fixed `Freezable`.
 
 The blank draft carries no meaning links.
 
+## `TInterfacePhonograph`
+
+The relays that build Core.Windows's phonograph and play a file on it.
+The phonograph is handed back as the `LPhonograph` port, so the caller names no Core.Windows type.
+The caller subscribes to `LPhonographFinished` itself, since an event is no production call.
+
 ## `TWindow`
 
 The shared runner for test steps that build WPF objects.
@@ -84,7 +90,8 @@ The wait is bounded, so a step that hangs fails the test rather than the whole r
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `ed7d18d90760`
 - `TInterfaceCapsule.cs` `062207ed6f90f438`
 - `TInterfaceDeportment.cs` `98defaca17184e1a`
+- `TInterfacePhonograph.cs` `888cd40c37da96bb`
 - `TWindow.cs` `20d60e5a8413b7cf`

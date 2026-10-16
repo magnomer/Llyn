@@ -169,7 +169,7 @@
     },
     "controlPrefixes": {
       "src/Llyn.UIDeportment": "P",
-      "src/Llyn.UIDemeanor": "P"
+      "src/Llyn.UIDemeanor": "A"
     },
     "controlBases": [
       "System.Windows.FrameworkElement",

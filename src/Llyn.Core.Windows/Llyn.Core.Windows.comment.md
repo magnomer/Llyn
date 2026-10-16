@@ -10,24 +10,47 @@ The Windows version in the target makes the system PDF reader in `Windows.Data.P
 Host, Deportment and Veneer already target the same version, so no project above needs a new one.
 The WebView2 package lives here because the browser engine prints, proofs and saves every press page.
 DPAPI, which protects the Joplin token, comes with the Windows desktop framework, so no package brings it.
+The project still uses WPF, because `LPressSpooler` reads the printers through System.Printing, a WPF assembly.
+The phonograph no longer needs it.
 
 ## `LPhonographMedia`
 
 The phonograph the composition root hands the engine.
-It holds one platform player and maps each port call onto it, with no logic of its own.
+It holds one Windows Runtime player and maps each port call onto it, with no logic of its own.
 The root builds one for the whole run, so a workspace switch keeps the same player.
-The player belongs to the shell's thread, so a call from another thread is sent there first.
-Stopping closes the player, so the file is no longer held open.
+The player accepts a call from any thread, so no call is sent to another thread first.
+Its media-key and system-overlay link is turned off, as the WPF player had none.
+It starts at half volume, the WPF player's default.
+So a sound played before any volume call plays as loud as before.
+Playing replaces the source and disposes the old one, so the earlier file is released.
+Stopping pauses the player, removes the source and disposes it, so the file is no longer held open.
+
+## `_lPhonographContext`
+
+The context a finish is reported on.
+The player raises its end and its failure on a worker thread.
+The shell's thread raised them before, and `LRecordingClerk` keeps its queue on that thread.
+The field starts as the constructing thread's context.
+Each play replaces it with the playing thread's context when that thread has one.
+The root builds the phonograph before the shell installs its context, so the construction alone would find none.
+The shell plays on its own thread, so its context arrives with the first play.
+It is volatile, since the player's worker thread reads what the playing thread wrote.
 
 ## `LPhonographFailHandle`
 
-Closes the player when a file fails to play, so the file is released.
+Stops the player when a file fails to play, so the file is released.
 The failure is not reported, since the phonograph has no route to the window.
 It then raises `LPhonographFinished`, so a run of sounds goes on to its next file.
+Both steps run on the context, in that order, as they did on the shell's thread.
 
 ## `LPhonographFinishHandle`
 
-Raises `LPhonographFinished` when the player reaches the end of a file.
+Raises `LPhonographFinished` on the context when the player reaches the end of a file.
+
+## `LPhonographDispatch`
+
+Posts a step to the context when one is known, and runs it at once on the player's thread otherwise.
+A post never waits, so the player's worker thread is never held by the listener.
 
 ## `LPressBrowser`
 
@@ -313,8 +336,8 @@ A caller then asks Joplin for a fresh token rather than failing on a stale setti
 
 ## Stamp
 
-Commit: `bd299c638b2c`
-- `LPhonographMedia.cs` `4f48ad7e405721fd`
+Commit: `ed7d18d90760`
+- `LPhonographMedia.cs` `1d55ab0954a5501e`
 - `LPressBrowser.cs` `0ec5161d6d11243a`
 - `LPressController.cs` `cc054b88aa9d403b`
 - `LPressDocument.cs` `108ca38d745071a2`

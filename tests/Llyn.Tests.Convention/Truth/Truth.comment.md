@@ -52,6 +52,7 @@ A kind outside the informative list always gates.
 A listed kind gates once every folder it waits on holds a walked source.
 Puppeteering is a member of a control type that requests logic, directly, through a relay or through a lambda.
 A control type is a driver type whose name starts with its ring's prefix in `TAuditControlPrefix`.
+A Demeanor type named `AWindow` is a control and `PWindow` is not, since a control carries its family's surface prefix.
 A control shows what its driver hands it, so the request belongs in the driver.
 Reading a Conduct record property is no request and stays legal.
 Every ledger ceiling equals its count, so a ceiling left above the count is stale.
@@ -201,6 +202,7 @@ Once every listed folder holds one, the kind fails like any other.
 Mismatching waits on Demeanor, since every Deportment reach mismatches while the CUI has no code.
 The control prefix of each driver ring is keyed by the ring's folder.
 A driver type whose name starts with its ring's prefix is a control type.
+The prefix is the surface prefix of the ring's family: `P` in Deportment, `A` in Demeanor.
 A control shows what it is handed and may not request logic, so puppeteering names any request inside one.
 `AuditUI.json` holds the same rows as `truth.controlPrefixes`, copied by hand.
 The framework packs are the shared frameworks referenced beside the test runtime, so framework types resolve.
@@ -337,13 +339,13 @@ A hit through a ref parameter names that parameter, as a hit through a local nam
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `TAuditTruth.cs` `bb581b1016b16e37`
+Commit: `ed7d18d90760`
+- `TAuditTruth.cs` `f4afca1c124eb6ca`
 - `TAuditTruthField.cs` `bda475280d6b7bcb`
 - `TAuditTruthLedger.json` `c50bb25b609b47e9`
 - `TAuditTruthLocal.cs` `4baaaa83b0678024`
 - `TAuditTruthReference.cs` `3c96dcfa5aa99002`
 - `TAuditTruthSequence.cs` `a5a77f14c0b84d98`
-- `TAuditTruthSetting.cs` `6423852722d78021`
+- `TAuditTruthSetting.cs` `566ece867a403943`
 - `TAuditTruthTampering.cs` `78e63b421c0ee57e`
 - `TAuditTruthWalker.cs` `6f9d273d1926e234`

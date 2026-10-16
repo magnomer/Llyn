@@ -99,6 +99,15 @@ public sealed class TAuditTruth
     }
 
     [Fact]
+    public void AuditTruth_DemeanorControl_TakesConsolePrefix()
+    {
+        string folder = Path.Combine(TAuditBinder.TAuditRoot, "src", "Llyn.UIDemeanor", "Window");
+
+        Assert.True(TAuditTruthWalker.TAuditControlCheck("AWindow", Path.Combine(folder, "AWindow.cs")));
+        Assert.False(TAuditTruthWalker.TAuditControlCheck("PWindow", Path.Combine(folder, "PWindow.cs")));
+    }
+
+    [Fact]
     public void AuditTruth_Ledger_MatchesHits()
     {
         TAuditLedger.TAuditStaleCheck(

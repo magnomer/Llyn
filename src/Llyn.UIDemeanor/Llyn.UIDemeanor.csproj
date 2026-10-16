@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="Llyn.Tests.Console" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Llyn.Conduct\Llyn.Conduct.csproj" />
   </ItemGroup>
 </Project>

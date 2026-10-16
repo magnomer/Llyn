@@ -60,6 +60,11 @@ The relays for the one Conduct map from a text to ready Markdown blocks.
 Each relay is transparent.
 The fake Markdown port runs the real engine parser, so a map sees real blocks.
 
+## `TInterfaceGuestroom`
+
+The relay for the launcher's choice of start.
+It is transparent, and the test hands in both starts.
+
 ## TInterfaceSettings
 
 The relays for the settings file and the posture the shell keeps beside it.
@@ -159,11 +164,12 @@ A file the operating system has not released yet is not a test failure.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `Llyn.Tests.Interface.csproj` `5a64ed92eefef899`
+Commit: `ed7d18d90760`
+- `Llyn.Tests.Interface.csproj` `1785ae59ab2bec8b`
 - `TEditorFixture.cs` `a42623dacfe4b6f9`
 - `TInterfaceBoundary.cs` `c098561a2150175f`
 - `TInterfaceCitation.cs` `9d8e4559d46b091b`
+- `TInterfaceGuestroom.cs` `b8ba07f12834fb28`
 - `TInterfaceMarkdown.cs` `e3d48d9e8ac783fa`
 - `TInterfaceSettings.cs` `56f6b9af791d9e96`
 - `TWorkspace.cs` `2cc686a2ca627691`

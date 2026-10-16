@@ -1,7 +1,7 @@
 # Llyn.Tests.Windows
 
 The behaviour tests that compile only on Windows.
-They stand apart from the portable suite because they drive Deportment, which builds for Windows.
+They stand apart from the portable suite because they drive Deportment and Core.Windows, which build for Windows.
 
 ## `<TargetFramework>net10.0-windows10.0.17763.0</TargetFramework>`
 
@@ -33,7 +33,11 @@ The reference also brings the language packs beside the test binaries.
 The tests reference Deportment directly.
 This project declares no direct Capsule or Veneer reference.
 
+## `<ProjectReference Include="../../src/Llyn.Core.Windows/Llyn.Core.Windows.csproj" />`
+
+The tests drive the Windows phonograph directly, with no window and no host.
+
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `Llyn.Tests.Windows.csproj` `093ab6e30d54e7fc`
+Commit: `ed7d18d90760`
+- `Llyn.Tests.Windows.csproj` `6d66f7f069547369`

@@ -114,6 +114,22 @@ public sealed class TAuditName
         Assert.DoesNotContain(hits, hit => hit.TAuditSealed);
     }
 
+    [Theory]
+    [InlineData("src/Llyn.UITerminal/Window/AWindow.cs", "AWindow", "PWindow")]
+    [InlineData("src/Llyn.UITerminal/Leave/ASLeave.cs", "ASLeave", "PSLeave")]
+    [InlineData("src/Llyn.UIDemeanor/Window/BWindow.cs", "BWindow", "QWindow")]
+    [InlineData("src/Llyn.UIDemeanor/Leave/BSLeave.cs", "BSLeave", "QSLeave")]
+    public void AuditName_ConsoleTurf_AllowsOnlyConsolePrefix(string relative, string console, string primary)
+    {
+        SyntaxNode root = CSharpSyntaxTree
+            .ParseText($"namespace Llyn;\ninternal sealed class {console} {{ }}\ninternal sealed class {primary} {{ }}")
+            .GetRoot();
+        List<(int TAuditLine, string TAuditType, string TAuditText, bool TAuditSealed)> hits =
+            TAuditTurfScan(relative, root).ToList();
+
+        Assert.Equal(primary, Assert.Single(hits).TAuditType);
+    }
+
     internal static IEnumerable<(int TAuditLine, string TAuditType, string TAuditText, bool TAuditSealed)>
         TAuditTurfScan(string relative, SyntaxNode root)
     {

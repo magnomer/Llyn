@@ -24,6 +24,7 @@
     <InternalsVisibleTo Include="Llyn.Tests.Engine" />
     <InternalsVisibleTo Include="Llyn.Tests.Conduct" />
     <InternalsVisibleTo Include="Llyn.Tests.Windows" />
+    <InternalsVisibleTo Include="Llyn.Tests.Console" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,6 +32,7 @@
     <ProjectReference Include="../../src/Llyn.Infrastructure/Llyn.Infrastructure.csproj" />
     <ProjectReference Include="../../src/Llyn.ShellEngine/Llyn.ShellEngine.csproj" />
     <ProjectReference Include="../../src/Llyn.Conduct/Llyn.Conduct.csproj" />
+    <ProjectReference Include="../../src/Llyn.Guestroom/Llyn.Guestroom.csproj" />
   </ItemGroup>
 
 </Project>

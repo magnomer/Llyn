@@ -10,6 +10,7 @@ internal static class TAuditPuritySetting
         "Llyn.Application",
         "Llyn.ShellEngine",
         "Llyn.Conduct",
+        "Llyn.Guestroom",
     ];
 
     public static readonly string[] TAuditPurityFrame =
@@ -32,6 +33,7 @@ internal static class TAuditPuritySetting
         ["Llyn.Application"] = [],
         ["Llyn.ShellEngine"] = ["System.Runtime.ExceptionServices"],
         ["Llyn.Conduct"] = ["System.Runtime.ExceptionServices"],
+        ["Llyn.Guestroom"] = [],
     };
 
     public static readonly string[] TAuditEavesdroppingMember =

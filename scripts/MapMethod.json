@@ -4,6 +4,7 @@
   "projectRoots": ["src", "tests", "performance"],
   "layers": [
     { "project": "Llyn.Host", "short": "Host", "rank": 8, "names": "*" },
+    { "project": "Llyn.Guestroom", "short": "Guestroom", "rank": 7.5, "names": [] },
     { "project": "Llyn.UIVeneer", "short": "Veneer", "rank": 7, "names": ["Deportment"] },
     { "project": "Llyn.UITerminal", "short": "UITerminal", "rank": 7, "names": ["Demeanor"] },
     { "project": "Llyn.UIDeportment", "short": "Deportment", "rank": 6, "names": ["Conduct", "Capsule"] },

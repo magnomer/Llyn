@@ -1,7 +1,7 @@
 # Llyn.slnx
 Hash: `62f044b684ced0b3`
 
-Lists the twelve source projects that `dotnet build Llyn.slnx` compiles.
+Lists the thirteen source projects that `dotnet build Llyn.slnx` compiles.
 This file is the single authoritative statement of the target structure.
 It states the target, and the source tree may lag it.
 The audits and convention tests measure the lag as falling ceilings.
@@ -25,11 +25,14 @@ The audits and convention tests measure the lag as falling ceilings.
 - A rule stated for one surface holds for the other surface.
 - A rule stated for one driver holds for the other driver.
 
-| Role | GUI | CUI | Prefix |
-|---|---|---|---|
-| Surface | `Llyn.UIVeneer` | `Llyn.UITerminal` | `P` |
-| Driver | `Llyn.UIDeportment` | `Llyn.UIDemeanor` | `Q` |
-| Shared | `Llyn.Conduct` | `Llyn.Conduct` | `C` |
+| Role | GUI | GUI prefix | CUI | CUI prefix |
+|---|---|---|---|---|
+| Surface | `Llyn.UIVeneer` | `P` | `Llyn.UITerminal` | `A` |
+| Driver | `Llyn.UIDeportment` | `Q` | `Llyn.UIDemeanor` | `B` |
+| Shared | `Llyn.Conduct` | `C` | `Llyn.Conduct` | `C` |
+
+- `S` after a prefix marks a subwindow in the GUI (`PS`, `QS`) and a sublevel in the CUI (`AS`, `BS`).
+- A sublevel is a modal layer drawn over the console window.
 
 ## Data and the cut
 
@@ -65,11 +68,11 @@ The audits and convention tests measure the lag as falling ceilings.
 ## `<Project Path="src/Llyn.UITerminal/Llyn.UITerminal.csproj" />`
 
 - UITerminal is what the console user sees: the drawn text, frames and fields.
-- UITerminal offers two modes: an interactive CUI and a command-line CUI.
-- In the interactive CUI the user navigates by key presses.
-- The interactive CUI supports every key feature the Veneer offers.
+- UITerminal offers two modes: the communicative mode and the strict mode.
+- In the communicative mode the user navigates by key presses.
+- The communicative mode supports every key feature the Veneer offers.
 - Only GUI-only work such as drag, clipboard and printing is left out.
-- In the command-line CUI, UITerminal relays the command to Demeanor and prints the result.
+- In the strict mode, UITerminal relays the command to Demeanor and prints the result.
 - In both modes UITerminal only presents what Demeanor hands it and relays input to Demeanor.
 - UITerminal never decides what is drawn.
 - A UITerminal member only calls a function.
@@ -218,6 +221,17 @@ The audits and convention tests measure the lag as falling ceilings.
 - Host builds the engine and the Conduct root and hands them to a driver.
 - Host holds no behaviour.
 - Each medium's entry point adds only what depends on its medium.
+- Host hands both starts to Guestroom, and Guestroom picks the one that runs.
+
+## `<Project Path="src/Llyn.Guestroom/Llyn.Guestroom.csproj" />`
+
+- Guestroom is the launcher's choice of the UI a start opens.
+- A `Llyn.com` start opens the console, and every other start opens the GUI.
+- While WPF is the only GUI family, a GUI start opens WPF with no selector.
+- A later GUI family adds the selector and the saved choice to Guestroom.
+- A console start never reaches the selector.
+- Guestroom names no project, and only Host names it.
+- Guestroom is portable while it holds no Windows API.
 
 ## Platform
 

@@ -56,6 +56,7 @@ Mismatching waits on `src/Llyn.UIDemeanor`, so it holds no ledger rows.
 Once Demeanor holds a source, every mismatching hit fails.
 `truth.controlPrefixes` maps each driver ring folder to its control prefix.
 A driver type whose name starts with its ring's prefix is a control type.
+The prefix is the surface prefix of the ring's family: `P` in Deportment, `A` in Demeanor.
 Puppeteering names every control member in the relay set, one hit per member.
 Its relay set is the fixed point grown before any event joins.
 A control raising its own event signals, and the driver handling it requests.

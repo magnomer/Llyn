@@ -40,6 +40,7 @@ internal static class TAuditPlatformSetting
         ["Llyn.UIVeneer"] = "Llyn.Conduct",
         ["Llyn.UIDemeanor"] = "Llyn.UIDemeanor",
         ["Llyn.UITerminal"] = "Llyn.UITerminal",
+        ["Llyn.Guestroom"] = "Llyn.Guestroom",
         ["Llyn.Host"] = "",
     };
 

@@ -27,6 +27,8 @@ A sealed turf such as Conduct exposes only its own prefix, so a stray public typ
 The sealed hit is hard, with no ceiling, and the script reports it as the `Sealed turf` gate.
 A parsed `public sealed class LDisplay` under a Conduct path gives one sealed hit.
 The same class declared `internal` gives none, so it stays in the turf count.
+In UITerminal and Demeanor a parsed `A`, `AS`, `B` or `BS` type gives no hit.
+The same type under `P`, `PS`, `Q` or `QS` gives one.
 The turf scan binds nothing, so a specimen can feed it a hand-written source.
 A name without a prefix is left to the name fact, so no type counts twice.
 A source outside every turf, such as a script helper, gives nothing.
@@ -64,7 +66,10 @@ The prefix ceiling is the number of types whose prefix lies outside their turf.
 It only falls and now stands at zero, and the script holds the same number as `naming.prefixCeiling`.
 Prefixes are listed longest first, so `PS` is read before `P`.
 `P` marks a surface, `Q` a driver, `C` Conduct, `L` every other project and `T` a test.
-An `S` after the first letter marks a subwindow, and a lowercase form marks a private field.
+`A` marks a console surface and `B` a console driver, the console UI not being the primary UI.
+An `S` after the first letter marks a subwindow, or a sublevel in the console UI.
+A lowercase form marks a private field.
+No other prefix starts with `A` or `B`, so they leave the read of every other name unchanged.
 Each project folder lists the prefixes its types may carry.
 The script holds the same map as `naming.prefixTurfs`.
 The sealed turfs are those whose out-of-turf types may not be public.
@@ -161,10 +166,10 @@ A malformed name is a violation, never a silent pass, so `L_foo` or `LDraft_` ca
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `TAuditName.cs` `c9b8090ffd62da90`
+Commit: `ed7d18d90760`
+- `TAuditName.cs` `9745ed82d31609bc`
 - `TAuditNameFilter.cs` `94d5e4f62b0c181b`
-- `TAuditNameSetting.cs` `8bb28cd3251ee523`
+- `TAuditNameSetting.cs` `8acdea7ade003bcb`
 - `TAuditNameWalker.cs` `9b6199c38f7bf330`
 - `TAuditRegistry.cs` `27c74af9a11890bb`
 - `TSpecimen.cs` `0b6da9e6a472965e`

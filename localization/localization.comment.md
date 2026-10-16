@@ -124,6 +124,12 @@ An area without other texts, such as `Sentence`, `Fold` or `Box`, sits beside th
 `Print.PageTotal` is one entry so each language orders "of {0}" itself.
 `Print.Sheets` and `Print.SheetsOne` give the plural and singular count of paper sheets.
 `Print.Idle` is the footer text while nothing prints.
+`Invocation.*` words the console's strict mode, and `Invocation.Usage` is its usage error line.
+The other usage errors fill slot `{0}` with the typed argument or option.
+Slot `{1}` takes its value, or the second verb.
+`Invocation.Help*` gives the help text, one sentence per option, printed after the literal option name.
+`Window.*` words the console window's notices, and `Window.Unbuilt` says that window is not built yet.
+The console prints both after `llyn: `, so each is one complete sentence with option names kept literal.
 
 ## `ko.json`
 
@@ -142,6 +148,6 @@ The person headers spell out person and number instead of the English abbreviati
 
 ## Stamp
 
-Commit: `bd299c638b2c`
-- `en.json` `b1ac4552c0532f7f`
-- `ko.json` `ecde7ddad106c6ce`
+Commit: `ed7d18d90760`
+- `en.json` `babc66a0023221e3`
+- `ko.json` `94458a1baea7f535`

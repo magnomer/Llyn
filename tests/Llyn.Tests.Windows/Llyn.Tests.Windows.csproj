@@ -23,6 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="../Llyn.Tests.Interface/Llyn.Tests.Interface.csproj" />
     <ProjectReference Include="../../src/Llyn.UIDeportment/Llyn.UIDeportment.csproj" />
+    <ProjectReference Include="../../src/Llyn.Core.Windows/Llyn.Core.Windows.csproj" />
   </ItemGroup>
 
 </Project>

@@ -151,6 +151,25 @@
       "cut": true
     },
     {
+      "name": "Llyn.Guestroom",
+      "neighbour": [],
+      "capsule": [],
+      "frame": [
+        "System",
+        "System.Collections.Generic",
+        "System.Linq",
+        "System.Text",
+        "System.Text.RegularExpressions",
+        "System.Globalization",
+        "System.Threading",
+        "System.Threading.Tasks",
+        "System.Diagnostics.CodeAnalysis",
+        "System.Runtime.CompilerServices"
+      ],
+      "pure": true,
+      "cut": false
+    },
+    {
       "name": "Llyn.Core.Windows",
       "neighbour": [
         "Llyn.Core"
@@ -168,6 +187,7 @@
       "Llyn.Application",
       "Llyn.Infrastructure",
       "Llyn.Core.Windows",
+      "Llyn.Guestroom",
       "Llyn.ShellEngine",
       "Llyn.Conduct",
       "Llyn.UIDeportment",
