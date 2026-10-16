@@ -245,6 +245,15 @@ public sealed class LPronunciationFacade : LPronunciationPort
         }
     }
 
+    public int LEngineRecordingPlay(IReadOnlyList<string> files, double volume)
+    {
+        lock (_lPronunciationFacadeGate)
+        {
+            return LPronunciationFacadeStaff.LEngineStaffLanguage.LLanguageStaffRecording
+                .LRecordingClerkPlay(files, volume);
+        }
+    }
+
     public int LEngineRecordingPlay(LEntryDraft draft, double volume)
     {
         ArgumentNullException.ThrowIfNull(draft);

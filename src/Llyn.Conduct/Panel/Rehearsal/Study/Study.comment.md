@@ -26,10 +26,16 @@ The roll's empty-state key is chosen here, since it is interaction.
   It does nothing with no chosen deck or no active card, so the roll's empty-state key stays the answer.
   A read failure shows `Study.LoadFailed`.
   It keeps only each card's front and back, by name, and drops the stored cue.
-  Each engine side becomes a `CSittingSide`, its picture files resolved to addresses and its first sound kept.
-`CStudySoundPlay` plays the shown front's or turned back's sound through `LEngineRecordingPlay`, as the reading view does.
+  Each engine side becomes a `CSittingSide`, its picture files resolved to addresses and all its sounds kept in order.
+`CStudySoundPlay` plays the sounds of the shown front or the turned back through one `LEngineRecordingPlay` run.
+  The sounds play one after another, and it keeps the run's ticket.
+  A new press starts the run again from the first sound.
   With no running card, an unturned back or a silent side it does nothing.
   A play failure shows `Sound.PlayFailed`.
+A card move stops the run.
+  `CSitting` calls back `LStudySoundStop` on advance, retreat and shuffle.
+  `CStudy` stops the run on start, finish, deck open and workspace restore.
+  `CSitting` itself calls no engine.
 `CStudyFinish` ends the running sitting.
   With none it does nothing and raises nothing.
 `CStudySitting` is the running sitting or null, the driver's one check.
@@ -60,10 +66,10 @@ The sound file stays internal, so the view learns only `CSittingSideAudible` and
 
 ## Stamp
 
-Commit: `121691f60459`
-- `CSitting.cs` `ae88bc924a34add2`
-- `CSittingSide.cs` `520a1bcf143a00de`
+Commit: `bd299c638b2c`
+- `CSitting.cs` `57859a0a65c8bcfc`
+- `CSittingSide.cs` `4676c64cac005a99`
 - `CSittingState.cs` `51da44b47c6a8c72`
-- `CStudy.cs` `8466b3b72f5e50ee`
+- `CStudy.cs` `d6a0ef39b461a9ce`
 - `CStudyRoll.cs` `bf01ab3d7688aa0f`
 - `CStudyRow.cs` `7a13b422ce9d4392`

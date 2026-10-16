@@ -11,7 +11,10 @@ public sealed class LPhonographMedia : LPhonograph
     public LPhonographMedia()
     {
         _lPhonographPlayer.MediaFailed += LPhonographFailHandle;
+        _lPhonographPlayer.MediaEnded += LPhonographFinishHandle;
     }
+
+    public event Action? LPhonographFinished;
 
     public void LPhonographPlay(string file)
     {
@@ -53,5 +56,11 @@ public sealed class LPhonographMedia : LPhonograph
     private void LPhonographFailHandle(object? sender, ExceptionEventArgs e)
     {
         _lPhonographPlayer.Close();
+        LPhonographFinished?.Invoke();
+    }
+
+    private void LPhonographFinishHandle(object? sender, EventArgs e)
+    {
+        LPhonographFinished?.Invoke();
     }
 }

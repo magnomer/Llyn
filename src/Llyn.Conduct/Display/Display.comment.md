@@ -45,6 +45,7 @@ A vista choosing nothing closes the view too, since the draft then stands on no 
 The note arrives parsed, so the driver draws its blocks and never parses.
 The unit and the freedom arrive as localization keys.
 `LDisplayStampRead` reads the stamp from the stored entry.
+It passes the interface culture from the settings, so the times follow the interface language.
 A refused read shows `Display.StampFailed` through repaint memory and hides the stamp.
 An empty stamp lets the entry still open.
 `CDisplayEntryClose` drops the shown draft and stops this view's play.
@@ -136,7 +137,7 @@ The display builds it once when an entry opens, so the driver only draws it.
 `CLecternMarked` is true when the entry carries a part of speech or a lexical unit, which shows the speech section.
 `CLecternNote` holds the note's Markdown blocks, parsed once when the entry opens.
 `CLecternStamped` is whether the stored entry was read, which shows the stamp row.
-The creation and update times are in local short form.
+The creation and update times are in local short form, worded in the interface culture.
 `CLecternUnit` and `CLecternFreedom` are localization keys, empty when none is chosen.
 `CLecternLanguage` picks the headword font and the flag.
 
@@ -207,8 +208,8 @@ Any other name is the unknown tier, so the chip always finds a brush and a name.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `CDisplay.cs` `f0e4b88ada337da3`
+Commit: `bd299c638b2c`
+- `CDisplay.cs` `3702d795243d94ff`
 - `CDisplayAccent.cs` `63df02164d2dda07`
 - `CDisplayGrasp.cs` `f1de44be2fed43a2`
 - `CDisplayPlayback.cs` `7fd2ed66c09e90e7`

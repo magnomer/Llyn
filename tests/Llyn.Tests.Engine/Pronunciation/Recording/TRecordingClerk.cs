@@ -82,6 +82,38 @@ public sealed class TRecordingClerk
     }
 
     [Fact]
+    public void RecordingClerkPlay_TwoFiles_PlaysSecondAfterFinish()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        LRecordingClerk clerk = TInterface.TRecordingClerkCreate(workspace.TWorkspaceRigCreate());
+        string first = TRecordingFileSave(workspace, "left.mp3");
+        string second = TRecordingFileSave(workspace, "right.mp3");
+
+        clerk.TRecordingClerkPlay([first, second], 1);
+
+        Assert.Equal([first], workspace.TWorkspacePhonograph.TPhonographFakePlayed);
+
+        workspace.TWorkspacePhonograph.TPhonographFakeFinish();
+        workspace.TWorkspacePhonograph.TPhonographFakeFinish();
+
+        Assert.Equal([first, second], workspace.TWorkspacePhonograph.TPhonographFakePlayed);
+    }
+
+    [Fact]
+    public void RecordingClerkStop_TwoFileRun_PlaysNoMore()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        LRecordingClerk clerk = TInterface.TRecordingClerkCreate(workspace.TWorkspaceRigCreate());
+        string first = TRecordingFileSave(workspace, "left.mp3");
+        int ticket = clerk.TRecordingClerkPlay([first, TRecordingFileSave(workspace, "right.mp3")], 1);
+
+        clerk.TRecordingClerkStop(ticket);
+        workspace.TWorkspacePhonograph.TPhonographFakeFinish();
+
+        Assert.Equal(first, Assert.Single(workspace.TWorkspacePhonograph.TPhonographFakePlayed));
+    }
+
+    [Fact]
     public void RecordingClerkPlay_LoudVolume_PlaysAtFullLevel()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

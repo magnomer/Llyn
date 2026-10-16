@@ -13,7 +13,8 @@ The right column holds the empty line in the catalog's empty style, and below it
   The empty line's text is unset in markup, since the driver looks up the key Conduct names.
   The card shows the place, the front face, a rule, the back face, and the stage commands below it.
   Both faces draw one `Study.Face` template: the `PFace` text, picture line and play button.
-  The front host sets the headword size and weight, and the back host a smaller size, which the text inherits.
+  Each host holds its own `Study.Face.Text` style, which the `PFace` text takes.
+  The front style is based on `Theme.Text.Headword`, and the back style sets a smaller size.
   A muted `PSittingBlank` line stands in for a turned back with nothing on it.
   At the end of a round, the `Study.Finished` line and Again replace the front, rule and stepping commands.
   The card takes focus so the driver's keys reach it, and its commands refuse focus to keep it there.
@@ -40,8 +41,8 @@ The right column holds the empty line in the catalog's empty style, and below it
 
 ## Stamp
 
-Commit: `121691f60459`
+Commit: `bd299c638b2c`
 - `PScoreboard.xaml` `1b1d8009957466f0`
 - `PScoreboard.xaml.cs` `34a5060453e0812a`
-- `PStudy.xaml` `1c496a0a704bea97`
+- `PStudy.xaml` `97e568d64dbe1711`
 - `PStudy.xaml.cs` `c6964d18e1764eed`

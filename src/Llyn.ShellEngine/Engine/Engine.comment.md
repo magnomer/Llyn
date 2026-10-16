@@ -90,10 +90,10 @@ The deck clerk receives the trail clerk, which normalizes a name before the deck
 The cue clerk receives the entry clerk, which loads each entry an add scans.
 It receives the translation, reference and trail clerks too, which the listing line reads.
 The stencil clerk receives the entry, translation, reference and trail clerks its fields read.
-The depot latch is built once per workspace and handed to the depot clerk.
 The depot clerk shares the stencil clerk, so an export reads the faces the deck view shows.
 It records its failures through the workspace clerk, as the courier does.
-The depot latch is built here once per workspace, so a busy export blocks only its own workspace.
+The depot latch is built here once per workspace and handed to the depot clerk.
+So a busy export blocks only its own workspace.
 A workspace switch rebuilds the staff, so the new workspace starts with an idle latch.
 
 ## `LEngine`
@@ -107,7 +107,7 @@ The third announces a change to everyone.
 
 The deportment never holds the engine itself.
 It holds the `L*Port` slices under `Port/`, cut by concern so each facade implements the ones it serves.
-Four sealed `L*Outlet` classes implement the ports no single facade serves and forward their members to this engine.
+Five sealed `L*Outlet` classes implement the ports no single facade serves and forward their members to this engine.
 `LHost` hands those outlets and the facades in.
 
 The engine is serialised behind `LEngineHearth.LEngineGate`.
@@ -229,7 +229,7 @@ A failure on one entry is recorded in the audit log, and the scan goes on with t
 
 It moves the engine's clerks, caches and settings onto the workspace `rig` was built over.
 `LWorkspaceFacade.LEngineRigApply` calls it under the gate, keeps the folder and the rescue, then raises the bulletin.
-The new rig's settings are read through the clerk's static open step before anything here changes.
+The new rig's settings are read through the clerk's static settings read before anything here changes.
 A folder that cannot be opened therefore leaves the old clerks and caches untouched.
 A workspace that already holds a settings file is opened on its own settings.
 One without any receives the current settings and has them written.
@@ -263,7 +263,7 @@ So a subscriber can detach without disturbing iteration.
 
 ## Stamp
 
-Commit: `121691f60459`
+Commit: `bd299c638b2c`
 - `LBulletinRoster.cs` `089b003a16e92876`
 - `LCatalogStaff.cs` `23816a2bb79aced1`
 - `LClaimStaff.cs` `fc2ed893e2af6438`

@@ -274,6 +274,9 @@ internal static partial class TInterface
     internal static int TRecordingClerkPlay(this LRecordingClerk clerk, string? file, double volume = 1) =>
         clerk.LRecordingClerkPlay(file, volume);
 
+    internal static int TRecordingClerkPlay(this LRecordingClerk clerk, IReadOnlyList<string?> files, double volume) =>
+        clerk.LRecordingClerkPlay(files, volume);
+
     internal static void TRecordingClerkAdjust(this LRecordingClerk clerk, double volume)
     {
         clerk.LRecordingClerkAdjust(volume);

@@ -71,7 +71,7 @@ Query tests distinguish unmatched wording from vacant wording.
 
 ## Stamp
 
-Commit: `121691f60459`
+Commit: `bd299c638b2c`
 - `TAnthology.cs` `cb28be04a5ee682f`
 - `TAnthologyCitation.cs` `bb28477146e55d7a`
 - `TAnthologyExample.cs` `7b627fdeb76ed1de`

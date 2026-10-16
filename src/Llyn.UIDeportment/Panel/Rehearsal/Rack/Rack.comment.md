@@ -62,7 +62,7 @@ Move lists `CDeckDestinationRead` for the row, top level included when the deck 
 
 ## `QDeckName`
 
-Rename swaps the row text for an inline field in the view.
+Rename swaps the row text for an inline field in the view, and hides the count text meanwhile.
 `QDeckNameOpen` keeps the gate its option handed over until the next open.
   Only an open writes it, and a save is reachable only while a field is open.
 Enter or a lost focus saves through that gate.
@@ -93,6 +93,7 @@ It copies the Conduct row by name, so the surface never holds a Conduct type.
 ## `QDeckItem`
 
 One painted row of the deck list, a deck or a folder.
+It holds the count text, formatted from the row's key and count, and empty for a folder.
 
 ## `QDeckDestination`
 
@@ -100,11 +101,11 @@ One entry of a deck row's move menu, holding the `CDeckDestination` it was paint
 
 ## Stamp
 
-Commit: `121691f60459`
+Commit: `bd299c638b2c`
 - `QBearingItem.cs` `ee8d20be1e44aaf2`
 - `QCharter.cs` `3053ed7c05a131dc`
-- `QDeck.cs` `a2190b57b7ee14da`
+- `QDeck.cs` `0d3ed46758e04153`
 - `QDeckDestination.cs` `7f2b9de20e5fe696`
-- `QDeckItem.cs` `066e0ddb7f03c310`
+- `QDeckItem.cs` `9e42d942c5b3cbbc`
 - `QDeckMenu.cs` `d3b8b6f664d97888`
-- `QDeckName.cs` `67ab6d97e6184d17`
+- `QDeckName.cs` `71b0d77e4eb3043a`

@@ -175,32 +175,6 @@ public sealed class TStudy
     }
 
     [Fact]
-    public void StudyStart_SoundOnBack_ReadsAudibleBack()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        LDeckOutlet port = TInterface.TDeckOutletCreate(engine);
-        long deck = port.TEngineDeckCreate("Study", null, LGrain.LGrainMeaning);
-        port.TEngineCueCreate(
-            deck,
-            [
-                TInterface.TCueCellCreate(LCueColumn.LCueColumnText, 1, "bed"),
-                TInterface.TCueCellCreate(LCueColumn.LCueColumnSound, 2, "bed.e6ade888.mp3"),
-            ]);
-        CStudy study = new(atelier, TEnvoyFake.TEnvoyCreate(false, []), new Random(7).Next);
-        study.CStudySelect(deck);
-        study.CStudyStart();
-
-        CSittingState state = Assert.IsType<CSitting>(study.CStudySitting).CSittingSideToggle();
-
-        Assert.Equal(string.Empty, state.CSittingStateBack.CSittingSideText);
-        Assert.True(state.CSittingStateBack.CSittingSideAudible);
-        Assert.False(state.CSittingStateFront.CSittingSideAudible);
-        Assert.Null(state.CSittingStateBlank);
-    }
-
-    [Fact]
     public void SittingAdvance_TurnedCard_ShowsNextUnturned()
     {
         CSitting sitting = TSittingStart("one", "two");

@@ -9,6 +9,7 @@ The Deportment driver `QCharter` fills the deck editor `PCharter`.
 ## `PDeck`
 
 The shell behind `PDeck.xaml`, placed by the main window.
+  Each deck row shows its flashcard count in `PDeckCount`, beside `PDeckText`.
 Its constructor only calls `InitializeComponent()`.
 
 ## `PCharter`
@@ -21,6 +22,8 @@ It has one markup block for reading and editing, copying `PAutograph` against it
 The direction rows are a list in Conduct's order.
   The driver sets each row's caption from the key Conduct chose.
 Each face of a direction holds five side boxes, the five sides of the phone's card.
+The Basic check box and `Theme.Charter.Side` share the look of `Theme.Input.Option`.
+  `Theme.Charter.Side` is based on it, and adds only its margin and alignment.
 
 ## Layout
 
@@ -46,8 +49,8 @@ The deck editor `PCharter` and the template editor `PStencil` stay collapsed whi
 
 ## Stamp
 
-Commit: `121691f60459`
-- `PCharter.xaml` `afe22729ff3fc023`
+Commit: `bd299c638b2c`
+- `PCharter.xaml` `663a83baf3cf00d8`
 - `PCharter.xaml.cs` `cb85fb7159da24e0`
-- `PDeck.xaml` `9c54107a68f5afaf`
+- `PDeck.xaml` `f6e929d51f3f4fa5`
 - `PDeck.xaml.cs` `c929dd801a891d3a`

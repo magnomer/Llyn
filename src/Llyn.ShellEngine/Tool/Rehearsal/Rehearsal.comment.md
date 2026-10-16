@@ -31,6 +31,6 @@ The zone is chosen here, at the engine edge, so Core and Application read no mac
 
 ## Stamp
 
-Commit: `121691f60459`
+Commit: `bd299c638b2c`
 - `LScoreboardFacade.cs` `f75e7c75f1774e32`
 - `LStudyFacade.cs` `6105a67372370bc2`

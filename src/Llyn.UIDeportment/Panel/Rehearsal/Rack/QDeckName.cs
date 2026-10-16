@@ -32,6 +32,11 @@ internal sealed class QDeckName
         _qDeckNameGate = gate;
         name.Text = text.Text;
         text.Visibility = Visibility.Collapsed;
+        if (QLook.QLookPartFind<TextBlock>(container, "PDeckCount") is TextBlock count)
+        {
+            count.Visibility = Visibility.Collapsed;
+        }
+
         name.Visibility = Visibility.Visible;
         name.LostFocus -= QDeckLeaveObserve;
         name.LostFocus += QDeckLeaveObserve;
@@ -68,7 +73,11 @@ internal sealed class QDeckName
         {
             if (part is TextBlock text)
             {
-                name.Text = text.Text;
+                if (text.Name == "PDeckText")
+                {
+                    name.Text = text.Text;
+                }
+
                 text.Visibility = Visibility.Visible;
             }
         }

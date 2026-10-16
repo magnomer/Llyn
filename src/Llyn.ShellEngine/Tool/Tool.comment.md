@@ -30,7 +30,7 @@ A settings bulletin follows either only for a real change, so an unchanged token
 ## `LDeckFacade`
 
 The facade for decks, their folders, their cues and their stencils.
-Each member takes the gate and relays one call of the deck, cue or stencil clerk.
+Most members take the gate and relay one call of the deck, cue or stencil clerk.
 It decides nothing, so every rule, refusal and order stays with the clerks.
 Each deck, folder and cue write raises a deck bulletin after the gate is released, as the favorite writes do.
 It carries the deck id the call names, and 0 for a folder write or a call naming no deck.
@@ -218,6 +218,7 @@ A failed fetch or file write reaches the caller as the clerk's vault fault, stil
 `LEngineRecordingSweep` deletes every stored recording no row and no draft names.
 
 `LEngineRecordingPlay` plays under the gate and plays nothing for a file that does not exist.
+The list overload hands the recording clerk a run.
 It answers the play's ticket, or zero when nothing played.
 `LEngineRecordingStop` and `LEngineVolumeSet` skip the gate, since they touch only the phonograph.
 They never wait on a long engine call.
@@ -261,7 +262,7 @@ The fold bulletin is raised after the gate is released, as the card fold writes 
 It is raised even for a refused id, since the clerk alone owns that rule.
 `LEngineSpreadCheck` and `LEngineBoxCheck` read the state the same way.
 
-`LEngineDescentRead` loads the pack through the language clerk under the gate and calls it outside.
+`LEngineDescentRead` takes the language clerk under the gate and loads the pack outside it.
 It answers none for a blank language.
 
 ## `LStemFacade`
@@ -308,13 +309,13 @@ It answers empty while neither exists.
 
 ## Stamp
 
-Commit: `121691f60459`
+Commit: `bd299c638b2c`
 - `LCourierFacade.cs` `316cb119faa9202c`
 - `LDeckFacade.cs` `461426b985ad509d`
 - `LFanqieFacade.cs` `19ca044c7f98d17f`
-- `LLiveryFacade.cs` `930588ef8cfd2c99`
+- `LLiveryFacade.cs` `ce684cbdeb2ca3c4`
 - `LMarkupFacade.cs` `68847305501ca292`
 - `LPortraitFacade.cs` `77018d523cca1d13`
-- `LPronunciationFacade.cs` `665456dd10052ea4`
+- `LPronunciationFacade.cs` `7f4ec9436915dbdd`
 - `LReflexFacade.cs` `95d3d3fbd6345d56`
 - `LStemFacade.cs` `8ea42b65c4f6631e`

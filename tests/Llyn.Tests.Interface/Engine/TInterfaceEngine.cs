@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Globalization;
 using Llyn.Application;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -104,9 +105,10 @@ internal static partial class TInterface
         engine.LEngineEntry.LEngineEntryRead(id);
 
     internal static (bool, string, string) TEngineStampRead(this LEngine engine, long id) =>
-        engine.LEngineEntry.LEngineStampRead(id);
+        engine.LEngineEntry.LEngineStampRead(id, engine.LEngineSettings.LEngineCultureRead());
 
-    internal static string TEngineStampFormat(string? utc) => LEntryFacade.LEngineStampFormat(utc);
+    internal static string TEngineStampFormat(string? utc) =>
+        LEntryFacade.LEngineStampFormat(utc, CultureInfo.InvariantCulture);
 
     internal static (string, IReadOnlyList<LMentionPiece>, string) TEngineLineRead(
         LSentenceDraft sentence, LSentenceOrder order, string mark, IReadOnlyDictionary<long, string> citations) =>

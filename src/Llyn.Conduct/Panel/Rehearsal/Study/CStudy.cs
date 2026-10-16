@@ -22,6 +22,8 @@ public sealed class CStudy
 
     private CSitting? _cStudySitting;
 
+    private int _cStudyTicket;
+
     public CStudy(CAtelier atelier, CEnvoy envoy, Func<int, int> chance)
     {
         ArgumentNullException.ThrowIfNull(atelier);
@@ -112,7 +114,8 @@ public sealed class CStudy
             return;
         }
 
-        _cStudySitting = new CSitting(cards, _cStudyChance);
+        LStudySoundStop();
+        _cStudySitting = new CSitting(cards, _cStudyChance, LStudySoundStop);
         CStudyChanged?.Invoke();
     }
 
@@ -120,14 +123,14 @@ public sealed class CStudy
     {
         if (_cStudySitting?.CSittingRead() is not { CSittingStateEnd: false } state
             || (back && !state.CSittingStateTurned)
-            || (back ? state.CSittingStateBack : state.CSittingStateFront).CSittingSideSound is not string sound)
+            || (back ? state.CSittingStateBack : state.CSittingStateFront) is not { CSittingSideAudible: true } side)
         {
             return;
         }
 
         try
         {
-            _ = _cStudyAtelier.CAtelierMediaPort.LEngineRecordingPlay(sound, double.NaN);
+            _cStudyTicket = _cStudyAtelier.CAtelierMediaPort.LEngineRecordingPlay(side.CSittingSideSounds, double.NaN);
         }
         catch (Exception exception)
         {
@@ -147,10 +150,7 @@ public sealed class CStudy
             }
         }
 
-        return new CSittingSide(side.LCueSideText, pictures)
-        {
-            CSittingSideSound = side.LCueSideSounds.Count > 0 ? side.LCueSideSounds[0] : null,
-        };
+        return new CSittingSide(side.LCueSideText, pictures) { CSittingSideSounds = side.LCueSideSounds };
     }
 
     public void CStudyFinish()
@@ -160,12 +160,14 @@ public sealed class CStudy
             return;
         }
 
+        LStudySoundStop();
         _cStudySitting = null;
         CStudyChanged?.Invoke();
     }
 
     private void LStudyOpen(long deck)
     {
+        LStudySoundStop();
         _cStudyChosen = deck;
         _cStudySitting = null;
         CStudyChanged?.Invoke();
@@ -173,8 +175,14 @@ public sealed class CStudy
 
     private void LStudyRestore()
     {
+        LStudySoundStop();
         _cStudyChosen = null;
         _cStudySitting = null;
         CStudyChanged?.Invoke();
+    }
+
+    private void LStudySoundStop()
+    {
+        _cStudyAtelier.CAtelierMediaPort.LEngineRecordingStop(_cStudyTicket);
     }
 }

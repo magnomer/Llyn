@@ -53,6 +53,8 @@ Its frame is drawn outward on hover and focus by `Theme.Input.Field.Bare`, so th
 `Theme.Input.Caret` is a bare field that takes no room while it is empty and unfocused.
 `QLook` then zeroes its width and sets `Theme.Input.CaretMargin`, whose negative right side cancels the left one.
 On focus `QLook` drops both values, so the field's own width and margin return.
+`Theme.Input.Option` is the check box look of an option row: theme ink, size 13, centred content, hand cursor.
+The deck editor's Basic check box and its side boxes build on it.
 `Theme.Text.Reading` collapses a reading with no text, through `QLook`.
 
 ## `PThemeNavigation`
@@ -152,10 +154,10 @@ That is because the fold is a state and not an action.
 
 ## Stamp
 
-Commit: `121691f60459`
+Commit: `bd299c638b2c`
 - `PTheme.xaml` `80319431283b47c1`
 - `PThemeDefault.xaml` `f10311a6336a0666`
-- `PThemeInput.xaml` `ab744099ece5f95a`
+- `PThemeInput.xaml` `9db0e41e04768502`
 - `PThemeNavigation.xaml` `117b631efd938fd7`
 - `PThemePalette.xaml` `be59d4de986fccd8`
 - `PThemePanel.xaml` `4e4591e27a8a58c8`

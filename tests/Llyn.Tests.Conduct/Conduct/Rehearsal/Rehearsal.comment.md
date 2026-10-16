@@ -10,6 +10,7 @@ Every deck a fact prepares is an entry deck.
 The delete facts use the tally envoy, so a fact reads whether the cue count was shown.
 The order facts read the roll after `CDeckOrderMove`, so the engine's stored order is what they check.
 The grain facts pin the five creatable grains and their wording keys in order.
+The read facts check each row's flashcard count and its singular or plural key.
   A grain select in range is kept and one out of range is ignored.
   A created deck takes the kept grain.
 The destination facts list the top level first for a foldered deck, and folders only for a top-level deck.
@@ -98,7 +99,7 @@ The refusal facts use the folder envoy, the fake that records a notice's refusal
   The roll facts pin the three empty-state keys and the active counts the engine answers.
   The sitting facts start from a deck whose cards read `one` and `one back`.
   They walk the place, turned and end states.
-  A turned back with nothing on it names `Study.BackEmpty`, and a sound on the back reads as an audible back.
+  A turned back with nothing on it names `Study.BackEmpty`.
   A seeded `Random` serves the draw.
   The shuffle facts check that the run visits a permutation of the fronts.
   A second toggle restores the deck order.
@@ -107,14 +108,25 @@ Their handler reads as the driver does, so a missing bulletin leaves the read un
 `TStudyWriteRead` walks every deck, folder and cue write a panel offers and counts the changes each raised.
 `TScoreboard` reuses it, and `TAccessionEntrySave` is shared for stored entries.
 
+## `TStudySound`
+
+Covers the sound a card side plays, over a real workspace engine.
+The back fact reads a sound on the back as an audible back and a silent front.
+The play fact gives the front two sound files, and starts the first.
+  Once the phonograph fake finishes it, the second plays, so every sound plays in turn.
+The advance fact starts the run, then advances the sitting.
+  The run stops at once, so the finish plays no second sound and the fake counts one more stop.
+The media facts use the atelier over `LMediaOutlet` and files written under the workspace audio folder.
+
 ## Stamp
 
-Commit: `121691f60459`
+Commit: `bd299c638b2c`
 - `TAccession.cs` `5133e9f5a11f0677`
 - `TCharter.cs` `2adc5e66a188e32a`
 - `TCue.cs` `91b47b58da593b72`
-- `TDeck.cs` `e408a28c6a60f943`
+- `TDeck.cs` `b02b31d063a669ba`
 - `TDepot.cs` `2d0b88b32165a1cc`
 - `TScoreboard.cs` `4af87d8fb47e40bc`
 - `TStencil.cs` `c6a716c83630b270`
-- `TStudy.cs` `5cf320a257db6322`
+- `TStudy.cs` `a62d0c2eff3627b5`
+- `TStudySound.cs` `7e0a6ca8b4a25e3d`

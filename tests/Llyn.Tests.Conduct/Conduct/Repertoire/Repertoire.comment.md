@@ -48,7 +48,7 @@ The held scenario lives in `TRepertoireScribe`, and the print and export gates i
 
 Builds the repertoire over the atelier and the envoy the test supplies.
 Its seam answers that the tab is in front, and its marshal runs each notice at once.
-It restores no vista, so a test that needs one restores it.
+Building the repertoire restores one vista, and this helper restores none after it.
 
 ## `TRepertoireTitleDefer`
 
@@ -100,7 +100,7 @@ The flag-fill load answers the rows and their languages once the fill has run.
 
 ## Stamp
 
-Commit: `121691f60459`
+Commit: `bd299c638b2c`
 - `TAtlas.cs` `3c441439964eefec`
 - `TOccurrence.cs` `536fa923acc28ac4`
 - `TRepertoire.cs` `9caa5ec9bcceaeec`

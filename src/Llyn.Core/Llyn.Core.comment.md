@@ -13,6 +13,7 @@ The engine decides which file plays and at what level, and never touches a playe
 `LPhonographPlay` plays the file from its start, replacing whatever was playing.
 `LPhonographStop` stays quiet when nothing plays.
 `LPhonographVolumeSet` takes a level from zero to one, for the next and the playing file.
+`LPhonographFinished` fires when a played file ends or fails to play, never after a stop.
 
 ## `LUsher`
 
@@ -41,7 +42,7 @@ The row record is one offered line.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `LPhonograph.cs` `493ee502280877e8`
+Commit: `bd299c638b2c`
+- `LPhonograph.cs` `5b998ec62c526792`
 - `LUsher.cs` `3f38471976099398`
 - `Llyn.Core.csproj` `af732680c4489b17`

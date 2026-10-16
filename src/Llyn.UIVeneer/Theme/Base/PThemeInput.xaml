@@ -207,6 +207,13 @@
         <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
 
+    <Style x:Key="Theme.Input.Option" TargetType="CheckBox">
+        <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Cursor" Value="Hand" />
+    </Style>
+
     <Style x:Key="Theme.Input.Tab" TargetType="Button">
         <Setter Property="Height" Value="34" />
         <Setter Property="Padding" Value="17,0" />

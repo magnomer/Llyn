@@ -243,7 +243,7 @@ The workspace staff hands it the workspace latch, so it holds no busy flag of it
 A run that loses the latch refuses as busy and changes nothing.
 The phone folder comes from the settings and must stay under the workspace root.
 The setting passes `LTrailPathValidate` again, so a stored path outside the root is refused.
-An unset or unresolvable folder refuses with `Refusal.DepotMissing` before the latch work begins.
+An unset or unresolvable folder refuses with `Refusal.DepotMissing` before any read or file work begins.
   A refusal reaches the user as a sentence, where a plain throw would read as a fault.
 
 A deck file whose digest differs from the manifest's is a phone export.
@@ -282,7 +282,7 @@ Wrong answers and statistics stay out in phase 1.
 
 ## Stamp
 
-Commit: `121691f60459`
+Commit: `bd299c638b2c`
 - `LCueClerk.cs` `034cedc7f2076454`
 - `LDeckClerk.cs` `78691b90d1a74996`
 - `LDepotClerk.cs` `68913dedea8246f8`

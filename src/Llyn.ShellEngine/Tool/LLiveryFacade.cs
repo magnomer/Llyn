@@ -70,7 +70,8 @@ internal sealed class LLiveryFacade
 
             LEngineStaff staff = LLiveryFacadeStaff;
             string language = draft.LEntryDraftLanguage;
-            (_, string created, string updated) = _lLiveryFacadeEntry.LEngineStampRead(entryId);
+            (_, string created, string updated) = _lLiveryFacadeEntry.LEngineStampRead(
+                entryId, _lLiveryFacadeSettings.LEngineCultureRead());
             LAccentSheet accent = _lLiveryFacadeLanguage.LEngineAccentRead(draft);
             bool marked = pending && _lLiveryFacadeVocabulary.LEngineInflectionCheck(entryId);
             bool enabled = _lLiveryFacadeSettings.LEngineMorphologyCheck();

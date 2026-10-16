@@ -32,14 +32,14 @@ Each of the following kinds has a ceiling per pair and fails above it.
   - `Undercutting` is a name a UI ring takes from below the cut, and a `using` of such a namespace counts.
   - `Leaking` is an offer signature type from below Conduct.
     Methods, operators, conversions, properties, events, fields and nested public types are all read.
-  - `Unsealing` is a sealed member type from below the neighbour, and the ceilings fall as each controller is sealed.
+  - `Unsealing` is a type from below the neighbour named by a public member of an unsealing ring's controller.
 `Poaching` is a neighbour name outside the offer where an offer is written for the pair.
 `Poaching`, `Drifting` and `Lingering` are hard, with no ceiling and no ledger.
 A drift hit names the pair, the entry or missing type, and the clause it failed.
 A linger hit names the subscribing type, the event and the handler.
 An exempt row clears a hit as it clears every other border hit.
-A Conduct type that leaves an engine event handler attached with no matching removal is `Lingering`.
-An engine-lifetime source outlives the Conduct object, so a kept handler keeps the object alive and firing.
+A Conduct type that leaves a deeper ring's event handler attached with no matching removal is `Lingering`.
+A deeper source outlives the Conduct object, so a kept handler keeps the object alive and firing.
 A drift specimen proves the comparison fires on a stale, an internal, a wrong-prefix and a missing name.
 Each break gives exactly one hit, so no clause reports an entry another clause already caught.
 Two cut pairs whose lists equal the neighbour's public types give no hit.
@@ -106,7 +106,7 @@ Every row must still match a hit, so a fixed break deletes its row.
 
 Reads, for every type one ring names from another, which ring declares it and whether it is data.
 The verdict comes from the binder, not from the position of the name in the line.
-Each tree of a ring is scanned on its own thread, and hits come back ordered by file and line.
+The trees of the rings are scanned in parallel, and hits come back ordered by file and line.
 A name is `Commuting` for the neighbour the table names and for the ring's capsule.
 Past the neighbour it is `Trespassing` beyond the closure, `Ferrying` for data and `Leapfrogging` for behaviour.
 A method called on a data type counts as behaviour, not data.
@@ -172,7 +172,7 @@ The exempt check fails when an exempt row matches no hit, so a fixed break delet
 
 ## Stamp
 
-Commit: `121691f60459`
+Commit: `bd299c638b2c`
 - `TAssayBorder.cs` `7a21fc1ac676ed8f`
 - `TAuditBorder.cs` `0027b680a1d1279d`
 - `TAuditBorderDrift.cs` `80233353cf79d45a`

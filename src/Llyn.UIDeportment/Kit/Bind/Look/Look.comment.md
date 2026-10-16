@@ -132,7 +132,7 @@ The order of the spread is load-bearing, since a later row wins on the same part
 
 ## Stamp
 
-Commit: `121691f60459`
+Commit: `bd299c638b2c`
 - `QLook.cs` `48638dcfa3b33455`
 - `QLookControl.cs` `fdbc2251a4de11fb`
 - `QLookCue.cs` `6b9a3fd8e550a325`

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Llyn.Application;
 using Llyn.Core;
 
@@ -13,6 +14,8 @@ public interface LMediaPort
     void LEngineLocationOpen(string target);
 
     int LEngineRecordingPlay(string? file, double volume);
+
+    int LEngineRecordingPlay(IReadOnlyList<string> files, double volume);
 
     int LEngineRecordingPlay(LEntryDraft draft, double volume);
 

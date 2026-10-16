@@ -107,6 +107,8 @@ It implements both the entry port and the grasp port.
 `LEngineEntryRead` answers null when no entry has the id.
 
 `LEngineStampRead` answers whether the entry is stored, with creation and update times already worded, since the draft carries no clock.
+It words them in the culture its caller passes.
+`CDisplay` and `LLiveryFacade` pass `LEngineCultureRead`, the interface language.
 An id no entry has answers false with empty times, so the reading view hides its stamp row.
 
 `LEngineStampFormat` turns a stored ISO 8601 UTC stamp into local time in the short general format of the current culture.
@@ -397,11 +399,11 @@ A link names its entry only through a stored id, so an empty id names nothing.
 
 ## Stamp
 
-Commit: `121691f60459`
+Commit: `bd299c638b2c`
 - `LAuthorFacade.cs` `a7c57e4576ed1f96`
 - `LCardFacade.cs` `fd835262e150b403`
 - `LCatalogFacade.cs` `8545ab05f0c69039`
-- `LEntryFacade.cs` `a9baa2d32061fb69`
+- `LEntryFacade.cs` `c0d6c5fdd16cd585`
 - `LExampleFacade.cs` `f20eb09a45abf04e`
 - `LMentionFacade.cs` `2cfb6578c504b8a7`
 - `LReferenceFacade.cs` `b73762c75a1cefad`

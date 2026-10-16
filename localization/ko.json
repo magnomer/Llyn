@@ -188,6 +188,8 @@
     "Deck.Delete": "{terms.deck} 삭제",
     "Deck.DeleteConfirm": "이 {terms.deck}과 그 안의 모든 {terms.flashcard}를 삭제할까요? 되돌릴 수 없습니다.",
     "Deck.DeleteCount": "{terms.flashcard} 수:",
+    "Deck.Count": "{terms.flashcard} {0}개",
+    "Deck.CountOne": "{terms.flashcard} {0}개",
     "Deck.Move": "폴더로 이동",
     "Deck.MoveTop": "최상위",
     "Deck.OrderUp": "위로 이동",

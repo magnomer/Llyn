@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Conduct;
@@ -117,18 +118,34 @@ internal sealed class QDeck
         {
             if (row.CDeckRowFolder is null)
             {
-                _qDeckList.Add(new QDeckItem(row.CDeckRowId, row.CDeckRowName, false, row.CDeckRowChosen));
+                _qDeckList.Add(new QDeckItem(
+                    row.CDeckRowId,
+                    row.CDeckRowName,
+                    false,
+                    row.CDeckRowChosen,
+                    string.Format(
+                        CultureInfo.CurrentCulture,
+                        QLocalizationCatalog.QLocalizationTextRead(row.CDeckRowKey),
+                        row.CDeckRowCount)));
             }
         }
 
         foreach (CDeckFolder folder in roll.CDeckRollFolders)
         {
-            _qDeckList.Add(new QDeckItem(folder.CDeckFolderId, folder.CDeckFolderName, true, false));
+            _qDeckList.Add(new QDeckItem(folder.CDeckFolderId, folder.CDeckFolderName, true, false, string.Empty));
             foreach (CDeckRow row in roll.CDeckRollDecks)
             {
                 if (row.CDeckRowFolder == folder.CDeckFolderId)
                 {
-                    _qDeckList.Add(new QDeckItem(row.CDeckRowId, row.CDeckRowName, false, row.CDeckRowChosen));
+                    _qDeckList.Add(new QDeckItem(
+                    row.CDeckRowId,
+                    row.CDeckRowName,
+                    false,
+                    row.CDeckRowChosen,
+                    string.Format(
+                        CultureInfo.CurrentCulture,
+                        QLocalizationCatalog.QLocalizationTextRead(row.CDeckRowKey),
+                        row.CDeckRowCount)));
                 }
             }
         }
@@ -201,6 +218,12 @@ internal sealed class QDeck
         {
             text.Text = deck.QDeckItemText;
             text.Visibility = Visibility.Visible;
+        }
+
+        if (QLook.QLookPartFind<TextBlock>(container, "PDeckCount") is TextBlock count)
+        {
+            count.Text = deck.QDeckItemCount;
+            count.Visibility = Visibility.Visible;
         }
 
         _qDeckName.QDeckNameRefine(container);

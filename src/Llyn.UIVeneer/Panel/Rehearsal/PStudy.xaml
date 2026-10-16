@@ -16,6 +16,7 @@
                     <TextBlock
                         x:Name="PFaceText"
                         HorizontalAlignment="Center"
+                        Style="{DynamicResource Study.Face.Text}"
                         TextAlignment="Center"
                         TextWrapping="Wrap" />
                     <ItemsControl
@@ -112,15 +113,22 @@
                             <ContentControl
                                 x:Name="PSittingFront"
                                 ContentTemplate="{StaticResource Study.Face}"
-                                Focusable="False"
-                                FontSize="40"
-                                FontWeight="Bold" />
+                                Focusable="False">
+                                <ContentControl.Resources>
+                                    <Style x:Key="Study.Face.Text" TargetType="TextBlock" BasedOn="{StaticResource Theme.Text.Headword}" />
+                                </ContentControl.Resources>
+                            </ContentControl>
                             <Border x:Name="PSittingRule" Height="1" Margin="0,22" Background="{StaticResource Theme.Line}" />
                             <ContentControl
                                 x:Name="PSittingBack"
                                 ContentTemplate="{StaticResource Study.Face}"
-                                Focusable="False"
-                                FontSize="20" />
+                                Focusable="False">
+                                <ContentControl.Resources>
+                                    <Style x:Key="Study.Face.Text" TargetType="TextBlock">
+                                        <Setter Property="FontSize" Value="20" />
+                                    </Style>
+                                </ContentControl.Resources>
+                            </ContentControl>
                             <TextBlock
                                 x:Name="PSittingBlank"
                                 HorizontalAlignment="Center"

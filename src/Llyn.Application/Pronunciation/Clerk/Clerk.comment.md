@@ -229,10 +229,14 @@ The file is resolved through the trail, so a relative path plays from the worksp
 It answers a fresh ticket naming this play, or zero when nothing played.
 A `volume` that is not a finite number keeps the current level.
 The app shares one phonograph, so a caller keeps its ticket to reach only its own play.
+The list overload plays a run of the existing files in order, all under one ticket.
+The first file plays at once.
+Each next file plays when the phonograph raises `LPhonographFinished`.
+Any new play replaces the queued rest of a run.
 
 ## `LRecordingClerk.LRecordingClerkStop`
 
-It stops the phonograph only while the ticket names the latest play.
+It stops the phonograph and drops the run's queued files only while the ticket names the latest play.
 A view clearing after another view played thus leaves that other sound running.
 
 ## `LRecordingClerk.LRecordingClerkClear`
@@ -410,12 +414,12 @@ Row ids, schemes and texts must all match in order, so equal ids alone never ski
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `bd299c638b2c`
 - `LDiweiClerk.cs` `ac530a588201a30b`
 - `LFanqieClerk.cs` `9bb477462abde638`
 - `LFrequencyClerk.cs` `270209f96a539217`
 - `LPronunciationClerk.cs` `e2299bcbc0df24e1`
-- `LRecordingClerk.cs` `72816538b13f857b`
+- `LRecordingClerk.cs` `48000bca3b2ab2a7`
 - `LScriptClerk.cs` `dfb8ad93fee23103`
 - `LShengfuClerk.cs` `aa18d84636cbfc5d`
 - `LStemClerk.cs` `492dc81c614a52d1`

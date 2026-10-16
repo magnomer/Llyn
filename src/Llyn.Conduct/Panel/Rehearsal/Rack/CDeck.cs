@@ -64,9 +64,23 @@ public sealed class CDeck
     public CDeckRoll CDeckRead()
     {
         (IReadOnlyList<LDeckFolder> LDeckFolders, IReadOnlyList<LDeck> LDeckListed) listed;
+        List<CDeckRow> decks;
         try
         {
             listed = _cDeckPort.LEngineDeckRead();
+            decks = listed.LDeckListed
+                .Select(deck =>
+                {
+                    int count = _cDeckPort.LEngineCensusRead(deck.LDeckId).LDeckCensusTotal;
+                    return new CDeckRow(
+                        deck.LDeckId,
+                        deck.LDeckFolderId,
+                        deck.LDeckName,
+                        deck.LDeckId == _cDeckChosen,
+                        count,
+                        count == 1 ? "Deck.CountOne" : "Deck.Count");
+                })
+                .ToList();
         }
         catch (Exception exception)
         {
@@ -74,10 +88,6 @@ public sealed class CDeck
             return new CDeckRoll([], [], CDeckGrainRead(), true);
         }
 
-        List<CDeckRow> decks = listed.LDeckListed
-            .Select(deck => new CDeckRow(
-                deck.LDeckId, deck.LDeckFolderId, deck.LDeckName, deck.LDeckId == _cDeckChosen))
-            .ToList();
         List<CDeckFolder> folders = listed.LDeckFolders
             .Select(static folder => new CDeckFolder(folder.LDeckFolderId, folder.LDeckFolderName))
             .ToList();

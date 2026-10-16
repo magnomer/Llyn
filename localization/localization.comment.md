@@ -53,12 +53,13 @@ The pair holds a plural and a singular form.
 `Display.CollocationAlso` words a closed row's "also N" marker.
 Its slot `{0}` is the comma-joined numbers of the further Meanings.
 `Notebook.*` labels the Sync page field naming the top Joplin notebook.
-`Settings.Depot` and `Settings.DepotHelper` title the flashcard folder setting and its folder dialog.
+`Settings.Depot` titles the flashcard folder setting and its folder dialog, and `Settings.DepotHelper` is the note under it.
 The setting title is the deck-sync term, as `Settings.Sync` is the sync term.
 `Refusal.PathRooted` refuses an absolute folder path, since the folder sits under the workspace root.
 `Deck.*` labels the deck list, its folders, the delete dialog and the export to the phone app.
 `Deck.DeleteCount` is the label before the flashcard tally that the delete dialog prints under its question.
-`Deck.LoadFailed` heads the failure notice when the deck list or a deck's flashcard count cannot be read.
+`Deck.Count` and `Deck.CountOne` word the flashcard count beside a deck, plural and singular.
+`Deck.LoadFailed` heads the failure notice when the deck list, a deck, its flashcards or their statistics cannot be read.
 `Layout.ReadFailed` is the notice when the stored layout cannot be read at open.
 `Input.FindFailed` and `Example.FindFailed` are the notices when a field's suggestions or the anchor choices cannot be looked up.
 `Input.SpeechFailed` is the notice when a part of speech cannot be added to the entry.
@@ -141,6 +142,6 @@ The person headers spell out person and number instead of the English abbreviati
 
 ## Stamp
 
-Commit: `121691f60459`
-- `en.json` `f8eaad78b76eddc1`
-- `ko.json` `069f639cf5cb6151`
+Commit: `bd299c638b2c`
+- `en.json` `b1ac4552c0532f7f`
+- `ko.json` `ecde7ddad106c6ce`

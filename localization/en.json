@@ -188,6 +188,8 @@
     "Deck.Delete": "Delete {terms.deck}",
     "Deck.DeleteConfirm": "Delete this {terms.deck}, with every {terms.flashcard} in it? It cannot be undone.",
     "Deck.DeleteCount": "{Terms.flashcard} count:",
+    "Deck.Count": "{0} {terms.flashcard}s",
+    "Deck.CountOne": "{0} {terms.flashcard}",
     "Deck.Move": "Move to folder",
     "Deck.MoveTop": "Top level",
     "Deck.OrderUp": "Move up",

@@ -42,6 +42,8 @@ It covers the reading view's stamp times, which the engine words for Conduct.
 A stored entry answers both times already worded.
 An id no entry has answers not stored with empty times, so the view hides its stamp row.
 A stamp that does not parse, or none at all, shows as nothing.
+The Korean fact sets the machine culture to Korean and reads the stamp for the interface language.
+  The added time is worded in the English short form, so the machine culture never words it.
 
 ## `TEngineVault.cs`
 
@@ -78,10 +80,10 @@ It judges an input or output failure a lock.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `bd299c638b2c`
 - `TEngineClock.cs` `8989e402d29be091`
 - `TEngineObserver.cs` `612db4ae2c0a859f`
 - `TEngineRig.cs` `3fd868a63b28c5a2`
-- `TEngineStamp.cs` `b0c187aec5a7b435`
+- `TEngineStamp.cs` `17909bda313a9240`
 - `TEngineVault.cs` `d9d6fd5e5587e548`
 - `TEnsign.cs` `c9df5c20e784a3b1`

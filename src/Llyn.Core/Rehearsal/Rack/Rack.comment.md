@@ -93,7 +93,7 @@ Now and the zone are arguments, so the rule never reads the clock or the machine
 
 ## Stamp
 
-Commit: `121691f60459`
+Commit: `bd299c638b2c`
 - `LAlmanacOrder.cs` `e6f4236b098a1575`
 - `LBearing.cs` `dfb5d059b3fca107`
 - `LBearingLead.cs` `7441fe1ee544c02b`

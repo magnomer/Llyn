@@ -76,6 +76,19 @@ A chip list picks its templates through a selector, so the presenter's own templ
 The part must still be found in the template the selector chose.
 Without that, every edited chip showed an empty frame with no text and no eraser.
 
+## `TSittingKey`
+
+The study card's key map is covered as the keyboard reaches it.
+Each case raises a real `KeyDown` routed event from the primary keyboard on the card.
+So the handlers `QSitting` attaches are proved, not called by hand.
+The card is a stand-in focusable border with the named parts of `PStudy.xaml`, hosted in an `HwndSource`.
+The sitting runs over a real workspace deck of two cards.
+- Space turns the card.
+- Right moves to the next card unturned.
+- Left moves back a card.
+- Esc ends the sitting.
+Each key marks the event handled, so nothing above the card acts on it too.
+
 ## `TVolumeCatalog`
 
 The window's one volume owner paints a shared volume level on every tray.
@@ -85,7 +98,7 @@ This silence keeps the trays and the display from notifying each other in a loop
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `bd299c638b2c`
 - `TBootstrapContext.cs` `160359e5c04253c5`
 - `TCapsulePosture.cs` `56b6ed906b2a3514`
 - `TContourPlot.cs` `5cc02f9da3b00670`
@@ -94,4 +107,5 @@ Commit: `2f9a06b8eb95`
 - `TInflectionSwitch.cs` `2bc53daaa347571a`
 - `TLocalizationChoice.cs` `3d142b2f15fb96b3`
 - `TLookPart.cs` `494007eb7fd66029`
+- `TSittingKey.cs` `eb8715df9d21a653`
 - `TVolumeCatalog.cs` `5837538aa2c9f706`

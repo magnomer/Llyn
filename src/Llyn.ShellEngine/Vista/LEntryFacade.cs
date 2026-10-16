@@ -34,14 +34,15 @@ public sealed class LEntryFacade : LEntryPort, LGraspPort
         }
     }
 
-    public (bool, string, string) LEngineStampRead(long entryId)
+    public (bool, string, string) LEngineStampRead(long entryId, CultureInfo culture)
     {
         return LEngineEntryRead(entryId) is LEntry entry
-            ? (true, LEngineStampFormat(entry.LEntryAddedUtc), LEngineStampFormat(entry.LEntryUpdatedUtc))
+            ? (true, LEngineStampFormat(entry.LEntryAddedUtc, culture),
+                LEngineStampFormat(entry.LEntryUpdatedUtc, culture))
             : (false, string.Empty, string.Empty);
     }
 
-    internal static string LEngineStampFormat(string? utc)
+    internal static string LEngineStampFormat(string? utc, CultureInfo culture)
     {
         if (utc is null
             || !DateTimeOffset.TryParse(
@@ -50,7 +51,7 @@ public sealed class LEntryFacade : LEntryPort, LGraspPort
             return string.Empty;
         }
 
-        return parsed.ToLocalTime().ToString("g", CultureInfo.CurrentCulture);
+        return parsed.ToLocalTime().ToString("g", culture);
     }
 
     public IReadOnlyList<LEntry> LEngineEntryFind(string query, LCatalogOrder order, LCatalogFilter filter)

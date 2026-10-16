@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Globalization;
 using Llyn.Application;
 using Llyn.Core;
 
@@ -8,7 +9,7 @@ public interface LEntryPort
 {
     LEntryDraft? LEngineEntryLoad(long id);
 
-    (bool, string, string) LEngineStampRead(long entryId);
+    (bool, string, string) LEngineStampRead(long entryId, CultureInfo culture);
 
     string LEngineTallyRead(long? reference);
 

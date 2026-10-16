@@ -4,6 +4,8 @@ namespace Llyn.Tests;
 
 internal sealed class TPhonographFake : LPhonograph
 {
+    public event Action? LPhonographFinished;
+
     public List<string> TPhonographFakePlayed { get; } = [];
 
     public int TPhonographFakeStopped { get; private set; }
@@ -23,5 +25,10 @@ internal sealed class TPhonographFake : LPhonograph
     public void LPhonographVolumeSet(double volume)
     {
         TPhonographFakeVolume = volume;
+    }
+
+    public void TPhonographFakeFinish()
+    {
+        LPhonographFinished?.Invoke();
     }
 }

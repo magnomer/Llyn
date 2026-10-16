@@ -31,7 +31,7 @@ The census's empty-state key is chosen here, since it is interaction.
 
 ## Stamp
 
-Commit: `121691f60459`
+Commit: `bd299c638b2c`
 - `CScoreboard.cs` `3d676787d5fcdfbe`
 - `CScoreboardCensus.cs` `01d8b1aedfaaaba7`
 - `CScoreboardRoll.cs` `392dff988d92e849`

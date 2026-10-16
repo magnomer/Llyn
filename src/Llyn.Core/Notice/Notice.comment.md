@@ -41,6 +41,6 @@ It is apart from the plain fold, so entry and card folds leave the series page a
 
 ## Stamp
 
-Commit: `121691f60459`
+Commit: `bd299c638b2c`
 - `LBulletin.cs` `30cb003d68104baa`
 - `LSubject.cs` `e27d284d73910205`

@@ -68,6 +68,8 @@ The overload with an out parameter also returns the refusal wording.
 ## `TEngineStampRead`
 
 Stamp reads retain the entry facade's presence verdict and two strings.
+The relay passes the engine settings' interface culture, as a driver does.
+The format relay words a time in the invariant culture.
 
 ## `TEngineLineRead`
 
@@ -206,9 +208,9 @@ Each relay is transparent, except that the author create and update also raise t
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `bd299c638b2c`
 - `TInterfaceContent.cs` `2f1032ea1bb4d887`
-- `TInterfaceEngine.cs` `c7b8e4962b114404`
+- `TInterfaceEngine.cs` `612ac0e445010eab`
 - `TInterfaceEngineFanqie.cs` `3e7c158c1c15322e`
 - `TInterfaceEngineLanguage.cs` `60527ff66ae06733`
 - `TInterfaceEngineMarkup.cs` `26a61d688b58bff1`

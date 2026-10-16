@@ -4,7 +4,7 @@ namespace Llyn.Conduct;
 
 public sealed record CSittingSide(string CSittingSideText, IReadOnlyList<CImageDraft> CSittingSidePictures)
 {
-    internal string? CSittingSideSound { get; init; }
+    internal IReadOnlyList<string> CSittingSideSounds { get; init; } = [];
 
-    public bool CSittingSideAudible => CSittingSideSound is not null;
+    public bool CSittingSideAudible => CSittingSideSounds.Count > 0;
 }

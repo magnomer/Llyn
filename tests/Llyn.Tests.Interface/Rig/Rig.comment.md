@@ -99,6 +99,7 @@ The paradigm, transcription, reflex, recording and frequency clerks share one la
 
 A recording clerk over the rig with a fresh language cache, trail clerk and claim clerk.
 The play relay answers the play's ticket and plays at full volume by default.
+A second play relay takes a list of files and a volume, and plays them in turn.
 
 ## `TMarkupIntakeCreate`
 
@@ -140,6 +141,7 @@ The played list holds every file the phonograph was asked to play, in order.
 A test reads it to prove a call did or did not reach the player.
 The stopped count says how often it was asked to stop.
 The volume holds the last level it was set to, or -1 before any.
+It raises `LPhonographFinished` only when a test asks, so the clerk's next file starts on the test's cue.
 
 ## `TPostureFake`
 
@@ -229,13 +231,13 @@ One reversal is shared between hiding and restoring.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `bd299c638b2c`
 - `TClockFake.cs` `dffa2b2fcf999593`
 - `TEngineFake.cs` `364e90d7a21a82f8`
 - `TEngineFault.cs` `deab7d5e61cdcbfb`
 - `TEnvoyFake.cs` `6d5bffee0960fa06`
-- `TInterfaceClerk.cs` `c1569f8257bd37db`
-- `TPhonographFake.cs` `af34df5efbe42d1c`
+- `TInterfaceClerk.cs` `08c1766833cedf3f`
+- `TPhonographFake.cs` `78d1f82eea929e6a`
 - `TPostureFake.cs` `85c13ab0bfe0439a`
 - `TRigFake.cs` `c83bd318f58f76b1`
 - `TWarrantFake.cs` `7cef68fe9f435952`

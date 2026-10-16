@@ -234,7 +234,7 @@ public sealed class CDisplay
     {
         try
         {
-            return _cDisplayEntryPort.LEngineStampRead(id);
+            return _cDisplayEntryPort.LEngineStampRead(id, _cDisplaySettings.LEngineCultureRead());
         }
         catch (Exception exception)
         {

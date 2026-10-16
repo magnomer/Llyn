@@ -95,7 +95,7 @@ It rejects a null engine and keeps it for every forward.
 ## `LMediaPort`
 
 The slice the conduct sees when it shows or plays media.
-It resolves a stored location to a playable address, says whether a recording file exists, and prepares one for play.
+It resolves a stored location or recording to a playable address and says whether a draft's recording exists.
 It plays, stops and sets the level of a recording through the phonograph, so the veneer owns no player.
 Each play answers a ticket, and a stop acts only for the ticket of the latest play.
 It opens a folder or a link through the usher, so the veneer starts no process.
@@ -105,6 +105,8 @@ It opens a folder or a link through the usher, so the veneer starts no process.
 So the video row parses no address and makes no second request.
 `LEngineRecordingPlay` plays nothing for a file that does not exist.
 It answers the play's ticket, or zero when nothing played.
+The list overload plays the existing files one after another under one ticket.
+A stop for that ticket ends the run.
 The draft overload plays the audio of the draft's first pronunciation.
 `LEngineSpanRead` is static, since it reads only the row the caller holds.
 It gives the moments a video row plays from and until, so the row parses no timestamp.
@@ -190,7 +192,9 @@ The inflection box of the reading view and the editor repaints after a change.
 `LEngineNotebookSave` answers the trimmed title it stored.
 A blank title stores `Llyn`, and the next sync renames the same notebook to the stored title.
 `LEngineDepotSave` answers the flashcard folder it stored.
-An absolute path is refused with `Refusal.PathRooted`, since the folder sits under the workspace root.
+An absolute path outside the workspace root is refused with `Refusal.PathRooted`, since the folder sits under that root.
+A relative path that does not resolve inside the root is refused the same way.
+One inside the root is stored relative to it.
 `LEngineFailureRead` gives a refusal's reason key, or else `unexpected`.
 `recorded` and the audit file come with it once the fault is written.
 One call reads the reason and writes the fault, so Conduct decides nothing about the exception.
@@ -211,13 +215,13 @@ A blank variety has no flag, so its key is empty and finds nothing.
 
 ## Stamp
 
-Commit: `121691f60459`
+Commit: `bd299c638b2c`
 - `LDeckOutlet.cs` `4fcdc01cf7e5aabb`
 - `LDeckPort.cs` `256cbea5290d73a0`
 - `LDraftOutlet.cs` `3c00d5a269978c47`
 - `LDraftPort.cs` `b5d61d945bfd7907`
-- `LMediaOutlet.cs` `cc595890330f42a2`
-- `LMediaPort.cs` `ba9007f05060ea3d`
+- `LMediaOutlet.cs` `601cc15907e2f22d`
+- `LMediaPort.cs` `8d313e317fe4b3e2`
 - `LPortraitOutlet.cs` `4b7d31ff3f0aa3c2`
 - `LPortraitPort.cs` `e9d21be77d9ef27b`
 - `LSettingsOutlet.cs` `00b4352ee5194ae8`

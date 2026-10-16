@@ -23,6 +23,11 @@ Stopping closes the player, so the file is no longer held open.
 
 Closes the player when a file fails to play, so the file is released.
 The failure is not reported, since the phonograph has no route to the window.
+It then raises `LPhonographFinished`, so a run of sounds goes on to its next file.
+
+## `LPhonographFinishHandle`
+
+Raises `LPhonographFinished` when the player reaches the end of a file.
 
 ## `LPressBrowser`
 
@@ -308,8 +313,8 @@ A caller then asks Joplin for a fresh token rather than failing on a stale setti
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `LPhonographMedia.cs` `f3039410f786ff46`
+Commit: `bd299c638b2c`
+- `LPhonographMedia.cs` `4f48ad7e405721fd`
 - `LPressBrowser.cs` `0ec5161d6d11243a`
 - `LPressController.cs` `cc054b88aa9d403b`
 - `LPressDocument.cs` `108ca38d745071a2`

@@ -61,6 +61,41 @@ public sealed class TDeck
     }
 
     [Fact]
+    public void DeckRead_HoldsCues_CountsThem()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        LDeckOutlet port = TInterface.TDeckOutletCreate(engine);
+        long stored = port.TEngineDeckCreate("Verbs", null, LGrain.LGrainEntry);
+        port.TEngineCueCreate(stored, []);
+        port.TEngineCueCreate(stored, []);
+        CDeck deck = new(atelier, TEnvoyFake.TEnvoyTallyCreate(true, []));
+
+        CDeckRow row = Assert.Single(deck.CDeckRead().CDeckRollDecks);
+
+        Assert.Equal(2, row.CDeckRowCount);
+        Assert.Equal("Deck.Count", row.CDeckRowKey);
+    }
+
+    [Fact]
+    public void DeckRead_OneCue_UsesSingular()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        LDeckOutlet port = TInterface.TDeckOutletCreate(engine);
+        long stored = port.TEngineDeckCreate("Verbs", null, LGrain.LGrainEntry);
+        port.TEngineCueCreate(stored, []);
+        CDeck deck = new(atelier, TEnvoyFake.TEnvoyTallyCreate(true, []));
+
+        CDeckRow row = Assert.Single(deck.CDeckRead().CDeckRollDecks);
+
+        Assert.Equal(1, row.CDeckRowCount);
+        Assert.Equal("Deck.CountOne", row.CDeckRowKey);
+    }
+
+    [Fact]
     public void DeckDelete_Declined_KeepsDeck()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

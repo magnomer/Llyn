@@ -71,7 +71,7 @@ One side of a card as studied: its plain text, its picture locations and its sou
 
 ## Stamp
 
-Commit: `121691f60459`
+Commit: `bd299c638b2c`
 - `LCue.cs` `73bd9d7d7a394017`
 - `LCueCell.cs` `1674fada9b964088`
 - `LCueColumn.cs` `b29a2835b433dbc4`

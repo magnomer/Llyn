@@ -11,6 +11,8 @@ public sealed class CSitting
 
     private readonly Func<int, int> _cSittingChance;
 
+    private readonly Action _cSittingMoved;
+
     private int[] _cSittingOrder;
 
     private int _cSittingPosition;
@@ -19,13 +21,15 @@ public sealed class CSitting
 
     private bool _cSittingShuffled;
 
-    internal CSitting(IReadOnlyList<(CSittingSide, CSittingSide)> cards, Func<int, int> chance)
+    internal CSitting(IReadOnlyList<(CSittingSide, CSittingSide)> cards, Func<int, int> chance, Action moved)
     {
         ArgumentNullException.ThrowIfNull(cards);
         ArgumentNullException.ThrowIfNull(chance);
+        ArgumentNullException.ThrowIfNull(moved);
 
         _cSittingCards = cards;
         _cSittingChance = chance;
+        _cSittingMoved = moved;
         _cSittingOrder = LSittingOrderBuild();
     }
 
@@ -61,6 +65,7 @@ public sealed class CSitting
         _cSittingOrder = LSittingOrderBuild();
         _cSittingPosition = 0;
         _cSittingTurned = false;
+        _cSittingMoved();
         return CSittingRead();
     }
 
@@ -70,6 +75,7 @@ public sealed class CSitting
         {
             _cSittingPosition++;
             _cSittingTurned = false;
+            _cSittingMoved();
         }
 
         return CSittingRead();
@@ -81,6 +87,7 @@ public sealed class CSitting
         {
             _cSittingPosition--;
             _cSittingTurned = false;
+            _cSittingMoved();
         }
 
         return CSittingRead();

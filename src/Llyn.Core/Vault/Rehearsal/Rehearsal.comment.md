@@ -60,7 +60,7 @@ An owned stencil goes with its deck, inside the deck delete.
 
 ## Stamp
 
-Commit: `121691f60459`
+Commit: `bd299c638b2c`
 - `LCueVault.cs` `851b23d27e0f2f46`
 - `LDeckFolderVault.cs` `0efe13113613f037`
 - `LDeckVault.cs` `8e470e7af6c57ef0`

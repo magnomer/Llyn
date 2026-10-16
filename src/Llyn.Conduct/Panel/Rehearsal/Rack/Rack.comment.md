@@ -116,6 +116,8 @@ It also carries the creatable grains, as `CDeckGrainRead` lists them.
 ## `CDeckRow`
 
 One deck as Conduct shows it.
+It carries the deck's flashcard count and the key that words it, `Deck.Count` or `Deck.CountOne`.
+`CDeckRead` reads the count with the list, so one failure shows `Deck.LoadFailed`.
 Its grain shows through the stencil state, so the row carries none.
 
 ## `CDeckGrain`
@@ -140,14 +142,14 @@ It is not named `CDeckFolderRow`, because its members would pass three name comp
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `bd299c638b2c`
 - `CCharter.cs` `e3365847c7dc131f`
 - `CCharterBearing.cs` `e09b60c3f229adea`
 - `CCharterState.cs` `bec7a3928d880965`
-- `CDeck.cs` `8129f8d72b6419ba`
+- `CDeck.cs` `ba13c0821320aa1b`
 - `CDeckDestination.cs` `691c943e20e8ea03`
 - `CDeckFolder.cs` `b97e5bf3a85d3d30`
 - `CDeckGrain.cs` `2aeff1e5c9946d85`
 - `CDeckRoll.cs` `a1b714825a072391`
-- `CDeckRow.cs` `bb67344dff6ea3b0`
+- `CDeckRow.cs` `aead52d7919e2aca`
 - `CDeckView.cs` `cb71a6331ebd550f`

@@ -52,7 +52,7 @@ Slots read back by column, then by index.
 
 ## Stamp
 
-Commit: `121691f60459`
+Commit: `bd299c638b2c`
 - `LCueArchive.cs` `62ac67a663846646`
 - `LDeckArchive.cs` `407dc9353301b5ab`
 - `LDeckFolderArchive.cs` `73021d288ce30e57`

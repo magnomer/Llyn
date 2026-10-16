@@ -148,7 +148,7 @@ The order overload lets the store answer which entries match and orders over wha
 The filter overload leaves out the entries in a hidden language.
 The library panel lists through it, so the filter is applied here and never in the shell.
 The tag, register, situation, example and reference overloads match by id and order by headword.
-A zero id stands for nothing chosen and returns every entry, except for a register.
+A zero id stands for nothing chosen and returns every entry.
 They take typed objects rather than text so the searches cannot be confused.
 A card cites a Source through the Example it holds, so the reference search goes through that Example.
 
@@ -234,7 +234,7 @@ The translation clerk names its incoming rows through it too.
 
 ## Stamp
 
-Commit: `121691f60459`
+Commit: `bd299c638b2c`
 - `LCatalogClerk.cs` `56685f63108c1e84`
 - `LEntryClerk.cs` `f9953b583dee4375`
 - `LEntryClerkField.cs` `810515c631a82ce2`

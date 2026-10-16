@@ -42,8 +42,9 @@ Stray spaces and empty names are dropped, so a hand-edited row still reads.
 ## `LCatalogTextNormalize`
 
 The form two wordings are compared in has edge spaces gone and case lowered the invariant way.
-It is the same fold the database's `lfold` helper applies.
-A match made in memory therefore agrees with one made in a query.
+The database's `lfold` helper lowers case the same way.
+It trims nothing.
+So the case fold agrees between a match made in memory and one made in a query.
 Every place that asks whether two typed wordings name one row folds both sides with this.
 
 ## `LCatalogMarkFind`
@@ -89,7 +90,8 @@ The library list uses it with `Library.Shown`, so its count line shares the one 
 
 ## `LCatalogTextMatch`
 
-Both text and query are folded the way `LCatalogTextNormalize` folds.
+Both text and query are lowercased the invariant way, as `LCatalogTextNormalize` does.
+Neither is trimmed.
 A query without a wildcard is read as a contains, so a partial wording still finds its rows.
 A query with a wildcard is read against the whole text.
 So `cat*` finds what starts with cat and `*cat` finds what ends with it.
@@ -123,8 +125,8 @@ The stored form of a member is its text, so a remembered choice survives a resta
 `LCatalogOrderAuthor` lists uncredited sources first.
 `LCatalogOrderRecent` and `LCatalogOrderMarked` list newest first.
 `LCatalogOrderUsage` and `LCatalogOrderWork` list the most cited or most credited first.
-`LCatalogOrderSound` lists entries carrying a pronunciation first.
-`LCatalogOrderPending` lists entries carrying none first.
+`LCatalogOrderSound` lists only entries carrying a pronunciation, by sound.
+`LCatalogOrderPending` lists only entries carrying none.
 `LCatalogOrderGrasp` lists the best known entries first.
 
 ## `LFellow`
@@ -170,7 +172,7 @@ The work and citation sentences are composed from the counts the catalog row car
 
 ## Stamp
 
-Commit: `121691f60459`
+Commit: `bd299c638b2c`
 - `LCatalog.cs` `4e576dcda285294e`
 - `LCatalogFilter.cs` `2a78cb399c5b8aea`
 - `LCatalogOrder.cs` `d928c60059e57574`

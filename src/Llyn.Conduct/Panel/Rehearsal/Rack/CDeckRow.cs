@@ -4,4 +4,6 @@ public sealed record CDeckRow(
     long CDeckRowId,
     long? CDeckRowFolder,
     string CDeckRowName,
-    bool CDeckRowChosen);
+    bool CDeckRowChosen,
+    int CDeckRowCount,
+    string CDeckRowKey);

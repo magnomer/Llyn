@@ -42,6 +42,7 @@ Member names keep the engine's `LEngine*` form.
 `LEngineEntryLoad` gives the stored entry as a draft, or null when it no longer stands.
 Its recordings come resolved to absolute paths.
 `LEngineStampRead` says whether an entry is stored, with its worded creation and update times, empty once it is gone.
+The caller passes the culture, read from the interface-language owner `LEngineCultureRead`, never the machine's.
 The engine parses and words the stored stamps, so Conduct only copies them.
 `LEngineTallyRead` words the usage tally of one Source, as none when no Source is given.
 `LEngineGlyphResolve` gives the id of the entry a glyph cell opens, made when none exists yet.
@@ -83,10 +84,10 @@ The dependence labels and particles are those already saved in the language's ex
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `bd299c638b2c`
 - `LAncestorPort.cs` `7e9777eb958ef99c`
 - `LCardPort.cs` `abe0d7c5966b542d`
-- `LEntryPort.cs` `f364cbbcc156a244`
+- `LEntryPort.cs` `f4a67592fdb729d6`
 - `LGraspPort.cs` `9099a47b67179e94`
 - `LMarkdownPort.cs` `d966d5c1e2a4e15c`
 - `LMentionPort.cs` `fb0fed747dc2e183`

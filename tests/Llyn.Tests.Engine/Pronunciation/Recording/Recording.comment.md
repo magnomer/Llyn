@@ -36,6 +36,8 @@ A file that is not on disk, or no file at all, never reaches the phonograph.
 A workspace-relative file reaches the phonograph as its full path.
 A volume above one plays at full level, and a volume below zero sets silence.
 Two plays on one clerk share one phonograph.
+A play of two files starts the first, and the phonograph's finish starts the second.
+  A stop with the run's ticket plays no more files after the finish.
 The ticket of an earlier play stops nothing, and the latest play's ticket stops it.
 
 ## `TRecordingFinding`
@@ -72,10 +74,10 @@ It stands in for a host throttling bursts, so the workspace's retry runs offline
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `bd299c638b2c`
 - `THarvest.cs` `6195e46689619707`
 - `THarvestStep.cs` `47edebe26fa56bfd`
-- `TRecordingClerk.cs` `6bf91274f8f0bcc2`
+- `TRecordingClerk.cs` `373ca9025d21c62a`
 - `TRecordingFinding.cs` `365b70e5aa73e843`
 - `TRecordingSaving.cs` `72b0224e0435c9d9`
 - `TRefusalHandler.cs` `650e47d07ed9c632`

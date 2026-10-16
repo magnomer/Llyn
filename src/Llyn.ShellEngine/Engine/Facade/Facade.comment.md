@@ -194,7 +194,7 @@ The name is matched exactly, because it is the tag the pack's own readings carry
 ## `LEngineLanguageLoad`
 
 It reads the pack named, through the language clerk.
-Every reader of a pack's declarations in the engine goes through here, so the cache alone parses the file.
+Readers of a pack's declarations go through the language clerk, so its cache alone parses the file.
 
 ## `LEngineTranscriptionRead`
 
@@ -369,7 +369,9 @@ Nothing is sent to Joplin here, since the next push reads the title afresh.
 
 It persists the deck sync folder and answers the folder it stored.
 It relays only, so the trail clerk decides the path rule and the settings change stores it.
-An absolute folder raises `Refusal.PathRooted` before anything is written.
+An absolute folder outside the workspace root raises `Refusal.PathRooted` before anything is written.
+A relative folder that does not resolve inside the root raises it too.
+One inside the root is stored relative to it.
 
 ## `LEngineSettingsChange`
 
@@ -517,7 +519,7 @@ The folder path is read there, so the caller hands nothing it gathered.
 
 ## Stamp
 
-Commit: `121691f60459`
+Commit: `bd299c638b2c`
 - `LDraftFacade.cs` `e6ad399867a18e7e`
 - `LLanguageFacade.cs` `22bf9bcec6db6495`
 - `LRequestFacade.cs` `9a08f1ac9c85e708`

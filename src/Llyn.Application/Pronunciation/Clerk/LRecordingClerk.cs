@@ -16,6 +16,7 @@ public sealed class LRecordingClerk
     private readonly LTrailClerk _lRecordingClerkTrail;
     private readonly LClaimClerk _lRecordingClerkClaims;
     private readonly Dictionary<string, IReadOnlyList<LSource>> _lRecordingClerkSources = new(StringComparer.Ordinal);
+    private readonly Queue<string> _lRecordingClerkQueue = new();
     private int _lRecordingClerkTicket;
 
     public LRecordingClerk(LRig rig, LLanguageCache languages, LTrailClerk trail, LClaimClerk claims)
@@ -28,6 +29,7 @@ public sealed class LRecordingClerk
         _lRecordingClerkPronunciations = rig.LRigSound.LRigSoundPronunciations;
         _lRecordingClerkFactory = rig.LRigSource.LRigSourceFactory;
         _lRecordingClerkPhonograph = rig.LRigPhonograph;
+        _lRecordingClerkPhonograph.LPhonographFinished += LRecordingFinishHandle;
         _lRecordingClerkLanguages = languages;
         _lRecordingClerkTrail = trail;
         _lRecordingClerkClaims = claims;
@@ -78,7 +80,23 @@ public sealed class LRecordingClerk
 
     public int LRecordingClerkPlay(string? file, double volume)
     {
-        if (!LRecordingClerkExist(file))
+        return LRecordingClerkPlay([file], volume);
+    }
+
+    public int LRecordingClerkPlay(IReadOnlyList<string?> files, double volume)
+    {
+        ArgumentNullException.ThrowIfNull(files);
+
+        List<string> found = [];
+        foreach (string? file in files)
+        {
+            if (LRecordingClerkExist(file))
+            {
+                found.Add(_lRecordingClerkTrail.LRecordingResolve(file!));
+            }
+        }
+
+        if (found.Count == 0)
         {
             return 0;
         }
@@ -88,7 +106,13 @@ public sealed class LRecordingClerk
             _lRecordingClerkPhonograph.LPhonographVolumeSet(Math.Clamp(volume, 0, 1));
         }
 
-        _lRecordingClerkPhonograph.LPhonographPlay(_lRecordingClerkTrail.LRecordingResolve(file!));
+        _lRecordingClerkQueue.Clear();
+        for (int index = 1; index < found.Count; index++)
+        {
+            _lRecordingClerkQueue.Enqueue(found[index]);
+        }
+
+        _lRecordingClerkPhonograph.LPhonographPlay(found[0]);
         return ++_lRecordingClerkTicket;
     }
 
@@ -99,12 +123,22 @@ public sealed class LRecordingClerk
             return;
         }
 
+        _lRecordingClerkQueue.Clear();
         _lRecordingClerkPhonograph.LPhonographStop();
     }
 
     public void LRecordingClerkClear()
     {
+        _lRecordingClerkQueue.Clear();
         _lRecordingClerkPhonograph.LPhonographStop();
+    }
+
+    private void LRecordingFinishHandle()
+    {
+        if (_lRecordingClerkQueue.TryDequeue(out string? next))
+        {
+            _lRecordingClerkPhonograph.LPhonographPlay(next);
+        }
     }
 
     public void LRecordingClerkAdjust(double volume)

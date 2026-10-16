@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -23,6 +24,9 @@ public sealed class LMediaOutlet : LMediaPort
 
     public int LEngineRecordingPlay(string? file, double volume) =>
         _lMediaOutletEngine.LEnginePronunciation.LEngineRecordingPlay(file, volume);
+
+    public int LEngineRecordingPlay(IReadOnlyList<string> files, double volume) =>
+        _lMediaOutletEngine.LEnginePronunciation.LEngineRecordingPlay(files, volume);
 
     public int LEngineRecordingPlay(LEntryDraft draft, double volume) =>
         _lMediaOutletEngine.LEnginePronunciation.LEngineRecordingPlay(draft, volume);
