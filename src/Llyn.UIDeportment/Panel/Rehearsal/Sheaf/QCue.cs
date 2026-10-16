@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
@@ -20,6 +21,8 @@ internal sealed class QCue
         ArgumentNullException.ThrowIfNull(surface);
 
         _qCueSurface = surface;
+        QCueFresh.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("new", 24));
+        QCueRemoval.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("delete", 24));
         QCueFresh.Click += QCueFreshObserve;
         QCueRemoval.Click += QCueRemovalObserve;
     }
@@ -75,28 +78,40 @@ internal sealed class QCue
             orphan.Visibility = QLook.QLookVisibleRead(cue.QCueItemOrphaned);
         }
 
-        if (QLook.QLookPartFind<CheckBox>(container, "PCueMark") is CheckBox mark)
+        if (QLook.QLookPartFind<ToggleButton>(container, "PCueMark") is ToggleButton mark)
         {
             mark.IsChecked = cue.QCueItemFlag;
             mark.Click -= QCueStateObserve;
             mark.Click += QCueStateObserve;
         }
 
-        if (QLook.QLookPartFind<CheckBox>(container, "PCueExclusion") is CheckBox exclusion)
+        if (QLook.QLookPartFind<QIconImage>(container, "PCueMarkIcon") is QIconImage markIcon)
+        {
+            markIcon.QIconSource = QIcon.QIconResolve("star", 16);
+            markIcon.IsEnabled = cue.QCueItemFlag;
+        }
+
+        if (QLook.QLookPartFind<ToggleButton>(container, "PCueExclusion") is ToggleButton exclusion)
         {
             exclusion.IsChecked = cue.QCueItemExcluded;
             exclusion.Click -= QCueStateObserve;
             exclusion.Click += QCueStateObserve;
         }
 
+        if (QLook.QLookPartFind<QIconImage>(container, "PCueExclusionIcon") is QIconImage exclusionIcon)
+        {
+            exclusionIcon.QIconSource = QIcon.QIconResolve("filter", 16);
+            exclusionIcon.IsEnabled = cue.QCueItemExcluded;
+        }
+
         if (QLook.QLookPartFind<QIconImage>(container, "PCueEarlierIcon") is QIconImage earlier)
         {
-            earlier.QIconSource = QIcon.QIconResolve("earlier", 12);
+            earlier.QIconSource = QIcon.QIconResolve("earlier", 16);
         }
 
         if (QLook.QLookPartFind<QIconImage>(container, "PCueLaterIcon") is QIconImage later)
         {
-            later.QIconSource = QIcon.QIconResolve("later", 12);
+            later.QIconSource = QIcon.QIconResolve("later", 16);
         }
 
         QCueHandleRefine(container, "PCueEarlier", QCueEarlierObserve);
@@ -151,8 +166,8 @@ internal sealed class QCue
     {
         if (QSender.QSenderItemRead<QCueItem>(sender) is not QCueItem cue
             || QCueView.ItemContainerGenerator.ContainerFromItem(cue) is not FrameworkElement container
-            || QLook.QLookPartFind<CheckBox>(container, "PCueMark") is not CheckBox mark
-            || QLook.QLookPartFind<CheckBox>(container, "PCueExclusion") is not CheckBox exclusion)
+            || QLook.QLookPartFind<ToggleButton>(container, "PCueMark") is not ToggleButton mark
+            || QLook.QLookPartFind<ToggleButton>(container, "PCueExclusion") is not ToggleButton exclusion)
         {
             return;
         }

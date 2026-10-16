@@ -5,6 +5,7 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Base/PThemePalette.xaml" />
+        <ResourceDictionary Source="/Llyn.UIVeneer;component/Theme/Sound/PThemeSpeech.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="Theme.Panel.Surface" TargetType="Border">
@@ -44,6 +45,22 @@
         <Setter Property="Margin" Value="0,22,0,0" />
         <Setter Property="Fill" Value="{StaticResource Theme.Line}" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
+    </Style>
+
+    <Style x:Key="Theme.Page.Heading" TargetType="TextBlock">
+        <Setter Property="Height" Value="34" />
+        <Setter Property="Margin" Value="2,0,2,12" />
+        <Setter Property="Padding" Value="0,5,0,0" />
+        <Setter Property="FontSize" Value="19" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style x:Key="Theme.Page.Tally" TargetType="Border" BasedOn="{StaticResource Theme.Speech.Chip}">
+        <Setter Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
+    </Style>
+
+    <Style x:Key="Theme.Page.Figure" TargetType="TextBlock" BasedOn="{StaticResource Theme.Speech.Name}">
+        <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
     </Style>
 
     <Style x:Key="Theme.Panel.SeamRow" TargetType="Rectangle">

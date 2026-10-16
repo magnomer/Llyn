@@ -23,6 +23,12 @@ internal sealed class TVaultFakeCue : LCueVault
         return created;
     }
 
+    public IReadOnlyList<LCue> LCueRead() =>
+        _tVaultFakeCues
+            .OrderBy(static cue => cue.LCueDeckId)
+            .ThenBy(static cue => cue.LCuePosition)
+            .ToList();
+
     public IReadOnlyList<LCue> LCueRead(long deckId) =>
         _tVaultFakeCues
             .Where(cue => cue.LCueDeckId == deckId)

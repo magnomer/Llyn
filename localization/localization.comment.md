@@ -26,6 +26,8 @@ The sync term names the push to Joplin, shared by the sync button and the Sync s
 The print, cancel, color and custom terms are shared within the print window.
 The print term also labels the Scribe print button, and the cancel term the Leave, Coinage and Customs dialogs.
 The deck, flashcard, study and statistics terms name the flashcard feature.
+The decks and flashcards terms are the plurals, since each language words its plural its own way.
+Korean repeats the singular in both.
 The deck-sync term names the export to the phone app, apart from the sync term that names the Joplin push.
 It labels the deck export button and the Depot setting.
 
@@ -70,8 +72,22 @@ The setting title is the deck-sync term, as `Settings.Sync` is the sync term.
 `Deck.Exporting` is the export line while the deck files are being written, as `Courier.Sending` is the push line.
 `Coinage.Deck` and `Coinage.DeckFolder` prompt for the name of a new deck and a new deck folder.
 `Navigation.Study` and `Navigation.Scoreboard` label the study and statistics tabs beside the deck tab.
-`Study.Empty` and `Scoreboard.Empty` are the empty lines of those two placeholder panels.
+`Study.Empty` and `Scoreboard.Empty` are the empty lines of those two panels.
+`Study.Unchosen` is the study line while no deck is chosen, and `Study.Inactive` while the chosen deck has no active flashcard.
+`Study.LoadFailed` heads the failure notice when the chosen deck's flashcards cannot be read for a sitting.
+`Scoreboard.Vacant` is the statistics line while the chosen deck holds no flashcard.
+`Scoreboard.Empty` also stands while all decks are chosen and hold no flashcard.
+`Scoreboard.Unsynced` words the last-sync figure while no deck sync has run.
+`Scoreboard.All` words the statistics row and title that stand for all decks at once, "All decks".
+`Scoreboard.Total`, `Scoreboard.Active`, `Scoreboard.Excluded`, `Scoreboard.Orphaned` and `Scoreboard.Flagged` caption the five figure tiles, each after its count.
+`Scoreboard.Synced` captions the last-sync line, before the time or the `Scoreboard.Unsynced` words.
+`Scoreboard.Weekly` heads the chart of flashcards added in each recent week.
 `CStudy` and `CScoreboard` name each key, and the driver looks it up.
+`Study.Launch` and `Study.Shuffle` label the study commands above the deck column.
+`Study.Previous`, `Study.Turn`, `Study.Next`, `Study.Again` and `Study.End` label the stage commands.
+`Study.Finished` is the stage line at the end of a round.
+  The markup names these keys itself, since each labels one fixed control.
+`Study.BackEmpty` is the muted line a turned card shows when its back holds nothing, chosen by `CSitting`.
 `Coinage.Stencil` prompts for the name a template is saved under.
 `Cue.*` labels one flashcard, its flag, its exclusion from study and its orphaned state.
 `Cue.Cell` captions one editable cell of a free flashcard, and `Cue.Pick` the button that picks its picture or sound file.
@@ -125,6 +141,6 @@ The person headers spell out person and number instead of the English abbreviati
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `en.json` `fdf6c801d58b9f56`
-- `ko.json` `c82aaaf152b59d10`
+Commit: `121691f60459`
+- `en.json` `f8eaad78b76eddc1`
+- `ko.json` `069f639cf5cb6151`

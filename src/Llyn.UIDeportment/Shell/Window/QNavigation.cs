@@ -109,6 +109,9 @@ internal sealed class QNavigation
         QNavigationRepertoire.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("repertoire", 24));
         QNavigationTenor.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("tenor", 24));
         QNavigationTaxonomy.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("taxonomy", 24));
+        QNavigationStudy.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("study", 24));
+        QNavigationDeck.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("deck", 24));
+        QNavigationScoreboard.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("scoreboard", 24));
         QNavigationCorpus.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("corpus", 24));
         QNavigationSource.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("reference", 24));
         QNavigationGuild.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("guild", 24));

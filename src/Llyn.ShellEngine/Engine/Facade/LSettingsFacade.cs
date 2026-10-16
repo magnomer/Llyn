@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Llyn.Application;
 using Llyn.Core;
 
@@ -78,6 +79,8 @@ internal sealed class LSettingsFacade
     {
         return LLocalization.LLocalizationNormalize(LEngineSettingsRead().LSettingsLocalization);
     }
+
+    internal CultureInfo LEngineCultureRead() => LLocalization.LLocalizationCultureRead(LEngineLocalizationRead());
 
     internal IReadOnlyList<string> LEngineLocalizationScan() => LLocalization.LLocalizationListedRead();
 

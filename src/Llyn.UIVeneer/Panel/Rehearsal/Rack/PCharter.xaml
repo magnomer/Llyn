@@ -45,9 +45,14 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Margin="{StaticResource Theme.Catalog.HeaderMargin}" Orientation="Horizontal">
-            <Button x:Name="PCharterStore" Content="{DynamicResource Deck.Save}" />
-        </StackPanel>
+        <Border Grid.Row="0" Margin="0,0,0,14" HorizontalAlignment="Left" Style="{StaticResource Theme.Command.Group}">
+            <StackPanel Orientation="Horizontal">
+                <Button
+                    x:Name="PCharterStore"
+                    Content="{DynamicResource Deck.Save}"
+                    Style="{StaticResource Theme.Command.Segment}" />
+            </StackPanel>
+        </Border>
 
         <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" Style="{StaticResource Theme.Catalog.Scroll}" VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="0,0,10,20">

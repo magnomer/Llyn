@@ -25,6 +25,9 @@ internal sealed class QStencil
         ArgumentNullException.ThrowIfNull(surface);
 
         _qStencilSurface = surface;
+        QStencilStore.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("save", 24));
+        QStencilApplication.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("check", 24));
+        QStencilText.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("edit", 24));
         QStencilStore.Click += QStencilStoreObserve;
         QStencilApplication.Click += QStencilApplyObserve;
         QStencilText.Click += QStencilTextObserve;
@@ -50,7 +53,7 @@ internal sealed class QStencil
 
     private ComboBox QStencilSound => QContract.QContractFind<ComboBox>(_qStencilSurface, "PStencilSound");
 
-    private ToggleButton QStencilText => QContract.QContractFind<ToggleButton>(_qStencilSurface, "PStencilText");
+    private Button QStencilText => QContract.QContractFind<Button>(_qStencilSurface, "PStencilText");
 
     internal void QStencilIntroduce(CStencil stencil)
     {
@@ -82,7 +85,9 @@ internal sealed class QStencil
         QStencilMediaRefine(
             QStencilPicture, state.CStencilStateSides, state.CStencilStatePicture, QStencilPictureObserve);
         QStencilMediaRefine(QStencilSound, state.CStencilStateSides, state.CStencilStateSound, QStencilSoundObserve);
-        QStencilText.IsChecked = _cStencil.CStencilTextChecked;
+        QStencilText.SetValue(
+            QLook.QLookCueProperty,
+            _cStencil.CStencilTextChecked ? QLookCue.QLookCueSelected : QLookCue.QLookCueIdle);
         QStencilSlots.Visibility = QLook.QLookVisibleRead(_cStencil.CStencilTextChecked);
         QSplice.QSpliceRefine(
             _qStencilList,
@@ -178,6 +183,11 @@ internal sealed class QStencil
 
         if (QLook.QLookPartFind<Button>(container, "PStencilRemoval") is Button removal)
         {
+            if (QLook.QLookPartFind<QIconImage>(container, "PStencilRemovalIcon") is QIconImage removalIcon)
+            {
+                removalIcon.QIconSource = QIcon.QIconResolve("remove", 12);
+            }
+
             removal.Click -= QStencilChipObserve;
             removal.Click += QStencilChipObserve;
         }

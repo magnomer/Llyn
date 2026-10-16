@@ -43,6 +43,28 @@
         </Setter>
     </Style>
 
+    <Style x:Key="Theme.Catalog.Item" TargetType="ListBoxItem">
+        <Setter Property="Margin" Value="0,0,0,3" />
+        <Setter Property="Padding" Value="12,9" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListBoxItem">
+                    <Border x:Name="PSurface" CornerRadius="11">
+                        <ContentPresenter x:Name="PSurfaceContent" VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="Theme.Catalog.Title" TargetType="TextBlock">
         <Setter Property="FontSize" Value="14.5" />
         <Setter Property="FontWeight" Value="SemiBold" />

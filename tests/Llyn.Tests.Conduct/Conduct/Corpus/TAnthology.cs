@@ -66,7 +66,7 @@ public sealed class TAnthology
 
         CDesk desk = TInterfaceConductDesk.TDeskCreate(engine, "Example", envoy, "Corpus", CSubject.CSubjectExample);
         CAnthology anthology = TInterfaceConductPanel.TAnthologyCreate(atelier, desk, envoy);
-        anthology.TAnthologyVistaRestore(engine.TEngineVistaStart("occurrence", LCatalogOrder.LCatalogOrderHeadword));
+        anthology.TAnthologyVistaRestore(engine.TEngineVistaStart("guild", LCatalogOrder.LCatalogOrderHeadword));
 
         Assert.Equal(string.Empty, anthology.CAnthologyPanel.CPanelAperture.CApertureTallyRead());
         Assert.Equal(["Example.LoadFailed"], asked);

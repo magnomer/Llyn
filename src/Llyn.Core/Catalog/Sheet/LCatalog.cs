@@ -141,13 +141,20 @@ public static class LCatalog
     public static string LCatalogTallyFormat(int count, string realm, Func<string, string> localize)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(realm);
+
+        return LCatalogCountFormat(count, realm + ".Usage", localize);
+    }
+
+    public static string LCatalogCountFormat(int count, string stem, Func<string, string> localize)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(stem);
         ArgumentNullException.ThrowIfNull(localize);
 
         return count switch
         {
-            0 => localize(realm + ".UsageNone"),
-            1 => localize(realm + ".UsageOne"),
-            _ => $"{count.ToString(CultureInfo.CurrentCulture)} {localize(realm + ".UsageMany")}",
+            0 => localize(stem + "None"),
+            1 => localize(stem + "One"),
+            _ => $"{count.ToString(CultureInfo.CurrentCulture)} {localize(stem + "Many")}",
         };
     }
 

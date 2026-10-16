@@ -20,7 +20,12 @@
             <Border Grid.Column="0" Margin="0,0,8,0" Style="{StaticResource Theme.Search.Bar}">
                 <TextBox x:Name="PTrawl" Style="{StaticResource Theme.Search.Field}" />
             </Border>
-            <Button x:Name="PAccessionBulk" Grid.Column="1" Content="{DynamicResource Accession.AddAll}" />
+            <Border Grid.Column="1" VerticalAlignment="Center" Style="{StaticResource Theme.Command.Group}">
+                <Button
+                    x:Name="PAccessionBulk"
+                    Content="{DynamicResource Accession.AddAll}"
+                    Style="{StaticResource Theme.Command.Segment}" />
+            </Border>
         </Grid>
 
         <Grid Grid.Row="1" Style="{StaticResource Theme.Catalog.Frame}">
@@ -53,8 +58,9 @@
                                     x:Name="PAccessionAddition"
                                     Grid.Column="2"
                                     Margin="8,0,0,0"
+                                    Style="{StaticResource Theme.Command.Icon}"
                                     ToolTip="{DynamicResource Accession.Add}">
-                                    <local:QIconImage x:Name="PAccessionAdditionIcon" Width="12" Height="12" />
+                                    <local:QIconImage x:Name="PAccessionAdditionIcon" Width="16" Height="16" />
                                 </Button>
                             </Grid>
                         </DataTemplate>

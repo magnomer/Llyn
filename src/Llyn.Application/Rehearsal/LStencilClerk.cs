@@ -65,6 +65,24 @@ public sealed class LStencilClerk
         return new LCueFace(cells);
     }
 
+    public IReadOnlyList<(LCue LCueStored, LCueFace LCueShown, LCueSide LCueFront, LCueSide LCueBack)>
+        LStencilFaceRead(long deckId, LPortraitLabel label)
+    {
+        ArgumentNullException.ThrowIfNull(label);
+
+        LStencil stencil = LStencilClerkRead(deckId);
+        List<(LCue LCueStored, LCueFace LCueShown, LCueSide LCueFront, LCueSide LCueBack)> faces = [];
+        foreach (LCue cue in _lStencilClerkCues.LCueRead(deckId).Where(static cue => !cue.LCueResting))
+        {
+            LCueFace face = cue.LCueGrain == LGrain.LGrainFree
+                ? new LCueFace(_lStencilClerkCues.LCueCellRead(cue.LCueId))
+                : LStencilClerkResolve(cue, stencil, label);
+            faces.Add((cue, face, LCueMarkup.LCueMarkupParse(face, 1), LCueMarkup.LCueMarkupParse(face, 2)));
+        }
+
+        return faces;
+    }
+
     public IReadOnlyList<LStencil> LStencilClerkRead()
     {
         return _lStencilClerkStencils.LStencilRead();

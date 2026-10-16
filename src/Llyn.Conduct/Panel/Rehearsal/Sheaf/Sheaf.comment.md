@@ -80,8 +80,8 @@ It carries the entry id, the headword, the epithet and whether the chosen deck a
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `CAccession.cs` `48559274277838c2`
+Commit: `121691f60459`
+- `CAccession.cs` `7b0a66755b8cb22a`
 - `CAccessionRow.cs` `f608fa4fbe79fcbc`
 - `CCue.cs` `080f47c84633d5ea`
 - `CCueCell.cs` `0b6eb7f352958485`

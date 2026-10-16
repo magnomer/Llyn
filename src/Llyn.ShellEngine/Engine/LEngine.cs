@@ -12,6 +12,8 @@ public sealed class LEngine : IDisposable
     internal LMarkupFacade LEngineMarkup { get; }
     internal LCourierFacade LEngineCourier { get; }
     internal LDeckFacade LEngineDeck { get; }
+    internal LStudyFacade LEngineStudy { get; }
+    internal LScoreboardFacade LEngineScoreboard { get; }
     internal LLiveryFacade LEngineLivery { get; }
     public LWorkspaceFacade LEngineWorkspace { get; }
     public LReflexFacade LEngineReflex { get; }
@@ -94,6 +96,8 @@ public sealed class LEngine : IDisposable
         LEnginePortrait = new LPortraitFacade(LEngineHearth, LEngineLivery, LEngineSettings);
         LEngineCourier = new LCourierFacade(LEngineHearth, LEngineLivery, LEngineSettings);
         LEngineDeck = new LDeckFacade(LEngineHearth, LEngineEntry, LEngineVistaRow);
+        LEngineStudy = new LStudyFacade(LEngineHearth);
+        LEngineScoreboard = new LScoreboardFacade(LEngineHearth);
         LEngineTenure = new LTenureFacade(this);
         LEngineHearth.LEngineWorkspaceOpen();
     }

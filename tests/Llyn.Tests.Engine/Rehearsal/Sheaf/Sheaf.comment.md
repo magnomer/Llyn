@@ -31,10 +31,24 @@ An applied stencil copies its slots, and a saved stencil keeps them through late
 
 Covers the phone markup's handling of a literal bar.
 A bar in text becomes a look-alike divider, so it cannot split a line.
+Covers the study side of one face too.
+A bar becomes a line break, and another side's cells stay out.
+Picture and sound cells fill the side's file lists and never reach its text.
+
+## `TCueStudy`
+
+Covers the reads study practises from, at the clerk and through the deck port.
+A resting card is left out of the faces and of the active counts.
+A free card's front and back come from its own cells.
+The active read answers folders, decks and counts together, and a deck with no active card has no count.
+The census read counts only the chosen deck.
+With no deck chosen, it takes the latest sync of any deck.
+Its weeks are checked only by their sum, since the cards carry the real time of their insert.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `121691f60459`
 - `TCue.cs` `fb984bcfc6fa43be`
 - `TCueClerk.cs` `21f7b1c324e2d086`
-- `TCueMarkup.cs` `a2c80ee2e3b16c79`
+- `TCueMarkup.cs` `23a86f25140dc5ab`
+- `TCueStudy.cs` `ebf8ab3640357560`

@@ -46,10 +46,14 @@ internal sealed class LDeckFacade
 
     public long LEngineDeckCreate(string name, long? folderId, LGrain grain)
     {
+        long deckId;
         lock (_lDeckFacadeGate)
         {
-            return LDeckFacadeStaff.LWorkspaceStaffDeck.LDeckClerkCreate(name, folderId, grain).LDeckId;
+            deckId = LDeckFacadeStaff.LWorkspaceStaffDeck.LDeckClerkCreate(name, folderId, grain).LDeckId;
         }
+
+        _lDeckFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectDeck, deckId);
+        return deckId;
     }
 
     public void LEngineDeckUpdate(long deckId, string name)
@@ -58,6 +62,8 @@ internal sealed class LDeckFacade
         {
             LDeckFacadeStaff.LWorkspaceStaffDeck.LDeckNameSet(deckId, name);
         }
+
+        _lDeckFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectDeck, deckId);
     }
 
     public void LEngineDeckUpdate(LDeck deck, IReadOnlyList<LBearing> bearings)
@@ -66,6 +72,8 @@ internal sealed class LDeckFacade
         {
             LDeckFacadeStaff.LWorkspaceStaffDeck.LDeckClerkUpdate(deck, bearings);
         }
+
+        _lDeckFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectDeck, deck.LDeckId);
     }
 
     public void LEngineDeckMove(long deckId, long? folderId)
@@ -74,6 +82,8 @@ internal sealed class LDeckFacade
         {
             LDeckFacadeStaff.LWorkspaceStaffDeck.LDeckClerkMove(deckId, folderId);
         }
+
+        _lDeckFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectDeck, deckId);
     }
 
     public void LEngineDeckMove(long? folderId, IReadOnlyList<long> order)
@@ -82,6 +92,8 @@ internal sealed class LDeckFacade
         {
             LDeckFacadeStaff.LWorkspaceStaffDeck.LDeckOrderSet(folderId, order);
         }
+
+        _lDeckFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectDeck, 0);
     }
 
     public void LEngineDeckDelete(long deckId)
@@ -90,14 +102,20 @@ internal sealed class LDeckFacade
         {
             LDeckFacadeStaff.LWorkspaceStaffDeck.LDeckClerkDelete(deckId);
         }
+
+        _lDeckFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectDeck, deckId);
     }
 
     public long LEngineFolderCreate(string name)
     {
+        long folderId;
         lock (_lDeckFacadeGate)
         {
-            return LDeckFacadeStaff.LWorkspaceStaffDeck.LDeckFolderCreate(name).LDeckFolderId;
+            folderId = LDeckFacadeStaff.LWorkspaceStaffDeck.LDeckFolderCreate(name).LDeckFolderId;
         }
+
+        _lDeckFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectDeck, 0);
+        return folderId;
     }
 
     public void LEngineFolderUpdate(long folderId, string name)
@@ -106,6 +124,8 @@ internal sealed class LDeckFacade
         {
             LDeckFacadeStaff.LWorkspaceStaffDeck.LDeckFolderUpdate(folderId, name);
         }
+
+        _lDeckFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectDeck, 0);
     }
 
     public void LEngineFolderDelete(long folderId)
@@ -114,6 +134,8 @@ internal sealed class LDeckFacade
         {
             LDeckFacadeStaff.LWorkspaceStaffDeck.LDeckFolderDelete(folderId);
         }
+
+        _lDeckFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectDeck, 0);
     }
 
     public IReadOnlyList<LCue> LEngineCueRead(long deckId)
@@ -160,18 +182,26 @@ internal sealed class LDeckFacade
 
     public int LEngineCueAdd(long deckId, IReadOnlyList<long> entryIds)
     {
+        int added;
         lock (_lDeckFacadeGate)
         {
-            return LDeckFacadeStaff.LWorkspaceStaffCue.LCueClerkAdd(deckId, entryIds).Count;
+            added = LDeckFacadeStaff.LWorkspaceStaffCue.LCueClerkAdd(deckId, entryIds).Count;
         }
+
+        _lDeckFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectDeck, deckId);
+        return added;
     }
 
     public long LEngineCueCreate(long deckId, IReadOnlyList<LCueCell> cells)
     {
+        long cueId;
         lock (_lDeckFacadeGate)
         {
-            return LDeckFacadeStaff.LWorkspaceStaffCue.LCueClerkCreate(deckId, cells).LCueId;
+            cueId = LDeckFacadeStaff.LWorkspaceStaffCue.LCueClerkCreate(deckId, cells).LCueId;
         }
+
+        _lDeckFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectDeck, deckId);
+        return cueId;
     }
 
     public void LEngineCueRemove(IReadOnlyList<long> cueIds)
@@ -180,6 +210,8 @@ internal sealed class LDeckFacade
         {
             LDeckFacadeStaff.LWorkspaceStaffCue.LCueClerkRemove(cueIds);
         }
+
+        _lDeckFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectDeck, 0);
     }
 
     public void LEngineCueMove(long deckId, long cueId, int position)
@@ -188,6 +220,8 @@ internal sealed class LDeckFacade
         {
             LDeckFacadeStaff.LWorkspaceStaffCue.LCueClerkMove(deckId, cueId, position);
         }
+
+        _lDeckFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectDeck, deckId);
     }
 
     public void LEngineCueSet(long cueId, int flag, bool excluded)
@@ -196,6 +230,8 @@ internal sealed class LDeckFacade
         {
             LDeckFacadeStaff.LWorkspaceStaffCue.LCueClerkSet(cueId, flag, excluded);
         }
+
+        _lDeckFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectDeck, 0);
     }
 
     public Task<LDeckReceipt> LEngineDeckExport(long deckId, LPortraitLabel label, CancellationToken cancellation)

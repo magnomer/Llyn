@@ -9,6 +9,7 @@ A port stands apart from the engine so the layers above never name the engine it
 
 The engine's face for `LDeckPort`, handed by the host to the conduct in place of the engine itself.
 Every member forwards to the same-named member of `LEngineDeck` and holds no state or logic.
+The study reads forward to `LEngineStudy` and the census read to `LEngineScoreboard` instead.
 It rejects a null engine and keeps it for every forward.
 
 ## `LDeckPort`
@@ -16,6 +17,8 @@ It rejects a null engine and keeps it for every forward.
 The slice the conduct sees for decks, deck folders, cues and stencils.
 It is a realm of its own, so `LPortraitPort` does not grow with it.
 Each member behaves as `LDeckFacade` documents it.
+The study reads behave as `LStudyFacade` documents them.
+The census read behaves as `LScoreboardFacade` documents it.
 The deck read carries the folders, so one call fills the deck list.
 The line read takes the label from the conduct, as the portrait read does.
 It answers each cue with its listing line.
@@ -163,6 +166,7 @@ It rejects a null engine and keeps it for every forward.
 
 The slice the conduct sees for settings, the workspace and the interface texts.
 It reads and saves the settings, the workspace path, the workspace state and the interface language.
+It also answers that language's culture, so a gate words figures in the interface language.
 It also words a failure into a notice, and loads fonts and flags.
 The interface texts are read through it, so the conduct names no localization.
 Nothing here changes an entry or a draft.
@@ -207,14 +211,14 @@ A blank variety has no flag, so its key is empty and finds nothing.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `LDeckOutlet.cs` `0369871f4aa6b0ab`
-- `LDeckPort.cs` `853c07ac3cea9a51`
+Commit: `121691f60459`
+- `LDeckOutlet.cs` `4fcdc01cf7e5aabb`
+- `LDeckPort.cs` `256cbea5290d73a0`
 - `LDraftOutlet.cs` `3c00d5a269978c47`
 - `LDraftPort.cs` `b5d61d945bfd7907`
 - `LMediaOutlet.cs` `cc595890330f42a2`
 - `LMediaPort.cs` `ba9007f05060ea3d`
 - `LPortraitOutlet.cs` `4b7d31ff3f0aa3c2`
 - `LPortraitPort.cs` `e9d21be77d9ef27b`
-- `LSettingsOutlet.cs` `5e05ed89b3950d92`
-- `LSettingsPort.cs` `68435b3064cc13e3`
+- `LSettingsOutlet.cs` `00b4352ee5194ae8`
+- `LSettingsPort.cs` `e22aba302a5bd871`

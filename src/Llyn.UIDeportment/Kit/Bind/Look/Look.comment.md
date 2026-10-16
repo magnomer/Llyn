@@ -8,6 +8,7 @@ It also owns generated item fills, their subscriptions and identity-based collec
 A row holds only while every cue it names holds, as a multi-trigger did.
 A null part means the control itself.
 Cue and icon property changes run the state handler immediately.
+A list box item's select and unselect run it too, so a range selection repaints every row it reaches.
 The inherited reach property attaches empty load and unload handlers to elements entering an attached view.
 Those handlers let the registered class handlers receive lifecycle events from otherwise bare elements.
 An already loaded element is refined immediately when reach arrives.
@@ -76,6 +77,7 @@ The progress sweep comes from the contracted `Theme.Popup.ProgressBar.Sweep` res
 
 Catalog, choice, command, language, paradigm, playback and volume rows stay together by style.
 Later checked and disabled rows can override earlier hover settings without changing the state handler.
+A segment under the `Selected` cue takes the pressed colours, so a toggle segment shows that it is on.
 
 ## `QLookDisplay`
 
@@ -130,9 +132,9 @@ The order of the spread is load-bearing, since a later row wins on the same part
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `QLook.cs` `5175b5af4fad7616`
-- `QLookControl.cs` `f8e1fe06320adcd7`
+Commit: `121691f60459`
+- `QLook.cs` `48638dcfa3b33455`
+- `QLookControl.cs` `fdbc2251a4de11fb`
 - `QLookCue.cs` `6b9a3fd8e550a325`
 - `QLookDisplay.cs` `17249a7d68d91dee`
 - `QLookInput.cs` `317591fa67165b39`

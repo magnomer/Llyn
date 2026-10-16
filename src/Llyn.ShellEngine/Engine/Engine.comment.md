@@ -85,7 +85,7 @@ The markup link clerk is built here and shared by the intake, its draft clerk an
 The courier records its failures through the workspace clerk, so a failed push leaves a trace.
 The courier takes no portrait clerk, since `LCourierFacade` hands it each Livery page at send time.
 The courier searches through the query clerk, never through the entry lifecycle.
-The deck, cue and stencil clerks are built here for `LDeckFacade`.
+The deck, cue and stencil clerks are built here for `LDeckFacade`, `LStudyFacade` and `LScoreboardFacade`.
 The deck clerk receives the trail clerk, which normalizes a name before the deck code is derived.
 The cue clerk receives the entry clerk, which loads each entry an add scans.
 It receives the translation, reference and trail clerks too, which the listing line reads.
@@ -140,6 +140,7 @@ The row facade follows it, so every facade that builds vista rows finds it.
 The facades come last, so none of them can ever see an engine without its staff.
 Each facade is built after the siblings it takes, so its constructor needs no engine.
 The deck facade takes the entry and row facades, so its accession find lists catalog rows.
+The study and scoreboard facades take only the hearth, so they follow the deck facade.
 The stem and reflex facades take no settings facade, since the language clerk owns every row's guise.
 The tenure facade comes last and alone takes the engine, since its tenures reach every facade.
 The workspace opens at the very end, after the workspace facade has created the database.
@@ -262,11 +263,11 @@ So a subscriber can detach without disturbing iteration.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `121691f60459`
 - `LBulletinRoster.cs` `089b003a16e92876`
 - `LCatalogStaff.cs` `23816a2bb79aced1`
 - `LClaimStaff.cs` `fc2ed893e2af6438`
-- `LEngine.cs` `70e0ba46ed5cc982`
+- `LEngine.cs` `ddb8ff6b5ba4ea1c`
 - `LEngineHearth.cs` `17ccd1f0c9342b91`
 - `LEngineStaff.cs` `1282514bb49cde5e`
 - `LEntryStaff.cs` `769d85bf0ae2afca`

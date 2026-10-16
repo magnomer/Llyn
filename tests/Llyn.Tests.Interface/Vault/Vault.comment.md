@@ -63,6 +63,7 @@ A delete drops the cues' cells too, as the cascade does.
 An update writes the flag, the exclusion and both texts, as the archive does.
 A cell save keeps the cells by column, then by index.
 A holder read answers the cue's own entry id, since the fake keeps no lexical rows.
+A whole-store read lists the cues by deck, then by position.
 
 ## `TVaultFakeDeck`
 
@@ -110,11 +111,11 @@ The realm is always the empty `Guid`, since no schema ever wrote one here.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
+Commit: `121691f60459`
 - `TInterfaceDatabase.cs` `da6742d17a5b907e`
 - `TInterfaceVault.cs` `77bad45b5f2ce34c`
 - `TVaultFake.cs` `7d9c55a8e3e857fb`
-- `TVaultFakeCue.cs` `458fbecacde3fc62`
+- `TVaultFakeCue.cs` `f7557ad5edf8898a`
 - `TVaultFakeDeck.cs` `47f068bafbd3bf0e`
 - `TVaultFakeFolder.cs` `04b2a4e56b6ba408`
 - `TVaultFakeRevision.cs` `6f60bed6da1e60c5`

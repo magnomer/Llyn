@@ -119,7 +119,41 @@ public sealed class TAccession
         Assert.Empty(asked);
     }
 
-    private static List<long> TAccessionEntrySave(TWorkspace workspace, params string[] headwords)
+    [Fact]
+    public void AccessionApertureTallyRead_DeckChosen_WordsShownCount()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        TAccessionEntrySave(workspace, "bank", "river");
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        long stored = TInterface.TDeckOutletCreate(engine).TEngineDeckCreate("Verbs", null, LGrain.LGrainEntry);
+        List<string> asked = [];
+        CDeck deck = new(atelier, TEnvoyFake.TEnvoyCreate(false, asked));
+        deck.CDeckSelect(stored);
+
+        string tally = deck.CDeckAccession.CAccessionAperture.CApertureTallyRead();
+
+        Assert.Empty(asked);
+        Assert.Equal($"2 {TInterface.TLocalizationTextRead("Library.ShownMany")}", tally);
+    }
+
+    [Fact]
+    public void AccessionKey_NoDeckChosen_ReadsUnchosen()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        TAccessionEntrySave(workspace, "bank");
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        List<string> asked = [];
+        CDeck deck = new(atelier, TEnvoyFake.TEnvoyCreate(false, asked));
+        deck.CDeckAccession.CAccessionRead();
+
+        Assert.Equal("Accession.Unchosen", deck.CDeckAccession.CAccessionKey);
+        Assert.Equal(string.Empty, deck.CDeckAccession.CAccessionTallyRead());
+        Assert.Empty(asked);
+    }
+
+    internal static List<long> TAccessionEntrySave(TWorkspace workspace, params string[] headwords)
     {
         LRig rig = workspace.TWorkspaceRigCreate();
         return headwords

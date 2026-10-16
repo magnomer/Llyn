@@ -256,6 +256,11 @@ public sealed class LVistaFacade : LVistaPort
     {
         ArgumentNullException.ThrowIfNull(vista);
 
+        if (vista.LVistaSubject == LSubject.LSubjectEntry)
+        {
+            return LEntryQueryClerk.LEntryTallyFormat(LEngineEntryFind(vista).Count);
+        }
+
         LOwner owner = vista.LVistaSubject switch
         {
             LSubject.LSubjectExample => LOwner.LOwnerExample,

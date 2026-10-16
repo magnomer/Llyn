@@ -288,7 +288,7 @@ public sealed class TAtlas
             static () => true,
             envoy,
             static _ => true);
-        atlas.TAtlasVistaRestore(engine.TEngineVistaStart("occurrence", LCatalogOrder.LCatalogOrderHeadword));
+        atlas.TAtlasVistaRestore(engine.TEngineVistaStart("guild", LCatalogOrder.LCatalogOrderHeadword));
 
         Assert.Equal(string.Empty, atlas.CAtlasPanel.CPanelAperture.CApertureTallyRead());
         Assert.Equal(["Situation.LoadFailed"], asked);

@@ -3,8 +3,7 @@
 This folder holds the guild panel, which browses Authors, the Sources crediting them, and the Author's own page.
 It splits into the panel, the Author reading `PVita`, the edit area `PAutograph` and the shared row templates.
 The C# shells only call `InitializeComponent()`.
-`PVita` and `PAutograph` carry no class of their own in markup.
-Their control loads them and wires the named parts.
+`QVita` and `QAutograph` load `PVita` and `PAutograph` and wire their named parts.
 
 ## `PGuild`
 
@@ -37,7 +36,8 @@ The kinds are drawn in code, because the engine lists them and each carries its 
 
 It is the shared `PPanelRail` as the panel's action row.
 Fresh opens the edit area on an Author nothing credits yet.
-Save stands in the rail at all times, and the undo pair walks the chronicle of the held Author.
+Save is enabled only while the edit area holds a storable draft.
+The undo pair walks the chronicle of the held Author.
 Print puts the Source read in the colophon on paper, and is dead while an Author is read instead.
 Export is hidden, because it belongs to an Entry and no Entry is read here.
 
@@ -75,7 +75,8 @@ Its icon is the named `PGuildBinIcon`, set by the rail driver, which also takes 
 
 ## `PVita`
 
-Its styles repeat the colophon's, because an Author is read as a Source is read.
+Its title style repeats the colophon's, because an Author is read as a Source is read.
+Its section heading and its tally chips come from the shared `Theme.Page` styles, which the statistics page uses too.
 The co-author and citation rows come from `PGuildTemplate.xaml`, merged here.
 The vita control fills each row's named parts and takes each list's clicks.
 
@@ -121,7 +122,7 @@ The notice stands in its place while the Author is unsaved, because nothing can 
 ## `PGuildTemplate`
 
 It holds the roll row, the co-author row, the citation row and the union row.
-It is a dictionary rather than markup in the panel, because four templates would outgrow one file.
+It is a dictionary because three controls share it.
 The panel, the vita and the edit area each merge it for the rows they list.
 It carries no code, and every part a row fill writes is named.
 
@@ -154,11 +155,11 @@ A style built on another cannot be resolved in a dictionary that stands on its o
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `121691f60459`
 - `PAutograph.xaml` `be61330295ea5ba8`
 - `PAutograph.xaml.cs` `eb524f605c7f73ce`
 - `PGuild.xaml` `8a0db9acdb8c1c9d`
 - `PGuild.xaml.cs` `45cccae55b8a3f38`
 - `PGuildTemplate.xaml` `de72aca78db37007`
-- `PVita.xaml` `3eaa69baaf0d545b`
+- `PVita.xaml` `892cbb9126191665`
 - `PVita.xaml.cs` `59b2c434aa6269a3`

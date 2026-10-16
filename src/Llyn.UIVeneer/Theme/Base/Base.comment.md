@@ -1,7 +1,7 @@
 # Base
 
 The base theme holds the roles every other theme part builds on.
-They are palette, input, panel, popup, scroll, search and navigation.
+They are default, palette, input, panel, popup, scroll, search and navigation.
 The theme is one dictionary per role rather than one file for every role at once.
 Each part names the styles of a single subject and merges only the parts it draws from.
 A part therefore resolves its own StaticResource and BasedOn references without reaching sideways.
@@ -74,10 +74,14 @@ A helper is an aid to the work rather than the work.
 A reader must see that before reading a word of it.
 It stays inside the program's own blue-grey, because a helper must not out-colour a choice or a verdict.
 `Theme.Page.Title` heads a page, the read or edit area a panel gives one thing on its own.
-The colophon and the settings pages share it, so a page reads the same wherever it opens.
+The colophon, the settings pages and the statistics page share it, so a page reads the same wherever it opens.
 `Theme.Page.Helper` is the one-line purpose under a page heading in the muted ink.
 `Theme.Page.Note` is the small muted line under a control's label.
 `Theme.Page.Rule` parts one row of a page from the next, laid only between rows and never around them.
+`Theme.Page.Heading` heads one section of a page.
+`Theme.Page.Tally` is one figure tile on the raised ground, shaped as a speech chip, and `Theme.Page.Figure` is its muted text.
+The Author page and the statistics page share these three, so a figure reads the same on both.
+`PThemePanel` merges `PThemeSpeech` for the chip and name shapes it builds on.
 `Theme.Panel.SeamRow` is the hairline across a panel where its controls end and its contents begin.
 It is drawn at the foot of its row and bled past the panel's margin.
 So it runs the width of the window.
@@ -129,7 +133,7 @@ An edge therefore marks what the control is doing rather than that it exists.
 It is held at one pixel throughout.
 So a bar that gains its edge does not shift the row beneath it.
 The bar is the placement target of the ordering dropdown, so the dropdown falls from the whole control.
-A bar with no name hangs the dropdown from its dropper instead, offset back to the bar's own edge.
+The kind filter has no named bar, so its dropdown hangs from its own dropper, offset back.
 `Theme.Search.Dropper` is the ordering button inside the bar with no frame or ground of its own.
 It takes a soft ground only under the pointer or while its dropdown is open.
 It is unfocusable, so tabbing into the bar reaches the field the user came to type in.
@@ -148,13 +152,13 @@ That is because the fold is a state and not an action.
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `121691f60459`
 - `PTheme.xaml` `80319431283b47c1`
 - `PThemeDefault.xaml` `f10311a6336a0666`
 - `PThemeInput.xaml` `ab744099ece5f95a`
 - `PThemeNavigation.xaml` `117b631efd938fd7`
 - `PThemePalette.xaml` `be59d4de986fccd8`
-- `PThemePanel.xaml` `ab2e3967da3cb3d9`
+- `PThemePanel.xaml` `4e4591e27a8a58c8`
 - `PThemePopup.xaml` `ac36471dcdc422e9`
 - `PThemeScroll.xaml` `fbe237bdd4bdd4e3`
 - `PThemeSearch.xaml` `fb9e04cba9a51ef9`

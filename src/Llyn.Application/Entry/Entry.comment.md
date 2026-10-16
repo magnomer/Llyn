@@ -168,6 +168,11 @@ The engine's vista narrows a child list the same way, so it calls here.
 The filter overload also applies the language filter and orders with the entry catalog's sort.
 So equal headwords follow its tie rule, and the shell holds no filter or order rule.
 
+### `LEntryTallyFormat`
+
+The library's count line, worded through `LCatalogCountFormat` under the `Library.Shown` keys.
+It reads no store, so the vista facade calls it with the count of the entries the vista lists.
+
 ### `LEntryEpithetScan`
 
 The epithet of every listed entry that has one, keyed by id, in one session.
@@ -229,12 +234,12 @@ The translation clerk names its incoming rows through it too.
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `121691f60459`
 - `LCatalogClerk.cs` `56685f63108c1e84`
 - `LEntryClerk.cs` `f9953b583dee4375`
 - `LEntryClerkField.cs` `810515c631a82ce2`
 - `LEntryClerkTwin.cs` `190654e34a95c306`
-- `LEntryQueryClerk.cs` `0887fc2f28fecdb4`
+- `LEntryQueryClerk.cs` `f74133704df6ad53`
 - `LGraspClerk.cs` `910cf0c01ca7378d`
 - `LRevisionClerk.cs` `742cdb16bc8c0050`
 - `LUsageClerk.cs` `824bbb12aa126b62`

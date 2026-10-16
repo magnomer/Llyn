@@ -75,9 +75,10 @@ An Example, a Situation and a Source count the entries that cite them.
 An Author counts the Sources crediting it.
 Any other subject, or no stored choice, reaches nothing.
 
-`LEngineTallyRead` gives the citation line of the chosen stored record, ready to show.
-An Example, a Situation and a Source have one, and any other vista refuses.
-No stored record reads as cited nowhere.
+`LEngineTallyRead` gives the line a vista shows beneath its list, ready to show.
+An entry vista counts the entries it lists, worded by `LEntryTallyFormat`.
+An Example, a Situation and a Source give the citation line of the chosen stored record.
+Any other vista refuses, and no stored record reads as cited nowhere.
 
 `LEngineVistaDelete` deletes the selected record of its subject and clears the selection afterwards.
 Only an entry delete records a revision, so every other subject answers null after deleting.
@@ -120,6 +121,7 @@ The catalog vista's child list asks here, so the probe shapes stay beside the en
 The entry clerk resolves its recordings to absolute paths.
 
 `LEngineEntryDelete` runs the clerk's delete under the gate, then raises the entry bulletin outside it.
+It reads the orphaned card count around the delete, and a change raises the deck bulletin with id 0 too.
 It returns the recorded revision.
 
 `LEngineReflexRead` lists the reflex rows that carry written text, in draft order.
@@ -140,7 +142,7 @@ Only drafts this engine holds are counted.
 Each held draft is measured as the leave dialog measures it, so the bar and the dialog cannot disagree.
 The entry count comes from the query clerk and the bytes from the workspace clerk.
 
-`LEngineUsageRead` and `LEngineTallyRead` hand the usage clerk's counts, itemized rows and citation lines, under the gate.
+`LEngineUsageRead` hands the usage clerk's counts and itemized rows under the gate, and `LEngineTallyRead` its citation lines.
 Itemized rows carry the epithet the settings ask for.
 
 `LEngineCardFind` says which card list of a draft holds a card, and at which place, or null when neither does.
@@ -395,14 +397,14 @@ A link names its entry only through a stored id, so an empty id names nothing.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `121691f60459`
 - `LAuthorFacade.cs` `a7c57e4576ed1f96`
 - `LCardFacade.cs` `fd835262e150b403`
 - `LCatalogFacade.cs` `8545ab05f0c69039`
-- `LEntryFacade.cs` `4a9aa0f176bb76e2`
+- `LEntryFacade.cs` `a9baa2d32061fb69`
 - `LExampleFacade.cs` `f20eb09a45abf04e`
 - `LMentionFacade.cs` `2cfb6578c504b8a7`
 - `LReferenceFacade.cs` `b73762c75a1cefad`
 - `LSituationFacade.cs` `534a19d43f1ba0ba`
-- `LVistaFacade.cs` `55e366ddf38ab66f`
+- `LVistaFacade.cs` `aba8d22b409fa49e`
 - `LVistaRowFacade.cs` `c984c1184a7c7741`

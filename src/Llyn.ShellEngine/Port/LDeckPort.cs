@@ -10,6 +10,11 @@ public interface LDeckPort
 {
     (IReadOnlyList<LDeckFolder> LDeckFolders, IReadOnlyList<LDeck> LDeckListed) LEngineDeckRead();
 
+    (IReadOnlyList<LDeckFolder> LDeckFolders, IReadOnlyList<LDeck> LDeckListed,
+        IReadOnlyDictionary<long, int> LDeckActive) LEngineActiveRead();
+
+    LDeckCensus LEngineCensusRead(long? deckId);
+
     (LDeck LDeckStored, IReadOnlyList<LBearing> LDeckBearings)? LEngineDeckRead(long deckId);
 
     long LEngineDeckCreate(string name, long? folderId, LGrain grain);
@@ -33,6 +38,9 @@ public interface LDeckPort
     IReadOnlyList<LCue> LEngineCueRead(long deckId);
 
     IReadOnlyList<(LCue LCueStored, string LCueLine)> LEngineLineRead(long deckId, LPortraitLabel label);
+
+    IReadOnlyList<(LCue LCueStored, LCueSide LCueFront, LCueSide LCueBack)> LEngineFaceRead(
+        long deckId, LPortraitLabel label);
 
     IReadOnlyList<(LVistaRow LAccessionRow, bool LAccessionBound)> LEngineAccessionFind(LVista vista, long deckId);
 

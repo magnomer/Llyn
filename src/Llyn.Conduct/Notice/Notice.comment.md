@@ -18,9 +18,10 @@ It mirrors the engine's subject member for member.
 `CSubjectFold` speaks about one entry's saved card folds, reading list and box states.
 So the editor and the display of that entry repaint after any of those writes.
 `CSubjectStemFold` speaks about one series member's own fold, which only the series page shows.
+`CSubjectDeck` speaks about any deck, folder or cue write, which the study and statistics panels follow.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `121691f60459`
 - `CBulletin.cs` `6ccb743a020f94a6`
-- `CSubject.cs` `25c25fef7483041c`
+- `CSubject.cs` `07270ad74e5d029b`

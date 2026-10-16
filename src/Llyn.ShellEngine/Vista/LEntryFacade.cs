@@ -97,12 +97,21 @@ public sealed class LEntryFacade : LEntryPort, LGraspPort
     internal LRevision LEngineEntryDelete(long id)
     {
         LRevision recorded;
+        bool orphaning;
         lock (_lEntryFacadeGate)
         {
+            LCueClerk cues = LEntryFacadeStaff.LEngineStaffWorkspace.LWorkspaceStaffCue;
+            int orphaned = cues.LCueCensusRead(null, TimeZoneInfo.Utc).LDeckCensusOrphaned;
             recorded = LEntryFacadeStaff.LEngineStaffEntry.LEntryStaffEntry.LEntryClerkDelete(id);
+            orphaning = cues.LCueCensusRead(null, TimeZoneInfo.Utc).LDeckCensusOrphaned != orphaned;
         }
 
         _lEntryFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectEntry, id);
+        if (orphaning)
+        {
+            _lEntryFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectDeck, 0);
+        }
+
         return recorded;
     }
 

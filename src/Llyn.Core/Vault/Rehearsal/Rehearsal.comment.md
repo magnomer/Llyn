@@ -23,6 +23,8 @@ A bearing save replaces the deck's bearings whole.
 
 The persistence port for a deck's cues and a free cue's cells.
 A create appends the cues to the deck in the given order.
+A read with no deck answers every cue, ordered by deck then position.
+So a count over all decks costs one query.
 It answers them with their stored ids, positions and added time.
 An update writes the flag, the exclusion and both texts.
 The grain and the references stay as created.
@@ -37,7 +39,6 @@ Answers the entry that holds the cue's bound row, or null when none does.
 The schema lets only an entry cue store an entry id.
 So a meaning, collocation, example or pair cue reaches its entry through the row it binds.
 The answer is read when asked, so it follows the rows as they are now.
-The port has no entry read yet, since its only reader comes with a later phase.
 
 ## `LDeckFolderVault`
 
@@ -59,8 +60,8 @@ An owned stencil goes with its deck, inside the deck delete.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
-- `LCueVault.cs` `6f985cf5ef03da1c`
+Commit: `121691f60459`
+- `LCueVault.cs` `851b23d27e0f2f46`
 - `LDeckFolderVault.cs` `0efe13113613f037`
 - `LDeckVault.cs` `8e470e7af6c57ef0`
 - `LStencilVault.cs` `0cd9fbc81cb03923`

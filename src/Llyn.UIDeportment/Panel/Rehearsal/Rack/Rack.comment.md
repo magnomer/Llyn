@@ -100,10 +100,10 @@ One entry of a deck row's move menu, holding the `CDeckDestination` it was paint
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `121691f60459`
 - `QBearingItem.cs` `ee8d20be1e44aaf2`
-- `QCharter.cs` `ad630d8e7be6afc2`
-- `QDeck.cs` `1d721b3e3b933959`
+- `QCharter.cs` `3053ed7c05a131dc`
+- `QDeck.cs` `a2190b57b7ee14da`
 - `QDeckDestination.cs` `7f2b9de20e5fe696`
 - `QDeckItem.cs` `066e0ddb7f03c310`
 - `QDeckMenu.cs` `d3b8b6f664d97888`

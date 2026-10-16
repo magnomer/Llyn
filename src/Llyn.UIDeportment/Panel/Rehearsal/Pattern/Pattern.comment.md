@@ -49,8 +49,8 @@ It shows the template's name.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `QStencil.cs` `881e85e93448a5d9`
+Commit: `121691f60459`
+- `QStencil.cs` `b5e40e28c0c534f3`
 - `QStencilChip.cs` `11064b09a5cae31e`
 - `QStencilChoice.cs` `6649f5c85b7533e1`
 - `QStencilItem.cs` `b9b9d7221a2189b5`

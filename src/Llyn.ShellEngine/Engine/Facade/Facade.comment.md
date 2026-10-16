@@ -307,6 +307,8 @@ The vista's export name and the galley's PDF name share it, so both offer the sa
 The stored interface language is normalised to a listed one, so a deportment never names the localization.
 The text reads answer the key itself, or null for the find form, when no text is loaded.
 The scan lists the interface languages the build embeds.
+`LEngineCultureRead` answers that language's culture through `LLocalizationCultureRead`, the one owner of the mapping.
+  A gate words dates and numbers with it, so a figure follows the interface language and never the machine's culture.
 
 ## `LEngineLocalizationSave`
 
@@ -515,12 +517,12 @@ The folder path is read there, so the caller hands nothing it gathered.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `121691f60459`
 - `LDraftFacade.cs` `e6ad399867a18e7e`
 - `LLanguageFacade.cs` `22bf9bcec6db6495`
 - `LRequestFacade.cs` `9a08f1ac9c85e708`
 - `LScriptFacade.cs` `0868062d56c4daf9`
-- `LSettingsFacade.cs` `d58eba61fbb95693`
+- `LSettingsFacade.cs` `53cfb98424acac7c`
 - `LTenureFacade.cs` `c7d7ee4457051f6e`
 - `LVocabularyFacade.cs` `f1299bc555399645`
 - `LWorkspaceFacade.cs` `f0eb53a0cb7a7ee9`

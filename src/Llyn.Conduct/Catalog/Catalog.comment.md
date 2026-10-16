@@ -62,8 +62,8 @@ Counts and credits arrive worded by Core, blank or an unknown wording when nothi
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `CCatalog.cs` `982fa7aa506508b2`
+Commit: `121691f60459`
+- `CCatalog.cs` `9bd012c60f9a52bc`
 - `CCatalogAuthor.cs` `b46f14e4512ea3a0`
 - `CCatalogExample.cs` `a3c4c5ca7f06fa47`
 - `CCatalogPronunciation.cs` `e74014415ee6721f`

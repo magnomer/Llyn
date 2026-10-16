@@ -25,11 +25,15 @@ Each face of a direction holds five side boxes, the five sides of the phone's ca
 ## Layout
 
 The deck list takes the narrow first column, under a bar with the grain box and the two create buttons.
+  The create buttons are icons tipped `Deck.New` and `Deck.FolderNew`.
+  The grain box takes the rest, so the bar fits the column.
 The export line sits under the list.
 Each deck row ends in two order buttons, tipped `Deck.OrderUp` and `Deck.OrderDown`.
 The wide column holds the listing, under a bar with the free cue and remove buttons.
 The listing is a list box with extended selection, so remove takes every selected row.
-Each listing row holds the flag box, the line over the orphan notice, the excluded box and two order buttons.
+  Its rows are `Theme.Catalog.Item` rows, the catalog row of the other panels.
+Each listing row holds the flag toggle, the line over the orphan notice, the excluded toggle and two order buttons.
+  The toggles are icon toggles, and the order icons are 16 pixels.
   The order buttons reuse the tips `Deck.OrderUp` and `Deck.OrderDown`.
 The cell editor `PJotter` sits under the listing in the same frame, its height capped so the listing keeps room.
   It is collapsed until one free flashcard is selected.
@@ -42,8 +46,8 @@ The deck editor `PCharter` and the template editor `PStencil` stay collapsed whi
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `PCharter.xaml` `a0a6af150246bf57`
+Commit: `121691f60459`
+- `PCharter.xaml` `afe22729ff3fc023`
 - `PCharter.xaml.cs` `cb85fb7159da24e0`
-- `PDeck.xaml` `16f1a95879122bf5`
+- `PDeck.xaml` `9c54107a68f5afaf`
 - `PDeck.xaml.cs` `c929dd801a891d3a`

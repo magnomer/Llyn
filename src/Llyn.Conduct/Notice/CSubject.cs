@@ -43,4 +43,6 @@ public enum CSubject
     CSubjectFold,
 
     CSubjectStemFold,
+
+    CSubjectDeck,
 }

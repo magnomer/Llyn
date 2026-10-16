@@ -69,6 +69,22 @@ public sealed class LCueArchive : LCueVault
         return created;
     }
 
+    public IReadOnlyList<LCue> LCueRead()
+    {
+        using LDatabaseSession session = _lCueArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+        command.CommandText = $"SELECT {LCueColumns} FROM cue ORDER BY deck_parent, position;";
+
+        List<LCue> cues = [];
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            cues.Add(LCueRowRead(reader));
+        }
+
+        return cues;
+    }
+
     public IReadOnlyList<LCue> LCueRead(long deckId)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(deckId);

@@ -79,6 +79,13 @@ The id comes last and only keeps the result stable, so storage order never decid
 The sentence for how many places cite a record, one of three forms by count.
 The realm chooses the keys, such as `Source`, `Example` or `Situation`.
 Every tally and the vita word it here, so the wording lives once.
+It forms the stem `{realm}.Usage` and hands it to `LCatalogCountFormat`.
+
+## `LCatalogCountFormat`
+
+The sentence for a count under any key stem, one of three forms by count.
+The stem takes `None`, `One` and `Many` as its keys, and the many form leads with the count.
+The library list uses it with `Library.Shown`, so its count line shares the one rule.
 
 ## `LCatalogTextMatch`
 
@@ -163,8 +170,8 @@ The work and citation sentences are composed from the counts the catalog row car
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `LCatalog.cs` `113003a013855408`
+Commit: `121691f60459`
+- `LCatalog.cs` `4e576dcda285294e`
 - `LCatalogFilter.cs` `2a78cb399c5b8aea`
 - `LCatalogOrder.cs` `d928c60059e57574`
 - `LFellow.cs` `3a26e85092f16979`

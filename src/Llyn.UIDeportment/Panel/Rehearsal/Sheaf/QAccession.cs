@@ -22,6 +22,7 @@ internal sealed class QAccession
         _qAccessionSurface = surface;
         QTrawl.SetResourceReference(QField.QFieldHintProperty, "Accession.Search");
         QTrawl.TextChanged += QAccessionTrawlObserve;
+        QAccessionBulk.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("new", 24));
         QAccessionBulk.Click += QAccessionBulkObserve;
         QAccessionRows.ItemsSource = _qAccessionList;
         QLookItem.QLookItemAttach(QAccessionRows, QAccessionItemRefine);
@@ -54,14 +55,13 @@ internal sealed class QAccession
             [.. _cAccession.CAccessionRead().Select(static row => new QAccessionItem(row))],
             QAccessionItem.QAccessionItemMatch,
             QAccessionItem.QAccessionItemSync);
-        CAperture aperture = _cAccession.CAccessionAperture;
-        QAccessionEmpty.SetResourceReference(TextBlock.TextProperty, aperture.CApertureKey);
-        QAccessionEmpty.Visibility = QLook.QLookVisibleRead(aperture.CApertureEmpty);
+        QAccessionEmpty.SetResourceReference(TextBlock.TextProperty, _cAccession.CAccessionKey);
+        QAccessionEmpty.Visibility = QLook.QLookVisibleRead(_cAccession.CAccessionAperture.CApertureEmpty);
     }
 
     internal void QAccessionTallyRefine()
     {
-        QAccessionTally.Text = _cAccession.CAccessionAperture.CApertureTallyRead();
+        QAccessionTally.Text = _cAccession.CAccessionTallyRead();
     }
 
     private void QAccessionItemRefine(FrameworkElement container, object item, string? _)
@@ -89,7 +89,7 @@ internal sealed class QAccession
 
         if (QLook.QLookPartFind<QIconImage>(container, "PAccessionAdditionIcon") is QIconImage icon)
         {
-            icon.QIconSource = QIcon.QIconResolve("add", 12);
+            icon.QIconSource = QIcon.QIconResolve("new", 16);
         }
 
         if (QLook.QLookPartFind<Button>(container, "PAccessionAddition") is Button addition)

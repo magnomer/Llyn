@@ -7,9 +7,10 @@ Table and column names are persisted keys and stay lowercase, independent of cod
 ## `LCueArchive`
 
 The adapter of `LCueVault` over the `cue` and `cue_cell` tables.
+The read of every cue is one select, ordered by deck and position.
 A create takes the positions after the deck's last cue and stamps the added time.
 An update of a missing cue throws.
-A delete answers each removed cue's deck, then renumbers those decks.
+A delete notes the deck of each removed cue, then renumbers those decks.
 So the next create's position never collides on the unique place index.
 Cells go with their cue by cascade.
 Cells are deleted and reinserted on save, which is safe because nothing references a cell.
@@ -20,7 +21,7 @@ Cells read back by column, then by index.
 One query takes the first holder the cue's references name.
 An entry reference answers itself while the entry exists.
 A sense or a collocation answers its `entry_parent`.
-An example answers the entry of a sense or collocation that shows it.
+An example answers the lowest entry holding a sense or collocation that shows it.
 
 ## `LDeckArchive`
 
@@ -38,7 +39,6 @@ The full read orders top-level decks first, then each folder's decks by position
 ## `LDeckFolderArchive`
 
 The adapter of `LDeckFolderVault` over the `deck_folder` table.
-It was split from `LDeckArchive` by role, before that file reached the line warning.
 A folder create takes one past the highest folder position.
 Folder positions carry no unique index, so a gap after a delete is harmless.
 An update of a missing folder throws.
@@ -52,8 +52,8 @@ Slots read back by column, then by index.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
-- `LCueArchive.cs` `7d18bfd6564807dd`
+Commit: `121691f60459`
+- `LCueArchive.cs` `62ac67a663846646`
 - `LDeckArchive.cs` `407dc9353301b5ab`
 - `LDeckFolderArchive.cs` `73021d288ce30e57`
 - `LStencilArchive.cs` `1ccca2346503cc5c`

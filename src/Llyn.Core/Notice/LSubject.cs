@@ -43,4 +43,6 @@ public enum LSubject
     LSubjectFold,
 
     LSubjectStemFold,
+
+    LSubjectDeck,
 }

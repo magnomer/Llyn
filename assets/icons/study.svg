@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" role="img" aria-label="Study">
+<title>Study</title>
+
+<defs>
+  <linearGradient id="blue" x1="4" y1="3" x2="20" y2="21" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#2AA8FF"/><stop offset="1" stop-color="#0874EA"/>
+  </linearGradient>
+  <linearGradient id="ice" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#DDEEFF"/>
+  </linearGradient>
+  <linearGradient id="blueSoft" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#EAF7FF"/><stop offset="1" stop-color="#CDE9FF"/>
+  </linearGradient>
+  <linearGradient id="red" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FF8A84"/><stop offset="1" stop-color="#E85252"/>
+  </linearGradient>
+  <linearGradient id="green" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#73D995"/><stop offset="1" stop-color="#2FAC65"/>
+  </linearGradient>
+  <linearGradient id="amber" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFD978"/><stop offset="1" stop-color="#F2A72D"/>
+  </linearGradient>
+  <linearGradient id="violet" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#A99CFF"/><stop offset="1" stop-color="#7367E8"/>
+  </linearGradient>
+  <linearGradient id="teal" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#68DED4"/><stop offset="1" stop-color="#25AFA5"/>
+  </linearGradient>
+  <linearGradient id="pink" x1="5" y1="4" x2="19" y2="20" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#F5A4CE"/><stop offset="1" stop-color="#D85B9A"/>
+  </linearGradient>
+</defs>
+
+<defs>
+  <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.5"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+  </linearGradient>
+  <linearGradient id="edge" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#A9D4F7"/><stop offset="1" stop-color="#5AA8EA"/>
+  </linearGradient>
+</defs>
+
+<g transform="rotate(12 15 12)">
+  <rect x="9.6" y="4.4" width="10.6" height="14.6" rx="2.2" fill="url(#blue)"/>
+  <rect x="9.6" y="4.4" width="10.6" height="7" rx="2.2" fill="url(#gloss)"/>
+  <path d="M14.9 8.6L16.9 11.7L14.9 14.8L12.9 11.7Z" fill="#FFFFFF" opacity="0.9"/>
+</g>
+<g transform="rotate(-8 9 13)">
+  <rect x="3.6" y="6.6" width="10.6" height="14.6" rx="2.2" fill="url(#edge)"/>
+  <rect x="3.6" y="5.6" width="10.6" height="14.6" rx="2.2" fill="url(#ice)"/>
+  <rect x="5.8" y="9.4" width="6.2" height="1.8" rx="0.9" fill="url(#blue)"/>
+  <rect x="5.8" y="12.6" width="4.4" height="1.8" rx="0.9" fill="#77BDF5"/>
+</g>
+<path d="M2.9 9C3.2 5.6 5.4 3.2 9 3" stroke="url(#amber)" stroke-width="1.9" stroke-linecap="round"/>
+<path d="M7.4 1.4L9.6 3L7.6 5" stroke="url(#amber)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+
+</svg>

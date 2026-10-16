@@ -14,6 +14,7 @@ public sealed class LCueClerk
     private readonly LTranslationClerk _lCueClerkTranslations;
     private readonly LReferenceClerk _lCueClerkReferences;
     private readonly LTrailClerk _lCueClerkTrail;
+    private readonly LClock _lCueClerkClock;
 
     public LCueClerk(
         LRig rig,
@@ -34,11 +35,31 @@ public sealed class LCueClerk
         _lCueClerkTranslations = translations;
         _lCueClerkReferences = references;
         _lCueClerkTrail = trail;
+        _lCueClerkClock = rig.LRigClock;
     }
 
     public IReadOnlyList<LCue> LCueClerkRead(long deckId)
     {
         return _lCueClerkCues.LCueRead(deckId);
+    }
+
+    public IReadOnlyDictionary<long, int> LCueActiveRead()
+    {
+        return _lCueClerkCues.LCueRead()
+            .Where(static cue => !cue.LCueResting)
+            .GroupBy(static cue => cue.LCueDeckId)
+            .ToDictionary(static deck => deck.Key, static deck => deck.Count());
+    }
+
+    public LDeckCensus LCueCensusRead(long? deckId, TimeZoneInfo zone)
+    {
+        ArgumentNullException.ThrowIfNull(zone);
+
+        IReadOnlyList<LCue> cues = deckId is long id ? _lCueClerkCues.LCueRead(id) : _lCueClerkCues.LCueRead();
+        IReadOnlyList<string?> synced = deckId is long chosen
+            ? [_lCueClerkDecks.LDeckRead(chosen)?.LDeckSyncedUtc]
+            : [.. _lCueClerkDecks.LDeckRead().Select(static deck => deck.LDeckSyncedUtc)];
+        return LDeckCensus.LDeckCensusBuild(cues, synced, _lCueClerkClock.LClockRead(), zone);
     }
 
     public IReadOnlyList<(LCue LCueStored, string LCueLine)> LCueLineRead(long deckId, LPortraitLabel label)

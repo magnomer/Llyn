@@ -33,7 +33,6 @@ public sealed class LDepotClerk
     ];
 
     private readonly LDeckVault _lDepotClerkDecks;
-    private readonly LCueVault _lDepotClerkCues;
     private readonly LDepot _lDepotClerkDepot;
     private readonly LDeckManifestVault _lDepotClerkManifest;
     private readonly LClock _lDepotClerkClock;
@@ -61,7 +60,6 @@ public sealed class LDepotClerk
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(fault);
         _lDepotClerkDecks = rig.LRigRehearsal.LRigRehearsalDecks;
-        _lDepotClerkCues = rig.LRigRehearsal.LRigRehearsalCues;
         _lDepotClerkDepot = rig.LRigRehearsal.LRigRehearsalDepot;
         _lDepotClerkManifest = rig.LRigRehearsal.LRigRehearsalManifest;
         _lDepotClerkClock = rig.LRigClock;
@@ -133,11 +131,10 @@ public sealed class LDepotClerk
                 throw new LRefusal(LRefusal.LRefusalPhone);
             }
 
-            LStencil stencil = _lDepotClerkStencil.LStencilClerkRead(deckId);
-            foreach (LCue cue in _lDepotClerkCues.LCueRead(deckId).Where(static cue => !cue.LCueResting))
+            foreach (var face in _lDepotClerkStencil.LStencilFaceRead(deckId, label))
             {
-                ids.Add(cue.LCueId);
-                faces.Add(LDepotFaceRead(cue, stencil, label));
+                ids.Add(face.LCueStored.LCueId);
+                faces.Add(face.LCueShown);
             }
         }
 
@@ -203,13 +200,6 @@ public sealed class LDepotClerk
                 _lDepotClerkManifest.LDeckManifestSave(new LDeckManifest(decks));
             }
         }
-    }
-
-    private LCueFace LDepotFaceRead(LCue cue, LStencil stencil, LPortraitLabel label)
-    {
-        return cue.LCueGrain == LGrain.LGrainFree
-            ? new LCueFace(_lDepotClerkCues.LCueCellRead(cue.LCueId))
-            : _lDepotClerkStencil.LStencilClerkResolve(cue, stencil, label);
     }
 
     private string LDepotCellResolve(

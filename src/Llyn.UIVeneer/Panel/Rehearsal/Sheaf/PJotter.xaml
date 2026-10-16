@@ -34,7 +34,14 @@
                             <TextBlock x:Name="PJotterNumber" Style="{StaticResource Theme.Jotter.Caption}" />
                         </StackPanel>
                         <TextBox x:Name="PJotterBody" Grid.Column="1" Style="{StaticResource Theme.Jotter.Field}" ToolTip="{DynamicResource Cue.Cell}" />
-                        <Button x:Name="PJotterPicker" Grid.Column="2" Margin="8,0,0,8" VerticalAlignment="Center" Content="{DynamicResource Cue.Pick}" />
+                        <Border Grid.Column="2" Margin="8,0,0,8" VerticalAlignment="Center" Style="{StaticResource Theme.Command.Group}">
+                            <StackPanel Orientation="Horizontal">
+                                <Button
+                                    x:Name="PJotterPicker"
+                                    Content="{DynamicResource Cue.Pick}"
+                                    Style="{StaticResource Theme.Command.Segment}" />
+                            </StackPanel>
+                        </Border>
                     </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>

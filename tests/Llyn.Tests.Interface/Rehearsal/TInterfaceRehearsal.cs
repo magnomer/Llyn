@@ -29,6 +29,11 @@ internal static partial class TInterface
     internal static string TCueMarkupFormat(string text) =>
         LCueMarkup.LCueMarkupFormat(text);
 
+    internal static LCueFace TCueFaceCreate(IReadOnlyList<LCueCell> cells) => new(cells);
+
+    internal static LCueSide TCueMarkupParse(LCueFace face, int side) =>
+        LCueMarkup.LCueMarkupParse(face, side);
+
     internal static string TDeckCodeResolve(string normalized, IReadOnlyCollection<string> taken) =>
         LDeckCode.LDeckCodeResolve(normalized, taken);
 
@@ -91,6 +96,11 @@ internal static partial class TInterface
     internal static LCueFace TStencilClerkResolve(
         this LStencilClerk clerk, LCue cue, LStencil stencil, LPortraitLabel label) =>
         clerk.LStencilClerkResolve(cue, stencil, label);
+
+    internal static IReadOnlyList<(LCue LCueStored, LCueFace LCueShown, LCueSide LCueFront, LCueSide LCueBack)>
+        TStencilFaceRead(
+        this LStencilClerk clerk, long deckId, LPortraitLabel label) =>
+        clerk.LStencilFaceRead(deckId, label);
 
     internal static LBearing TBearingFixtureCreate(int direction, int front, int back, int statistics) =>
         new(direction, front, back, statistics);
@@ -212,6 +222,9 @@ internal static partial class TInterface
         this LCueClerk clerk, long deckId, LPortraitLabel label) =>
         clerk.LCueLineRead(deckId, label);
 
+    internal static IReadOnlyDictionary<long, int> TCueActiveRead(this LCueClerk clerk) =>
+        clerk.LCueActiveRead();
+
     internal static IReadOnlyList<LCue> TCueClerkAdd(
         this LCueClerk clerk, long deckId, IReadOnlyList<long> entryIds) =>
         clerk.LCueClerkAdd(deckId, entryIds);
@@ -282,6 +295,14 @@ internal static partial class TInterface
 
     internal static IReadOnlyList<LCue> TEngineCueRead(this LDeckPort port, long deckId) =>
         port.LEngineCueRead(deckId);
+
+    internal static IReadOnlyList<(LCue LCueStored, LCueSide LCueFront, LCueSide LCueBack)> TEngineFaceRead(
+        this LDeckPort port, long deckId, LPortraitLabel label) =>
+        port.LEngineFaceRead(deckId, label);
+
+    internal static (IReadOnlyList<LDeckFolder> LDeckFolders, IReadOnlyList<LDeck> LDeckListed,
+        IReadOnlyDictionary<long, int> LDeckActive) TEngineActiveRead(this LDeckPort port) =>
+        port.LEngineActiveRead();
 
     internal static IReadOnlyList<(LVistaRow LAccessionRow, bool LAccessionBound)> TEngineAccessionFind(
         this LDeckPort port, LVista vista, long deckId) =>

@@ -59,7 +59,6 @@ It is subscribed before the session ends, so every panel stops before the engine
 Ending the session through `CAtelierClose` sweeps the workspace once more and lets the engine's posture go.
 A copy of the program left open for days would otherwise collect nothing it wrote after it started.
 The posture gets the workspace path on every opening, the first inside `CAtelierOpen`.
-That handler is subscribed before every panel and before the layout, so the layout applies the workspace just opened.
 
 ### Look sheet
 
@@ -143,9 +142,8 @@ An unknown button sends nothing.
 The navigation raises the change it made, so nothing is painted at the click.
 Before any change arrives, the tab whose panel the markup shows is marked.
 A change hides the tabs the session does not offer, marks the open tab and shows only its panel.
-A state naming no tab leaves the open tab as it is.
+A state with no open tab leaves the panels and the marked tab as they are.
 The icons are resolved here and set as the look's icon, which the tab style copies.
-The study, deck and scoreboard tabs set none.
 `Alt+Left` steps back and `Alt+Right` steps forward, each through one voyage gate.
 With Alt held the key arrives as a system key, so the arrow is read off `SystemKey`.
 The key binding is the GUI's own, so it stays here.
@@ -159,7 +157,7 @@ It takes facets only and never `QWindow`, so no panel reaches the window through
 The panels are input, taxonomy, study, deck, scoreboard, tenor, repertoire, corpus, reference, library and phonology.
 The rest are Xiesheng, Yunjing, favorite, duplex, guild and settings.
 Each is pulled from the window under its contract ID, as a plain page once moved to the veneer.
-Each driver is built at construction and wired only when the roster introduces it.
+Most drivers are built at construction and wired only when the roster introduces it.
 The study and scoreboard drivers wire nothing before their introduce, so the roster builds them there.
   It keeps no field for them, as `QDeck` keeps none for `QCue`.
 The settings panel takes the layout and the posture, since it resets the widths.
@@ -168,10 +166,9 @@ The layout is the one owner of the seam widths, shared by every seamed tab and t
 ### Introduce
 
 Every panel gets only the facets it uses.
-Then each panel's restore answers `CWorkspaceOpened`, and each duplex wing subscribes its own.
+Then each panel that reloads answers `CWorkspaceOpened`, and each duplex wing subscribes its own.
 The widths answer `CWorkspaceOpened` too, after every panel.
 They reset first, then apply the stored widths of the workspace opened.
-The window subscribes the posture's root before this runs, so every reload reads the new workspace.
 
 ### Attach and close
 
@@ -206,11 +203,11 @@ Device pixels become layout units first, so a scaled display still lands the win
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `121691f60459`
 - `QCaption.cs` `a94cfc236ad84fe3`
 - `QEnvoy.cs` `ce0505b274893fb3`
 - `QHeadquarter.cs` `77429c1948810be1`
-- `QNavigation.cs` `d4a071968f53aef9`
-- `QPanelRoster.cs` `b2b23292a6aad140`
+- `QNavigation.cs` `e0176c86a339c36b`
+- `QPanelRoster.cs` `7d2d7adf6ae30d16`
 - `QWindow.cs` `2a23b08f87db77ad`
 - `QWindowScreen.cs` `eb76a072e3a88c02`

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 using Llyn.Application;
 using Llyn.Core;
@@ -37,6 +38,8 @@ public sealed class LSettingsOutlet : LSettingsPort
         _lSettingsOutletEngine.LEngineSettings.LEngineLocalizationLoad(language);
 
     public string LEngineLocalizationRead() => _lSettingsOutletEngine.LEngineSettings.LEngineLocalizationRead();
+
+    public CultureInfo LEngineCultureRead() => _lSettingsOutletEngine.LEngineSettings.LEngineCultureRead();
 
     public IReadOnlyList<string> LEngineLocalizationScan() =>
         _lSettingsOutletEngine.LEngineSettings.LEngineLocalizationScan();

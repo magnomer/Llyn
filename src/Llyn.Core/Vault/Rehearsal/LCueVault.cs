@@ -6,6 +6,8 @@ public interface LCueVault
 {
     IReadOnlyList<LCue> LCueCreate(long deckId, IReadOnlyList<LCue> cues);
 
+    IReadOnlyList<LCue> LCueRead();
+
     IReadOnlyList<LCue> LCueRead(long deckId);
 
     long? LCueHolderRead(LCue cue);

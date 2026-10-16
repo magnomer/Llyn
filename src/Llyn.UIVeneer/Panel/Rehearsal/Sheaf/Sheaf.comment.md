@@ -23,8 +23,8 @@ It has one markup block for reading and editing, as `PStencil` has.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `PAccession.xaml` `65fa7e4b6154254f`
+Commit: `121691f60459`
+- `PAccession.xaml` `6c5a5f15e59b48b4`
 - `PAccession.xaml.cs` `4796bb51a37c4e27`
-- `PJotter.xaml` `94ae75e24e5391ea`
+- `PJotter.xaml` `67395c4f79b45155`
 - `PJotter.xaml.cs` `812cfcc29776a537`

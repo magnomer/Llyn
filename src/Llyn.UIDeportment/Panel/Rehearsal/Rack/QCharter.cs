@@ -18,6 +18,7 @@ internal sealed class QCharter
         ArgumentNullException.ThrowIfNull(surface);
 
         _qCharterSurface = surface;
+        QCharterStore.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("save", 24));
         QCharterStore.Click += QCharterStoreObserve;
         QCharterBasic.Click += QCharterBasicObserve;
         QLookItem.QLookItemAttach(QBearing, QBearingItemRefine);

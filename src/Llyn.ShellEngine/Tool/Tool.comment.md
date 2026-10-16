@@ -7,6 +7,7 @@ It takes siblings rather than the engine, so it names only the facades it uses.
 The gate, the staff and the shared state are read through the hearth.
 The staff is read afresh at each call, so a call after a workspace switch reaches the new workspace.
 Facades that implement a port hand themselves to Conduct from Host, with no outlet between.
+Facades that read decks for one rehearsal panel sit in `Rehearsal`, since they serve a panel, not a tool.
 
 ## `LCourierFacade`
 
@@ -31,6 +32,12 @@ A settings bulletin follows either only for a real change, so an unchanged token
 The facade for decks, their folders, their cues and their stencils.
 Each member takes the gate and relays one call of the deck, cue or stencil clerk.
 It decides nothing, so every rule, refusal and order stays with the clerks.
+Each deck, folder and cue write raises a deck bulletin after the gate is released, as the favorite writes do.
+It carries the deck id the call names, and 0 for a folder write or a call naming no deck.
+So the study and statistics panels learn of every write from its owner, whichever panel made it.
+A failed write throws before the raise.
+The stencil and cell calls raise nothing, since no panel list reads them.
+An export raises nothing either, so the statistics show its sync at their next read.
 Only the accession find calls a sibling, the entry facade and the vista row facade.
 `LDeckPort` is its face, through `LDeckOutlet`, as `LPortraitPort` faces the courier.
 
@@ -301,9 +308,9 @@ It answers empty while neither exists.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `121691f60459`
 - `LCourierFacade.cs` `316cb119faa9202c`
-- `LDeckFacade.cs` `eebaed3e40ae52ef`
+- `LDeckFacade.cs` `461426b985ad509d`
 - `LFanqieFacade.cs` `19ca044c7f98d17f`
 - `LLiveryFacade.cs` `930588ef8cfd2c99`
 - `LMarkupFacade.cs` `68847305501ca292`

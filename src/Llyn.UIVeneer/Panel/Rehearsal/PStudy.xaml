@@ -2,9 +2,173 @@
     x:Class="Llyn.UIVeneer.PStudy"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Llyn.UIDeportment;assembly=Llyn.UIDeportment"
     >
 
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Llyn.UIVeneer;component/Media/Image/PDisplayImage.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate x:Key="Study.Face">
+                <StackPanel x:Name="PFace">
+                    <TextBlock
+                        x:Name="PFaceText"
+                        HorizontalAlignment="Center"
+                        TextAlignment="Center"
+                        TextWrapping="Wrap" />
+                    <ItemsControl
+                        x:Name="PFacePicture"
+                        Margin="0,16,0,0"
+                        HorizontalAlignment="Center"
+                        Focusable="False"
+                        ItemTemplate="{StaticResource Display.Card.PictureLine}" />
+                    <Button
+                        x:Name="PFaceSound"
+                        Margin="0,12,0,0"
+                        HorizontalAlignment="Center"
+                        Focusable="False"
+                        Style="{StaticResource Theme.Accent.Tool}"
+                        ToolTip="{DynamicResource Downloader.Play}" />
+                </StackPanel>
+            </DataTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <Grid Margin="34,20,34,38">
-        <TextBlock x:Name="PStudyEmpty" Style="{StaticResource Theme.Catalog.Empty}" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Rectangle Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="-34,0,-34,0" Style="{StaticResource Theme.Panel.SeamRow}" />
+        <local:QSeam Grid.Row="1" Grid.Column="1" Margin="-16,0,0,-38" Style="{StaticResource Theme.Panel.SeamColumn}" />
+
+        <Border Grid.Row="0" Grid.Column="0" Margin="{StaticResource Theme.Catalog.HeaderMargin}" HorizontalAlignment="Left" Style="{StaticResource Theme.Command.Group}">
+            <StackPanel Orientation="Horizontal">
+                <Button
+                    x:Name="PStudyLaunch"
+                    Content="{DynamicResource Study.Launch}"
+                    Style="{StaticResource Theme.Command.Segment}" />
+                <Button
+                    x:Name="PStudyShuffle"
+                    Content="{DynamicResource Study.Shuffle}"
+                    IsEnabled="False"
+                    Style="{StaticResource Theme.Command.Segment}" />
+            </StackPanel>
+        </Border>
+
+        <Grid Grid.Row="1" Grid.Column="0" Style="{StaticResource Theme.Catalog.Frame}">
+            <ScrollViewer Style="{StaticResource Theme.Catalog.Scroll}">
+                <ItemsControl x:Name="PStudyShelf">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button x:Name="PStudyRow" Style="{StaticResource Theme.Catalog.Row}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <local:QIconImage
+                                        x:Name="PStudyIcon"
+                                        Grid.Column="0"
+                                        Width="16"
+                                        Height="16"
+                                        Margin="0,0,8,0"
+                                        VerticalAlignment="Center" />
+                                    <TextBlock x:Name="PStudyText" Grid.Column="1" Style="{StaticResource Theme.Catalog.Title}" />
+                                    <Border x:Name="PStudyPellet" Grid.Column="2" Style="{StaticResource Theme.Catalog.Pellet}">
+                                        <TextBlock x:Name="PStudyTally" Style="{StaticResource Theme.Catalog.Tally}" />
+                                    </Border>
+                                </Grid>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+
+        <DockPanel Grid.Row="1" Grid.Column="1" Margin="16,14,0,0">
+            <TextBlock x:Name="PStudyEmpty" DockPanel.Dock="Top" Style="{StaticResource Theme.Catalog.Empty}" />
+
+            <Border
+                x:Name="PSitting"
+                MaxWidth="760"
+                VerticalAlignment="Top"
+                Focusable="True"
+                FocusVisualStyle="{x:Null}"
+                Visibility="Collapsed">
+                <StackPanel>
+                    <TextBlock x:Name="PSittingPosition" Margin="0,0,0,12" HorizontalAlignment="Center" Style="{StaticResource Theme.Catalog.Meta}" />
+
+                    <Border MinHeight="340" Padding="30,24" Style="{StaticResource Theme.Input.Card}">
+                        <StackPanel VerticalAlignment="Center">
+                            <ContentControl
+                                x:Name="PSittingFront"
+                                ContentTemplate="{StaticResource Study.Face}"
+                                Focusable="False"
+                                FontSize="40"
+                                FontWeight="Bold" />
+                            <Border x:Name="PSittingRule" Height="1" Margin="0,22" Background="{StaticResource Theme.Line}" />
+                            <ContentControl
+                                x:Name="PSittingBack"
+                                ContentTemplate="{StaticResource Study.Face}"
+                                Focusable="False"
+                                FontSize="20" />
+                            <TextBlock
+                                x:Name="PSittingBlank"
+                                HorizontalAlignment="Center"
+                                FontSize="16"
+                                Foreground="{StaticResource Theme.Muted}"
+                                TextAlignment="Center"
+                                TextWrapping="Wrap" />
+                            <TextBlock
+                                x:Name="PSittingSummary"
+                                HorizontalAlignment="Center"
+                                FontSize="16"
+                                Text="{DynamicResource Study.Finished}"
+                                TextAlignment="Center"
+                                TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Margin="0,18,0,0" HorizontalAlignment="Center" Style="{StaticResource Theme.Command.Group}">
+                        <StackPanel Orientation="Horizontal">
+                            <Button
+                                x:Name="PSittingPrevious"
+                                Content="{DynamicResource Study.Previous}"
+                                Focusable="False"
+                                Style="{StaticResource Theme.Command.Segment}" />
+                            <Button
+                                x:Name="PSittingSide"
+                                Content="{DynamicResource Study.Turn}"
+                                Focusable="False"
+                                Style="{StaticResource Theme.Command.Segment}" />
+                            <Button
+                                x:Name="PSittingNext"
+                                Content="{DynamicResource Study.Next}"
+                                Focusable="False"
+                                Style="{StaticResource Theme.Command.Segment}" />
+                            <Button
+                                x:Name="PSittingAgain"
+                                Content="{DynamicResource Study.Again}"
+                                Focusable="False"
+                                Style="{StaticResource Theme.Command.Segment}" />
+                            <Button
+                                x:Name="PSittingEnd"
+                                Content="{DynamicResource Study.End}"
+                                Focusable="False"
+                                Style="{StaticResource Theme.Command.Segment}" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Border>
+        </DockPanel>
     </Grid>
 </UserControl>

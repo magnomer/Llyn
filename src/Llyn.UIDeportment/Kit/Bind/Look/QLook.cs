@@ -140,6 +140,10 @@ internal static class QLook
             typeof(ToggleButton), ToggleButton.CheckedEvent, new RoutedEventHandler(QLookStateRefine), true);
         EventManager.RegisterClassHandler(
             typeof(ToggleButton), ToggleButton.UncheckedEvent, new RoutedEventHandler(QLookStateRefine), true);
+        EventManager.RegisterClassHandler(
+            typeof(ListBoxItem), ListBoxItem.SelectedEvent, new RoutedEventHandler(QLookStateRefine), true);
+        EventManager.RegisterClassHandler(
+            typeof(ListBoxItem), ListBoxItem.UnselectedEvent, new RoutedEventHandler(QLookStateRefine), true);
     }
 
     internal static void QLookStyleAttach(FrameworkElement surface)

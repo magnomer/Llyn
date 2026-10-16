@@ -19,6 +19,13 @@ public sealed class LDeckOutlet : LDeckPort
     public (IReadOnlyList<LDeckFolder> LDeckFolders, IReadOnlyList<LDeck> LDeckListed) LEngineDeckRead() =>
         _lDeckOutletEngine.LEngineDeck.LEngineDeckRead();
 
+    public (IReadOnlyList<LDeckFolder> LDeckFolders, IReadOnlyList<LDeck> LDeckListed,
+        IReadOnlyDictionary<long, int> LDeckActive) LEngineActiveRead() =>
+        _lDeckOutletEngine.LEngineStudy.LEngineActiveRead();
+
+    public LDeckCensus LEngineCensusRead(long? deckId) =>
+        _lDeckOutletEngine.LEngineScoreboard.LEngineCensusRead(deckId);
+
     public (LDeck LDeckStored, IReadOnlyList<LBearing> LDeckBearings)? LEngineDeckRead(long deckId) =>
         _lDeckOutletEngine.LEngineDeck.LEngineDeckRead(deckId);
 
@@ -54,6 +61,10 @@ public sealed class LDeckOutlet : LDeckPort
 
     public IReadOnlyList<(LCue LCueStored, string LCueLine)> LEngineLineRead(long deckId, LPortraitLabel label) =>
         _lDeckOutletEngine.LEngineDeck.LEngineLineRead(deckId, label);
+
+    public IReadOnlyList<(LCue LCueStored, LCueSide LCueFront, LCueSide LCueBack)> LEngineFaceRead(
+        long deckId, LPortraitLabel label) =>
+        _lDeckOutletEngine.LEngineStudy.LEngineFaceRead(deckId, label);
 
     public IReadOnlyList<(LVistaRow LAccessionRow, bool LAccessionBound)> LEngineAccessionFind(
         LVista vista, long deckId) =>

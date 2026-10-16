@@ -30,6 +30,15 @@ A missing value reads empty.
 A bar inside a text value is escaped first, so it never reads as a join.
 Picture and Sound values are locations and stay unescaped.
 
+### `LStencilFaceRead`
+
+The deck's active cues in deck order, each with its face and its two sides as `LCueSide` records.
+It is the one place a card's face is built, so the export and study read the same face.
+Resting cues are left out, so an orphaned or excluded cue reaches neither.
+A free cue reads its own cells, and a bound cue reads its stencil face.
+The front is side 1 and the back is side 2, each split into text and media by `LCueMarkupParse`.
+The sides are built here, because the engine reaches Core rules only through Application.
+
 ### `LStencilClerkRead` and `LStencilSlotSet`
 
 The read answers a deck's owned template, the one its cards resolve against.
@@ -144,6 +153,20 @@ Reads one deck's cards straight from the cue vault, in their stored order.
 A deck never stored reads no cards.
 The deck delete counts these rows, so the count loads no entry.
 
+### `LCueActiveRead`
+
+Counts each deck's cards that are not resting, keyed by deck id.
+Every card is read in one vault query, and `LCueResting` decides, so the resting rule stays in Core.
+A deck with no active card has no key, and its reader takes zero.
+
+### `LCueCensusRead`
+
+Reads the census of one deck, or of all decks when no deck is given.
+It reads the cards and the sync stamps, and `LDeckCensusBuild` counts them, so the counting rules stay in Core.
+The last sync of all decks is the latest sync of any deck.
+A deck never stored reads no cards and no sync.
+The time comes from the rig clock and the zone from the caller, so a test fixes both.
+
 ### `LCueLineRead`
 
 Reads one deck's cards with the line a listing shows for each, in one call.
@@ -227,8 +250,7 @@ A deck file whose digest differs from the manifest's is a phone export.
 The run refuses it, because Llyn never overwrites a file it has not read.
 A file present with no manifest entry is refused the same way.
 
-Resting cues are left out, so an orphaned or excluded cue never reaches the phone.
-A free cue reads its own cells, and a bound cue reads its stencil face.
+The cues and their faces come from `LStencilFaceRead`, so resting cues never reach the phone.
 
 ### Media
 
@@ -260,10 +282,10 @@ Wrong answers and statistics stay out in phase 1.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `LCueClerk.cs` `885e824f6e29a437`
+Commit: `121691f60459`
+- `LCueClerk.cs` `034cedc7f2076454`
 - `LDeckClerk.cs` `78691b90d1a74996`
-- `LDepotClerk.cs` `efa9a9dc0d991ae9`
+- `LDepotClerk.cs` `68913dedea8246f8`
 - `LDepotLatch.cs` `fc94d5346f3c0f68`
-- `LStencilClerk.cs` `8a66420a3829cfa5`
+- `LStencilClerk.cs` `1c2b43f4c4b3e277`
 - `LStencilReader.cs` `e300f7e601e1ca04`

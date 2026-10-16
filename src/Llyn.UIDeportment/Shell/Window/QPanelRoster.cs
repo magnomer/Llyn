@@ -110,9 +110,9 @@ internal sealed class QPanelRoster
         _qXiesheng.QXieshengIntroduce(atelier, envoy, volume, mentionMenu);
         _qYunjing.QYunjingIntroduce(atelier, envoy, volume, mentionMenu);
         _qTaxonomy.QTaxonomyIntroduce(atelier, envoy, volume, mentionMenu);
-        new QStudy(QStudySurface).QStudyIntroduce();
+        new QStudy(QStudySurface).QStudyIntroduce(atelier, envoy);
         _qDeck.QDeckIntroduce(atelier, envoy);
-        new QScoreboard(QScoreboardSurface).QScoreboardIntroduce();
+        new QScoreboard(QScoreboardSurface).QScoreboardIntroduce(atelier, envoy);
         _qTenor.QTenorIntroduce(atelier, envoy, volume, mentionMenu);
         _qRepertoire.QRepertoireIntroduce(atelier, envoy, volume, mentionMenu);
         _qCorpus.QCorpusIntroduce(atelier, envoy, volume, mentionMenu);

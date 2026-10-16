@@ -72,14 +72,35 @@ Returns the normalized name, or that name with ` 2`, ` 3` and so on appended unt
 
 Answers false when a code in `taken` matches, ignoring case.
 
+## `LDeckCensus`
+
+The counts the statistics tab shows for one deck or for all decks.
+It is built from stored cards, and nothing of it is stored.
+`LDeckCensusBuild` counts the cards, the latest sync and the cards added in each recent week.
+Each count reads one property of the card, so a card falls in every count whose property it has.
+An active card is one that is not resting, and a flagged card is one with any flag.
+The latest sync is the latest stamp that parses, and a deck never synced gives none.
+`LDeckCensusSpan` holds the twelve weeks the tab charts.
+
+## `LDeckWeek`
+
+One Monday-to-Sunday week of the caller's time zone and the count of cards added in it.
+`LDeckWeekDivide` answers the given number of weeks, oldest first, ending with the week that holds now.
+Each stamp is read as UTC and placed by its local date.
+So a card added late on a UTC Sunday may count on a local Monday.
+A stamp outside the span, or one that does not parse, counts nowhere.
+Now and the zone are arguments, so the rule never reads the clock or the machine zone.
+
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `121691f60459`
 - `LAlmanacOrder.cs` `e6f4236b098a1575`
 - `LBearing.cs` `dfb5d059b3fca107`
 - `LBearingLead.cs` `7441fe1ee544c02b`
 - `LDeck.cs` `0b3c3deccdd6f2f6`
+- `LDeckCensus.cs` `4c72e47c201bf417`
 - `LDeckCode.cs` `a91aa39796229f3d`
 - `LDeckFolder.cs` `82bda161d83ab78e`
 - `LDeckSchedule.cs` `dab03b25a0d8186f`
+- `LDeckWeek.cs` `9c0b1725e2ad2df9`
 - `LGrain.cs` `7cb27e3e6371db24`

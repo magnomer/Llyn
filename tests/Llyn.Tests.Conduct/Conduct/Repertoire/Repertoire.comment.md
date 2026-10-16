@@ -46,8 +46,9 @@ The held scenario lives in `TRepertoireScribe`, and the print and export gates i
 
 ## `TRepertoirePrepare`
 
-Builds the repertoire over the atelier with its own editor, and it restores both vistas itself.
+Builds the repertoire over the atelier and the envoy the test supplies.
 Its seam answers that the tab is in front, and its marshal runs each notice at once.
+It restores no vista, so a test that needs one restores it.
 
 ## `TRepertoireTitleDefer`
 
@@ -56,6 +57,7 @@ Writes a title into the held scenario, so the playwright's desk holds an unsaved
 ## `TRepertoireHold`
 
 Covers two hooks that building a repertoire registers, and the playwright's typing gates.
+A typed title is written and answers the typed line, and a cleared description answers its hint.
 A draft notice on the scenario desk reaches the driver through the marshal the repertoire was given.
 The window's exit gate closes the entry editor and stops the display's playback.
 A typed kind is worded by the measure only while it is empty.
@@ -98,8 +100,8 @@ The flag-fill load answers the rows and their languages once the fill has run.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `TAtlas.cs` `38bd3e9bc1a05f8d`
+Commit: `121691f60459`
+- `TAtlas.cs` `3c441439964eefec`
 - `TOccurrence.cs` `536fa923acc28ac4`
 - `TRepertoire.cs` `9caa5ec9bcceaeec`
 - `TRepertoireHold.cs` `36998939fdcde2a4`

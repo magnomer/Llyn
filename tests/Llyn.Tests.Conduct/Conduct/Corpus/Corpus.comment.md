@@ -27,7 +27,8 @@ Unknown and unwritten text are separate cases because their wording and muted ve
 ## `TAnthologyGloss`
 
 Insertion tests preserve neighboring gloss languages while using the configured language for new rows.
-Preparation tests distinguish an empty held transcript from an unopened desk.
+Preparation tests distinguish an empty held transcript from no transcript held.
+Picked rows check the text, the language retag and the removal of a gloss.
 
 ## `TCorpus`
 
@@ -60,6 +61,7 @@ Closing transcript and quotation editors checks their different routes back to t
 Repeated restoration checks retained queries and duplicate observer notifications.
 Entry notices check row notifications for quote tallies.
 The asynchronous load checks rows and languages after filling.
+The quote tally words each form when quoting entries are added.
 
 ## `TQuotation`
 
@@ -69,8 +71,8 @@ Query tests distinguish unmatched wording from vacant wording.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `TAnthology.cs` `5f4cbaf4238e8702`
+Commit: `121691f60459`
+- `TAnthology.cs` `cb28be04a5ee682f`
 - `TAnthologyCitation.cs` `bb28477146e55d7a`
 - `TAnthologyExample.cs` `7b627fdeb76ed1de`
 - `TAnthologyGloss.cs` `9359d7893d79d281`

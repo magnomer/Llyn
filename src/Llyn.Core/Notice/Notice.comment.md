@@ -36,10 +36,11 @@ It covers a setting that shapes how records are shown, such as the respelling sw
 `LSubjectFold` carries the entry's id, and the fold changes no lexical data.
 Subscribers may reshape a held draft, but no lexical reload is required by this subject.
 `LSubjectStemFold` carries the series member's entry, and only the series page redraws.
+`LSubjectDeck` carries the written deck's id, or 0 for a folder or cue-only write.
 It is apart from the plain fold, so entry and card folds leave the series page alone.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `121691f60459`
 - `LBulletin.cs` `30cb003d68104baa`
-- `LSubject.cs` `2b599722433caba7`
+- `LSubject.cs` `e27d284d73910205`

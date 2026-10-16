@@ -84,6 +84,7 @@ internal sealed class QJotter
 
         if (QLook.QLookPartFind<Button>(container, "PJotterPicker") is Button picker)
         {
+            picker.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("lookup", 24));
             picker.Visibility = QLook.QLookVisibleRead(cell.CCueCellFile);
             picker.Click -= QJotterPickerObserve;
             picker.Click += QJotterPickerObserve;

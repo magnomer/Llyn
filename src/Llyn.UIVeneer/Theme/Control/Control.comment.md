@@ -10,12 +10,14 @@ This is since the styles carry no trigger.
 `Theme.Catalog.Row` is one row of a panel's catalog, drawn on nothing until it is pointed at.
 The catalogs carry no card of their own, so a bordered row would stack a frame inside a frame.
 A row shows its subject over a quieter line of what tells it apart.
+`Theme.Catalog.Item` is the same row for a list box, so a catalog that keeps a selection looks like the rest.
+  Hover raises it and selection tints it, as the chosen row does.
 The panel tags the row it stands on as chosen, and the `Chosen` cue is a `QLook` state.
 The tag paints the soft accent ground and turns the subject accent, as the reading compass marks its current row.
 One ground and one ink say chosen together, so no rail or edge repeats them.
 `Theme.Catalog.Epithet` is the epithet run after a listed headword.
 It is the reading the language pack names, such as `희롱할 롱` after `弄`.
-It sits on the headword's baseline, two steps smaller and muted, so the headword stays the row's one bold word.
+It sits on the headword's baseline, smaller and muted, so the headword stays the row's one bold word.
 No binding fills it, since the row fill in the deportment writes its text.
 That fill prepends an en space, so the run needs no margin of its own.
 The row's title keeps its ellipsis, since both runs share one text block.
@@ -32,13 +34,13 @@ It ends where the row surface ends before the scroll rail.
 `Theme.Catalog.Frame` offsets the 34-pixel panel margin to leave a 6-pixel left gutter.
 `Theme.Catalog.Middle` offsets the seam 16 pixels before an interior column to leave the same 6-pixel gutter.
 Both end at the next seam, where `Theme.Catalog.Scroll` opens its lane once the rows outrun the panel.
-Library, Sound, Tags, Situations, Examples, Sources and Favorites share these styles.
+Every catalog panel shares these styles, as do the Study, Deck and Scoreboard tabs.
 The document and editor scroll viewers hold the same lane at the same width.
 
 ## Choice styles
 
 `Theme.Choice.Row` is one row the user picks from, a whole row that takes the click.
-The entry index and the ordering dropdown use it, and templating it avoids the platform's square, grey Button chrome.
+Templating it avoids the platform's square, grey Button chrome, and no markup wears it yet.
 It is not a picker-popup row, because those carry no click of their own and offer their actions separately.
 Those are `Theme.Popup.RowSurface`.
 The rows sit on the panel's own ground.
@@ -67,7 +69,7 @@ It has no ground, edge or shadow of its own.
 So the commands read as commands rather than as a boxed group.
 Each command keeps its own hover and press, which is where a button says it is a button.
 A disabled tray is dimmed whole, there being no edge left to pale.
-`Theme.Command.IconToggle` is an icon-only command that holds a menu open.
+`Theme.Command.IconToggle` is an icon-only command that holds a menu open, or holds a row's on or off value.
 It is tinted while its menu stands open, so the tray says which picker is showing.
 `Theme.Command.Segment.Template` draws one command inside the tray, for a button and for a mode radio alike.
 The icon is the button's `QLook.QLookIconProperty`, drawn by a `QIconImage` part.
@@ -84,11 +86,11 @@ A disabled switch keeps that tint, because the mode it stands on is still true.
 ## Language styles
 
 `Theme.Language.Inset` is the room between the pill's edge and its face, written once for the chip and the toggle.
-`Theme.Language.Chip` is the blue pill an entry's language is named on.
+`Theme.Language.Chip` is the soft accent pill an entry's language is named on.
 The reading view wears it, and the editor's toggle copies it.
 Both are defined here, so the two views cannot drift apart.
 It carries the toggle's one-pixel border in its own fill, so the two pills measure the same.
-`Theme.Language.Face`, `Theme.Language.Flag` and `Theme.Language.Expand` shape the row of flag, name and chevron a pill shows.
+`Theme.Language.Face`, `Theme.Language.Flag`, `Theme.Language.Name` and `Theme.Language.Expand` shape the row of flag, name and chevron a pill shows.
 The chip and the toggle both fill it from these styles, so their faces are one shape.
 The chevron says the editor's pill opens a menu.
 Its icon is a `QLook` row, since the icon extension is logic.
@@ -133,7 +135,7 @@ It sits at the table's right edge, and the bottom margin parts it from the table
 `Theme.Paradigm.Fold` is one side of the switch, whose template part `PSurface` is a clear thumb.
 The state sheet gives the checked side the page ground, a faint outline and accent ink, since markup never branches.
 The default focus visual stays, so a keyboard user still sees which button holds focus.
-`Theme.Paradigm.Marked` holds letters the rules did not predict, in `Theme.Warning` so they stand out in red.
+`Theme.Paradigm.Marked` holds letters the rules did not predict, in `Theme.Warning` so they stand out.
 `Theme.Paradigm.Cut` is the faint hyphen between root and ending of a divided form, in `Theme.Muted`.
 So it does not read as a letter.
 `Theme.Paradigm.Row` has three columns for the part, name and form.
@@ -186,8 +188,8 @@ That is because a volume is chosen by where it should be rather than nudged towa
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `PThemeCatalog.xaml` `f51d9c83102a77d5`
+Commit: `121691f60459`
+- `PThemeCatalog.xaml` `8440c1a58d02634a`
 - `PThemeChoice.xaml` `168b1d5620f22041`
 - `PThemeCommand.xaml` `cfac497267cf2e60`
 - `PThemeLanguage.xaml` `65e4d1c6ffa6c7d2`

@@ -2,9 +2,150 @@
     x:Class="Llyn.UIVeneer.PScoreboard"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Llyn.UIDeportment;assembly=Llyn.UIDeportment"
     >
 
     <Grid Margin="34,20,34,38">
-        <TextBlock x:Name="PScoreboardEmpty" Style="{StaticResource Theme.Catalog.Empty}" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Rectangle Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="-34,0,-34,0" Style="{StaticResource Theme.Panel.SeamRow}" />
+        <local:QSeam Grid.Row="1" Grid.Column="1" Margin="-16,0,0,-38" Style="{StaticResource Theme.Panel.SeamColumn}" />
+
+        <Border Grid.Row="0" Grid.Column="0" Margin="{StaticResource Theme.Catalog.HeaderMargin}" HorizontalAlignment="Left" Style="{StaticResource Theme.Command.Group}">
+            <Button
+                Focusable="False"
+                IsHitTestVisible="False"
+                Style="{StaticResource Theme.Command.Segment}"
+                Visibility="Hidden" />
+        </Border>
+
+        <Grid Grid.Row="1" Grid.Column="0" Style="{StaticResource Theme.Catalog.Frame}">
+            <ScrollViewer Style="{StaticResource Theme.Catalog.Scroll}">
+                <ItemsControl x:Name="PScoreboardShelf">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button x:Name="PScoreboardRow" Style="{StaticResource Theme.Catalog.Row}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <local:QIconImage
+                                        x:Name="PScoreboardIcon"
+                                        Grid.Column="0"
+                                        Width="16"
+                                        Height="16"
+                                        Margin="0,0,8,0"
+                                        VerticalAlignment="Center" />
+                                    <TextBlock x:Name="PScoreboardText" Grid.Column="1" Style="{StaticResource Theme.Catalog.Title}" />
+                                </Grid>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+
+        <DockPanel Grid.Row="1" Grid.Column="1" Margin="16,14,0,0">
+            <TextBlock x:Name="PScoreboardEmpty" DockPanel.Dock="Top" Style="{StaticResource Theme.Catalog.Empty}" />
+
+            <ScrollViewer
+                Focusable="False"
+                HorizontalScrollBarVisibility="Disabled"
+                Style="{StaticResource Theme.Scroll.Gutter}"
+                VerticalScrollBarVisibility="Auto">
+                <Border
+                    x:Name="PCensus"
+                    MaxWidth="760"
+                    VerticalAlignment="Top"
+                    Style="{StaticResource Theme.Panel.Surface}"
+                    Visibility="Collapsed">
+                    <StackPanel Margin="30,18,30,24">
+                        <TextBlock x:Name="PCensusName" Style="{StaticResource Theme.Page.Title}" />
+
+                        <WrapPanel Margin="12,14,0,7" Orientation="Horizontal">
+                            <Border Style="{StaticResource Theme.Page.Tally}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock x:Name="PCensusTotal" Margin="0,0,5,0" Style="{StaticResource Theme.Page.Figure}" />
+                                    <TextBlock Style="{StaticResource Theme.Page.Figure}" Text="{DynamicResource Scoreboard.Total}" />
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource Theme.Page.Tally}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock x:Name="PCensusActive" Margin="0,0,5,0" Style="{StaticResource Theme.Page.Figure}" />
+                                    <TextBlock Style="{StaticResource Theme.Page.Figure}" Text="{DynamicResource Scoreboard.Active}" />
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource Theme.Page.Tally}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock x:Name="PCensusExcluded" Margin="0,0,5,0" Style="{StaticResource Theme.Page.Figure}" />
+                                    <TextBlock Style="{StaticResource Theme.Page.Figure}" Text="{DynamicResource Scoreboard.Excluded}" />
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource Theme.Page.Tally}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock x:Name="PCensusOrphaned" Margin="0,0,5,0" Style="{StaticResource Theme.Page.Figure}" />
+                                    <TextBlock Style="{StaticResource Theme.Page.Figure}" Text="{DynamicResource Scoreboard.Orphaned}" />
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource Theme.Page.Tally}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock x:Name="PCensusFlagged" Margin="0,0,5,0" Style="{StaticResource Theme.Page.Figure}" />
+                                    <TextBlock Style="{StaticResource Theme.Page.Figure}" Text="{DynamicResource Scoreboard.Flagged}" />
+                                </StackPanel>
+                            </Border>
+                        </WrapPanel>
+
+                        <StackPanel Margin="14,0,0,0" Orientation="Horizontal">
+                            <TextBlock Margin="0,0,6,0" Style="{StaticResource Theme.Catalog.Meta}" Text="{DynamicResource Scoreboard.Synced}" />
+                            <TextBlock x:Name="PCensusSynced" Style="{StaticResource Theme.Catalog.Meta}" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,28,0,0">
+                            <TextBlock Style="{StaticResource Theme.Page.Heading}" Text="{DynamicResource Scoreboard.Weekly}" />
+                            <ItemsControl x:Name="PCensusChart" Height="180" Margin="12,0,12,0">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Rows="1" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid x:Name="PWeek" Background="Transparent">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*" />
+                                                <RowDefinition Height="0" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <Border
+                                                x:Name="PWeekBar"
+                                                Grid.Row="1"
+                                                Margin="4,0"
+                                                Background="{StaticResource Theme.Accent}"
+                                                CornerRadius="2,2,0,0" />
+                                            <Border Grid.Row="2" Height="1" Background="{StaticResource Theme.Line}" VerticalAlignment="Top" />
+                                            <TextBlock
+                                                x:Name="PWeekMonday"
+                                                Grid.Row="2"
+                                                Margin="-30,6,-30,0"
+                                                Style="{StaticResource Theme.Catalog.Meta}"
+                                                TextAlignment="Center"
+                                                TextTrimming="None" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </ScrollViewer>
+        </DockPanel>
     </Grid>
 </UserControl>

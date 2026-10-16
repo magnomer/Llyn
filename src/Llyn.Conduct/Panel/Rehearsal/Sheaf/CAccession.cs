@@ -42,6 +42,13 @@ public sealed class CAccession
 
     public CAperture CAccessionAperture { get; }
 
+    public string CAccessionKey => _cAccessionChosen() is null ? "Accession.Unchosen" : CAccessionAperture.CApertureKey;
+
+    public string CAccessionTallyRead()
+    {
+        return _cAccessionChosen() is null ? string.Empty : CAccessionAperture.CApertureTallyRead();
+    }
+
     public IReadOnlyList<CAccessionRow> CAccessionRead()
     {
         IReadOnlyList<CAccessionRow> rows = [];

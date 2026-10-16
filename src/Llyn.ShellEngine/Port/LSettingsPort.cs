@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 using Llyn.Application;
 using Llyn.Core;
@@ -25,6 +26,8 @@ public interface LSettingsPort
     IReadOnlyDictionary<string, string> LEngineLocalizationLoad(string language);
 
     string LEngineLocalizationRead();
+
+    CultureInfo LEngineCultureRead();
 
     IReadOnlyList<string> LEngineLocalizationScan();
 

@@ -73,6 +73,11 @@ public sealed class LEntryQueryClerk
         return _lEntryQueryEntries.LEntryReferenceFind(reference.LReferenceId);
     }
 
+    public static string LEntryTallyFormat(int count)
+    {
+        return LCatalog.LCatalogCountFormat(count, "Library.Shown", LLocalization.QLocalizationTextRead);
+    }
+
     public static IReadOnlyList<LEntry> LEntryMatch(IReadOnlyList<LEntry> entries, string query)
     {
         ArgumentNullException.ThrowIfNull(entries);

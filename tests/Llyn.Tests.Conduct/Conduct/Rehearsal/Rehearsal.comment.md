@@ -89,16 +89,32 @@ The refusal facts use the folder envoy, the fake that records a notice's refusal
 
 ## `TStudy` and `TScoreboard`
 
-Each pins the empty-line key its placeholder names.
+`TScoreboard` drives every `CScoreboard` gate on a prepared workspace.
+  The column facts pin the all-decks row first, the chosen mark and `Scoreboard.Empty`.
+  The census facts pin the worded counts, the twelve weeks, `Scoreboard.Unsynced` and both empty-state keys.
+  One fact runs the census under a Korean machine culture and pins English month names, the interface language.
+  The failure facts throw from the deck port and expect `Deck.LoadFailed`.
+`TStudy` drives every `CStudy` and `CSitting` gate on a prepared workspace.
+  The roll facts pin the three empty-state keys and the active counts the engine answers.
+  The sitting facts start from a deck whose cards read `one` and `one back`.
+  They walk the place, turned and end states.
+  A turned back with nothing on it names `Study.BackEmpty`, and a sound on the back reads as an audible back.
+  A seeded `Random` serves the draw.
+  The shuffle facts check that the run visits a permutation of the fronts.
+  A second toggle restores the deck order.
+The deck-bulletin tests build the tab first, then write through `CDeck` the way a user does.
+Their handler reads as the driver does, so a missing bulletin leaves the read unset.
+`TStudyWriteRead` walks every deck, folder and cue write a panel offers and counts the changes each raised.
+`TScoreboard` reuses it, and `TAccessionEntrySave` is shared for stored entries.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `TAccession.cs` `1a0d66a8e98303ac`
+Commit: `121691f60459`
+- `TAccession.cs` `5133e9f5a11f0677`
 - `TCharter.cs` `2adc5e66a188e32a`
 - `TCue.cs` `91b47b58da593b72`
 - `TDeck.cs` `e408a28c6a60f943`
 - `TDepot.cs` `2d0b88b32165a1cc`
-- `TScoreboard.cs` `bd5adb9c0d1f9bc0`
+- `TScoreboard.cs` `4af87d8fb47e40bc`
 - `TStencil.cs` `c6a716c83630b270`
-- `TStudy.cs` `a85efa937a1dc4a5`
+- `TStudy.cs` `5cf320a257db6322`

@@ -6,17 +6,18 @@ The drivers of the chosen deck's cue listing, its adder and the free-cue cell ed
 
 Drives the listing of the chosen deck on the same `PDeck` page.
 `CCueChanged`, `CDeckChanged` and `CAccessionChanged` repaint it from one `CCueRead`, and an empty read paints no rows.
-Each row shows `CCueRowLine`, the flag and excluded boxes, and the orphan notice when the row is orphaned.
+Each row shows `CCueRowLine`, the flag and excluded toggles, and the orphan notice when the row is orphaned.
+  A toggle's icon is a literal key, the star for the flag and the filter for exclusion.
+  The icon is disabled while its value is off, so `QIconImage` greys it.
   The splice keeps the held rows when id, position and orphan state match.
-  Then the line, flag and excluded values are synced, so the list's selection survives a box click.
+  Then the line, flag and excluded values are synced, so the list's selection survives a toggle click.
 Every action hands its raw value to one `CCue` gate.
   Free cue calls `CCueCreate`, and remove hands the ids of the list's selected rows to `CCueRemove`.
   The gate asks the confirm, so the driver asks nothing.
   The order buttons send the row's painted position, one up or one down, to `CCueMove`.
   The engine clamps the position.
-  Either box hands both boxes of its row to `CCueSet`, so no painted value is sent back.
-  The gate takes both boxes as bools, and Conduct converts the flag for the engine.
-  The flag box takes `CCueRowFlag` as a bool, so the driver converts nothing.
+  Either toggle hands both toggles of its row to `CCueSet`, so no painted value is sent back.
+  The gate takes both toggles as bools, and Conduct converts the flag for the engine.
 The selection lives in the list control alone.
 The driver keeps no state beyond the painted list.
 
@@ -63,10 +64,10 @@ Its line, flag and excluded values change in place and notify, so the row repain
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `QAccession.cs` `08d55b342988c03c`
+Commit: `121691f60459`
+- `QAccession.cs` `b81a902026f5e6d2`
 - `QAccessionItem.cs` `40e6ca82c8ae2e65`
-- `QCue.cs` `dc311de49858fdca`
+- `QCue.cs` `2012972a14b06834`
 - `QCueItem.cs` `c464340025c863c3`
-- `QJotter.cs` `6f23f8819c563b58`
+- `QJotter.cs` `ed3fd58059a9f7bd`
 - `QJotterItem.cs` `4547fdba67f65e38`

@@ -24,6 +24,8 @@ internal sealed class QDeck
         ArgumentNullException.ThrowIfNull(surface);
 
         _qDeckSurface = surface;
+        QDeckFreshIcon.QIconSource = QIcon.QIconResolve("new", 24);
+        QDeckFolderIcon.QIconSource = QIcon.QIconResolve("folder", 24);
         QDeckFresh.Click += QDeckFreshObserve;
         QDeckFolder.Click += QDeckFolderObserve;
         QDeckKind.SelectionChanged += QDeckKindObserve;
@@ -35,6 +37,10 @@ internal sealed class QDeck
     private Button QDeckFresh => QContract.QContractFind<Button>(_qDeckSurface, "PDeckFresh");
 
     private Button QDeckFolder => QContract.QContractFind<Button>(_qDeckSurface, "PDeckFolder");
+
+    private QIconImage QDeckFreshIcon => QContract.QContractFind<QIconImage>(_qDeckSurface, "PDeckFreshIcon");
+
+    private QIconImage QDeckFolderIcon => QContract.QContractFind<QIconImage>(_qDeckSurface, "PDeckFolderIcon");
 
     private ComboBox QDeckKind => QContract.QContractFind<ComboBox>(_qDeckSurface, "PDeckKind");
 
@@ -201,12 +207,12 @@ internal sealed class QDeck
 
         if (QLook.QLookPartFind<QIconImage>(container, "PDeckEarlierIcon") is QIconImage earlier)
         {
-            earlier.QIconSource = QIcon.QIconResolve("earlier", 12);
+            earlier.QIconSource = QIcon.QIconResolve("earlier", 16);
         }
 
         if (QLook.QLookPartFind<QIconImage>(container, "PDeckLaterIcon") is QIconImage later)
         {
-            later.QIconSource = QIcon.QIconResolve("later", 12);
+            later.QIconSource = QIcon.QIconResolve("later", 16);
         }
 
         QDeckHandleRefine(container, "PDeckEarlier", deck, QDeckEarlierObserve);

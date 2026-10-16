@@ -21,11 +21,32 @@
         <Rectangle Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Margin="-34,0,-34,0" Style="{StaticResource Theme.Panel.SeamRow}" />
         <local:QSeam Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Margin="-16,0,0,-38" Style="{StaticResource Theme.Panel.SeamColumn}" />
 
-        <StackPanel Grid.Row="0" Grid.Column="0" Margin="{StaticResource Theme.Catalog.HeaderMargin}" Orientation="Horizontal">
-            <ComboBox x:Name="PDeckKind" MinWidth="110" Margin="0,0,8,0" ToolTip="{DynamicResource Deck.Grain}" />
-            <Button x:Name="PDeckFresh" Margin="0,0,8,0" Content="{DynamicResource Deck.New}" />
-            <Button x:Name="PDeckFolder" Content="{DynamicResource Deck.FolderNew}" />
-        </StackPanel>
+        <Grid Grid.Row="0" Grid.Column="0" Margin="{StaticResource Theme.Catalog.HeaderMargin}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <ComboBox
+                x:Name="PDeckKind"
+                Grid.Column="0"
+                Margin="0,0,4,0"
+                VerticalAlignment="Center"
+                Style="{StaticResource Theme.Input.Choice}"
+                ToolTip="{DynamicResource Deck.Grain}" />
+            <Border Grid.Column="1" VerticalAlignment="Center" Style="{StaticResource Theme.Command.Group}">
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="PDeckFresh" Style="{StaticResource Theme.Command.Icon}" ToolTip="{DynamicResource Deck.New}">
+                        <local:QIconImage x:Name="PDeckFreshIcon" Width="24" Height="24" />
+                    </Button>
+
+                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
+
+                    <Button x:Name="PDeckFolder" Style="{StaticResource Theme.Command.Icon}" ToolTip="{DynamicResource Deck.FolderNew}">
+                        <local:QIconImage x:Name="PDeckFolderIcon" Width="24" Height="24" />
+                    </Button>
+                </StackPanel>
+            </Border>
+        </Grid>
 
         <Grid Grid.Row="1" Grid.Column="0" Style="{StaticResource Theme.Catalog.Frame}">
             <ScrollViewer Style="{StaticResource Theme.Catalog.Scroll}">
@@ -52,14 +73,14 @@
                                             Margin="0,0,8,0"
                                             VerticalAlignment="Center" />
                                         <TextBlock x:Name="PDeckText" Grid.Column="1" Style="{StaticResource Theme.Catalog.Title}" />
-                                        <TextBox x:Name="PDeckName" Grid.Column="1" Visibility="Collapsed" />
+                                        <TextBox x:Name="PDeckName" Grid.Column="1" Style="{StaticResource Theme.Input.Field}" Visibility="Collapsed" />
                                     </Grid>
                                 </Button>
-                                <Button x:Name="PDeckEarlier" Grid.Column="1" ToolTip="{DynamicResource Deck.OrderUp}">
-                                    <local:QIconImage x:Name="PDeckEarlierIcon" Width="12" Height="12" />
+                                <Button x:Name="PDeckEarlier" Grid.Column="1" Style="{StaticResource Theme.Command.Icon}" ToolTip="{DynamicResource Deck.OrderUp}">
+                                    <local:QIconImage x:Name="PDeckEarlierIcon" Width="16" Height="16" />
                                 </Button>
-                                <Button x:Name="PDeckLater" Grid.Column="2" ToolTip="{DynamicResource Deck.OrderDown}">
-                                    <local:QIconImage x:Name="PDeckLaterIcon" Width="12" Height="12" />
+                                <Button x:Name="PDeckLater" Grid.Column="2" Style="{StaticResource Theme.Command.Icon}" ToolTip="{DynamicResource Deck.OrderDown}">
+                                    <local:QIconImage x:Name="PDeckLaterIcon" Width="16" Height="16" />
                                 </Button>
                             </Grid>
                         </DataTemplate>
@@ -72,10 +93,18 @@
                 Text="{DynamicResource Deck.Empty}" />
         </Grid>
 
-        <StackPanel Grid.Row="0" Grid.Column="1" Margin="{StaticResource Theme.Catalog.HeaderMargin}" Orientation="Horizontal">
-            <Button x:Name="PCueFresh" Margin="0,0,8,0" Content="{DynamicResource Cue.Free}" />
-            <Button x:Name="PCueRemoval" Content="{DynamicResource Cue.Remove}" />
-        </StackPanel>
+        <Border Grid.Row="0" Grid.Column="1" Margin="-4,0,16,18" HorizontalAlignment="Left" Style="{StaticResource Theme.Command.Group}">
+            <StackPanel Orientation="Horizontal">
+                <Button
+                    x:Name="PCueFresh"
+                    Content="{DynamicResource Cue.Free}"
+                    Style="{StaticResource Theme.Command.Segment}" />
+                <Button
+                    x:Name="PCueRemoval"
+                    Content="{DynamicResource Cue.Remove}"
+                    Style="{StaticResource Theme.Command.Segment}" />
+            </StackPanel>
+        </Border>
 
         <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource Theme.Catalog.Middle}">
             <Grid.RowDefinitions>
@@ -83,7 +112,13 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <ScrollViewer Grid.Row="0" Style="{StaticResource Theme.Catalog.Scroll}">
-                <ListBox x:Name="PCue" BorderThickness="0" SelectionMode="Extended">
+                <ListBox
+                    x:Name="PCue"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    ItemContainerStyle="{StaticResource Theme.Catalog.Item}"
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                    SelectionMode="Extended">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid>
@@ -94,17 +129,47 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <CheckBox x:Name="PCueMark" Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Center" ToolTip="{DynamicResource Cue.Flag}" />
+                                <ToggleButton
+                                    x:Name="PCueMark"
+                                    Grid.Column="0"
+                                    Width="30"
+                                    Height="26"
+                                    Margin="0,0,8,0"
+                                    Style="{StaticResource Theme.Command.IconToggle}"
+                                    ToolTip="{DynamicResource Cue.Flag}">
+                                    <local:QIconImage x:Name="PCueMarkIcon" Width="16" Height="16" />
+                                </ToggleButton>
                                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                     <TextBlock x:Name="PCueText" Style="{StaticResource Theme.Catalog.Title}" />
                                     <TextBlock x:Name="PCueOrphan" Style="{StaticResource Theme.Catalog.Meta}" Text="{DynamicResource Cue.Orphan}" />
                                 </StackPanel>
-                                <CheckBox x:Name="PCueExclusion" Grid.Column="2" Margin="8,0,8,0" VerticalAlignment="Center" ToolTip="{DynamicResource Cue.Exclude}" />
-                                <Button x:Name="PCueEarlier" Grid.Column="3" ToolTip="{DynamicResource Deck.OrderUp}">
-                                    <local:QIconImage x:Name="PCueEarlierIcon" Width="12" Height="12" />
+                                <ToggleButton
+                                    x:Name="PCueExclusion"
+                                    Grid.Column="2"
+                                    Width="30"
+                                    Height="26"
+                                    Margin="8,0,0,0"
+                                    Style="{StaticResource Theme.Command.IconToggle}"
+                                    ToolTip="{DynamicResource Cue.Exclude}">
+                                    <local:QIconImage x:Name="PCueExclusionIcon" Width="16" Height="16" />
+                                </ToggleButton>
+                                <Button
+                                    x:Name="PCueEarlier"
+                                    Grid.Column="3"
+                                    Width="30"
+                                    Height="26"
+                                    Style="{StaticResource Theme.Command.Icon}"
+                                    ToolTip="{DynamicResource Deck.OrderUp}">
+                                    <local:QIconImage x:Name="PCueEarlierIcon" Width="16" Height="16" />
                                 </Button>
-                                <Button x:Name="PCueLater" Grid.Column="4" ToolTip="{DynamicResource Deck.OrderDown}">
-                                    <local:QIconImage x:Name="PCueLaterIcon" Width="12" Height="12" />
+                                <Button
+                                    x:Name="PCueLater"
+                                    Grid.Column="4"
+                                    Width="30"
+                                    Height="26"
+                                    Style="{StaticResource Theme.Command.Icon}"
+                                    ToolTip="{DynamicResource Deck.OrderDown}">
+                                    <local:QIconImage x:Name="PCueLaterIcon" Width="16" Height="16" />
                                 </Button>
                             </Grid>
                         </DataTemplate>
