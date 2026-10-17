@@ -485,6 +485,7 @@
     "Zoom"
   ],
   "exempt": {
+    "Main": ["LConsoleUsher.cs"],
     "PART_EditableTextBox": ["*"],
     "PART_Popup": ["*"],
     "PART_Track": ["*"]

@@ -13,7 +13,7 @@
   "publish": {
     "runtime": "win-x64",
     "selfContained": true,
-    "shape": "folder",
+    "shape": "single-file",
     "properties": [
       "IncludeNativeLibrariesForSelfExtract=true"
     ]

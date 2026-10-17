@@ -15,6 +15,17 @@ The engine decides which file plays and at what level, and never touches a playe
 `LPhonographVolumeSet` takes a level from zero to one, for the next and the playing file.
 `LPhonographFinished` fires when a played file ends or fails to play, never after a stop.
 
+## `LConsole`
+
+The port through which Host learns whether the native `Llyn.com` started this process.
+Only that launcher gives `Llyn.exe` a console, so the answer is also whether the CUI opens.
+`LConsoleParent` in the Windows twin answers it.
+
+## `LConsoleAttach`
+
+Returns true and joins the launcher's console when the launcher started the process.
+Returns false and changes nothing for any other start.
+
 ## `LUsher`
 
 The port through which the logic rings ask a fact about a path.

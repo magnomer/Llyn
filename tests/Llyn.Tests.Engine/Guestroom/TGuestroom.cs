@@ -29,4 +29,14 @@ public sealed class TGuestroom
 
         Assert.Equal(7, code);
     }
+
+    [Theory]
+    [InlineData(@"C:\Program Files\Llyn\Llyn.exe")]
+    [InlineData(null)]
+    public void GuestroomRun_Marked_ReturnsConsoleCode(string? path)
+    {
+        int code = TInterfaceGuestroom.TGuestroomMarkedRun(path, () => 3, () => 7);
+
+        Assert.Equal(3, code);
+    }
 }

@@ -13,6 +13,28 @@ DPAPI, which protects the Joplin token, comes with the Windows desktop framework
 The project still uses WPF, because `LPressSpooler` reads the printers through System.Printing, a WPF assembly.
 The phonograph no longer needs it.
 
+## `LConsoleParent`
+
+The Windows adapter of `LConsole`, over the mark the native `Llyn.com` leaves.
+The launcher sets `LLYN_LAUNCHER` to `console` in the environment of the `Llyn.exe` it starts.
+`Llyn.exe` has the window subsystem, so it starts with no console of its own.
+
+## `LConsoleParentMark`
+
+The name of the environment variable the launcher sets.
+
+## `LConsoleParentProcess`
+
+`ATTACH_PARENT_PROCESS`, the value that asks for the console of the process that started this one.
+
+## `LConsoleAttach`
+
+Reads the mark and returns false at once when it is absent, so the GUI never gains a console.
+It clears the mark first, so no program Llyn starts inherits it.
+It attaches to the parent's console, which is the launcher's terminal.
+The handles the launcher passed are useless for console calls until then.
+They stay in place, so a redirect still reaches its file.
+
 ## `LPhonographMedia`
 
 The phonograph the composition root hands the engine.

@@ -15,6 +15,7 @@ internal static class TAuditExemptRegistry
     // AUDIT:SIDECAR:EXEMPT:START
     public static readonly Dictionary<string, string[]> TAuditExempt = new(StringComparer.Ordinal)
     {
+        ["Main"] = ["LConsoleUsher.cs"],
         ["PART_EditableTextBox"] = ["*"],
         ["PART_Popup"] = ["*"],
         ["PART_Track"] = ["*"],

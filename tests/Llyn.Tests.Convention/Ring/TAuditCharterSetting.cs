@@ -23,6 +23,7 @@ internal static class TAuditCharterSetting
         ["Llyn.UIDeportment"] = ["Llyn.Conduct", "Llyn.UIDeportment.Capsule"],
         ["Llyn.UIDeportment.Capsule"] = [],
         ["Llyn.Guestroom"] = [],
+        ["Llyn.Launcher"] = [],
         ["Llyn.UIVeneer"] = ["Llyn.UIDeportment"],
     };
 

@@ -54,6 +54,7 @@ internal static class TAuditNameSetting
         ["src/Llyn.Guestroom"] = ["L", "LS"],
         ["src/Llyn.Host"] = ["L", "LS"],
         ["src/Llyn.Infrastructure"] = ["L", "LS"],
+        ["src/Llyn.Launcher"] = ["L", "LS"],
         ["src/Llyn.ShellEngine"] = ["L", "LS"],
         ["src/Llyn.UIDemeanor"] = ["B", "BS"],
         ["src/Llyn.UIDeportment"] = ["Q", "QS"],

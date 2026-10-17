@@ -4,6 +4,7 @@
   <Project Path="src/Llyn.Core/Llyn.Core.csproj" />
   <Project Path="src/Llyn.Host/Llyn.Host.csproj" />
   <Project Path="src/Llyn.Infrastructure/Llyn.Infrastructure.csproj" />
+  <Project Path="src/Llyn.Launcher/Llyn.Launcher.csproj" />
   <Project Path="src/Llyn.Core.Windows/Llyn.Core.Windows.csproj" />
   <Project Path="src/Llyn.Guestroom/Llyn.Guestroom.csproj" />
   <Project Path="src/Llyn.ShellEngine/Llyn.ShellEngine.csproj" />

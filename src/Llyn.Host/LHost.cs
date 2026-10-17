@@ -143,4 +143,4 @@ Func<int> window = () =>
     return code;
 };
 
-return LGuestroom.LGuestroomRun(Environment.ProcessPath, console, window);
+return LGuestroom.LGuestroomRun(Environment.ProcessPath, new LConsoleParent().LConsoleAttach(), console, window);

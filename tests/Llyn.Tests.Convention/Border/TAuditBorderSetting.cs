@@ -20,6 +20,7 @@ internal static class TAuditBorderSetting
             ["Llyn.Core.Windows"] = ["Llyn.Core"],
             ["Llyn.UIDeportment.Capsule"] = [],
             ["Llyn.Guestroom"] = [],
+            ["Llyn.Launcher"] = [],
         };
 
     public static readonly IReadOnlyDictionary<string, string> TAuditBorderCapsule = new Dictionary<string, string>

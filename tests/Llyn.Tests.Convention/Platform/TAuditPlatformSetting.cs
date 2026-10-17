@@ -42,6 +42,7 @@ internal static class TAuditPlatformSetting
         ["Llyn.UITerminal"] = "Llyn.UITerminal",
         ["Llyn.Guestroom"] = "Llyn.Guestroom",
         ["Llyn.Host"] = "",
+        ["Llyn.Launcher"] = "",
     };
 
     public static readonly IReadOnlyDictionary<string, string> TAuditPlatformCapsule = new Dictionary<string, string>

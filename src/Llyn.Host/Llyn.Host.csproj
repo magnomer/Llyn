@@ -9,6 +9,7 @@
     <Nullable>enable</Nullable>
     <AssemblyName>Llyn</AssemblyName>
     <ApplicationIcon>..\..\assets\brand\icon.ico</ApplicationIcon>
+    <AllowedReferenceRelatedFileExtensions>.pdb</AllowedReferenceRelatedFileExtensions>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
@@ -33,7 +34,7 @@
     <None Include="$(IntermediateOutputPath)$(AssemblyName).com"
           Link="$(AssemblyName).com"
           CopyToOutputDirectory="PreserveNewest"
-          CopyToPublishDirectory="PreserveNewest"
+          CopyToPublishDirectory="Never"
           Visible="false" />
   </ItemGroup>
 
@@ -55,5 +56,19 @@
     <ItemGroup>
       <FileWrites Include="$(IntermediateOutputPath)$(AssemblyName).com" />
     </ItemGroup>
+  </Target>
+
+  <Target Name="LHostLauncherPublish" AfterTargets="Publish">
+    <PropertyGroup>
+      <LHostLauncherFolder>$([System.IO.Path]::GetFullPath('$(IntermediateOutputPath)launcher'))</LHostLauncherFolder>
+    </PropertyGroup>
+    <Exec Command="set &quot;PATH=%PATH%;$(MSBuildProgramFiles32)\Microsoft Visual Studio\Installer&quot; &amp;&amp; &quot;$(DOTNET_HOST_PATH)&quot; publish &quot;$(MSBuildProjectDirectory)\..\Llyn.Launcher\Llyn.Launcher.csproj&quot; -nologo -c $(Configuration) -r $(RuntimeIdentifier) -o &quot;$(LHostLauncherFolder)&quot; -v quiet"
+          UseUtf8Encoding="Always"
+          StdOutEncoding="utf-8"
+          StdErrEncoding="utf-8" />
+    <Copy SourceFiles="$(LHostLauncherFolder)\Llyn.Launcher.exe"
+          DestinationFiles="$(PublishDir)$(AssemblyName).com"
+          Retries="$(CopyRetryCount)"
+          RetryDelayMilliseconds="$(CopyRetryDelayMilliseconds)" />
   </Target>
 </Project>

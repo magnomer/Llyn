@@ -3,12 +3,14 @@
 The launcher's choice of the UI a start opens.
 It sits beside Host, so Host only builds and wires and holds no branch.
 It names no Llyn project, so it compiles against nothing beyond .NET.
-It builds for every platform, since the choice reads only the path Host hands it.
+It builds for every platform, since the choice reads only the path and the flag Host hands it.
 
 ## `LGuestroom`
 
 `LGuestroomRun` runs the console start or the window start and returns its exit code.
-A path ending in `.com` means `Llyn.com` started the process, so the console start runs.
+A marked start means the native `Llyn.com` started `Llyn.exe` and marked it, so the console start runs.
+A path ending in `.com` means a plain build's apphost `Llyn.com` started it.
+The console start runs then too.
 The match ignores case, since Windows file names ignore case.
 Any other path runs the window start.
 A missing path runs the window start too, so a renamed launcher keeps the GUI.
