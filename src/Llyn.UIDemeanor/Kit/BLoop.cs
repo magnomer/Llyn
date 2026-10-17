@@ -10,6 +10,7 @@ public sealed class BLoop : SynchronizationContext
 {
     private readonly BlockingCollection<Action> _bLoopQueue = new();
     private readonly Action<Exception> _bLoopFault;
+    private Action _bLoopBatch = static () => { };
 
     public BLoop(Action<Exception> fault)
     {
@@ -32,15 +33,31 @@ public sealed class BLoop : SynchronizationContext
         while (!until.IsCompleted)
         {
             Action work = _bLoopQueue.Take();
-            try
+            BLoopWorkRun(work);
+            if (_bLoopQueue.Count == 0)
             {
-                work();
-            }
-            catch (Exception exception)
-            {
-                _bLoopFault(exception);
+                BLoopWorkRun(_bLoopBatch);
             }
         }
+    }
+
+    private void BLoopWorkRun(Action work)
+    {
+        try
+        {
+            work();
+        }
+        catch (Exception exception)
+        {
+            _bLoopFault(exception);
+        }
+    }
+
+    internal void BLoopBatchAttach(Action observe)
+    {
+        ArgumentNullException.ThrowIfNull(observe);
+
+        _bLoopBatch = observe;
     }
 
     public void BLoopDefer(Action work)
@@ -48,6 +65,65 @@ public sealed class BLoop : SynchronizationContext
         ArgumentNullException.ThrowIfNull(work);
 
         _bLoopQueue.Add(work);
+    }
+
+    internal void BLoopKeyAttach(BConsole console, Action<ConsoleKeyInfo> observe)
+    {
+        ArgumentNullException.ThrowIfNull(console);
+        ArgumentNullException.ThrowIfNull(observe);
+
+        Thread reader = new(() =>
+        {
+            try
+            {
+                while (true)
+                {
+                    ConsoleKeyInfo key = console.BConsoleKeyRead();
+                    BLoopDefer(() => observe(key));
+                }
+            }
+            catch (Exception exception)
+            {
+                ExceptionDispatchInfo failure = ExceptionDispatchInfo.Capture(exception);
+                BLoopDefer(failure.Throw);
+            }
+        })
+        {
+            IsBackground = true,
+        };
+        reader.Start();
+    }
+
+    internal void BLoopSizeAttach(BConsole console, Action<int, int> observe)
+    {
+        ArgumentNullException.ThrowIfNull(console);
+        ArgumentNullException.ThrowIfNull(observe);
+
+        Thread ticker = new(() =>
+        {
+            using SemaphoreSlim ran = new(0);
+            while (true)
+            {
+                Thread.Sleep(100);
+                BLoopDefer(() =>
+                {
+                    try
+                    {
+                        (int width, int height) = console.BConsoleSizeRead();
+                        observe(width, height);
+                    }
+                    finally
+                    {
+                        ran.Release();
+                    }
+                });
+                ran.Wait();
+            }
+        })
+        {
+            IsBackground = true,
+        };
+        ticker.Start();
     }
 
     public override void Post(SendOrPostCallback d, object? state)

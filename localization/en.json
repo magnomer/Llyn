@@ -1030,6 +1030,8 @@
     "Invocation.QualifierMissing": "The option {0} needs the option {1}.",
     "Invocation.CustomsConfirm": "Import the entries as listed?",
     "Invocation.ReplaceConfirm": "The file {0} already exists. Replace it?",
-    "Window.Unbuilt": "The full-screen console window is not built yet."
+    "Window.Opening": "Opening…",
+    "Window.Small": "{Terms.product} needs a console of at least {0} by {1} cells. This one is {2} by {3}. Make the window larger to go on.",
+    "Legend.Quit": "Quit"
   }
 }

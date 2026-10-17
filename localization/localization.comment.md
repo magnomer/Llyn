@@ -138,8 +138,11 @@ The other `Invocation.Help*` keys give the help text of one option, printed afte
 `Invocation.HelpFind` names the four columns the option lists.
 `Invocation.HelpAs` lists the five file formats of `-export`, and `Invocation.HelpFormat` the three output formats.
 `Window.*` words the console window's notices.
-`Window.Unbuilt` says that window is not built yet.
-The console prints each usage error and window notice after `llyn: `.
+`Window.Opening` is the line the window shows while it opens.
+`Window.Small` is the notice for a console under 80 by 24 cells.
+`Window.Small` takes the minimum width and height, then the actual width and height, in slots `{0}` to `{3}`.
+`Legend.Quit` labels the quit key in the window legend.
+The console prints each usage error after `llyn: `.
 So each is one complete sentence, with option names kept literal.
 
 ## `ko.json`
@@ -159,6 +162,6 @@ The person headers spell out person and number instead of the English abbreviati
 
 ## Stamp
 
-Commit: `52c21d68b4c4`
-- `en.json` `899aa277a90a6b30`
-- `ko.json` `f9c938b71dd50ca4`
+Commit: `66a4aa567097`
+- `en.json` `c6987e0e954b4a95`
+- `ko.json` `f2c8c6ea13d3c1cc`

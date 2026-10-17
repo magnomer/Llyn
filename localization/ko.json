@@ -1030,6 +1030,8 @@
     "Invocation.QualifierMissing": "옵션 {0}에는 옵션 {1}이(가) 필요합니다.",
     "Invocation.CustomsConfirm": "나열한 대로 항목을 가져올까요?",
     "Invocation.ReplaceConfirm": "파일 {0}이(가) 이미 있습니다. 바꿀까요?",
-    "Window.Unbuilt": "전체 화면 콘솔 창은 아직 만들어지지 않았습니다."
+    "Window.Opening": "여는 중…",
+    "Window.Small": "{Terms.product}에는 가로 {0}칸, 세로 {1}칸 이상인 콘솔이 필요합니다. 이 콘솔은 가로 {2}칸, 세로 {3}칸입니다. 창을 키우면 이어집니다.",
+    "Legend.Quit": "끝내기"
   }
 }

@@ -15,6 +15,7 @@ public sealed class BBootstrap
     private readonly BLocalizationCatalog _bBootstrapCatalog = new();
     private Func<Exception, string?> _bBootstrapAudit = _ => null;
     private BInvocation? _bBootstrapInvocation;
+    private BEnvoy? _bBootstrapEnvoy;
 
     public BBootstrap(BConsole console)
     {
@@ -41,7 +42,7 @@ public sealed class BBootstrap
         ArgumentNullException.ThrowIfNull(runSeam);
 
         SynchronizationContext.SetSynchronizationContext(_bBootstrapLoop);
-        _bBootstrapConsole.BConsoleModeApply();
+        _bBootstrapConsole.BConsoleModeApply(BBootstrapConsoleRestore);
         try
         {
             try
@@ -57,19 +58,20 @@ public sealed class BBootstrap
 
             if (args.Length == 0 && _bBootstrapConsole.BConsoleTerminalCheck())
             {
-                _bBootstrapConsole.BConsoleNoticePrint(
-                    BBootstrapNoticeHead + _bBootstrapCatalog.BLocalizationTextRead("Window.Unbuilt"));
-                return 2;
+                _bBootstrapEnvoy = new BEnvoy(_bBootstrapConsole, _bBootstrapCatalog);
+                _bBootstrapConsole.BConsoleWindowApply();
             }
-
-            _bBootstrapInvocation = BInvocation.BInvocationParse(args, _bBootstrapCatalog, out string usage);
-            if (_bBootstrapInvocation is null)
+            else
             {
-                _bBootstrapConsole.BConsoleNoticePrint(BBootstrapNoticeHead + usage);
-                return 2;
+                _bBootstrapInvocation = BInvocation.BInvocationParse(args, _bBootstrapCatalog, out string usage);
+                if (_bBootstrapInvocation is null)
+                {
+                    _bBootstrapConsole.BConsoleNoticePrint(BBootstrapNoticeHead + usage);
+                    return 2;
+                }
             }
 
-            if (BBootstrapBuild(workspaceSeam, buildSeam, busySeam, _bBootstrapInvocation.BInvocationLeased)
+            if (BBootstrapBuild(workspaceSeam, buildSeam, busySeam, _bBootstrapInvocation?.BInvocationLeased ?? true)
                 is not BBootstrapEngine engine)
             {
                 return 3;
@@ -87,8 +89,15 @@ public sealed class BBootstrap
         }
         finally
         {
-            _bBootstrapConsole.BConsoleModeRestore();
+            BBootstrapConsoleRestore();
         }
+    }
+
+    private void BBootstrapConsoleRestore()
+    {
+        _bBootstrapConsole.BConsoleWindowRestore();
+        _bBootstrapEnvoy?.BEnvoyNoticePrint();
+        _bBootstrapConsole.BConsoleModeRestore();
     }
 
     private BBootstrapEngine? BBootstrapBuild<BBootstrapEngine>(
@@ -108,9 +117,9 @@ public sealed class BBootstrap
         {
             string refusal = _bBootstrapCatalog.BLocalizationTextRead(
                 CAtelier.CAtelierRefusalRead(busySeam(exception)));
-            _bBootstrapConsole.BConsoleNoticePrint(BBootstrapNoticeHead + refusal);
-            _bBootstrapConsole.BConsoleNoticePrint(workspace);
-            _bBootstrapConsole.BConsoleNoticePrint(exception.Message);
+            BBootstrapNoticePrint(BBootstrapNoticeHead + refusal);
+            BBootstrapNoticePrint(workspace);
+            BBootstrapNoticePrint(exception.Message);
             return null;
         }
     }
@@ -132,7 +141,7 @@ public sealed class BBootstrap
         }
         catch (Exception exception)
         {
-            _bBootstrapConsole.BConsoleNoticePrint(
+            BBootstrapNoticePrint(
                 $"{BBootstrapNoticeHead}The application language could not be loaded. {exception.Message}");
         }
     }
@@ -144,9 +153,9 @@ public sealed class BBootstrap
             return;
         }
 
-        _bBootstrapConsole.BConsoleNoticePrint(BBootstrapNoticeHead + _bBootstrapCatalog.BLocalizationTextRead(key));
-        _bBootstrapConsole.BConsoleNoticePrint($"{backup}");
-        _bBootstrapConsole.BConsoleNoticePrint($"{reason}");
+        BBootstrapNoticePrint(BBootstrapNoticeHead + _bBootstrapCatalog.BLocalizationTextRead(key));
+        BBootstrapNoticePrint($"{backup}");
+        BBootstrapNoticePrint($"{reason}");
     }
 
     public void BBootstrapFaultIntroduce(Func<Exception, string?> auditSeam)
@@ -161,6 +170,26 @@ public sealed class BBootstrap
     {
         ArgumentNullException.ThrowIfNull(atelierSeam);
         ArgumentNullException.ThrowIfNull(presenceSeam);
+
+        if (_bBootstrapEnvoy is BEnvoy envoy)
+        {
+            CAtelier shown = atelierSeam(false);
+            BWindow window = new(_bBootstrapConsole, _bBootstrapCatalog, shown, envoy);
+            _bBootstrapLoop.BLoopDefer(window.BWindowOpen);
+            _bBootstrapLoop.BLoopBatchAttach(window.BWindowBatchObserve);
+            _bBootstrapLoop.BLoopKeyAttach(_bBootstrapConsole, window.BWindowKeyObserve);
+            _bBootstrapLoop.BLoopSizeAttach(_bBootstrapConsole, window.BWindowSizeObserve);
+            try
+            {
+                _bBootstrapLoop.BLoopRun(window.BWindowExit);
+            }
+            finally
+            {
+                shown.CAtelierClose();
+            }
+
+            return 0;
+        }
 
         if (_bBootstrapInvocation is not BInvocation invocation)
         {
@@ -198,10 +227,20 @@ public sealed class BBootstrap
     private void BBootstrapFaultObserve(Exception exception)
     {
         string? log = _bBootstrapAudit(exception);
-        _bBootstrapConsole.BConsoleNoticePrint(
-            BBootstrapNoticeHead + _bBootstrapCatalog.BLocalizationTextRead("Workspace.Fault"));
-        _bBootstrapConsole.BConsoleNoticePrint($"{log}");
-        _bBootstrapConsole.BConsoleNoticePrint(exception.Message);
+        BBootstrapNoticePrint(BBootstrapNoticeHead + _bBootstrapCatalog.BLocalizationTextRead("Workspace.Fault"));
+        BBootstrapNoticePrint($"{log}");
+        BBootstrapNoticePrint(exception.Message);
+    }
+
+    private void BBootstrapNoticePrint(string text)
+    {
+        if (_bBootstrapEnvoy is BEnvoy envoy)
+        {
+            envoy.BEnvoyNoticeAdd(text);
+            return;
+        }
+
+        _bBootstrapConsole.BConsoleNoticePrint(text);
     }
 
     private void BBootstrapStrayObserve(object? sender, UnobservedTaskExceptionEventArgs e)

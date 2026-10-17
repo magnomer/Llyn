@@ -1,14 +1,15 @@
 # Kit
 
-The console framework Demeanor builds for itself: the loop, the port to the terminal and the cell width of text.
+The console framework Demeanor builds for itself.
+It holds the loop, the port to the terminal, the canvas and the cell width of text.
 It stands apart from `Shell` because no piece here knows the program, only the console.
 
 ## `BConsole`
 
 Demeanor's port to the terminal: diagnostics, results, one input line, the terminal test and the modes.
+It also prints a frame, reads the size, reads a key and applies the window.
 Diagnostics go to stderr through `BConsoleNoticePrint`, and results to stdout through `BConsoleResultPrint`.
 The port holds only what a live driver calls.
-Size and keys return with the drivers that call them.
 The port decides nothing, so every console decision stays in Demeanor's drivers.
 The host wires one implementation, and Demeanor never asks which one it holds.
 
@@ -26,9 +27,35 @@ The question is printed through `BConsoleNoticePrint` first, so each member keep
 Whether both stdin and stdout are a terminal, the test the mode choice reads.
 A strict question reads the same test before it asks for a line.
 
+## `BConsoleFramePrint`
+
+Writes a frame to stdout as it is and flushes at once.
+The canvas builds the frame, so the port adds no line end.
+
+## `BConsoleSizeRead`
+
+Answers the console's width and height in cells.
+
+## `BConsoleKeyRead`
+
+Waits for one key and returns it unechoed.
+It blocks, so only the loop's key reader thread calls it.
+
+## `BConsoleWindowApply`
+
+Enters the alternate screen, hides the cursor and makes Ctrl+C a key.
+The old Ctrl+C setting is remembered for the restore.
+
+## `BConsoleWindowRestore`
+
+Shows the cursor, leaves the alternate screen and puts back the Ctrl+C setting.
+It acts once, so a second call and a call without an apply do nothing.
+The exchange keeps the Ctrl+C thread and the main thread from restoring twice.
+
 ## `BConsoleModeApply`
 
 Sets UTF-8 for both streams and remembers the code pages it found.
+It takes the interruption the Ctrl+C handler calls first.
 
 ## `BConsoleModeRestore`
 
@@ -42,8 +69,9 @@ UTF-8 is set without a byte-order mark, so a redirected stream receives none.
 
 ## `_bConsoleStreamInterruption`
 
-The Ctrl+C handler, which restores the code pages and ends the process with exit code 130.
+The Ctrl+C handler, which runs the caller's interruption, restores the window and the code pages, and exits with 130.
 Ctrl+C ends the process at once, and no `finally` of the caller runs.
+The interruption lets the caller print held notices before the exit.
 The handler exits itself, since the default end gives Windows' own code in place of 130.
 
 ## `_bConsoleStreamOutput`
@@ -64,6 +92,22 @@ A call inside a work item nests, so a sublevel waits for its answer while queued
 The task's completion defers an empty item, so a run blocked on an empty queue wakes up.
 A work item that throws goes to the fault handler, and the loop runs on.
 
+## `BLoopBatchAttach`
+
+Sets the work that runs whenever the queue has just emptied.
+The window draws its frame there, so a burst of keys gives one frame.
+A batch that throws goes to the fault handler like any work item.
+
+## `BLoopKeyAttach`
+
+Starts a background thread that reads keys from the port and defers each to the observer.
+A failure of the read is thrown again on the loop, so the fault handler sees it.
+
+## `BLoopSizeAttach`
+
+Starts a background thread that asks the loop to read the size every 100 milliseconds.
+The next ask waits until the loop has run the last one, so asks never pile up.
+
 ## `BLoopDefer`
 
 Queues one work item from any thread.
@@ -80,7 +124,7 @@ Returns the loop itself, since a copy would break the identity checks of `BObser
 
 ## `BObserver`
 
-Builds the `marshal` delegate panel factories take, the console's `QObserver`.
+Builds the `marshal` delegate the atelier takes, the console's counterpart of `QObserver`.
 
 ## `BObserverCreate`
 
@@ -91,13 +135,13 @@ It refuses a thread with no loop, since the marshal would have nowhere to go.
 ## `BCanvasWidth`
 
 The width side of the canvas: how many cells a text takes on the console.
-It is its own object, so the later canvas grids hold one and stay whole in their file.
+It is its own object, so the canvas holds one and stays whole in its file.
 
 ## `_bCanvasWidthAmbiguous`
 
 Whether ambiguous characters such as `ǐ`, `★` and box drawing take two cells.
 The constructor takes it.
-Only `-find` builds one yet, and it passes narrow.
+The window builds its widths narrow.
 The setting holds for the object's life, so it has one writer, the constructor.
 
 ## `BCanvasWidthResolve`
@@ -108,6 +152,49 @@ A lone combining mark, enclosing mark, format or control character takes 0.
 A cluster holding U+FE0F asks for emoji presentation and takes 2.
 Every other character takes its cells from `BCanvasRange`.
 Categories come from the runtime that cuts the clusters, so both read one Unicode version.
+
+## `BCanvasWidthDivide`
+
+Cuts a text into lines of at most the given cells, never splitting a grapheme cluster.
+A line breaks at a space, and spaces at a line start are dropped.
+Two neighbouring wide clusters break between them, unless they are Hangul, which breaks only at spaces.
+A span of 0 or less gives no lines.
+A line with no break point is cut where the next cluster would overflow.
+A cluster wider than the span still takes a line of its own.
+
+## `BCanvasCell`
+
+One cell of the grid holds its text, its width and its role.
+Width 1 is a normal cell and width 2 is the head of a wide cluster.
+Width 0 is the empty tail after a head.
+The role names the style the cell belongs to.
+
+## `BCanvasText`
+
+One placed text: its row, column, span in cells, value and role.
+The frame is a list of these, so a driver never writes a cell itself.
+
+## `BCanvas`
+
+The grid of cells the window draws on, one drawn grid and one grid the terminal shows.
+The grid is as wide and high as the console, and a negative size is refused.
+The drawn grid starts blank and the shown grid starts unknown, so the first sync writes every cell.
+
+## `BCanvasFrameDraw`
+
+Rebuilds the drawn grid from blanks and the placed texts, in order, so a later text covers an earlier one.
+A text is clipped to its span and the row, and a row or column off the grid is skipped.
+A cluster of zero cells is skipped.
+A wide cluster that does not fit takes a blank cell and ends its text.
+Writing over half of a wide cluster blanks the other half, so no half character stays.
+
+## `BCanvasSync`
+
+Prints only the runs that differ from the shown grid, each after a cursor move to its row and column.
+A run grows to cover a wide tail and any changed cell after it.
+A change in a tail starts the run at its head.
+A sync with nothing changed prints nothing.
+The drawn grid becomes the shown one afterwards.
 
 ## `BCanvasRange`
 
@@ -121,10 +208,13 @@ Reserved code points in the wide blocks take 2, as the Unicode data lists them.
 
 ## Stamp
 
-Commit: `52c21d68b4c4`
+Commit: `66a4aa567097`
+- `BCanvas.cs` `0f5a31467f0acc03`
+- `BCanvasCell.cs` `cb0d077c14c60990`
 - `BCanvasRange.cs` `07ec2bb6aa90b979`
-- `BCanvasWidth.cs` `cd29cad80ec2fd92`
-- `BConsole.cs` `d3f3566823aa415c`
-- `BConsoleStream.cs` `15ce67e32788d41a`
-- `BLoop.cs` `19a29a372875f2a4`
+- `BCanvasText.cs` `025bd90e380a2df3`
+- `BCanvasWidth.cs` `ae7c1dcb36517e5a`
+- `BConsole.cs` `b4a6d1d52d852278`
+- `BConsoleStream.cs` `0bc001d457003413`
+- `BLoop.cs` `5afa5b048abe1562`
 - `BObserver.cs` `55a41481c90c90c6`

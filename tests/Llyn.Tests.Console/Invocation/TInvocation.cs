@@ -334,13 +334,24 @@ public sealed class TInvocation
         Func<LEngine, bool, CAtelier> create,
         params string[] args)
     {
+        return TInvocationRun(console, "en", folder, build, create, args);
+    }
+
+    internal static int TInvocationRun(
+        TConsoleFake console,
+        string language,
+        string folder,
+        Func<string, bool, LEngine> build,
+        Func<LEngine, bool, CAtelier> create,
+        params string[] args)
+    {
         SynchronizationContext? context = SynchronizationContext.Current;
         BBootstrap bootstrap = new(console);
         try
         {
             return bootstrap.BBootstrapIntroduce(
                 args,
-                static () => TInterface.TLocalizationLoad("en"),
+                () => TInterface.TLocalizationLoad(language),
                 () => folder,
                 build,
                 static _ => true,

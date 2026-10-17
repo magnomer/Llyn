@@ -42,6 +42,24 @@ public sealed class TCanvasWidth
     }
 
     [Fact]
+    public void CanvasWidthDivide_HangulWords_BreaksAtSpaces()
+    {
+        Assert.Equal(["이", "콘솔은", "가로"], new BCanvasWidth(false).BCanvasWidthDivide("이 콘솔은 가로", 6));
+    }
+
+    [Fact]
+    public void CanvasWidthDivide_HanKana_BreaksBetweenCharacters()
+    {
+        Assert.Equal(["漢字か", "な"], new BCanvasWidth(false).BCanvasWidthDivide("漢字かな", 6));
+    }
+
+    [Fact]
+    public void CanvasWidthDivide_LongHangul_BreaksBetweenClusters()
+    {
+        Assert.Equal(["콘솔", "콘솔"], new BCanvasWidth(false).BCanvasWidthDivide("콘솔콘솔", 5));
+    }
+
+    [Fact]
     public void CanvasWidthResolve_MixedText_SumsClusters()
     {
         Assert.Equal(6, new BCanvasWidth(false).BCanvasWidthResolve("水áǐ❤️"));

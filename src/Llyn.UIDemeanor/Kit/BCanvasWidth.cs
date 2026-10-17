@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
@@ -43,5 +44,59 @@ internal sealed class BCanvasWidth
         }
 
         return width;
+    }
+
+    public IReadOnlyList<string> BCanvasWidthDivide(string text, int span)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        List<(string BCanvasWidthCluster, int BCanvasWidthCells, bool BCanvasWidthHangul)> clusters = [];
+        for (int index = 0; index < text.Length;)
+        {
+            int length = StringInfo.GetNextTextElementLength(text, index);
+            string cluster = text.Substring(index, length);
+            Rune.DecodeFromUtf16(cluster, out Rune lead, out _);
+            bool hangul = lead.Value is (>= 0x1100 and <= 0x11FF) or (>= 0x3130 and <= 0x318F)
+                or (>= 0xA960 and <= 0xA97F) or (>= 0xAC00 and <= 0xD7FF);
+            clusters.Add((cluster, BCanvasWidthResolve(cluster), hangul));
+            index += length;
+        }
+
+        List<string> lines = [];
+        int first = 0;
+        while (span > 0 && first < clusters.Count)
+        {
+            if (clusters[first].BCanvasWidthCluster == " ")
+            {
+                first++;
+                continue;
+            }
+
+            (int used, int stop, int cut) = (0, first, -1);
+            while (stop < clusters.Count && used + clusters[stop].BCanvasWidthCells <= span)
+            {
+                used += clusters[stop].BCanvasWidthCells;
+                stop++;
+                bool wide = stop < clusters.Count
+                    && clusters[stop - 1] is { BCanvasWidthCells: 2, BCanvasWidthHangul: false }
+                    && clusters[stop] is { BCanvasWidthCells: 2, BCanvasWidthHangul: false };
+                if (stop < clusters.Count && (clusters[stop].BCanvasWidthCluster == " " || wide))
+                {
+                    cut = stop;
+                }
+            }
+
+            cut = stop == clusters.Count ? stop : cut >= 0 ? cut : Math.Max(stop, first + 1);
+            StringBuilder line = new();
+            for (int at = first; at < cut; at++)
+            {
+                line.Append(clusters[at].BCanvasWidthCluster);
+            }
+
+            lines.Add(line.ToString());
+            first = cut;
+        }
+
+        return lines;
     }
 }

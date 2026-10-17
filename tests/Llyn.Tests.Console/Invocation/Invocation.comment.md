@@ -6,6 +6,7 @@ They cover the grammar, the verbs and the envoy's answers.
 ## `TInvocation`
 
 Runs the whole console start through `BBootstrapIntroduce`, with a real workspace and the English catalog.
+A test that names a language loads that catalog instead.
 Each grammar error asserts its sentence, exit 2 and an empty stdout.
 The grammar cases include the write and export verbs, their qualifiers, the id forms and the missing `-to`.
 The build seam throws in those cases, so exit 2 also proves the workspace never opened.
@@ -33,7 +34,7 @@ The entry stays in that case, as a find confirms.
 ## `TInvocationPortrait`
 
 Covers `-import` and `-export` through the whole console start, with a real workspace.
-`-import` with `-yes` lists each entry on stderr, prints the count and stores the entries.
+`-import` with `-yes` lists each entry on stderr, prints the count and appends to the entry of that name.
 The list shows a merge target when an entry of that name exists, and the omission follows.
 A terminal `y` shows the row, then the question on stderr, and imports.
 A `-no`, or no answer without a terminal, imports nothing and exits 1 after showing the row.
@@ -45,6 +46,7 @@ A missing id exits 1 with the missing-entry sentence and writes no file.
 
 Starts the bootstrap with the given arguments, building the atelier from the engine and the detached flag the bootstrap passes.
 The build seam gets the lease flag.
+A second overload takes a language, and the bootstrap then loads that catalog in place of English.
 The default helper builds a leased engine over the workspace rig when it is set.
 The presence seam is `File.Exists`.
 A test may replace the atelier seam to watch the detached flag.
@@ -56,11 +58,13 @@ The busy seam answers busy, so a failed build words the busy refusal.
 Asks the envoy one question each, under `-yes`, `-no`, a terminal line or no terminal.
 The envoy gets a presence seam that finds no file.
 Each asserts the answer, what stderr shows and whether the run would exit 1.
+The leave question gets no answer and refuses the run.
+A failure prints its sentence even under `-quiet`, and an omission then prints nothing.
 
 ## Stamp
 
-Commit: `52c21d68b4c4`
+Commit: `66a4aa567097`
 - `TEnvoyStrict.cs` `36a77c55fd844082`
-- `TInvocation.cs` `4d62168ed651342f`
+- `TInvocation.cs` `ae7d338b30eb900a`
 - `TInvocationPortrait.cs` `6dd3a46182199551`
 - `TInvocationWrite.cs` `5731f47f567fa54d`
