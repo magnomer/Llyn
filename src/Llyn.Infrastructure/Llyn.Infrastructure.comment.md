@@ -14,7 +14,7 @@ The reference overrides the transitive bundle with a patched version.
 A Windows-only call turns the build red, so the platform stays out of Infrastructure.
 
 The favorite, marked favorite, star and expand icons are embedded resources.
-They ride inside the assembly, as the theme does.
+They ride inside the assembly, as the themes do.
 `LPortraitIcon.LPortraitIconRead` reads them, so an exported page embeds them without a file beside the program.
 Each logical name is `LPortraitIcon.LPortraitIconPrefix` plus the file name.
 
@@ -37,6 +37,6 @@ A missing file or folder answers false, since there is nothing left to keep.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `92c4426f8506`
 - `LUsherFile.cs` `4c0ba06ff2d16b37`
-- `Llyn.Infrastructure.csproj` `73765e6a646c35fc`
+- `Llyn.Infrastructure.csproj` `5c7b158c85d1ec06`

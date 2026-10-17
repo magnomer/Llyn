@@ -1,7 +1,9 @@
 using Llyn.Conduct;
 using Llyn.Core;
+using Llyn.Infrastructure;
 using Llyn.ShellEngine;
 using Llyn.UIDemeanor;
+using Llyn.UITerminal;
 using Xunit;
 
 namespace Llyn.Tests;
@@ -345,12 +347,26 @@ public sealed class TInvocation
         Func<LEngine, bool, CAtelier> create,
         params string[] args)
     {
+        Func<string, Func<string, string>> theme = name => LThemeLoader.LThemeLoaderLoad(name).LThemeColorRead;
+        return TInvocationRun(console, theme, language, folder, build, create, args);
+    }
+
+    internal static int TInvocationRun(
+        TConsoleFake console,
+        Func<string, Func<string, string>> theme,
+        string language,
+        string folder,
+        Func<string, bool, LEngine> build,
+        Func<LEngine, bool, CAtelier> create,
+        params string[] args)
+    {
         SynchronizationContext? context = SynchronizationContext.Current;
-        BBootstrap bootstrap = new(console);
+        BBootstrap bootstrap = new(console, new ABootstrap());
         try
         {
             return bootstrap.BBootstrapIntroduce(
                 args,
+                theme,
                 () => TInterface.TLocalizationLoad(language),
                 () => folder,
                 build,

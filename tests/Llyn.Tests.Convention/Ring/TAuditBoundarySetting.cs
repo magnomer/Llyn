@@ -41,6 +41,7 @@ internal static class TAuditBoundarySetting
     public static readonly string[] TAuditBoundaryLoader =
     [
         "QHeadquarter.cs",
+        "BBlueprint.cs",
     ];
 
     public const string TAuditBoundaryReflection = @"\bSystem\.Reflection\b";

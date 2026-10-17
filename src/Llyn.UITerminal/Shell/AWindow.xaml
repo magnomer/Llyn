@@ -1,0 +1,13 @@
+<Blueprint
+    x:Name="AWindow"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Split Rows="1,*,1,1">
+        <Text x:Name="ARoof" />
+        <Split Columns="*,*">
+            <Frame Theme="side" Glyphs="double" Rows="*,1" />
+            <Frame Theme="side" Glyphs="double" Rows="*,1" />
+        </Split>
+        <Text x:Name="AEstablishment" Theme="text" Margin="1,0,0,0" />
+        <Legend x:Name="ALegend" Theme="legend" />
+    </Split>
+</Blueprint>

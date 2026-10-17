@@ -1,7 +1,10 @@
 # Llyn.UIDemeanor
 
 Demeanor drives the console surface, as Deportment drives the veneer.
-`Kit` holds the loop and the console port, and `Shell` the start of the program.
+`Kit` holds four folders: `Asset`, `Blueprint`, `Canvas` and `Console`.
+`Asset` holds the theme, the words and the part contract, and `Blueprint` the loader.
+`Canvas` holds the grid and cell widths, and `Console` the port and the loop.
+`Shell` holds the start of the program, its window and its observer.
 `Invocation` holds strict mode: the parsed command line and the envoy that answers without a screen.
 `Llyn.Host` references Demeanor and starts it when the process runs through `Llyn.com`.
 
@@ -20,5 +23,5 @@ Demeanor calls the same gate Deportment calls for the same user action.
 
 ## Stamp
 
-Commit: `ed7d18d90760`
+Commit: `92c4426f8506`
 - `Llyn.UIDemeanor.csproj` `eadca67d8ca74413`

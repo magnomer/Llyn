@@ -9,7 +9,7 @@ public sealed class TCanvas
     public void CanvasFrameDraw_WideCharacterAtEdge_LeavesOneBlankCell()
     {
         TConsoleFake console = new() { TConsoleFakeWidth = 4, TConsoleFakeHeight = 1 };
-        BCanvas canvas = new(console, new BCanvasWidth(false), 4, 1);
+        BCanvas canvas = new(console, new BCanvasWidth(false), new BTheme(BTheme.BThemeSpareRead), 4, 1);
 
         canvas.BCanvasFrameDraw([new(0, 0, 4, "xxxx", "text"), new(0, 0, 3, "ab水", "text")]);
         canvas.BCanvasSync();
@@ -21,7 +21,7 @@ public sealed class TCanvas
     public void CanvasFrameDraw_HalfOfWideCharacter_BlanksTheOtherHalf()
     {
         TConsoleFake console = new() { TConsoleFakeWidth = 4, TConsoleFakeHeight = 1 };
-        BCanvas canvas = new(console, new BCanvasWidth(false), 4, 1);
+        BCanvas canvas = new(console, new BCanvasWidth(false), new BTheme(BTheme.BThemeSpareRead), 4, 1);
 
         canvas.BCanvasFrameDraw([new(0, 0, 4, "水水", "text"), new(0, 1, 2, "ab", "text")]);
         canvas.BCanvasSync();
@@ -33,7 +33,7 @@ public sealed class TCanvas
     public void CanvasSync_OneCellChanged_WritesThatRunOnly()
     {
         TConsoleFake console = new() { TConsoleFakeWidth = 4, TConsoleFakeHeight = 2 };
-        BCanvas canvas = new(console, new BCanvasWidth(false), 4, 2);
+        BCanvas canvas = new(console, new BCanvasWidth(false), new BTheme(BTheme.BThemeSpareRead), 4, 2);
         canvas.BCanvasFrameDraw([new(0, 0, 4, "abcd", "text")]);
         canvas.BCanvasSync();
 
@@ -41,7 +41,7 @@ public sealed class TCanvas
         canvas.BCanvasSync();
         canvas.BCanvasSync();
 
-        Assert.Equal(["\e[1;1Habcd\e[2;1H    ", "\e[2;3Hx"], console.TConsoleFakeFrames);
+        Assert.Equal(["\e[1;1H\e[96;44mabcd\e[2;1H    \e[0m", "\e[2;3H\e[96;44mx\e[0m"], console.TConsoleFakeFrames);
         Assert.Equal(["abcd", "  x "], console.TConsoleFakeGrid);
     }
 

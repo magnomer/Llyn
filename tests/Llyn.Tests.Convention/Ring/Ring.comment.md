@@ -46,7 +46,9 @@ They are a preprocessor branch, reflection, `dynamic` and inline markup code.
 They also include an enum parsed from text, a `using` alias and an `extern alias`.
 Each gives a logic name a second spelling.
 The walkers parse without symbols, so a branch would be skipped, and reflection names nothing the walk can follow.
-The one loader file reads the program version through the assembly, and so may name reflection.
+Two loader files may name reflection.
+`QHeadquarter.cs` reads the program version through the assembly.
+`BBlueprint.cs` finds its embedded blueprints through the assembly.
 The timer type is the one a panel used to hold its own debounce in.
 That was before the tenure owned the quiet.
 The hold pattern list is empty, since no file holds a draft by name any more.
@@ -164,9 +166,9 @@ A member appends its own name, so `DateTime.UtcNow` is told apart from `DateTime
 
 ## Stamp
 
-Commit: `52c21d68b4c4`
+Commit: `92c4426f8506`
 - `TAuditBoundary.cs` `51ad50d413ce0aab`
-- `TAuditBoundarySetting.cs` `4e9200085c208d70`
+- `TAuditBoundarySetting.cs` `90ff7d32da133086`
 - `TAuditCensus.cs` `1927cbc5ad714acf`
 - `TAuditCensusSetting.cs` `8fb52cbc35a34b4e`
 - `TAuditCensusWalker.cs` `301bfbc58a822e20`

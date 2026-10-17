@@ -79,17 +79,22 @@ Markers are walked until a frame marker is met, and the scan stops at a malforme
 
 ## `LThemeLoader`
 
-It reads the embedded theme file into the core's `LTheme` record.
-`themes/default.json` is embedded here alone, so every palette in the program comes through this one read.
+It reads an embedded theme file into the core's `LTheme` record.
+The palettes of `themes/` are embedded here alone, so every palette in the program comes through this one read.
+The read without a name loads `default`.
 A missing or broken theme is not a failure worth stopping an export for.
 Every colour then falls back to the value the record ships with.
+The read with a name serves the console themes and hides no failure.
+An unknown name throws `FileNotFoundException` and broken JSON throws `JsonException`.
+The console start catches either and falls back to its own spare palette.
+A blank name throws, since it can name no resource.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `92c4426f8506`
 - `LPortraitAsset.cs` `be37daa2bcbf516e`
 - `LPortraitFile.cs` `527bf6a2a0892d0c`
 - `LPortraitFilm.cs` `5295c2a2ef3a8a94`
 - `LPortraitIcon.cs` `a1df0e263a968016`
 - `LPortraitSize.cs` `cfd128cc5638459c`
-- `LThemeLoader.cs` `0946c89064e07d64`
+- `LThemeLoader.cs` `32889cb456aa998f`

@@ -8,9 +8,10 @@ It mirrors Deportment's `Shell`, so each start step has the same name and seam o
 The start of the console program, with every notice a start can raise and the fault handlers.
 The host builds the engine and hands each step in as a seam, so no engine type is named.
 The engine is a type parameter for the same reason, as in `QBootstrap`.
-The console port comes through the constructor, so no member sees the bootstrap without it.
+The console port and the blueprint come through the constructor, so no member sees the bootstrap without them.
+The blueprint is the UI family's own `BBlueprint`, so Demeanor names no concrete screen file.
 The bootstrap owns the loop and the catalog, and later drivers receive them from it.
-In the communicative mode it also owns the window's envoy, and every notice waits there.
+In the communicative mode it also owns the window's envoy, and the notices of `BBootstrapNoticePrint` wait there.
 
 ## `BBootstrapNoticeHead`
 
@@ -33,7 +34,12 @@ Its presence tells every later step that the window mode is running.
 Installs the loop as the thread's context first, then applies the console modes.
 It loads the default catalog and chooses the mode before the workspace opens.
 No arguments with stdin and stdout on a terminal is the communicative mode.
-That mode builds the envoy and applies the window, then builds the engine as a leased start.
+That mode builds the envoy, then the console theme, and then applies the window.
+It then builds the engine as a leased start.
+The theme seam answers a named theme as a role-to-colour function, and the start asks for `console-blue`.
+A theme that fails to load or parse falls back to the built-in spare palette.
+The failure is held as a notice with the `llyn: ` head and the reason, and the start goes on.
+Strict mode builds no theme.
 Any other start is strict mode, parsed by `BInvocationParse` before the workspace opens.
 A usage error prints its sentence on stderr and returns 2, and the workspace never opens.
 A valid command line builds the engine, then hands it to the run seam.
@@ -76,10 +82,10 @@ Runs the loop for one atelier and returns the exit code.
 It takes a seam and asks it for a detached atelier, so a command line never touches a stored layout.
 The seam is called after the invocation check, so a missing invocation throws before any atelier exists.
 With the window's envoy it opens a `BWindow` on an attached atelier instead.
+The window gets the blueprint and the theme, and a held theme notice goes to the envoy first.
 The window opens as the loop's first work item.
 The window's batch, key and size observers attach to the loop before it runs.
 The loop ends when the window's exit task completes, and the run returns 0.
-The atelier closes on every return, as in the strict run.
 The presence seam answers whether a path names an existing file.
 The strict run hands it to the invocation.
 The strict invocation is the loop's first work item, and the loop ends when it completes.
@@ -126,17 +132,21 @@ Holds one line per omission, with its line number and text, after the same head.
 
 The full-screen window, owning a canvas that follows the console size.
 It draws a frame of two bordered halves, an opening line and the quit legend.
+The layout comes from the `AWindow` blueprint, and the window only fills the parts it names.
+The constructor finds `AEstablishment` and `ALegend` in `AWindow` and `ANoticeText` in `ANotice`.
+A missing blueprint or part throws at construction, not while drawing.
 Below 80 by 24 cells it draws only the small-console notice, wrapped by cells.
 The window ends the run through `BWindowExit` and holds the atelier and the envoy it was given.
 
 ## `BWindowOpen`
 
 Reads the size, observes it and then opens the atelier with the envoy.
-The marshal it hands over comes from `BObserverCreate`, so it runs work at once on the loop.
+The marshal it hands over comes from `BObserverCreate`.
+Work from the loop's thread runs at once, and other work is deferred onto the loop.
 
 ## `BWindowSizeObserve`
 
-Builds a new canvas when the size differs from the last one, and marks the frame changed.
+Builds a new canvas with the theme when the size differs from the last one, and marks the frame changed.
 A negative size counts as 0, and the first call always builds a canvas.
 The new canvas starts blank, so the next sync prints the whole frame.
 
@@ -153,42 +163,45 @@ Every other key does nothing yet.
 
 ## `BWindowFrameBuild`
 
-Places the two halves, the opening line and the legend for the current size.
+Places the `AWindow` blueprint for the current size and draws its frames with the glyph set each names.
+The opening line fills `AEstablishment`, one cell in from the left.
+The legend puts `10` and `Legend.Quit` nine slots of 8 cells right of the `ALegend` column, so at column 72.
 The left half is half the width, and the right half takes the rest.
-The legend puts `10` and `Legend.Quit` at column 72, nine slots of 8 cells from the left edge.
+Each half has a rule above its last inner row.
+Row 0 is the roof and stays blank.
 
-## `BWindowSideBuild`
+## `BWindowLegendBuild`
 
-Places one bordered half, with a rule two rows above the bottom border.
-The top border sits on row 1, so row 0 stays blank.
+Places one legend key, the number and then its label.
+The two roles are the legend's theme with `-number` and `-label` added, so the theme file styles them.
 
 ## `BWindowNoticeBuild`
 
 Fills `Window.Small` with the minimum and the actual size, then wraps it by cells.
-Each line is placed from the left edge on its own row.
+A console narrower than 44 or lower than 8 cells gets the bare text in the `text` role.
+Each line starts at the left edge on its own row.
+A larger one gets a framed `ANotice` box 42 cells wide, centred, with ` Llyn ` on its top border.
+The box height follows the wrapped lines, and lines past the box are cut.
+The quit legend sits on the last row at column 0.
 
 ## `BBootstrapStrayObserve`
 
 Records an unobserved task fault and marks it observed.
 
-## `BLocalizationCatalog`
+## `BObserver`
 
-The one place a console key resolves, as `QLocalizationCatalog` is for the GUI.
-It is an instance the bootstrap owns, since a driver may hold no mutable static state.
+Builds the `marshal` delegate the atelier takes, the console's counterpart of `QObserver`.
 
-## `BLocalizationCatalogApply`
+## `BObserverCreate`
 
-Merges a catalog over the one in place and replaces the whole dictionary.
-A key the new catalog lacks keeps its earlier text, as the GUI merge does.
-
-## `BLocalizationTextRead`
-
-Returns the text of a key, or the key itself when no catalog carries it, as the GUI does.
+Captures the loop that is the current context when the delegate is built.
+A call on the loop's thread runs at once, and a call from another thread is deferred onto the loop.
+It refuses a thread with no loop, since the marshal would have nowhere to go.
 
 ## Stamp
 
-Commit: `66a4aa567097`
-- `BBootstrap.cs` `8b05b604324177cd`
+Commit: `92c4426f8506`
+- `BBootstrap.cs` `e5d3454404fd8520`
 - `BEnvoy.cs` `15ac0daeb21b5ed5`
-- `BLocalizationCatalog.cs` `6b3081293256d764`
-- `BWindow.cs` `0bd68f8d4e67edb1`
+- `BObserver.cs` `55a41481c90c90c6`
+- `BWindow.cs` `2c84c82386472e36`

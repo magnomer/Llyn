@@ -44,20 +44,22 @@ Demeanor never sees the choice, so neither UI family knows the other exists.
 
 The console path runs on the calling thread, with no STA and no WPF object.
 `BBootstrap` takes the same rig seams `QBootstrap` takes and returns the exit code itself.
+The host builds `BBootstrap` over the console port and the UITerminal blueprint `ABootstrap`.
+It also hands over a theme seam that reads a named console theme through `LThemeLoader`, as role-to-colour.
+Only the communicative mode asks it, once, for the default theme, and strict mode never calls it.
 The client is disposed once the bootstrap returns, as on the GUI path.
 
 The atelier is composed in one place for both paths, so the two UIs wire the same ports.
 Each path hands in its own marshal, built on its own UI thread.
 The factory also takes a detached flag, which the atelier keeps from construction.
-The console path takes the flag from `BBootstrapAtelierRun`, which always asks for a detached atelier.
-The window path passes false, so the GUI still reads and writes its stored layout.
-The console path hands `BBootstrapAtelierRun` the atelier as a seam on that flag, with `File.Exists` as the presence seam.
-The presence seam lets the strict export ask whether a file exists.
-So the console driver names no file system call.
+The console path takes the flag from `BBootstrapAtelierRun`, which asks for a detached atelier only in strict mode.
+The GUI path passes false, so the GUI still reads and writes its stored layout.
+`BBootstrapAtelierRun` also takes `File.Exists` as a presence seam.
+It lets the strict export ask whether a file exists, so the console driver names no file system call.
 The engine factory also takes a leased flag.
 The console path takes it from the parsed options.
-It is true only for the writing options `-new`, `-delete` and `-import`.
-The window path always asks for a lease, so a console that writes cannot open the workspace the GUI holds.
+It is true for `-new`, `-delete`, `-import` and `-workspace` with a value, and always in the communicative mode.
+The GUI path always asks for a lease.
 Each path builds its own rig on its own UI thread, so the GUI builds its adapters as before.
 
 The GUI exit code stays 1 unless the application runs, so a failed start exits with 1.
@@ -111,6 +113,6 @@ The host then disposes the engine the window ran over.
 
 ## Stamp
 
-Commit: `52c21d68b4c4`
-- `LHost.cs` `4f583129b1c6aa82`
+Commit: `92c4426f8506`
+- `LHost.cs` `f9729ff1dc7b2c5a`
 - `Llyn.Host.csproj` `227db85934ecef45`

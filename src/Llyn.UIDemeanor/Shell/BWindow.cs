@@ -11,27 +11,51 @@ internal sealed class BWindow
     private const int BWindowWidthMinimum = 80;
     private const int BWindowHeightMinimum = 24;
     private const int BWindowLegendWidth = 8;
+    private const int BWindowNoticeWidth = 44;
+    private const int BWindowNoticeHeight = 8;
 
     private readonly BConsole _bWindowConsole;
     private readonly BLocalizationCatalog _bWindowCatalog;
     private readonly CAtelier _bWindowAtelier;
     private readonly CEnvoy _bWindowEnvoy;
+    private readonly BTheme _bWindowTheme;
+    private readonly IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<string>>> _bWindowGlyphs;
+    private readonly BBlueprintPart _bWindowBlueprint;
+    private readonly BBlueprintPart _bWindowEstablishment;
+    private readonly BBlueprintPart _bWindowLegend;
+    private readonly BBlueprintPart _bWindowNotice;
+    private readonly BBlueprintPart _bWindowNoticeText;
     private readonly TaskCompletionSource _bWindowExit = new();
     private (int BConsoleWidth, int BConsoleHeight) _bWindowSize;
     private BCanvas? _bWindowCanvas;
     private bool _bWindowChanged;
 
-    internal BWindow(BConsole console, BLocalizationCatalog catalog, CAtelier atelier, CEnvoy envoy)
+    internal BWindow(
+        BConsole console,
+        BLocalizationCatalog catalog,
+        CAtelier atelier,
+        CEnvoy envoy,
+        BBlueprint blueprint,
+        BTheme theme)
     {
         ArgumentNullException.ThrowIfNull(console);
         ArgumentNullException.ThrowIfNull(catalog);
         ArgumentNullException.ThrowIfNull(atelier);
         ArgumentNullException.ThrowIfNull(envoy);
+        ArgumentNullException.ThrowIfNull(blueprint);
+        ArgumentNullException.ThrowIfNull(theme);
 
         _bWindowConsole = console;
         _bWindowCatalog = catalog;
         _bWindowAtelier = atelier;
         _bWindowEnvoy = envoy;
+        _bWindowTheme = theme;
+        _bWindowGlyphs = blueprint.BBlueprintGlyphs;
+        _bWindowBlueprint = BContract.BContractBlueprintFind(blueprint, "AWindow");
+        _bWindowEstablishment = BContract.BContractFind(_bWindowBlueprint, "AEstablishment");
+        _bWindowLegend = BContract.BContractFind(_bWindowBlueprint, "ALegend");
+        _bWindowNotice = BContract.BContractBlueprintFind(blueprint, "ANotice");
+        _bWindowNoticeText = BContract.BContractFind(_bWindowNotice, "ANoticeText");
     }
 
     internal Task BWindowExit => _bWindowExit.Task;
@@ -52,7 +76,7 @@ internal sealed class BWindow
         }
 
         _bWindowSize = (width, height);
-        _bWindowCanvas = new BCanvas(_bWindowConsole, new BCanvasWidth(false), width, height);
+        _bWindowCanvas = new BCanvas(_bWindowConsole, new BCanvasWidth(false), _bWindowTheme, width, height);
         _bWindowChanged = true;
     }
 
@@ -83,42 +107,33 @@ internal sealed class BWindow
 
     private IEnumerable<BCanvasText> BWindowFrameBuild(int width, int height)
     {
-        int left = width / 2;
-        foreach (BCanvasText side in BWindowSideBuild(0, left, height))
+        BBlueprint.BBlueprintPlace(_bWindowBlueprint, 0, 0, width, height);
+        foreach (BCanvasText scaffold in BBlueprint.BBlueprintDraw(_bWindowBlueprint, _bWindowGlyphs))
         {
-            yield return side;
+            yield return scaffold;
         }
 
-        foreach (BCanvasText side in BWindowSideBuild(left, width - left, height))
+        BBlueprintPart establishment = _bWindowEstablishment;
+        yield return new BCanvasText(
+            establishment.BBlueprintPartRow,
+            establishment.BBlueprintPartColumn,
+            establishment.BBlueprintPartWidth,
+            _bWindowCatalog.BLocalizationTextRead("Window.Opening"),
+            establishment.BBlueprintPartTheme);
+        BBlueprintPart legend = _bWindowLegend;
+        foreach (BCanvasText key in BWindowLegendBuild(
+            legend.BBlueprintPartRow, legend.BBlueprintPartColumn + (9 * BWindowLegendWidth)))
         {
-            yield return side;
+            yield return key;
         }
-
-        yield return new BCanvasText(
-            height - 2, 1, width - 1, _bWindowCatalog.BLocalizationTextRead("Window.Opening"), "text");
-        int quit = 9 * BWindowLegendWidth;
-        yield return new BCanvasText(height - 1, quit, 2, "10", "legend-number");
-        yield return new BCanvasText(
-            height - 1,
-            quit + 2,
-            BWindowLegendWidth - 2,
-            _bWindowCatalog.BLocalizationTextRead("Legend.Quit"),
-            "legend-label");
     }
 
-    private static IEnumerable<BCanvasText> BWindowSideBuild(int column, int width, int height)
+    private IEnumerable<BCanvasText> BWindowLegendBuild(int row, int column)
     {
-        int inner = Math.Max(width - 2, 0);
-        yield return new BCanvasText(1, column, width, $"╔{new string('═', inner)}╗", "side");
-        for (int row = 2; row < height - 3; row++)
-        {
-            string body = row == height - 5
-                ? $"╟{new string('─', inner)}╢"
-                : $"║{new string(' ', inner)}║";
-            yield return new BCanvasText(row, column, width, body, "side");
-        }
-
-        yield return new BCanvasText(height - 3, column, width, $"╚{new string('═', inner)}╝", "side");
+        string theme = _bWindowLegend.BBlueprintPartTheme;
+        string quit = _bWindowCatalog.BLocalizationTextRead("Legend.Quit");
+        yield return new BCanvasText(row, column, 2, "10", $"{theme}-number");
+        yield return new BCanvasText(row, column + 2, BWindowLegendWidth - 2, quit, $"{theme}-label");
     }
 
     private IEnumerable<BCanvasText> BWindowNoticeBuild(int width, int height)
@@ -130,10 +145,42 @@ internal sealed class BWindow
             BWindowHeightMinimum,
             width,
             height);
-        IReadOnlyList<string> lines = new BCanvasWidth(false).BCanvasWidthDivide(notice, width);
-        for (int row = 0; row < lines.Count; row++)
+        BCanvasWidth measure = new(false);
+        if (width < BWindowNoticeWidth || height < BWindowNoticeHeight)
         {
-            yield return new BCanvasText(row, 0, width, lines[row], "text");
+            IReadOnlyList<string> bare = measure.BCanvasWidthDivide(notice, width);
+            for (int row = 0; row < bare.Count; row++)
+            {
+                yield return new BCanvasText(row, 0, width, bare[row], "text");
+            }
+
+            yield break;
+        }
+
+        BBlueprintPart text = _bWindowNoticeText;
+        string theme = text.BBlueprintPartTheme;
+        int across = BWindowNoticeWidth - 2;
+        BBlueprint.BBlueprintPlace(_bWindowNotice, 0, 0, across, height - 1);
+        IReadOnlyList<string> lines = measure.BCanvasWidthDivide(notice, text.BBlueprintPartWidth);
+        int down = Math.Min(lines.Count + (height - 1 - text.BBlueprintPartHeight), height - 1);
+        (int top, int left) = ((height - 1 - down) / 2, (width - across) / 2);
+        BBlueprint.BBlueprintPlace(_bWindowNotice, top, left, across, down);
+        foreach (BCanvasText scaffold in BBlueprint.BBlueprintDraw(_bWindowNotice, _bWindowGlyphs))
+        {
+            yield return scaffold;
+        }
+
+        const string title = " Llyn ";
+        yield return new BCanvasText(top, left + ((across - title.Length) / 2), title.Length, title, theme);
+        for (int line = 0; line < Math.Min(lines.Count, text.BBlueprintPartHeight); line++)
+        {
+            yield return new BCanvasText(
+                text.BBlueprintPartRow + line, text.BBlueprintPartColumn, text.BBlueprintPartWidth, lines[line], theme);
+        }
+
+        foreach (BCanvasText key in BWindowLegendBuild(height - 1, 0))
+        {
+            yield return key;
         }
     }
 }

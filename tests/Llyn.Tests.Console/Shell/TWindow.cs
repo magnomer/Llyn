@@ -63,7 +63,7 @@ public sealed class TWindow
     }
 
     [Fact]
-    public void WindowSizeObserve_BelowEightyByTwentyFour_DrawsNotice()
+    public void WindowSizeObserve_BelowEightyByTwentyFour_DrawsFramedNotice()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         TConsoleFake console = new() { TConsoleFakeTerminal = true };
@@ -72,11 +72,19 @@ public sealed class TWindow
 
         TInvocation.TInvocationRun(console, workspace);
 
+        string side = new(' ', 11);
         string[] notice =
         [
-            "Llyn needs a console of at least 80 by 24 cells. This one is 64".PadRight(64),
-            "by 18. Make the window larger to go on.".PadRight(64),
-            .. Enumerable.Repeat(new string(' ', 64), 16),
+            .. Enumerable.Repeat(new string(' ', 64), 5),
+            $"{side}╔{new string('═', 17)} Llyn {new string('═', 17)}╗{side}",
+            $"{side}║{new string(' ', 40)}║{side}",
+            $"{side}║  {"Llyn needs a console of at least 80",-36}  ║{side}",
+            $"{side}║  {"by 24 cells. This one is 64 by 18.",-36}  ║{side}",
+            $"{side}║  {"Make the window larger to go on.",-36}  ║{side}",
+            $"{side}║{new string(' ', 40)}║{side}",
+            $"{side}╚{new string('═', 40)}╝{side}",
+            .. Enumerable.Repeat(new string(' ', 64), 5),
+            "10Quit".PadRight(64),
         ];
         Assert.Equal(notice, console.TConsoleFakeGrid);
     }

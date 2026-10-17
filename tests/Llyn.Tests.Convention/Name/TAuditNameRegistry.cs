@@ -228,6 +228,7 @@ internal static class TAuditNameRegistry
         "Navigation",
         "Notation",
         "Note",
+        "Notice",
         "Object",
         "Observer",
         "Occurrence",

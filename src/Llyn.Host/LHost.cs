@@ -11,6 +11,7 @@ using Llyn.Infrastructure;
 using Llyn.ShellEngine;
 using Llyn.UIDemeanor;
 using Llyn.UIDeportment;
+using ABootstrap = Llyn.UITerminal.ABootstrap;
 using PBootstrap = Llyn.UIVeneer.PBootstrap;
 
 Func<LEngine, LSettingsOutlet, Action<Action>, bool, CAtelier> atelier = static (engine, settings, marshal, detached) =>
@@ -58,10 +59,11 @@ Func<int> console = () =>
     LPressQueue queue = new LPressSpooler();
     LWarrant warrant = new LWarrantShield();
     LPhonograph phonograph = new LPhonographMedia();
-    BBootstrap bootstrap = new(new BConsoleStream());
+    BBootstrap bootstrap = new(new BConsoleStream(), new ABootstrap());
 
     int status = bootstrap.BBootstrapIntroduce(
         args,
+        name => LThemeLoader.LThemeLoaderLoad(name).LThemeColorRead,
         () => LLocalization.LLocalizationLoad(new LLocalizationLoader(), LLocalization.LLocalizationDefault),
         LWorkspaceRoot.LWorkspaceRootRead,
         (workspace, leased) => new LEngine(

@@ -1,7 +1,8 @@
 # Llyn.UITerminal
 
 The console surface, the second UI beside the WPF veneer.
-It holds no source yet.
+It holds the blueprints of the console screens and the one class that loads them.
+Demeanor drives the screens, and this project only says where each part sits.
 
 ## `Llyn.UITerminal.csproj`
 
@@ -11,8 +12,26 @@ A name past Demeanor fails the build, not only the border audit.
 Demeanor is the only reference, as Deportment is the veneer's only reference.
 A UITerminal member only calls a function, and Demeanor drives it.
 It targets the portable framework, and a Windows API fails its build through CA1416.
+It embeds `ABootstrap.xaml`, `Shell/AWindow.xaml` and `Shell/ANotice.xaml` as resources.
+The loader finds a blueprint among the embedded resources, so a file left out of the project is never read.
+
+## `ABootstrap`
+
+The shell of the console UI, which the host hands to `BBootstrap`.
+Its constructor loads the blueprints and glyph sets of `ABootstrap.xaml` and holds no other logic.
+A broken or missing blueprint throws there, so the start fails before any screen.
+
+## `ABootstrap.xaml`
+
+The shell's list of the blueprints to load and the glyph sets they may draw with.
+It lists `AWindow` and `ANotice`, and a blueprint left out of the list is not loaded.
+Each glyph set holds six frame marks, three rule marks and the marks of the UI's symbols.
+The `double` set draws the window, the `single` set uses thin lines, and the `ascii` set needs no box drawing.
+Every set has a mark for every symbol, so a screen may switch sets without a missing glyph.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `Llyn.UITerminal.csproj` `0f5afd6f5ca66e78`
+Commit: `92c4426f8506`
+- `ABootstrap.cs` `ffad35cfe3757da5`
+- `ABootstrap.xaml` `8c3d97adc88ebae0`
+- `Llyn.UITerminal.csproj` `e1a2c385d7f7b93c`

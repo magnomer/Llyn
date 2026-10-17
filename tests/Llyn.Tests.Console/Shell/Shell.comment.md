@@ -18,14 +18,16 @@ The legend shows `10` and `Quit` in the last row at column 72.
 Resizing to 64 by 18 and then to 101 by 30 ends on the large frame.
 The odd width gives the left half 50 columns and the right half 51.
 
-## `WindowSizeObserve_BelowEightyByTwentyFour_DrawsNotice`
+## `WindowSizeObserve_BelowEightyByTwentyFour_DrawsFramedNotice`
 
-A console under 80 by 24 shows the small-console notice instead of the frame.
-The notice wraps at a space within the console width.
+A console of 64 by 18 shows the small-console notice in a framed box instead of the frame.
+The box is 44 cells wide, centred, with ` Llyn ` on its top border.
+The notice wraps at a space within the 36-cell text and the quit legend sits on the last row.
 
 ## `WindowSizeObserve_KoreanNotice_WrapsByCells`
 
-The Korean notice wraps by cells, so a wide character never splits across lines.
+The Korean notice is on a 21 by 8 console, too small for the box, so it is bare text.
+It wraps by cells, so a wide character never splits across lines.
 A line shorter than the width ends in blanks, since a new canvas writes every cell.
 
 ## `WindowKeyObserve_FunctionTenUnderNotice_ExitsZero`
@@ -67,5 +69,5 @@ The mode restore comes last.
 
 ## Stamp
 
-Commit: `66a4aa567097`
-- `TWindow.cs` `14de0f3d432228c1`
+Commit: `92c4426f8506`
+- `TWindow.cs` `472441d419cdedab`

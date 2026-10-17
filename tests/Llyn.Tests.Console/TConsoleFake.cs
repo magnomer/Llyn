@@ -81,10 +81,19 @@ internal sealed class TConsoleFake : BConsole
         {
             if (frame[index] == '\e')
             {
-                int end = frame.IndexOf('H', index);
-                string[] place = frame[(index + 2)..end].Split(';');
-                (row, column) = (int.Parse(place[0], CultureInfo.InvariantCulture) - 1,
-                    int.Parse(place[1], CultureInfo.InvariantCulture) - 1);
+                int end = index + 2;
+                while (frame[end] is >= '0' and <= '?')
+                {
+                    end++;
+                }
+
+                if (frame[end] == 'H')
+                {
+                    string[] place = frame[(index + 2)..end].Split(';');
+                    (row, column) = (int.Parse(place[0], CultureInfo.InvariantCulture) - 1,
+                        int.Parse(place[1], CultureInfo.InvariantCulture) - 1);
+                }
+
                 index = end + 1;
                 continue;
             }

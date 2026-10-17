@@ -10,19 +10,22 @@ internal sealed class BCanvas
 {
     private readonly BConsole _bCanvasConsole;
     private readonly BCanvasWidth _bCanvasWidth;
+    private readonly BTheme _bCanvasTheme;
     private readonly int _bCanvasColumns;
     private BCanvasCell[] _bCanvasDrawn;
     private BCanvasCell[] _bCanvasShown;
 
-    internal BCanvas(BConsole console, BCanvasWidth width, int columns, int rows)
+    internal BCanvas(BConsole console, BCanvasWidth width, BTheme theme, int columns, int rows)
     {
         ArgumentNullException.ThrowIfNull(console);
         ArgumentNullException.ThrowIfNull(width);
+        ArgumentNullException.ThrowIfNull(theme);
         ArgumentOutOfRangeException.ThrowIfNegative(columns);
         ArgumentOutOfRangeException.ThrowIfNegative(rows);
 
         _bCanvasConsole = console;
         _bCanvasWidth = width;
+        _bCanvasTheme = theme;
         _bCanvasColumns = columns;
         _bCanvasDrawn = new BCanvasCell[columns * rows];
         _bCanvasShown = new BCanvasCell[columns * rows];
@@ -94,6 +97,7 @@ internal sealed class BCanvas
     internal void BCanvasSync()
     {
         StringBuilder frame = new();
+        string? colour = null;
         for (int start = 0; start < _bCanvasDrawn.Length; start += _bCanvasColumns)
         {
             int end = start + _bCanvasColumns;
@@ -120,6 +124,18 @@ internal sealed class BCanvas
                 frame.Append(CultureInfo.InvariantCulture, $"\e[{(start / _bCanvasColumns) + 1};{first - start + 1}H");
                 for (int cell = first; cell < stop; cell++)
                 {
+                    if (_bCanvasDrawn[cell].BCanvasCellWidth == 0)
+                    {
+                        continue;
+                    }
+
+                    string escape = _bCanvasTheme.BThemeRead(_bCanvasDrawn[cell].BCanvasCellRole);
+                    if (escape != colour)
+                    {
+                        frame.Append(escape);
+                        colour = escape;
+                    }
+
                     frame.Append(_bCanvasDrawn[cell].BCanvasCellText);
                 }
 
@@ -130,6 +146,7 @@ internal sealed class BCanvas
         _bCanvasShown = _bCanvasDrawn;
         if (frame.Length > 0)
         {
+            frame.Append("\e[0m");
             _bCanvasConsole.BConsoleFramePrint(frame.ToString());
         }
     }

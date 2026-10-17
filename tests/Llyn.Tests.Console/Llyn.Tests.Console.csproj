@@ -25,6 +25,13 @@
   <ItemGroup>
     <ProjectReference Include="../Llyn.Tests.Interface/Llyn.Tests.Interface.csproj" />
     <ProjectReference Include="../../src/Llyn.UIDemeanor/Llyn.UIDemeanor.csproj" />
+    <ProjectReference Include="../../src/Llyn.UITerminal/Llyn.UITerminal.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Kit/TBlueprintFake.xaml" />
+    <EmbeddedResource Include="Kit/TBlueprintListed.xaml" />
+    <EmbeddedResource Include="Kit/TBlueprintUnlisted.xaml" />
   </ItemGroup>
 
 </Project>

@@ -11,22 +11,28 @@ public sealed class BBootstrap
     internal const string BBootstrapNoticeHead = "llyn: ";
 
     private readonly BConsole _bBootstrapConsole;
+    private readonly BBlueprint _bBootstrapBlueprint;
     private readonly BLoop _bBootstrapLoop;
     private readonly BLocalizationCatalog _bBootstrapCatalog = new();
     private Func<Exception, string?> _bBootstrapAudit = _ => null;
     private BInvocation? _bBootstrapInvocation;
     private BEnvoy? _bBootstrapEnvoy;
+    private BTheme? _bBootstrapTheme;
+    private string? _bBootstrapThemeNotice;
 
-    public BBootstrap(BConsole console)
+    public BBootstrap(BConsole console, BBlueprint blueprint)
     {
         ArgumentNullException.ThrowIfNull(console);
+        ArgumentNullException.ThrowIfNull(blueprint);
 
         _bBootstrapConsole = console;
+        _bBootstrapBlueprint = blueprint;
         _bBootstrapLoop = new BLoop(BBootstrapFaultObserve);
     }
 
     public int BBootstrapIntroduce<BBootstrapEngine>(
         string[] args,
+        Func<string, Func<string, string>> themeSeam,
         Func<IReadOnlyDictionary<string, string>> catalogSeam,
         Func<string> workspaceSeam,
         Func<string, bool, BBootstrapEngine> buildSeam,
@@ -35,6 +41,7 @@ public sealed class BBootstrap
         where BBootstrapEngine : class
     {
         ArgumentNullException.ThrowIfNull(args);
+        ArgumentNullException.ThrowIfNull(themeSeam);
         ArgumentNullException.ThrowIfNull(catalogSeam);
         ArgumentNullException.ThrowIfNull(workspaceSeam);
         ArgumentNullException.ThrowIfNull(buildSeam);
@@ -59,6 +66,17 @@ public sealed class BBootstrap
             if (args.Length == 0 && _bBootstrapConsole.BConsoleTerminalCheck())
             {
                 _bBootstrapEnvoy = new BEnvoy(_bBootstrapConsole, _bBootstrapCatalog);
+                try
+                {
+                    _bBootstrapTheme = new BTheme(themeSeam(BTheme.BThemeDefault));
+                }
+                catch (Exception exception)
+                {
+                    _bBootstrapTheme = new BTheme(BTheme.BThemeSpareRead);
+                    _bBootstrapThemeNotice =
+                        $"{BBootstrapNoticeHead}The console theme could not be loaded. {exception.Message}";
+                }
+
                 _bBootstrapConsole.BConsoleWindowApply();
             }
             else
@@ -171,10 +189,15 @@ public sealed class BBootstrap
         ArgumentNullException.ThrowIfNull(atelierSeam);
         ArgumentNullException.ThrowIfNull(presenceSeam);
 
-        if (_bBootstrapEnvoy is BEnvoy envoy)
+        if (_bBootstrapEnvoy is BEnvoy envoy && _bBootstrapTheme is BTheme theme)
         {
+            if (_bBootstrapThemeNotice is string notice)
+            {
+                envoy.BEnvoyNoticeAdd(notice);
+            }
+
             CAtelier shown = atelierSeam(false);
-            BWindow window = new(_bBootstrapConsole, _bBootstrapCatalog, shown, envoy);
+            BWindow window = new(_bBootstrapConsole, _bBootstrapCatalog, shown, envoy, _bBootstrapBlueprint, theme);
             _bBootstrapLoop.BLoopDefer(window.BWindowOpen);
             _bBootstrapLoop.BLoopBatchAttach(window.BWindowBatchObserve);
             _bBootstrapLoop.BLoopKeyAttach(_bBootstrapConsole, window.BWindowKeyObserve);

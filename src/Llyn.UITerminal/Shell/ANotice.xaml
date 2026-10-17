@@ -1,0 +1,7 @@
+<Blueprint
+    x:Name="ANotice"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Frame Theme="dialog" Glyphs="double">
+        <Text x:Name="ANoticeText" Theme="dialog" Margin="2,1" />
+    </Frame>
+</Blueprint>

@@ -22,6 +22,15 @@ The reference also brings the language packs beside the test binaries.
 
 Demeanor grants this project its internals, so the strict types stay internal.
 
+## `<ProjectReference Include="../../src/Llyn.UITerminal/Llyn.UITerminal.csproj" />`
+
+The tests load the real console blueprints, so a broken blueprint file fails a test and not only the start.
+
+## `<EmbeddedResource Include="Kit/TBlueprintFake.xaml" />`
+
+The three `TBlueprint*` files are embedded so the loader finds them as it finds a UI's own.
+`TBlueprintFake` lists `TBlueprintListed`, and `TBlueprintUnlisted` is embedded without a listing.
+
 ## `TConsoleFake`
 
 The console port with no terminal behind it.
@@ -40,6 +49,7 @@ A test counts them to know how often the window drew.
 
 The screen rebuilt from the frames, one string per row.
 It reads the cursor moves and the cell width of each cluster, so a wide cluster fills two cells.
+Colour escapes are stepped over and change nothing, so a test reads the text under any theme.
 The grid is empty until a first frame arrives.
 
 ## `TConsoleFakeKeys`
@@ -56,6 +66,6 @@ So the test sees every size drawn.
 
 ## Stamp
 
-Commit: `66a4aa567097`
-- `Llyn.Tests.Console.csproj` `c830d51b81636ccb`
-- `TConsoleFake.cs` `9019bccd286ef59a`
+Commit: `92c4426f8506`
+- `Llyn.Tests.Console.csproj` `bceadb309d05ccaa`
+- `TConsoleFake.cs` `15cf08ae6b513d96`

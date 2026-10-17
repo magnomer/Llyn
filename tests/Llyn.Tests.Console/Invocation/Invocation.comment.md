@@ -46,7 +46,9 @@ A missing id exits 1 with the missing-entry sentence and writes no file.
 
 Starts the bootstrap with the given arguments, building the atelier from the engine and the detached flag the bootstrap passes.
 The build seam gets the lease flag.
-A second overload takes a language, and the bootstrap then loads that catalog in place of English.
+A further overload takes a language, and the bootstrap then loads that catalog in place of English.
+The last overload also takes the theme seam, and the others build it over the real `LThemeLoader`.
+The bootstrap is built over the real `ABootstrap` in every overload.
 The default helper builds a leased engine over the workspace rig when it is set.
 The presence seam is `File.Exists`.
 A test may replace the atelier seam to watch the detached flag.
@@ -63,8 +65,8 @@ A failure prints its sentence even under `-quiet`, and an omission then prints n
 
 ## Stamp
 
-Commit: `66a4aa567097`
+Commit: `92c4426f8506`
 - `TEnvoyStrict.cs` `36a77c55fd844082`
-- `TInvocation.cs` `ae7d338b30eb900a`
+- `TInvocation.cs` `80a46c8a7cb39cea`
 - `TInvocationPortrait.cs` `6dd3a46182199551`
 - `TInvocationWrite.cs` `5731f47f567fa54d`

@@ -8,6 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="ABootstrap.xaml" />
+    <EmbeddedResource Include="Shell\AWindow.xaml" />
+    <EmbeddedResource Include="Shell\ANotice.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Llyn.UIDemeanor\Llyn.UIDemeanor.csproj" />
   </ItemGroup>
 </Project>

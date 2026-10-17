@@ -1,0 +1,55 @@
+<Blueprint
+    x:Class="Llyn.UITerminal.ABootstrap"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Blueprint Source="Shell/AWindow.xaml" />
+    <Blueprint Source="Shell/ANotice.xaml" />
+
+    <Glyphs
+        x:Key="double"
+        Frame="╔ ═ ╗ ║ ╚ ╝"
+        Rule="╟ ─ ╢"
+        Favorite="★"
+        Clip="♪"
+        Order="▲ ▼"
+        Pending="●"
+        History="◄ ►"
+        Submenu="▸"
+        Ellipsis="…"
+        Dot="·"
+        Arrow="→"
+        Scroll="░ █"
+        Check="[x]"
+        Radio="(•)" />
+    <Glyphs
+        x:Key="single"
+        Frame="┌ ─ ┐ │ └ ┘"
+        Rule="├ ─ ┤"
+        Favorite="★"
+        Clip="♪"
+        Order="▲ ▼"
+        Pending="●"
+        History="◄ ►"
+        Submenu="▸"
+        Ellipsis="…"
+        Dot="·"
+        Arrow="→"
+        Scroll="░ █"
+        Check="[x]"
+        Radio="(•)" />
+    <Glyphs
+        x:Key="ascii"
+        Frame="+ - + | + +"
+        Rule="+ - +"
+        Favorite="*"
+        Clip="~"
+        Order="^ v"
+        Pending="o"
+        History="&lt; &gt;"
+        Submenu="&gt;"
+        Ellipsis="~"
+        Dot="-"
+        Arrow="-&gt;"
+        Scroll=". #"
+        Check="[x]"
+        Radio="(*)" />
+</Blueprint>
