@@ -40,7 +40,6 @@ internal static class TAuditBoundarySetting
 
     public static readonly string[] TAuditBoundaryLoader =
     [
-        "QHeadquarter.cs",
         "BBlueprint.cs",
     ];
 

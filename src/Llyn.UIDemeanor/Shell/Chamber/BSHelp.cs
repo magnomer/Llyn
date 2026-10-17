@@ -55,7 +55,12 @@ internal sealed class BSHelp : BSParleyBody
                 .. Enumerable.Range(0, _bsHelpPages.Count).Select(page =>
                     (IReadOnlyList<int?>)[.. BSHelpPageBuild(page).Select(static line => line.BSHelpTarget)]),
             ],
-            focus == BKeymapFocus.BKeymapFocusParley ? 2 : 1,
+            focus switch
+            {
+                BKeymapFocus.BKeymapFocusParley => 2,
+                BKeymapFocus.BKeymapFocusHelp => 0,
+                _ => 1,
+            },
             BSHelpHeight);
     }
 

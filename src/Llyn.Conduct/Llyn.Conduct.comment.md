@@ -21,6 +21,11 @@ Four assemblies see Conduct internals.
 - `Llyn`, the host, builds `CAtelier` over the ports it makes.
   The constructor naming those ports stays internal, so no driver can build one.
 
+`LlynVersionWrite` writes `CVersion.g.cs` into the intermediate folder before each compile.
+It holds `CVersionText`, the `LlynVersion` that `Directory.Build.props` reads from `version.json`.
+Conduct is a pure ring, so the build hands it the version and no reflection reads it.
+The file is written only when the text differs, so an unchanged version recompiles nothing.
+
 ## Stamp
 
 Commit: `c2f335c331fe`

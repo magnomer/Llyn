@@ -126,6 +126,7 @@ internal static class TAuditLogicRegistry
         "Usher",
         "Variety",
         "Vault",
+        "Version",
         "Vista",
         "Vocabulary",
         "Voice",

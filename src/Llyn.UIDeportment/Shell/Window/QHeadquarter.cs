@@ -1,5 +1,5 @@
 using System;
-using System.Reflection;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -45,13 +45,11 @@ public sealed class QHeadquarter
         QHeadquarterPopup.IsOpen = false;
         e.Handled = true;
 
-        Version? version = Assembly.GetExecutingAssembly().GetName().Version;
-        string build = version is null ? string.Empty : version.ToString(3);
-        string product = QLocalizationCatalog.QLocalizationTextRead("Terms.Product");
+        IReadOnlyList<string> about = CAtelier.CAtelierAboutRead(QLocalizationCatalog.QLocalizationTextRead);
         MessageBox.Show(
             _qHeadquarterWindow,
-            $"{product}\n{QLocalizationCatalog.QLocalizationTextRead(CAtelier.CAtelierAboutRead())} {build}",
-            product,
+            string.Join('\n', about),
+            about[0],
             MessageBoxButton.OK,
             MessageBoxImage.Information);
     }

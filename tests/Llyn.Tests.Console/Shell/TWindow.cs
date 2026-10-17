@@ -19,16 +19,17 @@ public sealed class TWindow
         string body = $"║{new string(' ', 38)}║";
         string rule = $"╟{new string('─', 38)}╢";
         string bottom = $"╚{new string('═', 38)}╝";
+        string voyage = $"║{"◄Back (Alt+Left)",-18}Forward (Alt+Right)►║";
         string[] frame =
         [
-            new string(' ', 80),
+            "  Llyn  Panel".PadRight(80),
             top + top,
             .. Enumerable.Repeat(body + body, 17),
             rule + rule,
-            body + body,
+            body + voyage,
             bottom + bottom,
             " Opening…".PadRight(80),
-            "1Help   " + new string(' ', 64) + "10Quit  ",
+            "1Help   " + new string(' ', 56) + "9Menu   10Quit  ",
         ];
         Assert.Equal(frame, console.TConsoleFakeGrid);
     }
@@ -48,16 +49,17 @@ public sealed class TWindow
         string body = $"║{new string(' ', 48)}║║{new string(' ', 49)}║";
         string rule = $"╟{new string('─', 48)}╢╟{new string('─', 49)}╢";
         string bottom = $"╚{new string('═', 48)}╝╚{new string('═', 49)}╝";
+        string voyage = $"║{new string(' ', 48)}║║{"◄Back (Alt+Left)",-29}Forward (Alt+Right)►║";
         string[] frame =
         [
-            new string(' ', 101),
+            "  Llyn  Panel".PadRight(101),
             top,
             .. Enumerable.Repeat(body, 23),
             rule,
-            body,
+            voyage,
             bottom,
             " Opening…".PadRight(101),
-            ("1Help   " + new string(' ', 64) + "10Quit").PadRight(101),
+            ("1Help   " + new string(' ', 56) + "9Menu   10Quit").PadRight(101),
         ];
         Assert.Equal(frame, console.TConsoleFakeGrid);
     }

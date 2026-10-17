@@ -222,47 +222,6 @@ public sealed class TEnvoy
     }
 
     [Fact]
-    public void WindowParleyConsult_QueuedWork_RunsUnderParley()
-    {
-        TConsoleFake console = new() { TConsoleFakeTerminal = true };
-        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\r', ConsoleKey.Enter, false, false, false));
-        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\0', ConsoleKey.F10, false, false, false));
-
-        object? answer = TEnvoyRun(console, static envoy =>
-        {
-            bool ran = false;
-            SynchronizationContext.Current!.Post(_ => ran = true, null);
-            envoy.CEnvoyConfirm("Scribe.DeleteConfirm");
-            return ran;
-        });
-
-        Assert.Equal(true, answer);
-    }
-
-    [Fact]
-    public void WindowFrameBuild_ParleyOpen_ShowsCloseLegend()
-    {
-        TConsoleFake console = new() { TConsoleFakeTerminal = true };
-        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\r', ConsoleKey.Enter, false, false, false));
-        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\0', ConsoleKey.F10, false, false, false));
-
-        TEnvoyRun(console, static envoy => envoy.CEnvoyConfirm("Scribe.DeleteConfirm"));
-
-        Assert.Equal("1Help   " + new string(' ', 64) + "10Close ", console.TConsoleFakeShots[0][23]);
-    }
-
-    [Fact]
-    public void WindowKeyObserve_ControlCUnderParley_AnswersSafe()
-    {
-        TConsoleFake console = new() { TConsoleFakeTerminal = true };
-        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\u0003', ConsoleKey.C, false, false, true));
-
-        object? answer = TEnvoyRun(console, static envoy => envoy.CEnvoyConfirm("Scribe.DeleteConfirm"));
-
-        Assert.Equal(false, answer);
-    }
-
-    [Fact]
     public void EnvoyLeaveConfirm_Enter_AnswersStore()
     {
         TConsoleFake console = new() { TConsoleFakeTerminal = true };
@@ -364,7 +323,8 @@ public sealed class TEnvoy
         Assert.Equal("ac", answer);
     }
 
-    internal static object? TEnvoyRun(TConsoleFake console, Func<BEnvoy, object?> ask, string language = "en")
+    internal static object? TEnvoyRun(
+        TConsoleFake console, Func<BEnvoy, object?> ask, string language = "en", Action<BWindow>? prime = null)
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -383,7 +343,11 @@ public sealed class TEnvoy
             envoy.BEnvoyWindowAttach(window);
             object? answer = null;
             loop.BLoopDefer(window.BWindowOpen);
-            loop.BLoopDefer(() => answer = ask(envoy));
+            loop.BLoopDefer(() =>
+            {
+                prime?.Invoke(window);
+                answer = ask(envoy);
+            });
             loop.BLoopBatchAttach(window.BWindowBatchObserve);
             loop.BLoopKeyAttach(console, window.BWindowKeyObserve);
             loop.BLoopRun(window.BWindowExit);

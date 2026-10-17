@@ -16,4 +16,23 @@
   <ItemGroup>
     <ProjectReference Include="..\Llyn.ShellEngine\Llyn.ShellEngine.csproj" />
   </ItemGroup>
+
+  <Target Name="LlynVersionWrite" BeforeTargets="CoreCompile">
+    <PropertyGroup>
+      <LlynVersionFile>$(IntermediateOutputPath)CVersion.g.cs</LlynVersionFile>
+    </PropertyGroup>
+    <ItemGroup>
+      <LlynVersionLine Include="// &lt;auto-generated/&gt;" />
+      <LlynVersionLine Include="namespace Llyn.Conduct%3B" />
+      <LlynVersionLine Include="internal static class CVersion" />
+      <LlynVersionLine Include="{" />
+      <LlynVersionLine Include="internal const string CVersionText = &quot;$(LlynVersion)&quot;%3B" />
+      <LlynVersionLine Include="}" />
+    </ItemGroup>
+    <WriteLinesToFile File="$(LlynVersionFile)" Lines="@(LlynVersionLine)" Overwrite="true" WriteOnlyWhenDifferent="true" />
+    <ItemGroup>
+      <Compile Include="$(LlynVersionFile)" />
+      <FileWrites Include="$(LlynVersionFile)" />
+    </ItemGroup>
+  </Target>
 </Project>

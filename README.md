@@ -74,7 +74,7 @@ git clone https://github.com/magnomer/Llyn.git
 cd Llyn
 ```
 
-Build the current source as a Release, self-contained, single-file application:
+Build the current source as a Release, self-contained application, in the publish shape scripts/Execution.json sets (a folder for Llyn):
 
 ```powershell
 .\scripts\Build.ps1

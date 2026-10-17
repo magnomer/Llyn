@@ -14,7 +14,7 @@ public sealed class TBlueprint
     {
         ABootstrap bootstrap = new();
 
-        Assert.Equal(["AWindow", "ANotice", "ASParley"], bootstrap.BBlueprintParts.Keys);
+        Assert.Equal(["AWindow", "ANotice", "ASParley", "ASNavigation"], bootstrap.BBlueprintParts.Keys);
         Assert.Equal(["double", "single", "ascii"], bootstrap.BBlueprintGlyphs.Keys);
     }
 

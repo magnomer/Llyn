@@ -169,9 +169,11 @@ public sealed class CAtelier : IDisposable
         CAtelierMediaPort.LEngineLocationOpen(target);
     }
 
-    public static string CAtelierAboutRead()
+    public static IReadOnlyList<string> CAtelierAboutRead(Func<string, string> lookup)
     {
-        return "Headquarter.Version";
+        ArgumentNullException.ThrowIfNull(lookup);
+
+        return [lookup("Terms.Product"), $"{lookup("Headquarter.Version")} {CVersion.CVersionText}"];
     }
 
     public static string CAtelierRefusalRead(bool busy)

@@ -12,6 +12,7 @@
     <EmbeddedResource Include="Shell\AWindow.xaml" />
     <EmbeddedResource Include="Shell\ANotice.xaml" />
     <EmbeddedResource Include="Shell\ASParley.xaml" />
+    <EmbeddedResource Include="Shell\ASNavigation.xaml" />
   </ItemGroup>
 
   <ItemGroup>

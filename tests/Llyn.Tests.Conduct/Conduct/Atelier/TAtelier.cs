@@ -14,7 +14,11 @@ public sealed class TAtelier
     [Fact]
     public void AtelierAboutRead_AnySession_ReadsVersionKey()
     {
-        Assert.Equal("Headquarter.Version", CAtelier.CAtelierAboutRead());
+        Version? version = typeof(CAtelier).Assembly.GetName().Version;
+
+        IReadOnlyList<string> about = CAtelier.CAtelierAboutRead(static key => $"<{key}>");
+
+        Assert.Equal(["<Terms.Product>", $"<Headquarter.Version> {version!.ToString(3)}"], about);
     }
 
     [Fact]

@@ -31,6 +31,12 @@ Up and Down move the lit label, clamped, and keep it inside the page.
 Enter, Space, Escape and F10 return false, which tells the table to close the drop.
 Every other key returns true and does nothing, so a drop holds the keyboard while open.
 
+## `BDropLitMove`
+
+Moves the lit label by a step, clamped, and keeps it inside the page.
+Up and Down call it with one step.
+An owner that picks the next label itself calls it with the gap.
+
 ## Stamp
 
 Commit: `9a85a3ab82db`

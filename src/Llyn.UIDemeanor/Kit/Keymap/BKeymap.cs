@@ -19,7 +19,7 @@ internal sealed class BKeymap
             bool letter = row.BKeymapRowKey is >= ConsoleKey.A and <= ConsoleKey.Z;
             bool control = modifiers.HasFlag(ConsoleModifiers.Control);
             bool alt = modifiers.HasFlag(ConsoleModifiers.Alt);
-            bool roof = letter && alt;
+            bool roof = letter && alt && row.BKeymapRowFocus != BKeymapFocus.BKeymapFocusRoof;
             bool shift = modifiers.HasFlag(ConsoleModifiers.Shift);
             bool terminal = row.BKeymapRowKey == ConsoleKey.F11
                 || (alt && row.BKeymapRowKey is ConsoleKey.F4 or ConsoleKey.Enter)

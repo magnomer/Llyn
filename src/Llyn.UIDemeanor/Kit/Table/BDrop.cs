@@ -45,13 +45,18 @@ internal sealed class BDrop
         switch (key.Key)
         {
             case ConsoleKey.UpArrow or ConsoleKey.DownArrow:
-                _bDropShift = BDropLit + step - _bDropOrigin;
-                BDropTop = Math.Clamp(BDropTop, BDropLit - _bDropPage + 1, BDropLit);
+                BDropLitMove(step);
                 return true;
             case ConsoleKey.Enter or ConsoleKey.Spacebar or ConsoleKey.Escape or ConsoleKey.F10:
                 return false;
             default:
                 return true;
         }
+    }
+
+    internal void BDropLitMove(int step)
+    {
+        _bDropShift = BDropLit + step - _bDropOrigin;
+        BDropTop = Math.Clamp(BDropTop, BDropLit - _bDropPage + 1, BDropLit);
     }
 }

@@ -211,15 +211,12 @@ internal sealed class BInvocation
 
     private static void BInvocationVersionObserve(BConsole console, BLocalizationCatalog catalog)
     {
-        BInvocationVersionPrint(CAtelier.CAtelierAboutRead(), console, catalog);
+        BInvocationVersionPrint(CAtelier.CAtelierAboutRead(catalog.BLocalizationTextRead), console);
     }
 
-    private static void BInvocationVersionPrint(string key, BConsole console, BLocalizationCatalog catalog)
+    private static void BInvocationVersionPrint(IReadOnlyList<string> about, BConsole console)
     {
-        Version? version = typeof(BInvocation).Assembly.GetName().Version;
-        string build = version is null ? string.Empty : version.ToString(3);
-        console.BConsoleResultPrint(
-            $"{catalog.BLocalizationTextRead("Terms.Product")} {catalog.BLocalizationTextRead(key)} {build}");
+        console.BConsoleResultPrint(string.Join(' ', about));
     }
 
     private static void BInvocationWorkspaceObserve(

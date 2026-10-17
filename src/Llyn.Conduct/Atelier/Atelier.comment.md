@@ -91,7 +91,8 @@ The posture is released in a `finally`, so neither fault leaves its vistas watch
 
 The three static reads answer wording keys for notices shown where no atelier stands.
 - `CAtelierAboutRead` is static since every session words the notice alike.
-  The build number stays with the driver, because Conduct is framed away from reflection.
+  The build number is `CVersionText`, which the project writes from `LlynVersion` before each compile.
+  So Conduct reads its version without reflection, and `version.json` stays the only place it is written.
 - `CAtelierRefusalRead` says so when another program holds the database, since closing that program is the cure.
   It is static since no atelier stands when the workspace fails to open.
 - `CAtelierRescueRead` answers null when no database was set aside.

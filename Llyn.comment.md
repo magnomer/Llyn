@@ -376,9 +376,9 @@ It references portable engine projects only, never a UI project.
 Every project in the repository imports it, so its properties reach each assembly.
 `version.json` is the single source of the version.
 `current-version` is read at compile time and stamped into every assembly's version metadata.
-Runtime code reads the version back through reflection on the executing assembly.
+Conduct reads it from CVersion.CVersionText, a constant the build writes from LlynVersion, so no face reads it through reflection.
 A missing or unreadable file stamps `0.0.0` instead of failing the build.
-NuGet packages ship IntelliSense `.xml` files that single-file publish would leave beside the executable.
+NuGet packages ship IntelliSense `.xml` files that a publish would leave beside the executable.
 `AllowedReferenceRelatedFileExtensions` therefore copies only `.pdb`, so the install folder stays clean.
 
 ## Stamp

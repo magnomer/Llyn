@@ -1,0 +1,33 @@
+<Blueprint
+    x:Name="ASNavigation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Frame x:Name="ANavigation" Theme="dialog" Glyphs="double" Rows="3,7,3,2,2">
+        <Split Rows="1,1,1">
+            <Text x:Name="ANavigationInput" />
+            <Text x:Name="ANavigationLibrary" />
+            <Text x:Name="ANavigationFavorite" />
+        </Split>
+        <Split Rows="1,1,1,1,1,1,1">
+            <Text x:Name="ANavigationPhonology" />
+            <Text x:Name="ANavigationRepertoire" />
+            <Text x:Name="ANavigationTenor" />
+            <Text x:Name="ANavigationTaxonomy" />
+            <Text x:Name="ANavigationStudy" />
+            <Text x:Name="ANavigationDeck" />
+            <Text x:Name="ANavigationScoreboard" />
+        </Split>
+        <Split Rows="1,1,1">
+            <Text x:Name="ANavigationCorpus" />
+            <Text x:Name="ANavigationSource" />
+            <Text x:Name="ANavigationGuild" />
+        </Split>
+        <Split Rows="1,1">
+            <Text x:Name="ANavigationXiesheng" />
+            <Text x:Name="ANavigationYunjing" />
+        </Split>
+        <Split Rows="1,1">
+            <Text x:Name="ANavigationDuplex" />
+            <Text x:Name="ANavigationSettings" />
+        </Split>
+    </Frame>
+</Blueprint>

@@ -4,6 +4,7 @@
     <Blueprint Source="Shell/AWindow.xaml" />
     <Blueprint Source="Shell/ANotice.xaml" />
     <Blueprint Source="Shell/ASParley.xaml" />
+    <Blueprint Source="Shell/ASNavigation.xaml" />
 
     <Glyphs
         x:Key="double"
