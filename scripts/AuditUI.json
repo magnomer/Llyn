@@ -240,7 +240,12 @@
       "IsKeyboardFocused",
       "IsKeyboardFocusWithin"
     ],
-    "truthHandles": [],
+    "truthHandles": [
+      "BDrop",
+      "BField",
+      "BSParleyButton",
+      "BTable"
+    ],
     "moonlightingVerbs": [
       "Aggregate",
       "All",

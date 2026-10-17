@@ -24,4 +24,18 @@ public sealed class TLoop
 
         Assert.Equal(1, batches);
     }
+
+    [Fact]
+    public void LoopRun_RunFault_CallsRunFault()
+    {
+        List<string> faults = [];
+        TaskCompletionSource done = new();
+        BLoop loop = new(exception => faults.Add($"loop {exception.Message}"));
+        loop.BLoopDefer(static () => throw new InvalidOperationException("broken"));
+        loop.BLoopDefer(done.SetResult);
+
+        loop.BLoopRun(done.Task, exception => faults.Add($"run {exception.Message}"));
+
+        Assert.Equal(["run broken"], faults);
+    }
 }

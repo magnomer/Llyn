@@ -15,8 +15,9 @@ internal sealed class BWindow
     private const int BWindowNoticeHeight = 8;
 
     private readonly BConsole _bWindowConsole;
+    private readonly BLoop _bWindowLoop;
     private readonly BLocalizationCatalog _bWindowCatalog;
-    private readonly CAtelier _bWindowAtelier;
+    private readonly CAtelier? _bWindowAtelier;
     private readonly CEnvoy _bWindowEnvoy;
     private readonly BTheme _bWindowTheme;
     private readonly IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<string>>> _bWindowGlyphs;
@@ -26,26 +27,29 @@ internal sealed class BWindow
     private readonly BBlueprintPart _bWindowNotice;
     private readonly BBlueprintPart _bWindowNoticeText;
     private readonly TaskCompletionSource _bWindowExit = new();
+    private readonly List<BSParley> _bWindowParleys = [];
     private (int BConsoleWidth, int BConsoleHeight) _bWindowSize;
     private BCanvas? _bWindowCanvas;
     private bool _bWindowChanged;
 
     internal BWindow(
         BConsole console,
+        BLoop loop,
         BLocalizationCatalog catalog,
-        CAtelier atelier,
+        CAtelier? atelier,
         CEnvoy envoy,
         BBlueprint blueprint,
         BTheme theme)
     {
         ArgumentNullException.ThrowIfNull(console);
+        ArgumentNullException.ThrowIfNull(loop);
         ArgumentNullException.ThrowIfNull(catalog);
-        ArgumentNullException.ThrowIfNull(atelier);
         ArgumentNullException.ThrowIfNull(envoy);
         ArgumentNullException.ThrowIfNull(blueprint);
         ArgumentNullException.ThrowIfNull(theme);
 
         _bWindowConsole = console;
+        _bWindowLoop = loop;
         _bWindowCatalog = catalog;
         _bWindowAtelier = atelier;
         _bWindowEnvoy = envoy;
@@ -64,7 +68,10 @@ internal sealed class BWindow
     {
         (int width, int height) = _bWindowConsole.BConsoleSizeRead();
         BWindowSizeObserve(width, height);
-        _bWindowAtelier.CAtelierOpen(_bWindowEnvoy, BObserver.BObserverCreate<Action>(static work => work()));
+        if (_bWindowAtelier is CAtelier atelier)
+        {
+            atelier.CAtelierOpen(_bWindowEnvoy, BObserver.BObserverCreate<Action>(static work => work()));
+        }
     }
 
     internal void BWindowSizeObserve(int width, int height)
@@ -96,13 +103,44 @@ internal sealed class BWindow
 
     internal void BWindowKeyObserve(ConsoleKeyInfo key)
     {
-        bool quit = key.Key == ConsoleKey.F10
-            || (key.Key == ConsoleKey.C && key.Modifiers == ConsoleModifiers.Control)
+        bool interrupt = (key.Key == ConsoleKey.C && key.Modifiers == ConsoleModifiers.Control)
             || key.KeyChar == '\u0003';
-        if (quit && _bWindowAtelier.CAtelierQuitConfirm(_bWindowEnvoy))
+        (int width, int height) = _bWindowSize;
+        bool small = width < BWindowWidthMinimum || height < BWindowHeightMinimum;
+        if (!interrupt && !small && _bWindowParleys.Count > 0)
+        {
+            BSParley parley = _bWindowParleys[^1];
+            parley.BSParleyKeyObserve(key);
+            if (parley.BSParleyAnswer.IsCompleted)
+            {
+                _bWindowParleys.Remove(parley);
+            }
+
+            _bWindowChanged = true;
+            return;
+        }
+
+        if ((interrupt || key.Key == ConsoleKey.F10)
+            && (_bWindowAtelier is not CAtelier atelier || atelier.CAtelierQuitConfirm(_bWindowEnvoy)))
         {
             _bWindowExit.TrySetResult();
         }
+    }
+
+    internal int? BWindowParleyConsult(BSParley parley, Action<Exception>? fault = null)
+    {
+        ArgumentNullException.ThrowIfNull(parley);
+
+        if (_bWindowExit.Task.IsCompleted)
+        {
+            return null;
+        }
+
+        _bWindowParleys.Add(parley);
+        _bWindowChanged = true;
+        _bWindowLoop.BLoopRun(Task.WhenAny(parley.BSParleyAnswer, _bWindowExit.Task), fault);
+        parley.BSParleyKeyObserve(new ConsoleKeyInfo('\e', ConsoleKey.Escape, false, false, false));
+        return parley.BSParleyAnswer.Result;
     }
 
     private IEnumerable<BCanvasText> BWindowFrameBuild(int width, int height)
@@ -122,18 +160,28 @@ internal sealed class BWindow
             establishment.BBlueprintPartTheme);
         BBlueprintPart legend = _bWindowLegend;
         foreach (BCanvasText key in BWindowLegendBuild(
-            legend.BBlueprintPartRow, legend.BBlueprintPartColumn + (9 * BWindowLegendWidth)))
+            legend.BBlueprintPartRow,
+            legend.BBlueprintPartColumn + (9 * BWindowLegendWidth),
+            _bWindowParleys.Count > 0 ? "Legend.Close" : "Legend.Quit"))
         {
             yield return key;
         }
+
+        foreach (BSParley parley in _bWindowParleys)
+        {
+            foreach (BCanvasText text in parley.BSParleyDraw(_bWindowGlyphs, width, height))
+            {
+                yield return text;
+            }
+        }
     }
 
-    private IEnumerable<BCanvasText> BWindowLegendBuild(int row, int column)
+    private IEnumerable<BCanvasText> BWindowLegendBuild(int row, int column, string key)
     {
         string theme = _bWindowLegend.BBlueprintPartTheme;
-        string quit = _bWindowCatalog.BLocalizationTextRead("Legend.Quit");
+        string label = _bWindowCatalog.BLocalizationTextRead(key);
         yield return new BCanvasText(row, column, 2, "10", $"{theme}-number");
-        yield return new BCanvasText(row, column + 2, BWindowLegendWidth - 2, quit, $"{theme}-label");
+        yield return new BCanvasText(row, column + 2, BWindowLegendWidth - 2, label, $"{theme}-label");
     }
 
     private IEnumerable<BCanvasText> BWindowNoticeBuild(int width, int height)
@@ -178,7 +226,7 @@ internal sealed class BWindow
                 text.BBlueprintPartRow + line, text.BBlueprintPartColumn, text.BBlueprintPartWidth, lines[line], theme);
         }
 
-        foreach (BCanvasText key in BWindowLegendBuild(height - 1, 0))
+        foreach (BCanvasText key in BWindowLegendBuild(height - 1, 0, "Legend.Quit"))
         {
             yield return key;
         }

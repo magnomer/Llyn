@@ -183,6 +183,7 @@
     "Customs.Accept": "Import",
     "Customs.Cancel": "{Terms.cancel}",
     "Customs.Close": "Close",
+    "Customs.Position": "{0} of {1}",
     "Deck.New": "New {terms.deck}",
     "Deck.NameSet": "{Terms.deck} name",
     "Deck.Delete": "Delete {terms.deck}",
@@ -1032,6 +1033,10 @@
     "Invocation.ReplaceConfirm": "The file {0} already exists. Replace it?",
     "Window.Opening": "Opening…",
     "Window.Small": "{Terms.product} needs a console of at least {0} by {1} cells. This one is {2} by {3}. Make the window larger to go on.",
-    "Legend.Quit": "Quit"
+    "Legend.Quit": "Quit",
+    "Legend.Close": "{Terms.close}",
+    "Parley.Yes": "Yes",
+    "Parley.No": "No",
+    "Parley.Ok": "OK"
   }
 }

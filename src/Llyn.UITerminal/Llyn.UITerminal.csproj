@@ -11,6 +11,7 @@
     <EmbeddedResource Include="ABootstrap.xaml" />
     <EmbeddedResource Include="Shell\AWindow.xaml" />
     <EmbeddedResource Include="Shell\ANotice.xaml" />
+    <EmbeddedResource Include="Shell\ASParley.xaml" />
   </ItemGroup>
 
   <ItemGroup>

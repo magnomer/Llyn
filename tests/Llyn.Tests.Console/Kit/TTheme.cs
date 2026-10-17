@@ -95,6 +95,7 @@ public sealed class TTheme
         const string missing = "The theme 'console-blue' is missing.";
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         TConsoleFake console = new() { TConsoleFakeTerminal = true };
+        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\e', ConsoleKey.Escape, false, false, false));
         console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\0', ConsoleKey.F10, false, false, false));
 
         int code = TInvocation.TInvocationRun(
@@ -107,7 +108,11 @@ public sealed class TTheme
             TInterfaceConduct.TAtelierCreate);
 
         Assert.Equal(0, code);
-        Assert.Contains($"llyn: The console theme could not be loaded. {missing}", console.TConsoleFakeError);
+        string shot = string.Join('\n', console.TConsoleFakeShots[0]);
+        Assert.Contains($"║  {"The console theme could not be loaded.",-52}  ║", shot);
+        Assert.Contains($"║  {missing,-52}  ║", shot);
+        Assert.Empty(console.TConsoleFakeError);
+        Assert.DoesNotContain(new BTheme(BTheme.BThemeSpareRead).BThemeRead("alert"), console.TConsoleFakeFrames[0]);
         Assert.Contains("\e[96;44m", console.TConsoleFakeFrames[0]);
     }
 }

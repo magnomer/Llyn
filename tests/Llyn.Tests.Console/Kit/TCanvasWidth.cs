@@ -60,6 +60,12 @@ public sealed class TCanvasWidth
     }
 
     [Fact]
+    public void CanvasWidthDivide_PathPastSpan_BreaksAfterSeparators()
+    {
+        Assert.Equal(["C:\\ab\\", "c d\\ef"], new BCanvasWidth(false).BCanvasWidthDivide("C:\\ab\\c d\\ef", 6, "\\/"));
+    }
+
+    [Fact]
     public void CanvasWidthResolve_MixedText_SumsClusters()
     {
         Assert.Equal(6, new BCanvasWidth(false).BCanvasWidthResolve("水áǐ❤️"));

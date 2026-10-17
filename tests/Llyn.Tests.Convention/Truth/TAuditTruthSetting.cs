@@ -139,7 +139,7 @@ internal static class TAuditTruthSetting
         "IsKeyboardFocusWithin",
     ];
 
-    public static readonly string[] TAuditTruthHandles = [];
+    public static readonly string[] TAuditTruthHandles = ["BDrop", "BField", "BSParleyButton", "BTable"];
 
     public static readonly string[] TAuditMoonlightingVerbs =
     [

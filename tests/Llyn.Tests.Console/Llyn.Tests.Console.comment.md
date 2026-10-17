@@ -38,6 +38,8 @@ Each print lands in a list, so a test asserts stdout and stderr line by line.
 The terminal answer and the line to read are set by the test.
 The mode apply does nothing, since no code page exists to change.
 The trail lists notices and restore calls in order, so a test asserts what printed after the restore.
+Each frame also keeps a copy of the grid, so a test reads what a box showed after it closed.
+A test may set a count of frames to refuse, and each refused frame throws after it is recorded.
 The window flag is null before the apply, true after it and false after the restore.
 
 ## `TConsoleFakeFrames`
@@ -66,6 +68,6 @@ So the test sees every size drawn.
 
 ## Stamp
 
-Commit: `92c4426f8506`
+Commit: `9a85a3ab82db`
 - `Llyn.Tests.Console.csproj` `bceadb309d05ccaa`
-- `TConsoleFake.cs` `15cf08ae6b513d96`
+- `TConsoleFake.cs` `41420280f27df3b7`

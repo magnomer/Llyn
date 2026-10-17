@@ -12,6 +12,7 @@ The console port and the blueprint come through the constructor, so no member se
 The blueprint is the UI family's own `BBlueprint`, so Demeanor names no concrete screen file.
 The bootstrap owns the loop and the catalog, and later drivers receive them from it.
 In the communicative mode it also owns the window's envoy, and the notices of `BBootstrapNoticePrint` wait there.
+The same mode keeps a rescue and a theme reason until the window can show them in a box.
 
 ## `BBootstrapNoticeHead`
 
@@ -34,11 +35,11 @@ Its presence tells every later step that the window mode is running.
 Installs the loop as the thread's context first, then applies the console modes.
 It loads the default catalog and chooses the mode before the workspace opens.
 No arguments with stdin and stdout on a terminal is the communicative mode.
-That mode builds the envoy, then the console theme, and then applies the window.
+That mode builds the envoy with the blueprint, then the console theme, and then applies the window.
 It then builds the engine as a leased start.
 The theme seam answers a named theme as a role-to-colour function, and the start asks for `console-blue`.
 A theme that fails to load or parse falls back to the built-in spare palette.
-The failure is held as a notice with the `llyn: ` head and the reason, and the start goes on.
+Only the reason is kept, the window shows it in a box once it runs, and the start goes on.
 Strict mode builds no theme.
 Any other start is strict mode, parsed by `BInvocationParse` before the workspace opens.
 A usage error prints its sentence on stderr and returns 2, and the workspace never opens.
@@ -61,7 +62,9 @@ Without an envoy no notice is held, and the restore only puts the modes back.
 Reads the workspace and builds the engine, as `QBootstrapBuild` does for the GUI.
 It passes the lease flag on to the build seam with the workspace.
 A failure shows the sentence `CAtelierRefusalRead` chooses, the workspace and the reason, and the start exits 3.
-The three lines go through `BBootstrapNoticePrint`, so a window start holds them.
+In the window mode it first opens the window.
+It shows the refusal in an alert box, with the workspace as a path line.
+Then the three lines go through `BBootstrapNoticePrint`, so a window start holds them for after the restore.
 
 ## `BBootstrapCatalogApply`
 
@@ -71,6 +74,7 @@ A failed load keeps the default catalog and shows a fixed English warning.
 ## `BBootstrapRescueConsult`
 
 Shows the rescue notice, the backup path and the reason, when the start rescued a database.
+In the window mode it only keeps them, and `BBootstrapNoticeShow` draws the box when the run starts.
 
 ## `BBootstrapFaultIntroduce`
 
@@ -82,9 +86,9 @@ Runs the loop for one atelier and returns the exit code.
 It takes a seam and asks it for a detached atelier, so a command line never touches a stored layout.
 The seam is called after the invocation check, so a missing invocation throws before any atelier exists.
 With the window's envoy it opens a `BWindow` on an attached atelier instead.
-The window gets the blueprint and the theme, and a held theme notice goes to the envoy first.
-The window opens as the loop's first work item.
-The window's batch, key and size observers attach to the loop before it runs.
+`BBootstrapWindowAttach` builds the window with the loop, the blueprint and the theme, and gives it to the envoy.
+It opens as the loop's first work item, and its batch, key and size observers attach to the loop.
+The held rescue and theme reason are shown as the next item.
 The loop ends when the window's exit task completes, and the run returns 0.
 The presence seam answers whether a path names an existing file.
 The strict run hands it to the invocation.
@@ -94,11 +98,24 @@ A fault in that item prints the fault notice and ends the run with 4.
 The atelier closes on every return, as the GUI window closes it on exit.
 The atelier is never opened by a strict verb, since each verb calls only the gates of its own action.
 
+## `BBootstrapNoticeShow`
+
+Shows the kept rescue first, then the kept theme reason, each in its own box.
+Each box waits for its answer before the next draws.
+
 ## `BBootstrapFaultObserve`
 
-Hears a work item's fault from the loop, records it and shows the fault notice with the log path.
+Hears a work item's fault from the loop and records it through the audit seam.
+In the window mode the envoy shows a fault box with the log path and the message.
+Without a window it prints the fault notice through `BBootstrapFaultPrint`.
 The loop then runs on, as the dispatcher does after a handled fault.
 Before `BBootstrapFaultIntroduce` the audit seam records nothing, yet the notice still shows.
+
+## `BBootstrapFaultPrint`
+
+Records the fault and sends the head, the log path and the message to `BBootstrapNoticePrint`.
+The envoy hands it to the fault box as the handler of the box's own run.
+So a box that fails to draw still leaves a notice.
 
 ## `BBootstrapNoticePrint`
 
@@ -107,9 +124,70 @@ Holding the line keeps the alternate screen from hiding it.
 
 ## `BEnvoy`
 
-The window's answer to Conduct's `CEnvoy`, with no panel to ask yet.
-Every question is answered with its refusing default and every read returns null or false.
+The window's answer to Conduct's `CEnvoy`, which asks through sublevel boxes drawn over the window.
+It answers confirms, failures, the leave question, a coinage name, the import dialog and the omission list.
+The other reads, such as file, workspace, folder, media and markup, still return null, and the press read false.
+It finds `ASParley` in the blueprint, and takes the arrow from that blueprint's glyphs.
+A box needs the window, which `BEnvoyWindowAttach` gives it.
+Without a window every show falls back to a held notice, and every question gets no answer.
 The envoy holds notice lines under a lock, since a fault may come from another thread.
+
+## `BEnvoyParleyConsult`
+
+Builds one box and asks the window to run it.
+A question has Yes and No buttons with No as the safe answer, and any other box has OK.
+The leave, coinage and import boxes name their own buttons, and the last is the safe one.
+It answers null when no window is attached or the window has exited.
+
+## `BEnvoyFaultShow`
+
+Shows a fault box in the `alert` role with the message, and the log path as a path line.
+The fault handler of the box's own run is the one passed in.
+A box that cannot show holds the same lines as notices.
+
+## `BEnvoyRefusalShow`
+
+Shows the start refusal, the workspace and the reason as an alert box with OK.
+
+## `BEnvoyRescueShow`
+
+Shows the rescue sentence, the backup path and the reason in a `dialog` box.
+A box that cannot show holds the same lines as notices.
+
+## `BEnvoyThemeShow`
+
+Shows a fixed English theme sentence and the reason in a `dialog` box.
+The sentence is English because the catalog holds no key for it.
+A box that cannot show holds the head, the sentence and the reason as one notice.
+
+## `CEnvoyConfirm`
+
+Asks in an alert box, or in a dialog box when a tally follows the question.
+Only Yes answers true, and Escape answers No.
+
+## `CEnvoyUnionConfirm`
+
+Asks a dialog box with the dropped and the kept name around the arrow.
+
+## `CEnvoyLeaveConfirm`
+
+Asks with Save, Discard and Cancel, and Cancel is the safe answer.
+Save answers true, Discard false and anything else null.
+
+## `CEnvoyCoinageRead`
+
+Asks for a name in a field, and the Create button is enabled only while the wording is valid.
+It answers the typed text when Create is pressed, and otherwise null.
+
+## `CEnvoyCustomsRead`
+
+Shows the import dialog with an Import button on F2 and a Cancel button.
+Import starts enabled only if every row is ready.
+It answers true only when Import is pressed.
+
+## `BEnvoyWindowAttach`
+
+Gives the envoy the window it draws its boxes on.
 
 ## `BEnvoyNoticeAdd`
 
@@ -121,12 +199,14 @@ Prints the held lines on stderr in order, then clears them.
 
 ## `CEnvoyFailureShow`
 
-Holds the failure sentence after the `llyn: ` head, as strict mode prints it.
-With a ledger notice it holds the notice's sentence too, and its label and path when both exist.
+Shows the failure sentence in an alert box with OK.
+With a ledger notice the box adds the notice's sentence, and its label and path when both exist.
+A box that cannot show holds the same sentences after the `llyn: ` head, as strict mode prints them.
 
 ## `CEnvoyOmissionShow`
 
-Holds one line per omission, with its line number and text, after the same head.
+Shows the omissions in a box with a Close button.
+A box that cannot show holds one line per omission, with its line number and text, after the same head.
 
 ## `BWindow`
 
@@ -137,10 +217,12 @@ The constructor finds `AEstablishment` and `ALegend` in `AWindow` and `ANoticeTe
 A missing blueprint or part throws at construction, not while drawing.
 Below 80 by 24 cells it draws only the small-console notice, wrapped by cells.
 The window ends the run through `BWindowExit` and holds the atelier and the envoy it was given.
+The atelier may be null, when the start was refused and only a box is shown.
+It also holds the loop and the stack of open boxes.
 
 ## `BWindowOpen`
 
-Reads the size, observes it and then opens the atelier with the envoy.
+Reads the size, observes it and then opens the atelier with the envoy, when there is one.
 The marshal it hands over comes from `BObserverCreate`.
 Work from the loop's thread runs at once, and other work is deferred onto the loop.
 
@@ -152,27 +234,39 @@ The new canvas starts blank, so the next sync prints the whole frame.
 
 ## `BWindowBatchObserve`
 
-Draws and syncs the frame once when the size changed since the last batch.
-Keys that change nothing print no frame, so a burst of them costs nothing.
+Draws and syncs the frame once when a size or a box key marked it changed since the last batch.
+Without a mark no frame is built, so a burst of keys costs one frame.
 
 ## `BWindowKeyObserve`
 
-Treats F10, Ctrl+C and the character U+0003 as a request to quit.
+With a box open and the console large enough, every key except Ctrl+C goes to the top box.
+A box that has answered leaves the stack, and the frame is marked changed.
+Otherwise F10, Ctrl+C and the character U+0003 are a request to quit.
 The atelier's quit confirmation decides, and only a yes completes the exit task.
-Every other key does nothing yet.
+Without an atelier the request quits at once.
+Every other key does nothing.
+
+## `BWindowParleyConsult`
+
+Puts a box on the stack and runs the loop nested until the box answers or the window exits.
+Queued work keeps running in the nested loop, and a fault there goes to the handler given.
+When the window exits, the box gets Escape, so it answers its safe index.
+It answers null at once if the window has already exited.
 
 ## `BWindowFrameBuild`
 
 Places the `AWindow` blueprint for the current size and draws its frames with the glyph set each names.
+The open boxes draw last, in stack order, so the top box covers the rest.
 The opening line fills `AEstablishment`, one cell in from the left.
-The legend puts `10` and `Legend.Quit` nine slots of 8 cells right of the `ALegend` column, so at column 72.
+The legend puts `10` and its label nine slots of 8 cells right of `ALegend`, so at column 72.
+The label is `Legend.Quit`, or `Legend.Close` while a box is open.
 The left half is half the width, and the right half takes the rest.
 Each half has a rule above its last inner row.
 Row 0 is the roof and stays blank.
 
 ## `BWindowLegendBuild`
 
-Places one legend key, the number and then its label.
+Places one legend key, the number and then the label of the key it is given.
 The two roles are the legend's theme with `-number` and `-label` added, so the theme file styles them.
 
 ## `BWindowNoticeBuild`
@@ -200,8 +294,8 @@ It refuses a thread with no loop, since the marshal would have nowhere to go.
 
 ## Stamp
 
-Commit: `92c4426f8506`
-- `BBootstrap.cs` `e5d3454404fd8520`
-- `BEnvoy.cs` `15ac0daeb21b5ed5`
+Commit: `9a85a3ab82db`
+- `BBootstrap.cs` `4ef31cb830fd2059`
+- `BEnvoy.cs` `0d329ee34b22daeb`
 - `BObserver.cs` `55a41481c90c90c6`
-- `BWindow.cs` `2c84c82386472e36`
+- `BWindow.cs` `954b2630ad2b98f3`

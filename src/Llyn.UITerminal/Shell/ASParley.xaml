@@ -1,0 +1,10 @@
+<Blueprint
+    x:Name="ASParley"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Frame Theme="dialog" Glyphs="double">
+        <Split Rows="*,1" Margin="2,1">
+            <Text x:Name="ASParleyText" Theme="dialog" Margin="0,0,0,1" />
+            <Text x:Name="ASParleyButton" Theme="dialog" />
+        </Split>
+    </Frame>
+</Blueprint>

@@ -14,7 +14,7 @@ public sealed class TBlueprint
     {
         ABootstrap bootstrap = new();
 
-        Assert.Equal(["AWindow", "ANotice"], bootstrap.BBlueprintParts.Keys);
+        Assert.Equal(["AWindow", "ANotice", "ASParley"], bootstrap.BBlueprintParts.Keys);
         Assert.Equal(["double", "single", "ascii"], bootstrap.BBlueprintGlyphs.Keys);
     }
 
@@ -34,11 +34,13 @@ public sealed class TBlueprint
         TConsoleFake console = new();
         BLocalizationCatalog catalog = new();
         CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, false);
-        BEnvoy envoy = new(console, catalog);
-        BTheme theme = new(BTheme.BThemeSpareRead);
         ABootstrap bootstrap = new();
+        BEnvoy envoy = new(console, catalog, bootstrap);
+        BTheme theme = new(BTheme.BThemeSpareRead);
+        BLoop loop = new(static _ => { });
 
-        Exception? fault = Record.Exception(() => new BWindow(console, catalog, atelier, envoy, bootstrap, theme));
+        Exception? fault = Record.Exception(
+            () => new BWindow(console, loop, catalog, atelier, envoy, bootstrap, theme));
 
         Assert.Null(fault);
     }

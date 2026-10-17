@@ -3,6 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Blueprint Source="Shell/AWindow.xaml" />
     <Blueprint Source="Shell/ANotice.xaml" />
+    <Blueprint Source="Shell/ASParley.xaml" />
 
     <Glyphs
         x:Key="double"

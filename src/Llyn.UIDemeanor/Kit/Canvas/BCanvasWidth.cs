@@ -46,7 +46,7 @@ internal sealed class BCanvasWidth
         return width;
     }
 
-    public IReadOnlyList<string> BCanvasWidthDivide(string text, int span)
+    public IReadOnlyList<string> BCanvasWidthDivide(string text, int span, string? separators = null)
     {
         ArgumentNullException.ThrowIfNull(text);
 
@@ -66,7 +66,7 @@ internal sealed class BCanvasWidth
         int first = 0;
         while (span > 0 && first < clusters.Count)
         {
-            if (clusters[first].BCanvasWidthCluster == " ")
+            if (separators is null && clusters[first].BCanvasWidthCluster == " ")
             {
                 first++;
                 continue;
@@ -80,7 +80,13 @@ internal sealed class BCanvasWidth
                 bool wide = stop < clusters.Count
                     && clusters[stop - 1] is { BCanvasWidthCells: 2, BCanvasWidthHangul: false }
                     && clusters[stop] is { BCanvasWidthCells: 2, BCanvasWidthHangul: false };
-                if (stop < clusters.Count && (clusters[stop].BCanvasWidthCluster == " " || wide))
+                bool after = separators is not null
+                    && clusters[stop - 1].BCanvasWidthCluster is [char mark]
+                    && separators.Contains(mark, StringComparison.Ordinal);
+                bool before = separators is null
+                    && stop < clusters.Count
+                    && (clusters[stop].BCanvasWidthCluster == " " || wide);
+                if (after || before)
                 {
                     cut = stop;
                 }

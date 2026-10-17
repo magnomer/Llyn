@@ -181,9 +181,36 @@ public sealed class TWindow
     }
 
     [Fact]
+    public void BootstrapFaultObserve_WindowRunning_DrawsFaultBox()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        TConsoleFake console = new() { TConsoleFakeTerminal = true };
+        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\r', ConsoleKey.Enter, false, false, false));
+        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\0', ConsoleKey.F10, false, false, false));
+
+        int code = TInvocation.TInvocationRun(
+            console,
+            workspace.TWorkspaceFolder,
+            (_, _) => new LEngine(
+                workspace.TWorkspaceRigCreate(), _ => workspace.TWorkspaceRigCreate(), static _ => { }, true),
+            static (engine, detached) =>
+            {
+                SynchronizationContext.Current!.Post(static _ => throw new InvalidOperationException("broken"), null);
+                return TInterfaceConduct.TAtelierCreate(engine, detached);
+            });
+
+        string[] shot = console.TConsoleFakeShots[0];
+        Assert.Equal($"║  {"Something went wrong. The details were written to",-52}  ║", shot[8][10..68]);
+        Assert.Equal($"║  {"broken",-52}  ║", shot[11][10..68]);
+        Assert.Equal(0, code);
+        Assert.Empty(console.TConsoleFakeError);
+    }
+
+    [Fact]
     public void BootstrapIntroduce_WindowWorkspaceBusy_ExitsThree()
     {
         TConsoleFake console = new() { TConsoleFakeTerminal = true };
+        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\e', ConsoleKey.Escape, false, false, false));
 
         int code = TInvocation.TInvocationRun(console, "D:\\Busy", (_, _) => throw new IOException("locked"));
 
@@ -191,7 +218,7 @@ public sealed class TWindow
         string busy = "llyn: The workspace database is in use by another program. Close it and try again.";
         Assert.Equal([busy, "D:\\Busy", "locked"], console.TConsoleFakeError);
         Assert.False(console.TConsoleFakeWindow);
-        Assert.Empty(console.TConsoleFakeFrames);
+        Assert.NotEmpty(console.TConsoleFakeFrames);
     }
 
     [Fact]
@@ -216,6 +243,7 @@ public sealed class TWindow
     public void BootstrapIntroduce_WindowRefusal_PrintsAfterRestore()
     {
         TConsoleFake console = new() { TConsoleFakeTerminal = true };
+        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\r', ConsoleKey.Enter, false, false, false));
 
         TInvocation.TInvocationRun(console, "D:\\Busy", (_, _) => throw new IOException("locked"));
 

@@ -19,10 +19,11 @@ public sealed class BLoop : SynchronizationContext
         _bLoopFault = fault;
     }
 
-    public void BLoopRun(Task until)
+    public void BLoopRun(Task until, Action<Exception>? fault = null)
     {
         ArgumentNullException.ThrowIfNull(until);
 
+        Action<Exception> observe = fault ?? _bLoopFault;
         until.ContinueWith(
             static (_, loop) => ((BLoop)loop!).BLoopDefer(static () => { }),
             this,
@@ -30,18 +31,23 @@ public sealed class BLoop : SynchronizationContext
             TaskContinuationOptions.ExecuteSynchronously,
             TaskScheduler.Default);
 
+        if (_bLoopQueue.Count == 0)
+        {
+            BLoopWorkRun(_bLoopBatch, observe);
+        }
+
         while (!until.IsCompleted)
         {
             Action work = _bLoopQueue.Take();
-            BLoopWorkRun(work);
+            BLoopWorkRun(work, observe);
             if (_bLoopQueue.Count == 0)
             {
-                BLoopWorkRun(_bLoopBatch);
+                BLoopWorkRun(_bLoopBatch, observe);
             }
         }
     }
 
-    private void BLoopWorkRun(Action work)
+    private static void BLoopWorkRun(Action work, Action<Exception> fault)
     {
         try
         {
@@ -49,7 +55,7 @@ public sealed class BLoop : SynchronizationContext
         }
         catch (Exception exception)
         {
-            _bLoopFault(exception);
+            fault(exception);
         }
     }
 

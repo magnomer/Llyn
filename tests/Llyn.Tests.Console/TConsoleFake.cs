@@ -23,11 +23,15 @@ internal sealed class TConsoleFake : BConsole
 
     public int TConsoleFakeHeight { get; set; } = 24;
 
+    public int TConsoleFakeFaults { get; set; }
+
     public BlockingCollection<ConsoleKeyInfo> TConsoleFakeKeys { get; } = [];
 
     public bool? TConsoleFakeWindow { get; private set; }
 
     public List<string> TConsoleFakeFrames { get; } = [];
+
+    public List<string[]> TConsoleFakeShots { get; } = [];
 
     public string[] TConsoleFakeGrid =>
         _tConsoleFakeCells?.Select(static row => string.Concat(row)).ToArray() ?? [];
@@ -114,9 +118,16 @@ internal sealed class TConsoleFake : BConsole
             column += cells;
         }
 
+        TConsoleFakeShots.Add(TConsoleFakeGrid);
         lock (_tConsoleFakeSizes)
         {
             Monitor.PulseAll(_tConsoleFakeSizes);
+        }
+
+        if (TConsoleFakeFaults > 0)
+        {
+            TConsoleFakeFaults--;
+            throw new IOException("The console refused the frame.");
         }
     }
 

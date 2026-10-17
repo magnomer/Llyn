@@ -1,7 +1,7 @@
 # Shell
 
 The blueprints of the console's start screens.
-Each file holds one `Blueprint` with a name that `BWindow` finds by contract.
+Each file holds one `Blueprint` with a name that the window, the envoy or the box finds by contract.
 Draw order and area come from the file, and the words come from the localization catalog.
 
 ## `AWindow.xaml`
@@ -21,8 +21,18 @@ One `double` frame in the `dialog` theme holds `ANoticeText`, the notice text.
 The text has a margin of two columns and one row.
 The window reads the text part's size to wrap the notice and to size the frame.
 
+## `ASParley.xaml`
+
+The sublevel box the console draws over the window.
+One `double` frame in the `dialog` theme holds a split of a weighted row and a row of 1.
+The split has a margin of two columns and one row.
+The first row is `ASParleyText`, with a bottom margin of one row, and the last is `ASParleyButton`.
+`BSParley` finds both parts by name, so renaming either breaks its construction.
+The frame names its glyph set, which the box draws and the envoy reads for the arrow.
+
 ## Stamp
 
-Commit: `92c4426f8506`
+Commit: `9a85a3ab82db`
 - `ANotice.xaml` `30a72b1b0e5d1943`
+- `ASParley.xaml` `9c08cc18227e74bb`
 - `AWindow.xaml` `987c9213804d9ba1`

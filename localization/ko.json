@@ -183,6 +183,7 @@
     "Customs.Accept": "가져오기",
     "Customs.Cancel": "{Terms.cancel}",
     "Customs.Close": "닫기",
+    "Customs.Position": "{1}개 중 {0}",
     "Deck.New": "새 {terms.deck}",
     "Deck.NameSet": "{terms.deck} 이름",
     "Deck.Delete": "{terms.deck} 삭제",
@@ -1032,6 +1033,10 @@
     "Invocation.ReplaceConfirm": "파일 {0}이(가) 이미 있습니다. 바꿀까요?",
     "Window.Opening": "여는 중…",
     "Window.Small": "{Terms.product}에는 가로 {0}칸, 세로 {1}칸 이상인 콘솔이 필요합니다. 이 콘솔은 가로 {2}칸, 세로 {3}칸입니다. 창을 키우면 이어집니다.",
-    "Legend.Quit": "끝내기"
+    "Legend.Quit": "끝내기",
+    "Legend.Close": "{Terms.close}",
+    "Parley.Yes": "예",
+    "Parley.No": "아니요",
+    "Parley.Ok": "확인"
   }
 }

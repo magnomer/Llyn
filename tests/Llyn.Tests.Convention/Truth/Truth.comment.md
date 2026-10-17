@@ -231,7 +231,8 @@ The handles are driver types a driver field may hold as a handle rather than as 
 A handle is called on and passed on, so the field is skipped before any rule reads it.
 A Conduct type is a handle by rule and is never listed.
 A type from below Conduct is never a handle, so holding one is a duplicating hit counted in the ledger.
-The list is empty now that the veneer helpers take Conduct's atelier, which is a handle by rule.
+The list names `BDrop`, `BField`, `BSParleyButton` and `BTable`, the console controls that keep their view state.
+The console keeps that state in these controls as the GUI keeps it in WPF controls.
 A type is matched as the binder shows it, with any nullable mark dropped.
 The moonlighting verbs are query methods that, applied to a value from below Conduct, are moonlighting.
 
@@ -339,13 +340,13 @@ A hit through a ref parameter names that parameter, as a hit through a local nam
 
 ## Stamp
 
-Commit: `ed7d18d90760`
+Commit: `9a85a3ab82db`
 - `TAuditTruth.cs` `f4afca1c124eb6ca`
 - `TAuditTruthField.cs` `bda475280d6b7bcb`
 - `TAuditTruthLedger.json` `c50bb25b609b47e9`
 - `TAuditTruthLocal.cs` `4baaaa83b0678024`
 - `TAuditTruthReference.cs` `3c96dcfa5aa99002`
 - `TAuditTruthSequence.cs` `a5a77f14c0b84d98`
-- `TAuditTruthSetting.cs` `566ece867a403943`
+- `TAuditTruthSetting.cs` `bc16939d83198ec8`
 - `TAuditTruthTampering.cs` `78e63b421c0ee57e`
 - `TAuditTruthWalker.cs` `6f9d273d1926e234`

@@ -18,7 +18,9 @@ public sealed class BBootstrap
     private BInvocation? _bBootstrapInvocation;
     private BEnvoy? _bBootstrapEnvoy;
     private BTheme? _bBootstrapTheme;
-    private string? _bBootstrapThemeNotice;
+    private string? _bBootstrapThemeReason;
+    private (string BBootstrapRescueKey, string? BBootstrapRescueBackup, string? BBootstrapRescueReason)?
+        _bBootstrapRescue;
 
     public BBootstrap(BConsole console, BBlueprint blueprint)
     {
@@ -65,7 +67,7 @@ public sealed class BBootstrap
 
             if (args.Length == 0 && _bBootstrapConsole.BConsoleTerminalCheck())
             {
-                _bBootstrapEnvoy = new BEnvoy(_bBootstrapConsole, _bBootstrapCatalog);
+                _bBootstrapEnvoy = new BEnvoy(_bBootstrapConsole, _bBootstrapCatalog, _bBootstrapBlueprint);
                 try
                 {
                     _bBootstrapTheme = new BTheme(themeSeam(BTheme.BThemeDefault));
@@ -73,8 +75,7 @@ public sealed class BBootstrap
                 catch (Exception exception)
                 {
                     _bBootstrapTheme = new BTheme(BTheme.BThemeSpareRead);
-                    _bBootstrapThemeNotice =
-                        $"{BBootstrapNoticeHead}The console theme could not be loaded. {exception.Message}";
+                    _bBootstrapThemeReason = exception.Message;
                 }
 
                 _bBootstrapConsole.BConsoleWindowApply();
@@ -133,8 +134,14 @@ public sealed class BBootstrap
         }
         catch (Exception exception)
         {
-            string refusal = _bBootstrapCatalog.BLocalizationTextRead(
-                CAtelier.CAtelierRefusalRead(busySeam(exception)));
+            string key = CAtelier.CAtelierRefusalRead(busySeam(exception));
+            if (_bBootstrapEnvoy is BEnvoy envoy && _bBootstrapTheme is BTheme theme)
+            {
+                BBootstrapWindowAttach(envoy, theme, null);
+                envoy.BEnvoyRefusalShow(key, workspace, exception.Message);
+            }
+
+            string refusal = _bBootstrapCatalog.BLocalizationTextRead(key);
             BBootstrapNoticePrint(BBootstrapNoticeHead + refusal);
             BBootstrapNoticePrint(workspace);
             BBootstrapNoticePrint(exception.Message);
@@ -171,6 +178,12 @@ public sealed class BBootstrap
             return;
         }
 
+        if (_bBootstrapEnvoy is not null)
+        {
+            _bBootstrapRescue = (key, backup, reason);
+            return;
+        }
+
         BBootstrapNoticePrint(BBootstrapNoticeHead + _bBootstrapCatalog.BLocalizationTextRead(key));
         BBootstrapNoticePrint($"{backup}");
         BBootstrapNoticePrint($"{reason}");
@@ -191,17 +204,9 @@ public sealed class BBootstrap
 
         if (_bBootstrapEnvoy is BEnvoy envoy && _bBootstrapTheme is BTheme theme)
         {
-            if (_bBootstrapThemeNotice is string notice)
-            {
-                envoy.BEnvoyNoticeAdd(notice);
-            }
-
             CAtelier shown = atelierSeam(false);
-            BWindow window = new(_bBootstrapConsole, _bBootstrapCatalog, shown, envoy, _bBootstrapBlueprint, theme);
-            _bBootstrapLoop.BLoopDefer(window.BWindowOpen);
-            _bBootstrapLoop.BLoopBatchAttach(window.BWindowBatchObserve);
-            _bBootstrapLoop.BLoopKeyAttach(_bBootstrapConsole, window.BWindowKeyObserve);
-            _bBootstrapLoop.BLoopSizeAttach(_bBootstrapConsole, window.BWindowSizeObserve);
+            BWindow window = BBootstrapWindowAttach(envoy, theme, shown);
+            _bBootstrapLoop.BLoopDefer(() => BBootstrapNoticeShow(envoy));
             try
             {
                 _bBootstrapLoop.BLoopRun(window.BWindowExit);
@@ -247,7 +252,43 @@ public sealed class BBootstrap
         return run.Task.Result;
     }
 
+    private BWindow BBootstrapWindowAttach(BEnvoy envoy, BTheme theme, CAtelier? atelier)
+    {
+        BWindow window = new(
+            _bBootstrapConsole, _bBootstrapLoop, _bBootstrapCatalog, atelier, envoy, _bBootstrapBlueprint, theme);
+        envoy.BEnvoyWindowAttach(window);
+        _bBootstrapLoop.BLoopDefer(window.BWindowOpen);
+        _bBootstrapLoop.BLoopBatchAttach(window.BWindowBatchObserve);
+        _bBootstrapLoop.BLoopKeyAttach(_bBootstrapConsole, window.BWindowKeyObserve);
+        _bBootstrapLoop.BLoopSizeAttach(_bBootstrapConsole, window.BWindowSizeObserve);
+        return window;
+    }
+
+    private void BBootstrapNoticeShow(BEnvoy envoy)
+    {
+        if (_bBootstrapRescue is var (key, backup, reason))
+        {
+            envoy.BEnvoyRescueShow(key, backup, reason);
+        }
+
+        if (_bBootstrapThemeReason is string theme)
+        {
+            envoy.BEnvoyThemeShow(theme);
+        }
+    }
+
     private void BBootstrapFaultObserve(Exception exception)
+    {
+        if (_bBootstrapEnvoy is not BEnvoy envoy)
+        {
+            BBootstrapFaultPrint(exception);
+            return;
+        }
+
+        envoy.BEnvoyFaultShow(_bBootstrapAudit(exception), exception.Message, BBootstrapFaultPrint);
+    }
+
+    private void BBootstrapFaultPrint(Exception exception)
     {
         string? log = _bBootstrapAudit(exception);
         BBootstrapNoticePrint(BBootstrapNoticeHead + _bBootstrapCatalog.BLocalizationTextRead("Workspace.Fault"));

@@ -90,6 +90,10 @@ Runs deferred work until the given task completes.
 A call inside a work item nests, so a sublevel waits for its answer while queued work keeps running.
 The task's completion defers an empty item, so a run blocked on an empty queue wakes up.
 A work item that throws goes to the fault handler, and the loop runs on.
+A call may bring its own fault handler, which then replaces the loop's for that run.
+So a box that fails to draw reports to the handler of its own run.
+A run that starts with an empty queue runs the batch first.
+So a nested run draws its first frame.
 
 ## `BLoopBatchAttach`
 
@@ -123,7 +127,7 @@ Returns the loop itself, since a copy would break the identity checks of `BObser
 
 ## Stamp
 
-Commit: `92c4426f8506`
+Commit: `9a85a3ab82db`
 - `BConsole.cs` `b4a6d1d52d852278`
 - `BConsoleStream.cs` `0bc001d457003413`
-- `BLoop.cs` `5afa5b048abe1562`
+- `BLoop.cs` `8eca3f514cac409a`

@@ -29,6 +29,8 @@ Categories come from the runtime that cuts the clusters, so both read one Unicod
 Cuts a text into lines of at most the given cells, never splitting a grapheme cluster.
 A line breaks at a space, and spaces at a line start are dropped.
 Two neighbouring wide clusters break between them, unless they are Hangul, which breaks only at spaces.
+Given separators, a line breaks only after a separator character, and spaces are kept.
+A path then wraps after `\` or `/` and not at the spaces inside a name.
 A span of 0 or less gives no lines.
 A line with no break point is cut where the next cluster would overflow.
 A cluster wider than the span still takes a line of its own.
@@ -83,9 +85,9 @@ Reserved code points in the wide blocks take 2, as the Unicode data lists them.
 
 ## Stamp
 
-Commit: `92c4426f8506`
+Commit: `9a85a3ab82db`
 - `BCanvas.cs` `0f0b8d99716ec206`
 - `BCanvasCell.cs` `cb0d077c14c60990`
 - `BCanvasRange.cs` `07ec2bb6aa90b979`
 - `BCanvasText.cs` `025bd90e380a2df3`
-- `BCanvasWidth.cs` `ae7c1dcb36517e5a`
+- `BCanvasWidth.cs` `cd8811f7dc154e6f`
