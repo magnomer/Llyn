@@ -12,7 +12,9 @@ internal sealed class TAuditRegistry
 
     public static TAuditRegistry TAuditLoad() => new()
     {
-        TAuditBases = new HashSet<string>(TAuditNameRegistry.TAuditBases, StringComparer.Ordinal),
+        TAuditBases = new HashSet<string>(
+            TAuditLogicRegistry.TAuditBases.Concat(TAuditUIRegistry.TAuditBases).Concat(TAuditTestRegistry.TAuditBases),
+            StringComparer.Ordinal),
         TAuditVerbs = new HashSet<string>(TAuditVerbRegistry.TAuditVerbs, StringComparer.Ordinal),
         TAuditExempt = TAuditExemptRegistry.TAuditExempt.ToDictionary(
             entry => entry.Key,

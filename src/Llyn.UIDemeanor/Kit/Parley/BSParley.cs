@@ -30,7 +30,8 @@ internal sealed class BSParley
         IReadOnlyList<BSParleyLine> lines,
         IReadOnlyList<BSParleyButton> buttons,
         int safe,
-        BSParleyBody? body = null)
+        BSParleyBody? body = null,
+        BKeymapFocus focus = BKeymapFocus.BKeymapFocusParley)
     {
         ArgumentNullException.ThrowIfNull(blueprint);
         ArgumentNullException.ThrowIfNull(title);
@@ -50,9 +51,62 @@ internal sealed class BSParley
         _bsParleySafe = safe;
         _bsParleyBody = body;
         _bsParleyFocus = body;
+        BSParleyKeymapFocus = focus;
+
+        Func<BKeymapLive> shown = static () => BKeymapLive.BKeymapLiveShown;
+        Action<int> press = index =>
+        {
+            if (_bsParleyButtons[index].BSParleyButtonEnabled)
+            {
+                _bsParleyAnswer.TrySetResult(index);
+            }
+        };
+        Action<ConsoleKeyInfo> close = _ => _bsParleyAnswer.TrySetResult(_bsParleySafe);
+        Action<ConsoleKeyInfo> part = key =>
+        {
+            if (_bsParleyBody is BSParleyBody owned)
+            {
+                _bsParleyFocus = _bsParleyFocus is null ? owned : null;
+            }
+            else
+            {
+                BSParleyLitMove(key.Modifiers.HasFlag(ConsoleModifiers.Shift) ? -1 : 1);
+            }
+        };
+        List<BKeymapRow> rows = [];
+        for (int index = 0; index < buttons.Count; index++)
+        {
+            (BSParleyButton button, int pressed) = (buttons[index], index);
+            if (button.BSParleyButtonKey is ConsoleKey key && button.BSParleyButtonLegend is string legend)
+            {
+                rows.Add(new(
+                    key,
+                    0,
+                    focus,
+                    legend,
+                    _ => press(pressed),
+                    () => button.BSParleyButtonEnabled ? BKeymapLive.BKeymapLiveShown : BKeymapLive.BKeymapLiveDim));
+            }
+        }
+
+        BSParleyKeymap = new BKeymap(
+        [
+            .. rows,
+            new(ConsoleKey.F10, 0, focus, "Legend.Close", close, shown),
+            new(ConsoleKey.Escape, 0, focus, "Legend.Close", close, shown),
+            new(ConsoleKey.Enter, 0, focus, "Window.Help.Press", _ => press(_bsParleyLit), shown),
+            new(ConsoleKey.Tab, 0, focus, "Window.Help.Part", part, shown),
+            new(ConsoleKey.Tab, ConsoleModifiers.Shift, focus, "Window.Help.Part", part, shown),
+            new(ConsoleKey.LeftArrow, 0, focus, "Window.Help.Button", _ => BSParleyLitMove(-1), shown),
+            new(ConsoleKey.RightArrow, 0, focus, "Window.Help.Button", _ => BSParleyLitMove(1), shown),
+        ]);
     }
 
     internal (int BSParleyRow, int BSParleyColumn)? BSParleyAnchor { get; init; }
+
+    internal BKeymap BSParleyKeymap { get; }
+
+    internal BKeymapFocus BSParleyKeymapFocus { get; }
 
     internal Task<int> BSParleyAnswer => _bsParleyAnswer.Task;
 
@@ -63,37 +117,7 @@ internal sealed class BSParley
             return;
         }
 
-        int pressed = key.Key == ConsoleKey.Enter
-            ? _bsParleyLit
-            : _bsParleyButtons.ToList().FindIndex(button => button.BSParleyButtonKey == key.Key);
-        if (pressed >= 0)
-        {
-            if (_bsParleyButtons[pressed].BSParleyButtonEnabled)
-            {
-                _bsParleyAnswer.TrySetResult(pressed);
-            }
-
-            return;
-        }
-
-        switch (key.Key)
-        {
-            case ConsoleKey.Escape or ConsoleKey.F10:
-                _bsParleyAnswer.TrySetResult(_bsParleySafe);
-                break;
-            case ConsoleKey.LeftArrow:
-                BSParleyLitMove(-1);
-                break;
-            case ConsoleKey.RightArrow:
-                BSParleyLitMove(1);
-                break;
-            case ConsoleKey.Tab when _bsParleyBody is BSParleyBody body:
-                _bsParleyFocus = _bsParleyFocus is null ? body : null;
-                break;
-            case ConsoleKey.Tab:
-                BSParleyLitMove(key.Modifiers.HasFlag(ConsoleModifiers.Shift) ? -1 : 1);
-                break;
-        }
+        BSParleyKeymap.BKeymapFind(BSParleyKeymapFocus, key)?.BKeymapRowAction(key);
     }
 
     internal IReadOnlyList<BCanvasText> BSParleyDraw(

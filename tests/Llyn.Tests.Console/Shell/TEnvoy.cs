@@ -58,6 +58,19 @@ public sealed class TEnvoy
     }
 
     [Fact]
+    public void EnvoyConfirm_ShiftFunctionTen_KeepsBox()
+    {
+        TConsoleFake console = new() { TConsoleFakeTerminal = true };
+        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\0', ConsoleKey.F10, true, false, false));
+        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\r', ConsoleKey.Enter, false, false, false));
+        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\0', ConsoleKey.F10, false, false, false));
+
+        object? answer = TEnvoyRun(console, static envoy => envoy.CEnvoyConfirm("Scribe.DeleteConfirm"));
+
+        Assert.Equal(true, answer);
+    }
+
+    [Fact]
     public void EnvoyConfirm_Plain_DrawsAlertBox()
     {
         TConsoleFake console = new() { TConsoleFakeTerminal = true };
@@ -235,7 +248,7 @@ public sealed class TEnvoy
 
         TEnvoyRun(console, static envoy => envoy.CEnvoyConfirm("Scribe.DeleteConfirm"));
 
-        Assert.Equal(new string(' ', 72) + "10Close ", console.TConsoleFakeShots[0][23]);
+        Assert.Equal("1Help   " + new string(' ', 64) + "10Close ", console.TConsoleFakeShots[0][23]);
     }
 
     [Fact]
@@ -351,7 +364,7 @@ public sealed class TEnvoy
         Assert.Equal("ac", answer);
     }
 
-    internal static object? TEnvoyRun(TConsoleFake console, Func<BEnvoy, object?> ask)
+    internal static object? TEnvoyRun(TConsoleFake console, Func<BEnvoy, object?> ask, string language = "en")
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -361,7 +374,7 @@ public sealed class TEnvoy
         try
         {
             BLocalizationCatalog catalog = new();
-            catalog.BLocalizationCatalogApply(TInterface.TLocalizationLoad("en"));
+            catalog.BLocalizationCatalogApply(TInterface.TLocalizationLoad(language));
             ABootstrap bootstrap = new();
             BEnvoy envoy = new(console, catalog, bootstrap);
             using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, false);

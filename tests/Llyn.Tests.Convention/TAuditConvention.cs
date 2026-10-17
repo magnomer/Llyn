@@ -16,7 +16,9 @@ public sealed class TAuditConvention
     {
         (string TSidecarName, int TSidecarGeneration)[] sidecars =
         [
-            (nameof(TAuditNameRegistry), TAuditNameRegistry.TAuditGeneration),
+            (nameof(TAuditLogicRegistry), TAuditLogicRegistry.TAuditGeneration),
+            (nameof(TAuditUIRegistry), TAuditUIRegistry.TAuditGeneration),
+            (nameof(TAuditTestRegistry), TAuditTestRegistry.TAuditGeneration),
             (nameof(TAuditNameSetting), TAuditNameSetting.TAuditGeneration),
             (nameof(TAuditLineSetting), TAuditLineSetting.TAuditGeneration),
             (nameof(TAuditCommentSetting), TAuditCommentSetting.TAuditGeneration),

@@ -25,6 +25,7 @@ The imperfect, future and conditional terms exist so inflection labels can share
 The sync term names the push to Joplin, shared by the sync button and the Sync settings page.
 The print, cancel, color and custom terms are shared within the print window.
 The print term also labels the Scribe print button, and the cancel term the Leave, Coinage and Customs dialogs.
+The close term labels the legend's Close key and the help box's Close button.
 The deck, flashcard, study and statistics terms name the flashcard feature.
 The decks and flashcards terms are the plurals, since each language words its plural its own way.
 Korean repeats the singular in both.
@@ -137,11 +138,16 @@ Slot `{1}` takes its value, the second verb, or the option that `Invocation.Qual
 The other `Invocation.Help*` keys give the help text of one option, printed after the literal option name.
 `Invocation.HelpFind` names the four columns the option lists.
 `Invocation.HelpAs` lists the five file formats of `-export`, and `Invocation.HelpFormat` the three output formats.
-`Window.*` words the console window's notices.
+`Window.*` words the console window's notices and its help.
 `Window.Opening` is the line the window shows while it opens.
 `Window.Small` is the notice for a console under 80 by 24 cells.
 `Window.Small` takes the minimum width and height, then the actual width and height, in slots `{0}` to `{3}`.
-`Legend.Quit` labels the quit key in the window legend.
+`Window.Help.*` words the help box: its title, page names, prose, key names and key meanings.
+`Window.Help.Text.Small` takes the minimum width and height in slots `{0}` and `{1}`.
+`Window.Help.Position` takes the lit link and the link count in slots `{0}` and `{1}`.
+`Window.Help.Key.*` names the keys that help prints, and any other key prints its .NET name.
+`Legend.*` labels the keys that the window legend and help list: `Legend.Help`, `Legend.Quit`, `Legend.Close` and `Legend.Import`.
+`Parley.*` labels the Yes, No and OK buttons of the console's boxes.
 The console prints each usage error after `llyn: `.
 So each is one complete sentence, with option names kept literal.
 
@@ -162,6 +168,6 @@ The person headers spell out person and number instead of the English abbreviati
 
 ## Stamp
 
-Commit: `66a4aa567097`
-- `en.json` `c6987e0e954b4a95`
-- `ko.json` `f2c8c6ea13d3c1cc`
+Commit: `2883be178842`
+- `en.json` `1e2f6a8eacacdd68`
+- `ko.json` `4898baaf2c87b654`

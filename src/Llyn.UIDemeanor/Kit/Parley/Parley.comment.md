@@ -11,6 +11,9 @@ The safe index must lie inside the buttons, or the constructor throws.
 The answer is the index of the pressed button, held in a task that completes once.
 Escape and F10 answer the safe index unless a focused body takes them, so a user can leave.
 The box holds its own state, a lit button and a focus.
+It builds its own key table from the buttons' keys and the standard keys.
+The window reads that table for the legend and help.
+It also carries a key focus, defaulting to the box focus, so help can take the help focus.
 
 ## `BSParleyWidth`
 
@@ -21,6 +24,7 @@ The box shrinks to the console width less 2 cells.
 
 A focused body sees the key first, and a key it takes goes no further.
 Enter presses the lit button, and a button's own key presses that button.
+A key row matches its modifiers exactly, so Ctrl+Tab does nothing.
 A disabled button never answers, whether by Enter or by its key.
 Left and Right move the lit button.
 Without a body, Tab does the same, backwards with Shift.
@@ -42,13 +46,15 @@ A body draws below the text and may print its position on the bottom border.
 
 ## `BSParleyBody`
 
-What a box can hold besides text, such as a field.
+What a box can hold besides text, such as a field or the help pages.
 It tells its width, height and position text, observes keys and draws itself.
 Observing returns true when the body took the key.
 
 ## `BSParleyButton`
 
-A label, an optional key and an enabled flag.
+A label, an optional key with its legend, and an enabled flag.
+The legend is a catalog key, required whenever there is a key.
+The key's row dims while the button is disabled.
 The enabled flag is the one writable member, since a body switches it as its input changes.
 
 ## `BSParleyLine`
@@ -58,8 +64,8 @@ A path line may break after a separator.
 
 ## Stamp
 
-Commit: `9a85a3ab82db`
-- `BSParley.cs` `75f5cc529c1ff9e4`
+Commit: `2883be178842`
+- `BSParley.cs` `a7f4e0c7907f58a1`
 - `BSParleyBody.cs` `a4a8e3b5f6118120`
-- `BSParleyButton.cs` `d4e092b24eff93d0`
+- `BSParleyButton.cs` `5228b2831c1f9269`
 - `BSParleyLine.cs` `34f3fd75cc4134ab`

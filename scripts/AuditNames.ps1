@@ -109,7 +109,8 @@ if ([string]::IsNullOrWhiteSpace($Root)) {
 
 # The registered names come from AuditNames.registry.json, never from docs-internal. The chain is
 # docs-internal -> SyncNames.ps1 -> AuditNames.registry.json (this audit and AuditNamesNew.ps1) and
-# TAuditNameRegistry.cs, TAuditVerbRegistry.cs and TAuditExemptRegistry.cs (the convention tests).
+# the TAudit*Registry.cs files under Name/Registry: TAuditLogicRegistry.cs, TAuditUIRegistry.cs,
+# TAuditTestRegistry.cs, TAuditVerbRegistry.cs and TAuditExemptRegistry.cs (the convention tests).
 # Only SyncNames.ps1 reads docs-internal.
 
 if ($Help) {
@@ -152,7 +153,9 @@ OUTPUT
     same line the convention test TAuditName prints. The audit reads the names
     from AuditNames.registry.json and writes no test file. SyncNames.ps1 alone
     reads docs-internal and generates both that registry and the tests'
-    TAuditNameRegistry.cs, TAuditVerbRegistry.cs and TAuditExemptRegistry.cs.
+    TAudit*Registry.cs files under Name/Registry: one per base role
+    (TAuditLogicRegistry.cs, TAuditUIRegistry.cs, TAuditTestRegistry.cs),
+    TAuditVerbRegistry.cs and TAuditExemptRegistry.cs.
     A missing or malformed registry fails the run with a
     request to run SyncNames.ps1.
 

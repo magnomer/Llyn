@@ -33,9 +33,9 @@ A generation names the set of checks the audits apply, not a count of edits.
 Every audit and every settings file share one number, so a report from any of them compares across projects.
 Raise `TAuditGeneration` only when a check is added, removed, or changed in what it reports.
 The first line of every audit report is `<AUDIT> - AUDIT GENERATION <n>`, the form the scripts print on launch.
-The generation of the generated registry and of each hand-written setting that numbers one is compared with this one.
+The generation of each generated base registry and of each hand-written setting that numbers one is compared with this one.
 A mismatch means the tooling moved on while a file did not.
-The registry is fixed by regenerating it, and a setting file is fixed by editing it.
+A registry is fixed by regenerating it, and a setting file is fixed by editing it.
 
 ## `TAuditHit`
 
@@ -138,9 +138,9 @@ Roots, segments, files and suffixes compare without case, as the audit scripts d
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `2883be178842`
 - `Llyn.Tests.Convention.csproj` `ce887e848efbe5d9`
-- `TAuditConvention.cs` `245168a09fe624f4`
+- `TAuditConvention.cs` `b7ead36d959913c9`
 - `TAuditHit.cs` `695336cb3b584873`
 - `TAuditLedger.cs` `3bf02bd2a94ba410`
 - `TAuditRatchet.cs` `5c3a1d13f6f273e7`

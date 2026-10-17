@@ -8,8 +8,9 @@ It runs in plain PowerShell, so it answers in about a second.
 
 The bases, verbs and exemptions come from `scripts/AuditNames.registry.json`, never from `docs-internal`.
 `SyncNames.ps1` is the only reader of `docs-internal`.
-It writes that JSON registry for the audits and `TAuditNameRegistry.cs`, `TAuditVerbRegistry.cs` and `TAuditExemptRegistry.cs` for the convention tests.
-The chain is `docs-internal` -> `SyncNames.ps1` -> registry JSON (audits) and the three `TAudit*Registry.cs` files (tests).
+It writes that JSON registry for the audits and the `TAudit*Registry.cs` files under `Name/Registry` for the convention tests.
+Those are `TAuditLogicRegistry.cs`, `TAuditUIRegistry.cs` and `TAuditTestRegistry.cs`, one per base role, then `TAuditVerbRegistry.cs` and `TAuditExemptRegistry.cs`.
+The chain is `docs-internal` -> `SyncNames.ps1` -> registry JSON (audits) and the five `TAudit*Registry.cs` files (tests).
 A missing or malformed registry fails the run and asks you to run `SyncNames.ps1`.
 Run `SyncNames.ps1` after every edit to `docs-internal`, or this check sees stale names.
 

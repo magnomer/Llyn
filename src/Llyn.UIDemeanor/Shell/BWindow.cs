@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using Llyn.Conduct;
 
@@ -8,8 +9,8 @@ namespace Llyn.UIDemeanor;
 
 internal sealed class BWindow
 {
-    private const int BWindowWidthMinimum = 80;
-    private const int BWindowHeightMinimum = 24;
+    internal const int BWindowWidthMinimum = 80;
+    internal const int BWindowHeightMinimum = 24;
     private const int BWindowLegendWidth = 8;
     private const int BWindowNoticeWidth = 44;
     private const int BWindowNoticeHeight = 8;
@@ -26,6 +27,7 @@ internal sealed class BWindow
     private readonly BBlueprintPart _bWindowLegend;
     private readonly BBlueprintPart _bWindowNotice;
     private readonly BBlueprintPart _bWindowNoticeText;
+    private readonly BBlueprintPart _bWindowHelpBlueprint;
     private readonly TaskCompletionSource _bWindowExit = new();
     private readonly List<BSParley> _bWindowParleys = [];
     private (int BConsoleWidth, int BConsoleHeight) _bWindowSize;
@@ -60,9 +62,29 @@ internal sealed class BWindow
         _bWindowLegend = BContract.BContractFind(_bWindowBlueprint, "ALegend");
         _bWindowNotice = BContract.BContractBlueprintFind(blueprint, "ANotice");
         _bWindowNoticeText = BContract.BContractFind(_bWindowNotice, "ANoticeText");
+        _bWindowHelpBlueprint = BContract.BContractBlueprintFind(blueprint, "ASParley");
+        Func<BKeymapLive> shown = static () => BKeymapLive.BKeymapLiveShown;
+        Action<ConsoleKeyInfo> quit = _ => BWindowQuitConfirm();
+        const BKeymapFocus window = BKeymapFocus.BKeymapFocusWindow;
+        const BKeymapFocus parley = BKeymapFocus.BKeymapFocusParley;
+        const BKeymapFocus notice = BKeymapFocus.BKeymapFocusNotice;
+        const BKeymapFocus help = BKeymapFocus.BKeymapFocusHelp;
+        BWindowKeymap = new BKeymap(
+        [
+            new(ConsoleKey.F1, 0, window, "Legend.Help", _ => BWindowHelpShow(window), shown),
+            new(ConsoleKey.F10, 0, window, "Legend.Quit", quit, shown),
+            new(ConsoleKey.C, ConsoleModifiers.Control, window, "Legend.Quit", quit, shown),
+            new(ConsoleKey.F10, 0, notice, "Legend.Quit", quit, shown),
+            new(ConsoleKey.C, ConsoleModifiers.Control, notice, "Legend.Quit", quit, shown),
+            new(ConsoleKey.F1, 0, parley, "Legend.Help", _ => BWindowHelpShow(parley), shown),
+            new(ConsoleKey.C, ConsoleModifiers.Control, parley, "Legend.Quit", quit, shown),
+            new(ConsoleKey.C, ConsoleModifiers.Control, help, "Legend.Quit", quit, shown),
+        ]);
     }
 
     internal Task BWindowExit => _bWindowExit.Task;
+
+    internal BKeymap BWindowKeymap { get; }
 
     internal void BWindowOpen()
     {
@@ -96,34 +118,21 @@ internal sealed class BWindow
 
         _bWindowChanged = false;
         (int width, int height) = _bWindowSize;
-        bool small = width < BWindowWidthMinimum || height < BWindowHeightMinimum;
+        bool small = BWindowFocusRead() == BKeymapFocus.BKeymapFocusNotice;
         canvas.BCanvasFrameDraw([.. small ? BWindowNoticeBuild(width, height) : BWindowFrameBuild(width, height)]);
         canvas.BCanvasSync();
     }
 
     internal void BWindowKeyObserve(ConsoleKeyInfo key)
     {
-        bool interrupt = (key.Key == ConsoleKey.C && key.Modifiers == ConsoleModifiers.Control)
-            || key.KeyChar == '\u0003';
-        (int width, int height) = _bWindowSize;
-        bool small = width < BWindowWidthMinimum || height < BWindowHeightMinimum;
-        if (!interrupt && !small && _bWindowParleys.Count > 0)
+        BKeymapFocus focus = BWindowFocusRead();
+        if (BWindowKeymap.BKeymapFind(focus, key) is BKeymapRow row)
         {
-            BSParley parley = _bWindowParleys[^1];
-            parley.BSParleyKeyObserve(key);
-            if (parley.BSParleyAnswer.IsCompleted)
-            {
-                _bWindowParleys.Remove(parley);
-            }
-
-            _bWindowChanged = true;
-            return;
+            row.BKeymapRowAction(key);
         }
-
-        if ((interrupt || key.Key == ConsoleKey.F10)
-            && (_bWindowAtelier is not CAtelier atelier || atelier.CAtelierQuitConfirm(_bWindowEnvoy)))
+        else if (focus is BKeymapFocus.BKeymapFocusParley or BKeymapFocus.BKeymapFocusHelp)
         {
-            _bWindowExit.TrySetResult();
+            BWindowParleyObserve(key);
         }
     }
 
@@ -143,6 +152,69 @@ internal sealed class BWindow
         return parley.BSParleyAnswer.Result;
     }
 
+    private BKeymapFocus BWindowFocusRead()
+    {
+        (int width, int height) = _bWindowSize;
+        return width < BWindowWidthMinimum || height < BWindowHeightMinimum ? BKeymapFocus.BKeymapFocusNotice
+            : _bWindowParleys is [.., BSParley top] ? top.BSParleyKeymapFocus
+            : BKeymapFocus.BKeymapFocusWindow;
+    }
+
+    private void BWindowHelpShow(BKeymapFocus focus)
+    {
+        BSHelp help = new(
+            _bWindowCatalog,
+            kind =>
+            {
+                BSParley? box = kind == BKeymapFocus.BKeymapFocusWindow ? null
+                    : _bWindowParleys.LastOrDefault(parley => parley.BSParleyKeymapFocus == kind)
+                        ?? _bWindowParleys.LastOrDefault();
+                return
+                [
+                    .. BWindowKeymap.BKeymapRead(kind),
+                    .. box?.BSParleyKeymap.BKeymapRead(box.BSParleyKeymapFocus) ?? [],
+                ];
+            },
+            focus);
+        BSParleyButton close = new(_bWindowCatalog.BLocalizationTextRead("Window.Help.Close"));
+        BSParley parley = new(
+            _bWindowHelpBlueprint,
+            _bWindowCatalog.BLocalizationTextRead("Window.Help.Title"),
+            "dialog",
+            [],
+            [close],
+            0,
+            help,
+            BKeymapFocus.BKeymapFocusHelp);
+        _ = BWindowParleyConsult(parley);
+    }
+
+    private BKeymapRow? BWindowKeymapFind(BKeymapFocus focus, ConsoleKeyInfo key)
+    {
+        return BWindowKeymap.BKeymapFind(focus, key)
+            ?? (_bWindowParleys is [.., BSParley top] ? top.BSParleyKeymap.BKeymapFind(focus, key) : null);
+    }
+
+    private void BWindowQuitConfirm()
+    {
+        if (_bWindowAtelier is not CAtelier atelier || atelier.CAtelierQuitConfirm(_bWindowEnvoy))
+        {
+            _bWindowExit.TrySetResult();
+        }
+    }
+
+    private void BWindowParleyObserve(ConsoleKeyInfo key)
+    {
+        BSParley parley = _bWindowParleys[^1];
+        parley.BSParleyKeyObserve(key);
+        if (parley.BSParleyAnswer.IsCompleted)
+        {
+            _bWindowParleys.Remove(parley);
+        }
+
+        _bWindowChanged = true;
+    }
+
     private IEnumerable<BCanvasText> BWindowFrameBuild(int width, int height)
     {
         BBlueprint.BBlueprintPlace(_bWindowBlueprint, 0, 0, width, height);
@@ -160,9 +232,7 @@ internal sealed class BWindow
             establishment.BBlueprintPartTheme);
         BBlueprintPart legend = _bWindowLegend;
         foreach (BCanvasText key in BWindowLegendBuild(
-            legend.BBlueprintPartRow,
-            legend.BBlueprintPartColumn + (9 * BWindowLegendWidth),
-            _bWindowParleys.Count > 0 ? "Legend.Close" : "Legend.Quit"))
+            legend.BBlueprintPartRow, legend.BBlueprintPartColumn, BWindowFocusRead()))
         {
             yield return key;
         }
@@ -176,12 +246,28 @@ internal sealed class BWindow
         }
     }
 
-    private IEnumerable<BCanvasText> BWindowLegendBuild(int row, int column, string key)
+    private IEnumerable<BCanvasText> BWindowLegendBuild(int row, int column, BKeymapFocus focus)
     {
         string theme = _bWindowLegend.BBlueprintPartTheme;
-        string label = _bWindowCatalog.BLocalizationTextRead(key);
-        yield return new BCanvasText(row, column, 2, "10", $"{theme}-number");
-        yield return new BCanvasText(row, column + 2, BWindowLegendWidth - 2, label, $"{theme}-label");
+        int packed = column;
+        for (ConsoleKey key = ConsoleKey.F1; key <= ConsoleKey.F10; key++)
+        {
+            BKeymapRow? found = BWindowKeymapFind(focus, new ConsoleKeyInfo('\0', key, false, false, false));
+            BKeymapLive live = found?.BKeymapRowLive() ?? BKeymapLive.BKeymapLiveHidden;
+            if (found is null || live == BKeymapLive.BKeymapLiveHidden)
+            {
+                continue;
+            }
+
+            int slot = key - ConsoleKey.F1;
+            int left = focus == BKeymapFocus.BKeymapFocusNotice ? packed : column + (slot * BWindowLegendWidth);
+            packed += BWindowLegendWidth;
+            string number = (slot + 1).ToString(CultureInfo.InvariantCulture);
+            string label = _bWindowCatalog.BLocalizationTextRead(found.BKeymapRowLabel);
+            string role = live == BKeymapLive.BKeymapLiveDim ? "disabled" : $"{theme}-label";
+            yield return new BCanvasText(row, left, number.Length, number, $"{theme}-number");
+            yield return new BCanvasText(row, left + number.Length, BWindowLegendWidth - number.Length, label, role);
+        }
     }
 
     private IEnumerable<BCanvasText> BWindowNoticeBuild(int width, int height)
@@ -226,7 +312,7 @@ internal sealed class BWindow
                 text.BBlueprintPartRow + line, text.BBlueprintPartColumn, text.BBlueprintPartWidth, lines[line], theme);
         }
 
-        foreach (BCanvasText key in BWindowLegendBuild(height - 1, 0, "Legend.Quit"))
+        foreach (BCanvasText key in BWindowLegendBuild(height - 1, 0, BKeymapFocus.BKeymapFocusNotice))
         {
             yield return key;
         }

@@ -79,7 +79,8 @@ AuditComments.json shape:
       "markers": { ".cs": ["//", "/*"], ".xaml": ["<!--"], ".props": ["<!--"],
                    ".csproj": ["<!--"], ".slnx": ["<!--"] },
       "closers": { "/*": "*/", "<!--": "-->" },
-      "exemptFiles": ["TAuditExemptRegistry.cs", "TAuditNameRegistry.cs", "TAuditVerbRegistry.cs"]
+      "exemptFiles": ["TAuditExemptRegistry.cs", "TAuditLogicRegistry.cs", "TAuditTestRegistry.cs",
+                      "TAuditUIRegistry.cs", "TAuditVerbRegistry.cs"]
     },
     "exempt": { "comments": ["<comment file path>"] },
     "ceilings": { "unstamped": <n>, "folders": { "<folder path>": <n> } },

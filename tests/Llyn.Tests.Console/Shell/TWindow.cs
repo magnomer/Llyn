@@ -28,7 +28,7 @@ public sealed class TWindow
             body + body,
             bottom + bottom,
             " Opening…".PadRight(80),
-            new string(' ', 72) + "10Quit  ",
+            "1Help   " + new string(' ', 64) + "10Quit  ",
         ];
         Assert.Equal(frame, console.TConsoleFakeGrid);
     }
@@ -57,7 +57,7 @@ public sealed class TWindow
             body,
             bottom,
             " Opening…".PadRight(101),
-            (new string(' ', 72) + "10Quit").PadRight(101),
+            ("1Help   " + new string(' ', 64) + "10Quit").PadRight(101),
         ];
         Assert.Equal(frame, console.TConsoleFakeGrid);
     }
@@ -165,6 +165,20 @@ public sealed class TWindow
         Assert.Equal(0, code);
         Assert.False(console.TConsoleFakeWindow);
         Assert.Empty(console.TConsoleFakeError);
+    }
+
+    [Fact]
+    public void WindowKeyObserve_ShiftFunctionTen_KeepsWindow()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        TConsoleFake console = new() { TConsoleFakeTerminal = true };
+        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\0', ConsoleKey.F10, true, false, false));
+        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\0', ConsoleKey.F10, false, false, false));
+
+        int code = TInvocation.TInvocationRun(console, workspace);
+
+        Assert.Equal(0, code);
+        Assert.Empty(console.TConsoleFakeKeys);
     }
 
     [Fact]

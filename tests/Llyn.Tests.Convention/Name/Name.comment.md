@@ -1,13 +1,8 @@
 # Name
 
 This folder holds the name audit with its walker, filter and setting.
-It also holds the generated base, verb and exemption registries and the specimen and violation records.
-
-## `TAuditExemptRegistry`
-
-This exemption registry is generated and must never be edited by hand.
-It holds the exemptions apart from TAuditNameRegistry so no generated file outgrows the line limit.
-An entry too wide for one line keeps its key once and wraps its file list below it.
+It also holds the specimen and violation records.
+The generated base, verb and exemption registries live in `Registry`.
 
 ## `TAuditName`
 
@@ -50,16 +45,11 @@ The key is namespace, enclosing types, name and arity, as AuditNames.ps1 keys it
 Each type key is visited once, so a cycle in the base lists cannot loop.
 A contract declared by a source base type counts too, as it does in AuditNames.ps1.
 
-## `TAuditNameRegistry`
-
-This registry is generated and must never be edited by hand.
-The verbs live apart in the generated TAuditVerbRegistry.cs, the exemptions in TAuditExemptRegistry.cs.
-
 ## `TAuditNameSetting`
 
 Every naming-audit setting lives here and nowhere else, hand-written and tracked.
 No script writes this file, and no registered name may appear in it.
-Bases, verbs, and exemptions reach the tests only through the three generated registries.
+Bases, verbs, and exemptions reach the tests only through the generated registries in `Registry`.
 The tests read no script configuration, so no json or ps1 can change what they check.
 They do read the untracked sources Git lists, since an unstaged file is still source.
 The prefix ceiling is the number of types whose prefix lies outside their turf.
@@ -104,18 +94,14 @@ The code trees are parsed first, so the partial index sees every part before any
 ## `TAuditRegistry`
 
 The registered bases, verbs, and exemptions the name audit checks against.
-They load from the three generated registry files, so the tests read no document and no embedded resource.
+They load from the generated registry files, so the tests read no document and no embedded resource.
+The bases come from one file per role, joined into one set.
 Those files hold names only, never a setting.
 Regenerate them before the tests, since a stale registry audits against stale names.
 An exemption row grants its name only inside the files it names.
 The same word stays a violation everywhere else.
 `*` grants a mechanism that is universal by spelling, such as a template part.
 File names in an exemption compare case-insensitively, since the file system does.
-
-## `TAuditVerbRegistry`
-
-This verb registry is generated and must never be edited by hand.
-It holds the verbs apart from `TAuditNameRegistry` so no generated file outgrows the line limit.
 
 ## `TSpecimen`
 
@@ -168,11 +154,11 @@ A malformed name is a violation, never a silent pass, so `L_foo` or `LDraft_` ca
 
 ## Stamp
 
-Commit: `52c21d68b4c4`
+Commit: `2883be178842`
 - `TAuditName.cs` `9745ed82d31609bc`
 - `TAuditNameFilter.cs` `94d5e4f62b0c181b`
-- `TAuditNameSetting.cs` `086f5de92c2a5d47`
+- `TAuditNameSetting.cs` `c86c0a2c541ff8f7`
 - `TAuditNameWalker.cs` `9b6199c38f7bf330`
-- `TAuditRegistry.cs` `27c74af9a11890bb`
+- `TAuditRegistry.cs` `9e1e29befdb2570b`
 - `TSpecimen.cs` `0b6da9e6a472965e`
 - `TViolation.cs` `9173679d3acf4860`

@@ -30,6 +30,22 @@ public sealed class TCustoms
     }
 
     [Fact]
+    public void EnvoyCustomsRead_ShiftFunctionTwo_IgnoresImport()
+    {
+        TConsoleFake console = TCustomsRun(
+            ConsoleKey.Enter, ConsoleKey.DownArrow, ConsoleKey.Enter, ConsoleKey.RightArrow, ConsoleKey.Enter,
+            ConsoleKey.Enter);
+        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\0', ConsoleKey.F2, true, false, false));
+        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\e', ConsoleKey.Escape, false, false, false));
+        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\e', ConsoleKey.Escape, false, false, false));
+        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\0', ConsoleKey.F10, false, false, false));
+
+        object? answer = TEnvoy.TEnvoyRun(console, static envoy => envoy.CEnvoyCustomsRead(TCustomsPrepare([7, 8])));
+
+        Assert.Equal(false, answer);
+    }
+
+    [Fact]
     public void EnvoyCustomsRead_Escape_Declines()
     {
         TConsoleFake console = TCustomsRun(ConsoleKey.Escape, ConsoleKey.F10);
@@ -40,6 +56,41 @@ public sealed class TCustoms
         string shot = string.Join('\n', console.TConsoleFakeShots[0]);
         Assert.Contains(" Import entries ", shot);
         Assert.Contains("═ 1 of 1 ═", shot);
+    }
+
+    [Fact]
+    public void WindowFrameBuild_CustomsOpen_ShowsImportLegend()
+    {
+        TConsoleFake console = TCustomsRun(ConsoleKey.Escape, ConsoleKey.F10);
+
+        TEnvoy.TEnvoyRun(console, static envoy => envoy.CEnvoyCustomsRead(TCustomsPrepare([7])));
+
+        string legend = "1Help   " + "2Import " + new string(' ', 56) + "10Close ";
+        Assert.Equal(legend, console.TConsoleFakeShots[0][23]);
+    }
+
+    [Fact]
+    public void WindowFrameBuild_KoreanImport_CutsByCells()
+    {
+        TConsoleFake console = TCustomsRun(ConsoleKey.Escape, ConsoleKey.F10);
+
+        TEnvoy.TEnvoyRun(console, static envoy => envoy.CEnvoyCustomsRead(TCustomsPrepare([7])), "ko");
+
+        Assert.StartsWith("1도움말 2가져오 ", console.TConsoleFakeShots[0][23], StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void WindowFrameBuild_CustomsNotReady_DimsImport()
+    {
+        TConsoleFake console = TCustomsRun(ConsoleKey.Escape, ConsoleKey.F10);
+        CSCustoms customs = TCustomsPrepare([7, 8]);
+        customs.TCustomsModeSet(0, CSCustomsMode.CSCustomsModeMerge);
+
+        TEnvoy.TEnvoyRun(console, envoy => envoy.CEnvoyCustomsRead(customs));
+
+        BTheme theme = new(BTheme.BThemeSpareRead);
+        string legend = theme.BThemeRead("legend-number") + "2" + theme.BThemeRead("disabled") + "Import";
+        Assert.Contains(legend, console.TConsoleFakeFrames[0]);
     }
 
     [Fact]

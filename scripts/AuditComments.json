@@ -81,7 +81,9 @@
     },
     "exemptFiles": [
       "TAuditExemptRegistry.cs",
-      "TAuditNameRegistry.cs",
+      "TAuditLogicRegistry.cs",
+      "TAuditTestRegistry.cs",
+      "TAuditUIRegistry.cs",
       "TAuditVerbRegistry.cs"
     ]
   },

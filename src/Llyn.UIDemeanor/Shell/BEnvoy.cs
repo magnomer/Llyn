@@ -225,7 +225,8 @@ internal sealed class BEnvoy : CEnvoy
     {
         ArgumentNullException.ThrowIfNull(customs);
 
-        BSParleyButton admit = new(_bEnvoyCatalog.BLocalizationTextRead("Customs.Accept"), ConsoleKey.F2);
+        BSParleyButton admit = new(
+            _bEnvoyCatalog.BLocalizationTextRead("Customs.Accept"), ConsoleKey.F2, "Legend.Import");
         admit.BSParleyButtonEnabled = customs.CSCustomsReadyCheck();
         BSParleyButton[] buttons = [admit, new(_bEnvoyCatalog.BLocalizationTextRead("Customs.Cancel"))];
 
@@ -313,7 +314,10 @@ internal sealed class BEnvoy : CEnvoy
     }
 
     private int? BEnvoyParleyConsult(
-        string title, IReadOnlyList<BSParleyLine> lines, IReadOnlyList<BSParleyButton> buttons, BSParleyBody? body)
+        string title,
+        IReadOnlyList<BSParleyLine> lines,
+        IReadOnlyList<BSParleyButton> buttons,
+        BSParleyBody? body)
     {
         if (_bEnvoyWindow is not BWindow window)
         {

@@ -3,6 +3,7 @@
 Tests of the console window, its envoy and its boxes, driven through `TInvocation.TInvocationRun` and the fake port.
 A start with a terminal and no arguments is the window, and an F10 key ends it.
 `TWindow` drives the window, `TBootstrap` the start boxes and `TEnvoy` the questions and notices.
+`THelp` drives the help box.
 
 ## `TWindow`
 
@@ -12,7 +13,7 @@ The loop's own threads read the keys and sizes, so the tests assert the grid the
 ## `WindowOpen_EightyByTwentyFour_DrawsEmptyFrame`
 
 Pins the whole frame at 80 by 24, with two bordered halves, the opening line and the quit legend.
-The legend shows `10` and `Quit` in the last row at column 72.
+The legend shows `1` and `Help` at column 0 and `10` and `Quit` at column 72 in the last row.
 
 ## `WindowSizeObserve_Grown_RedrawsFrameByHalves`
 
@@ -22,7 +23,7 @@ The odd width gives the left half 50 columns and the right half 51.
 ## `WindowSizeObserve_BelowEightyByTwentyFour_DrawsFramedNotice`
 
 A console of 64 by 18 shows the small-console notice in a framed box instead of the frame.
-The box is 44 cells wide, centred, with ` Llyn ` on its top border.
+The box is 42 cells wide, centred, with ` Llyn ` on its top border.
 The notice wraps at a space within the 36-cell text and the quit legend sits on the last row.
 
 ## `WindowSizeObserve_KoreanNotice_WrapsByCells`
@@ -43,6 +44,10 @@ Keys that change nothing print no further frame.
 ## `WindowKeyObserve_FunctionTen_ExitsZero`
 
 A key other than a quit key is ignored, and F10 ends the run with 0.
+
+## `WindowKeyObserve_ShiftFunctionTen_KeepsWindow`
+
+Shift+F10 is not the quit key, so the window stays until F10 ends the run with 0.
 
 ## `WindowKeyObserve_ControlC_ExitsZero`
 
@@ -85,6 +90,7 @@ A rescue and a failed theme both draw, with the rescue first.
 
 Each test runs the envoy inside a window with the fake port, and queues the keys a user would press.
 Enter answers Yes, Right then Enter answers No, and Escape and F10 answer No.
+Shift with F10 leaves the box open, since a key matches its modifiers exactly.
 A plain confirm draws an alert box, and a tally draws its count line.
 A union confirm draws the dropped and kept names around an arrow.
 A failure with only a headline draws no detail line.
@@ -92,15 +98,26 @@ A long path wraps at its separators, with the folder row and the file row.
 A failure shown under a confirm draws above it, and the confirm still answers.
 A fault box whose frame the console refuses reports to the run's own handler, so stderr holds that refusal.
 Work queued while a box is open still runs.
-A box changes the legend to `Close`.
+A box changes the legend to `1Help` and `10Close`.
 Ctrl+C under a box ends the window, and the box answers its safe index.
 The leave question answers store, discard or stay.
 The coinage question answers the typed text, and Enter before typing waits for valid wording.
 Tab moves focus to the buttons and back, so letters typed between are ignored.
 
+## `THelp`
+
+F1 opens help on the window page.
+End scrolls it to show the links and the position `1 of 2`.
+F1 over a box opens the box page, with the box's keys listed.
+F1 inside help shows the keys everywhere page.
+Enter on a link follows it, and Backspace returns to the page before.
+An open help changes the legend to `Close` only.
+Help lists only keys that are bound and not hidden, and a dim key draws in the `disabled` role.
+
 ## Stamp
 
-Commit: `9a85a3ab82db`
+Commit: `2883be178842`
 - `TBootstrap.cs` `2cf3b16c8595d74e`
-- `TEnvoy.cs` `bbfbe6beda796227`
-- `TWindow.cs` `2bb9db2b4111cbe6`
+- `TEnvoy.cs` `96b22a19349dc78a`
+- `THelp.cs` `3f9b903cdcb70357`
+- `TWindow.cs` `db8a54651fc71471`
