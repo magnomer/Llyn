@@ -3,6 +3,24 @@
 The clerks for what belongs to one workspace as a whole: its paths and locations, and its own ports.
 They stand apart from the entry clerks because they serve no single entry.
 
+## `LLeaseClerk`
+
+It puts the lease of one rig behind a clerk, so the engine names no Core port for it.
+It takes the lease port from the rig when it is built.
+
+### `LLeaseClerkOpen`
+
+It takes the lease, and the port's `LLeaseFault` reaches the caller when another holder has it.
+
+### `LLeaseClerkClose`
+
+It gives the lease up.
+
+### `LLeaseClerkMatch`
+
+It tells whether the other clerk is not null and holds the very same lease port.
+So the workspace swap can tell a lease it still needs from one it may release.
+
 ## `LTrailClerk`
 
 It resolves paths and locations against one workspace root.
@@ -155,6 +173,7 @@ Blank and hand-written respellings are left as they are.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `52c21d68b4c4`
+- `LLeaseClerk.cs` `f63cd9aa34c50014`
 - `LTrailClerk.cs` `8ef4054bb5faf578`
 - `LWorkspaceClerk.cs` `43f8b3d7fedc8307`

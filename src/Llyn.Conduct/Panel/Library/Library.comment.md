@@ -16,15 +16,28 @@ The wings share the library's orderings, so no driver names an engine ordering.
 The window's exit gate runs `LLibraryClose`, which stops the editor and cancels the display's playback.
 Print opens no window when no entry is chosen.
 
+## `CLibraryEntryCreate`
+
+Opens a fresh entry in the panel and writes each given field through the entry controller.
+A null field is left as it is.
+It saves through the editor and answers whether the save ended the tenure, as `CEditorEntrySave` does.
+A declined leave question opens no fresh entry, so the fields then land on the held draft.
+
+## `CLibraryEntryExport`
+
+Chooses the row by id, then runs the export gate on it.
+It answers the path written, or null when the row did not open, the reader cancelled or the export failed.
+
 ## `CLibraryMarkupImport`
 
 Asks the envoy for a markup file first, before the customs and omission questions.
-A cancelled pick answers no file and changes nothing.
+A cancelled pick answers null and changes nothing.
 The engine reads the file, asks for the intakes through this panel, and stores the cargo in one call.
-A declined declaration stores nothing, so the rows are not refreshed and nothing is reported.
+A declined declaration stores nothing, so the rows are not refreshed, nothing is reported and it answers null.
 After a store the rows refresh, and what the import could not place is shown through the envoy.
 The report is shown only when it holds a line.
-Any failure is shown under `List.ImportFailed`, and the engine stores every entry or none.
+A store answers the count of intakes the declaration listed.
+Any failure is shown under `List.ImportFailed` and answers null, and the engine stores every entry or none.
 
 ## `LLibraryIntakeRead`
 
@@ -119,6 +132,6 @@ The side only passes the draft across, so it never keeps it.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `CLibrary.cs` `ede46618cd86a457`
+Commit: `52c21d68b4c4`
+- `CLibrary.cs` `1c12b644fd16ce91`
 - `CWing.cs` `1e096be3dc635adc`

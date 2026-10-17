@@ -2,7 +2,7 @@
 
 This folder holds the root ports of storage and the ambient ports the engine runs on.
 It stands apart because the ports here are not tied to one lexicon base.
-They cover the session, the store fault, the clock, paths, the fault log and recovery.
+They cover the session, the store fault, the clock, paths, the fault log, recovery and the workspace lease.
 The engine never learns which adapter stands behind any of them.
 
 ## `LVault`
@@ -65,6 +65,21 @@ Opens or creates the workspace store, migrating it to the current shape.
 A store this build can no longer read is moved aside and a clean one started in its place.
 It returns the healthy rescue, or one naming the file moved aside and why.
 
+## `LLease`
+
+The port that lets one running program hold a workspace at a time.
+`LLeaseFile` in Infrastructure is its adapter over a file inside the workspace.
+`LLeaseOpen` takes the lease and raises `LLeaseFault` when another holder has it.
+`LLeaseClose` gives it up.
+The engine opens the lease only when it is built as leased, and a test may answer with a fake.
+
+## `LLeaseFault`
+
+The one exception a lease adapter raises when another holder has the workspace.
+It is no `LVaultFault`, because the store is healthy and only the lease is taken.
+The cause travels as the inner exception, and its message is kept as this one's.
+`LDoctor.LDoctorBusyCheck` counts it as a busy workspace, so the launch names the case to the user.
+
 ## `LTrail`
 
 A path as the operating system reads it, and the port that resolves, relates and names one.
@@ -97,10 +112,12 @@ The name with every character a file name cannot carry replaced by an underscore
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `52c21d68b4c4`
 - `LAuditVault.cs` `051abf6a534e5663`
 - `LClock.cs` `7cec97284660ee50`
 - `LDoctorVault.cs` `e354cbea24a852f6`
+- `LLease.cs` `cd302c1bc8f6caf3`
+- `LLeaseFault.cs` `f0b5b3b1273de6bf`
 - `LTrail.cs` `fc4a23c952f61d61`
 - `LVault.cs` `d0de38b0fce48b77`
 - `LVaultFault.cs` `030adfbeea8a02fa`

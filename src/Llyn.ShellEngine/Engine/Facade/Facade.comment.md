@@ -455,6 +455,7 @@ It takes its siblings rather than the engine, so it names only the facades it us
 The folder and the rescue are read from the first rig, so a reader sees them before any switch.
 Both are replaced under the gate on every rig apply.
 The rig factory and pointer writer come from Host, so the engine names no infrastructure.
+It also holds the lease of the workspace in use, or none when the engine was built unleased.
 
 ## `LEngineWorkspaceStart`
 
@@ -477,6 +478,15 @@ It moves the engine onto the workspace `rig` was built over, without touching th
 The new rig's rescue is read before anything changes, so a folder that cannot open leaves all as it was.
 The engine then moves its clerks, caches and settings, and the folder and rescue follow under the same gate.
 The move is then announced, so every surface holding a stored record learns that all of it is stale.
+An unleased engine stays unleased, and a leased one opens the new rig's lease before anything moves.
+A failed move closes the new lease and keeps the old one, unless both are the same lease.
+A successful move closes the old lease after the swap, again unless both are the same lease.
+
+## `LEngineLeaseClose`
+
+It lets go of the lease held for the workspace in use, and the engine's disposal calls it.
+It does nothing for an unleased engine.
+It forgets the lease, so a second call closes nothing.
 
 ## `LEngineRescueRead`
 
@@ -519,7 +529,7 @@ The folder path is read there, so the caller hands nothing it gathered.
 
 ## Stamp
 
-Commit: `bd299c638b2c`
+Commit: `52c21d68b4c4`
 - `LDraftFacade.cs` `e6ad399867a18e7e`
 - `LLanguageFacade.cs` `22bf9bcec6db6495`
 - `LRequestFacade.cs` `9a08f1ac9c85e708`
@@ -527,4 +537,4 @@ Commit: `bd299c638b2c`
 - `LSettingsFacade.cs` `53cfb98424acac7c`
 - `LTenureFacade.cs` `c7d7ee4457051f6e`
 - `LVocabularyFacade.cs` `f1299bc555399645`
-- `LWorkspaceFacade.cs` `f0eb53a0cb7a7ee9`
+- `LWorkspaceFacade.cs` `9cce824f83d9406d`

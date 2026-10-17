@@ -99,8 +99,9 @@ public sealed class TLibraryMarkup
             workspace, "<llyn><entry><headword>ember</headword><language>English</language></entry></llyn>");
         CLibrary library = TLibrary.TLibraryPrepare(atelier, TLibraryEnvoyCreate(file, static _ => true, asked));
 
-        await library.CLibraryMarkupImport();
+        int? count = await library.CLibraryMarkupImport();
 
+        Assert.Equal(1, count);
         Assert.Equal(["Markup", "Customs:1"], asked);
         Assert.Equal(["ember"], library.CLibraryRowsRead().Select(row => row.CVistaRowHeadword));
     }
@@ -117,8 +118,9 @@ public sealed class TLibraryMarkup
         int refreshed = 0;
         library.CLibraryPanel.CPanelAperture.CApertureRowsChanged += () => refreshed++;
 
-        await library.CLibraryMarkupImport();
+        int? count = await library.CLibraryMarkupImport();
 
+        Assert.Null(count);
         Assert.Equal(["Markup", "Customs:1"], asked);
         Assert.Equal(0, refreshed);
         Assert.Empty(library.CLibraryRowsRead());

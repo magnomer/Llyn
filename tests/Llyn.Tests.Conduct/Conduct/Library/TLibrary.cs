@@ -118,6 +118,40 @@ public sealed class TLibrary
         Assert.Empty(library.CLibraryRowsRead());
     }
 
+    [Theory]
+    [InlineData("stone", true)]
+    [InlineData(null, false)]
+    public void LibraryEntryCreate_HeadwordGivenOrNot_ReportsTheSave(string? headword, bool saved)
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        CLibrary library = TLibraryPrepare(atelier, TEnvoyFake.TEnvoyCreate(true, []));
+
+        bool created = library.CLibraryEntryCreate(headword, "English", null, null);
+
+        Assert.Equal(saved, created);
+        Assert.Equal(saved ? ["stone"] : [], library.CLibraryRowsRead().Select(row => row.CVistaRowHeadword));
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void PanelBinDelete_StoredOrMissingId_ReportsTheDeletion(bool stored)
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        LEntry water = TLibraryEntrySave(engine, "water", "English");
+        CLibrary library = TLibraryPrepare(atelier, TEnvoyFake.TEnvoyCreate(true, []));
+
+        long id = stored ? water.LEntryId : water.LEntryId + 100;
+        bool deleted = library.CLibraryPanel.CPanelBin.CPanelBinDelete(id);
+
+        Assert.Equal(stored, deleted);
+        Assert.Equal(stored ? [] : ["water"], library.CLibraryRowsRead().Select(row => row.CVistaRowHeadword));
+    }
+
     [Fact]
     public void LibraryPanelRowOpen_ScribeOn_OpensTheEntryInTheEditor()
     {
@@ -175,9 +209,31 @@ public sealed class TLibrary
         Assert.False(File.Exists(path));
 
         library.CLibraryPanel.CPanelRowSelect(water.LEntryId);
-        await library.CLibraryPortraitExport();
+        string? written = await library.CLibraryPortraitExport();
 
+        Assert.Equal(path, written);
         Assert.Contains("water", File.ReadAllText(path), StringComparison.Ordinal);
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task LibraryEntryExport_StoredOrMissing_WritesOrRefuses(bool stored)
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        LEntry water = TLibraryEntrySave(engine, "water", "English");
+        string path = Path.Combine(workspace.TWorkspaceFolder, "water.md");
+        List<string> asked = [];
+        CLibrary library = TLibraryPrepare(
+            atelier, TEnvoyFake.TEnvoyFileCreate(path, CPortraitMedium.CPortraitMediumMarkdown, asked));
+
+        string? written = await library.CLibraryEntryExport(stored ? water.LEntryId : water.LEntryId + 100);
+
+        Assert.Equal(stored ? path : null, written);
+        Assert.Equal(stored ? ["File:water"] : [], asked);
+        Assert.Equal(stored, File.Exists(path));
     }
 
     [Fact]

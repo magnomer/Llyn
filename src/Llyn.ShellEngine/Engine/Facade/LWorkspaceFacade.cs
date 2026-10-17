@@ -14,6 +14,7 @@ public sealed class LWorkspaceFacade
     private readonly Action<string> _lWorkspaceFacadePointer;
     private string _lWorkspaceFacadeFolder;
     private LDoctorRescue _lWorkspaceFacadeRescue;
+    private LLeaseClerk? _lWorkspaceFacadeLease;
 
     internal LWorkspaceFacade(
         LEngineHearth hearth,
@@ -22,7 +23,8 @@ public sealed class LWorkspaceFacade
         LRig rig,
         Func<string,
         LRig> factory,
-        Action<string> pointer)
+        Action<string> pointer,
+        LLeaseClerk? lease)
     {
         ArgumentNullException.ThrowIfNull(hearth);
         ArgumentNullException.ThrowIfNull(draft);
@@ -37,6 +39,7 @@ public sealed class LWorkspaceFacade
         _lWorkspaceFacadeFactory = factory;
         _lWorkspaceFacadePointer = pointer;
         _lWorkspaceFacadeFolder = rig.LRigWorkspace;
+        _lWorkspaceFacadeLease = lease;
         _lWorkspaceFacadeRescue = LWorkspaceClerk.LWorkspaceRescueCreate(rig);
     }
 
@@ -65,13 +68,42 @@ public sealed class LWorkspaceFacade
 
         lock (_lWorkspaceFacadeGate)
         {
-            LDoctorRescue rescue = LWorkspaceClerk.LWorkspaceRescueCreate(rig);
-            _lWorkspaceFacadeHearth.LEngineRigApply(rig);
-            _lWorkspaceFacadeFolder = rig.LRigWorkspace;
-            _lWorkspaceFacadeRescue = rescue;
+            LLeaseClerk? lease = _lWorkspaceFacadeLease is null ? null : new LLeaseClerk(rig);
+            LLeaseClerk? released = lease is null || lease.LLeaseClerkMatch(_lWorkspaceFacadeLease)
+                ? null
+                : _lWorkspaceFacadeLease;
+            lease?.LLeaseClerkOpen();
+            try
+            {
+                LDoctorRescue rescue = LWorkspaceClerk.LWorkspaceRescueCreate(rig);
+                _lWorkspaceFacadeHearth.LEngineRigApply(rig);
+                _lWorkspaceFacadeFolder = rig.LRigWorkspace;
+                _lWorkspaceFacadeRescue = rescue;
+                _lWorkspaceFacadeLease = lease;
+            }
+            catch
+            {
+                if (released is not null)
+                {
+                    lease?.LLeaseClerkClose();
+                }
+
+                throw;
+            }
+
+            released?.LLeaseClerkClose();
         }
 
         _lWorkspaceFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectWorkspace, 0);
+    }
+
+    internal void LEngineLeaseClose()
+    {
+        lock (_lWorkspaceFacadeGate)
+        {
+            _lWorkspaceFacadeLease?.LLeaseClerkClose();
+            _lWorkspaceFacadeLease = null;
+        }
     }
 
     public LDoctorRescue LEngineRescueRead()

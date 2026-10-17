@@ -1,3 +1,4 @@
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 using Llyn.UIDemeanor;
@@ -17,6 +18,20 @@ public sealed class TInvocation
     [InlineData(new[] { "-ver" }, "The option -ver is unknown. Run llyn -help to list the options.")]
     [InlineData(new[] { "-color", "-version" }, "The option -color needs a value after a colon.")]
     [InlineData(new[] { "-workspace:" }, "The option -workspace needs a value after a colon.")]
+    [InlineData(new[] { "-find:" }, "The option -find needs a value after a colon.")]
+    [InlineData(new[] { "-find" }, "The option -find needs a value after a colon.")]
+    [InlineData(new[] { "-new" }, "The option -new needs a value after a colon.")]
+    [InlineData(new[] { "-new:word" }, "The option -new does not accept the value word.")]
+    [InlineData(new[] { "-new:entry", "-headword" }, "The option -headword needs a value after a colon.")]
+    [InlineData(new[] { "-delete:abc" }, "The option -delete does not accept the value abc.")]
+    [InlineData(new[] { "-delete:-4" }, "The option -delete does not accept the value -4.")]
+    [InlineData(new[] { "-delete:0" }, "The option -delete does not accept the value 0.")]
+    [InlineData(new[] { "-import" }, "The option -import needs a value after a colon.")]
+    [InlineData(new[] { "-export:5" }, "The option -export needs the option -to.")]
+    [InlineData(new[] { "-export:abc", "-to:a.md" }, "The option -export does not accept the value abc.")]
+    [InlineData(new[] { "-export:5", "-to:a.md", "-as:rtf" }, "The option -as does not accept the value rtf.")]
+    [InlineData(new[] { "-export:5", "-to:" }, "The option -to needs a value after a colon.")]
+    [InlineData(new[] { "-format:pdf", "-version" }, "The option -format does not accept the value pdf.")]
     [InlineData(new[] { "-version:1" }, "The option -version takes no value.")]
     [InlineData(new[] { "-color:pink", "-version" }, "The option -color does not accept the value pink.")]
     [InlineData(new[] { "-help:frobnicate" }, "The option -help does not accept the value frobnicate.")]
@@ -28,7 +43,7 @@ public sealed class TInvocation
     {
         TConsoleFake console = new();
 
-        int code = TInvocationRun(console, string.Empty, _ => throw new InvalidOperationException(), args);
+        int code = TInvocationRun(console, string.Empty, (_, _) => throw new InvalidOperationException(), args);
 
         Assert.Equal(2, code);
         Assert.StartsWith("llyn: " + sentence, Assert.Single(console.TConsoleFakeError), StringComparison.Ordinal);
@@ -40,7 +55,7 @@ public sealed class TInvocation
     {
         TConsoleFake console = new();
 
-        int code = TInvocationRun(console, string.Empty, _ => throw new InvalidOperationException());
+        int code = TInvocationRun(console, string.Empty, (_, _) => throw new InvalidOperationException());
 
         Assert.Equal(2, code);
         string usage = "llyn: Name one verb as an option, in the form -name or -name:value.";
@@ -52,7 +67,7 @@ public sealed class TInvocation
     {
         TConsoleFake console = new();
 
-        int code = TInvocationRun(console, "D:\\Busy", _ => throw new IOException("locked"), "-version");
+        int code = TInvocationRun(console, "D:\\Busy", (_, _) => throw new IOException("locked"), "-version");
 
         Assert.Equal(3, code);
         string busy = "llyn: The workspace database is in use by another program. Close it and try again.";
@@ -69,12 +84,13 @@ public sealed class TInvocation
         int code = TInvocationRun(console, workspace, "-help");
 
         Assert.Equal(0, code);
-        Assert.Equal(9, console.TConsoleFakeOutput.Count);
+        Assert.Equal(20, console.TConsoleFakeOutput.Count);
         Assert.Equal(
             "Run llyn with one verb and any further options, each written as -name or -name:value.",
             console.TConsoleFakeOutput[0]);
-        Assert.Equal("-version    Prints the version line.", console.TConsoleFakeOutput[2]);
-        Assert.Equal("-no         Answers no to every question.", console.TConsoleFakeOutput[5]);
+        Assert.Equal("-version        Prints the version line.", console.TConsoleFakeOutput[2]);
+        Assert.Equal("-to             Names the file that -export writes.", console.TConsoleFakeOutput[13]);
+        Assert.Equal("-no             Answers no to every question.", console.TConsoleFakeOutput[16]);
         Assert.Empty(console.TConsoleFakeError);
     }
 
@@ -88,7 +104,7 @@ public sealed class TInvocation
 
         Assert.Equal(0, code);
         Assert.Equal(
-            ["-workspace  Prints the workspace folder, or moves the workspace to the folder given as its value."],
+            ["-workspace      Prints the workspace folder, or moves the workspace to the folder given as its value."],
             console.TConsoleFakeOutput);
     }
 
@@ -130,7 +146,7 @@ public sealed class TInvocation
         int code = TInvocationRun(
             console,
             first.TWorkspaceFolder,
-            _ =>
+            (_, _) =>
             {
                 LEngine engine = new(first.TWorkspaceRigCreate(), _ => second.TWorkspaceRigCreate(), pointed.Add);
                 return engine;
@@ -152,7 +168,7 @@ public sealed class TInvocation
         int code = TInvocationRun(
             console,
             first.TWorkspaceFolder,
-            _ =>
+            (_, _) =>
             {
                 Func<string, LRig> refused = _ => throw new IOException("locked");
                 LEngine engine = new(first.TWorkspaceRigCreate(), refused, static _ => { });
@@ -165,13 +181,158 @@ public sealed class TInvocation
         Assert.Equal([first.TWorkspaceFolder], console.TConsoleFakeOutput);
     }
 
-    private static int TInvocationRun(TConsoleFake console, TWorkspace workspace, params string[] args)
+    [Fact]
+    public void InvocationRun_FindText_AlignsColumnsByCells()
     {
-        return TInvocationRun(console, workspace.TWorkspaceFolder, _ => workspace.TWorkspaceEngineStart(), args);
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        long latin;
+        long han;
+        using (LEngine engine = workspace.TWorkspaceEngineStart())
+        {
+            latin = engine.TEngineTranslationCreate("abcde", "English").LEntryId;
+            han = engine.TEngineTranslationCreate("ab水水", "Chinese").LEntryId;
+        }
+
+        TConsoleFake console = new();
+
+        int code = TInvocationRun(console, workspace, "-find:ab");
+
+        Assert.Equal(0, code);
+        Assert.Equal(
+            [$"{latin}  abcde   English", $"{han}  ab水水  Chinese"],
+            console.TConsoleFakeOutput.OrderBy(static line => line, StringComparer.Ordinal));
+        Assert.Empty(console.TConsoleFakeError);
     }
 
-    private static int TInvocationRun(
-        TConsoleFake console, string folder, Func<string, LEngine> build, params string[] args)
+    [Fact]
+    public void InvocationRun_FindTsv_PrintsTabbedFields()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        long id;
+        using (LEngine engine = workspace.TWorkspaceEngineStart())
+        {
+            id = engine.TEngineTranslationCreate("ab水水", "Chinese").LEntryId;
+        }
+
+        TConsoleFake console = new();
+
+        int code = TInvocationRun(console, workspace, "-format:tsv", "-find:ab");
+
+        Assert.Equal(0, code);
+        Assert.Equal([$"{id}\tab水水\tChinese\t"], console.TConsoleFakeOutput);
+    }
+
+    [Fact]
+    public void InvocationRun_FindJson_PrintsInvariantArray()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        long id;
+        using (LEngine engine = workspace.TWorkspaceEngineStart())
+        {
+            id = engine.TEngineTranslationCreate("ab水水", "Chinese").LEntryId;
+        }
+
+        TConsoleFake console = new();
+
+        int code = TInvocationRun(console, workspace, "-find:ab", "-format:json");
+
+        Assert.Equal(0, code);
+        Assert.Equal(
+            [$$"""[{"id":{{id}},"headword":"ab水水","language":"Chinese","epithet":""}]"""],
+            console.TConsoleFakeOutput);
+    }
+
+    [Fact]
+    public void InvocationRun_FindNoMatch_PrintsNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using (LEngine engine = workspace.TWorkspaceEngineStart())
+        {
+            engine.TEngineTranslationCreate("abcde", "English");
+        }
+
+        TConsoleFake console = new();
+
+        int code = TInvocationRun(console, workspace, "-find:zzz", "-format:json");
+
+        Assert.Equal(0, code);
+        Assert.Empty(console.TConsoleFakeOutput);
+        Assert.Empty(console.TConsoleFakeError);
+    }
+
+    [Fact]
+    public void InvocationRun_FindLeasedWorkspace_PrintsTheMatch()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine holder = new(
+            workspace.TWorkspaceRigCreate(), _ => workspace.TWorkspaceRigCreate(), static _ => { }, true);
+        long id = holder.TEngineTranslationCreate("ab水水", "Chinese").LEntryId;
+        TConsoleFake console = new();
+
+        int code = TInvocationRun(console, workspace, "-format:tsv", "-find:ab");
+
+        Assert.Equal(0, code);
+        Assert.Equal([$"{id}\tab水水\tChinese\t"], console.TConsoleFakeOutput);
+    }
+
+    [Fact]
+    public void BootstrapAtelierRun_AnyVerb_DetachesStoredLayout()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using (LEngine engine = workspace.TWorkspaceEngineStart())
+        using (LPosture seed = engine.TPostureStart())
+        {
+            seed.TPostureLayoutSave(TInterface.TLayoutCreate("library", LCatalogOrder.LCatalogOrderReverse));
+        }
+
+        string path = Path.Combine(workspace.TWorkspaceFolder, "posture.json");
+        string before = File.ReadAllText(path);
+        LCatalogOrder? read = null;
+        string? after = null;
+
+        TInvocationRun(
+            new TConsoleFake(),
+            workspace.TWorkspaceFolder,
+            (_, _) => workspace.TWorkspaceEngineStart(),
+            (engine, detached) =>
+            {
+                CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, detached);
+                LVista vista = atelier.TAtelierVistaStart("library", CCatalogOrder.CCatalogOrderHeadword);
+                read = vista.LVistaOrder;
+                vista.TVistaOrderSet(LCatalogOrder.LCatalogOrderRecent);
+                after = File.ReadAllText(path);
+                return atelier;
+            },
+            "-version");
+
+        Assert.Equal(LCatalogOrder.LCatalogOrderHeadword, read);
+        Assert.Equal(before, after);
+    }
+
+    internal static int TInvocationRun(TConsoleFake console, TWorkspace workspace, params string[] args)
+    {
+        return TInvocationRun(
+            console,
+            workspace.TWorkspaceFolder,
+            (_, leased) => leased
+                ? new LEngine(
+                    workspace.TWorkspaceRigCreate(), _ => workspace.TWorkspaceRigCreate(), static _ => { }, true)
+                : workspace.TWorkspaceEngineStart(),
+            args);
+    }
+
+    internal static int TInvocationRun(
+        TConsoleFake console, string folder, Func<string, bool, LEngine> build, params string[] args)
+    {
+        return TInvocationRun(console, folder, build, TInterfaceConduct.TAtelierCreate, args);
+    }
+
+    internal static int TInvocationRun(
+        TConsoleFake console,
+        string folder,
+        Func<string, bool, LEngine> build,
+        Func<LEngine, bool, CAtelier> create,
+        params string[] args)
     {
         SynchronizationContext? context = SynchronizationContext.Current;
         BBootstrap bootstrap = new(console);
@@ -187,7 +348,7 @@ public sealed class TInvocation
                 {
                     using (engine)
                     {
-                        return bootstrap.BBootstrapAtelierRun(TInterfaceConduct.TAtelierCreate(engine));
+                        return bootstrap.BBootstrapAtelierRun(detached => create(engine, detached), File.Exists);
                     }
                 });
         }

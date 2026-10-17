@@ -19,6 +19,7 @@ Each relay reaches a conduct member or builds one over outlets, so none builds a
 ## `TAtelierCreate`
 
 The plain overload builds the atelier over real outlets on the engine.
+Its detached flag defaults to false, and true builds an atelier that reads and stores no layout.
 Its stub player accepts a stop but never plays.
 The stub resolves every media location to no address and no screen, so a scenario's media rows still read.
 A workspace engine is needed, since disposing sweeps drafts through the real draft outlet.
@@ -35,6 +36,11 @@ Its draft, bundled entry and bundled sound ports answer from the map.
 The settings and portrait ports are outlets on the engine, and the media port answers from the map too.
 It adds the leftover sweep and the recording stop, so disposing the atelier needs no answer from the test.
 It also relays the side save to the real engine, so a stored side survives a fake vista port.
+
+## `TAtelierVistaStart`
+
+Starts a tab's vista on the entry subject with the given fallback order.
+It spares a layout fact from naming the subject.
 
 ## `TAtelierFaultCreate`
 
@@ -497,9 +503,9 @@ The arrival opens relay a panel's open as the navigation runs it.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `52c21d68b4c4`
 - `TInterfaceArea.cs` `bf5825a6e7d0f03b`
-- `TInterfaceConduct.cs` `749182a34b02a3cd`
+- `TInterfaceConduct.cs` `f849d43f7cf1ffa9`
 - `TInterfaceConductCard.cs` `678838c33733ba58`
 - `TInterfaceConductDesk.cs` `85c44229ca35484b`
 - `TInterfaceConductDialog.cs` `3c2d58ee2694a179`

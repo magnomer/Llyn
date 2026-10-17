@@ -16,8 +16,9 @@ public sealed class TPanelRow
         long chosen = panel.TPanelChosenRead();
         panel.CPanelScribeToggle(true);
 
-        panel.CPanelRowSelect(chosen + 100);
+        bool opened = panel.CPanelRowSelect(chosen + 100);
 
+        Assert.False(opened);
         Assert.Equal(chosen, panel.TPanelChosenRead());
     }
 
@@ -36,8 +37,9 @@ public sealed class TPanelRow
         long chosen = panel.TPanelChosenRead();
         panel.CPanelScribeToggle(true);
 
-        panel.CPanelRowSelect(fire.LEntryId);
+        bool opened = panel.CPanelRowSelect(fire.LEntryId);
 
+        Assert.Equal(left, opened);
         Assert.Equal(left ? ["Leave", "Station"] : ["Leave"], asked);
         Assert.Equal(left ? fire.LEntryId : chosen, panel.TPanelChosenRead());
     }

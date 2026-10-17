@@ -141,6 +141,33 @@ public sealed class CLibrary
         CCatalog.LCatalogEnsignLoad(
             _cLibraryEnvoy, _cLibrarySettingsPort, "List.LoadFailed", store, CLibraryRowsRead);
 
+    public bool CLibraryEntryCreate(string? headword, string? language, string? pronunciation, string? note)
+    {
+        CLibraryPanel.CPanelEntryCreate();
+        CEntry entry = CLibraryEditor.CEditorEntry;
+        if (headword is not null)
+        {
+            entry.CEntryHeadwordSet(headword);
+        }
+
+        if (language is not null)
+        {
+            entry.CEntryLanguageSet(language);
+        }
+
+        if (pronunciation is not null)
+        {
+            entry.CEntryPronunciationSet(pronunciation);
+        }
+
+        if (note is not null)
+        {
+            entry.CEntryNoteSet(note);
+        }
+
+        return CLibraryEditor.CEditorEntrySave();
+    }
+
     internal string LLibraryFileRead()
     {
         return _cLibraryVistaPort.LEngineFileRead(CLibraryPanel.CPanelAperture.CApertureVista);
@@ -156,7 +183,7 @@ public sealed class CLibrary
                 CPortrait.LPortraitLabelRead(_cLibrarySettingsPort)));
     }
 
-    public Task CLibraryPortraitExport()
+    public Task<string?> CLibraryPortraitExport()
     {
         return CPortrait.LPortraitFileExport(
             _cLibraryEnvoy,
@@ -169,19 +196,32 @@ public sealed class CLibrary
                 CPortrait.LPortraitLabelRead(_cLibrarySettingsPort)));
     }
 
-    public async Task CLibraryMarkupImport()
+    public async Task<string?> CLibraryEntryExport(long id)
+    {
+        return CLibraryPanel.CPanelRowSelect(id) ? await CLibraryPortraitExport() : null;
+    }
+
+    public async Task<int?> CLibraryMarkupImport()
     {
         if (_cLibraryEnvoy.CEnvoyMarkupRead() is not string path)
         {
-            return;
+            return null;
         }
 
+        int count = 0;
         try
         {
-            if (await _cLibraryPortraitPort.LEngineMarkupStart(path, LLibraryIntakeRead)
+            if (await _cLibraryPortraitPort.LEngineMarkupStart(
+                    path,
+                    (entries, targets) =>
+                    {
+                        IReadOnlyList<LMarkupIntake>? intakes = LLibraryIntakeRead(entries, targets);
+                        count = intakes?.Count ?? 0;
+                        return intakes;
+                    })
                 is not IReadOnlyList<LMarkupOmission> omissions)
             {
-                return;
+                return null;
             }
 
             CLibraryPanel.CPanelAperture.CApertureRowsResonate();
@@ -190,10 +230,13 @@ public sealed class CLibrary
             {
                 _cLibraryEnvoy.CEnvoyOmissionShow(report);
             }
+
+            return count;
         }
         catch (Exception exception)
         {
             CLedger.LLedgerFailureShow(_cLibraryEnvoy, _cLibrarySettingsPort, "List.ImportFailed", exception);
+            return null;
         }
     }
 

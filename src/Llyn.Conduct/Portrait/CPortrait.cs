@@ -85,7 +85,7 @@ internal static class CPortrait
         };
     }
 
-    internal static async Task LPortraitFileExport(
+    internal static async Task<string?> LPortraitFileExport(
         CEnvoy envoy, LSettingsPort settings, Func<string> fileRead, Func<string, LPortraitMedium, Task> export)
     {
         ArgumentNullException.ThrowIfNull(envoy);
@@ -101,7 +101,7 @@ internal static class CPortrait
         catch (Exception exception)
         {
             CLedger.LLedgerFailureShow(envoy, settings, "Export.NameFailed", exception);
-            return;
+            return null;
         }
 
         try
@@ -109,14 +109,16 @@ internal static class CPortrait
             (string? path, CPortraitMedium format) = envoy.CEnvoyFileRead(file, LPortraitChoiceRead());
             if (path is null)
             {
-                return;
+                return null;
             }
 
             await export(path, LPortraitMediumRead(format));
+            return path;
         }
         catch (Exception exception)
         {
             CLedger.LLedgerFailureShow(envoy, settings, "Export.Failed", exception);
+            return null;
         }
     }
 

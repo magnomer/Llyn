@@ -8,6 +8,8 @@ namespace Llyn.Conduct;
 
 public sealed class CAtelier : IDisposable
 {
+    private readonly bool _cAtelierLayoutDetached;
+
     internal CAtelier(
         LPosture posture,
         LDraftPort drafts,
@@ -16,7 +18,8 @@ public sealed class CAtelier : IDisposable
         CPhonologyBundle phonology,
         LMediaPort media,
         LPortraitPort portraits,
-        Action<Action> marshal)
+        Action<Action> marshal,
+        bool detached = false)
     {
         ArgumentNullException.ThrowIfNull(posture);
         ArgumentNullException.ThrowIfNull(drafts);
@@ -35,6 +38,7 @@ public sealed class CAtelier : IDisposable
         CAtelierMediaPort = media;
         CAtelierPortraitPort = portraits;
         CAtelierMarshal = marshal;
+        _cAtelierLayoutDetached = detached;
         CAtelierMention = new CMention(this);
         CAtelierNavigation = new CNavigation(this);
         CAtelierLedger = new CLedger(this);
@@ -73,7 +77,8 @@ public sealed class CAtelier : IDisposable
             tab,
             subject is CSubject held ? CCatalog.LCatalogSubjectRead(held) : null,
             CCatalog.LCatalogOrderRead(fallback),
-            blank);
+            blank,
+            _cAtelierLayoutDetached);
     }
 
     public CEditor CAtelierInputCreate(CEnvoy envoy)

@@ -38,73 +38,84 @@ public sealed class LEngine : IDisposable
     internal LEngineHearth LEngineHearth { get; }
     internal LVistaRowFacade LEngineVistaRow { get; }
 
-    public LEngine(LRig rig, Func<string, LRig> factory, Action<string> pointer)
+    public LEngine(LRig rig, Func<string, LRig> factory, Action<string> pointer, bool leased = false)
     {
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(factory);
         ArgumentNullException.ThrowIfNull(pointer);
 
-        LEngineHearth = new LEngineHearth(rig);
-        LEngineVistaRow = new LVistaRowFacade(LEngineHearth);
-        LEngineCatalog = new LCatalogFacade(LEngineHearth, LEngineVistaRow);
-        LEngineSettings = new LSettingsFacade(LEngineHearth);
-        LEngineVocabulary = new LVocabularyFacade(LEngineHearth);
-        LEngineMention = new LMentionFacade(LEngineHearth);
-        LEngineMarkup = new LMarkupFacade(LEngineHearth);
-        LEngineDraft = new LDraftFacade(LEngineHearth, LEngineVocabulary);
-        LEnginePronunciation = new LPronunciationFacade(LEngineHearth, LEngineDraft, LEngineVistaRow);
-        LEngineCard = new LCardFacade(LEngineHearth, LEnginePronunciation, LEngineSettings, LEngineVistaRow);
-        LEngineEntry = new LEntryFacade(LEngineHearth, LEngineCard, LEngineDraft);
-        LEngineAncestor = new LAncestorFacade(LEngineHearth);
-        LEngineExample = new LExampleFacade(LEngineHearth, LEngineDraft);
-        LEngineReference = new LReferenceFacade(LEngineHearth, LEngineDraft);
-        LEngineSituation = new LSituationFacade(LEngineHearth, LEngineDraft);
-        LEngineAuthor = new LAuthorFacade(
-            LEngineHearth, LEngineDraft, LEngineEntry, LEngineReference, LEngineSettings);
-        LEngineWorkspace = new LWorkspaceFacade(
-            LEngineHearth, LEngineDraft, LEnginePronunciation, rig, factory, pointer);
-        LEngineVista = new LVistaFacade(
-            LEngineHearth,
-            LEngineAuthor,
-            LEngineCatalog,
-            LEngineEntry,
-            LEngineExample,
-            LEngineReference,
-            LEngineSettings,
-            LEngineSituation,
-            LEngineWorkspace,
-            LEngineVistaRow);
-        LEngineFanqie = new LFanqieFacade(LEngineHearth, LEngineEntry, LEngineSettings, LEngineVistaRow);
-        LEngineReflex = new LReflexFacade(LEngineHearth, LEngineFanqie);
-        LEngineScript = new LScriptFacade(LEngineHearth);
-        LEngineLanguage = new LLanguageFacade(
-            LEngineHearth, LEngineFanqie, LEngineReflex, LEngineScript, LEngineSettings, LEngineVocabulary);
-        LEngineStem = new LStemFacade(LEngineHearth, LEngineEntry, LEngineLanguage, LEngineVistaRow);
-        LEngineRequest = new LRequestFacade(LEngineHearth, LEngineDraft, LEngineEntry);
-        LEngineLivery = new LLiveryFacade(
-            LEngineHearth,
-            LEngineCard,
-            LEngineCatalog,
-            LEngineEntry,
-            LEngineFanqie,
-            LEngineLanguage,
-            LEngineReference,
-            LEngineReflex,
-            LEngineScript,
-            LEngineSettings,
-            LEngineVocabulary);
-        LEnginePortrait = new LPortraitFacade(LEngineHearth, LEngineLivery, LEngineSettings);
-        LEngineCourier = new LCourierFacade(LEngineHearth, LEngineLivery, LEngineSettings);
-        LEngineDeck = new LDeckFacade(LEngineHearth, LEngineEntry, LEngineVistaRow);
-        LEngineStudy = new LStudyFacade(LEngineHearth);
-        LEngineScoreboard = new LScoreboardFacade(LEngineHearth);
-        LEngineTenure = new LTenureFacade(this);
-        LEngineHearth.LEngineWorkspaceOpen();
+        LLeaseClerk? lease = leased ? new LLeaseClerk(rig) : null;
+        lease?.LLeaseClerkOpen();
+        try
+        {
+            LEngineHearth = new LEngineHearth(rig);
+            LEngineVistaRow = new LVistaRowFacade(LEngineHearth);
+            LEngineCatalog = new LCatalogFacade(LEngineHearth, LEngineVistaRow);
+            LEngineSettings = new LSettingsFacade(LEngineHearth);
+            LEngineVocabulary = new LVocabularyFacade(LEngineHearth);
+            LEngineMention = new LMentionFacade(LEngineHearth);
+            LEngineMarkup = new LMarkupFacade(LEngineHearth);
+            LEngineDraft = new LDraftFacade(LEngineHearth, LEngineVocabulary);
+            LEnginePronunciation = new LPronunciationFacade(LEngineHearth, LEngineDraft, LEngineVistaRow);
+            LEngineCard = new LCardFacade(LEngineHearth, LEnginePronunciation, LEngineSettings, LEngineVistaRow);
+            LEngineEntry = new LEntryFacade(LEngineHearth, LEngineCard, LEngineDraft);
+            LEngineAncestor = new LAncestorFacade(LEngineHearth);
+            LEngineExample = new LExampleFacade(LEngineHearth, LEngineDraft);
+            LEngineReference = new LReferenceFacade(LEngineHearth, LEngineDraft);
+            LEngineSituation = new LSituationFacade(LEngineHearth, LEngineDraft);
+            LEngineAuthor = new LAuthorFacade(
+                LEngineHearth, LEngineDraft, LEngineEntry, LEngineReference, LEngineSettings);
+            LEngineWorkspace = new LWorkspaceFacade(
+                LEngineHearth, LEngineDraft, LEnginePronunciation, rig, factory, pointer, lease);
+            LEngineVista = new LVistaFacade(
+                LEngineHearth,
+                LEngineAuthor,
+                LEngineCatalog,
+                LEngineEntry,
+                LEngineExample,
+                LEngineReference,
+                LEngineSettings,
+                LEngineSituation,
+                LEngineWorkspace,
+                LEngineVistaRow);
+            LEngineFanqie = new LFanqieFacade(LEngineHearth, LEngineEntry, LEngineSettings, LEngineVistaRow);
+            LEngineReflex = new LReflexFacade(LEngineHearth, LEngineFanqie);
+            LEngineScript = new LScriptFacade(LEngineHearth);
+            LEngineLanguage = new LLanguageFacade(
+                LEngineHearth, LEngineFanqie, LEngineReflex, LEngineScript, LEngineSettings, LEngineVocabulary);
+            LEngineStem = new LStemFacade(LEngineHearth, LEngineEntry, LEngineLanguage, LEngineVistaRow);
+            LEngineRequest = new LRequestFacade(LEngineHearth, LEngineDraft, LEngineEntry);
+            LEngineLivery = new LLiveryFacade(
+                LEngineHearth,
+                LEngineCard,
+                LEngineCatalog,
+                LEngineEntry,
+                LEngineFanqie,
+                LEngineLanguage,
+                LEngineReference,
+                LEngineReflex,
+                LEngineScript,
+                LEngineSettings,
+                LEngineVocabulary);
+            LEnginePortrait = new LPortraitFacade(LEngineHearth, LEngineLivery, LEngineSettings);
+            LEngineCourier = new LCourierFacade(LEngineHearth, LEngineLivery, LEngineSettings);
+            LEngineDeck = new LDeckFacade(LEngineHearth, LEngineEntry, LEngineVistaRow);
+            LEngineStudy = new LStudyFacade(LEngineHearth);
+            LEngineScoreboard = new LScoreboardFacade(LEngineHearth);
+            LEngineTenure = new LTenureFacade(this);
+            LEngineHearth.LEngineWorkspaceOpen();
+        }
+        catch
+        {
+            lease?.LLeaseClerkClose();
+            throw;
+        }
     }
 
     public void Dispose()
     {
         LEngineHearth.LEngineStaffClear();
+        LEngineWorkspace.LEngineLeaseClose();
     }
 
     public void LEngineObserverAttach(Action<LBulletin> observer)

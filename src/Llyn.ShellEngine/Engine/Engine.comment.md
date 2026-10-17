@@ -129,12 +129,16 @@ The engine keeps one property per facade and forwards the observer calls to the 
 Each facade but the tenure facade takes the hearth and its sibling facades, never the engine.
 `LEngineStaff` keeps the clerks in dependency order and swaps them together when the rig changes.
 
-## `LEngine(LRig rig, Func<string, LRig> factory, Action<string> pointer)`
+## `LEngine(LRig rig, Func<string, LRig> factory, Action<string> pointer, bool leased = false)`
 
 Binds the engine to the ports of `rig`, already built over the workspace they stand on.
 It neither reads nor rewrites the recorded workspace pointer.
 Host hands `factory`, which builds a rig over a folder, and `pointer`, which records the chosen folder.
 Both stay outside, since the engine names no infrastructure, and pass on to the workspace facade.
+A leased engine opens the rig's lease before anything else, so a held workspace raises `LLeaseFault` and builds nothing.
+An unleased engine, the default, touches no lease.
+The lease passes on to the workspace facade, which swaps it with the rig.
+A failure while the engine is built closes the lease again and rethrows, so a refused start holds no workspace.
 The hearth comes first, building the clerks and reading the settings.
 The row facade follows it, so every facade that builds vista rows finds it.
 The facades come last, so none of them can ever see an engine without its staff.
@@ -193,6 +197,7 @@ The shared state every facade reads, built before any facade so none sees an eng
 
 Cancels every pending fetch, so a closed engine leaves no task writing into the workspace.
 `LEngineHearth.LEngineStaffClear` does it, since the hearth owns the gate and the staff.
+It then lets go of the lease through the workspace facade's `LEngineLeaseClose`, so the next program may open the workspace.
 
 ## `LEngineHearth.cs`
 
@@ -263,11 +268,11 @@ So a subscriber can detach without disturbing iteration.
 
 ## Stamp
 
-Commit: `bd299c638b2c`
+Commit: `52c21d68b4c4`
 - `LBulletinRoster.cs` `089b003a16e92876`
 - `LCatalogStaff.cs` `23816a2bb79aced1`
 - `LClaimStaff.cs` `fc2ed893e2af6438`
-- `LEngine.cs` `ddb8ff6b5ba4ea1c`
+- `LEngine.cs` `47fe498848314fbf`
 - `LEngineHearth.cs` `17ccd1f0c9342b91`
 - `LEngineStaff.cs` `1282514bb49cde5e`
 - `LEntryStaff.cs` `769d85bf0ae2afca`

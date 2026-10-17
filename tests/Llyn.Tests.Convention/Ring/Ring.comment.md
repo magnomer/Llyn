@@ -110,6 +110,7 @@ The project edge table lives here, as project name to referenced project names.
 The fact holds the `.csproj` files to this table exactly, so a new edge is an edit here first.
 Each ring's edges but the host's equal its border neighbour plus its capsule.
 The engine references the application alone and ferries core records through it.
+Guestroom references no project, and the host references it with the rest.
 The `Piggybacking` ceiling counts the cut projects that still compile against rings past their neighbour.
 Every cut project disables transitive project references, so the ceiling holds at zero.
 A count above fails the fact, and a ceiling above the count is stale and fails too.
@@ -133,6 +134,7 @@ Both copies change together, as scripts/principles.md asks.
 `AuditStructure.json` holds its own copy of the ring frames for the structure script.
 The pure rings are held to the frame and kept from every eavesdropping member.
 Conduct is one, since it uses no WPF and no console and serves both media.
+Guestroom is one too, with no extra namespace, since its choice reads only the path Host hands it.
 The surfaces, the drivers and the adapters are outside the purity and name what they need.
 `System.IO`, `System.Xml`, `System.Reflection` and `System.Text.Json` are outside the frame and belong behind a port.
 The extra namespaces one pure ring adds match the ring frames of scripts/AuditStructure.json.
@@ -162,14 +164,14 @@ A member appends its own name, so `DateTime.UtcNow` is told apart from `DateTime
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `52c21d68b4c4`
 - `TAuditBoundary.cs` `51ad50d413ce0aab`
 - `TAuditBoundarySetting.cs` `4e9200085c208d70`
 - `TAuditCensus.cs` `1927cbc5ad714acf`
 - `TAuditCensusSetting.cs` `8fb52cbc35a34b4e`
 - `TAuditCensusWalker.cs` `301bfbc58a822e20`
 - `TAuditCharter.cs` `9640ab92d9a80db5`
-- `TAuditCharterSetting.cs` `29df81e8f6c27a35`
+- `TAuditCharterSetting.cs` `2c30f7cb3a7e4b78`
 - `TAuditPurity.cs` `9acbad32aaa34359`
-- `TAuditPuritySetting.cs` `6bf999085e3bd848`
+- `TAuditPuritySetting.cs` `c6e04528213a5c9d`
 - `TAuditPurityWalker.cs` `77f32b04ab93854e`

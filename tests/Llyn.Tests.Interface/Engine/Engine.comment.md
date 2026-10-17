@@ -184,6 +184,7 @@ Each relay is transparent.
 The relays for the engine's workspace, its rig and its state.
 That is the workspace start, open, change, read and format, the folder open and the location reads.
 The rescue read, the status bar's establishment read and the revision and state reads are relayed here too.
+The leased engine construction is relayed too, so a fact can hold or refuse a workspace lease.
 The observer attach and detach and the recording sweep are relayed here as well.
 The rig apply, the usher swap and the three record builders sit here too.
 Each relay is transparent.
@@ -208,7 +209,7 @@ Each relay is transparent, except that the author create and update also raise t
 
 ## Stamp
 
-Commit: `bd299c638b2c`
+Commit: `52c21d68b4c4`
 - `TInterfaceContent.cs` `2f1032ea1bb4d887`
 - `TInterfaceEngine.cs` `612ac0e445010eab`
 - `TInterfaceEngineFanqie.cs` `3e7c158c1c15322e`
@@ -216,5 +217,5 @@ Commit: `bd299c638b2c`
 - `TInterfaceEngineMarkup.cs` `26a61d688b58bff1`
 - `TInterfaceEnginePortrait.cs` `0b846a638698dde8`
 - `TInterfaceEngineSettings.cs` `86ffacd21d12d364`
-- `TInterfaceEngineWorkspace.cs` `6983c82028cff3ca`
+- `TInterfaceEngineWorkspace.cs` `d2bd34564bfd2ac8`
 - `TInterfaceReference.cs` `33defb3a50ab83aa`

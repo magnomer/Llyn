@@ -9,10 +9,17 @@ The tests distinguish live volume from stored posture by reopening an atelier ov
 Faulting posture storage checks notice deduplication separately from recording every fault.
 Startup ordering protects view restoration from blank leftover drafts.
 
+## `TAtelierVista`
+
+Vista starts reach the engine by subject and order name.
+A detached atelier reads and writes no stored layout, and the posture file stays byte-identical.
+An attached atelier restores the stored layout and keeps later changes for a reopened atelier.
+
 ## `TAtelierWorkspace`
 
 Workspace changes are tested against pointer writes, leave answers and view restoration.
 Failure cases protect the current workspace from unsuccessful moves.
+A folder leased by another engine is refused, so the old workspace stays and no pointer is written.
 Reopening with another envoy checks that later status failures reach the latest recipient.
 
 ## `TNavigation`
@@ -29,8 +36,9 @@ The capacity test records fifty-one stations to verify that only the oldest stat
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `TAtelier.cs` `82cc009fe7bb9f3a`
-- `TAtelierWorkspace.cs` `08cebffa57219b33`
+Commit: `52c21d68b4c4`
+- `TAtelier.cs` `3abc93a291997713`
+- `TAtelierVista.cs` `9f1ef11ced7f4b40`
+- `TAtelierWorkspace.cs` `11be6151fca3b740`
 - `TNavigation.cs` `c6a168bfe7d17ce9`
 - `TVoyage.cs` `e2a0037bd030e947`

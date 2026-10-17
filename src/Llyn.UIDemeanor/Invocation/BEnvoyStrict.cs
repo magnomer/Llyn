@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Llyn.Conduct;
 
 namespace Llyn.UIDemeanor;
@@ -10,16 +11,20 @@ internal sealed class BEnvoyStrict : CEnvoy
     private readonly BConsole _bEnvoyStrictConsole;
     private readonly BLocalizationCatalog _bEnvoyStrictCatalog;
     private readonly BInvocation _bEnvoyStrictInvocation;
+    private readonly Func<string, bool> _bEnvoyStrictPresence;
 
-    internal BEnvoyStrict(BConsole console, BLocalizationCatalog catalog, BInvocation invocation)
+    internal BEnvoyStrict(
+        BConsole console, BLocalizationCatalog catalog, BInvocation invocation, Func<string, bool> presence)
     {
         ArgumentNullException.ThrowIfNull(console);
         ArgumentNullException.ThrowIfNull(catalog);
         ArgumentNullException.ThrowIfNull(invocation);
+        ArgumentNullException.ThrowIfNull(presence);
 
         _bEnvoyStrictConsole = console;
         _bEnvoyStrictCatalog = catalog;
         _bEnvoyStrictInvocation = invocation;
+        _bEnvoyStrictPresence = presence;
     }
 
     internal bool BEnvoyStrictRefusal { get; private set; }
@@ -73,14 +78,37 @@ internal sealed class BEnvoyStrict : CEnvoy
 
     public string? CEnvoyMarkupRead()
     {
-        BEnvoyStrictRefusal = true;
-        return null;
+        string? path = _bEnvoyStrictInvocation.BInvocationValueRead("import");
+        BEnvoyStrictRefusal |= path is null;
+        return path;
     }
 
     public bool CEnvoyCustomsRead(CSCustoms customs)
     {
-        BEnvoyStrictRefusal = true;
-        return false;
+        ArgumentNullException.ThrowIfNull(customs);
+
+        BInvocationGlobal global = _bEnvoyStrictInvocation.BInvocationGlobal;
+        if (!global.BInvocationGlobalQuiet || global.BInvocationGlobalAnswer is null)
+        {
+            for (int row = 0; row < customs.CSCustomsEntry.Count; row++)
+            {
+                CMarkupEntry entry = customs.CSCustomsEntry[row];
+                CSCustomsRow proposal = customs.CSCustomsRowRead(row);
+                string mode = _bEnvoyStrictCatalog.BLocalizationTextRead(proposal.CSCustomsRowMode switch
+                {
+                    CSCustomsMode.CSCustomsModeFresh => "Customs.Create",
+                    CSCustomsMode.CSCustomsModeMerge => "Customs.Append",
+                    _ => "Customs.Replace",
+                });
+                string target = proposal.CSCustomsRowTargeted
+                    ? " " + proposal.CSCustomsRowTarget.ToString(CultureInfo.InvariantCulture)
+                    : string.Empty;
+                string name = $"{entry.CMarkupEntryName} ({entry.CMarkupEntryLanguage})";
+                _bEnvoyStrictConsole.BConsoleNoticePrint($"{BBootstrap.BBootstrapNoticeHead}{name} {mode}{target}");
+            }
+        }
+
+        return BEnvoyStrictConsult(_bEnvoyStrictCatalog.BLocalizationTextRead("Invocation.CustomsConfirm"));
     }
 
     public bool CEnvoyPressRead(CSPress press)
@@ -108,8 +136,32 @@ internal sealed class BEnvoyStrict : CEnvoy
     public (string? CEnvoyFile, CPortraitMedium CEnvoyMedium) CEnvoyFileRead(
         string file, IReadOnlyList<CPortraitChoice> choices)
     {
-        BEnvoyStrictRefusal = true;
-        return (null, default);
+        ArgumentNullException.ThrowIfNull(choices);
+
+        if (_bEnvoyStrictInvocation.BInvocationValueRead("to") is not string to)
+        {
+            BEnvoyStrictRefusal = true;
+            return (null, default);
+        }
+
+        CPortraitMedium medium = _bEnvoyStrictInvocation.BInvocationValueRead("as") switch
+        {
+            "markup" => CPortraitMedium.CPortraitMediumMarkup,
+            "html" => CPortraitMedium.CPortraitMediumHtml,
+            "markdown" => CPortraitMedium.CPortraitMediumMarkdown,
+            "docx" => CPortraitMedium.CPortraitMediumDocx,
+            "pdf" => CPortraitMedium.CPortraitMediumPdf,
+            _ => choices.First(static choice => choice.CPortraitChoiceChosen).CPortraitChoiceMedium,
+        };
+        if (_bEnvoyStrictPresence(to) && !BEnvoyStrictConsult(string.Format(
+                CultureInfo.CurrentCulture,
+                _bEnvoyStrictCatalog.BLocalizationTextRead("Invocation.ReplaceConfirm"),
+                to)))
+        {
+            return (null, default);
+        }
+
+        return (to, medium);
     }
 
     public string? CEnvoyWorkspaceRead(string workspace)

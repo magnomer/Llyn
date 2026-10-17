@@ -50,6 +50,7 @@ Errand and timbre gates reach the engine through a tenure, not a port.
 Their rows therefore fault the vault member the tenure reaches, over the real rig.
 Panel list-load rows live in `TFaultList.TFaultListRows` and join the list before the portrait rows.
 Courier rows fault the portrait port's courier members over a courier built by `CCourier.CCourierCreate`.
+The depot export row faults `LDeckPort.LEngineDeckExport` and expects `Deck.ExportFailed`.
 Portrait print and export rows live in `TFaultPortrait` and join the list last.
 
 ## `TFaultGates`
@@ -133,6 +134,7 @@ Shelf print and export take the footnote entry.
 Guild print takes a source of the chosen author.
 Xiesheng and yunjing prints need a language pack and a chosen character row.
 Their exports, and the favorite, library and phonology gates, need nothing chosen.
+The library entry export is given a stored entry, since it selects the row by id before it exports.
 The print window's own gates run inside a session opened by `TFaultPressOpen`.
 Its system dialog and print fault the board and expect `Print.Failed`.
 Its draw faults the board's draw and expects `Print.RenderFailed`.
@@ -226,12 +228,12 @@ This arrange step answers the gate call and an optional read-back of the state t
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `52c21d68b4c4`
 - `TDisplayFailure.cs` `5e70984c18d89cbc`
 - `TFault.cs` `fa397c15b685eb43`
 - `TFaultList.cs` `e993e6b5885af5a2`
 - `TFaultMark.cs` `0f1918ca0cc50610`
-- `TFaultPortrait.cs` `b3f577a92abedc3e`
+- `TFaultPortrait.cs` `548737d4700eceaf`
 - `TFaultRow.cs` `94662f8cc5a1e773`
 - `TFaultStage.cs` `2894647223e0a2fc`
 - `TFaultWrite.cs` `2689e72430601ed8`

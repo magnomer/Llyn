@@ -40,6 +40,11 @@ The move raises the workspace bulletin once to an attached observer.
 A setting saved after the move lands in the target, and the target reopens on it.
 The folder open hands the workspace folder in use to the usher.
 The workspace format answers the open folder's name.
+A leased engine holds its workspace.
+A second leased engine over it throws a lease fault the busy check recognises.
+Disposing the engine frees the workspace for a new leased engine.
+Moving a leased engine takes the target's lease and frees the old workspace.
+A construction that fails after the lease opens frees it too.
 
 ## `TUsherOpened`
 
@@ -62,8 +67,8 @@ It is a doctor that refuses to open, standing in for a database folder that is a
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `52c21d68b4c4`
 - `TEngineLocation.cs` `f57d570023e2fd7c`
 - `TEngineRecordingSweeping.cs` `8bd58ff6afe6f6b4`
-- `TEngineWorkspace.cs` `d677d9bea96f62c9`
+- `TEngineWorkspace.cs` `84ce02214926be15`
 - `TWorkspaceClerk.cs` `9d6b834836dfbfc5`

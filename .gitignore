@@ -211,6 +211,8 @@ $RECYCLE.BIN/
 !/scripts/TraceSymbol.ps1
 !/scripts/TraceValue.json
 !/scripts/TraceValue.ps1
+!/scripts/UnicodeWidth.comment.md
+!/scripts/UnicodeWidth.ps1
 !/scripts/vendor/
 !/scripts/Zip.ps1
 

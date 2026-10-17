@@ -9,6 +9,8 @@ Covers the posture the session keeps beside the settings file.
 It holds each tab's listing, open tab, split and volume.
 Every panel's ordering and filter reaches the posture through its vista, which announces and never saves.
 Each push lands in that tab's layout record, and an ordering and a filter share one record.
+A vista started on the engine and not through the posture is never remembered.
+Its ordering, filter and editing pushes write no file and store no layout.
 A restarted vista opens on what was stored.
 So the round trip is checked through the vista and not the file.
 A typed query or a chosen row announces too, but moves no stored field, so nothing is written.
@@ -42,7 +44,7 @@ A failing read at start is recorded once and raised once as `LPostureReadFailed`
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `TPosture.cs` `57c7fc16ea6b3bf0`
+Commit: `52c21d68b4c4`
+- `TPosture.cs` `199bd5096922a244`
 - `TPostureFile.cs` `b37706d39b7c30e7`
 - `TPostureWorkspace.cs` `6904557928566577`

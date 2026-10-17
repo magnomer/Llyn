@@ -71,6 +71,8 @@ An `S` after the first letter marks a subwindow, or a sublevel in the console UI
 A lowercase form marks a private field.
 No other prefix starts with `A` or `B`, so they leave the read of every other name unchanged.
 Each project folder lists the prefixes its types may carry.
+UITerminal takes `A` and `AS`, Demeanor takes `B` and `BS`, and Guestroom takes `L` and `LS`.
+The console test project takes `T` like the other test projects.
 The script holds the same map as `naming.prefixTurfs`.
 The sealed turfs are those whose out-of-turf types may not be public.
 Conduct is sealed, since a public `L` type there would offer the engine to the UI rings.
@@ -166,10 +168,10 @@ A malformed name is a violation, never a silent pass, so `L_foo` or `LDraft_` ca
 
 ## Stamp
 
-Commit: `ed7d18d90760`
+Commit: `52c21d68b4c4`
 - `TAuditName.cs` `9745ed82d31609bc`
 - `TAuditNameFilter.cs` `94d5e4f62b0c181b`
-- `TAuditNameSetting.cs` `8acdea7ade003bcb`
+- `TAuditNameSetting.cs` `086f5de92c2a5d47`
 - `TAuditNameWalker.cs` `9b6199c38f7bf330`
 - `TAuditRegistry.cs` `27c74af9a11890bb`
 - `TSpecimen.cs` `0b6da9e6a472965e`

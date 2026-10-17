@@ -48,6 +48,10 @@ internal static class TInterfaceEngineWorkspace
         engine.LEngineWorkspace.LEngineRigApply(rig);
     }
 
+    internal static LEngine TEngineLeaseCreate(
+        LRig rig, Func<string, LRig> factory, Action<string> pointer, bool leased) =>
+        new(rig, factory, pointer, leased);
+
     internal static LDoctorRescue TEngineRescueRead(this LEngine engine) =>
         engine.LEngineWorkspace.LEngineRescueRead();
 

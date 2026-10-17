@@ -134,6 +134,28 @@ public sealed class TPosture
     }
 
     [Fact]
+    public void VistaOrderSet_VistaPostureNeverStarted_WritesNoFile()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LPosture posture = engine.TPostureStart();
+        LVista vista = engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword);
+        string path = Path.Combine(workspace.TWorkspaceFolder, "posture.json");
+        string before = File.ReadAllText(path);
+        DateTime written = File.GetLastWriteTimeUtc(path);
+        File.SetLastWriteTimeUtc(path, written.AddMinutes(-5));
+
+        vista.TVistaOrderSet(LCatalogOrder.LCatalogOrderReverse);
+        vista.TVistaFilterSet(TInterface.TCatalogFilterCreate("Korean"));
+        vista.TVistaEditingSet(true);
+
+        Assert.Equal(written.AddMinutes(-5), File.GetLastWriteTimeUtc(path));
+        Assert.Equal(before, File.ReadAllText(path));
+        Assert.Empty(posture.TPostureRead().LPostureStateLayout ?? []);
+        Assert.False(posture.TPostureRead().LPostureStateSplit);
+    }
+
+    [Fact]
     public void PostureVolumeSave_SameLevel_WritesNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

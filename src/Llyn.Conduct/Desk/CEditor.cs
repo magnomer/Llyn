@@ -162,14 +162,14 @@ public sealed class CEditor
         CEditorEntryOpen(CEditorDesk.CDeskStoredRead());
     }
 
-    public void CEditorEntrySave()
+    public bool CEditorEntrySave()
     {
         if (!CEditorDesk.LDeskChangeCheck())
         {
-            return;
+            return false;
         }
 
-        LEditorFinish(true);
+        return LEditorFinish(true);
     }
 
     internal bool LEditorFinish(bool store)

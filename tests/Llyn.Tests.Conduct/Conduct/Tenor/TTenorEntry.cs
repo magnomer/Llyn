@@ -145,8 +145,9 @@ public sealed class TTenorEntry
         Assert.False(tenor.CTenorCohort.CCohortPanel.CPanelBinEnabled);
 
         tenor.CTenorEditor.CEditorEntry.CEntryHeadwordSet("fern");
-        tenor.CTenorEditor.CEditorEntrySave();
+        bool saved = tenor.CTenorEditor.CEditorEntrySave();
 
+        Assert.True(saved);
         Assert.Equal(["fern"], tenor.CTenorCohort.CCohortRowsRead().Select(row => row.CVistaRowHeadword));
     }
 

@@ -274,6 +274,9 @@ Entering the editor hands the chosen row to it, and with no row the panel closes
 ## `CPanelRowSelect`
 
 After the leave question the row is opened.
+It answers whether the panel now holds the row.
+A null id, a refused leave question and a refused load all answer false.
+`CPanelBin` takes this gate as its seam, so a delete by id selects the row by the same path.
 A panel standing on a tab first records the station the click leaves.
 `LPanelStationAttach` hands in the navigation's record, and a sub-panel never gets one.
 `LPanelChosenRead` answers the station, and zero says there is no place to come back to.
@@ -308,6 +311,10 @@ A panel without a delete scope or without a vista does nothing.
 The question names how many places the delete reaches, which the vista counts.
 A record nothing references is a plain question, and one something references is asked with its tally.
 A refused delete is told through the envoy, and a done one raises `CPanelBinDeleted`.
+`CPanelBinDelete(long id)` selects the row through the seam, then runs the delete on the chosen row.
+So the leave question and the delete question both come first, and a row that does not open deletes nothing.
+`CPanelBinDelete` answers true only for a done delete.
+Every path that deletes nothing answers false, a declined question and a refused delete included.
 
 ## `CPhonology`
 
@@ -453,13 +460,13 @@ It then tells the driver through `CYunjingWorkspaceChanged`.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `52c21d68b4c4`
 - `CAperture.cs` `7645b95c3ccac75e`
 - `CDiptych.cs` `a0f45daf855a9029`
 - `CEntryList.cs` `4e3ce97f8049b525`
 - `CFavorite.cs` `54ea336508512b06`
-- `CPanel.cs` `9a7bfccdec6e4dd6`
-- `CPanelBin.cs` `0d2b96a54f76e6d4`
+- `CPanel.cs` `478bdc517d85618b`
+- `CPanelBin.cs` `64a8e4a91337bcb9`
 - `CPhonology.cs` `631e15a40aae7054`
 - `CXiesheng.cs` `082a17a504e62c8b`
 - `CYunjing.cs` `4ffaeae361caa525`

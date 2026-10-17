@@ -82,6 +82,7 @@ A name whose meaning must change is renamed everywhere in the same change.
 | `-SnapshotDirectory` | Folder that receives the version folders and their archives. | GitDownload |
 | `-Threshold` | Exclusive version threshold saved to `snapshot.json`, where 0 takes every version. | GitDownload |
 | `-Destination` | Folder the dispatchers are written to. | Install |
+| `-DataDirectory` | Folder holding the input data files the script reads. | UnicodeWidth |
 | `-File` | Text file of name tokens to check. | AuditNamesNew |
 | `-Token` | Name tokens to check. | AuditNamesNew |
 | `-Round` | Granularity of the suggested version step. | VEstimate |

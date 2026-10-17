@@ -16,6 +16,10 @@ Covers the library panel's Conduct end to end on a real workspace.
 Its rows, query, order and filter follow the vista, which a fresh area already stands on.
 The empty verdict follows the last rows read.
 A chosen row is marked, reports its id and names the file, and a deleted one reports zero again.
+The entry create gate answers true only when the entry saved, which needs a headword.
+The entry delete gate answers true only for a stored id.
+A missing id deletes nothing.
+The entry export gate answers the written path for a stored id, and none for a missing id.
 An entry jump through the navigation opens the entry in the area, asking nothing.
 A row click on the tab records the station it leaves, and an empty click records nothing.
 A row open with the scribe on opens the entry in the editor.
@@ -36,7 +40,9 @@ The markup import asks for the file first, and a cancelled pick asks nothing mor
 It then asks the customs question once and stores under the declared rows.
 The question shows each entry with its ready targets, and a clean file reports nothing after.
 A merge row appends to its target, so the declared mode reaches the engine unchanged.
-A declined question stores nothing, and a malformed file shows the import failure.
+A clean file answers the count of entries stored.
+A declined question stores nothing and answers none.
+A malformed file shows the import failure.
 
 ## `TLibraryEnvoyCreate`
 
@@ -58,8 +64,8 @@ The rows load answers the stored rows and the languages once the fill has run.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `52c21d68b4c4`
 - `TCustoms.cs` `ff66ae9d6ea56f78`
-- `TLibrary.cs` `2f98baa702fe7710`
-- `TLibraryMarkup.cs` `c22e173f0c2f3ae4`
+- `TLibrary.cs` `710723af57107f0a`
+- `TLibraryMarkup.cs` `4329941ca4943e9f`
 - `TLibraryVista.cs` `3ea7f5cc6a857b72`

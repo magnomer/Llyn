@@ -28,7 +28,7 @@ public sealed class BBootstrap
         string[] args,
         Func<IReadOnlyDictionary<string, string>> catalogSeam,
         Func<string> workspaceSeam,
-        Func<string, BBootstrapEngine> buildSeam,
+        Func<string, bool, BBootstrapEngine> buildSeam,
         Func<Exception, bool> busySeam,
         Func<BBootstrapEngine, int> runSeam)
         where BBootstrapEngine : class
@@ -69,7 +69,8 @@ public sealed class BBootstrap
                 return 2;
             }
 
-            if (BBootstrapBuild(workspaceSeam, buildSeam, busySeam) is not BBootstrapEngine engine)
+            if (BBootstrapBuild(workspaceSeam, buildSeam, busySeam, _bBootstrapInvocation.BInvocationLeased)
+                is not BBootstrapEngine engine)
             {
                 return 3;
             }
@@ -91,14 +92,17 @@ public sealed class BBootstrap
     }
 
     private BBootstrapEngine? BBootstrapBuild<BBootstrapEngine>(
-        Func<string> workspaceSeam, Func<string, BBootstrapEngine> buildSeam, Func<Exception, bool> busySeam)
+        Func<string> workspaceSeam,
+        Func<string, bool, BBootstrapEngine> buildSeam,
+        Func<Exception, bool> busySeam,
+        bool leased)
         where BBootstrapEngine : class
     {
         string workspace = string.Empty;
         try
         {
             workspace = workspaceSeam();
-            return buildSeam(workspace);
+            return buildSeam(workspace, leased);
         }
         catch (Exception exception)
         {
@@ -153,21 +157,24 @@ public sealed class BBootstrap
         TaskScheduler.UnobservedTaskException += BBootstrapStrayObserve;
     }
 
-    public int BBootstrapAtelierRun(CAtelier atelier)
+    public int BBootstrapAtelierRun(Func<bool, CAtelier> atelierSeam, Func<string, bool> presenceSeam)
     {
-        ArgumentNullException.ThrowIfNull(atelier);
+        ArgumentNullException.ThrowIfNull(atelierSeam);
+        ArgumentNullException.ThrowIfNull(presenceSeam);
 
         if (_bBootstrapInvocation is not BInvocation invocation)
         {
             throw new InvalidOperationException("The atelier runs only after an invocation was parsed.");
         }
 
+        CAtelier atelier = atelierSeam(true);
         TaskCompletionSource<int> run = new();
-        _bBootstrapLoop.BLoopDefer(() =>
+        _bBootstrapLoop.BLoopDefer(async () =>
         {
             try
             {
-                run.SetResult(invocation.BInvocationRun(atelier, _bBootstrapConsole, _bBootstrapCatalog));
+                run.SetResult(await invocation.BInvocationRun(
+                    atelier, _bBootstrapConsole, _bBootstrapCatalog, presenceSeam));
             }
             catch (Exception exception)
             {

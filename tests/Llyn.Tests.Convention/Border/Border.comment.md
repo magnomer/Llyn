@@ -84,7 +84,8 @@ The offers each pair may name live in `TAuditEngineSetting`, `TAuditDeportmentSe
 The host project names every project, so it is no ring of the border.
 Each ring names its neighbour alone and ferries the data of every ring inside it.
 The two adapters name `Llyn.Core` as spokes, since the contracts they implement live there.
-The core and the capsule name no neighbour.
+The core, the capsule and the launcher choice in `Llyn.Guestroom` name no neighbour.
+Guestroom is no capsule, since no ring names it.
 A capsule belongs to one ring alone, and a ring names at most one capsule beside its neighbour.
 The cut rings name only their neighbour and their capsule.
 Offer prefixes say which prefix every offered type must carry, Conduct offering `C` types and the engine `L` types.
@@ -172,12 +173,12 @@ The exempt check fails when an exempt row matches no hit, so a fixed break delet
 
 ## Stamp
 
-Commit: `bd299c638b2c`
+Commit: `52c21d68b4c4`
 - `TAssayBorder.cs` `7a21fc1ac676ed8f`
 - `TAuditBorder.cs` `0027b680a1d1279d`
 - `TAuditBorderDrift.cs` `80233353cf79d45a`
 - `TAuditBorderLinger.cs` `e55f695a547e6456`
-- `TAuditBorderSetting.cs` `3d8100483444c636`
+- `TAuditBorderSetting.cs` `7b37cff72a51ba06`
 - `TAuditBorderWalker.cs` `24d841dbc314714b`
 - `TAuditDemeanorSetting.cs` `9798bc5b0f0e0851`
 - `TAuditDeportmentSetting.cs` `fc12276d862ed20d`

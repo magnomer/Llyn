@@ -264,6 +264,25 @@ public sealed class TAtelierWorkspace
         Assert.Equal("fake", atelier.CAtelierPathRead());
     }
 
+    [Fact]
+    public void AtelierWorkspaceChange_LeasedFolder_KeepsTheOldWorkspace()
+    {
+        List<string> pointed = [];
+        List<string> asked = [];
+        using TWorkspace first = TWorkspace.TWorkspacePrepare();
+        using TWorkspace second = TWorkspace.TWorkspacePrepare();
+        using LEngine holder = new(second.TWorkspaceRigCreate(), _ => second.TWorkspaceRigCreate(), _ => { }, true);
+        using LEngine engine = new(first.TWorkspaceRigCreate(), _ => second.TWorkspaceRigCreate(), pointed.Add, true);
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+
+        string shown = atelier.CAtelierWorkspace.CWorkspaceChange(
+            second.TWorkspaceFolder, TEnvoyFake.TEnvoyCreate(false, asked));
+
+        Assert.Equal(["Workspace.OpenFailed"], asked);
+        Assert.Equal(first.TWorkspaceFolder, shown);
+        Assert.Empty(pointed);
+    }
+
     private static CEnvoy TAtelierEnvoyCreate(Func<string, string?> folder, List<string> asked) =>
         TEngineFake.TEngineCreate<CEnvoy>(new Dictionary<string, Func<object?[]?, object?>>
         {

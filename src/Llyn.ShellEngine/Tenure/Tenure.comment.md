@@ -125,6 +125,8 @@ A failure in that completion is recorded too and is not retried.
 
 Posture keeps shared session preferences beside the engine and persists through its settings interface.
 Vista bulletins store order and filter, while workspace bulletins reload posture.
+Only a vista started through the posture is remembered, so a bulletin of any other vista stores nothing.
+That keeps a vista started beside the posture, as a detached atelier does, out of the stored layout.
 Dispose removes the engine subscription and editing handlers of remembered vistas.
 
 Volume changes stay in memory until save is requested, avoiding a write for every gesture step.
@@ -172,10 +174,10 @@ Session clearing removes every transcription scheme along with candidate and rec
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `52c21d68b4c4`
 - `LErrand.cs` `c61ceb9f8ddc5692`
 - `LForay.cs` `eb0b0946abaaf6ee`
-- `LPosture.cs` `4590b7b4d15449e9`
+- `LPosture.cs` `1c14bb4b431dac60`
 - `LTenure.cs` `e482dc12cd6bda4f`
 - `LTenureGauge.cs` `05df6162da764173`
 - `LTenureHerald.cs` `f36aae6150e1b18d`

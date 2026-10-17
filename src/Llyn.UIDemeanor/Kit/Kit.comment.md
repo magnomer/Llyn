@@ -1,6 +1,6 @@
 # Kit
 
-The console framework Demeanor builds for itself: the loop and the port to the terminal.
+The console framework Demeanor builds for itself: the loop, the port to the terminal and the cell width of text.
 It stands apart from `Shell` because no piece here knows the program, only the console.
 
 ## `BConsole`
@@ -88,9 +88,42 @@ Captures the loop that is the current context when the delegate is built.
 A call on the loop's thread runs at once, and a call from another thread is deferred onto the loop.
 It refuses a thread with no loop, since the marshal would have nowhere to go.
 
+## `BCanvasWidth`
+
+The width side of the canvas: how many cells a text takes on the console.
+It is its own object, so the later canvas grids hold one and stay whole in their file.
+
+## `_bCanvasWidthAmbiguous`
+
+Whether ambiguous characters such as `ǐ`, `★` and box drawing take two cells.
+The constructor takes it.
+Only `-find` builds one yet, and it passes narrow.
+The setting holds for the object's life, so it has one writer, the constructor.
+
+## `BCanvasWidthResolve`
+
+Sums the cells of each grapheme cluster `StringInfo` cuts from the text, so one cluster gives its own width.
+A cluster takes the widest of its characters, so a combining mark joins its base at no cost.
+A lone combining mark, enclosing mark, format or control character takes 0.
+A cluster holding U+FE0F asks for emoji presentation and takes 2.
+Every other character takes its cells from `BCanvasRange`.
+Categories come from the runtime that cuts the clusters, so both read one Unicode version.
+
+## `BCanvasRange`
+
+The cell-width table, written by `scripts/UnicodeWidth.ps1` and never edited by hand.
+Its Unicode version is pinned to the runtime's, 16.0.0 for .NET 10.
+`BCanvasRangeFirst` partitions every code point into runs, each starting where its class changes.
+`BCanvasRangeNarrow` and `BCanvasRangeWide` give each run's cells under each ambiguous setting.
+The table holds the answer for both settings, so no class code needs decoding.
+Wide and fullwidth characters and emoji presentation take 2, ambiguous ones 1 or 2, and the rest 1.
+Reserved code points in the wide blocks take 2, as the Unicode data lists them.
+
 ## Stamp
 
-Commit: `ed7d18d90760`
+Commit: `52c21d68b4c4`
+- `BCanvasRange.cs` `07ec2bb6aa90b979`
+- `BCanvasWidth.cs` `cd29cad80ec2fd92`
 - `BConsole.cs` `d3f3566823aa415c`
 - `BConsoleStream.cs` `15ce67e32788d41a`
 - `BLoop.cs` `19a29a372875f2a4`

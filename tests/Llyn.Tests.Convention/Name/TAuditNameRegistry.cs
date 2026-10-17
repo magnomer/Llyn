@@ -191,6 +191,7 @@ internal static class TAuditNameRegistry
         "Lattice",
         "Layout",
         "Leaf",
+        "Lease",
         "Leave",
         "Lectern",
         "Ledger",

@@ -179,7 +179,8 @@ The process id is one.
 The posture is a `TPostureFake` and the phonograph is a `TPhonographFake`.
 The pronunciation and reflex ports are an empty `TVaultFakePronunciation` and `TVaultFakeReflex`.
 The workspace open reads them for every entry to renew stale respellings, so they answer instead of throwing.
-Every other port, besides the fakes below, is a throwing stub, the livery, manifest and outpost ports among them.
+Every other port, besides the fakes below, is a throwing stub, the livery, manifest, outpost and lease ports among them.
+The lease stub is never reached, since an engine built unleased opens no lease.
 
 ## `TRigSourceCreate`
 
@@ -193,7 +194,7 @@ A test asserting a recorded stub fault reads it here instead of copying the text
 ## `TRigStubCreate`
 
 One throwing stub for a port, generated over the proxy below.
-A generated stub per port spares the suite a hand-written class for every one of the fifty stubbed ports.
+A generated stub per port spares the suite a hand-written class for every one of the stubbed ports.
 
 ## `TRigFakeProxy`
 
@@ -231,7 +232,7 @@ One reversal is shared between hiding and restoring.
 
 ## Stamp
 
-Commit: `bd299c638b2c`
+Commit: `52c21d68b4c4`
 - `TClockFake.cs` `dffa2b2fcf999593`
 - `TEngineFake.cs` `364e90d7a21a82f8`
 - `TEngineFault.cs` `deab7d5e61cdcbfb`
@@ -239,5 +240,5 @@ Commit: `bd299c638b2c`
 - `TInterfaceClerk.cs` `08c1766833cedf3f`
 - `TPhonographFake.cs` `78d1f82eea929e6a`
 - `TPostureFake.cs` `85c13ab0bfe0439a`
-- `TRigFake.cs` `c83bd318f58f76b1`
+- `TRigFake.cs` `ac2dfbafea247d4e`
 - `TWarrantFake.cs` `7cef68fe9f435952`

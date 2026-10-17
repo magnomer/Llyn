@@ -41,6 +41,8 @@ A folder that cannot be opened therefore fails in the engine, before the old rig
 
 The trail, the clock and the process id are read here.
 The root is the one place outside the rings that may touch them.
+The lease is built over the root but not opened here, so building a rig claims nothing.
+The engine opens it when it is built as leased.
 
 ## `LRigFactory.LRigClientCreate`
 
@@ -63,5 +65,5 @@ Cambridge and some Wiktionary edge caches reject requests without a browser-like
 
 ## Stamp
 
-Commit: `aae5349dbb94`
-- `LRigFactory.cs` `020585819087890d`
+Commit: `52c21d68b4c4`
+- `LRigFactory.cs` `926ac783c4e30d09`

@@ -124,12 +124,23 @@ An area without other texts, such as `Sentence`, `Fold` or `Box`, sits beside th
 `Print.PageTotal` is one entry so each language orders "of {0}" itself.
 `Print.Sheets` and `Print.SheetsOne` give the plural and singular count of paper sheets.
 `Print.Idle` is the footer text while nothing prints.
-`Invocation.*` words the console's strict mode, and `Invocation.Usage` is its usage error line.
-The other usage errors fill slot `{0}` with the typed argument or option.
-Slot `{1}` takes its value, or the second verb.
-`Invocation.Help*` gives the help text, one sentence per option, printed after the literal option name.
-`Window.*` words the console window's notices, and `Window.Unbuilt` says that window is not built yet.
-The console prints both after `llyn: `, so each is one complete sentence with option names kept literal.
+`Invocation.*` words the console's strict mode.
+`Invocation.Usage` is its usage error line.
+Most other usage errors fill slot `{0}` with the typed argument or option.
+Slot `{1}` takes its value, the second verb, or the option that `Invocation.QualifierMissing` requires.
+`Invocation.Conflict` has no slot, since it names `-yes` and `-no` literally.
+`Invocation.EntryMissing` says no entry holds the given id.
+`Invocation.NewEmpty` says the new entry holds nothing to save, and points to `-headword:value`.
+`Invocation.CustomsConfirm` is the question before an import enters the listed entries.
+`Invocation.ReplaceConfirm` asks before `-export` replaces a file, and its slot `{0}` is the path.
+`Invocation.Help` is the sentence above the option list.
+The other `Invocation.Help*` keys give the help text of one option, printed after the literal option name.
+`Invocation.HelpFind` names the four columns the option lists.
+`Invocation.HelpAs` lists the five file formats of `-export`, and `Invocation.HelpFormat` the three output formats.
+`Window.*` words the console window's notices.
+`Window.Unbuilt` says that window is not built yet.
+The console prints each usage error and window notice after `llyn: `.
+So each is one complete sentence, with option names kept literal.
 
 ## `ko.json`
 
@@ -148,6 +159,6 @@ The person headers spell out person and number instead of the English abbreviati
 
 ## Stamp
 
-Commit: `ed7d18d90760`
-- `en.json` `babc66a0023221e3`
-- `ko.json` `94458a1baea7f535`
+Commit: `52c21d68b4c4`
+- `en.json` `899aa277a90a6b30`
+- `ko.json` `f9c938b71dd50ca4`

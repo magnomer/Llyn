@@ -30,6 +30,7 @@ That mode is not built yet, so it prints `Window.Unbuilt` on stderr and returns 
 Any other start is strict mode, parsed by `BInvocationParse` before the workspace opens.
 A usage error prints its sentence on stderr and returns 2, and the workspace never opens.
 A valid command line builds the engine, then hands it to the run seam.
+The build seam is told whether the command line is leased, which `BInvocationLeased` answers.
 Every valid verb runs with the workspace open, so its text speaks the stored language.
 A run seam that throws is a fault: the fault notice, then exit 4.
 A catalog that fails to load prints a fixed English line and returns 1, as `LHost` exits 1.
@@ -38,6 +39,7 @@ The modes are restored on every return, and Ctrl+C restores them through the por
 ## `BBootstrapBuild`
 
 Reads the workspace and builds the engine, as `QBootstrapBuild` does for the GUI.
+It passes the lease flag on to the build seam with the workspace.
 A failure prints the sentence `CAtelierRefusalRead` chooses, the workspace and the reason, and the start exits 3.
 
 ## `BBootstrapCatalogApply`
@@ -56,7 +58,12 @@ Takes the audit seam and observes unobserved task faults, as `QBootstrapFaultInt
 ## `BBootstrapAtelierRun`
 
 Runs the loop for one atelier and returns the exit code.
+It takes a seam and asks it for a detached atelier, so a command line never touches a stored layout.
+The seam is called after the invocation check, so a missing invocation throws before any atelier exists.
+The presence seam answers whether a path names an existing file.
+The run hands it to the strict envoy.
 The strict invocation is the loop's first work item, and the loop ends when it completes.
+The item is awaited, since the import and export verbs finish asynchronously.
 A fault in that item prints the fault notice and ends the run with 4.
 The atelier closes on every return, as the GUI window closes it on exit.
 The atelier is never opened, since each verb calls only the gates of its own action.
@@ -88,6 +95,6 @@ Returns the text of a key, or the key itself when no catalog carries it, as the 
 
 ## Stamp
 
-Commit: `ed7d18d90760`
-- `BBootstrap.cs` `6971d6359ccc4aef`
+Commit: `52c21d68b4c4`
+- `BBootstrap.cs` `eaf502f8e71d0bf2`
 - `BLocalizationCatalog.cs` `6b3081293256d764`

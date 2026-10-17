@@ -138,6 +138,7 @@ It listens to nothing itself, since `CEntry` supplies draft notifications when t
 A requested entry that leaves no held draft falls back to a fresh draft.
 `CEditorEntryUndo` reopens the stored entry, or a fresh draft when none exists.
 `CEditorEntrySave` does not finish an unchanged draft, and a changed draft uses the same finish path as leaving.
+It answers whether the store ended the tenure, so an unchanged draft and a failed store both answer false.
 `LEditorFinish` captures the fresh-entry verdict before finishing.
 So post-store reopening uses the draft's former identity.
 `CEditorStoredShow` reopens a freshly stored input draft blank and every other stored entry as itself.
@@ -289,11 +290,11 @@ The subject maps through `CCatalog.LCatalogSubjectRead`, so a subject it does no
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `52c21d68b4c4`
 - `CDesk.cs` `9f036c7e380e9b97`
 - `CDeskChronicle.cs` `fc6b9a85af7d4b71`
 - `CDeskDraft.cs` `bf7d16d5e2c74ad0`
-- `CEditor.cs` `aaf454c649d52566`
+- `CEditor.cs` `efc620f117523040`
 - `CEntry.cs` `07aadff922c69653`
 - `CErrand.cs` `8f73391eb2be162b`
 - `CEsteem.cs` `b08f4e56adee1280`

@@ -69,6 +69,7 @@ A vista whose chosen Tag no longer answers is deselected.
 
 The slice a deportment sees when it lists entry rows.
 `LVistaFacade` implements it, since every entry list runs through a vista.
+The port starts no vista, so the shell's posture starts each one through the facade.
 `LEngineEntryFind` applies the vista's query, order and filter, and a blank vista with nothing typed answers no rows.
 The parent and child form narrows a child list by the parent catalog's choice.
 The footnote, cohort, membership, occurrence and quotation lists are read this way.
@@ -87,7 +88,7 @@ A vista with no choice, or a subject it cannot delete, deletes nothing.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `52c21d68b4c4`
 - `LAuthorPort.cs` `6f38609535b6a579`
 - `LExamplePort.cs` `c02a2d7c260aee03`
 - `LFavoritePort.cs` `3c243051779a80d9`

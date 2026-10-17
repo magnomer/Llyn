@@ -58,6 +58,7 @@ public static class LRigFactory
             phonograph,
             new LTrailSystem(),
             new LClockSystem(),
+            new LLeaseFile(root),
             Environment.ProcessId,
             root);
     }

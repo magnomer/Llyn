@@ -28,6 +28,7 @@ A changed fresh entry that stays gets only the leave question.
 One that is discarded goes on to the wording.
 New starts an entry without asking the wording once a Register is chosen.
 A fresh entry under a chosen Register carries it from its first paint and lists under it once stored.
+The editor's save answers true for that entry.
 A fresh entry with an entry shown and no Register chosen is blank and unchanged.
 Closing the panel drops the fresh draft the editor held.
 A cohort row select opens the entry with no station, and a stayed leave question opens nothing.
@@ -47,7 +48,7 @@ The rows event is answered in these tests as the driver answers it, by reading t
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `52c21d68b4c4`
 - `TTenor.cs` `738f8586d18e5c2e`
-- `TTenorEntry.cs` `b070e44ef3675130`
+- `TTenorEntry.cs` `be70190d11f9acff`
 - `TTenorVista.cs` `f236ea567d99d759`

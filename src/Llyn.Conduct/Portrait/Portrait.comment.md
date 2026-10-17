@@ -41,6 +41,7 @@ The question needs the gate's offered name and formats, so the envoy asks it rat
 A failed name read shows `Export.NameFailed` and asks nothing.
 Its own key tells a failed name read apart from a failed export.
 No path means the reader cancelled, which exports nothing and is no failure.
+The task answers the path written, and null for a cancel or a failure.
 A failed export shows `Export.Failed` through the panel's envoy, with the notice the settings read.
 The format read and the question run inside that same try.
 So an engine throw or an unknown format is shown, and the export stops cleanly.
@@ -87,7 +88,7 @@ It mirrors the engine's formats member for member, and `CPortrait` maps between 
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `CPortrait.cs` `37a9199673348538`
+Commit: `52c21d68b4c4`
+- `CPortrait.cs` `7fceba7d71f55793`
 - `CPortraitChoice.cs` `57fa08f2f47e2c37`
 - `CPortraitMedium.cs` `3871271851799896`

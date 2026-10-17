@@ -86,6 +86,7 @@ They match `domain.exempt` in scripts/AuditPlatform.json.
 The silencers map project properties to the value that switches the platform analyzer off.
 The column table maps each project to the portable half of its column.
 A portable half is its own column, and a twin names its portable half.
+Guestroom is a portable half with no twin, so it is its own column.
 The host has an empty column because it names every project.
 Twin naming is not settled, so a twin's name here is provisional.
 A twin may reference one capsule project outside its column.
@@ -96,10 +97,10 @@ Lower a ceiling when a project sheds a hit, never raise one to admit a new one.
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `52c21d68b4c4`
 - `TAuditPlatform.cs` `238370aaf071caf6`
 - `TAuditPlatformAnalyzer.cs` `398f4a2286265cce`
 - `TAuditPlatformFile.cs` `0470f513ed276337`
 - `TAuditPlatformPortable.cs` `691f001f8ce04da3`
 - `TAuditPlatformProject.cs` `69626c7ae8f733ad`
-- `TAuditPlatformSetting.cs` `24528a1757904966`
+- `TAuditPlatformSetting.cs` `b183b141f09b5da4`

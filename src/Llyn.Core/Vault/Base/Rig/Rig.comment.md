@@ -23,6 +23,9 @@ It hands in the printer list `LRigQueue` beside `LRigPress`, since both serve pr
 `LRigAsset.LRigAssetManifest` remembers what was last pushed to Joplin and is kept with the other workspace files.
 `LRigAsset.LRigAssetLivery` answers the style note Joplin imports, set beside the portrait port since both wear the theme.
 `LRigTrail` and `LRigClock` are the two ambient facts the engine may not read itself, the path rules and the time.
+`LRigLease` is the workspace lease port, built over the same root as the other root-bound adapters.
+The engine opens it only when built as leased.
+A workspace change swaps it with the rest of the rig.
 `LRigEntryQuery` is the read-only entry query port, set beside `LRigEntries` since both cover entries.
 `LRigProcess` is the id of the process the rig was built in.
 A claim on a draft is compared against it.
@@ -30,5 +33,5 @@ A claim on a draft is compared against it.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
-- `LRig.cs` `84137e92a3f10901`
+Commit: `52c21d68b4c4`
+- `LRig.cs` `7ddb98921165af73`

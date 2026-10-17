@@ -35,6 +35,13 @@ So the workspace holds no editor, and the quit and a workspace change reach it a
 The driver names the subject and order in Conduct's enums, so it never names a Core one.
 They reach the engine through `CCatalog`'s by-name maps, never by cast.
 
+The constructor takes a detached flag and keeps it, and the flag defaults to false.
+The strict console asks Host's seam for a detached atelier, so a command line never touches a stored layout.
+`CAtelierVistaStart` hands the flag to the posture, whose detached start reads no stored layout.
+The vista then starts on the given order and an empty filter, with no split, so in its read mode.
+The posture never learns of that vista, so the vista's later changes write no layout.
+The other posture reads, such as volume, stay the same.
+
 `LAtelierSplitRead` tells whether the open tab shows its editor rather than its read area.
 Only the navigation reads it, when it restores the open tab on every open.
 
@@ -243,8 +250,8 @@ The amount is written with one decimal in megabytes and as a whole number in kil
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `CAtelier.cs` `f47a17e14661cb82`
+Commit: `52c21d68b4c4`
+- `CAtelier.cs` `1b7cd5cad8052419`
 - `CEntryBundle.cs` `5a3f6144e85000d5`
 - `CEnvoy.cs` `54422ae5955ae73f`
 - `CPhonologyBundle.cs` `c969d9a57ef9c34d`

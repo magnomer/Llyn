@@ -16,32 +16,47 @@ public sealed class CPanelBin
 
     private readonly string? _cPanelBinScope;
 
-    internal CPanelBin(CEnvoy envoy, LSettingsPort settings, LVistaPort vistas, CAperture aperture, string? scope)
+    private readonly Func<long?, bool> _cPanelBinSeam;
+
+    internal CPanelBin(
+        CEnvoy envoy,
+        LSettingsPort settings,
+        LVistaPort vistas,
+        CAperture aperture,
+        string? scope,
+        Func<long?, bool> seam)
     {
         ArgumentNullException.ThrowIfNull(envoy);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(vistas);
         ArgumentNullException.ThrowIfNull(aperture);
+        ArgumentNullException.ThrowIfNull(seam);
 
         _cPanelBinEnvoy = envoy;
         _cPanelBinSettings = settings;
         _cPanelBinVistas = vistas;
         _cPanelBinAperture = aperture;
         _cPanelBinScope = scope;
+        _cPanelBinSeam = seam;
     }
 
     public event Action? CPanelBinDeleted;
 
-    public void CPanelBinDelete()
+    public bool CPanelBinDelete(long id)
+    {
+        return _cPanelBinSeam(id) && CPanelBinDelete();
+    }
+
+    public bool CPanelBinDelete()
     {
         if (_cPanelBinScope is not string scope || _cPanelBinAperture.CApertureVista is not LVista vista)
         {
-            return;
+            return false;
         }
 
         if (!LPanelBinConfirm(scope, _cPanelBinVistas.LEngineUsageRead(vista)))
         {
-            return;
+            return false;
         }
 
         try
@@ -51,10 +66,11 @@ public sealed class CPanelBin
         catch (Exception exception)
         {
             CLedger.LLedgerFailureShow(_cPanelBinEnvoy, _cPanelBinSettings, scope + ".DeleteFailed", exception);
-            return;
+            return false;
         }
 
         CPanelBinDeleted?.Invoke();
+        return true;
     }
 
     private bool LPanelBinConfirm(string scope, int usage)

@@ -57,6 +57,19 @@ public sealed partial class TFault
                 return Task.FromResult<Func<Task>>(guild.CGuildPortraitPrint);
             }),
         new(
+            "CLibrary.CLibraryEntryExport",
+            "LPortraitPort.LEnginePortraitExport",
+            "Export.Failed",
+            static stage =>
+            {
+                LEngine engine = TFaultEngineStart(stage);
+                long id = engine.TEngineTranslationCreate("water", "English").LEntryId;
+                CLibrary library = TLibrary.TLibraryPrepare(
+                    TFaultAtelierCreate(stage, engine),
+                    TFaultEnvoyCreate(stage));
+                return Task.FromResult<Func<Task>>(() => library.CLibraryEntryExport(id));
+            }),
+        new(
             "CLibrary.CLibraryPortraitExport",
             "LPortraitPort.LEnginePortraitExport",
             "Export.Failed",

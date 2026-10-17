@@ -1,7 +1,7 @@
 # Configuration
 
 This folder holds the adapters for everything the program keeps outside the database.
-It covers settings, posture, print setting, language catalogs, the audit log, paths, the clock and the workspace pointer.
+It covers settings, posture, print setting, language catalogs, the audit log, paths, the clock, the lease and the workspace pointer.
 It stands apart from Database because each file here is small JSON or text that the user may hand-edit.
 Each adapter owns its JSON shape, and Core holds no JSON.
 
@@ -187,6 +187,15 @@ It answers the clock port with the system clock.
 `LClockRead` gives UTC, so a stamp reads the same wherever the workspace travels.
 `LClockPause` is a real wait through `Task.Delay`, cancelled by the token.
 
+## `LLeaseFile`
+
+It answers the lease port with the file `workspace.lease` under the workspace root.
+The file is opened exclusively and set to vanish when closed, so a killed program leaves no stale claim.
+`LLeaseOpen` does nothing while this lease is already held.
+A sharing or lock violation raises `LLeaseFault` around the system's exception, since another holder has the file.
+Any other file fault passes through as it came.
+`LLeaseClose` releases the file, and closing an unheld lease is harmless.
+
 ## Inline notes
 
 ### LSettingsLoader.cs: Dictionary<string, object> payload = new(StringComparer.Ordinal)
@@ -246,10 +255,11 @@ Anything else means empty, so an older workspace starts with no folder chosen.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
+Commit: `52c21d68b4c4`
 - `LAuditWriter.cs` `dd4172f169ed53a1`
 - `LClockSystem.cs` `b36331da33b322ac`
 - `LKeepFile.cs` `c6c78aa9341281fa`
+- `LLeaseFile.cs` `c576bdb367b6ba21`
 - `LLocalizationLoader.cs` `c26518d6f35865af`
 - `LPostureFile.cs` `ac5bf5c7f5c371e1`
 - `LPressFile.cs` `d65a8925b22bf89c`

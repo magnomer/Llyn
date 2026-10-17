@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 
 internal static class TInterfaceConduct
 {
-    internal static CAtelier TAtelierCreate(LEngine engine) => new(
+    internal static CAtelier TAtelierCreate(LEngine engine, bool detached = false) => new(
         new LPosture(engine),
         new LDraftOutlet(engine),
         TEntryBundleCreate(engine),
@@ -22,7 +22,11 @@ internal static class TInterfaceConduct
             ["LEngineScreenRead"] = _ => null,
         }),
         new LPortraitOutlet(engine),
-        static run => run());
+        static run => run(),
+        detached);
+
+    internal static LVista TAtelierVistaStart(this CAtelier atelier, string tab, CCatalogOrder fallback) =>
+        atelier.CAtelierVistaStart(tab, CSubject.CSubjectEntry, fallback);
 
     internal static CAtelier TAtelierCreate(LEngine engine, LMediaPort media) => new(
         new LPosture(engine),

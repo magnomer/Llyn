@@ -104,6 +104,7 @@ internal static class TRigFake
             new TPhonographFake(),
             new LTrailSystem(),
             new TClockFake(),
+            TRigStubCreate<LLease>(),
             1,
             workspace);
     }

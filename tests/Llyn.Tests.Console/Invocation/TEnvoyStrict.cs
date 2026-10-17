@@ -13,7 +13,7 @@ public sealed class TEnvoyStrict
         BLocalizationCatalog catalog = new();
         catalog.BLocalizationCatalogApply(TInterface.TLocalizationLoad("en"));
         BInvocation invocation = BInvocation.BInvocationParse(["-version", "-yes"], catalog, out _)!;
-        BEnvoyStrict envoy = new(console, catalog, invocation);
+        BEnvoyStrict envoy = new(console, catalog, invocation, static _ => false);
 
         bool answer = envoy.CEnvoyConfirm("Scribe.DeleteConfirm");
 
@@ -29,7 +29,7 @@ public sealed class TEnvoyStrict
         BLocalizationCatalog catalog = new();
         catalog.BLocalizationCatalogApply(TInterface.TLocalizationLoad("en"));
         BInvocation invocation = BInvocation.BInvocationParse(["-no", "-version"], catalog, out _)!;
-        BEnvoyStrict envoy = new(console, catalog, invocation);
+        BEnvoyStrict envoy = new(console, catalog, invocation, static _ => false);
 
         bool answer = envoy.CEnvoyConfirm("Scribe.DeleteConfirm");
 
@@ -45,7 +45,7 @@ public sealed class TEnvoyStrict
         BLocalizationCatalog catalog = new();
         catalog.BLocalizationCatalogApply(TInterface.TLocalizationLoad("en"));
         BInvocation invocation = BInvocation.BInvocationParse(["-version"], catalog, out _)!;
-        BEnvoyStrict envoy = new(console, catalog, invocation);
+        BEnvoyStrict envoy = new(console, catalog, invocation, static _ => false);
 
         bool answer = envoy.CEnvoyConfirm("Scribe.DeleteConfirm");
 
@@ -62,7 +62,7 @@ public sealed class TEnvoyStrict
         BLocalizationCatalog catalog = new();
         catalog.BLocalizationCatalogApply(TInterface.TLocalizationLoad("en"));
         BInvocation invocation = BInvocation.BInvocationParse(["-version"], catalog, out _)!;
-        BEnvoyStrict envoy = new(console, catalog, invocation);
+        BEnvoyStrict envoy = new(console, catalog, invocation, static _ => false);
 
         bool answer = envoy.CEnvoyConfirm("Scribe.DeleteConfirm");
 
@@ -78,7 +78,7 @@ public sealed class TEnvoyStrict
         BLocalizationCatalog catalog = new();
         catalog.BLocalizationCatalogApply(TInterface.TLocalizationLoad("en"));
         BInvocation invocation = BInvocation.BInvocationParse(["-version"], catalog, out _)!;
-        BEnvoyStrict envoy = new(console, catalog, invocation);
+        BEnvoyStrict envoy = new(console, catalog, invocation, static _ => false);
 
         bool? answer = envoy.CEnvoyLeaveConfirm();
 
@@ -93,7 +93,7 @@ public sealed class TEnvoyStrict
         BLocalizationCatalog catalog = new();
         catalog.BLocalizationCatalogApply(TInterface.TLocalizationLoad("en"));
         BInvocation invocation = BInvocation.BInvocationParse(["-version", "-quiet"], catalog, out _)!;
-        BEnvoyStrict envoy = new(console, catalog, invocation);
+        BEnvoyStrict envoy = new(console, catalog, invocation, static _ => false);
 
         envoy.CEnvoyFailureShow("Workspace.OpenFailed");
 
@@ -108,7 +108,7 @@ public sealed class TEnvoyStrict
         BLocalizationCatalog catalog = new();
         catalog.BLocalizationCatalogApply(TInterface.TLocalizationLoad("en"));
         BInvocation invocation = BInvocation.BInvocationParse(["-version", "-quiet"], catalog, out _)!;
-        BEnvoyStrict envoy = new(console, catalog, invocation);
+        BEnvoyStrict envoy = new(console, catalog, invocation, static _ => false);
 
         envoy.CEnvoyOmissionShow([new CMarkupOmission("12", "The element holds no text.")]);
 

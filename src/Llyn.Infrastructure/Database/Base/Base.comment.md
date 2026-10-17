@@ -150,7 +150,7 @@ Those are the two ways a broken or unknown file announces itself.
 A busy file, a full disk, a read error and a failed rebuild propagate.
 Resetting on one of those would set aside a healthy database on a bad morning.
 
-`LDoctorBusyCheck` says another connection holds the database.
+`LDoctorBusyCheck` says another connection holds the database, or another program holds the workspace lease.
 The launch names that case to the user, since closing the other program is the cure.
 
 `LDoctorDatabaseSave` moves the file aside and returns where it went.
@@ -213,10 +213,10 @@ One matcher on both sides keeps the headword catalog and the in-memory catalogs 
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `52c21d68b4c4`
 - `LDatabase.cs` `7ed9662f8bae6357`
 - `LDatabaseLink.cs` `6213269c5836f43a`
 - `LDatabaseOrder.cs` `d02d69fd03dc1028`
 - `LDatabaseSession.cs` `2d0a0294da057251`
-- `LDoctor.cs` `eca39bc31edc8c46`
+- `LDoctor.cs` `de8fc5f895a0fac4`
 - `LStateColumn.cs` `346a55dfd3d09118`

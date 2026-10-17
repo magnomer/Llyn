@@ -55,9 +55,15 @@ public sealed class LPosture : IDisposable
         return string.Equals(LPostureRead().LPostureStateMode, mode, StringComparison.Ordinal);
     }
 
-    public LVista LPostureVistaStart(string tab, LSubject? subject, LCatalogOrder fallback, bool blank = false)
+    public LVista LPostureVistaStart(
+        string tab, LSubject? subject, LCatalogOrder fallback, bool blank = false, bool detached = false)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(tab);
+        if (detached)
+        {
+            return _lEngine.LEngineVista.LEngineVistaStart(
+                tab, subject, fallback, LCatalogFilter.LCatalogFilterEmpty, false, blank);
+        }
 
         LPostureState state = LPostureRead();
         LLayout? record = LPostureLayoutFind(state, tab);
@@ -188,10 +194,10 @@ public sealed class LPosture : IDisposable
         lock (_lPostureGate)
         {
             (LCatalogOrder LPostureOrder, string LPostureFilter) next = LPostureVistaRead(vista);
-            if (_lPostureVistas.TryGetValue(
+            if (!_lPostureVistas.TryGetValue(
                     vista.LVistaId, out (LCatalogOrder LPostureOrder, string LPostureFilter) held)
-                && held.LPostureOrder == next.LPostureOrder
-                && string.Equals(held.LPostureFilter, next.LPostureFilter, StringComparison.Ordinal))
+                || (held.LPostureOrder == next.LPostureOrder
+                    && string.Equals(held.LPostureFilter, next.LPostureFilter, StringComparison.Ordinal)))
             {
                 return;
             }

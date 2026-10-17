@@ -47,7 +47,7 @@ public sealed class LDoctor : LDoctorVault
     {
         ArgumentNullException.ThrowIfNull(fault);
 
-        return fault is SqliteException { SqliteErrorCode: raw.SQLITE_BUSY or raw.SQLITE_LOCKED };
+        return fault is SqliteException { SqliteErrorCode: raw.SQLITE_BUSY or raw.SQLITE_LOCKED } or LLeaseFault;
     }
 
     private static string LDoctorDatabaseSave(string file)

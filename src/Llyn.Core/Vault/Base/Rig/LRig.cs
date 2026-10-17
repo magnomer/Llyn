@@ -27,5 +27,6 @@ public sealed record LRig(
     LPhonograph LRigPhonograph,
     LTrail LRigTrail,
     LClock LRigClock,
+    LLease LRigLease,
     int LRigProcess,
     string LRigWorkspace);

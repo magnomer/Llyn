@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Net.Http;
 using System.Threading;
 using Llyn.Application;
@@ -12,40 +13,42 @@ using Llyn.UIDemeanor;
 using Llyn.UIDeportment;
 using PBootstrap = Llyn.UIVeneer.PBootstrap;
 
-Func<LEngine, LSettingsOutlet, Action<Action>, CAtelier> atelier = static (engine, settings, marshal) => new CAtelier(
-    new LPosture(engine),
-    new LDraftOutlet(engine),
-    new CEntryBundle(
-        engine.LEngineEntry,
-        engine.LEngineEntry,
-        engine.LEngineCatalog,
-        engine.LEngineVista,
-        engine.LEngineCard,
-        engine.LEngineCatalog,
-        engine.LEngineCatalog,
-        engine.LEngineMention,
-        engine.LEngineLanguage,
-        engine.LEngineSituation,
-        engine.LEngineExample,
-        engine.LEngineReference,
-        engine.LEngineAuthor,
-        engine.LEngineDraft,
-        engine.LEnginePronunciation,
-        engine.LEngineAncestor,
-        new LDeckOutlet(engine)),
-    settings,
-    new CPhonologyBundle(
-        engine.LEngineFanqie,
-        engine.LEngineFanqie,
-        engine.LEngineScript,
-        engine.LEngineLanguage,
-        engine.LEngineReflex,
-        engine.LEngineVocabulary,
-        engine.LEngineVocabulary,
-        engine.LEngineStem),
-    new LMediaOutlet(engine),
-    new LPortraitOutlet(engine),
-    marshal);
+Func<LEngine, LSettingsOutlet, Action<Action>, bool, CAtelier> atelier = static (engine, settings, marshal, detached) =>
+    new CAtelier(
+        new LPosture(engine),
+        new LDraftOutlet(engine),
+        new CEntryBundle(
+            engine.LEngineEntry,
+            engine.LEngineEntry,
+            engine.LEngineCatalog,
+            engine.LEngineVista,
+            engine.LEngineCard,
+            engine.LEngineCatalog,
+            engine.LEngineCatalog,
+            engine.LEngineMention,
+            engine.LEngineLanguage,
+            engine.LEngineSituation,
+            engine.LEngineExample,
+            engine.LEngineReference,
+            engine.LEngineAuthor,
+            engine.LEngineDraft,
+            engine.LEnginePronunciation,
+            engine.LEngineAncestor,
+            new LDeckOutlet(engine)),
+        settings,
+        new CPhonologyBundle(
+            engine.LEngineFanqie,
+            engine.LEngineFanqie,
+            engine.LEngineScript,
+            engine.LEngineLanguage,
+            engine.LEngineReflex,
+            engine.LEngineVocabulary,
+            engine.LEngineVocabulary,
+            engine.LEngineStem),
+        new LMediaOutlet(engine),
+        new LPortraitOutlet(engine),
+        marshal,
+        detached);
 
 Func<int> console = () =>
 {
@@ -61,10 +64,11 @@ Func<int> console = () =>
         args,
         () => LLocalization.LLocalizationLoad(new LLocalizationLoader(), LLocalization.LLocalizationDefault),
         LWorkspaceRoot.LWorkspaceRootRead,
-        workspace => new LEngine(
+        (workspace, leased) => new LEngine(
             LRigFactory.LRigFactoryBuild(workspace, client, usher, press, queue, warrant, phonograph),
             path => LRigFactory.LRigFactoryBuild(path, client, usher, press, queue, warrant, phonograph),
-            LWorkspaceRoot.LWorkspaceRootChange),
+            LWorkspaceRoot.LWorkspaceRootChange,
+            leased),
         LDoctor.LDoctorBusyCheck,
         engine =>
         {
@@ -78,8 +82,9 @@ Func<int> console = () =>
             bootstrap.BBootstrapRescueConsult(
                 rescue.LDoctorRescueDone, rescue.LDoctorRescueBackup, rescue.LDoctorRescueReason);
 
+            Action<Action> marshal = BObserver.BObserverCreate<Action>(static work => work());
             int run = bootstrap.BBootstrapAtelierRun(
-                atelier(engine, settings, BObserver.BObserverCreate<Action>(static work => work())));
+                detached => atelier(engine, settings, marshal, detached), File.Exists);
             engine.Dispose();
             return run;
         });
@@ -108,7 +113,8 @@ Func<int> window = () =>
             workspace => new LEngine(
                 LRigFactory.LRigFactoryBuild(workspace, client, usher, press, queue, warrant, phonograph),
                 path => LRigFactory.LRigFactoryBuild(path, client, usher, press, queue, warrant, phonograph),
-                LWorkspaceRoot.LWorkspaceRootChange),
+                LWorkspaceRoot.LWorkspaceRootChange,
+                true),
             LDoctor.LDoctorBusyCheck,
             engine =>
             {
@@ -123,7 +129,7 @@ Func<int> window = () =>
                     rescue.LDoctorRescueDone, rescue.LDoctorRescueBackup, rescue.LDoctorRescueReason);
 
                 bootstrap.QBootstrapWindowShow(new QWindow(
-                    atelier(engine, settings, QObserver.QObserverCreate<Action>(static run => run()))));
+                    atelier(engine, settings, QObserver.QObserverCreate<Action>(static run => run()), false)));
                 code = application.Run();
                 engine.Dispose();
             });

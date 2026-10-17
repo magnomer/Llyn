@@ -48,6 +48,16 @@ The client is disposed once the bootstrap returns, as on the GUI path.
 
 The atelier is composed in one place for both paths, so the two UIs wire the same ports.
 Each path hands in its own marshal, built on its own UI thread.
+The factory also takes a detached flag, which the atelier keeps from construction.
+The console path takes the flag from `BBootstrapAtelierRun`, which always asks for a detached atelier.
+The window path passes false, so the GUI still reads and writes its stored layout.
+The console path hands `BBootstrapAtelierRun` the atelier as a seam on that flag, with `File.Exists` as the presence seam.
+The presence seam lets the strict export ask whether a file exists.
+So the console driver names no file system call.
+The engine factory also takes a leased flag.
+The console path takes it from the parsed options.
+It is true only for the writing options `-new`, `-delete` and `-import`.
+The window path always asks for a lease, so a console that writes cannot open the workspace the GUI holds.
 Each path builds its own rig on its own UI thread, so the GUI builds its adapters as before.
 
 The GUI exit code stays 1 unless the application runs, so a failed start exits with 1.
@@ -101,6 +111,6 @@ The host then disposes the engine the window ran over.
 
 ## Stamp
 
-Commit: `ed7d18d90760`
-- `LHost.cs` `6dbd9622b43df849`
+Commit: `52c21d68b4c4`
+- `LHost.cs` `4f583129b1c6aa82`
 - `Llyn.Host.csproj` `227db85934ecef45`

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Llyn.Core;
+using Llyn.Infrastructure;
 using Llyn.ShellEngine;
 using Xunit;
 
@@ -171,6 +172,66 @@ public sealed class TEngineWorkspace
         Assert.Equal("ko", reopened.TEngineSettingsRead().LSettingsLocalization);
         Assert.Equal("en", TInterface.TSettingsLoad(first.TWorkspaceFolder).LSettingsLocalization);
     }
+
+    [Fact]
+    public void LeaseOpen_SecondEngine_ThrowsBusyFault()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine held = TLeaseStart(workspace, workspace);
+
+        LLeaseFault fault = Assert.Throws<LLeaseFault>(() => TLeaseStart(workspace, workspace));
+
+        Assert.True(TInterface.TDoctorBusyCheck(fault));
+    }
+
+    [Fact]
+    public void LeaseClose_EngineDisposed_FreesTheWorkspace()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        TLeaseStart(workspace, workspace).Dispose();
+
+        using LEngine reopened = TLeaseStart(workspace, workspace);
+
+        Assert.Equal(workspace.TWorkspaceFolder, reopened.TEngineWorkspaceRead());
+    }
+
+    [Fact]
+    public void LeaseOpen_WorkspaceChanged_MovesToTheTarget()
+    {
+        using TWorkspace first = TWorkspace.TWorkspacePrepare();
+        using TWorkspace second = TWorkspace.TWorkspacePrepare();
+        using LEngine mover = TLeaseStart(first, second);
+
+        mover.TEngineWorkspaceOpen(second.TWorkspaceFolder);
+
+        using LEngine reopened = TLeaseStart(first, first);
+        Assert.Equal(first.TWorkspaceFolder, reopened.TEngineWorkspaceRead());
+        Assert.Throws<LLeaseFault>(() => TLeaseStart(second, second));
+    }
+
+    [Fact]
+    public void LeaseClose_ConstructionFailed_FreesTheWorkspace()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        LLanguageVault failing = TEngineFake.TEngineCreate<LLanguageVault>(
+            new Dictionary<string, Func<object?[]?, object?>>
+            {
+                ["LLanguageScan"] = _ => throw new InvalidOperationException("The scan failed."),
+            });
+
+        Assert.Throws<InvalidOperationException>(() => TInterfaceEngineWorkspace.TEngineLeaseCreate(
+            workspace.TWorkspaceRigCreate() with { LRigLanguages = failing },
+            _ => workspace.TWorkspaceRigCreate(),
+            _ => { },
+            true));
+
+        using LEngine reopened = TLeaseStart(workspace, workspace);
+        Assert.Equal(workspace.TWorkspaceFolder, reopened.TEngineWorkspaceRead());
+    }
+
+    private static LEngine TLeaseStart(TWorkspace opened, TWorkspace moved) =>
+        TInterfaceEngineWorkspace.TEngineLeaseCreate(
+            opened.TWorkspaceRigCreate(), _ => moved.TWorkspaceRigCreate(), _ => { }, true);
 
     private sealed class TUsherOpened : LUsher
     {
