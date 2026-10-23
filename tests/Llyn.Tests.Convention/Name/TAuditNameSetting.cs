@@ -120,6 +120,7 @@ internal static class TAuditNameSetting
         "TAuditNameWalker.cs",
         "TAuditRegistry.cs",
         "TAuditScope.cs",
+        "TAuditSharedRegistry.cs",
         "TAuditSource.cs",
         "TAuditTestRegistry.cs",
         "TAuditUIRegistry.cs",

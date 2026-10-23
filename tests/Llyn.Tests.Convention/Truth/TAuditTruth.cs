@@ -150,7 +150,7 @@ public sealed class TAuditTruth
     {
         string repoRoot = TAuditSource.TAuditRootRead();
         string version = TAuditSource.TAuditVersionRead(repoRoot);
-        string path = Path.Combine(repoRoot, string.Format(TAuditTruthSetting.TAuditTruthReport, version));
+        string path = Path.Combine(repoRoot, string.Format(TAuditTruthSetting.TAuditTruthPath, version));
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
         IReadOnlyList<TViolation> hits = TAuditTruthHits.Value.TAuditHits;
 

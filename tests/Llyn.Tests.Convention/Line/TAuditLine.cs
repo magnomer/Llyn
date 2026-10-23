@@ -18,15 +18,15 @@ public sealed class TAuditLine
     public void AuditLine_File_HoldWithinLength()
     {
         List<string> hits = TAuditLineRows.Value
-            .Where(row => row.TAuditLineCount > TAuditLineSetting.TAuditLineLimit)
-            .OrderByDescending(row => row.TAuditLineCount)
-            .Select(row => $"  {row.TAuditLineCount,5}  {row.TAuditLinePath}")
+            .Where(row => row.TAuditLineTotal > TAuditLineSetting.TAuditLineLimit)
+            .OrderByDescending(row => row.TAuditLineTotal)
+            .Select(row => $"  {row.TAuditLineTotal,5}  {row.TAuditLinePath}")
             .ToList();
         List<string> warnings = TAuditLineRows.Value
-            .Where(row => row.TAuditLineCount > TAuditLineSetting.TAuditLineWarning
-                && row.TAuditLineCount <= TAuditLineSetting.TAuditLineLimit)
-            .OrderByDescending(row => row.TAuditLineCount)
-            .Select(row => $"  {row.TAuditLineCount,5}  {row.TAuditLinePath}")
+            .Where(row => row.TAuditLineTotal > TAuditLineSetting.TAuditLineWarning
+                && row.TAuditLineTotal <= TAuditLineSetting.TAuditLineLimit)
+            .OrderByDescending(row => row.TAuditLineTotal)
+            .Select(row => $"  {row.TAuditLineTotal,5}  {row.TAuditLinePath}")
             .ToList();
 
         TAuditWarningRecord(
@@ -94,7 +94,7 @@ public sealed class TAuditLine
         IReadOnlyList<TAuditLineRow> rows = TAuditLineRows.Value;
         return new Dictionary<string, int>(StringComparer.Ordinal)
         {
-            ["Length"] = rows.Count(row => row.TAuditLineCount > TAuditLineSetting.TAuditLineLimit),
+            ["Length"] = rows.Count(row => row.TAuditLineTotal > TAuditLineSetting.TAuditLineLimit),
             ["Width"] = rows.Sum(row => row.TAuditLineWide.Count(pair => pair.TAuditWidth > row.TAuditLineWidth)),
         };
     }

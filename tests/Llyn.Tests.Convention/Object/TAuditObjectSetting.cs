@@ -4,7 +4,7 @@ internal static class TAuditObjectSetting
 {
     public const int TAuditGeneration = 26;
     public const bool TAuditObjectEnforced = true;
-    public const string TAuditObjectReport = "temp/audit/Object-{0}.md";
+    public const string TAuditObjectPath = "temp/audit/Object-{0}.md";
 
     public static readonly IReadOnlyDictionary<string, double> TAuditHydraLimit = new Dictionary<string, double>
     {

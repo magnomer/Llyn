@@ -8,7 +8,7 @@ public sealed class TAuditEncoding
 {
     private const string TAuditEncodingAudit = "AUDITENCODING";
 
-    private static readonly byte[] TAuditEncodingMark = [0xEF, 0xBB, 0xBF];
+    private static readonly byte[] TAuditEncodingPreamble = [0xEF, 0xBB, 0xBF];
 
     private static readonly UTF8Encoding TAuditEncodingStrict = new(false, true);
 
@@ -46,7 +46,7 @@ public sealed class TAuditEncoding
     {
         List<string> hits = TAuditEncodingScan(static (_, bytes) =>
         {
-            int offset = bytes.AsSpan().IndexOf(TAuditEncodingMark);
+            int offset = bytes.AsSpan().IndexOf(TAuditEncodingPreamble);
             return offset < 0 ? null : $"byte order mark at offset {offset}";
         });
 

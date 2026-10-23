@@ -225,7 +225,7 @@ public sealed class TAuditObject
         string repoRoot = TAuditSource.TAuditRootRead();
         IReadOnlyList<TAuditObjectRow> rows = TAuditObjectRows.Value;
         string version = TAuditSource.TAuditVersionRead(repoRoot);
-        string path = Path.Combine(repoRoot, string.Format(TAuditObjectSetting.TAuditObjectReport, version));
+        string path = Path.Combine(repoRoot, string.Format(TAuditObjectSetting.TAuditObjectPath, version));
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
 
         List<TAuditObjectRow> split = rows.Where(row => row.TAuditObjectParts > 1).ToList();

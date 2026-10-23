@@ -1,6 +1,6 @@
 # Object
 
-This folder holds the object audit, which grades every merged type of `src`.
+This folder holds the object audit, which grades every merged type of the sources its settings include.
 It also holds the audit's member, part, row and type records, its setting and its walker.
 
 ## `TAuditObject`
@@ -41,7 +41,7 @@ A split type without a ceiling may hold one part, so a new partial split fails a
 A part row whose type is whole again counts as one part.
 The report table lists every type with a flag, several parts or a hub, in ladder order.
 A closing line counts the Hermits left out.
-The report lands under `temp/audit`, and its lines end in LF alone.
+The report lands at the path the setting names, and its lines end in LF alone.
 The head lists the generation, the switch, the type count and the count of each verdict.
 Each flag and the hub follow against their ceilings, then the above and stale counts and the rules.
 A part overrun is listed among the above-ceiling lines.
@@ -78,10 +78,12 @@ Incoming counts the distinct codebase types that name this type, its fan-in.
 Incoming counts types, not members or references, so it stays in the unit of Outgoing.
 Hubs names each hub slot with how many parts reach it, and Shared counts those slots.
 Crossings counts the member links crossing from one part into another, and Density is crossings per member.
-Glued is the share of parts the widest member component spans.
-Fused is the same share once hub state is removed.
+Glued joins members linked by use into components and is the share of parts the widest one spans.
+Excluded members join nothing, so hub state can be lifted out before the read.
+With nothing excluded it reads Glued, and with the hubs excluded it reads Fused.
 Flags lists every flag the type hits, in ladder order from Hydra down to Serpent.
-A hub is a finding on a slot, so it is never among the flags.
+The flags are read from the finished numbers.
+A hub is a finding on a slot, so it is never among them.
 The verdict is the first flag, else Colony for several parts and Hermit for one.
 
 ## `TAuditObjectSetting`
@@ -95,12 +97,11 @@ Raising a limit spares more types, which would loosen the audit.
 Every limit is reached at its value or above.
 Kraken has no dictionary, since it reuses the Serpent, Centipede, Octopus and Spider limits.
 The enforced switch false makes every flag, hub and part fact a warning that passes.
-The report path carries the version, and `temp` is ignored by Git, so a run never dirties the tree.
+The report path carries the version.
 The Hydra limit needs Parts and Lines, and Fused or Density too.
 Fused is Glued once hub state is removed, so one shared field alone never makes a Hydra.
 It holds doubles, since Fused is a share and Density is crossings per member.
 A Spider needs both Outgoing and Incoming.
-Its Outgoing sits below the Octopus Outgoing, so a Spider need not be an Octopus.
 Incoming alone flags nothing, since a widely used record or helper is healthy.
 The hub limit counts the declaring part as reaching the slot.
 The ceiling holds the hit count each flag may reach, and the hub slots over every type.
@@ -108,7 +109,7 @@ A type counts once under every flag it hits, so a Kraken still counts as an Octo
 A count above fails the fact, and a ceiling above the count is stale and fails too.
 Lower a ceiling when a type sheds a flag, never raise one to admit a new one.
 Each key is kept equal to the same key under `ceiling` in AuditObject.json, by hand.
-The parts ceiling is keyed by full type name and lists every split type at its count.
+The parts ceiling is keyed by full type name.
 A type not listed may hold one part.
 Dropping a row once its type is whole tightens, so the ratchet lets it go.
 Lower a ceiling when a plan lifts a part into its own type, never raise one.
@@ -153,18 +154,14 @@ A readonly field never rebinds, so it is not mutable whatever its type holds.
 A get-only or init-only property is set only during construction, so it is not mutable either.
 An event only notifies, so it is not mutable.
 A captured primary-constructor parameter is neither state nor mutable, a known limit, since it declares no member.
-Glued joins members linked by use into components and returns the share of parts the widest one spans.
-Excluded members join nothing, so hub state can be lifted out before the read.
-With nothing excluded it reads Glued, and with the hubs excluded it reads Fused.
-The flags are read from the finished numbers, and a hub leaves the verdict alone.
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `TAuditObject.cs` `be82ffc8a21e284a`
+Commit: `90a13c9590ba`
+- `TAuditObject.cs` `d7c49bde47bed70d`
 - `TAuditObjectMember.cs` `a16c1d47d7995c6c`
 - `TAuditObjectPart.cs` `8d291a83366d68f8`
-- `TAuditObjectRow.cs` `24db2a72e938da7f`
-- `TAuditObjectSetting.cs` `725aff3f9c216963`
+- `TAuditObjectRow.cs` `4bab03b10990872d`
+- `TAuditObjectSetting.cs` `f137dbd3fdb5a20e`
 - `TAuditObjectType.cs` `b202f87d774b9373`
-- `TAuditObjectWalker.cs` `6f0da4a7cb6ec6f4`
+- `TAuditObjectWalker.cs` `30f80d6d1d86e20e`

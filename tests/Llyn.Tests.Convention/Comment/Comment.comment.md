@@ -17,19 +17,19 @@ Every audited source is scanned for the comment markers its extension declares.
 In `.cs` files, string and character literals are blanked first, so a `//` inside a URL does not count.
 A verbatim or raw literal spanning lines keeps its line count, so a hit reports the right line.
 Every line of an unclosed block comment counts until the line holding its closer.
-Exempt files are skipped, since the generated registries carry a header.
+Exempt files are skipped.
 Every folder holding a source needs its one sidecar.
 A sidecar that is no folder's sidecar is left behind by a deleted or renamed folder and fails.
 Every signature heading of a sidecar must name an identifier that a source in its folder still holds.
 A heading that is a markup snippet is left out.
 A heading that is a file name must name a file in the folder.
 A heading names the last identifier before a parameter list, an initializer, a body or a base list.
-Type arguments are dropped first.
+Type arguments are dropped before the identifier is taken.
 
 ## `TAuditCommentFile`
 
 Finds the sources and sidecars the comment audit inspects, for `TAuditComment` and `TAuditCommentStamp`.
-Both read one scope, so the line rules and the stamps judge the same files.
+Both take their roots and excluded segments from one setting, so they judge the same sidecars.
 A configured root or reserved sidecar that does not exist fails first, as in the script.
 An empty scope fails rather than passing vacuously.
 The repository root is exempt, so a file directly inside it is never scanned.
@@ -57,12 +57,12 @@ The audits read no script configuration, and both copies change together as scri
 The generation constant equals the script's generation, so a mismatch shows the two drifted.
 `TAuditCommentEnforced` matches `enforced` in the script configuration.
 While it is false, every finding fact passes and the script reports it as a warning.
-A project sets it false while its sidecars migrate, so the audit can land before the migration.
+Setting it false lets the audit land before the sidecars migrate.
 Stale ceilings and unreadable files fail either way.
-The generated registries carry a generated-file header, so they alone are exempt.
+The exempt files are named in the setting and skipped by the source, heading and stamp checks.
 Reserved sidecars match `exempt.comments` in the script configuration, and no check reads them.
 Each path is relative to the repository root and must exist.
-The source patterns match the source pairs in scripts/AuditComments.json.
+The source patterns match `sources.suffixes` in scripts/AuditComments.json.
 The abbreviations, markers and closers match `rules.abbreviations`, `remark.markers` and `remark.closers`.
 The unstamped ceiling matches `ceilings.unstamped`.
 A count above it fails, and a ceiling above the count is stale and fails too.
@@ -76,14 +76,14 @@ Compares each sidecar with the stamp it carries in its trailing `## Stamp` secti
 The stamp holds a commit and one hash row per source.
 A stamp is a person's word that the prose was reread against the sources.
 The findings match the stamp rows of AuditComments.ps1, though neither reads the other.
-The sidecars come from `TAuditCommentFile`, the same scope `TAuditComment` judges.
+The sidecars come from the owners that `TAuditCommentFile` finds.
 The test output sink is kept so a warning lands beside the result.
 A source changed, added or removed since the stamp only advises, never fails.
 The advice names the diff to run against the stamped commit.
 Hash drift stays advice because a source edit does not always touch the sidecar's intent.
 A sidecar with no stamp or no commit is backlog from before the stamp existed.
 It passes as a warning while the count sits at or below the `Unstamped` ceiling.
-A count above the ceiling fails, so a new sidecar is stamped when it is written.
+A count above the ceiling fails once enforced, so a new sidecar is stamped when written.
 The ceiling equals the count, so each stamp lowers it on both sides.
 A folder holding more sources than the folder file limit warns, and never fails.
 A folder under a ceiling row warns only above that ceiling.
@@ -96,9 +96,9 @@ Git line-ending settings or a downloaded copy therefore never change the value.
 
 ## Stamp
 
-Commit: `2883be178842`
+Commit: `90a13c9590ba`
 - `TAuditComment.cs` `75ff40287e6ac7b3`
 - `TAuditCommentFile.cs` `2f985b13b8af43f1`
 - `TAuditCommentLine.cs` `cc1bd66f2202a39b`
-- `TAuditCommentSetting.cs` `555098432c58684c`
+- `TAuditCommentSetting.cs` `22cd7836d2993aee`
 - `TAuditCommentStamp.cs` `3cb323a65e5d3e86`

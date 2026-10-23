@@ -198,7 +198,8 @@ public sealed class TAuditBorder
         ];
 
         Assert.Equal(expected, hits.Select(hit => hit.TAuditHitName));
-        Assert.All(hits, hit => Assert.Equal("Drifting:Llyn.UIDeportment>Llyn.Conduct", hit.TAuditPairRead()));
+        Assert.All(hits, hit =>
+            Assert.Equal("Drifting:Llyn.UIDeportment>Llyn.Conduct", hit.TAuditPairRead()));
     }
 
     [Fact]

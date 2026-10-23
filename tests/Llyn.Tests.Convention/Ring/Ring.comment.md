@@ -16,16 +16,18 @@ A panel that needs to know whether a value is unknown asks a verdict rather than
 Every shell source and markup is scanned for a construct that hides code from the walkers.
 Every shell source but the loaders is scanned for the reflection namespace.
 Every tracked file under `src` and `tests` that the audits would skip by segment, suffix or prefix is listed.
+A markdown suffix is not counted.
 A source named like a generated file would otherwise never be walked.
-Every source outside the shell roots is scanned for a `P` or `PS` type.
+Every source outside the shell roots is scanned for a type that matches the panel pattern.
 A panel declared in another project would sit outside every shell audit.
 Every shell file whose name a hold pattern matches is scanned for a timer of its own.
-The tenure waits out the typing, so a second wait in the panel would write twice or out of order.
+A second wait in a panel would write twice or out of order.
+An owner already waits out the typing.
 Every listed converter must still compare a state.
 Every loader must still reflect.
 Every hold pattern must name a file.
 A row that spares or names nothing is stale and must be removed.
-The facts share one scan method, and the shell is whatever the truth and reach includes name.
+The facts share one scan method, and the shell is whatever the shell, capsule and reach includes name.
 So a new shell assembly joins without an edit here.
 An empty enumeration fails rather than passing vacuously.
 Each scan hit is one line naming the file, the line and the pattern found.
@@ -39,20 +41,17 @@ The forbidden calls read text or an id into a state, plus a `using static` hidin
 Each is a regular expression, so a space before the parenthesis does not slip past.
 The state names are matched bare, so a qualified read, markup and a `using static` are caught alike.
 A bare name followed by `:` or `=` is a declaration or a named argument and is not a read.
-The converter list is empty, since no converter compares a state any more.
+The converter, loader and hold lists name the files the facts spare, require to reflect, or inspect for a timer.
 A converter is still a surface type, so the strict audit counts every branch in it.
 The hidden constructs keep code out of a syntax walk.
 They are a preprocessor branch, reflection, `dynamic` and inline markup code.
 They also include an enum parsed from text, a `using` alias and an `extern alias`.
 Each gives a logic name a second spelling.
 The walkers parse without symbols, so a branch would be skipped, and reflection names nothing the walk can follow.
-Two loader files may name reflection.
-`QHeadquarter.cs` reads the program version through the assembly.
-`BBlueprint.cs` finds its embedded blueprints through the assembly.
-The timer type is the one a panel used to hold its own debounce in.
-That was before the tenure owned the quiet.
-The hold pattern list is empty, since no file holds a draft by name any more.
-A panel type is declared by its prefix, and only the shell may hold one.
+No file outside the loader list may name reflection.
+The timer pattern is the construct a panel must not use for its own wait.
+A file whose name a hold pattern matches is scanned for it.
+The panel pattern declares a panel type by its prefix, and only the shell may hold one.
 
 ## `TAuditCensus`
 
@@ -61,7 +60,8 @@ It counts the files and types a ring holds, and bans the words listed for a fold
 A ring holds no word listed for its folder, enough source files and no squatting type.
 The same census is audited by `AuditStructure.ps1` from its own configuration, and neither reads the other.
 No bound source under a folder names a word listed for it.
-Opening a vault session belongs to a clerk, so the shell engine may not name it.
+A word listed for a folder marks a duty of another ring.
+So the folder may not name it.
 Every ring with a floor holds at least that many source files.
 A ring emptied by mistake would otherwise pass every border fact vacuously.
 No ring declares a type whose name matches a squatting pattern written for it.
@@ -72,10 +72,9 @@ Hand-written and tracked, with no script writing it and no script configuration 
 `AuditStructure.json` holds its own copy, kept in step by hand as scripts/principles.md asks.
 The smuggling words match `smugglingWords` in scripts/AuditStructure.json.
 The floor is the fewest source files a ring may hold.
-The application ring emptied once when its records were mistaken for the core's.
-Raise a floor when a plan lifts another clerk in, never lower it.
+Raise a floor when a plan lifts more code into the ring, never lower it.
 A squatting pattern is a type name a ring may not declare.
-A request record belongs to the application, so one in the core is misplaced.
+Such a type belongs to another ring, so one declared here is misplaced.
 
 ## `TAuditCensusWalker`
 
@@ -98,11 +97,9 @@ A ring dropped from the border's neighbour table would stop being walked, so the
 No project reaches code the charter cannot see, which would be `Backdooring`.
 A `Reference` with a `HintPath` or a `Compile` linked from outside the project folder fails.
 Any reference or source item in a `Directory.Build` import fails too, since it applies to every project.
-The imports checked are the files MSBuild imports on its own from every folder above a project.
+The imports checked are every `Directory.Build.props` and `Directory.Build.targets` file Git lists, whatever the folder.
 The items checked are those that bring code or a reference into a build.
 Cut projects that do not disable transitive project references stay within their `Piggybacking` ceiling.
-Until they do, a UI project compiles against every ring below its neighbour, and only the tests hold the cut.
-Disabling them breaks the build until the `Undercutting` ceilings reach zero, so it is the cut's last step.
 The `Piggybacking` ceiling equals its count, so a project that closes its references lowers it.
 
 ## `TAuditCharterSetting`
@@ -111,17 +108,14 @@ Hand-written and tracked, with no script writing it.
 The project edge table lives here, as project name to referenced project names.
 The fact holds the `.csproj` files to this table exactly, so a new edge is an edit here first.
 Each ring's edges but the host's equal its border neighbour plus its capsule.
-The engine references the application alone and ferries core records through it.
-Guestroom references no project, and the host references it with the rest.
 The `Piggybacking` ceiling counts the cut projects that still compile against rings past their neighbour.
-Every cut project disables transitive project references, so the ceiling holds at zero.
 A count above fails the fact, and a ceiling above the count is stale and fails too.
 
 ## `TAuditPurity`
 
 Keeps every pure ring inside its frame, which limits what a ring may name outside the project.
 A pure ring names only the framework namespaces the frame lists and touches no eavesdropping member.
-The clock, the environment, the disk and the console arrive through a port or not at all.
+The eavesdropping members are project-specific values in the project's settings files.
 The same purity is audited by `AuditStructure.ps1` from its own configuration, and neither reads the other.
 The hits are bound once and shared by every fact.
 No pair holds more `Foraging` hits, naming a namespace outside the frame, than its ceiling.
@@ -135,21 +129,15 @@ Hand-written and tracked, with no script writing it and no script configuration 
 Both copies change together, as scripts/principles.md asks.
 `AuditStructure.json` holds its own copy of the ring frames for the structure script.
 The pure rings are held to the frame and kept from every eavesdropping member.
-Conduct is one, since it uses no WPF and no console and serves both media.
-Guestroom is one too, with no extra namespace, since its choice reads only the path Host hands it.
-The surfaces, the drivers and the adapters are outside the purity and name what they need.
-`System.IO`, `System.Xml`, `System.Reflection` and `System.Text.Json` are outside the frame and belong behind a port.
+The rings outside the purity name what they need.
+The frame lists the framework namespaces a pure ring may name, and any other namespace belongs behind a port.
 The extra namespaces one pure ring adds match the ring frames of scripts/AuditStructure.json.
-The shell engine and Conduct rethrow a captured exception, so only they name `System.Runtime.ExceptionServices`.
-The eavesdropping members cover the clock, the environment, an id, a random, the console, the disk and a process.
 A member matches when its full name equals a row or sits under it.
-The ceiling is empty since every foraging and eavesdropping break moved behind a port.
-It stays declared so the next break has a row to fail.
+The ceiling table keeps its declaration even when empty, so the next break has a row to fail.
 Lower a ceiling when a ring sheds a name, never raise one to admit a new one.
-Exempt rows are `path:name` and break the purity today, one row per break.
+Exempt rows are `path:name` and break the purity, one row per break.
 A path ending in `/*` exempts a whole folder for one name.
 Every row must still match a hit, so a fixed break deletes its row.
-No row stands today.
 
 ## `TAuditPurityWalker`
 
@@ -162,18 +150,18 @@ A namespace outside the frame is a `Foraging` hit and a member under an eavesdro
 One hit is kept per line, kind and name, so a name used twice on a line counts once.
 A namespace is outside only when it is in neither the shared frame nor the ring's extra frame.
 It matches whole, so `System` never admits `System.IO`.
-A member appends its own name, so `DateTime.UtcNow` is told apart from `DateTime`.
+A member appends its own name, so a member is told apart from its type.
 
 ## Stamp
 
-Commit: `92c4426f8506`
+Commit: `90a13c9590ba`
 - `TAuditBoundary.cs` `51ad50d413ce0aab`
-- `TAuditBoundarySetting.cs` `90ff7d32da133086`
+- `TAuditBoundarySetting.cs` `927a29bfdba67c3f`
 - `TAuditCensus.cs` `1927cbc5ad714acf`
-- `TAuditCensusSetting.cs` `8fb52cbc35a34b4e`
+- `TAuditCensusSetting.cs` `a08172799eac3a52`
 - `TAuditCensusWalker.cs` `301bfbc58a822e20`
 - `TAuditCharter.cs` `9640ab92d9a80db5`
-- `TAuditCharterSetting.cs` `2c30f7cb3a7e4b78`
+- `TAuditCharterSetting.cs` `174df8f90e8921ad`
 - `TAuditPurity.cs` `9acbad32aaa34359`
-- `TAuditPuritySetting.cs` `c6e04528213a5c9d`
+- `TAuditPuritySetting.cs` `20a659b55370b1f9`
 - `TAuditPurityWalker.cs` `77f32b04ab93854e`

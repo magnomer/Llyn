@@ -5,8 +5,8 @@ This folder holds the fault audit counting swallowed catch clauses, with its set
 ## `TAssayFault`
 
 Assays of the fault walker, run through `TAuditFaultWalker.TAuditFaultScan`.
-`TAuditFault` holds the facts over the tree.
-The assayed source sits under the Application ring so the walker reads it.
+`TAuditFault` runs the same scan over the tree.
+The assayed source sits in a ring the setting lists, so the walker reads it.
 The clause always opens on line 30, so an expected hit names that line.
 `LAssayRecord` is an interface, so a call through it is a recording, never a way out.
 `LAssayKeep` stores its argument in a field, so its parameter is carried.
@@ -21,7 +21,7 @@ A check expects exactly the one hit, or none.
 
 ## `TAuditFault`
 
-Counts the catch clauses below Conduct that swallow a fault, so the count can only fall.
+Counts the catch clauses of the listed rings that swallow a fault, so the count can only fall.
 A swallowed fault is only recorded or turned into null and never reaches the user.
 Each ring has its own ceiling, and an exempt row counts against none.
 The same count is audited by `AuditFault.ps1` from its own configuration, and neither reads the other.
@@ -36,20 +36,18 @@ An exempt row names the file and enclosing method of the hit.
 
 Hand-written and tracked, with no script writing it.
 `AuditFault.ps1` reads its own AuditFault.json and never writes this file.
-The rings are the projects below Conduct whose catch clauses are walked, each under `src/`.
-A fault swallowed there never reaches the user, since only Conduct and above can tell them.
-The `Swallowing` ceiling is the hit count each ring may reach, exempt rows left out.
+The rings are the projects whose catch clauses are walked, each under `src/`.
+The ceiling is the `Swallowing` hit count each ring may reach, exempt rows left out.
 A count above its ceiling fails the fact, and a ceiling above the count is stale and fails too.
 Lower a ceiling when a catch hands its fault out or is removed.
 Never raise one to admit a new one.
 Exempt rows are `path:EnclosingMethod` whose catch clauses swallow by design and count against no ceiling.
-Both ceilings are zero.
-The list is empty, since no catch swallows by design.
+The ceilings and the exempt rows live in the project's settings files.
 A row that matches no hit fails, so no row outlives its catch.
 
 ## `TAuditFaultWalker`
 
-Finds the catch clauses below Conduct that keep a fault from ever reaching the user.
+Finds the catch clauses of the listed rings that keep a fault from ever reaching the user.
 A clause hands its fault out by throwing, by carrying its variable out, or by invoking a delegate or event.
 Recording the fault through an interface or into another ring is not handing it out.
 Every other clause is a `Swallowing` hit, unless it catches a cancellation.
@@ -80,8 +78,8 @@ A call result never holds the variable, since the callee decides what it returns
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `TAssayFault.cs` `07914153c6c07a41`
+Commit: `90a13c9590ba`
+- `TAssayFault.cs` `caf373b1d9ff54db`
 - `TAuditFault.cs` `b6f2ce6aeb4ab086`
-- `TAuditFaultSetting.cs` `af8e938145cfe90b`
+- `TAuditFaultSetting.cs` `fd8c678a9331bf53`
 - `TAuditFaultWalker.cs` `a9c101c8ddd998bc`

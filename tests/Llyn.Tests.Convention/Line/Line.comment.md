@@ -14,15 +14,15 @@ The strict decoder throws on an invalid sequence instead of writing a replacemen
 Strict decoding names every file with a byte sequence that is not UTF-8.
 The reason gives the offset of the first bad byte, so the counterpart script prints the same line.
 A byte order mark anywhere in a file is named, the first three bytes included.
-The repository writes UTF-8 without a mark, as `.editorconfig` declares for every editor.
+Every file is written as UTF-8 without a mark.
 A carriage return, paired with a line feed or alone, is named.
-The repository breaks lines with LF alone, in Git and in the working tree, as `.gitattributes` declares.
+Every file breaks lines with LF alone.
 A non-empty file whose last byte is not a line feed is named.
 A raw control character other than tab, line feed and carriage return is named.
 A test that needs one writes the escape, so the character is visible in the source.
 Text that was UTF-8 once and was read back as a single-byte page is named.
 A run of two doubled characters is required, so a stray accented letter before a quote passes.
-A tab in a source or markup file is named, since the editors here never write one.
+A tab in a file of a tabless suffix is named.
 A tab inside a literal is written as its escape.
 A PowerShell script holding a byte outside ASCII is named with the line of the first one.
 Windows PowerShell 5.1 reads a script without a mark in the ANSI page, so any other byte changes meaning.
@@ -33,8 +33,8 @@ The scan fails when Git enumerates no file, so an empty scope cannot pass vacuou
 
 Hand-written and tracked, with no script writing it.
 Every pattern is spelled in escapes, so this file passes its own audit however it is copied.
-The included kinds are Git pathspecs for sources, markup, prose, settings, projects and scripts.
-`version.json` is set by hand at each commit, so no encoding fact reads it at all.
+The included kinds are Git pathspecs.
+The skipped names are exempt from every encoding fact.
 The tabless suffixes mark files where a tab is never written, so a raw one is a paste gone wrong.
 The trail character class is one byte of a multibyte sequence as it reads on the Windows-1252 page.
 The undefined slots of that page are left out, as they never come back as a character.
@@ -80,9 +80,9 @@ The audits read no script configuration, and both copies change together as scri
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `TAuditEncoding.cs` `b9e93637b09cabd1`
+Commit: `90a13c9590ba`
+- `TAuditEncoding.cs` `fc87c4dcc1a10651`
 - `TAuditEncodingSetting.cs` `def9bacf5940d3c8`
-- `TAuditLine.cs` `867c2c819f1106ac`
-- `TAuditLineRow.cs` `2a5115baa39988df`
+- `TAuditLine.cs` `9b9bf5b3e3e16d9e`
+- `TAuditLineRow.cs` `b7d6154dc7c2cfb1`
 - `TAuditLineSetting.cs` `b7abb2330f29c3b6`

@@ -1,14 +1,25 @@
 # Assay
 
-This folder holds assays of the driver walker's core, sink and relay halves on hand-written sources.
+This folder holds assays of the driver walker's core, sink, relay, control and zeroing checks on hand-written sources.
 It also holds the walker's sink and relay halves, beside the assays that check them.
+
+## `TAssayControl`
+
+Assays of the Puppeteering kind, run through `TAuditTruthWalker.TAuditRun` with the stand-in gate of `TAssayTruth`.
+Only hits of that kind are kept.
+The check adds a Conduct record beside the gate, so reading its property crosses no gate.
+A control type calling a gate directly and through a driver relay reports both members as puppeteering.
+The relay type itself is no control, so its own request is not puppeteering.
+A control reading a Conduct record property makes no request.
+A control raising its own event, which a driver handles with a gate call, reports nothing.
+The surface signals and the driver requests, so the event is no puppet string.
+It fails when events join the relay set before the puppeteering snapshot is taken.
 
 ## `TAssayRelay`
 
 Assays of the relay reading, meaning which delegates and members count as a request.
 Each gatekeeping assay tests a field in a branch that calls a delegate.
 The hit appears only when the delegate is a relay.
-The three control assays read the relay set through the puppeteering of a control type.
 The two-type assays hand a whole source, so the injected delegate crosses from one type to another.
 A gate delegate passed to another type's constructor and stored there is a relay when invoked.
 A delegate that reaches no gate makes no relay, and such twins only guard against an over-broad rule.
@@ -19,17 +30,8 @@ A field initializer holding one is not, since only assignments are read as wirin
 A gate delegate wired to an interface event makes that event a relay.
 Raising the event that implements it is then a request.
 That twin fails when either half of the interface rule is switched off.
-A control type calling a gate directly and through a driver relay reports both members as puppeteering.
-It follows the shape of the pre-fix `PMention.PMentionPieceRead`.
-The relay type itself is no control, so its own request is not puppeteering.
-A control reading a Conduct record property makes no request.
-A control raising its own event, which a driver handles with a gate call, reports nothing.
-The surface signals and the driver requests, so the event is no puppet string.
-It follows the shape of `PGloss.PGlossPickRaise` and the event members of `PGrasp` and `PMention`.
-It fails when events join the relay set before the puppeteering snapshot is taken.
 The gatekeeping check adds the interface as a third source in the Conduct folder, outside the shell.
 So only the interface clause of the wiring rule can make its event a relay.
-The control check runs beside the gate and a Conduct record, so reading its property crosses no gate.
 
 ## `TAssaySink`
 
@@ -56,18 +58,13 @@ An owner that keeps the field private and exposes only a method gives the siblin
 ## `TAssayTruth`
 
 Assays of the driver walker, run through `TAuditTruthWalker.TAuditRun`.
-`TAuditTruth` holds the facts over the tree.
+`TAuditTruth` runs the same walker over the tree.
 Its helpers and stand-in gate are internal, so sibling truth assays such as `TAssaySink` and `TAssayRelay` reuse them.
 The assayed driver sits under a driver root so the walker reads it.
 The stand-in gate sits under Conduct so its type takes the Conduct side.
 The gate has three instance methods, so each call to any is a send.
 `CAssayApply` returns nothing and `CAssayRead` returns an int, so a ternary or an assignment can take its answer.
 `CAssayRemove` takes a nullable id, so a Zeroing assay can send a literal zero or a null.
-A driver helper forwards its id to `CAssayRemove`, so its id position is hot.
-It is four member lines, so body line k of a driver holding it is line 14 + k.
-A driver type appended after `QAssay` stores its id into a getter-only property in its constructor.
-Appended text leaves every line of `QAssay` where it was.
-That constructor is hot only when the stored property is read inside a hot argument.
 A body is wrapped as the body of `QAssayRun`, starting on line 10.
 So its line k is line 9 + k.
 Every Misfiring case here sends first on body line 3, so the reason names line 12.
@@ -87,11 +84,18 @@ A `throw` in a local function runs only if the function is called.
 A `throw` expression such as `text ?? throw` is not a jump.
 A `break` or `continue` whose loop or switch lies inside the branch stays in the branch.
 
+## `TAssayZeroing`
+
+Assays of the Zeroing kind, run through `TAssayTruth.TAssayTruthCheck` and its driver wrapper.
 Zeroing is pinned in pairs of a literal zero and a `null`.
 A literal zero passed to a driver helper whose id reaches the gate is Zeroing.
+The helper forwards its id to `CAssayRemove`, so its id position is hot.
+It is four member lines, so body line k of a driver holding it is line 14 + k.
 The hit is named after the helper and lands on the literal's line.
 A `null` at that position is no Zeroing, since absence is spelled in the type.
 A zero handed to a driver constructor is Zeroing when the stored id later reaches the gate.
+The driver type is appended after `QAssay` and stores its id into a getter-only property in its constructor.
+Appended text leaves every line of `QAssay` where it was.
 That needs the wider Zeroing map, since the hot map holds no constructor.
 A stored id compared with zero is Zeroing when read inside a hot argument.
 The hit is named after the compared member.
@@ -110,9 +114,9 @@ An event is a signal, and the member that handles it is the one that requests.
 So a control raising its own event, or forwarding a child's, is no puppeteer.
 The puppet set stays null while the first pass grows, which keeps events out of the wiring.
 The reader names are the driver members whose body reads or requests logic.
-So a value from one is an engine value.
+So a value from one comes from logic.
 A request is a read too, so a relay is read through as well.
-The hot names give, for each relay, the positions of the parameters that reach logic inside it.
+The hot names give, for each method and local function, the positions of the parameters that reach logic inside it.
 An argument at any other position is shown, not sent, and is no sink.
 The Zeroing map is a copy of the hot names grown further.
 Constructors join, and a parameter stored into a member read inside a hot argument is hot too.
@@ -169,7 +173,7 @@ The sink half of the truth walker, covering where a driver value may not go.
 `TAuditSinkRead` walks up from a reference to its member and names the first sink met.
 A reference that is only the receiver of a member access is not a sink.
 Parentheses and a null-forgiving `!` between the two do not change that.
-The owner of that member audits its own field.
+The walk stops at the enclosing member declaration.
 The target of `?.` whose tail requests is gatekeeping, since its presence decides the request.
 A hot argument is a replaying sink.
 So is a value written into a record copy or the initialiser of a logic or relay construction.
@@ -193,17 +197,18 @@ An `&&` or `||` chain counts only when every operand is such a test.
 
 `TAuditRequestCheck` is true when a node contains a logic call, a logic construction or a call to a relay.
 
-`TAuditHotCheck` is true for any argument of a logic call, and for a relay argument standing at a hot position.
+`TAuditHotCheck` is true for any argument of a logic call.
+It is also true for an argument at a hot position of its callee.
 A named argument is matched to its parameter by name.
 
 `TAuditZeroingCheck` is true when an argument of a call or construction stands at a Zeroing hot position.
 Any argument of a logic call is hot, as in `TAuditHotCheck`.
-Otherwise the position must sit in `TAuditZeroingNames`, never in `TAuditHotNames`.
+Otherwise the position must sit in `TAuditZeroingNames`, the only position map this check reads.
 The callee is the relay or logic symbol, else the plain method or constructor called.
 So a driver constructor or helper outside the relay set can still be hot.
 An indexer argument or a `this` or `base` initialiser is never hot.
 
-`TAuditZeroingScan` reports every literal zero or default that a driver sends toward a gate as "none", "new" or "append".
+`TAuditZeroingScan` reports every literal zero or default that a driver sends toward a gate or compares with a gate-bound member.
 From the literal it climbs through parentheses, casts, either arm of `?:` and the right side of `??`.
 A literal that then stands at a Zeroing hot position is a hit named after the callee.
 A constructor callee is named by its type, and the reason reads `passes 0 to new T`.
@@ -234,9 +239,11 @@ A method a driver itself names `nameof` resolves to a symbol and is not one.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `TAssayRelay.cs` `3c4177d77c7181a0`
-- `TAssaySink.cs` `3bfb09db25c8f6f2`
-- `TAssayTruth.cs` `a93d0d1bb962df96`
+Commit: `90a13c9590ba`
+- `TAssayControl.cs` `7665198e484be7fd`
+- `TAssayRelay.cs` `4d5cbd221728c8e7`
+- `TAssaySink.cs` `921bd5e11c87862f`
+- `TAssayTruth.cs` `74d379ab6ea10564`
+- `TAssayZeroing.cs` `1421a9346abb4fa4`
 - `TAuditTruthRelay.cs` `55ad73318110b1ce`
 - `TAuditTruthSink.cs` `9c23cfa573bae31a`

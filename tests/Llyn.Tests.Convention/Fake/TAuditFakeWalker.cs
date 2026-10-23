@@ -5,7 +5,7 @@ namespace Convention.Tests;
 
 internal static class TAuditFakeWalker
 {
-    private const string TAuditTypeMark = "T:";
+    private const string TAuditTypePrefix = "T:";
 
     private static readonly CSharpParseOptions TAuditSyntaxOptions = new(
         languageVersion: LanguageVersion.Preview,
@@ -41,7 +41,7 @@ internal static class TAuditFakeWalker
         TAuditLiveApply(members, markup, elements, serialized);
         return members.Values
             .Where(member => !member.TAuditMemberLive)
-            .Where(member => !member.TAuditMemberKey.StartsWith(TAuditTypeMark, StringComparison.Ordinal))
+            .Where(member => !member.TAuditMemberKey.StartsWith(TAuditTypePrefix, StringComparison.Ordinal))
             .Select(member => TAuditRowCreate(member, members))
             .OrderBy(row => row.TViolationPath, StringComparer.Ordinal)
             .ThenBy(row => row.TViolationLine)
@@ -90,7 +90,7 @@ internal static class TAuditFakeWalker
                 list.Add(member);
             }
 
-            bool typed = member.TAuditMemberKey.StartsWith(TAuditTypeMark, StringComparison.Ordinal);
+            bool typed = member.TAuditMemberKey.StartsWith(TAuditTypePrefix, StringComparison.Ordinal);
             if ((typed ? elements : markup).Contains(member.TAuditMemberName)
                 || serialized.Contains(member.TAuditMemberKey)
                 || member.TAuditMemberReaders.Any(reader => !members.ContainsKey(reader)))

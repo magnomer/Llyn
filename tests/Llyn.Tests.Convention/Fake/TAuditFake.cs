@@ -122,7 +122,7 @@ public sealed class TAuditFake
         string repoRoot = TAuditBinder.TAuditRoot;
         IReadOnlyList<TViolation> rows = TAuditFakeRows.Value;
         string version = TAuditSource.TAuditVersionRead(repoRoot);
-        string path = Path.Combine(repoRoot, string.Format(TAuditFakeSetting.TAuditFakeReport, version));
+        string path = Path.Combine(repoRoot, string.Format(TAuditFakeSetting.TAuditFakePath, version));
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
 
         List<string> above = TAuditAboveRead();

@@ -4,7 +4,7 @@ internal static class TAuditStrictSetting
 {
     public const int TAuditGeneration = 26;
     public const bool TAuditStrictEnforced = true;
-    public const string TAuditStrictReport = "temp/audit/Strict-{0}.md";
+    public const string TAuditStrictPath = "temp/audit/Strict-{0}.md";
     public const string TAuditLedgerFile = "TAuditStrictLedger";
 
     public static readonly string[] TAuditReachInclude =

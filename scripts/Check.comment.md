@@ -1,8 +1,7 @@
 # Check.ps1
 
 Runs the whole done gate in one call and prints one tally line.
-It covers the build, the full `Test.ps1`, and the nine audits.
-It is tracked, kept visible by its `!/scripts/Check.ps1` line in `.gitignore`.
+It covers the build, the full `Test.ps1`, and the audits its `$audits` list names.
 
 ## Usage
 
@@ -28,7 +27,7 @@ The exit code is 0 on `OK` and 1 on `FAIL`.
 
 ## Resilience
 
-It passes no flags to the other scripts except `-NoOpen`, so their parameter changes cannot break it.
+Audit calls pass only optional `-NoOpen`, but changes to required parameters or output grammar can still break them.
 It passes `-NoOpen` only to an audit that declares it.
 It reads only the `Result` line of each audit's output and the table of rows below it.
 Every `OK` or `FAIL` row adds to the audit's sum, and any sum above zero fails the run.

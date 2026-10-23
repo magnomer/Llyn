@@ -1,11 +1,11 @@
 # Platform
 
-This folder holds the platform audit, which holds every project under `src` to the platform table.
+This folder holds the platform audit, which holds every project under the sources its settings name to the platform table.
 It also holds the audit's analyzer check, file reader, portable scan, project reader and setting.
 
 ## `TAuditPlatform`
 
-Holds every project under `src` to the platform table.
+Holds every project of the sources its settings name to the platform table.
 A layer splits into a portable half and a Windows twin, and this fact keeps that split.
 The layer chain itself is the concern of the charter and border facts.
 `scripts/AuditPlatform.ps1` reports the same kinds from its own configuration.
@@ -26,10 +26,11 @@ A portable half is also read for suppressions of the platform rule.
 The analyzer hit names the first failing file by path, ordered without case and then exactly.
 Every project file and import is read for implicit usings, which the binder would miss.
 A twin only maps a port call to a Windows API and back.
-So a twin outside the UI column that holds more holds domain logic, a `Domain` hit.
+So a twin outside the shell projects that holds more holds domain logic, a `Domain` hit.
 That is a twin holding a top-level type that implements nothing of its portable half.
-The UI column is left to the driver and surface audits.
-A project counts as Windows when it is a twin in the table or its file targets a Windows framework.
+The shell projects are left to the driver and surface audits.
+A project counts as Windows when the table maps it to another project's column.
+It also counts when its file targets a Windows framework.
 
 ## `TAuditPlatformAnalyzer`
 
@@ -51,7 +52,7 @@ Without any severity, the rule holds only when escalated, since a warning is its
 Finds and reads the files the platform audit inspects, for `TAuditPlatform` and its helpers.
 A text file that cannot be read is recorded rather than thrown, so the ceiling fact can list every one.
 A file read many times is still one unreadable file.
-The imports are the `Directory.Build` files MSBuild reads on its own from every folder above a project.
+The imports are every `Directory.Build.props` and `Directory.Build.targets` file Git lists, whatever the folder.
 A chain read returns the named files from the project's folder up to the repository root, nearest first.
 
 ## `TAuditPlatformPortable`
@@ -73,7 +74,7 @@ A framework is read whether written singly or as a list.
 ## `TAuditPlatformSetting`
 
 Hand-written and tracked.
-The platform table, the frameworks, the Windows markers and the ceilings live here.
+It holds the platform table, the frameworks, the platform rule, the Windows markers and the ceilings.
 `AuditPlatform.ps1` reads its own AuditPlatform.json and never writes this file.
 The enforced switch false lets the ceiling fact pass above its ceilings.
 Unreadable files and stale ceilings fail the facts either way.
@@ -81,26 +82,24 @@ A portable half targets one framework, matched exactly.
 A twin targets a Windows framework, matched as a prefix so a Windows version may follow.
 The platform analyzer rule must be an error in every portable half.
 With it, a Windows API in a portable half fails the build.
-The shell columns are the UI projects, which the domain rule leaves to the UI audits.
+The shell list names the projects the domain rule leaves to the driver and surface audits.
 They match `domain.exempt` in scripts/AuditPlatform.json.
 The silencers map project properties to the value that switches the platform analyzer off.
 The column table maps each project to the portable half of its column.
 A portable half is its own column, and a twin names its portable half.
-Guestroom is a portable half with no twin, so it is its own column.
-The host has an empty column because it names every project.
-Twin naming is not settled, so a twin's name here is provisional.
-A twin may reference one capsule project outside its column.
+A project mapped to an empty column is the host, because it names every project.
+A twin may reference the one capsule project the capsule table names for it, outside its column.
 The capsule keeps its own portable column, and the capsule table spares that reference a `Column` hit.
-The ceilings stood at the counts on the day the fact was written.
+A kind without a ceiling has a ceiling of zero.
 A count above fails the fact, and a ceiling above the count is stale and fails too.
 Lower a ceiling when a project sheds a hit, never raise one to admit a new one.
 
 ## Stamp
 
-Commit: `52c21d68b4c4`
+Commit: `90a13c9590ba`
 - `TAuditPlatform.cs` `238370aaf071caf6`
 - `TAuditPlatformAnalyzer.cs` `398f4a2286265cce`
 - `TAuditPlatformFile.cs` `0470f513ed276337`
 - `TAuditPlatformPortable.cs` `691f001f8ce04da3`
 - `TAuditPlatformProject.cs` `69626c7ae8f733ad`
-- `TAuditPlatformSetting.cs` `b183b141f09b5da4`
+- `TAuditPlatformSetting.cs` `05bdb0294562957b`

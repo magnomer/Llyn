@@ -24,9 +24,9 @@ Text and comments are left out, so a word in prose keeps nothing alive.
 The element names are the types markup constructs.
 An empty test enumeration fails, since the audit would otherwise pass vacuously.
 A project without markup is audited all the same, as AuditFake.ps1 does.
-The report under `temp` holds the counts, the ceilings and every hit, grouped by kind.
+The report holds the counts, the ceilings and every hit, grouped by kind.
 Its text matches the report of AuditFake.ps1 line for line, so a diff of the two shows any drift.
-Lines end in LF alone, as every file in the repository does.
+Lines end in LF alone.
 
 ## `TAuditFakeCandidate`
 
@@ -59,9 +59,9 @@ The type is marked too, since the serializer constructs it.
 
 Hand-written and tracked, with no script writing it.
 `AuditFake.ps1` reads its own AuditFake.json and never writes this file.
-When `TAuditFakeEnforced` is false every fake fact is a warning that passes.
+When `TAuditFakeEnforced` is false every kind fact is a warning that passes.
 When true a fact fails when a kind counts above its ceiling.
-The report lands under `temp`, which Git ignores, so a run never dirties the tree.
+The report path is a format string over the version, so each version gets its own file.
 The `Orphan` ceiling counts members that nothing live and no test reads.
 The `Tested` ceiling counts members that only tests read.
 A count above its ceiling fails the fact, and a ceiling above the count is stale and fails too.
@@ -109,7 +109,6 @@ This class compiles the tests, settles what is live and writes the rows.
 Liveness marks every member a root reads, then every member a live member reads, until nothing changes.
 A root is a markup word, a serialized member, a class markup constructs, or a read from untracked code.
 A markup word keeps a member of any type alive, since markup cannot be bound by type.
-The strict audit counts a markup name below the driver as overreaching, so such a binding is still held.
 Each row is `Tested` when a test reads the member and `Orphan` otherwise.
 The reason names the tests and the fake members that alone read it.
 A type key, marked by the `T:` prefix, is left out of the report.
@@ -117,12 +116,12 @@ Rows come back in path and line order.
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `TAuditFake.cs` `281e16070eef28b9`
+Commit: `90a13c9590ba`
+- `TAuditFake.cs` `1f62f085565b60c8`
 - `TAuditFakeCandidate.cs` `c76e4546064389cc`
 - `TAuditFakeMember.cs` `3c2c44c59c44edbc`
 - `TAuditFakeSerial.cs` `b9b72edf6488103a`
-- `TAuditFakeSetting.cs` `997a6625741d25ea`
+- `TAuditFakeSetting.cs` `ccf4c2e4bb6c749f`
 - `TAuditFakeSymbol.cs` `c82651b1fabf2050`
 - `TAuditFakeUse.cs` `019a711c29d548c2`
-- `TAuditFakeWalker.cs` `eb85e80055b371c6`
+- `TAuditFakeWalker.cs` `962ec2a70800a982`

@@ -19,8 +19,8 @@ value appears here: this file is identical in every project at this generation.
 # only one tool reads is named by that tool: docs-internal is named by SyncNames.ps1 alone.
 # The name registry chain is docs-internal -> SyncNames.ps1 -> AuditNames.registry.json, which both
 # audits read, and the TAudit*Registry.cs files under Name/Registry (TAuditLogicRegistry.cs,
-# TAuditUIRegistry.cs, TAuditTestRegistry.cs, TAuditVerbRegistry.cs and TAuditExemptRegistry.cs), which
-# the convention tests compile. The registry file is
+# TAuditUIRegistry.cs, TAuditSharedRegistry.cs, TAuditTestRegistry.cs, TAuditVerbRegistry.cs and
+# TAuditExemptRegistry.cs), which the convention tests compile. The registry file is
 # shared by all three scripts, so its name and its strict reader live here.
 # The convention tests never read this file: the hand-written TAuditNameSetting.cs mirrors every key
 # but naming.componentReview, which only sets the script's review count and gates nothing, and the

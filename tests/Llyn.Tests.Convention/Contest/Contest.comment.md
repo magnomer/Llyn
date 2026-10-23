@@ -76,7 +76,7 @@ Any engine input makes the call engine, else any plain input makes it plain.
 
 ## `TAuditOriginHolder`
 
-Reads the values a Deportment holder is written with, for `TAuditOriginWalker` to sort.
+Reads the values a driver holder is written with, for `TAuditOriginWalker` to sort.
 A holder's use sites come from `TAuditOriginSite`.
 The result is null when the symbol is no holder.
 A null entry is an unseen writer that reads plain.
@@ -95,8 +95,8 @@ An `out` variable or a catch variable is unseen.
 Every holder except a getter body or dependency property also takes its assignments.
 A `ref` argument into a plain helper writes the arguments the helper assigns to that parameter.
 The helper's own assignment to its `ref` parameter yields nothing, since each call site already counts.
-A helper that does anything else with the parameter makes the write unseen.
-Plain means every write is a simple assignment from another by-value parameter of the same method.
+A helper is read only when each write to its `ref` parameter copies another by-value parameter of that method.
+Any other write to the parameter, or no write at all, makes the write unseen.
 
 ## `TAuditOriginSite`
 
@@ -123,7 +123,7 @@ A site whose arguments cannot be read is unseen.
 ## `TAuditOriginWalker`
 
 Sorts a value written to a judged field by where it comes from, for Contesting.
-It follows the value through Deportment holders to their writers.
+It follows the value through driver holders to their writers.
 Only a member of a logic-side type is an engine source.
 It is a class of its own, so the walker's big partial type gains no part.
 The verdict of each holder resolved from an empty path is cached for the compilation.
@@ -136,7 +136,7 @@ It is also `engine` when it names a holder whose origin is engine.
 A compound assignment, increment or out argument has no value and is plain.
 A name inside `nameof` reads no logic.
 A call into the Capsule project is a shell source, and its arguments are not searched.
-The Capsule reads and writes Deportment's own file, so its answer is the shell's whatever key goes in.
+So a Capsule answer stays the shell's whatever key goes in.
 Writers outside the walked roots count, since every tracked shell source is indexed.
 A holder is engine when it has a writer that is not a clear and every such writer is engine.
 A holder met again on the path is a cycle and reads plain.
@@ -162,11 +162,11 @@ So a second shell writer can never hide behind the first.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `90a13c9590ba`
 - `TAssayContesting.cs` `977da0d0e60fb28d`
 - `TAssayContestingCarrier.cs` `565860d3d28c6128`
-- `TAssayContestingMarkup.cs` `a5293e36062a8105`
-- `TAssayOrigin.cs` `be57f8199e1d6303`
+- `TAssayContestingMarkup.cs` `e13753e75ac68939`
+- `TAssayOrigin.cs` `dedca0570e91b8d3`
 - `TAuditLookupWalker.cs` `6d59d41f701cec4c`
 - `TAuditOriginHolder.cs` `6992920120af377a`
 - `TAuditOriginSite.cs` `0313b780b83a82fa`

@@ -18,6 +18,7 @@ public sealed class TAuditConvention
         [
             (nameof(TAuditLogicRegistry), TAuditLogicRegistry.TAuditGeneration),
             (nameof(TAuditUIRegistry), TAuditUIRegistry.TAuditGeneration),
+            (nameof(TAuditSharedRegistry), TAuditSharedRegistry.TAuditGeneration),
             (nameof(TAuditTestRegistry), TAuditTestRegistry.TAuditGeneration),
             (nameof(TAuditNameSetting), TAuditNameSetting.TAuditGeneration),
             (nameof(TAuditLineSetting), TAuditLineSetting.TAuditGeneration),

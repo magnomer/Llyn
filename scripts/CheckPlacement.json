@@ -1,0 +1,37 @@
+{
+  "generation": 1,
+  "project": "Llyn",
+  "source": {
+    "path": "Llyn.comment.md",
+    "hash": "38ff5ce269b259f62c90f1f113db2b2a71d34d13e2a5942aed32fe0aaf6814b1"
+  },
+  "layers": [
+    { "id": "Veneer", "role": "surface", "path": "src/Llyn.UIVeneer", "exists": true, "tests": [] },
+    { "id": "Deportment", "role": "driver", "path": "src/Llyn.UIDeportment", "exists": true, "tests": ["tests/Llyn.Tests.Windows"] },
+    { "id": "Deportment.Capsule", "role": "capsule", "path": "src/Llyn.UIDeportment.Capsule", "exists": true, "tests": ["tests/Llyn.Tests.Windows"] },
+    { "id": "Conduct", "role": "conduct", "path": "src/Llyn.Conduct", "exists": true, "tests": ["tests/Llyn.Tests.Conduct", "tests/Llyn.Tests.Interface"] },
+    { "id": "ShellEngine", "role": "connection", "path": "src/Llyn.ShellEngine", "exists": true, "tests": ["tests/Llyn.Tests.Engine", "tests/Llyn.Tests.Interface"] },
+    { "id": "Application", "role": "workflow", "path": "src/Llyn.Application", "exists": true, "tests": ["tests/Llyn.Tests.Engine"] },
+    { "id": "Core", "role": "model", "path": "src/Llyn.Core", "exists": true, "tests": ["tests/Llyn.Tests.Engine"] },
+    { "id": "Infrastructure", "role": "adapter", "path": "src/Llyn.Infrastructure", "exists": true, "tests": ["tests/Llyn.Tests.Engine", "tests/Llyn.Tests.Interface"] },
+    { "id": "Host", "role": "wiring", "path": "src/Llyn.Host", "exists": true, "tests": [] },
+    { "id": "Guestroom", "role": "start", "path": "src/Llyn.Guestroom", "exists": true, "tests": [] }
+  ],
+  "names": [
+    { "from": "Veneer", "to": "Deportment" },
+    { "from": "Deportment", "to": "Conduct" },
+    { "from": "Deportment", "to": "Deportment.Capsule" },
+    { "from": "Conduct", "to": "ShellEngine" },
+    { "from": "ShellEngine", "to": "Application" },
+    { "from": "Application", "to": "Core" },
+    { "from": "Infrastructure", "to": "Core" }
+  ],
+  "twins": [
+    { "owner": "Core", "twin": "Core.Windows", "path": "src/Llyn.Core.Windows", "exists": true, "tests": [] }
+  ],
+  "outside": ["src/Llyn.Launcher", "src/Llyn.UIDemeanor", "src/Llyn.UITerminal"],
+  "locales": [
+    "localization/en.json",
+    "localization/ko.json"
+  ]
+}

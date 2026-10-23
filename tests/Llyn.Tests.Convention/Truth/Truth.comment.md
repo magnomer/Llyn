@@ -7,7 +7,7 @@ It also holds the local, sequence and tampering halves.
 
 The driver rules say a driver gathers input, calls a Conduct gate and shows the verdict.
 It never builds, checks or decides what a gate owns, and it reaches the engine only through Conduct.
-The rules hold Deportment and Demeanor alike.
+The rules hold every driver ring alike.
 The walk runs once and every fact reads the same hits.
 While `TAuditTruthEnforced` is false every fact passes and only prints its count.
 Enforced, a kind fails in any file whose count stands above its ledger ceiling.
@@ -32,7 +32,8 @@ A driver field or settable property holding a type from below Conduct is a hit.
 So is a field named as a state, typed `object`, or caching the answer to a request.
 So is a driver type deriving from or implementing a type from below Conduct.
 A Conduct type is held freely, and a Conduct port is implemented freely.
-A driver line that assigns a logic member, reorders a collection or overrides a built request mutates logic.
+A driver line that assigns a logic member or reorders a collection mutates logic.
+So does one that overrides a logic member in a record copy.
 Misfiring is a control or console input deciding a request.
 A clock driving a request is misfiring, and so is an observer that never reads its bulletin.
 It is also a member sending a second request, since one user action is one gate.
@@ -43,22 +44,22 @@ A driver line is laundering when it computes over a carried engine value.
 Computing over the input of a control or the console is laundering too.
 A driver line handing its surface a type from below the cut, Conduct's included, is spoonfeeding.
 A surface binding reads the members of what it is fed, so spoonfeeding is where the cut is crossed.
-Mismatching is a Conduct member one driver reaches and the other never does.
+Mismatching is a Conduct member one driver reaches and another never does.
 It is also a Conduct port a driver does not implement.
-Both drivers call the same gate for the same action, so an asymmetry is medium work or a leak.
-It only informs while Demeanor holds no source, as `TAuditTruthInformative` sets.
+Drivers call the same gate for the same action, so an asymmetry is medium work or a leak.
+It only informs while a driver ring it waits on holds no source, as `TAuditTruthInformative` sets.
 An informative kind waiting on an empty driver prints its count and fails nothing.
 A kind outside the informative list always gates.
 A listed kind gates once every folder it waits on holds a walked source.
 Puppeteering is a member of a control type that requests logic, directly, through a relay or through a lambda.
 A control type is a driver type whose name starts with its ring's prefix in `TAuditControlPrefix`.
-A Demeanor type named `AWindow` is a control and `PWindow` is not, since a control carries its family's surface prefix.
 A control shows what its driver hands it, so the request belongs in the driver.
 Reading a Conduct record property is no request and stays legal.
 Every ledger ceiling equals its count, so a ceiling left above the count is stale.
 The lowered ledger is written under `temp/audit` to copy over the tracked one.
 Every tracked driver source must reach the walkers.
-An empty driver passes, but a file the binder dropped does not pass unseen.
+A file the binder dropped does not pass unseen.
+The walk fails when no tracked file matches the include patterns.
 Every driver source is enumerated with Git, and the driver, moonlighting and laundering walkers run once.
 Paths are made repo-relative.
 The report opens with the counts, then the fields by hit count, then every hit by kind.
@@ -69,12 +70,12 @@ One audited field, with the symbols that mean it, its label, its type and where 
 A positional parameter carries both its parameter symbol and the property it generates.
 The record also lists which members of a class are audited fields.
 `TAuditTruthWalker` judges each one it yields.
-The audited members are the mutable fields, the settable properties and the positional record parameters of a class.
+The audited members are the mutable fields, the settable properties and the primary-constructor parameters of a type.
 A `readonly` or `const` field is a fixture while nothing fills it and it holds no engine type.
 A write is an assignment, a slot or a fill verb on any part of the class.
-`TAuditValueCheck` names a value type: a bool, char, number, string, enum, or the nullable form of one.
-A value-typed member set once at construction is identity, not state, so it is not audited.
-A `readonly` value field ignores one write, an assignment inside a constructor of the declaring type.
+`TAuditValueCheck` names a value type, meaning a bool, char, number, string, enum, or the nullable form of one.
+A value-typed `readonly` field set at construction is identity, not state, so it is not audited.
+A `readonly` value field ignores every write made directly in a constructor of the declaring type.
 A write from a lambda, a local function or another member still counts, since it can change the value later.
 A positional record parameter of a value type is identity unless the record is copied with `with` or written.
 `TAuditCopyResolve` collects every record type that any `with` expression copies, and its record base types.
@@ -89,12 +90,10 @@ A getter property that reads the field is followed as the field, so gatekeeping 
 
 The driver audit's ceilings, by kind and then by repo-relative file.
 Each ceiling is the count of that kind in that file, and every kind may only fall.
-Mismatching holds no rows, since it only informs while Demeanor has no code.
-Once Demeanor holds a source, every mismatching hit fails.
-Puppeteering holds no rows, since no control type requests logic.
-Zeroing holds no rows, since no driver sends a literal zero toward a gate.
-Gatekeeping and Replaying hold no rows either, so every kind stands at zero in every file.
+A kind with no rows stands at zero in every file.
 A file missing from a kind has a ceiling of zero.
+A kind that only informs holds no rows.
+Once the driver ring it waits on holds a source, every hit of it fails.
 `TAuditRatchet` holds every ceiling against the committed copy, and a new generation baselines it afresh.
 When a count falls, the truth ledger fact writes the lowered ledger under `temp/audit` to copy here.
 
@@ -179,30 +178,26 @@ No script writes this file.
 The generation numbers the revision of the driver-audit settings this file holds.
 The enforced switch false makes every driver fact a warning that passes.
 True fails a fact on any file whose count of a kind stands above its ledger ceiling.
-The report path carries the version, and `temp` is ignored by Git, so a run never dirties the tree.
+The report path carries the version.
 A field or property whose name ends in the state suffix is a state the engine should own.
 The bulletin type is the engine's notice type.
-A handler or lambda taking one and never reading it is a deaf observer, in either medium.
+A handler or lambda taking one and never reading it is a deaf observer, in any medium.
 The configuration is the build whose output and generated files the binder reads.
 The reference root is the project whose build output carries every package any source references.
-Host names every project, so its output holds the packages of both media and of Infrastructure.
-The Conduct root holds Conduct's types.
-A driver may hold, implement and reshape them, since Conduct's types stop at the driver.
-The Capsule include patterns cover the project that stores Deportment's own state.
-A call into it answers a shell value, so Contesting does not search its arguments.
+The Conduct root holds the types of the gate layer.
+A driver may hold, implement and reshape them, since the gate layer's types stop at the driver.
+The Capsule include patterns name sources that count as shell.
+A call into one answers a shell value, so Contesting does not search its arguments.
 Every reader of the shell include joins this list to it, so each path is written once.
-The shell include patterns cover every UI source, both surfaces and both drivers.
-A type declared under one of these, or under the Capsule patterns, is UI.
-A type declared in Conduct is a gate type, and a type declared under any other source is engine.
-The truth include patterns cover the driver sources the driver walks audit, Deportment and Demeanor alike.
-The surfaces are left to the surface audit, where holding anything is already a hit.
+A type declared under the shell or Capsule patterns is shell.
+A type declared under the Conduct root is a gate type.
+A type declared under any other source is engine.
+The truth include patterns select the driver sources the driver walks audit, every driver ring alike.
 Informative kinds only inform, each with the driver folders it waits on.
 Such a kind gates nothing while a listed folder holds no tracked source.
 Once every listed folder holds one, the kind fails like any other.
-Mismatching waits on Demeanor, since every Deportment reach mismatches while the CUI has no code.
 The control prefix of each driver ring is keyed by the ring's folder.
 A driver type whose name starts with its ring's prefix is a control type.
-The prefix is the surface prefix of the ring's family: `P` in Deportment, `A` in Demeanor.
 A control shows what it is handed and may not request logic, so puppeteering names any request inside one.
 `AuditUI.json` holds the same rows as `truth.controlPrefixes`, copied by hand.
 The framework packs are the shared frameworks referenced beside the test runtime, so framework types resolve.
@@ -210,29 +205,25 @@ A type deriving from a control base is a GUI control, whose state may not decide
 The order verbs are collection calls that change an order, which only the engine may decide.
 The fill verbs write into a collection in place, so a `readonly` field filled through one is not a fixture.
 Every request record carries the request prefix.
-The send roots are the tenure calls a request finally goes through.
+The send roots are the calls a request finally goes through.
 A member that reaches one, calls a Conduct method or builds a request is a sender.
 The clock types fire on time rather than on a user act.
-The console input calls carry what the user typed, the CUI's control input.
+The console input calls carry what the user typed, the console's control input.
 Each is written as the full name of its declaring type and member.
 The dialog types give an answer that confirms a request.
 A confirm belongs in the gate behind a port, so a dialog answer deciding a request is gatekeeping.
 The delay members are the waits that turn a loop into a clock.
 The input base is the base type of every control that takes user input.
 The laundering walk colours an input member only on a receiver deriving from it.
-`TextBox`, `ComboBox` and `ToggleButton` derive from it, while `TextBlock` and `Run` do not.
 `AuditUI.json` holds the same name as `truth.inputBase`, copied by hand.
 The input members of a GUI control carry what the user typed or chose.
-Caret and selection positions stay off the list, since a driver keeps caret, focus and placement work.
 `AuditUI.json` holds the same list as `truth.inputMembers`, copied by hand.
 The focus members tell whether the user is at a GUI control.
 A guard on one of them only asks whose event it is, so the misfiring scan exempts it.
 The handles are driver types a driver field may hold as a handle rather than as a value.
 A handle is called on and passed on, so the field is skipped before any rule reads it.
 A Conduct type is a handle by rule and is never listed.
-A type from below Conduct is never a handle, so holding one is a duplicating hit counted in the ledger.
-The list names `BDrop`, `BField`, `BSParleyButton` and `BTable`, the console controls that keep their view state.
-The console keeps that state in these controls as the GUI keeps it in WPF controls.
+A type from below Conduct that is not listed is no handle, so holding one is a duplicating hit.
 A type is matched as the binder shows it, with any nullable mark dropped.
 The moonlighting verbs are query methods that, applied to a value from below Conduct, are moonlighting.
 
@@ -323,7 +314,7 @@ Hits are sorted by path, line and name, so the order holds whatever the set's or
 
 `TAuditFieldCheck` treats a field holding an engine type as duplicating before any reference is read.
 A field typed `object` is duplicating too, since an untyped slot hides what it holds.
-A field whose name ends in `State` is duplicating too, since only the engine resolves a state.
+A field whose name ends in the state suffix is duplicating too, since only the engine resolves a state.
 A `??=` whose right side requests caches the answer and is duplicating.
 It visits every reference to the field and its aliases, outside its class only for shared fields or non-private symbols.
 A use of a ref parameter the field was passed to counts as inside, wherever its method lies.
@@ -340,13 +331,13 @@ A hit through a ref parameter names that parameter, as a hit through a local nam
 
 ## Stamp
 
-Commit: `9a85a3ab82db`
-- `TAuditTruth.cs` `f4afca1c124eb6ca`
+Commit: `90a13c9590ba`
+- `TAuditTruth.cs` `0158f5aa35dfba0a`
 - `TAuditTruthField.cs` `bda475280d6b7bcb`
 - `TAuditTruthLedger.json` `c50bb25b609b47e9`
 - `TAuditTruthLocal.cs` `4baaaa83b0678024`
 - `TAuditTruthReference.cs` `3c96dcfa5aa99002`
 - `TAuditTruthSequence.cs` `a5a77f14c0b84d98`
-- `TAuditTruthSetting.cs` `bc16939d83198ec8`
+- `TAuditTruthSetting.cs` `650669334584d064`
 - `TAuditTruthTampering.cs` `78e63b421c0ee57e`
 - `TAuditTruthWalker.cs` `6f9d273d1926e234`

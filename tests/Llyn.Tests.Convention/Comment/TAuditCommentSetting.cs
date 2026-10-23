@@ -64,6 +64,7 @@ internal static class TAuditCommentSetting
     [
         "TAuditExemptRegistry.cs",
         "TAuditLogicRegistry.cs",
+        "TAuditSharedRegistry.cs",
         "TAuditTestRegistry.cs",
         "TAuditUIRegistry.cs",
         "TAuditVerbRegistry.cs",
