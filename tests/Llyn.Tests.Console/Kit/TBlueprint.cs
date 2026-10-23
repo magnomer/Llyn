@@ -40,7 +40,7 @@ public sealed class TBlueprint
         BLoop loop = new(static _ => { });
 
         Exception? fault = Record.Exception(
-            () => new BWindow(console, loop, catalog, atelier, envoy, bootstrap, theme));
+            () => new BWindow(console, loop, catalog, atelier, envoy, bootstrap, (null, theme), _ => theme));
 
         Assert.Null(fault);
     }

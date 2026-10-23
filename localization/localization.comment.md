@@ -140,13 +140,25 @@ The other `Invocation.Help*` keys give the help text of one option, printed afte
 `Invocation.HelpAs` lists the five file formats of `-export`, and `Invocation.HelpFormat` the three output formats.
 `Window.*` words the console window's notices and its help.
 `Window.Opening` is the line the window shows while it opens.
+`Establishment.Courier` begins the console status line, and its slot `{0}` is `Courier.Attach` or `Courier.Connected`.
+`Roof.Llyn.Attach` and `Roof.Llyn.Send` are the console menu items that connect Llyn to Joplin and send the entries there.
+`Roof.Options.Glyphs.*` name the console's three glyph sets, and `Roof.Options.Settings` opens the Settings tab.
+`Roof.Options.Ambiguous` names the setting that draws East Asian ambiguous characters one or two cells wide.
+`.Narrow` and `.Wide` are its two choices.
+`Roof.Options` titles the console's Options menu.
+`.Theme`, `.Glyphs`, `.Ambiguous` and `.Language` are its entries.
+`.Theme.Blue` and `.Theme.Dark` name the two themes.
+`Roof.Llyn.Send` and `Roof.Options.Settings` cite the sync and settings terms.
+Each roof menu and entry that takes a letter has a `.Hotkey` key.
+It must hold one ASCII letter, or the entry has no hotkey.
+`Window.Help.Page.Tabs` and `Window.Help.Text.Tabs` name and word the help page on the tab menu, the tab box and the history keys.
 `Window.Small` is the notice for a console under 80 by 24 cells.
 `Window.Small` takes the minimum width and height, then the actual width and height, in slots `{0}` to `{3}`.
 `Window.Help.*` words the help box: its title, page names, prose, key names and key meanings.
 `Window.Help.Text.Small` takes the minimum width and height in slots `{0}` and `{1}`.
 `Window.Help.Position` takes the lit link and the link count in slots `{0}` and `{1}`.
 `Window.Help.Key.*` names the keys that help prints, and any other key prints its .NET name.
-`Legend.*` labels the keys that the window legend and help list: `Legend.Help`, `Legend.Quit`, `Legend.Close` and `Legend.Import`.
+`Legend.*` labels the keys that the window legend and help list: `Legend.Help`, `Legend.Quit`, `Legend.Close`, `Legend.Import` and `Legend.Menu`.
 `Parley.*` labels the Yes, No and OK buttons of the console's boxes.
 The console prints each usage error after `llyn: `.
 So each is one complete sentence, with option names kept literal.
@@ -168,6 +180,6 @@ The person headers spell out person and number instead of the English abbreviati
 
 ## Stamp
 
-Commit: `2883be178842`
-- `en.json` `1e2f6a8eacacdd68`
-- `ko.json` `4898baaf2c87b654`
+Commit: `c1396871c007`
+- `en.json` `32009d01a3b4b822`
+- `ko.json` `5cdea5be12db89b3`

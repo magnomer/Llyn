@@ -37,7 +37,8 @@ internal sealed class BSCustomsOmission : BSParleyBody
         int column,
         int width,
         bool focused,
-        string role)
+        string role,
+        BCanvasWidth measure)
     {
         yield return new BCanvasText(row, column, width, _bsCustomsOmissionHeading, role);
         foreach (int index in _bsCustomsOmissionTable.BTableRowShown)

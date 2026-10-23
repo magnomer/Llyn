@@ -30,7 +30,7 @@ A fault in a queued item goes to the handler the run was given, and not to the l
 
 Loads the real `ABootstrap` and expects `AWindow`, `ANotice` and `ASParley` with the glyph sets `double`, `single` and `ascii`.
 A blueprint embedded but not listed is skipped, as `TBlueprintFake` shows.
-A `BWindow` is built with a loop and an envoy to prove every contract name is found.
+A `BWindow` is built with a loop, an envoy and a theme loader to prove every contract name is found.
 An ASCII frame is drawn on a 3 by 3 area to prove the glyph set picks the marks.
 A glyph set missing a mark, an unknown element and an unknown attribute each throw `InvalidDataException`.
 A `Frame` without `Glyphs` throws `InvalidDataException` with the message `a Frame takes Glyphs`.
@@ -55,17 +55,18 @@ The fallback frame still carries the `console-blue` colour, and the run exits 0.
 
 Typing three Hangul syllables into a field of 6 cells shows the tail `나다` padded with blanks.
 The field keeps the whole text and reports it to the callback.
+The field draws with a width measure the test passes in.
 
 ## Stamp
 
-Commit: `9a85a3ab82db`
-- `TBlueprint.cs` `7140e248961d3664`
+Commit: `c1396871c007`
+- `TBlueprint.cs` `efb5286b148096f1`
 - `TBlueprintFake.cs` `000e50a0d9cf0b07`
 - `TBlueprintFake.xaml` `0d000834862bab6c`
 - `TBlueprintListed.xaml` `5b0e022ddbcd8a05`
 - `TBlueprintUnlisted.xaml` `c90b948e5b5fd904`
 - `TCanvas.cs` `f15ccf3edfc35e06`
 - `TCanvasWidth.cs` `70f3ebae89174d36`
-- `TField.cs` `ee121ff30fa2bf94`
+- `TField.cs` `d60f7d6d52c31c2d`
 - `TLoop.cs` `d33aa16620dbc226`
 - `TTheme.cs` `a65066d14995ec46`

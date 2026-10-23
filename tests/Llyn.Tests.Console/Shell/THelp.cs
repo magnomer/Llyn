@@ -17,7 +17,7 @@ public sealed class THelp
         Assert.Contains("═ Help ═", opened);
         Assert.Contains("These keys work inside help.", opened);
         Assert.Contains("    A box", scrolled);
-        Assert.Contains("═ 1 of 2 ═", scrolled);
+        Assert.Contains("═ 1 of 3 ═", scrolled);
         Assert.DoesNotContain("F1,", scrolled);
     }
 
@@ -64,6 +64,70 @@ public sealed class THelp
     }
 
     [Fact]
+    public void HelpPageBuild_TabsPage_NamesChooserMenuAndHistoryKeys()
+    {
+        TConsoleFake console = THelpRun(
+            ConsoleKey.F1, ConsoleKey.Tab, ConsoleKey.Tab, ConsoleKey.Enter, ConsoleKey.Escape, ConsoleKey.F10);
+
+        string shot = THelpShotFind(console, "A menu on the top row");
+
+        Assert.Contains("Alt+F1", shot);
+        Assert.Contains("Alt+Left", shot);
+        Assert.Contains("Alt+Right", shot);
+        Assert.Contains("Alt+P", shot);
+        Assert.DoesNotContain("F10", shot);
+        Assert.DoesNotContain("Ctrl+C", shot);
+    }
+
+    [Fact]
+    public void HelpPageBuild_BoxOverChooser_NamesChooserKeys()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        TConsoleFake console = new() { TConsoleFakeTerminal = true };
+        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\0', ConsoleKey.F1, false, true, false));
+        console.TConsoleFakeAdjust(81, 24);
+        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\0', ConsoleKey.F1, false, false, false));
+        console.TConsoleFakeAdjust(83, 24);
+        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\e', ConsoleKey.Escape, false, false, false));
+        console.TConsoleFakeAdjust(85, 24);
+        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\e', ConsoleKey.Escape, false, false, false));
+        console.TConsoleFakeAdjust(87, 24);
+        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\0', ConsoleKey.F10, false, false, false));
+
+        Assert.Equal(0, TInvocation.TInvocationRun(console, workspace));
+
+        string shot = THelpShotFind(console, "A box opens over the window");
+        Assert.Contains("Up, Down, Left, Right", shot);
+        Assert.DoesNotContain("button.", shot);
+        Assert.Contains("Enter, 1, 2, 3", shot);
+    }
+
+    [Fact]
+    public void HelpPageBuild_BoxOverChooserButtons_NamesButtonKeys()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        TConsoleFake console = new() { TConsoleFakeTerminal = true };
+        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\0', ConsoleKey.F1, false, true, false));
+        console.TConsoleFakeAdjust(81, 24);
+        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\t', ConsoleKey.Tab, false, false, false));
+        console.TConsoleFakeAdjust(83, 24);
+        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\0', ConsoleKey.F1, false, false, false));
+        console.TConsoleFakeAdjust(85, 24);
+        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\e', ConsoleKey.Escape, false, false, false));
+        console.TConsoleFakeAdjust(87, 24);
+        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\e', ConsoleKey.Escape, false, false, false));
+        console.TConsoleFakeAdjust(89, 24);
+        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\0', ConsoleKey.F10, false, false, false));
+
+        Assert.Equal(0, TInvocation.TInvocationRun(console, workspace));
+
+        string shot = THelpShotFind(console, "A box opens over the window");
+        Assert.Contains("button.", shot);
+        Assert.DoesNotContain("1, 2, 3", shot);
+        Assert.DoesNotContain("Up, Down", shot);
+    }
+
+    [Fact]
     public void WindowFrameBuild_HelpOpen_ShowsCloseLegend()
     {
         TConsoleFake console = THelpRun(ConsoleKey.F1, ConsoleKey.Escape, ConsoleKey.F10);
@@ -93,13 +157,14 @@ public sealed class THelp
             BKeymapFocus.BKeymapFocusParley => [import],
             _ => [],
         };
-        BSHelp everywhere = new(catalog, keys, BKeymapFocus.BKeymapFocusWindow);
+        BCanvasWidth measure = new(false);
+        BSHelp everywhere = new(catalog, keys, BKeymapFocus.BKeymapFocusWindow, measure);
         everywhere.BSParleyBodyObserve(new ConsoleKeyInfo('\0', ConsoleKey.F1, false, false, false));
-        BSHelp box = new(catalog, keys, BKeymapFocus.BKeymapFocusParley);
+        BSHelp box = new(catalog, keys, BKeymapFocus.BKeymapFocusParley, measure);
 
         Dictionary<string, IReadOnlyList<string>> glyphs = [];
-        BCanvasText[] first = [.. everywhere.BSParleyBodyDraw(glyphs, 0, 0, 72, true, "dialog")];
-        BCanvasText[] last = [.. box.BSParleyBodyDraw(glyphs, 0, 0, 72, true, "dialog")];
+        BCanvasText[] first = [.. everywhere.BSParleyBodyDraw(glyphs, 0, 0, 72, true, "dialog", measure)];
+        BCanvasText[] last = [.. box.BSParleyBodyDraw(glyphs, 0, 0, 72, true, "dialog", measure)];
 
         Assert.Contains(first, static text => text.BCanvasTextValue == "  F10   Quit");
         Assert.DoesNotContain(first, static text => text.BCanvasTextValue.Contains("F5", StringComparison.Ordinal));

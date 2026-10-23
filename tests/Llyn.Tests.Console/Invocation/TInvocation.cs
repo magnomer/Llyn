@@ -375,6 +375,7 @@ public sealed class TInvocation
                 {
                     using (engine)
                     {
+                        engine.TEngineLocalizationSave(language);
                         return bootstrap.BBootstrapAtelierRun(detached => create(engine, detached), File.Exists);
                     }
                 });

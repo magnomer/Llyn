@@ -120,12 +120,24 @@ internal sealed class BSParley
         BSParleyKeymap.BKeymapFind(BSParleyKeymapFocus, key)?.BKeymapRowAction(key);
     }
 
+    internal IReadOnlyList<BKeymapRow> BSParleyKeymapRead()
+    {
+        return
+        [
+            .. _bsParleyFocus?.BSParleyBodyKeymap?.BKeymapRead(BSParleyKeymapFocus) ?? [],
+            .. BSParleyKeymap.BKeymapRead(BSParleyKeymapFocus),
+        ];
+    }
+
     internal IReadOnlyList<BCanvasText> BSParleyDraw(
-        IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<string>>> glyphs, int width, int height)
+        IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<string>>> glyphs,
+        int width,
+        int height,
+        BCanvasWidth measure)
     {
         ArgumentNullException.ThrowIfNull(glyphs);
+        ArgumentNullException.ThrowIfNull(measure);
 
-        BCanvasWidth measure = new(false);
         int across = Math.Clamp(width - 2, 0, _bsParleyBody?.BSParleyBodyWidth ?? BSParleyWidth);
         BBlueprint.BBlueprintPlace(_bsParleyBlueprint, 0, 0, across, height);
         int span = _bsParleyText.BBlueprintPartWidth;
@@ -209,7 +221,7 @@ internal sealed class BSParley
                     : new Dictionary<string, IReadOnlyList<string>>();
             texts.AddRange(drawn.BSParleyBodyDraw(
                 set, text.BBlueprintPartRow + rows.Count + gap, text.BBlueprintPartColumn, span,
-                _bsParleyFocus is not null, _bsParleyRole));
+                _bsParleyFocus is not null, _bsParleyRole, measure));
             string position = $" {drawn.BSParleyBodyPosition} ";
             int length = measure.BCanvasWidthResolve(position);
             if (drawn.BSParleyBodyPosition.Length > 0 && length <= across - 4)

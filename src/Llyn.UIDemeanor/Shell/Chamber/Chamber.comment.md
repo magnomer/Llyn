@@ -2,17 +2,19 @@
 
 The console main window and everything it owns directly.
 It mirrors Deportment's `Shell/Window`, so each window piece has the same name and seam on both families.
-It holds the window, its drawing, the user-question port, the product menu, the tab navigation and the help box.
+It holds the window and its pieces, its drawing and the status line.
+It also holds the user-question port and the tab navigation.
 It stands apart from `Rafter`, which holds the roof menu bar every tab shares.
+`Rafter` also holds the bar's menus and the boxes they open.
 
 ## `BEnvoy`
 
 The window's answer to Conduct's `CEnvoy`, which asks through sublevel boxes drawn over the window.
 It answers confirms, failures, the leave question, a coinage name, the import dialog and the omission list.
 The other reads, such as file, workspace, folder, media and markup, still return null, and the press read false.
-It finds `ASParley` in the blueprint, and takes the arrow from that blueprint's glyphs.
+It finds `ASParley` in the blueprint for its boxes.
 A box needs the window, which `BEnvoyWindowAttach` gives it.
-Without a window every show falls back to a held notice, and every question gets no answer.
+Without a window every show but the refusal falls back to a held notice, and every question gets no answer.
 The envoy holds notice lines under a lock, since a fault may come from another thread.
 
 ## `BEnvoyParleyConsult`
@@ -25,17 +27,19 @@ It answers null when no window is attached or the window has exited.
 
 ## `BEnvoyFaultShow`
 
-Shows a fault box in the `alert` role with the message, and the log path as a path line.
+Shows a fault box in the `alert` role with the fault sentence and the reason.
+The log path is a path line between them when there is one.
 The fault handler of the box's own run is the one passed in.
 A box that cannot show holds the same lines as notices.
 
 ## `BEnvoyRefusalShow`
 
-Shows the start refusal, the workspace and the reason as an alert box with OK.
+Shows the start refusal, the workspace when it is not empty, and the reason as an alert box with OK.
+It holds no notice when the box cannot show, since the bootstrap prints the three lines itself.
 
 ## `BEnvoyRescueShow`
 
-Shows the rescue sentence, the backup path and the reason in a `dialog` box.
+Shows the rescue sentence, then the backup path and the reason when each is given, in a `dialog` box.
 A box that cannot show holds the same lines as notices.
 
 ## `BEnvoyThemeShow`
@@ -52,6 +56,8 @@ Only Yes answers true, and Escape answers No.
 ## `CEnvoyUnionConfirm`
 
 Asks a dialog box with the dropped and the kept name around the arrow.
+The arrow comes from the window's glyph set in use, so it follows a glyph choice.
+Without a window or an arrow mark it falls back to the `→` character.
 
 ## `CEnvoyLeaveConfirm`
 
@@ -98,88 +104,209 @@ A box that cannot show holds one line per omission, with its line number and tex
 
 The full-screen window, owning a canvas that follows the console size.
 It holds the window's state and routes each key, and `BMural` turns that state into the frame.
+It delegates the rest, so each piece has one reason to change.
+`BWardrobe` holds the look choices, `BDocket` the open boxes, `BKeymapWindow` the key table and `BEstablishment` the status line.
+`BMirror` holds the Conduct state the roof shows and the roof built from it.
 The layout comes from the `AWindow` blueprint, and the window only fills the parts it names.
-The constructor finds `AWindow`, then `ASParley`, which help uses for its box.
+The constructor finds `AWindow`, then `ASParley`, which help and the other boxes use.
 The mural it builds then finds the parts it draws.
 A missing blueprint or part throws at construction, not while drawing.
 Below 80 by 24 cells the focus is the notice, which wins over any open box.
 The window ends the run through `BWindowExit` and holds the atelier and the envoy it was given.
 The atelier may be null, when the start was refused and only a box is shown.
-It also holds the loop and the stack of open boxes.
+The courier exists only with an atelier, so a refused start has no Joplin items.
 
 ## `BWindowOpen`
 
-Reads the size, observes it and then opens the atelier with the envoy, when there is one.
-The marshal it hands over comes from `BObserverCreate`.
+Reads the size and observes it.
+With an atelier it subscribes to arrivals, has `BMirrorOpen` subscribe the mirrored state, then subscribes to establishment changes.
+Each subscription but the arrival one comes through `BObserverCreate`, so it runs on the loop's thread.
 Work from the loop's thread runs at once, and other work is deferred onto the loop.
+A tab arrival closes any open roof menu, so a menu never stays over the new tab.
+It opens nothing, since subscribing and opening are two roles.
+The caller runs `BWindowAtelierOpen` next.
+
+## `BWindowAtelierOpen`
+
+Opens the atelier with the envoy, when the window has an atelier, after `BWindowOpen` subscribed.
+The marshal handed to the atelier comes through `BObserverCreate`, as the subscriptions do.
 
 ## `BWindowSizeObserve`
 
 Builds a new canvas with the theme when the size differs from the last one, and marks the frame changed.
 A negative size counts as 0, and the first call always builds a canvas.
 The new canvas starts blank, so the next sync prints the whole frame.
+The canvas takes the wardrobe's ambiguous-width setting, so a wide choice changes how every cell is counted.
 
 ## `BWindowBatchObserve`
 
 Draws and syncs the frame once when a size or a box key marked it changed since the last batch.
-It hands `BMuralDraw` the size, the focus, the roof, the navigation, the boxes and its key lookup.
+It hands `BMuralDraw` the size, the focus, the roof, the navigation and the courier state.
+It adds the boxes, the glyphs, the marks, its key lookup and the width measure.
 Without a mark no frame is built, so a burst of keys costs one frame.
-
-## `BWindowKeymap`
-
-The window's own key table, with rows for the window, a box, the notice and help.
-It is built in the constructor, so a refused key fails at construction.
-A box keeps its own rows in `BSParleyKeymap`.
-The legend looks in this table first, then in the roof's, then in the top box's table.
 
 ## `BWindowKeyObserve`
 
-The key is looked up in this table at the current focus, and a found row runs its action.
-F1 opens help at the window and at a box.
-F10 and Ctrl+C ask to quit at the window and the notice.
-Ctrl+C also asks to quit at a box and in help.
-At a box or help focus, a key this table lacks goes to the top box.
-The box leaves the stack once it answers.
+The key is looked up in the window's table at the current focus, and a found row runs its action.
+At a box or help focus, a key the table lacks goes to the top box.
+At the window and roof focus, such a key goes to the roof.
+The frame is marked changed when the roof used the key.
+At the notice focus, every key without a row does nothing.
 The frame is marked changed after a key that reaches a box.
-The atelier's quit confirmation decides, and only a yes completes the exit task.
+Quit goes through the atelier's quit confirmation, and only a yes completes the exit task.
 Without an atelier the request quits at once.
-At the window and the notice focus, every key without a row does nothing.
 
 ## `BWindowParleyConsult`
 
-Puts a box on the stack and runs the loop nested until the box answers or the window exits.
-Queued work keeps running in the nested loop, and a fault there goes to the handler given.
-When the window exits, the box gets Escape, so it answers its safe index.
-It answers null at once if the window has already exited.
+Hands the box to the docket, which runs it.
 
 ## `BWindowHelpShow`
 
 Opens help as a box with one Close button, for the focus that asked.
-For each page, help reads the window's rows of that page's focus.
-It adds the rows of the open box with the same focus, or else the top box.
+For each page, help reads the window's rows of that page's focus, then the roof's rows.
+It adds the rows of the box with the same focus, or else the top box.
+Those rows list the body's keys first.
+The window page reads no box, since it is not about one.
 The box has the help focus, so its own rows are the keys inside help.
+
+## `BWindowNavigationShow`
+
+Opens the tab chooser as a box and waits until a tab is picked or the box closes.
+It selects the tab only if one was picked and the window has not exited meanwhile.
+Without an atelier or a navigation state it does nothing.
+
+## `BWindowKeymapFind`
+
+The legend looks in the window's table first, then in the roof's, then in the top box's table.
+
+## `BMirror`
+
+The window's copy of the Conduct state the roof shows, and the roof built from it.
+It mirrors the navigation, the ledger and the courier state, and each has one writer, its observer.
+The roof is built once, and each change hands it newly built menus.
+Each change also marks the frame changed through a callback.
+So a verdict is computed once on its event and an open menu stays open across it.
+The window reads the roof, the navigation and the courier state, and never writes them.
+The product menu comes from a callback that receives the courier state reader.
+A look choice reaches the window through a second callback, which drops the canvas.
+
+## `BMirrorOpen`
+
+Subscribes to navigation, ledger and courier changes, each through `BObserverCreate`.
+With a courier it then reads the courier state once through the courier observer, as the GUI courier does.
+So the Joplin items show even when the workspace open fails and no courier change comes.
+A navigation or courier change gives the roof new menus, since those menus depend on that state.
+Each ledger change applies the ledger's texts to the catalog and keeps the ledger state.
+It then gives the roof new menus, as the GUI settings do.
+Without a courier only navigation and ledger are heard.
+
+## `BMirrorMenuBuild`
+
+Builds the roof's three menus, the product menu, the tab menu and `Options`.
+It runs again after any state a menu shows changes, and the roof applies the result.
+A look choice gives the roof new menus only when the wardrobe accepted the name.
+It then drops the canvas and calls the size observer again.
+So the whole window is printed once anew.
+Without an atelier the language save does nothing and `Settings…` selects nothing.
+
+## `BKeymapWindow`
+
+The window's own key table, with rows for the window, a box, the notice, help and the roof.
+It is built in the constructor, so a refused key fails at construction.
+A box keeps its own rows in `BSParleyKeymap`.
+F1 opens help at the window, at a box and at the roof.
+F10 and Ctrl+C ask to quit at the window, the notice and the roof.
+Ctrl+C also asks at a box and in help.
+The roof rows close the open menu before they act.
+Alt+F1 chooses a tab, and Alt+Left and Alt+Right move back and forward in the tab history.
+Each of those rows exists at the window and the roof focus.
+The history rows are dim while the voyage has no past or no future.
+They are hidden before a navigation state is heard.
+Every row is built from callbacks, so the table knows nothing about the window.
+
+## `BWardrobe`
+
+Holds the look the user can change during the run.
+That is the theme, the glyph set and the width of ambiguous characters.
+A choice answers false for a name it does not know, so a bad name changes nothing.
+The theme is replaced whole with its name.
+The theme seam answers null after a failed load has been shown, so the current theme stays.
+The glyph set in use is named, and the marks are that set's glyphs.
+The initial set comes from the glyph set of the `ASParley` child, and is empty when that has none.
+The glyph sets it hands the blueprint map every set name to the set in use.
+So frames draw the chosen set whatever set they name.
+Ambiguous width is `narrow` or `wide`, and it builds the canvas width measure everything else shares.
+The choices last for the run and are not saved.
+
+## `BDocket`
+
+The stack of open boxes and the loop that serves them.
+A box is put on the stack, and the loop runs nested.
+It stops when the box answers, a given task completes, or the window exits.
+Queued work keeps running in the nested loop, and a fault there goes to the handler given.
+The box then gets Escape.
+So it answers its safe index even when the window exits or the task ended the wait.
+A box run with a task, such as the tab chooser, leaves the stack at once.
+Any other box leaves when its own key answers.
+It answers null at once if the window has already exited.
+Each change marks the frame changed through a callback.
+
+## `BEstablishment`
+
+The status line, one row under the frames.
+Before the workspace has reported an establishment, or without a courier state, it shows only the opening text.
+After that it shows the Joplin state on the left, then the courier's last line after a slash.
+The line is cut with an ellipsis to the room left.
+A first character too wide for the room beside the ellipsis leaves the ellipsis alone.
+The room reserves the unsaved mark, so that mark is never pushed out.
+The unsaved mark shows only while the establishment has pending changes.
+The entry and size tally sits on the right in the `muted` role, joined with a dot.
+Dot, ellipsis and pending glyphs come from the marks, with a built-in fallback for each.
+All widths are measured, so wide characters keep their columns.
+
+## `BNavigation`
+
+Maps the tab parts of the `ASNavigation` blueprint to their catalog labels and builds what shows them.
+A part with no mapping throws at construction.
+The tab menu lists the visible tabs in their blueprint groups.
+A separator sits between groups, and a radio mark sits on the current tab.
+It adds Back and Forward, enabled by the voyage, and a Choose entry that opens the chooser.
+Without an atelier or state the menu is empty.
+Drawing puts the current tab name at the right end of the roof row.
+Back and Forward sit at the foot of the right frame.
+A history move that is not possible draws in the `disabled` role.
+
+## `BNotice`
+
+Draws the small-console notice.
+A console narrower than 44 or lower than 8 cells gets the bare text in the `text` role.
+Each line starts at the left edge on its own row.
+A larger one gets a framed `ANotice` box 42 cells wide, centred, with ` Llyn ` on its top border.
+The box height follows the wrapped lines, and lines past the box are cut.
+The legend of the notice focus comes in from the caller.
 
 ## `BMural`
 
 The window's drawing: it turns the state `BWindow` holds into the texts of one frame.
 The window decides and the mural draws, so no drawing code reads or writes window state.
-It finds `AEstablishment`, `ALegend` and `AVoyage` in `AWindow` and `ANoticeText` in `ANotice` at construction.
-It keeps the glyphs, the marks and the tab navigation, which never change after construction.
+It finds `ALegend` and `AVoyage` in `AWindow` at construction, and builds the notice drawing.
+It keeps the tab navigation and the status line, which never change after construction.
 
 ## `BMuralDraw`
 
 Draws the small-console notice at the notice focus, and otherwise the whole frame.
-The roof, the navigation, the boxes and the key lookup come in at each draw.
+The roof, the navigation and the courier state come in at each draw.
+So do the boxes, the glyphs, the marks, the key lookup and the measure.
 
 ## `BMuralFrameBuild`
 
 Places the `AWindow` blueprint for the current size and draws its frames with the glyph set each names.
+The status line, the legend, the roof and the tab drawing follow.
 The open boxes draw last, in stack order, so the top box covers the rest.
-The opening line fills `AEstablishment`, one cell in from the left.
 The legend is built for the current focus.
 The left half is half the width, and the right half takes the rest.
 Each half has a rule above its last inner row.
-Row 0 is the roof and stays blank.
+Row 0 is the roof, which the scaffold leaves to `BRoof`.
 
 ## `BMuralLegendBuild`
 
@@ -192,34 +319,19 @@ The number takes the legend theme with `-number`, so the theme file styles both.
 
 ## `BMuralNoticeBuild`
 
-Fills `Window.Small` with the minimum and the actual size, then wraps it by cells.
-A console narrower than 44 or lower than 8 cells gets the bare text in the `text` role.
-Each line starts at the left edge on its own row.
-A larger one gets a framed `ANotice` box 42 cells wide, centred, with ` Llyn ` on its top border.
-The box height follows the wrapped lines, and lines past the box are cut.
-The legend of the notice focus sits on the last row at column 0.
-
-## `BSHelp`
-
-The body of the help box: three pages of prose and keys, linked to each other.
-The pages are keys everywhere, the window, and a box.
-Each page has a key focus, and the window page uses the help focus.
-The keys of a page come from a function, so help lists only what is bound.
-The window page also lists the pager's own rows.
-Rows with the same key and modifiers are listed once.
-Pages are built on every read, so a key's live state shows at once.
-Help opens on the box page for a box focus, and otherwise on the window page.
-Each page lists its keys as `keys   meaning`, joining keys with one meaning and leaving out hidden rows.
-A dim row draws in the `disabled` role.
-Each page ends with links to the other pages, and the lit link takes the pointer from the `History` glyphs.
-A `BPager` moves through the pages and the links, and F1 inside help goes to the keys everywhere page.
-The page position shows the lit link of the links on the page, and nothing on a page without links.
-The width is 78 and the height 14.
-Prose wraps by cells, and the console minimum fills the small-console sentence.
+Fills `Window.Small` with the minimum and the actual size, then hands it to `BNotice`.
+The legend sits on the last row at column 0.
 
 ## Stamp
 
-Commit: `2883be178842`
-- `BEnvoy.cs` `d7e2f11929e06cae`
-- `BSHelp.cs` `82db0d982b342712`
-- `BWindow.cs` `c8e171a932f84e7b`
+Commit: `c1396871c007`
+- `BDocket.cs` `2f1ab27227907c41`
+- `BEnvoy.cs` `a4cf806121cce012`
+- `BEstablishment.cs` `f0b09dc75cb89774`
+- `BKeymapWindow.cs` `ac57c5af4fc27418`
+- `BMirror.cs` `7cd7718e386c989c`
+- `BMural.cs` `694702d575d8e626`
+- `BNavigation.cs` `c45d372cb6483331`
+- `BNotice.cs` `7a5f8cc1b48d424d`
+- `BWardrobe.cs` `79a636696cb2e9a9`
+- `BWindow.cs` `ce50e4cd09dbe945`

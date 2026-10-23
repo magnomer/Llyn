@@ -22,7 +22,8 @@
       { "name": "Llyn.UIDemeanor", "role": "portable" },
       { "name": "Llyn.UITerminal", "role": "portable" },
       { "name": "Llyn.Guestroom", "role": "portable" },
-      { "name": "Llyn.Host", "role": "host" }
+      { "name": "Llyn.Host", "role": "host" },
+      { "name": "Llyn.Launcher", "role": "host" }
     ]
   },
   "framework": {

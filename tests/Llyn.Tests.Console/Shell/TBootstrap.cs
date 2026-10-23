@@ -96,6 +96,40 @@ public sealed class TBootstrap
         Assert.Equal(0, code);
     }
 
+    [Fact]
+    public void BootstrapAtelierRun_SpareTheme_MarksNoTheme()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        TConsoleFake console = new() { TConsoleFakeTerminal = true };
+        foreach (ConsoleKeyInfo key in (ConsoleKeyInfo[])
+        [
+            new('\r', ConsoleKey.Enter, false, false, false),
+            new('o', ConsoleKey.O, false, true, false),
+            new('\0', ConsoleKey.RightArrow, false, false, false),
+        ])
+        {
+            console.TConsoleFakeKeys.Add(key);
+            console.TConsoleFakeAdjust(80, 24);
+        }
+
+        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\0', ConsoleKey.F10, false, false, false));
+
+        int code = TInvocation.TInvocationRun(
+            console,
+            static _ => throw new InvalidDataException("no theme"),
+            "en",
+            workspace.TWorkspaceFolder,
+            (_, _) => new LEngine(
+                workspace.TWorkspaceRigCreate(), _ => workspace.TWorkspaceRigCreate(), static _ => { }, true),
+            TInterfaceConduct.TAtelierCreate);
+
+        string shot = string.Join('\n', console.TConsoleFakeShots[^1]);
+        Assert.Contains("    Blue", shot);
+        Assert.Contains("    Dark", shot);
+        Assert.DoesNotContain("(•)", shot);
+        Assert.Equal(0, code);
+    }
+
     private static int TBootstrapRescueRun(TConsoleFake console, Func<string, Func<string, string>> theme)
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

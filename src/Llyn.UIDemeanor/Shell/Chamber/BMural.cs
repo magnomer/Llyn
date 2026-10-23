@@ -10,11 +10,9 @@ internal sealed class BMural
     private const int BMuralLegendWidth = 8;
 
     private readonly BLocalizationCatalog _bMuralCatalog;
-    private readonly IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<string>>> _bMuralGlyphs;
-    private readonly IReadOnlyDictionary<string, IReadOnlyList<string>> _bMuralMarks;
     private readonly BNavigation _bMuralTabs;
     private readonly BBlueprintPart _bMuralBlueprint;
-    private readonly BBlueprintPart _bMuralEstablishment;
+    private readonly BEstablishment _bMuralEstablishment;
     private readonly BBlueprintPart _bMuralLegend;
     private readonly BBlueprintPart _bMuralVoyage;
     private readonly BNotice _bMuralNotice;
@@ -23,21 +21,19 @@ internal sealed class BMural
         BBlueprint blueprint,
         BBlueprintPart window,
         BLocalizationCatalog catalog,
-        IReadOnlyDictionary<string, IReadOnlyList<string>> marks,
-        BNavigation tabs)
+        BNavigation tabs,
+        BEstablishment establishment)
     {
         ArgumentNullException.ThrowIfNull(blueprint);
         ArgumentNullException.ThrowIfNull(window);
         ArgumentNullException.ThrowIfNull(catalog);
-        ArgumentNullException.ThrowIfNull(marks);
         ArgumentNullException.ThrowIfNull(tabs);
+        ArgumentNullException.ThrowIfNull(establishment);
 
         _bMuralCatalog = catalog;
-        _bMuralGlyphs = blueprint.BBlueprintGlyphs;
-        _bMuralMarks = marks;
         _bMuralTabs = tabs;
         _bMuralBlueprint = window;
-        _bMuralEstablishment = BContract.BContractFind(window, "AEstablishment");
+        _bMuralEstablishment = establishment;
         _bMuralLegend = BContract.BContractFind(window, "ALegend");
         _bMuralVoyage = BContract.BContractFind(window, "AVoyage");
         _bMuralNotice = new BNotice(blueprint);
@@ -49,16 +45,24 @@ internal sealed class BMural
         BKeymapFocus focus,
         BRoof roof,
         CNavigationState? navigation,
+        CCourierState? courier,
         IReadOnlyList<BSParley> parleys,
-        Func<BKeymapFocus, ConsoleKeyInfo, BKeymapRow?> find)
+        IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<string>>> glyphs,
+        IReadOnlyDictionary<string, IReadOnlyList<string>> marks,
+        Func<BKeymapFocus, ConsoleKeyInfo, BKeymapRow?> find,
+        BCanvasWidth measure)
     {
         ArgumentNullException.ThrowIfNull(roof);
         ArgumentNullException.ThrowIfNull(parleys);
+        ArgumentNullException.ThrowIfNull(glyphs);
+        ArgumentNullException.ThrowIfNull(marks);
         ArgumentNullException.ThrowIfNull(find);
+        ArgumentNullException.ThrowIfNull(measure);
 
         return focus == BKeymapFocus.BKeymapFocusNotice
-            ? BMuralNoticeBuild(width, height, find)
-            : BMuralFrameBuild(width, height, focus, roof, navigation, parleys, find);
+            ? BMuralNoticeBuild(width, height, glyphs, find, measure)
+            : BMuralFrameBuild(
+                width, height, focus, roof, navigation, courier, parleys, glyphs, marks, find, measure);
     }
 
     private IEnumerable<BCanvasText> BMuralFrameBuild(
@@ -67,22 +71,24 @@ internal sealed class BMural
         BKeymapFocus focus,
         BRoof roof,
         CNavigationState? navigation,
+        CCourierState? courier,
         IReadOnlyList<BSParley> parleys,
-        Func<BKeymapFocus, ConsoleKeyInfo, BKeymapRow?> find)
+        IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<string>>> glyphs,
+        IReadOnlyDictionary<string, IReadOnlyList<string>> marks,
+        Func<BKeymapFocus, ConsoleKeyInfo, BKeymapRow?> find,
+        BCanvasWidth measure)
     {
         BBlueprint.BBlueprintPlace(_bMuralBlueprint, 0, 0, width, height);
-        foreach (BCanvasText scaffold in BBlueprint.BBlueprintDraw(_bMuralBlueprint, _bMuralGlyphs))
+        foreach (BCanvasText scaffold in BBlueprint.BBlueprintDraw(_bMuralBlueprint, glyphs))
         {
             yield return scaffold;
         }
 
-        BBlueprintPart establishment = _bMuralEstablishment;
-        yield return new BCanvasText(
-            establishment.BBlueprintPartRow,
-            establishment.BBlueprintPartColumn,
-            establishment.BBlueprintPartWidth,
-            _bMuralCatalog.BLocalizationTextRead("Window.Opening"),
-            establishment.BBlueprintPartTheme);
+        foreach (BCanvasText status in _bMuralEstablishment.BEstablishmentDraw(courier, marks, measure))
+        {
+            yield return status;
+        }
+
         BBlueprintPart legend = _bMuralLegend;
         foreach (BCanvasText key in BMuralLegendBuild(
             legend.BBlueprintPartRow, legend.BBlueprintPartColumn, focus, find))
@@ -90,7 +96,7 @@ internal sealed class BMural
             yield return key;
         }
 
-        foreach (BCanvasText text in roof.BRoofDraw(_bMuralMarks))
+        foreach (BCanvasText text in roof.BRoofDraw(marks, measure))
         {
             yield return text;
         }
@@ -99,7 +105,7 @@ internal sealed class BMural
         {
             BBlueprintPart top = BContract.BContractFind(_bMuralBlueprint, "ARoof");
             foreach (BCanvasText text in _bMuralTabs.BNavigationDraw(
-                _bMuralCatalog, state, _bMuralMarks, top, _bMuralVoyage))
+                _bMuralCatalog, state, marks, top, _bMuralVoyage, measure))
             {
                 yield return text;
             }
@@ -107,7 +113,7 @@ internal sealed class BMural
 
         foreach (BSParley parley in parleys)
         {
-            foreach (BCanvasText text in parley.BSParleyDraw(_bMuralGlyphs, width, height))
+            foreach (BCanvasText text in parley.BSParleyDraw(glyphs, width, height, measure))
             {
                 yield return text;
             }
@@ -140,7 +146,11 @@ internal sealed class BMural
     }
 
     private IEnumerable<BCanvasText> BMuralNoticeBuild(
-        int width, int height, Func<BKeymapFocus, ConsoleKeyInfo, BKeymapRow?> find)
+        int width,
+        int height,
+        IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<string>>> glyphs,
+        Func<BKeymapFocus, ConsoleKeyInfo, BKeymapRow?> find,
+        BCanvasWidth measure)
     {
         string notice = string.Format(
             CultureInfo.CurrentCulture,
@@ -153,7 +163,8 @@ internal sealed class BMural
             notice,
             width,
             height,
-            _bMuralGlyphs,
-            BMuralLegendBuild(height - 1, 0, BKeymapFocus.BKeymapFocusNotice, find));
+            glyphs,
+            BMuralLegendBuild(height - 1, 0, BKeymapFocus.BKeymapFocusNotice, find),
+            measure);
     }
 }

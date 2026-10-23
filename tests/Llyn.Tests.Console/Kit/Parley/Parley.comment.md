@@ -11,8 +11,9 @@ A long path wraps and draws every row.
 A disabled button draws in `disabled`, and the lit button in `lit`.
 Right skips a disabled button, so Enter answers the next enabled one.
 Escape answers the safe index.
+The box is drawn with a width measure the test passes in, as the window does.
 
 ## Stamp
 
-Commit: `9a85a3ab82db`
-- `TParley.cs` `0bea1ac82378c9a7`
+Commit: `c1396871c007`
+- `TParley.cs` `9ed1224b37cf73e6`

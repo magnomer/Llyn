@@ -4,6 +4,8 @@ Tests of the console window, its envoy and its boxes, driven through `TInvocatio
 A start with a terminal and no arguments is the window, and an F10 key ends it.
 `TWindow` drives the window, `TBootstrap` the start boxes and `TEnvoy` the questions and notices.
 `THelp` drives the help box.
+`TWindowLayer` drives the roof menus, submenus, tab keys and boxes over the window.
+`TCabinet` drives the `Options` menu, and `TEstablishment` the status line and the Joplin items.
 
 ## `TWindow`
 
@@ -12,7 +14,8 @@ The loop's own threads read the keys and sizes, so the tests assert the grid the
 
 ## `WindowOpen_EightyByTwentyFour_DrawsEmptyFrame`
 
-Pins the whole frame at 80 by 24, with two bordered halves, the opening line and the quit legend.
+Pins the whole frame at 80 by 24, with two bordered halves, the roof and the legend.
+The status line below the halves reads `Joplin: Connect` and the tally, not the opening text.
 The legend shows `1` and `Help` at column 0 and `10` and `Quit` at column 72 in the last row.
 
 ## `WindowSizeObserve_Grown_RedrawsFrameByHalves`
@@ -48,6 +51,13 @@ A key other than a quit key is ignored, and F10 ends the run with 0.
 ## `WindowKeyObserve_ShiftFunctionTen_KeepsWindow`
 
 Shift+F10 is not the quit key, so the window stays until F10 ends the run with 0.
+
+## `WindowKeyObserve_WideChosen_WidensMenuAndCanvas`
+
+Choosing wide ambiguous characters in the `Options` menu makes the window count those characters as two cells.
+The radio mark in the menu then takes the cells it needs, and the labels beside it still line up.
+It runs on a fake port that also counts the characters as wide.
+So the canvas and the menu are checked against one measure.
 
 ## `WindowKeyObserve_ControlC_ExitsZero`
 
@@ -85,10 +95,15 @@ The box has an OK button, and Enter or F10 ends the start with 3.
 The refusal lines print on stderr after the window is left.
 A rescue draws an information box with the backup path and the reason.
 A rescue and a failed theme both draw, with the rescue first.
+When the theme fails and the spare palette runs, the `Options` menu marks no theme.
+The palette has no name.
 
 ## `TEnvoy`
 
 Each test runs the envoy inside a window with the fake port, and queues the keys a user would press.
+The helper `TEnvoyRun` also serves the other window tests.
+It can prime the window, replace the theme loader and read the engine once the run settles.
+It stores the language first, so a language choice can be seen in the stored value.
 Enter answers Yes, Right then Enter answers No, and Escape and F10 answer No.
 Shift with F10 leaves the box open, since a key matches its modifiers exactly.
 A plain confirm draws an alert box, and a tally draws its count line.
@@ -107,17 +122,69 @@ Tab moves focus to the buttons and back, so letters typed between are ignored.
 ## `THelp`
 
 F1 opens help on the window page.
-End scrolls it to show the links and the position `1 of 2`.
+End scrolls it to show the links and the position `1 of 3`, one link for each other page.
 F1 over a box opens the box page, with the box's keys listed.
 F1 inside help shows the keys everywhere page.
 Enter on a link follows it, and Backspace returns to the page before.
+The tabs page names the Alt keys of the chooser, the history and the tab menu.
+It names none of the quit keys.
+Help over the tab chooser lists the chooser's keys, and its row wins where the box holds the same key.
+After Tab moves the focus to the buttons, the same help names the button keys.
+It then names none of the chooser's keys.
 An open help changes the legend to `Close` only.
 Help lists only keys that are bound and not hidden, and a dim key draws in the `disabled` role.
 
+## `TWindowLayer`
+
+The roof menus and the boxes over the window, one layer above the other.
+A box over the window shows the Close legend, and queued work still runs under it.
+F9 opens the product menu, and a box drawn over it covers it.
+Enter on About closes the menu first, then shows the version, so the menu never stays under the box.
+A box key pressed in an open menu, such as F1, F10 or Ctrl+C, closes the menu before it acts.
+A submenu opens beside its item on Right, Enter or its hotkey, and Left or Escape closes only the submenu.
+Up and Down move inside an open submenu, and choosing an item there runs it with the name it carries.
+Alt+P opens the tab menu with rules between its groups.
+Alt+F1 opens the chooser, and a digit picks a tab and closes it.
+A hidden tab is left out of both the tab menu and the chooser.
+With no history, Back and Forward draw dim, and stay dim in every frame.
+A chosen tab shows its name at the end of the roof row.
+Ctrl+C under a box answers the box's safe index.
+
+## `TCabinet`
+
+The `Options` menu, built directly and driven through the window.
+The current theme, glyph set, ambiguous width and language each carry the radio mark.
+A spare start theme has no name, so no theme is marked.
+Choosing ASCII draws an ASCII frame, an ASCII notice and an ASCII arrow in the union question.
+Choosing a language saves it through the engine and relabels the menu bar.
+Choosing a theme redraws the whole window, and Settings selects the Settings tab.
+Up inside a submenu moves inside it, and the theme loader is asked for the named theme.
+
+## `TEstablishment`
+
+The status line and the Joplin items of the product menu.
+Before anything is heard the line shows the opening text.
+Without a stored token the line offers connecting, with the tally muted at the right.
+With a token it shows connected.
+The courier's line follows a separator until it is cleared.
+A long one is cut with an ellipsis that keeps the right end.
+With too little room the ellipsis alone stays, also when the first character is too wide to sit beside it.
+The unsaved mark and count show only while changes are pending.
+A newer establishment replaces the numbers, and drawing again shows the same row.
+The product menu lists Connect only without a token, lists Sync in both cases, and sets them above a rule.
+A busy courier dims both items and leaves About live.
+Without a courier it leaves the Joplin items out.
+Opening a workspace shows the line in the window.
+The mirror reads the courier state when it subscribes, so the Joplin items show though no workspace opened.
+A courier change keeps an open product menu open on its lit item, while Connect leaves it once attached.
+
 ## Stamp
 
-Commit: `2883be178842`
-- `TBootstrap.cs` `2cf3b16c8595d74e`
-- `TEnvoy.cs` `96b22a19349dc78a`
-- `THelp.cs` `3f9b903cdcb70357`
-- `TWindow.cs` `db8a54651fc71471`
+Commit: `c1396871c007`
+- `TBootstrap.cs` `015737479cbb0b7b`
+- `TCabinet.cs` `ce20853cde2f2f7e`
+- `TEnvoy.cs` `0da0d289d361384c`
+- `TEstablishment.cs` `b14c98e63112fda6`
+- `THelp.cs` `ad48e495cfa363ea`
+- `TWindow.cs` `43c3ae1cafdd3224`
+- `TWindowLayer.cs` `2296dba4b8ba91f2`

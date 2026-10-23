@@ -29,31 +29,45 @@ internal sealed class BSHelp : BSParleyBody
 
     private readonly BLocalizationCatalog _bsHelpCatalog;
     private readonly Func<BKeymapFocus, IReadOnlyList<BKeymapRow>> _bsHelpKeys;
-    private readonly IReadOnlyList<(string BSHelpTitle, string[] BSHelpProse, BKeymapFocus BSHelpFocus)> _bsHelpPages =
+    private readonly IReadOnlyList<(
+        string BSHelpTitle, string[] BSHelpProse, BKeymapFocus BSHelpFocus, Func<BKeymapRow, bool>? BSHelpFilter)>
+        _bsHelpPages =
     [
-        ("Window.Help.Page.Everywhere", ["Window.Help.Text.Everywhere"], BKeymapFocus.BKeymapFocusWindow),
+        ("Window.Help.Page.Everywhere", ["Window.Help.Text.Everywhere"], BKeymapFocus.BKeymapFocusWindow, null),
         (
             "Window.Help.Page.Window",
             ["Window.Help.Text.Legend", "Window.Help.Text.Small", "Window.Help.Text.Inside"],
-            BKeymapFocus.BKeymapFocusHelp),
-        ("Window.Help.Page.Box", ["Window.Help.Text.Box"], BKeymapFocus.BKeymapFocusParley),
+            BKeymapFocus.BKeymapFocusHelp,
+            null),
+        ("Window.Help.Page.Box", ["Window.Help.Text.Box"], BKeymapFocus.BKeymapFocusParley, null),
+        (
+            "Window.Help.Page.Tabs",
+            ["Window.Help.Text.Tabs"],
+            BKeymapFocus.BKeymapFocusRoof,
+            static row => row.BKeymapRowModifiers == ConsoleModifiers.Alt),
     ];
 
     private readonly BPager _bsHelpPager;
+    private readonly BCanvasWidth _bsHelpMeasure;
 
     internal BSHelp(
-        BLocalizationCatalog catalog, Func<BKeymapFocus, IReadOnlyList<BKeymapRow>> keys, BKeymapFocus focus)
+        BLocalizationCatalog catalog,
+        Func<BKeymapFocus, IReadOnlyList<BKeymapRow>> keys,
+        BKeymapFocus focus,
+        BCanvasWidth measure)
     {
         ArgumentNullException.ThrowIfNull(catalog);
         ArgumentNullException.ThrowIfNull(keys);
+        ArgumentNullException.ThrowIfNull(measure);
 
         _bsHelpCatalog = catalog;
         _bsHelpKeys = keys;
+        _bsHelpMeasure = measure;
         _bsHelpPager = new BPager(
             () =>
             [
-                .. Enumerable.Range(0, _bsHelpPages.Count).Select(page =>
-                    (IReadOnlyList<int?>)[.. BSHelpPageBuild(page).Select(static line => line.BSHelpTarget)]),
+                .. Enumerable.Range(0, _bsHelpPages.Count).Select(page => (IReadOnlyList<int?>)
+                    [.. BSHelpPageBuild(page, _bsHelpMeasure).Select(static line => line.BSHelpTarget)]),
             ],
             focus switch
             {
@@ -72,7 +86,8 @@ internal sealed class BSHelp : BSParleyBody
     {
         get
         {
-            int links = BSHelpPageBuild(_bsHelpPager.BPagerPage).Count(static line => line.BSHelpTarget is not null);
+            int links = BSHelpPageBuild(_bsHelpPager.BPagerPage, _bsHelpMeasure)
+                .Count(static line => line.BSHelpTarget is not null);
             return links == 0 ? string.Empty : string.Format(
                 CultureInfo.CurrentCulture,
                 _bsHelpCatalog.BLocalizationTextRead("Window.Help.Position"),
@@ -98,11 +113,12 @@ internal sealed class BSHelp : BSParleyBody
         int column,
         int width,
         bool focused,
-        string role)
+        string role,
+        BCanvasWidth measure)
     {
         string pointer = glyphs.GetValueOrDefault("History") is [_, string forward] ? forward : ">";
         IReadOnlyList<(string BSHelpText, bool BSHelpDim, int? BSHelpTarget)> lines =
-            BSHelpPageBuild(_bsHelpPager.BPagerPage);
+            BSHelpPageBuild(_bsHelpPager.BPagerPage, measure);
         int[] links = [.. Enumerable.Range(0, lines.Count).Where(line => lines[line].BSHelpTarget is not null)];
         int lit = links.Length > 0 ? links[_bsHelpPager.BPagerLit] : -1;
         int top = _bsHelpPager.BPagerTop;
@@ -115,21 +131,25 @@ internal sealed class BSHelp : BSParleyBody
         }
     }
 
-    private IReadOnlyList<(string BSHelpText, bool BSHelpDim, int? BSHelpTarget)> BSHelpPageBuild(int page)
+    private IReadOnlyList<(string BSHelpText, bool BSHelpDim, int? BSHelpTarget)> BSHelpPageBuild(
+        int page, BCanvasWidth measure)
     {
-        (string title, string[] prose, BKeymapFocus focus) = _bsHelpPages[page];
+        (string title, string[] prose, BKeymapFocus focus, Func<BKeymapRow, bool>? filter) = _bsHelpPages[page];
         IEnumerable<BKeymapRow> own = focus == BKeymapFocus.BKeymapFocusHelp
             ? _bsHelpPager.BPagerKeymap.BKeymapRead(focus)
             : [];
         BKeymapRow[] rows =
-            [.. own.Concat(_bsHelpKeys(focus)).DistinctBy(static row => (row.BKeymapRowKey, row.BKeymapRowModifiers))];
+        [
+            .. own.Concat(_bsHelpKeys(focus))
+                .Where(row => filter?.Invoke(row) ?? true)
+                .DistinctBy(static row => (row.BKeymapRowKey, row.BKeymapRowModifiers)),
+        ];
         (string, int)[] links =
         [
             .. Enumerable.Range(0, _bsHelpPages.Count)
                 .Where(other => other != page)
                 .Select(other => (_bsHelpPages[other].BSHelpTitle, other)),
         ];
-        BCanvasWidth measure = new(false);
         Func<string, int, string> pad = (text, cells) =>
             text + new string(' ', Math.Max(cells - measure.BCanvasWidthResolve(text), 0));
         List<(string BSHelpText, bool BSHelpDim, int? BSHelpTarget)> lines =
@@ -218,6 +238,7 @@ internal sealed class BSHelp : BSParleyBody
 
         parts.Add(BSHelpKey.TryGetValue(row.BKeymapRowKey, out string? name)
             ? _bsHelpCatalog.BLocalizationTextRead(name)
+            : row.BKeymapRowKey is >= ConsoleKey.D0 and <= ConsoleKey.D9 ? ((char)row.BKeymapRowKey).ToString()
             : row.BKeymapRowKey.ToString());
         return string.Join('+', parts);
     }

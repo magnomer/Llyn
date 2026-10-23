@@ -21,11 +21,11 @@ internal sealed class BNotice
         int width,
         int height,
         IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<string>>> glyphs,
-        IEnumerable<BCanvasText> legend)
+        IEnumerable<BCanvasText> legend,
+        BCanvasWidth measure)
     {
         const int noticeWidth = 44;
         const int noticeHeight = 8;
-        BCanvasWidth measure = new(false);
         if (width < noticeWidth || height < noticeHeight)
         {
             IReadOnlyList<string> bare = measure.BCanvasWidthDivide(notice, width);

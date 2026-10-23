@@ -47,11 +47,13 @@ internal sealed class BNavigation
         BLocalizationCatalog catalog,
         CNavigationState? state,
         IReadOnlyDictionary<string, IReadOnlyList<string>> marks,
-        Action choose)
+        Action choose,
+        BCanvasWidth measure)
     {
         ArgumentNullException.ThrowIfNull(catalog);
         ArgumentNullException.ThrowIfNull(marks);
         ArgumentNullException.ThrowIfNull(choose);
+        ArgumentNullException.ThrowIfNull(measure);
 
         string bullet = marks.GetValueOrDefault("Radio") is [string radio] ? radio : "*";
         Func<string, ConsoleKey?> letter = key => catalog.BLocalizationTextRead(key) is [char single]
@@ -62,7 +64,7 @@ internal sealed class BNavigation
         if (_bNavigationAtelier is CAtelier atelier && state is not null)
         {
             CNavigation navigation = atelier.CAtelierNavigation;
-            string blank = new(' ', new BCanvasWidth(false).BCanvasWidthResolve(bullet));
+            string blank = new(' ', measure.BCanvasWidthResolve(bullet));
             foreach (IReadOnlyList<KeyValuePair<string, string>> group in _bNavigationTabs)
             {
                 List<BRoofItem> built = [];
@@ -127,15 +129,16 @@ internal sealed class BNavigation
         CNavigationState state,
         IReadOnlyDictionary<string, IReadOnlyList<string>> marks,
         BBlueprintPart roof,
-        BBlueprintPart foot)
+        BBlueprintPart foot,
+        BCanvasWidth measure)
     {
         ArgumentNullException.ThrowIfNull(catalog);
         ArgumentNullException.ThrowIfNull(state);
         ArgumentNullException.ThrowIfNull(marks);
         ArgumentNullException.ThrowIfNull(roof);
         ArgumentNullException.ThrowIfNull(foot);
+        ArgumentNullException.ThrowIfNull(measure);
 
-        BCanvasWidth measure = new(false);
         string? label = _bNavigationTabs.SelectMany(static group => group)
             .FirstOrDefault(tab => tab.Key == state.CNavigationStateTab).Value;
         string name = label is null ? string.Empty : $" {catalog.BLocalizationTextRead(label)} ";

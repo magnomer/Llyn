@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Llyn.UIDemeanor;
@@ -8,9 +9,10 @@ internal sealed class BRoof
 {
     private readonly BBlueprintPart _bRoofWindow;
     private readonly BBlueprintPart _bRoofPart;
-    private readonly IReadOnlyList<BRoofMenu> _bRoofMenus;
+    private IReadOnlyList<BRoofMenu> _bRoofMenus;
     private int? _bRoofShown;
     private BDrop? _bRoofDrop;
+    private BDrop? _bRoofSubmenu;
 
     internal BRoof(BBlueprintPart window, IReadOnlyList<BRoofMenu> menus)
     {
@@ -19,19 +21,103 @@ internal sealed class BRoof
 
         _bRoofWindow = window;
         _bRoofPart = BContract.BContractFind(window, "ARoof");
-        _bRoofMenus = [.. menus.Where(static menu => menu.BRoofMenuItems.Any(static item => item is not null))];
+        BRoofApply(menus);
+    }
 
+    internal BKeymap BRoofKeymap { get; private set; }
+
+    internal BKeymapFocus BRoofKeymapFocus =>
+        _bRoofShown is null ? BKeymapFocus.BKeymapFocusWindow : BKeymapFocus.BKeymapFocusRoof;
+
+    [MemberNotNull(nameof(_bRoofMenus), nameof(BRoofKeymap))]
+    internal void BRoofApply(IReadOnlyList<BRoofMenu> menus)
+    {
+        ArgumentNullException.ThrowIfNull(menus);
+
+        (int? shown, BDrop? drop, BDrop? submenu) = (_bRoofShown, _bRoofDrop, _bRoofSubmenu);
+        BRoofMenu? before = shown is int was && _bRoofMenus is { } held ? held[was] : null;
+        _bRoofMenus = [.. menus.Where(static menu => menu.BRoofMenuItems.Any(static item => item is not null))];
+        BRoofKeymap = BRoofKeymapBuild();
+        BRoofClose();
+        if (shown is not int old || before is null || drop is null)
+        {
+            return;
+        }
+
+        int titled = _bRoofMenus.ToList().FindIndex(menu => menu.BRoofMenuTitle == before.BRoofMenuTitle);
+        int open = titled >= 0 ? titled : old;
+        if (open >= _bRoofMenus.Count)
+        {
+            return;
+        }
+
+        Func<IReadOnlyList<BRoofItem?>, IReadOnlyList<BRoofItem?>, BDrop, BDrop, BRoofItem?> keep =
+            (earlier, items, past, fresh) =>
+            {
+                string? label = earlier.ElementAtOrDefault(past.BDropLit)?.BRoofItemLabel;
+                int named = items.ToList().FindIndex(item => item is not null && item.BRoofItemLabel == label);
+                int at = named >= 0 ? named : past.BDropLit;
+                if (items.ElementAtOrDefault(at) is not BRoofItem item || !item.BRoofItemLive())
+                {
+                    return null;
+                }
+
+                fresh.BDropLitMove(at - fresh.BDropLit);
+                return item;
+            };
+        BRoofOpen(open);
+        IReadOnlyList<BRoofItem?> items = _bRoofMenus[open].BRoofMenuItems;
+        if (_bRoofDrop is not BDrop opened
+            || keep(before.BRoofMenuItems, items, drop, opened) is not { BRoofItemSubmenu: [_, ..] inner }
+            || submenu is null
+            || before.BRoofMenuItems.ElementAtOrDefault(drop.BDropLit)?.BRoofItemSubmenu is not { } earlier)
+        {
+            return;
+        }
+
+        BDrop nested = BRoofDropBuild(inner, opened.BDropLit - opened.BDropTop);
+        _bRoofSubmenu = nested;
+        _ = keep(earlier, inner, submenu, nested);
+    }
+
+    private BKeymap BRoofKeymapBuild()
+    {
         const BKeymapFocus closed = BKeymapFocus.BKeymapFocusWindow;
         const BKeymapFocus roof = BKeymapFocus.BKeymapFocusRoof;
         Func<BKeymapLive> shown = static () => BKeymapLive.BKeymapLiveShown;
         Action<ConsoleKeyInfo> close = _ => BRoofClose();
-        Action<BRoofItem?> run = chosen =>
+        Func<IReadOnlyList<BRoofItem?>> level = () =>
+            _bRoofShown is not int open ? []
+            : _bRoofSubmenu is not null && _bRoofDrop is BDrop parent
+                ? _bRoofMenus[open].BRoofMenuItems[parent.BDropLit]?.BRoofItemSubmenu ?? []
+            : _bRoofMenus[open].BRoofMenuItems;
+        Func<int> lit = () => (_bRoofSubmenu ?? _bRoofDrop)?.BDropLit ?? -1;
+        Action<int> branch = at =>
         {
-            if (chosen is BRoofItem item && item.BRoofItemLive())
+            if (_bRoofDrop is not BDrop drop
+                || level()[at] is not { BRoofItemSubmenu: [_, ..] and IReadOnlyList<BRoofItem?> inner })
             {
-                BRoofClose();
-                item.BRoofItemAction();
+                return;
             }
+
+            drop.BDropLitMove(at - drop.BDropLit);
+            _bRoofSubmenu = BRoofDropBuild(inner, drop.BDropLit - drop.BDropTop);
+        };
+        Action<int> run = at =>
+        {
+            if (level().ElementAtOrDefault(at) is not BRoofItem item || !item.BRoofItemLive())
+            {
+                return;
+            }
+
+            if (_bRoofSubmenu is null && item.BRoofItemSubmenu is not null)
+            {
+                branch(at);
+                return;
+            }
+
+            BRoofClose();
+            item.BRoofItemAction();
         };
         Action<int> change = step =>
         {
@@ -40,10 +126,27 @@ internal sealed class BRoof
                 BRoofOpen((open + step + _bRoofMenus.Count) % _bRoofMenus.Count);
             }
         };
+        Func<bool> fold = () =>
+        {
+            bool folded = _bRoofSubmenu is not null;
+            _bRoofSubmenu = null;
+            return folded;
+        };
+        Action<ConsoleKeyInfo> right = _ =>
+        {
+            if (_bRoofSubmenu is null && level().ElementAtOrDefault(lit()) is { BRoofItemSubmenu: not null } item
+                && item.BRoofItemLive())
+            {
+                branch(lit());
+                return;
+            }
+
+            change(1);
+        };
         Action<int> move = step =>
         {
-            IReadOnlyList<BRoofItem?> items = _bRoofShown is int open ? _bRoofMenus[open].BRoofMenuItems : [];
-            for (int turn = 1; _bRoofDrop is BDrop drop && turn <= items.Count; turn++)
+            IReadOnlyList<BRoofItem?> items = level();
+            for (int turn = 1; (_bRoofSubmenu ?? _bRoofDrop) is BDrop drop && turn <= items.Count; turn++)
             {
                 int at = (((drop.BDropLit + (step * turn)) % items.Count) + items.Count) % items.Count;
                 if (items[at] is BRoofItem item && item.BRoofItemLive())
@@ -69,20 +172,12 @@ internal sealed class BRoof
                 },
                 () => _bRoofMenus.Count > 0 ? BKeymapLive.BKeymapLiveShown : BKeymapLive.BKeymapLiveHidden),
             new(ConsoleKey.F9, 0, roof, "Legend.Close", close, shown),
-            new(ConsoleKey.Escape, 0, roof, "Legend.Close", close, shown),
-            new(ConsoleKey.LeftArrow, 0, roof, "Window.Help.Menu", _ => change(-1), shown),
-            new(ConsoleKey.RightArrow, 0, roof, "Window.Help.Menu", _ => change(1), shown),
+            new(ConsoleKey.Escape, 0, roof, "Legend.Close", key => { if (!fold()) { close(key); } }, shown),
+            new(ConsoleKey.LeftArrow, 0, roof, "Window.Help.Menu", _ => { if (!fold()) { change(-1); } }, shown),
+            new(ConsoleKey.RightArrow, 0, roof, "Window.Help.Menu", right, shown),
             new(ConsoleKey.UpArrow, 0, roof, "Window.Help.Item", _ => move(-1), shown),
             new(ConsoleKey.DownArrow, 0, roof, "Window.Help.Item", _ => move(1), shown),
-            new(
-                ConsoleKey.Enter,
-                0,
-                roof,
-                "Window.Help.Run",
-                _ => run(_bRoofShown is int open && _bRoofDrop is BDrop drop
-                    ? _bRoofMenus[open].BRoofMenuItems.ElementAtOrDefault(drop.BDropLit)
-                    : null),
-                shown),
+            new(ConsoleKey.Enter, 0, roof, "Window.Help.Run", _ => run(lit()), shown),
         ];
         for (int index = 0; index < _bRoofMenus.Count; index++)
         {
@@ -96,6 +191,7 @@ internal sealed class BRoof
 
         IEnumerable<ConsoleKey> hotkeys = _bRoofMenus
             .SelectMany(static menu => menu.BRoofMenuItems)
+            .SelectMany(static item => (IEnumerable<BRoofItem?>)[item, .. item?.BRoofItemSubmenu ?? []])
             .Select(static item => item?.BRoofItemHotkey)
             .OfType<ConsoleKey>()
             .Distinct();
@@ -106,39 +202,28 @@ internal sealed class BRoof
                 0,
                 roof,
                 "Window.Help.Run",
-                _ => run(_bRoofShown is int open
-                    ? _bRoofMenus[open].BRoofMenuItems.FirstOrDefault(item => item?.BRoofItemHotkey == hotkey)
-                    : null),
+                _ => run(level().ToList().FindIndex(item => item?.BRoofItemHotkey == hotkey)),
                 shown));
         }
 
-        BRoofKeymap = new BKeymap(rows);
+        return new BKeymap(rows);
     }
-
-    internal BKeymap BRoofKeymap { get; }
-
-    internal BKeymapFocus BRoofKeymapFocus =>
-        _bRoofShown is null ? BKeymapFocus.BKeymapFocusWindow : BKeymapFocus.BKeymapFocusRoof;
 
     internal void BRoofOpen(int menu)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(menu);
         ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(menu, _bRoofMenus.Count);
 
-        IReadOnlyList<BRoofItem?> items = _bRoofMenus[menu].BRoofMenuItems;
-        int top = _bRoofPart.BBlueprintPartRow + 1;
         _bRoofShown = menu;
-        _bRoofDrop = new BDrop(
-            [.. items.Select(static item => item?.BRoofItemLabel ?? string.Empty)],
-            items.ToList().FindIndex(static item => item is not null && item.BRoofItemLive()),
-            true,
-            Math.Max(_bRoofWindow.BBlueprintPartHeight - top - 3, 1));
+        _bRoofDrop = BRoofDropBuild(_bRoofMenus[menu].BRoofMenuItems, 0);
+        _bRoofSubmenu = null;
     }
 
     internal void BRoofClose()
     {
         _bRoofShown = null;
         _bRoofDrop = null;
+        _bRoofSubmenu = null;
     }
 
     internal bool BRoofKeyObserve(ConsoleKeyInfo key)
@@ -156,15 +241,16 @@ internal sealed class BRoof
         return true;
     }
 
-    internal IReadOnlyList<BCanvasText> BRoofDraw(IReadOnlyDictionary<string, IReadOnlyList<string>> glyphs)
+    internal IReadOnlyList<BCanvasText> BRoofDraw(
+        IReadOnlyDictionary<string, IReadOnlyList<string>> glyphs, BCanvasWidth measure)
     {
         ArgumentNullException.ThrowIfNull(glyphs);
+        ArgumentNullException.ThrowIfNull(measure);
 
         BBlueprintPart part = _bRoofPart;
         (int row, int column, int width) =
             (part.BBlueprintPartRow, part.BBlueprintPartColumn, part.BBlueprintPartWidth);
         string theme = part.BBlueprintPartTheme;
-        BCanvasWidth measure = new(false);
         List<BCanvasText> texts = [new(row, column, width, new string(' ', width), theme)];
         int at = column + 1;
         for (int index = 0; index < _bRoofMenus.Count; index++)
@@ -190,7 +276,15 @@ internal sealed class BRoof
 
             if (open && _bRoofDrop is BDrop drop)
             {
-                texts.AddRange(BRoofBuild(menu, drop, row + 1, at, glyphs));
+                BCanvasText[] box = [.. BRoofBuild(menu.BRoofMenuItems, drop, row + 1, at, glyphs, measure)];
+                texts.AddRange(box);
+                if (_bRoofSubmenu is BDrop inner
+                    && menu.BRoofMenuItems[drop.BDropLit]?.BRoofItemSubmenu is IReadOnlyList<BRoofItem?> nested)
+                {
+                    int line = row + 1 + drop.BDropLit - drop.BDropTop;
+                    int edge = box[0].BCanvasTextColumn + box[0].BCanvasTextSpan;
+                    texts.AddRange(BRoofBuild(nested, inner, line, edge, glyphs, measure));
+                }
             }
 
             at += cells;
@@ -199,12 +293,27 @@ internal sealed class BRoof
         return texts;
     }
 
-    private IEnumerable<BCanvasText> BRoofBuild(
-        BRoofMenu menu, BDrop drop, int top, int left, IReadOnlyDictionary<string, IReadOnlyList<string>> glyphs)
+    private BDrop BRoofDropBuild(IReadOnlyList<BRoofItem?> items, int offset)
     {
-        BCanvasWidth measure = new(false);
-        IReadOnlyList<BRoofItem?> items = menu.BRoofMenuItems;
-        string[] keys = [.. items.Select(static item => item?.BRoofItemKey?.ToString() ?? string.Empty)];
+        int top = _bRoofPart.BBlueprintPartRow + 1 + offset;
+        return new BDrop(
+            [.. items.Select(static item => item?.BRoofItemLabel ?? string.Empty)],
+            items.ToList().FindIndex(static item => item is not null && item.BRoofItemLive()),
+            true,
+            Math.Max(_bRoofWindow.BBlueprintPartHeight - top - 3, 1));
+    }
+
+    private IEnumerable<BCanvasText> BRoofBuild(
+        IReadOnlyList<BRoofItem?> items,
+        BDrop drop,
+        int top,
+        int left,
+        IReadOnlyDictionary<string, IReadOnlyList<string>> glyphs,
+        BCanvasWidth measure)
+    {
+        string branch = glyphs.GetValueOrDefault("Submenu") is [string arrow] ? arrow : ">";
+        string[] keys = [.. items.Select(item => item?.BRoofItemKey?.ToString()
+            ?? (item?.BRoofItemSubmenu is null ? string.Empty : branch))];
         int label = items.Max(item => item is null ? 0 : measure.BCanvasWidthResolve(item.BRoofItemLabel));
         int key = keys.Max(text => measure.BCanvasWidthResolve(text));
         int inner = label + key + (key > 0 ? 5 : 2);

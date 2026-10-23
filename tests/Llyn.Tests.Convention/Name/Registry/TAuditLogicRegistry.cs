@@ -50,6 +50,7 @@ internal static class TAuditLogicRegistry
         "Entry",
         "Envelope",
         "Epoch",
+        "Estimation",
         "Facade",
         "Feature",
         "Fold",

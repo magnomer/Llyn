@@ -15,6 +15,9 @@ public sealed class TWindow
 
         TInvocation.TInvocationRun(console, workspace);
 
+        string status = console.TConsoleFakeGrid[22];
+        Assert.Matches("^ Joplin: Connect +[0-9]+ entries · [0-9]+ KB $", status);
+        Assert.Equal(80, status.Length);
         string top = $"╔{new string('═', 38)}╗";
         string body = $"║{new string(' ', 38)}║";
         string rule = $"╟{new string('─', 38)}╢";
@@ -22,13 +25,13 @@ public sealed class TWindow
         string voyage = $"║{"◄Back (Alt+Left)",-18}Forward (Alt+Right)►║";
         string[] frame =
         [
-            "  Llyn  Panel".PadRight(80),
+            "  Llyn  Panel  Options".PadRight(80),
             top + top,
             .. Enumerable.Repeat(body + body, 17),
             rule + rule,
             body + voyage,
             bottom + bottom,
-            " Opening…".PadRight(80),
+            status,
             "1Help   " + new string(' ', 56) + "9Menu   10Quit  ",
         ];
         Assert.Equal(frame, console.TConsoleFakeGrid);
@@ -45,6 +48,9 @@ public sealed class TWindow
 
         TInvocation.TInvocationRun(console, workspace);
 
+        string status = console.TConsoleFakeGrid[28];
+        Assert.Matches("^ Joplin: Connect +[0-9]+ entries · [0-9]+ KB $", status);
+        Assert.Equal(101, status.Length);
         string top = $"╔{new string('═', 48)}╗╔{new string('═', 49)}╗";
         string body = $"║{new string(' ', 48)}║║{new string(' ', 49)}║";
         string rule = $"╟{new string('─', 48)}╢╟{new string('─', 49)}╢";
@@ -52,13 +58,13 @@ public sealed class TWindow
         string voyage = $"║{new string(' ', 48)}║║{"◄Back (Alt+Left)",-29}Forward (Alt+Right)►║";
         string[] frame =
         [
-            "  Llyn  Panel".PadRight(101),
+            "  Llyn  Panel  Options".PadRight(101),
             top,
             .. Enumerable.Repeat(body, 23),
             rule,
             voyage,
             bottom,
-            " Opening…".PadRight(101),
+            status,
             ("1Help   " + new string(' ', 56) + "9Menu   10Quit").PadRight(101),
         ];
         Assert.Equal(frame, console.TConsoleFakeGrid);
@@ -298,5 +304,40 @@ public sealed class TWindow
             nameof(BConsole.BConsoleModeRestore),
         ];
         Assert.Equal(trail, console.TConsoleFakeTrail);
+    }
+
+    [Fact]
+    public void WindowKeyObserve_WideChosen_WidensMenuAndCanvas()
+    {
+        TConsoleFake console = new() { TConsoleFakeTerminal = true, TConsoleFakeAmbiguous = true };
+        foreach (ConsoleKeyInfo key in (ConsoleKeyInfo[])
+        [
+            new('o', ConsoleKey.O, false, true, false),
+            new('\0', ConsoleKey.DownArrow, false, false, false),
+            new('\0', ConsoleKey.DownArrow, false, false, false),
+            new('\0', ConsoleKey.RightArrow, false, false, false),
+            new('\0', ConsoleKey.DownArrow, false, false, false),
+            new('\r', ConsoleKey.Enter, false, false, false),
+            new('o', ConsoleKey.O, false, true, false),
+            new('\0', ConsoleKey.DownArrow, false, false, false),
+            new('\0', ConsoleKey.DownArrow, false, false, false),
+            new('\0', ConsoleKey.RightArrow, false, false, false),
+        ])
+        {
+            console.TConsoleFakeKeys.Add(key);
+            console.TConsoleFakeAdjust(80, 24);
+        }
+
+        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\0', ConsoleKey.F10, false, false, false));
+
+        TEnvoy.TEnvoyRun(console, static _ => null);
+
+        string[] shot = console.TConsoleFakeShots[^1];
+        string narrow = Assert.Single(shot, static row => row.Contains("Narrow", StringComparison.Ordinal));
+        string wide = Assert.Single(shot, static row => row.Contains("(•) Wide", StringComparison.Ordinal));
+        BCanvasWidth measure = new(true);
+        Assert.Equal(
+            measure.BCanvasWidthResolve(wide.AsSpan(0, wide.IndexOf("(•) Wide", StringComparison.Ordinal) + 4)),
+            measure.BCanvasWidthResolve(narrow.AsSpan(0, narrow.IndexOf("Narrow", StringComparison.Ordinal))));
     }
 }

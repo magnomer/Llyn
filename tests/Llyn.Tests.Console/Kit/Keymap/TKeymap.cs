@@ -160,7 +160,8 @@ public sealed class TKeymap
             null,
             new BEnvoy(console, catalog, bootstrap),
             bootstrap,
-            new BTheme(BTheme.BThemeSpareRead));
+            (null, new BTheme(BTheme.BThemeSpareRead)),
+            static _ => null);
         return window.BWindowKeymap;
     }
 }

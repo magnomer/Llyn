@@ -12,21 +12,19 @@ internal sealed class BWindow
     internal const int BWindowHeightMinimum = 24;
 
     private readonly BConsole _bWindowConsole;
-    private readonly BLoop _bWindowLoop;
     private readonly BLocalizationCatalog _bWindowCatalog;
     private readonly CAtelier? _bWindowAtelier;
     private readonly CEnvoy _bWindowEnvoy;
-    private readonly BTheme _bWindowTheme;
+    private readonly BWardrobe _bWindowWardrobe;
     private readonly BBlueprintPart _bWindowBlueprint;
     private readonly BBlueprintPart _bWindowHelpBlueprint;
-    private readonly IReadOnlyDictionary<string, IReadOnlyList<string>> _bWindowMarks;
     private readonly BNavigation _bWindowTabs;
     private readonly BMural _bWindowMural;
-    private readonly BRoofMenu _bWindowHeadquarter;
+    private readonly CCourier? _bWindowCourier;
+    private readonly BEstablishment _bWindowEstablishment;
     private readonly TaskCompletionSource _bWindowExit = new();
-    private readonly List<BSParley> _bWindowParleys = [];
-    private BRoof _bWindowRoof;
-    private CNavigationState? _bWindowNavigation;
+    private readonly BDocket _bWindowDocket;
+    private readonly BMirror _bWindowMirror;
     private (int BConsoleWidth, int BConsoleHeight) _bWindowSize;
     private BCanvas? _bWindowCanvas;
     private bool _bWindowChanged;
@@ -38,82 +36,65 @@ internal sealed class BWindow
         CAtelier? atelier,
         CEnvoy envoy,
         BBlueprint blueprint,
-        BTheme theme)
+        (string?, BTheme) theme,
+        Func<string, BTheme?> themes)
     {
         ArgumentNullException.ThrowIfNull(console);
         ArgumentNullException.ThrowIfNull(loop);
         ArgumentNullException.ThrowIfNull(catalog);
         ArgumentNullException.ThrowIfNull(envoy);
         ArgumentNullException.ThrowIfNull(blueprint);
-        ArgumentNullException.ThrowIfNull(theme);
+        ArgumentNullException.ThrowIfNull(theme.Item2);
+        ArgumentNullException.ThrowIfNull(themes);
 
         _bWindowConsole = console;
-        _bWindowLoop = loop;
         _bWindowCatalog = catalog;
         _bWindowAtelier = atelier;
         _bWindowEnvoy = envoy;
-        _bWindowTheme = theme;
-        IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<string>>> glyphs =
-            blueprint.BBlueprintGlyphs;
+        Action changed = () => _bWindowChanged = true;
+        _bWindowDocket = new BDocket(loop, _bWindowExit.Task, changed);
         _bWindowBlueprint = BContract.BContractBlueprintFind(blueprint, "AWindow");
         _bWindowHelpBlueprint = BContract.BContractBlueprintFind(blueprint, "ASParley");
-        _bWindowMarks = _bWindowHelpBlueprint.BBlueprintPartChildren is [{ BBlueprintPartGlyphs: string set }]
-            && glyphs.TryGetValue(set, out IReadOnlyDictionary<string, IReadOnlyList<string>>? marks)
-                ? marks
-                : new Dictionary<string, IReadOnlyList<string>>();
+        string glyphs = _bWindowHelpBlueprint.BBlueprintPartChildren is [{ BBlueprintPartGlyphs: string set }]
+            ? set : string.Empty;
+        _bWindowWardrobe = new BWardrobe(theme, themes, blueprint.BBlueprintGlyphs, glyphs);
         _bWindowTabs = new BNavigation(blueprint, atelier);
-        _bWindowMural = new BMural(blueprint, _bWindowBlueprint, catalog, _bWindowMarks, _bWindowTabs);
-        _bWindowHeadquarter = BHeadquarter.BHeadquarterBuild(
+        _bWindowEstablishment = new BEstablishment(_bWindowBlueprint, catalog);
+        _bWindowMural = new BMural(blueprint, _bWindowBlueprint, catalog, _bWindowTabs, _bWindowEstablishment);
+        CCourier? courier = atelier is null ? null : CCourier.CCourierCreate(atelier);
+        _bWindowCourier = courier;
+        _bWindowMirror = new BMirror(
             catalog,
-            () => BHeadquarter.BHeadquarterAboutShow(
-                catalog, _bWindowHelpBlueprint, parley => BWindowParleyConsult(parley)),
-            () => BWindowHelpShow(BKeymapFocus.BKeymapFocusWindow),
-            () => BWindowHelpShow(BKeymapFocus.BKeymapFocusHelp),
-            BWindowQuitConfirm);
-        _bWindowRoof = BWindowRoofBuild();
-        Func<BKeymapLive> shown = static () => BKeymapLive.BKeymapLiveShown;
-        Func<Action, Action<ConsoleKeyInfo>> pressed = action => _ => action();
-        Action<ConsoleKeyInfo> quit = pressed(BWindowQuitConfirm);
-        Func<Action, Action<ConsoleKeyInfo>> closing = action => _ =>
-        {
-            _bWindowRoof.BRoofClose();
-            action();
-        };
-        Action back = _bWindowTabs.BNavigationRetreat;
-        Action forward = _bWindowTabs.BNavigationAdvance;
-        Func<Func<CVoyageState, bool>, Func<BKeymapLive>> voyage = can => () =>
-            _bWindowNavigation is not CNavigationState state ? BKeymapLive.BKeymapLiveHidden
-            : can(state.CNavigationStateVoyage) ? BKeymapLive.BKeymapLiveShown
-            : BKeymapLive.BKeymapLiveDim;
-        Func<BKeymapLive> past = voyage(static state => state.CVoyageStatePast);
-        Func<BKeymapLive> future = voyage(static state => state.CVoyageStateFuture);
-        Func<BKeymapLive> open = voyage(static _ => true);
-        const ConsoleModifiers alt = ConsoleModifiers.Alt;
-        const BKeymapFocus window = BKeymapFocus.BKeymapFocusWindow;
-        const BKeymapFocus parley = BKeymapFocus.BKeymapFocusParley;
-        const BKeymapFocus notice = BKeymapFocus.BKeymapFocusNotice;
-        const BKeymapFocus help = BKeymapFocus.BKeymapFocusHelp;
-        const BKeymapFocus roof = BKeymapFocus.BKeymapFocusRoof;
-        BWindowKeymap = new BKeymap(
-        [
-            new(ConsoleKey.F1, 0, window, "Legend.Help", _ => BWindowHelpShow(window), shown),
-            new(ConsoleKey.F10, 0, window, "Legend.Quit", quit, shown),
-            new(ConsoleKey.C, ConsoleModifiers.Control, window, "Legend.Quit", quit, shown),
-            new(ConsoleKey.F10, 0, notice, "Legend.Quit", quit, shown),
-            new(ConsoleKey.C, ConsoleModifiers.Control, notice, "Legend.Quit", quit, shown),
-            new(ConsoleKey.F1, 0, parley, "Legend.Help", _ => BWindowHelpShow(parley), shown),
-            new(ConsoleKey.C, ConsoleModifiers.Control, parley, "Legend.Quit", quit, shown),
-            new(ConsoleKey.C, ConsoleModifiers.Control, help, "Legend.Quit", quit, shown),
-            new(ConsoleKey.F1, 0, roof, "Legend.Help", closing(() => BWindowHelpShow(roof)), shown),
-            new(ConsoleKey.F10, 0, roof, "Legend.Quit", closing(BWindowQuitConfirm), shown),
-            new(ConsoleKey.C, ConsoleModifiers.Control, roof, "Legend.Quit", closing(BWindowQuitConfirm), shown),
-            new(ConsoleKey.F1, alt, window, "Window.Help.Choose", pressed(BWindowNavigationShow), open),
-            new(ConsoleKey.LeftArrow, alt, window, "Voyage.Retreat", pressed(back), past),
-            new(ConsoleKey.RightArrow, alt, window, "Voyage.Advance", pressed(forward), future),
-            new(ConsoleKey.F1, alt, roof, "Window.Help.Choose", closing(BWindowNavigationShow), open),
-            new(ConsoleKey.LeftArrow, alt, roof, "Voyage.Retreat", closing(back), past),
-            new(ConsoleKey.RightArrow, alt, roof, "Voyage.Advance", closing(forward), future),
-        ]);
+            atelier,
+            envoy,
+            _bWindowWardrobe,
+            _bWindowBlueprint,
+            _bWindowTabs,
+            heard => BHeadquarter.BHeadquarterBuild(
+                catalog,
+                courier,
+                envoy,
+                heard,
+                () => BHeadquarter.BHeadquarterAboutShow(
+                    catalog, _bWindowHelpBlueprint, parley => BWindowParleyConsult(parley)),
+                () => BWindowHelpShow(BKeymapFocus.BKeymapFocusWindow),
+                () => BWindowHelpShow(BKeymapFocus.BKeymapFocusHelp),
+                BWindowQuitConfirm),
+            BWindowNavigationShow,
+            () =>
+            {
+                _bWindowCanvas = null;
+                BWindowSizeObserve(_bWindowSize.BConsoleWidth, _bWindowSize.BConsoleHeight);
+            },
+            changed);
+        BWindowKeymap = BKeymapWindow.BKeymapWindowBuild(
+            BWindowHelpShow,
+            BWindowQuitConfirm,
+            BWindowNavigationShow,
+            () => _bWindowMirror.BMirrorRoof.BRoofClose(),
+            _bWindowTabs.BNavigationRetreat,
+            _bWindowTabs.BNavigationAdvance,
+            () => _bWindowMirror.BMirrorNavigation);
     }
 
     internal Task BWindowExit => _bWindowExit.Task;
@@ -128,11 +109,23 @@ internal sealed class BWindow
         {
             atelier.CAtelierNavigation.CNavigationArrived += () =>
             {
-                _bWindowRoof.BRoofClose();
+                _bWindowMirror.BMirrorRoof.BRoofClose();
                 _bWindowChanged = true;
             };
-            atelier.CAtelierNavigation.CNavigationChanged +=
-                BObserver.BObserverCreate<CNavigationState>(BWindowNavigationObserve);
+            _bWindowMirror.BMirrorOpen(atelier, _bWindowCourier);
+            atelier.CAtelierWorkspace.CWorkspaceEstablishmentChanged +=
+                BObserver.BObserverCreate<CEstablishment>(establishment =>
+                {
+                    _bWindowEstablishment.BEstablishmentObserve(establishment);
+                    _bWindowChanged = true;
+                });
+        }
+    }
+
+    internal void BWindowAtelierOpen()
+    {
+        if (_bWindowAtelier is CAtelier atelier)
+        {
             atelier.CAtelierOpen(_bWindowEnvoy, BObserver.BObserverCreate<Action>(static work => work()));
         }
     }
@@ -147,7 +140,8 @@ internal sealed class BWindow
 
         _bWindowSize = (width, height);
         BBlueprint.BBlueprintPlace(_bWindowBlueprint, 0, 0, width, height);
-        _bWindowCanvas = new BCanvas(_bWindowConsole, new BCanvasWidth(false), _bWindowTheme, width, height);
+        (_, BTheme theme) = _bWindowWardrobe.BWardrobeTheme;
+        _bWindowCanvas = new BCanvas(_bWindowConsole, _bWindowWardrobe.BWardrobeWidth, theme, width, height);
         _bWindowChanged = true;
     }
 
@@ -161,7 +155,17 @@ internal sealed class BWindow
         _bWindowChanged = false;
         (int width, int height) = _bWindowSize;
         canvas.BCanvasFrameDraw([.. _bWindowMural.BMuralDraw(
-            width, height, BWindowFocusRead(), _bWindowRoof, _bWindowNavigation, _bWindowParleys, BWindowKeymapFind)]);
+            width,
+            height,
+            BWindowFocusRead(),
+            _bWindowMirror.BMirrorRoof,
+            _bWindowMirror.BMirrorNavigation,
+            _bWindowMirror.BMirrorCourier,
+            _bWindowDocket.BDocketParleys,
+            _bWindowWardrobe.BWardrobeGlyphSets,
+            BWindowMarksRead(),
+            BWindowKeymapFind,
+            _bWindowWardrobe.BWardrobeWidth)]);
         canvas.BCanvasSync();
     }
 
@@ -174,10 +178,10 @@ internal sealed class BWindow
         }
         else if (focus is BKeymapFocus.BKeymapFocusParley or BKeymapFocus.BKeymapFocusHelp)
         {
-            BWindowParleyObserve(key);
+            _bWindowDocket.BDocketKeyObserve(key);
         }
         else if (focus is BKeymapFocus.BKeymapFocusWindow or BKeymapFocus.BKeymapFocusRoof
-            && _bWindowRoof.BRoofKeyObserve(key))
+            && _bWindowMirror.BMirrorRoof.BRoofKeyObserve(key))
         {
             _bWindowChanged = true;
         }
@@ -185,36 +189,20 @@ internal sealed class BWindow
 
     internal int? BWindowParleyConsult(BSParley parley, Action<Exception>? fault = null, Task? until = null)
     {
-        ArgumentNullException.ThrowIfNull(parley);
+        return _bWindowDocket.BDocketConsult(parley, fault, until);
+    }
 
-        if (_bWindowExit.Task.IsCompleted)
-        {
-            return null;
-        }
-
-        _bWindowParleys.Add(parley);
-        _bWindowChanged = true;
-        _bWindowLoop.BLoopRun(
-            until is null
-                ? Task.WhenAny(parley.BSParleyAnswer, _bWindowExit.Task)
-                : Task.WhenAny(parley.BSParleyAnswer, until, _bWindowExit.Task),
-            fault);
-        if (until is not null)
-        {
-            _bWindowParleys.Remove(parley);
-            _bWindowChanged = true;
-        }
-
-        parley.BSParleyKeyObserve(new ConsoleKeyInfo('\e', ConsoleKey.Escape, false, false, false));
-        return parley.BSParleyAnswer.Result;
+    internal IReadOnlyDictionary<string, IReadOnlyList<string>> BWindowMarksRead()
+    {
+        return _bWindowWardrobe.BWardrobeMarks;
     }
 
     private BKeymapFocus BWindowFocusRead()
     {
         (int width, int height) = _bWindowSize;
         return width < BWindowWidthMinimum || height < BWindowHeightMinimum ? BKeymapFocus.BKeymapFocusNotice
-            : _bWindowParleys is [.., BSParley top] ? top.BSParleyKeymapFocus
-            : _bWindowRoof.BRoofKeymapFocus;
+            : _bWindowDocket.BDocketParleys is [.., BSParley top] ? top.BSParleyKeymapFocus
+            : _bWindowMirror.BMirrorRoof.BRoofKeymapFocus;
     }
 
     private void BWindowHelpShow(BKeymapFocus focus)
@@ -223,17 +211,18 @@ internal sealed class BWindow
             _bWindowCatalog,
             kind =>
             {
+                IReadOnlyList<BSParley> parleys = _bWindowDocket.BDocketParleys;
                 BSParley? box = kind == BKeymapFocus.BKeymapFocusWindow ? null
-                    : _bWindowParleys.LastOrDefault(parley => parley.BSParleyKeymapFocus == kind)
-                        ?? _bWindowParleys.LastOrDefault();
+                    : parleys.LastOrDefault(parley => parley.BSParleyKeymapFocus == kind) ?? parleys.LastOrDefault();
                 return
                 [
                     .. BWindowKeymap.BKeymapRead(kind),
-                    .. _bWindowRoof.BRoofKeymap.BKeymapRead(kind),
-                    .. box?.BSParleyKeymap.BKeymapRead(box.BSParleyKeymapFocus) ?? [],
+                    .. _bWindowMirror.BMirrorRoof.BRoofKeymap.BKeymapRead(kind),
+                    .. box?.BSParleyKeymapRead() ?? [],
                 ];
             },
-            focus);
+            focus,
+            _bWindowWardrobe.BWardrobeWidth);
         BSParleyButton close = new(_bWindowCatalog.BLocalizationTextRead("Window.Help.Close"));
         BSParley parley = new(
             _bWindowHelpBlueprint,
@@ -247,22 +236,20 @@ internal sealed class BWindow
         _ = BWindowParleyConsult(parley);
     }
 
-    private void BWindowNavigationObserve(CNavigationState state)
-    {
-        _bWindowNavigation = state;
-        _bWindowRoof = BWindowRoofBuild();
-        _bWindowChanged = true;
-    }
-
     private void BWindowNavigationShow()
     {
-        if (_bWindowAtelier is not CAtelier atelier || _bWindowNavigation is not CNavigationState state)
+        if (_bWindowAtelier is not CAtelier atelier || _bWindowMirror.BMirrorNavigation is not CNavigationState state)
         {
             return;
         }
 
         TaskCompletionSource<string> chosen = new();
-        BSNavigation body = new(_bWindowCatalog, _bWindowTabs.BNavigationTabs, state, tab => chosen.TrySetResult(tab));
+        BSNavigation body = new(
+            _bWindowCatalog,
+            _bWindowTabs.BNavigationTabs,
+            state,
+            tab => chosen.TrySetResult(tab),
+            _bWindowWardrobe.BWardrobeWidth);
         BSParley parley = new(
             _bWindowHelpBlueprint, _bWindowCatalog.BLocalizationTextRead("Window.Navigation.Title"), "dialog", [],
             [new BSParleyButton(_bWindowCatalog.BLocalizationTextRead("Window.Navigation.Close"))], 0, body);
@@ -273,18 +260,12 @@ internal sealed class BWindow
         }
     }
 
-    private BRoof BWindowRoofBuild()
-    {
-        BRoofMenu panel = _bWindowTabs.BNavigationBuild(
-            _bWindowCatalog, _bWindowNavigation, _bWindowMarks, BWindowNavigationShow);
-        return new BRoof(_bWindowBlueprint, [_bWindowHeadquarter, panel]);
-    }
-
     private BKeymapRow? BWindowKeymapFind(BKeymapFocus focus, ConsoleKeyInfo key)
     {
         return BWindowKeymap.BKeymapFind(focus, key)
-            ?? _bWindowRoof.BRoofKeymap.BKeymapFind(focus, key)
-            ?? (_bWindowParleys is [.., BSParley top] ? top.BSParleyKeymap.BKeymapFind(focus, key) : null);
+            ?? _bWindowMirror.BMirrorRoof.BRoofKeymap.BKeymapFind(focus, key)
+            ?? (_bWindowDocket.BDocketParleys is [.., BSParley top]
+                ? top.BSParleyKeymap.BKeymapFind(focus, key) : null);
     }
 
     private void BWindowQuitConfirm()
@@ -293,17 +274,5 @@ internal sealed class BWindow
         {
             _bWindowExit.TrySetResult();
         }
-    }
-
-    private void BWindowParleyObserve(ConsoleKeyInfo key)
-    {
-        BSParley parley = _bWindowParleys[^1];
-        parley.BSParleyKeyObserve(key);
-        if (parley.BSParleyAnswer.IsCompleted)
-        {
-            _bWindowParleys.Remove(parley);
-        }
-
-        _bWindowChanged = true;
     }
 }

@@ -13,7 +13,8 @@ public sealed class TParley
         BSParley parley = new(
             bootstrap.BBlueprintParts["ASParley"], "Llyn", "dialog", [new("Text", false)], [new("OK")], 0);
 
-        IReadOnlyList<BCanvasText> texts = parley.BSParleyDraw(bootstrap.BBlueprintGlyphs, 80, 24);
+        IReadOnlyList<BCanvasText> texts =
+            parley.BSParleyDraw(bootstrap.BBlueprintGlyphs, 80, 24, new BCanvasWidth(false));
 
         BCanvasText[] shadow =
         [
@@ -30,7 +31,8 @@ public sealed class TParley
         BSParley parley = new(
             bootstrap.BBlueprintParts["ASParley"], "Llyn", "dialog", [new("Text", false)], [new("OK")], 0);
 
-        IReadOnlyList<BCanvasText> texts = parley.BSParleyDraw(bootstrap.BBlueprintGlyphs, 40, 24);
+        IReadOnlyList<BCanvasText> texts =
+            parley.BSParleyDraw(bootstrap.BBlueprintGlyphs, 40, 24, new BCanvasWidth(false));
 
         Assert.Equal((8, 0, 38), (texts[0].BCanvasTextRow, texts[0].BCanvasTextColumn, texts[0].BCanvasTextSpan));
     }
@@ -45,7 +47,8 @@ public sealed class TParley
             BSParleyAnchor = (2, 5),
         };
 
-        IReadOnlyList<BCanvasText> texts = parley.BSParleyDraw(bootstrap.BBlueprintGlyphs, 80, 24);
+        IReadOnlyList<BCanvasText> texts =
+            parley.BSParleyDraw(bootstrap.BBlueprintGlyphs, 80, 24, new BCanvasWidth(false));
 
         Assert.Equal((2, 5), (texts[0].BCanvasTextRow, texts[0].BCanvasTextColumn));
     }
@@ -63,7 +66,8 @@ public sealed class TParley
             [new("OK")],
             0);
 
-        IReadOnlyList<BCanvasText> texts = parley.BSParleyDraw(bootstrap.BBlueprintGlyphs, 80, 24);
+        IReadOnlyList<BCanvasText> texts =
+            parley.BSParleyDraw(bootstrap.BBlueprintGlyphs, 80, 24, new BCanvasWidth(false));
 
         Assert.Equal(rows, texts.Select(static text => text.BCanvasTextValue).Where(rows.Contains));
     }
@@ -80,7 +84,8 @@ public sealed class TParley
             [new("Create") { BSParleyButtonEnabled = false }, new("Cancel")],
             1);
 
-        IReadOnlyList<BCanvasText> texts = parley.BSParleyDraw(bootstrap.BBlueprintGlyphs, 80, 24);
+        IReadOnlyList<BCanvasText> texts =
+            parley.BSParleyDraw(bootstrap.BBlueprintGlyphs, 80, 24, new BCanvasWidth(false));
 
         Assert.Equal(["disabled", "dialog"], texts.TakeLast(2).Select(static text => text.BCanvasTextRole));
     }
@@ -97,7 +102,8 @@ public sealed class TParley
             [new("Yes"), new("No")],
             1);
 
-        IReadOnlyList<BCanvasText> texts = parley.BSParleyDraw(bootstrap.BBlueprintGlyphs, 80, 24);
+        IReadOnlyList<BCanvasText> texts =
+            parley.BSParleyDraw(bootstrap.BBlueprintGlyphs, 80, 24, new BCanvasWidth(false));
 
         Assert.Equal(["lit", "alert"], texts.TakeLast(2).Select(static text => text.BCanvasTextRole));
     }

@@ -25,8 +25,9 @@ Draws one `field` text of the given width, padded with blanks.
 A text wider than the field shows its tail, kept to one cell short of the width.
 The tail starts at a cluster boundary, so a wide character never splits.
 A width of 0 or less draws nothing.
+Cells are counted with the measure the box hands in, so the window's ambiguous-width choice applies.
 
 ## Stamp
 
-Commit: `9a85a3ab82db`
-- `BField.cs` `ed3c30067f7dd421`
+Commit: `c1396871c007`
+- `BField.cs` `906bb39d3e9ae431`

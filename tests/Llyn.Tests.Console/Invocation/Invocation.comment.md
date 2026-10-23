@@ -7,6 +7,7 @@ They cover the grammar, the verbs and the envoy's answers.
 
 Runs the whole console start through `BBootstrapIntroduce`, with a real workspace and the English catalog.
 A test that names a language loads that catalog instead.
+The helper also stores that language in the engine, so the run reads the same language the catalog speaks.
 Each grammar error asserts its sentence, exit 2 and an empty stdout.
 The grammar cases include the write and export verbs, their qualifiers, the id forms and the missing `-to`.
 The build seam throws in those cases, so exit 2 also proves the workspace never opened.
@@ -65,8 +66,8 @@ A failure prints its sentence even under `-quiet`, and an omission then prints n
 
 ## Stamp
 
-Commit: `92c4426f8506`
+Commit: `c1396871c007`
 - `TEnvoyStrict.cs` `36a77c55fd844082`
-- `TInvocation.cs` `80a46c8a7cb39cea`
+- `TInvocation.cs` `de830c99a4d2f379`
 - `TInvocationPortrait.cs` `6dd3a46182199551`
 - `TInvocationWrite.cs` `5731f47f567fa54d`

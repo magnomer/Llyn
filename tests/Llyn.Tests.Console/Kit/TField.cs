@@ -16,7 +16,7 @@ public sealed class TField
         }
 
         BCanvasText drawn = Assert.Single(field.BSParleyBodyDraw(
-            new Dictionary<string, IReadOnlyList<string>>(), 3, 4, 6, true, "dialog"));
+            new Dictionary<string, IReadOnlyList<string>>(), 3, 4, 6, true, "dialog", new BCanvasWidth(false)));
 
         Assert.Equal(new BCanvasText(3, 4, 6, "나다  ", "field"), drawn);
         Assert.Equal("가나다", field.BFieldText);

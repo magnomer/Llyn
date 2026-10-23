@@ -106,7 +106,8 @@ public sealed class TCustoms
         }
 
         List<BCanvasText> texts =
-            [.. customs.BSParleyBodyDraw(new Dictionary<string, IReadOnlyList<string>>(), 0, 0, 72, true, "dialog")];
+            [.. customs.BSParleyBodyDraw(
+                new Dictionary<string, IReadOnlyList<string>>(), 0, 0, 72, true, "dialog", new BCanvasWidth(false))];
 
         Assert.Contains(new BCanvasText(10, 0, 72, "17 meanings, 27 collocations dropped", "dialog"), texts);
         Assert.Contains(texts, static text => text is { BCanvasTextValue: "[Replace ]", BCanvasTextRole: "lit" });
@@ -195,7 +196,8 @@ public sealed class TCustoms
             customs.BSParleyBodyObserve(key);
         }
 
-        return [.. customs.BSParleyBodyDraw(new Dictionary<string, IReadOnlyList<string>>(), 0, 0, 72, true, "dialog")];
+        return [.. customs.BSParleyBodyDraw(
+            new Dictionary<string, IReadOnlyList<string>>(), 0, 0, 72, true, "dialog", new BCanvasWidth(false))];
     }
 
     private static CSCustoms TCustomsPrepare(long[] ids) =>

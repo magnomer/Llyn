@@ -17,8 +17,8 @@ public sealed class BBootstrap
     private Func<Exception, string?> _bBootstrapAudit = _ => null;
     private BInvocation? _bBootstrapInvocation;
     private BEnvoy? _bBootstrapEnvoy;
-    private BTheme? _bBootstrapTheme;
-    private string? _bBootstrapThemeReason;
+    private (BTheme BBootstrapThemeInitial, Func<string, Func<string, string>> BBootstrapThemeSeam,
+        string? BBootstrapThemeReason)? _bBootstrapTheme;
     private (string BBootstrapRescueKey, string? BBootstrapRescueBackup, string? BBootstrapRescueReason)?
         _bBootstrapRescue;
 
@@ -70,12 +70,11 @@ public sealed class BBootstrap
                 _bBootstrapEnvoy = new BEnvoy(_bBootstrapConsole, _bBootstrapCatalog, _bBootstrapBlueprint);
                 try
                 {
-                    _bBootstrapTheme = new BTheme(themeSeam(BTheme.BThemeDefault));
+                    _bBootstrapTheme = (new BTheme(themeSeam(BTheme.BThemeDefault)), themeSeam, null);
                 }
                 catch (Exception exception)
                 {
-                    _bBootstrapTheme = new BTheme(BTheme.BThemeSpareRead);
-                    _bBootstrapThemeReason = exception.Message;
+                    _bBootstrapTheme = (new BTheme(BTheme.BThemeSpareRead), themeSeam, exception.Message);
                 }
 
                 _bBootstrapConsole.BConsoleWindowApply();
@@ -135,7 +134,7 @@ public sealed class BBootstrap
         catch (Exception exception)
         {
             string key = CAtelier.CAtelierRefusalRead(busySeam(exception));
-            if (_bBootstrapEnvoy is BEnvoy envoy && _bBootstrapTheme is BTheme theme)
+            if (_bBootstrapEnvoy is BEnvoy envoy && _bBootstrapTheme is { } theme)
             {
                 BBootstrapWindowAttach(envoy, theme, null);
                 envoy.BEnvoyRefusalShow(key, workspace, exception.Message);
@@ -202,7 +201,7 @@ public sealed class BBootstrap
         ArgumentNullException.ThrowIfNull(atelierSeam);
         ArgumentNullException.ThrowIfNull(presenceSeam);
 
-        if (_bBootstrapEnvoy is BEnvoy envoy && _bBootstrapTheme is BTheme theme)
+        if (_bBootstrapEnvoy is BEnvoy envoy && _bBootstrapTheme is { } theme)
         {
             CAtelier shown = atelierSeam(false);
             BWindow window = BBootstrapWindowAttach(envoy, theme, shown);
@@ -252,12 +251,36 @@ public sealed class BBootstrap
         return run.Task.Result;
     }
 
-    private BWindow BBootstrapWindowAttach(BEnvoy envoy, BTheme theme, CAtelier? atelier)
+    private BWindow BBootstrapWindowAttach(
+        BEnvoy envoy,
+        (BTheme BBootstrapThemeInitial, Func<string, Func<string, string>> BBootstrapThemeSeam,
+            string? BBootstrapThemeReason) theme,
+        CAtelier? atelier)
     {
+        Func<string, BTheme?> themes = name =>
+        {
+            try
+            {
+                return new BTheme(theme.BBootstrapThemeSeam(name));
+            }
+            catch (Exception exception)
+            {
+                envoy.BEnvoyThemeShow(exception.Message);
+                return null;
+            }
+        };
         BWindow window = new(
-            _bBootstrapConsole, _bBootstrapLoop, _bBootstrapCatalog, atelier, envoy, _bBootstrapBlueprint, theme);
+            _bBootstrapConsole,
+            _bBootstrapLoop,
+            _bBootstrapCatalog,
+            atelier,
+            envoy,
+            _bBootstrapBlueprint,
+            (theme.BBootstrapThemeReason is null ? BTheme.BThemeDefault : null, theme.BBootstrapThemeInitial),
+            themes);
         envoy.BEnvoyWindowAttach(window);
         _bBootstrapLoop.BLoopDefer(window.BWindowOpen);
+        _bBootstrapLoop.BLoopDefer(window.BWindowAtelierOpen);
         _bBootstrapLoop.BLoopBatchAttach(window.BWindowBatchObserve);
         _bBootstrapLoop.BLoopKeyAttach(_bBootstrapConsole, window.BWindowKeyObserve);
         _bBootstrapLoop.BLoopSizeAttach(_bBootstrapConsole, window.BWindowSizeObserve);
@@ -271,7 +294,7 @@ public sealed class BBootstrap
             envoy.BEnvoyRescueShow(key, backup, reason);
         }
 
-        if (_bBootstrapThemeReason is string theme)
+        if (_bBootstrapTheme?.BBootstrapThemeReason is string theme)
         {
             envoy.BEnvoyThemeShow(theme);
         }

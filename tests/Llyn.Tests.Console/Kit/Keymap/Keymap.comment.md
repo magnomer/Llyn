@@ -9,8 +9,9 @@ No focus finds Alt with a letter, F11, Alt+F4, Alt+Enter, Ctrl+V, Ctrl+Tab or Ct
 The character U+0003 finds the Ctrl+C row.
 A key bound at both the window and the notice keeps one label.
 Every label the window table finds, and `Legend.Import`, exists in the English and Korean catalogs.
+The table comes from a window built with no atelier, and `BKeymapWindow` builds it.
 
 ## Stamp
 
-Commit: `2883be178842`
-- `TKeymap.cs` `dec15ceadc2301b9`
+Commit: `c1396871c007`
+- `TKeymap.cs` `1f9392061ae4ae27`

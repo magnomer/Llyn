@@ -11,6 +11,8 @@ internal interface BSParleyBody
 
     string BSParleyBodyPosition { get; }
 
+    BKeymap? BSParleyBodyKeymap => null;
+
     bool BSParleyBodyObserve(ConsoleKeyInfo key);
 
     IEnumerable<BCanvasText> BSParleyBodyDraw(
@@ -19,5 +21,6 @@ internal interface BSParleyBody
         int column,
         int width,
         bool focused,
-        string role);
+        string role,
+        BCanvasWidth measure);
 }

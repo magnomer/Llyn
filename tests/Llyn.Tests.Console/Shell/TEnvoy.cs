@@ -324,10 +324,16 @@ public sealed class TEnvoy
     }
 
     internal static object? TEnvoyRun(
-        TConsoleFake console, Func<BEnvoy, object?> ask, string language = "en", Action<BWindow>? prime = null)
+        TConsoleFake console,
+        Func<BEnvoy, object?> ask,
+        string language = "en",
+        Action<BWindow>? prime = null,
+        Func<string, BTheme?>? themes = null,
+        Action<LEngine>? settled = null)
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineLocalizationSave(language);
         SynchronizationContext? context = SynchronizationContext.Current;
         BLoop loop = new(static _ => { });
         SynchronizationContext.SetSynchronizationContext(loop);
@@ -338,11 +344,20 @@ public sealed class TEnvoy
             ABootstrap bootstrap = new();
             BEnvoy envoy = new(console, catalog, bootstrap);
             using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, false);
+            BTheme spare = new(BTheme.BThemeSpareRead);
             BWindow window = new(
-                console, loop, catalog, atelier, envoy, bootstrap, new BTheme(BTheme.BThemeSpareRead));
+                console,
+                loop,
+                catalog,
+                atelier,
+                envoy,
+                bootstrap,
+                (BTheme.BThemeDefault, spare),
+                themes ?? (_ => spare));
             envoy.BEnvoyWindowAttach(window);
             object? answer = null;
             loop.BLoopDefer(window.BWindowOpen);
+            loop.BLoopDefer(window.BWindowAtelierOpen);
             loop.BLoopDefer(() =>
             {
                 prime?.Invoke(window);
@@ -351,6 +366,7 @@ public sealed class TEnvoy
             loop.BLoopBatchAttach(window.BWindowBatchObserve);
             loop.BLoopKeyAttach(console, window.BWindowKeyObserve);
             loop.BLoopRun(window.BWindowExit);
+            settled?.Invoke(engine);
             return answer;
         }
         finally

@@ -40,13 +40,15 @@ That mode builds the envoy with the blueprint, then the console theme, and then 
 It then builds the engine as a leased start.
 The theme seam answers a named theme as a role-to-colour function, and the start asks for `console-blue`.
 A theme that fails to load or parse falls back to the built-in spare palette.
-Only the reason is kept, the window shows it in a box once it runs, and the start goes on.
+The theme seam is kept for the run, so the `Options` menu can load another theme by name later.
+Of the failure only the reason is kept.
+The window shows it in a box once it runs, and the start goes on.
 Strict mode builds no theme.
 Any other start is strict mode, parsed by `BInvocationParse` before the workspace opens.
 A usage error prints its sentence on stderr and returns 2, and the workspace never opens.
 A valid command line builds the engine, then hands it to the run seam.
 The build seam is told whether the command line is leased, which `BInvocationLeased` answers.
-Every valid verb runs with the workspace open, so its text speaks the stored language.
+The engine is built from the workspace before the run seam, so a verb's text can speak the stored language.
 A run seam that throws is a fault: the fault notice, then exit 4.
 A catalog that fails to load prints a fixed English line and returns 1, as `LHost` exits 1.
 The console is restored on every return through `BBootstrapConsoleRestore`.
@@ -88,7 +90,12 @@ It takes a seam and asks it for a detached atelier, so a command line never touc
 The seam is called after the invocation check, so a missing invocation throws before any atelier exists.
 With the window's envoy it opens a `BWindow` on an attached atelier instead.
 `BBootstrapWindowAttach` builds the window with the loop, the blueprint and the theme, and gives it to the envoy.
-It opens as the loop's first work item, and its batch, key and size observers attach to the loop.
+It also hands the window a theme loader over the kept theme seam.
+A theme that fails to load is shown in the theme box, and the loader answers null.
+The window starts with the default theme's name only when the first load worked.
+So the menu does not mark the spare palette as a named choice.
+It opens as the loop's first work item and opens the atelier as the second.
+Its batch, key and size observers attach to the loop.
 The held rescue and theme reason are shown as the next item.
 The loop ends when the window's exit task completes, and the run returns 0.
 The presence seam answers whether a path names an existing file.
@@ -139,6 +146,6 @@ It refuses a thread with no loop, since the marshal would have nowhere to go.
 
 ## Stamp
 
-Commit: `2883be178842`
-- `BBootstrap.cs` `4ef31cb830fd2059`
+Commit: `c1396871c007`
+- `BBootstrap.cs` `afc1ac7a32f31ed8`
 - `BObserver.cs` `55a41481c90c90c6`

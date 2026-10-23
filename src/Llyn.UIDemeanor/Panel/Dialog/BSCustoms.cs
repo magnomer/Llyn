@@ -64,9 +64,9 @@ internal sealed class BSCustoms : BSParleyBody
         int column,
         int width,
         bool focused,
-        string role)
+        string role,
+        BCanvasWidth measure)
     {
-        BCanvasWidth measure = new(false);
         Func<string, int, string> fit = (text, cells) =>
         {
             StringBuilder kept = new();

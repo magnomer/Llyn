@@ -10,7 +10,6 @@ internal sealed class BEnvoy : CEnvoy
     private readonly BConsole _bEnvoyConsole;
     private readonly BLocalizationCatalog _bEnvoyCatalog;
     private readonly BBlueprintPart _bEnvoyParley;
-    private readonly string _bEnvoyArrow;
     private readonly List<string> _bEnvoyNotices = [];
     private BWindow? _bEnvoyWindow;
 
@@ -23,9 +22,6 @@ internal sealed class BEnvoy : CEnvoy
         _bEnvoyConsole = console;
         _bEnvoyCatalog = catalog;
         _bEnvoyParley = BContract.BContractBlueprintFind(blueprint, "ASParley");
-        _bEnvoyArrow = _bEnvoyParley.BBlueprintPartChildren is [{ BBlueprintPartGlyphs: string set }]
-            ? blueprint.BBlueprintGlyphs[set]["Arrow"][0]
-            : "→";
     }
 
     internal void BEnvoyWindowAttach(BWindow window)
@@ -155,11 +151,14 @@ internal sealed class BEnvoy : CEnvoy
 
     public bool CEnvoyUnionConfirm(string key, string dropped, string kept)
     {
+        string arrow = _bEnvoyWindow?.BWindowMarksRead().GetValueOrDefault("Arrow") is [string mark, ..]
+            ? mark
+            : "→";
         BSParleyLine[] lines =
         [
             new(_bEnvoyCatalog.BLocalizationTextRead(key), false),
             new(string.Empty, false),
-            new($"{dropped} {_bEnvoyArrow} {kept}", false),
+            new($"{dropped} {arrow} {kept}", false),
         ];
 
         return BEnvoyParleyConsult("dialog", lines, true) is 0;

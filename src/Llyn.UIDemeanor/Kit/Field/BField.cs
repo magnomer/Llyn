@@ -51,14 +51,14 @@ internal sealed class BField : BSParleyBody
         int column,
         int width,
         bool focused,
-        string role)
+        string role,
+        BCanvasWidth measure)
     {
         if (width <= 0)
         {
             yield break;
         }
 
-        BCanvasWidth measure = new(false);
         List<int> starts = BFieldStartRead(BFieldText);
         int from = BFieldText.Length;
         int cells = 0;

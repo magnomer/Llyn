@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Llyn.UIDemeanor;
 
@@ -7,4 +8,5 @@ internal sealed record BRoofItem(
     ConsoleKey? BRoofItemKey,
     ConsoleKey? BRoofItemHotkey,
     Action BRoofItemAction,
-    Func<bool> BRoofItemLive);
+    Func<bool> BRoofItemLive,
+    IReadOnlyList<BRoofItem?>? BRoofItemSubmenu = null);

@@ -17,6 +17,8 @@ internal sealed class TConsoleFake : BConsole
 
     public bool TConsoleFakeTerminal { get; set; }
 
+    public bool TConsoleFakeAmbiguous { get; set; }
+
     public string? TConsoleFakeAnswer { get; set; }
 
     public int TConsoleFakeWidth { get; set; } = 80;
@@ -78,7 +80,7 @@ internal sealed class TConsoleFake : BConsole
         _tConsoleFakeCells ??= Enumerable.Range(0, TConsoleFakeHeight)
             .Select(_ => Enumerable.Repeat(" ", TConsoleFakeWidth).ToArray())
             .ToArray();
-        BCanvasWidth measure = new(false);
+        BCanvasWidth measure = new(TConsoleFakeAmbiguous);
         (int row, int column) = (0, 0);
         int index = 0;
         while (index < frame.Length)

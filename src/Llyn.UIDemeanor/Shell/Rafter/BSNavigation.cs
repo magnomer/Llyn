@@ -9,17 +9,22 @@ internal sealed class BSNavigation : BSParleyBody
 {
     private readonly IReadOnlyList<KeyValuePair<string, string>> _bsNavigationTabs;
     private readonly BDrop _bsNavigationDrop;
+    private readonly BCanvasWidth _bsNavigationMeasure;
 
     internal BSNavigation(
         BLocalizationCatalog catalog,
         IReadOnlyList<IReadOnlyList<KeyValuePair<string, string>>> tabs,
         CNavigationState state,
-        Action<string> choose)
+        Action<string> choose,
+        BCanvasWidth measure)
     {
         ArgumentNullException.ThrowIfNull(catalog);
         ArgumentNullException.ThrowIfNull(tabs);
         ArgumentNullException.ThrowIfNull(state);
         ArgumentNullException.ThrowIfNull(choose);
+        ArgumentNullException.ThrowIfNull(measure);
+
+        _bsNavigationMeasure = measure;
 
         const string hotkeys = "123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         _bsNavigationTabs = [.. tabs.SelectMany(static group => group)
@@ -69,15 +74,16 @@ internal sealed class BSNavigation : BSParleyBody
             rows.Add(new(key, 0, focus, "Window.Help.Run", _ => run(chosen), shown));
         }
 
-        BSNavigationKeymap = new BKeymap(rows);
+        BSParleyBodyKeymap = new BKeymap(rows);
     }
 
     public int BSParleyBodyWidth
     {
         get
         {
-            BCanvasWidth measure = new(false);
-            int cells = _bsNavigationTabs.Select(tab => measure.BCanvasWidthResolve(tab.Value)).DefaultIfEmpty(0).Max();
+            int cells = _bsNavigationTabs.Select(tab => _bsNavigationMeasure.BCanvasWidthResolve(tab.Value))
+                .DefaultIfEmpty(0)
+                .Max();
             return (cells * 2) + 9;
         }
     }
@@ -86,11 +92,11 @@ internal sealed class BSNavigation : BSParleyBody
 
     public string BSParleyBodyPosition => string.Empty;
 
-    internal BKeymap BSNavigationKeymap { get; }
+    public BKeymap BSParleyBodyKeymap { get; }
 
     public bool BSParleyBodyObserve(ConsoleKeyInfo key)
     {
-        if (BSNavigationKeymap.BKeymapFind(BKeymapFocus.BKeymapFocusParley, key) is not BKeymapRow row)
+        if (BSParleyBodyKeymap.BKeymapFind(BKeymapFocus.BKeymapFocusParley, key) is not BKeymapRow row)
         {
             return false;
         }
@@ -105,9 +111,11 @@ internal sealed class BSNavigation : BSParleyBody
         int column,
         int width,
         bool focused,
-        string role)
+        string role,
+        BCanvasWidth measure)
     {
-        int cells = Math.Clamp((width - 3) / 2, 0, (BSParleyBodyWidth - 9) / 2);
+        int widest = _bsNavigationTabs.Select(tab => measure.BCanvasWidthResolve(tab.Value)).DefaultIfEmpty(0).Max();
+        int cells = Math.Clamp((width - 3) / 2, 0, widest);
         int down = BSParleyBodyHeight;
         for (int index = 0; index < _bsNavigationTabs.Count; index++)
         {

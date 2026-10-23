@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Llyn.Conduct;
 
 namespace Llyn.UIDemeanor;
@@ -8,9 +9,18 @@ namespace Llyn.UIDemeanor;
 internal static class BHeadquarter
 {
     internal static BRoofMenu BHeadquarterBuild(
-        BLocalizationCatalog catalog, Action about, Action help, Action keys, Action quit)
+        BLocalizationCatalog catalog,
+        CCourier? courier,
+        CEnvoy envoy,
+        Func<CCourierState?> heard,
+        Action about,
+        Action help,
+        Action keys,
+        Action quit)
     {
         ArgumentNullException.ThrowIfNull(catalog);
+        ArgumentNullException.ThrowIfNull(envoy);
+        ArgumentNullException.ThrowIfNull(heard);
 
         Func<string, ConsoleKey?> letter = key => catalog.BLocalizationTextRead(key) is [char single]
             && char.IsAsciiLetter(single)
@@ -18,10 +28,27 @@ internal static class BHeadquarter
                 : null;
         Func<string, string, ConsoleKey?, Action, BRoofItem> item = (key, hotkey, shortcut, action) =>
             new(catalog.BLocalizationTextRead(key), shortcut, letter(hotkey), action, static () => true);
+        Func<bool> free = () => heard() is { CCourierStateAllowed: true };
+        Func<string, Func<CEnvoy, Task>, BRoofItem> courierItem = (key, request) => new(
+            catalog.BLocalizationTextRead(key),
+            null,
+            letter($"{key}.Hotkey"),
+            async () => await request(envoy),
+            free);
+        List<BRoofItem?> joplin = [];
+        if (courier is CCourier messenger && heard() is CCourierState state)
+        {
+            BRoofItem[] attach = [courierItem("Roof.Llyn.Attach", messenger.CCourierAttach)];
+            joplin.AddRange(attach.Where(_ => !state.CCourierStateAttached));
+            joplin.Add(courierItem("Roof.Llyn.Send", messenger.CCourierSend));
+            joplin.Add(null);
+        }
+
         return new BRoofMenu(
             catalog.BLocalizationTextRead("Roof.Llyn"),
             letter("Roof.Llyn.Hotkey"),
             [
+                .. joplin,
                 item("Roof.Llyn.About", "Roof.Llyn.About.Hotkey", null, about),
                 item("Roof.Llyn.Help", "Roof.Llyn.Help.Hotkey", ConsoleKey.F1, help),
                 item("Roof.Llyn.Keys", "Roof.Llyn.Keys.Hotkey", null, keys),

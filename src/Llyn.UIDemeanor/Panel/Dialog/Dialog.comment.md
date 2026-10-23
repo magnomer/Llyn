@@ -8,7 +8,7 @@ Each is a `BSParleyBody`, so the box owns the frame and buttons and the body own
 The body of the import dialog, a table of the file's entries drawn from a `CSCustoms`.
 It is 118 cells wide and 11 rows high, and shows 7 entries at a time.
 A row shows its number, headword, language, mode and stored target.
-The mode cell and the target cell each open a drop of 5 labels.
+The mode cell and the target cell each open a drop that shows 5 labels at a time.
 The modes are create, append and replace, and the labels come from the catalog.
 A choice goes to the `CSCustoms` and the import button follows what it answers.
 So the button is enabled only while every row is ready.
@@ -18,6 +18,7 @@ Under 112 cells the lit row's loss text sits on one line under the table.
 Only the lit row shows lit cells, and only while the body has focus.
 The position text reads `n of m` for the lit row.
 The state is read from the `CSCustoms` on every draw, so the body keeps no copy.
+Cell widths use the measure the box hands in.
 
 ## `BSCustomsOmission`
 
@@ -29,6 +30,6 @@ It has no position text.
 
 ## Stamp
 
-Commit: `9a85a3ab82db`
-- `BSCustoms.cs` `02cf30b69eb9c8ea`
-- `BSCustomsOmission.cs` `c9abd7cfeb33122f`
+Commit: `c1396871c007`
+- `BSCustoms.cs` `333a3b3c32a382e9`
+- `BSCustomsOmission.cs` `d4d471f74ee64ba8`
