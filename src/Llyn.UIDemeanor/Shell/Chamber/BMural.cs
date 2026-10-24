@@ -47,6 +47,7 @@ internal sealed class BMural
         CNavigationState? navigation,
         CCourierState? courier,
         IReadOnlyList<BSParley> parleys,
+        IEnumerable<BCanvasText> panel,
         IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<string>>> glyphs,
         IReadOnlyDictionary<string, IReadOnlyList<string>> marks,
         Func<BKeymapFocus, ConsoleKeyInfo, BKeymapRow?> find,
@@ -54,6 +55,7 @@ internal sealed class BMural
     {
         ArgumentNullException.ThrowIfNull(roof);
         ArgumentNullException.ThrowIfNull(parleys);
+        ArgumentNullException.ThrowIfNull(panel);
         ArgumentNullException.ThrowIfNull(glyphs);
         ArgumentNullException.ThrowIfNull(marks);
         ArgumentNullException.ThrowIfNull(find);
@@ -62,7 +64,7 @@ internal sealed class BMural
         return focus == BKeymapFocus.BKeymapFocusNotice
             ? BMuralNoticeBuild(width, height, glyphs, find, measure)
             : BMuralFrameBuild(
-                width, height, focus, roof, navigation, courier, parleys, glyphs, marks, find, measure);
+                width, height, focus, roof, navigation, courier, parleys, panel, glyphs, marks, find, measure);
     }
 
     private IEnumerable<BCanvasText> BMuralFrameBuild(
@@ -73,6 +75,7 @@ internal sealed class BMural
         CNavigationState? navigation,
         CCourierState? courier,
         IReadOnlyList<BSParley> parleys,
+        IEnumerable<BCanvasText> panel,
         IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<string>>> glyphs,
         IReadOnlyDictionary<string, IReadOnlyList<string>> marks,
         Func<BKeymapFocus, ConsoleKeyInfo, BKeymapRow?> find,
@@ -82,6 +85,11 @@ internal sealed class BMural
         foreach (BCanvasText scaffold in BBlueprint.BBlueprintDraw(_bMuralBlueprint, glyphs))
         {
             yield return scaffold;
+        }
+
+        foreach (BCanvasText text in panel)
+        {
+            yield return text;
         }
 
         foreach (BCanvasText status in _bMuralEstablishment.BEstablishmentDraw(courier, marks, measure))

@@ -78,7 +78,9 @@ Each test builds its panel through `TPanel.TPanelPrepare`, except the credited a
 
 Covers how the browsing panel chooses a row and follows the stored entry, end to end on a real workspace.
 A refused leave keeps the row the panel stands on.
-A row select answers whether the panel moved to the row.
+A row select answers opened, stayed or failed.
+A cancelled leave answers stayed, and a list that no longer loads answers failed with `List.LoadFailed`.
+A select with no id answers failed.
 A row click asks the leave question before it records the station.
 A declined leave records no station and opens nothing.
 Opening a stored row chooses it, and in edit mode hands it to the editor.
@@ -112,7 +114,7 @@ A throwing window escapes to the caller, since only the open call is guarded by 
 
 ## Stamp
 
-Commit: `52c21d68b4c4`
+Commit: `fe7e11daae88`
 - `TAperture.cs` `5ec65d9a18316bee`
 - `TCatalog.cs` `490668e03758f42c`
 - `TCatalogFilter.cs` `d3f1b60b77c6957d`
@@ -120,5 +122,5 @@ Commit: `52c21d68b4c4`
 - `TEntryList.cs` `3ed9071e02cf0aad`
 - `TPanel.cs` `75b98cf0395da741`
 - `TPanelBin.cs` `30b10a6f864ccc72`
-- `TPanelRow.cs` `f55b41f91b7a285a`
+- `TPanelRow.cs` `dbd20cdc2c054230`
 - `TPortrait.cs` `82c5fca76ce1769b`

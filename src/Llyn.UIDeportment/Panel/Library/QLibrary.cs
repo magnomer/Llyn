@@ -116,7 +116,10 @@ internal sealed class QLibrary
 
     private void QLibraryIndexRefine(IReadOnlyList<CVistaRow> rows)
     {
-        _qIndex.QIndexRefine(rows, _cLibrary.CLibraryPanel.CPanelAperture.CApertureEmpty);
+        CAperture aperture = _cLibrary.CLibraryPanel.CPanelAperture;
+        QContract.QContractFind<TextBlock>(_qLibrarySurface, "PIndexEmpty")
+            .SetResourceReference(TextBlock.TextProperty, aperture.CApertureKey);
+        _qIndex.QIndexRefine(rows, aperture.CApertureEmpty);
     }
 
     private void QLibraryStoreRefine()

@@ -9,13 +9,14 @@ Each control builds its own table: the window, a box and the pager.
 Dispatch, the legend and help read the same rows, so they cannot disagree about a key.
 The constructor refuses a null list or a null row.
 It throws `ArgumentException` for a row on a key the roof or the terminal owns.
-Alt with a letter belongs to the roof.
+Alt with a letter belongs to the roof, so only a row at the roof focus may bind it.
 F11, Alt+F4, Alt+Enter, Ctrl+V and any Ctrl+Tab belong to the terminal.
 Ctrl+Shift with a letter also belongs to the terminal, except Ctrl+Shift+Z.
 
 ## `BKeymapFind`
 
 Returns the first row of the focus whose key and modifiers both match exactly, or null.
+A row whose live state is hidden is skipped, so a hidden key finds nothing and falls through.
 So Shift+F10 does not find the F10 row.
 The character U+0003 counts as Ctrl+C, since a terminal may send the interrupt as a character.
 
@@ -33,18 +34,18 @@ The live function is asked at each draw, so a state follows the program without 
 
 ## `BKeymapFocus`
 
-Where the keys go: the window, a box, the small-console notice or the help box.
+Where the keys go: the window, a box, the small-console notice, the help box or the roof.
 
 ## `BKeymapLive`
 
 Shown draws a key in the legend and help.
 Dim draws it in the `disabled` role, for a key that does nothing at the moment.
-Hidden leaves it out of both, though the key still acts.
+Hidden leaves it out of both, and `BKeymapFind` does not find it.
 
 ## Stamp
 
-Commit: `2883be178842`
-- `BKeymap.cs` `6db978e61072235f`
-- `BKeymapFocus.cs` `3f482dd700932075`
+Commit: `fe7e11daae88`
+- `BKeymap.cs` `f4521bf6490e80ae`
+- `BKeymapFocus.cs` `891be976b24c913d`
 - `BKeymapLive.cs` `c4bed21c76f50c73`
 - `BKeymapRow.cs` `3a59402801d27b87`

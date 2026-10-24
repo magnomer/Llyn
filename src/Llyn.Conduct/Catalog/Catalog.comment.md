@@ -40,8 +40,10 @@ Drivers place each cell by its own column and walk only the row they get, so pad
 
 `LCatalogOrderRead` maps the ordering both ways, by name.
 An unknown member is a caller's error, and a driver that chose none maps to null.
+`CCatalogOrderFormat` answers the English word of an ordering, such as `Name` or `Grasp`, one case per member.
+An unknown member throws, so a new ordering cannot go unworded.
 `LCatalogSubjectRead` maps the subject member by member.
-The series fold subject maps to its own engine subject, never to the plain fold.
+The stem fold subject maps to its own engine subject, never to the plain fold.
 `LCatalogRowRead` is the one home of the vista row copy, for entry lists and the translation offer.
 It copies the engine's empty epithet as it stands, so the map holds no fallback.
 `LCatalogMeaningRead` maps meaning rows with no rule, for the shared sense read in `CMention`.
@@ -62,8 +64,8 @@ Counts and credits arrive worded by Core, blank or an unknown wording when nothi
 
 ## Stamp
 
-Commit: `bd299c638b2c`
-- `CCatalog.cs` `9bd012c60f9a52bc`
+Commit: `fe7e11daae88`
+- `CCatalog.cs` `a67c9a18931e4583`
 - `CCatalogAuthor.cs` `b46f14e4512ea3a0`
 - `CCatalogExample.cs` `a3c4c5ca7f06fa47`
 - `CCatalogPronunciation.cs` `e74014415ee6721f`

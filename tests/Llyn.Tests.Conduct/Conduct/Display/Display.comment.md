@@ -121,12 +121,14 @@ The note arrives parsed, so its italic span is already a block's span.
 An entry without a unit carries an empty unit key.
 An entry gone from the store chooses nothing, so the view closes and drops its draft.
 Closing drops the shown draft and blanks the header.
+The view reads blank before an entry opens, not after, and blank again once it closes.
 A followed panel's load opens its entry here, and its clearing closes the view.
 The library attaches its display to its panel when it is created, so the test attaches nothing.
 A notice about the chosen entry reloads its draft and opens it again.
 With nothing chosen the notice changes nothing.
 A workspace swap closes the view.
 A favourite bulletin about the chosen entry raises the favourite change and no grasp change.
+Both the favourite change and the heart's gate live on the display's grasp area.
 The heart's gate stores the mark and answers what the store now holds.
 With no entry chosen the heart stays unmarked.
 Conduct chooses the one-off key for the driver's frequency lookup, and an unranked entry shows no chip.
@@ -255,11 +257,11 @@ Saves an English noun whose paradigm asks for a plural nothing stores.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `fe7e11daae88`
 - `TCardSense.cs` `1c55637cd01fb929`
 - `TDisplay.cs` `c18d439ee37ac348`
 - `TDisplayAccent.cs` `bc384431fa7b13d5`
-- `TDisplayArea.cs` `82d93e6633ae7e7b`
+- `TDisplayArea.cs` `02789b2b8f45b3bd`
 - `TDisplayCard.cs` `75e0cbecc4651cb9`
 - `TDisplayGrasp.cs` `02d2dd52a323976b`
 - `TDisplayMention.cs` `718d56e9487cb408`

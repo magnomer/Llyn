@@ -141,6 +141,16 @@ public sealed class TLibraryVista
     }
 
     [Fact]
+    public void CatalogOrderFormat_EveryOrder_HasItsOwnWord()
+    {
+        string[] words = [.. Enum.GetValues<CCatalogOrder>().Select(CCatalog.CCatalogOrderFormat)];
+
+        Assert.All(words, static word => Assert.False(string.IsNullOrWhiteSpace(word)));
+        Assert.Equal(words.Length, words.Distinct(StringComparer.Ordinal).Count());
+        Assert.Equal("Headword", CCatalog.CCatalogOrderFormat(CCatalogOrder.CCatalogOrderHeadword));
+    }
+
+    [Fact]
     public void LibraryClose_ExitGate_ClosesTheEditorAndStopsTheRecording()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

@@ -16,11 +16,13 @@ The mark follows `CApertureFiltered`, rather than deciding whether a filter matt
 The caller supplies the bar anchor, letting the menu align with more than the dropper button.
 The introduced title supplies both the tooltip key and row label prefix.
 A click passes the parsed order to the aperture and unchecks the dropper, closing the menu.
-Refresh checks the aperture's current ordering, keeping restored state separate from click handling.
+Refine checks the aperture's current ordering, keeping restored state separate from click handling.
+Close shuts the popup without a choice.
 
 ## `QChoice`
 
 Ordering words tag the rows and form the final component of their label keys.
+The word of each ordering comes from `CCatalog.CCatalogOrderFormat`, so this folder keeps no table of its own.
 The supplied ordering list owns which choices exist and their order.
 Order rows need no explicit group name because they share one parent panel.
 Kind menu rows use a group name separately from ordering rows.
@@ -35,11 +37,15 @@ The popup's close event unchecks the dropper, keeping both states aligned.
 
 ### `QChoiceOrderApply`
 
-No row is marked when the supplied order's word is absent from the popup.
+The order arrives as a catalog order or as its word, and both go through one marking step.
+Each radio button is checked when its tag equals the word.
+So no row is marked when the word is absent from the popup.
+`QChoiceOrder` calls it in its refine step with the aperture's current order word.
 
 ### `QChoiceFilterBuild`
 
-Language and kind rows take their checked state from the supplied filter, keeping hidden-value decisions outside row construction.
+Language rows take their checked state from the supplied filter, keeping hidden-value decisions outside row construction.
+`QChoiceKindRefine` builds the kind rows the same way.
 Language badges use a ring when no flag image is available.
 
 ### `QChoiceFilterRead`
@@ -49,7 +55,7 @@ The clicked box's parent supplies the rows, so no separate view field feeds the 
 
 ### `QChoiceOrderRead`
 
-An unknown string tag yields the ordering enum's default through the dictionary lookup.
+An unknown string tag yields the ordering enum's default, since the lookup is a first-or-default scan of its members.
 A sender that is not a tagged radio button yields null instead.
 
 ### `QChoiceButtonScan`
@@ -58,7 +64,7 @@ Walking the logical tree keeps callers independent of the border and panel wrapp
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `QChoice.cs` `bb3bf58d7960e558`
+Commit: `fe7e11daae88`
+- `QChoice.cs` `f4d5e11421357981`
 - `QChoiceFilter.cs` `12cb4ec034881da9`
-- `QChoiceOrder.cs` `db7a0d6fc08dfa63`
+- `QChoiceOrder.cs` `35af07fbfdc711a7`

@@ -16,10 +16,31 @@ public sealed class TPanelRow
         long chosen = panel.TPanelChosenRead();
         panel.CPanelScribeToggle(true);
 
-        bool opened = panel.CPanelRowSelect(chosen + 100);
+        CPanelOutcome opened = panel.CPanelRowSelect(chosen + 100);
 
-        Assert.False(opened);
+        Assert.Equal(CPanelOutcome.CPanelOutcomeStayed, opened);
         Assert.Equal(chosen, panel.TPanelChosenRead());
+    }
+
+    [Fact]
+    public void PanelRowSelect_LeaveCancelledOrLoadFails_AnswersStayedOrFailed()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        List<string> asked = [];
+        CPanel cancelled = TPanel.TPanelPrepare(engine, null, asked, [], "Scribe", () => true);
+        long chosen = cancelled.TPanelChosenRead();
+        cancelled.CPanelScribeToggle(true);
+        CPanel viewing = TPanel.TPanelPrepare(engine, null, asked, [], "Scribe", () => false);
+
+        CPanelOutcome stayed = cancelled.CPanelRowSelect(chosen);
+        workspace.TWorkspaceScriptRun("ALTER TABLE entry RENAME TO entry_gone;");
+        CPanelOutcome failed = viewing.CPanelRowSelect(chosen);
+
+        Assert.Equal(CPanelOutcome.CPanelOutcomeStayed, stayed);
+        Assert.Equal(CPanelOutcome.CPanelOutcomeFailed, failed);
+        Assert.Equal(CPanelOutcome.CPanelOutcomeFailed, viewing.CPanelRowSelect(null));
+        Assert.Equal(["Leave", "List.LoadFailed"], asked);
     }
 
     [Theory]
@@ -37,9 +58,9 @@ public sealed class TPanelRow
         long chosen = panel.TPanelChosenRead();
         panel.CPanelScribeToggle(true);
 
-        bool opened = panel.CPanelRowSelect(fire.LEntryId);
+        CPanelOutcome opened = panel.CPanelRowSelect(fire.LEntryId);
 
-        Assert.Equal(left, opened);
+        Assert.Equal(left ? CPanelOutcome.CPanelOutcomeOpened : CPanelOutcome.CPanelOutcomeStayed, opened);
         Assert.Equal(left ? ["Leave", "Station"] : ["Leave"], asked);
         Assert.Equal(left ? fire.LEntryId : chosen, panel.TPanelChosenRead());
     }

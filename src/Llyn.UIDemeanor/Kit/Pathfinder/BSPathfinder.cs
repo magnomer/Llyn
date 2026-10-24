@@ -189,6 +189,7 @@ internal sealed class BSPathfinder : BSParleyBody
         int row,
         int column,
         int width,
+        int height,
         bool focused,
         string role,
         BCanvasWidth measure)
@@ -211,7 +212,7 @@ internal sealed class BSPathfinder : BSParleyBody
             glyphs,
             path.BBlueprintPartRow,
             path.BBlueprintPartColumn + cells,
-            path.BBlueprintPartWidth - cells - tailCells,
+            path.BBlueprintPartWidth - cells - tailCells, 1,
             focused && _bsPathfinderKeymap == _bsPathfinderPathKeymap,
             role,
             measure))

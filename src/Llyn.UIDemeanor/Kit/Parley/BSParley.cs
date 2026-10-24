@@ -222,7 +222,8 @@ internal sealed class BSParley
                     : new Dictionary<string, IReadOnlyList<string>>();
             texts.AddRange(drawn.BSParleyBodyDraw(
                 set, text.BBlueprintPartRow + rows.Count + gap, text.BBlueprintPartColumn, span,
-                _bsParleyFocus is not null, _bsParleyRole, measure));
+                Math.Max(text.BBlueprintPartHeight - rows.Count - gap, 0), _bsParleyFocus is not null, _bsParleyRole,
+                measure));
             string position = $" {drawn.BSParleyBodyPosition} ";
             int length = measure.BCanvasWidthResolve(position);
             if (drawn.BSParleyBodyPosition.Length > 0 && length <= across - 4)

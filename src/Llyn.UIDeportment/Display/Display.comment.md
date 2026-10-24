@@ -12,6 +12,9 @@ The accent section draws its rows before it loads their flags, so late flags lan
 The card section redraws before the compass, so contents measurements follow the section updates.
 `QRoster` is built after the compass because contents clicks need the compass instance.
 Fold notices refresh the card section, sound boxes and reflex hinge together.
+The empty notice and the contents swap on the open and the close alike.
+The swap follows whether the display holds the blank header.
+So an open that leaves the blank header shows the empty notice.
 Bulletin subscriptions use `QObserver`, keeping their delivery separate from the direct open and close callbacks.
 
 ## `QGraspStar`
@@ -97,6 +100,7 @@ A hover with no step reads the standing grasp label, so the label returns when t
 
 Text, font, flag and favorite state have separate redraw callbacks, keeping their updates independent.
 A favorite click redraws from the gate's returned state rather than trusting the toggle.
+The header takes the favourite gate and its change event from the display's grasp area, not from the display.
 
 ### `QLecternFlagRefine`
 
@@ -138,14 +142,14 @@ The label column joins the shared `PReadingLabel` width only while its section s
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `fe7e11daae88`
 - `QGraspStar.cs` `b96249bbb783b9db`
-- `QLectern.cs` `f44b838e37fa2538`
+- `QLectern.cs` `bd10cde4904921d7`
 - `QLecternCard.cs` `9286e5946ef4540e`
 - `QLecternEntry.cs` `f13d612b00f01fd0`
 - `QLecternEtymology.cs` `db6f54cdb8b0c4f2`
 - `QLecternFrequency.cs` `557735b484228775`
 - `QLecternGrasp.cs` `b3a3e33c2b56fe4c`
-- `QLecternHeader.cs` `129c98ee22f19ead`
+- `QLecternHeader.cs` `b52feac09f86897b`
 - `QLecternIncoming.cs` `2013dfbcd1cfc565`
 - `QLecternLead.cs` `f744babc1ea40def`

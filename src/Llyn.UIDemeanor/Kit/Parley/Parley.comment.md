@@ -55,6 +55,8 @@ It tells its width, height and position text, observes keys and draws itself.
 It may also offer a key table of its own, which the box lists in front of its keys.
 It lists them only while the body holds the focus.
 Drawing receives the width measure, so a body never builds its own.
+It also receives the rows left in the text part under the text lines and their gap, never below zero.
+The path prompt hands its path field one row.
 Observing returns true when the body took the key.
 Resuming tells the body the focus has come back to it and from which side.
 The default does nothing, so a body with one part ignores it.
@@ -74,8 +76,8 @@ A path line may break after a separator.
 
 ## Stamp
 
-Commit: `78fc0ebfff7c`
-- `BSParley.cs` `b43e2623e121bf9d`
-- `BSParleyBody.cs` `b16181f26db83138`
+Commit: `fe7e11daae88`
+- `BSParley.cs` `d63ba89fd06ca55e`
+- `BSParleyBody.cs` `c73380869b4abf3e`
 - `BSParleyButton.cs` `5228b2831c1f9269`
 - `BSParleyLine.cs` `34f3fd75cc4134ab`

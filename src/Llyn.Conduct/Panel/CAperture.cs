@@ -49,6 +49,8 @@ public sealed class CAperture
 
     public CCatalogOrder CApertureOrder => CCatalog.LCatalogOrderRead(LVista.LVistaOrderRead(_cApertureVista));
 
+    public string CApertureOrderWord => CCatalog.CCatalogOrderFormat(CApertureOrder);
+
     public CCatalogFilter CApertureFilter => CCatalog.LCatalogFilterRead(LVista.LVistaFilterRead(_cApertureVista));
 
     public long? CApertureChosen => _cApertureVista?.LVistaChosen;

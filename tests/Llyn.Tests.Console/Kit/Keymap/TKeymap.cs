@@ -149,6 +149,40 @@ public sealed class TKeymap
         }
     }
 
+    [Fact]
+    public void Keymap_TwoRowsOnOneKey_FindsTheLiveRow()
+    {
+        bool editing = false;
+        BKeymapRow edit = new(
+            ConsoleKey.F4, 0, BKeymapFocus.BKeymapFocusWindow, "Scribe.Edit", static _ => { },
+            () => editing ? BKeymapLive.BKeymapLiveHidden : BKeymapLive.BKeymapLiveDim);
+        BKeymapRow view = new(
+            ConsoleKey.F4, 0, BKeymapFocus.BKeymapFocusWindow, "Scribe.View", static _ => { },
+            () => editing ? BKeymapLive.BKeymapLiveShown : BKeymapLive.BKeymapLiveHidden);
+        BKeymap keymap = new([edit, view]);
+        ConsoleKeyInfo key = new('\0', ConsoleKey.F4, false, false, false);
+
+        BKeymapRow? viewing = keymap.BKeymapFind(BKeymapFocus.BKeymapFocusWindow, key);
+        editing = true;
+        BKeymapRow? scribing = keymap.BKeymapFind(BKeymapFocus.BKeymapFocusWindow, key);
+
+        Assert.Same(edit, viewing);
+        Assert.Same(view, scribing);
+    }
+
+    [Fact]
+    public void Keymap_HiddenRow_PassesItsKeyOn()
+    {
+        BKeymap keymap = new(
+        [
+            new(ConsoleKey.F2, 0, BKeymapFocus.BKeymapFocusWindow, "Scribe.Save", static _ => { },
+                static () => BKeymapLive.BKeymapLiveHidden),
+        ]);
+
+        Assert.Null(keymap.BKeymapFind(
+            BKeymapFocus.BKeymapFocusWindow, new ConsoleKeyInfo('\0', ConsoleKey.F2, false, false, false)));
+    }
+
     private static BKeymap TKeymapWindowCreate()
     {
         TConsoleFake console = new();

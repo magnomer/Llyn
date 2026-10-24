@@ -90,7 +90,7 @@ public sealed class TPathfinderMedium
             new ABootstrap().BBlueprintParts["ASPathfinder"], catalog, "C:\\", null, static _ => ([], []),
             static _ => false, static _ => { }, static () => null, new BSPathfinderMedium(TPathfinderMediumChoices));
         Func<string?> format = () => pathfinder.BSParleyBodyDraw(
-                new Dictionary<string, IReadOnlyList<string>>(), 0, 0, 72, true, "dialog", new BCanvasWidth(false))
+                new Dictionary<string, IReadOnlyList<string>>(), 0, 0, 72, 24, true, "dialog", new BCanvasWidth(false))
             .First(static text => text.BCanvasTextValue.StartsWith("Format", StringComparison.Ordinal))
             .BCanvasTextRole;
         Assert.NotEqual("lit", format());

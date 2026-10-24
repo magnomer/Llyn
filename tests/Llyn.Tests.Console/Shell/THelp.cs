@@ -163,8 +163,8 @@ public sealed class THelp
         BSHelp box = new(catalog, keys, BKeymapFocus.BKeymapFocusParley, measure);
 
         Dictionary<string, IReadOnlyList<string>> glyphs = [];
-        BCanvasText[] first = [.. everywhere.BSParleyBodyDraw(glyphs, 0, 0, 72, true, "dialog", measure)];
-        BCanvasText[] last = [.. box.BSParleyBodyDraw(glyphs, 0, 0, 72, true, "dialog", measure)];
+        BCanvasText[] first = [.. everywhere.BSParleyBodyDraw(glyphs, 0, 0, 72, 24, true, "dialog", measure)];
+        BCanvasText[] last = [.. box.BSParleyBodyDraw(glyphs, 0, 0, 72, 24, true, "dialog", measure)];
 
         Assert.Contains(first, static text => text.BCanvasTextValue == "  F10   Quit");
         Assert.DoesNotContain(first, static text => text.BCanvasTextValue.Contains("F5", StringComparison.Ordinal));

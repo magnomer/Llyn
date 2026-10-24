@@ -50,7 +50,8 @@ public sealed class CPanel
         _cPanelFinishSeam = finishSeam;
         _cPanelShownSeam = shownSeam;
         CPanelAperture = new CAperture(envoy, settings, vistas, loadKey, vacantKey, unmatchedKey);
-        CPanelBin = new CPanelBin(envoy, settings, vistas, CPanelAperture, deleteScope, CPanelRowSelect);
+        CPanelBin = new CPanelBin(envoy, settings, vistas, CPanelAperture, deleteScope,
+            id => CPanelRowSelect(id) == CPanelOutcome.CPanelOutcomeOpened);
         CPanelBin.CPanelBinDeleted += CPanelEntryClose;
     }
 
@@ -202,20 +203,20 @@ public sealed class CPanel
         CPanelChanged?.Invoke();
     }
 
-    public bool CPanelRowSelect(long? id)
+    public CPanelOutcome CPanelRowSelect(long? id)
     {
         if (id is null)
         {
-            return false;
+            return CPanelOutcome.CPanelOutcomeFailed;
         }
 
         if (!CPanelLeaveConfirm())
         {
-            return false;
+            return CPanelOutcome.CPanelOutcomeStayed;
         }
 
         _cPanelStation?.Invoke();
-        return CPanelRowOpen(id);
+        return CPanelRowOpen(id) ? CPanelOutcome.CPanelOutcomeOpened : CPanelOutcome.CPanelOutcomeFailed;
     }
 
     internal void LPanelStationAttach(Action record)

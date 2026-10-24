@@ -45,7 +45,7 @@ internal sealed class QChoiceOrder
 
     internal void QChoiceOrderRefine()
     {
-        QChoice.QChoiceOrderApply(QChoiceOrderDropdown, _qChoiceOrderAperture.CApertureOrder);
+        QChoice.QChoiceOrderApply(QChoiceOrderDropdown, _qChoiceOrderAperture.CApertureOrderWord);
     }
 
     internal void QChoiceOrderClose()

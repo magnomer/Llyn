@@ -57,6 +57,7 @@ internal sealed class BField : BSParleyBody
         int row,
         int column,
         int width,
+        int height,
         bool focused,
         string role,
         BCanvasWidth measure)

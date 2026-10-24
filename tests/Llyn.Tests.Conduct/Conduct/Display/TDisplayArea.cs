@@ -80,12 +80,15 @@ public sealed class TDisplayArea
         LEntry water = TDisplayEntrySave(engine, "water");
         CWing wing = TDisplayWingPrepare(atelier);
         CDisplay area = wing.CWingDisplay;
+        Assert.True(area.CDisplayBlank);
         wing.CWingEntryOpen(water.LEntryId);
+        Assert.False(area.CDisplayBlank);
         int closed = 0;
         area.CDisplayClosed += () => closed++;
 
         area.CDisplayEntryClose();
 
+        Assert.True(area.CDisplayBlank);
         Assert.Equal(1, closed);
         Assert.Empty(area.CDisplayShown.CLecternHeadword);
         Assert.Null(wing.CWingDisplay.LDisplayRule.CVoice.CVoiceShown);
@@ -185,10 +188,10 @@ public sealed class TDisplayArea
         wing.CWingEntryOpen(water.LEntryId);
         List<CBulletin> favorites = [];
         int grasps = 0;
-        area.CDisplayFavoriteChanged += favorites.Add;
+        area.CDisplayGrasp.CDisplayFavoriteChanged += favorites.Add;
         area.CDisplayGrasp.CDisplayGraspChanged += _ => grasps++;
 
-        area.CDisplayFavoriteToggle(true);
+        area.CDisplayGrasp.CDisplayFavoriteToggle(true);
 
         Assert.Equal(water.LEntryId, Assert.Single(favorites).CBulletinId);
         Assert.Equal(0, grasps);
@@ -205,9 +208,9 @@ public sealed class TDisplayArea
         CDisplay area = wing.CWingDisplay;
         wing.CWingEntryOpen(water.LEntryId);
 
-        Assert.True(area.CDisplayFavoriteToggle(true));
-        Assert.True(area.CDisplayFavoriteRead());
-        Assert.False(area.CDisplayFavoriteToggle(false));
+        Assert.True(area.CDisplayGrasp.CDisplayFavoriteToggle(true));
+        Assert.True(area.CDisplayGrasp.CDisplayFavoriteRead());
+        Assert.False(area.CDisplayGrasp.CDisplayFavoriteToggle(false));
     }
 
     [Fact]
@@ -218,7 +221,7 @@ public sealed class TDisplayArea
         using CAtelier atelier = TDisplayAtelierCreate(engine);
         CWing wing = TDisplayWingPrepare(atelier);
 
-        Assert.False(wing.CWingDisplay.CDisplayFavoriteToggle(true));
+        Assert.False(wing.CWingDisplay.CDisplayGrasp.CDisplayFavoriteToggle(true));
     }
 
     [Fact]

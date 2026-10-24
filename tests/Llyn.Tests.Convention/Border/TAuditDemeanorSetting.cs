@@ -215,6 +215,7 @@ internal static class TAuditDemeanorSetting
                 "CFold",
                 "CPanel",
                 "CPanelBin",
+                "CPanelOutcome",
                 "CAperture",
                 "CDiptych",
                 "CAtlas",

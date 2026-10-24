@@ -12,6 +12,7 @@ internal sealed class BMirror
     private readonly BWardrobe _bMirrorWardrobe;
     private readonly BNavigation _bMirrorTabs;
     private readonly Func<Func<CCourierState?>, BRoofMenu> _bMirrorHeadquarter;
+    private readonly Func<IReadOnlyList<BRoofMenu>> _bMirrorArea;
     private readonly Action _bMirrorPicker;
     private readonly Action _bMirrorRestyled;
     private readonly Action _bMirrorChanged;
@@ -25,6 +26,7 @@ internal sealed class BMirror
         BBlueprintPart blueprint,
         BNavigation tabs,
         Func<Func<CCourierState?>, BRoofMenu> headquarter,
+        Func<IReadOnlyList<BRoofMenu>> area,
         Action picker,
         Action restyled,
         Action changed)
@@ -35,6 +37,7 @@ internal sealed class BMirror
         ArgumentNullException.ThrowIfNull(blueprint);
         ArgumentNullException.ThrowIfNull(tabs);
         ArgumentNullException.ThrowIfNull(headquarter);
+        ArgumentNullException.ThrowIfNull(area);
         ArgumentNullException.ThrowIfNull(picker);
         ArgumentNullException.ThrowIfNull(restyled);
         ArgumentNullException.ThrowIfNull(changed);
@@ -45,6 +48,7 @@ internal sealed class BMirror
         _bMirrorWardrobe = wardrobe;
         _bMirrorTabs = tabs;
         _bMirrorHeadquarter = headquarter;
+        _bMirrorArea = area;
         _bMirrorPicker = picker;
         _bMirrorRestyled = restyled;
         _bMirrorChanged = changed;
@@ -134,6 +138,6 @@ internal sealed class BMirror
             _bMirrorAtelier is CAtelier shown ? shown.CAtelierNavigation.CNavigationTabSelect
                 : static _ => false,
             _bMirrorWardrobe.BWardrobeWidth);
-        return [_bMirrorHeadquarter(() => BMirrorCourier), panel, options];
+        return [_bMirrorHeadquarter(() => BMirrorCourier), panel, .. _bMirrorArea(), options];
     }
 }

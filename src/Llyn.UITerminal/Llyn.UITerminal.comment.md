@@ -27,11 +27,12 @@ The shell's list of the blueprints to load and the glyph sets they may draw with
 It lists the same six blueprints in that order, and a blueprint left out of the list is not loaded.
 Each glyph set holds six frame marks, three rule marks and the marks of the UI's symbols.
 The `double` set draws the window, the `single` set uses thin lines, and the `ascii` set needs no box drawing.
+A mark with several states lists one cell per state, such as `Grasp` with its three star steps.
 Every set has a mark for every symbol, so a screen may switch sets without a missing glyph.
 
 ## Stamp
 
-Commit: `78fc0ebfff7c`
+Commit: `fe7e11daae88`
 - `ABootstrap.cs` `ffad35cfe3757da5`
-- `ABootstrap.xaml` `dec756fe9c1ec0b0`
+- `ABootstrap.xaml` `1453619044f0fff7`
 - `Llyn.UITerminal.csproj` `86e4ea580199520e`

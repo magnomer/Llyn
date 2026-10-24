@@ -25,6 +25,7 @@ internal sealed class BSHelp : BSParleyBody
         [ConsoleKey.PageDown] = "Window.Help.Key.PageDown",
         [ConsoleKey.Home] = "Window.Help.Key.Home",
         [ConsoleKey.End] = "Window.Help.Key.End",
+        [ConsoleKey.Spacebar] = "Window.Help.Key.Space",
     };
 
     private readonly BLocalizationCatalog _bsHelpCatalog;
@@ -112,6 +113,7 @@ internal sealed class BSHelp : BSParleyBody
         int row,
         int column,
         int width,
+        int height,
         bool focused,
         string role,
         BCanvasWidth measure)

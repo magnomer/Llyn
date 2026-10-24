@@ -107,8 +107,6 @@ public sealed class CDisplay
 
     public event Action? CDisplayClosed;
 
-    public event Action<CBulletin>? CDisplayFavoriteChanged;
-
     public event Action<CBulletin>? CDisplayFrequencyChanged;
 
     public event Action<CBulletin>? CDisplayParadigmChanged;
@@ -126,6 +124,8 @@ public sealed class CDisplay
     public event Action<CBulletin>? CDisplayFoldChanged;
 
     public CLectern CDisplayShown { get; private set; } = _cDisplayBlank;
+
+    public bool CDisplayBlank => ReferenceEquals(CDisplayShown, _cDisplayBlank);
 
     public CDisplaySound CDisplaySound { get; }
 
@@ -160,8 +160,6 @@ public sealed class CDisplay
     internal void LDisplayVistaRestore(LVista vista)
     {
         LDisplayRule.CRuleVistaRestore(vista);
-        LDisplayRule.CRuleChosenAttach(
-            CSubject.CSubjectFavorite, bulletin => CDisplayFavoriteChanged?.Invoke(bulletin));
         CDisplayGrasp.LDisplayGraspAttach();
         LDisplayRule.CRuleChosenAttach(
             CSubject.CSubjectFrequency, bulletin => CDisplayFrequencyChanged?.Invoke(bulletin));
@@ -264,17 +262,6 @@ public sealed class CDisplay
     public void CDisplayWorkspaceResonate()
     {
         CDisplayEntryClose();
-    }
-
-    public bool CDisplayFavoriteRead()
-    {
-        return LDisplayRule.CRuleFavoriteRead(LDisplayRule.CRuleChosen);
-    }
-
-    public bool CDisplayFavoriteToggle(bool marked)
-    {
-        LDisplayRule.CRuleFavoriteSave(LDisplayRule.CRuleChosen, marked);
-        return CDisplayFavoriteRead();
     }
 
     public CFrequency? CDisplayFrequencyRead(Func<string, string> lookup)

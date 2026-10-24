@@ -158,6 +158,31 @@ public sealed class CCatalog
         };
     }
 
+    public static string CCatalogOrderFormat(CCatalogOrder order)
+    {
+        return order switch
+        {
+            CCatalogOrder.CCatalogOrderName => "Name",
+            CCatalogOrder.CCatalogOrderHeadword => "Headword",
+            CCatalogOrder.CCatalogOrderReverse => "Reverse",
+            CCatalogOrder.CCatalogOrderRecent => "Recent",
+            CCatalogOrder.CCatalogOrderEarliest => "Earliest",
+            CCatalogOrder.CCatalogOrderYear => "Year",
+            CCatalogOrder.CCatalogOrderAuthor => "Author",
+            CCatalogOrder.CCatalogOrderUsage => "Usage",
+            CCatalogOrder.CCatalogOrderLanguage => "Language",
+            CCatalogOrder.CCatalogOrderMarked => "Marked",
+            CCatalogOrder.CCatalogOrderText => "Text",
+            CCatalogOrder.CCatalogOrderSource => "Source",
+            CCatalogOrder.CCatalogOrderKind => "Kind",
+            CCatalogOrder.CCatalogOrderSound => "Sound",
+            CCatalogOrder.CCatalogOrderPending => "Pending",
+            CCatalogOrder.CCatalogOrderWork => "Work",
+            CCatalogOrder.CCatalogOrderGrasp => "Grasp",
+            _ => throw new ArgumentOutOfRangeException(nameof(order), order, null),
+        };
+    }
+
     internal static LCatalogOrder? LCatalogOrderRead(CCatalogOrder? order)
     {
         return order is CCatalogOrder held ? LCatalogOrderRead(held) : null;

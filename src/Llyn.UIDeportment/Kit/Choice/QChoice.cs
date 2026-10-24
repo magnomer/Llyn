@@ -12,28 +12,6 @@ namespace Llyn.UIDeportment;
 
 internal static class QChoice
 {
-    private static readonly IReadOnlyDictionary<CCatalogOrder, string> QChoiceWord =
-        new Dictionary<CCatalogOrder, string>
-        {
-            [CCatalogOrder.CCatalogOrderName] = "Name",
-            [CCatalogOrder.CCatalogOrderHeadword] = "Headword",
-            [CCatalogOrder.CCatalogOrderReverse] = "Reverse",
-            [CCatalogOrder.CCatalogOrderRecent] = "Recent",
-            [CCatalogOrder.CCatalogOrderEarliest] = "Earliest",
-            [CCatalogOrder.CCatalogOrderYear] = "Year",
-            [CCatalogOrder.CCatalogOrderAuthor] = "Author",
-            [CCatalogOrder.CCatalogOrderUsage] = "Usage",
-            [CCatalogOrder.CCatalogOrderLanguage] = "Language",
-            [CCatalogOrder.CCatalogOrderMarked] = "Marked",
-            [CCatalogOrder.CCatalogOrderText] = "Text",
-            [CCatalogOrder.CCatalogOrderSource] = "Source",
-            [CCatalogOrder.CCatalogOrderKind] = "Kind",
-            [CCatalogOrder.CCatalogOrderSound] = "Sound",
-            [CCatalogOrder.CCatalogOrderPending] = "Pending",
-            [CCatalogOrder.CCatalogOrderWork] = "Work",
-            [CCatalogOrder.CCatalogOrderGrasp] = "Grasp",
-        };
-
     internal static void QChoiceOrderBuild(
         Panel list, string prefix, RoutedEventHandler handler, IReadOnlyList<CCatalogOrder> orders)
     {
@@ -47,10 +25,11 @@ internal static class QChoice
         {
             RadioButton choice = new()
             {
-                Tag = QChoiceWord[order],
+                Tag = CCatalog.CCatalogOrderFormat(order),
             };
             choice.SetResourceReference(FrameworkElement.StyleProperty, "Theme.Choice.Order");
-            choice.SetResourceReference(ContentControl.ContentProperty, QChoiceKeyRead(prefix, QChoiceWord[order]));
+            choice.SetResourceReference(
+                ContentControl.ContentProperty, QChoiceKeyRead(prefix, CCatalog.CCatalogOrderFormat(order)));
             choice.Click += handler;
             list.Children.Add(choice);
         }
@@ -87,7 +66,15 @@ internal static class QChoice
     {
         ArgumentNullException.ThrowIfNull(dropdown);
 
-        QChoiceWordApply(dropdown, QChoiceWord[order]);
+        QChoiceWordApply(dropdown, CCatalog.CCatalogOrderFormat(order));
+    }
+
+    internal static void QChoiceOrderApply(Popup dropdown, string word)
+    {
+        ArgumentNullException.ThrowIfNull(dropdown);
+        ArgumentNullException.ThrowIfNull(word);
+
+        QChoiceWordApply(dropdown, word);
     }
 
     internal static void QChoiceFilterBuild(
@@ -192,7 +179,7 @@ internal static class QChoice
     internal static CCatalogOrder? QChoiceOrderRead(object sender)
     {
         return sender is RadioButton { Tag: string word }
-            ? QChoiceWord.FirstOrDefault(pair => pair.Value == word).Key
+            ? Enum.GetValues<CCatalogOrder>().FirstOrDefault(order => CCatalog.CCatalogOrderFormat(order) == word)
             : null;
     }
 

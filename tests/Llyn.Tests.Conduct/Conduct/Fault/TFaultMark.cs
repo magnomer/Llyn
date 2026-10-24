@@ -29,13 +29,13 @@ public sealed partial class TFault
                 return (() => esteem.CEsteemGraspSet(4), () => esteem.CEsteemGrasp);
             }),
         new(
-            "CDisplay.CDisplayFavoriteToggle",
+            "CDisplayGrasp.CDisplayFavoriteToggle",
             "LFavoritePort.LEngineFavoriteSave",
             "Favorite.MarkFailed",
             static stage =>
             {
-                CDisplay display = TFaultWingOpen(stage).CWingDisplay;
-                return (() => display.CDisplayFavoriteToggle(true), () => display.CDisplayFavoriteRead());
+                CDisplayGrasp grasp = TFaultWingOpen(stage).CWingDisplay.CDisplayGrasp;
+                return (() => grasp.CDisplayFavoriteToggle(true), () => grasp.CDisplayFavoriteRead());
             }),
         new(
             "CDisplayCard.CDisplayFoldToggle",

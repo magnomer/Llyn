@@ -44,6 +44,10 @@ The localization key of the empty list notice.
 A search with text reads as unmatched and no search as vacant.
 It reads empty when the panel gave no keys.
 
+## `CApertureOrderWord`
+
+The English word of the standing ordering, through `CCatalog.CCatalogOrderFormat`.
+
 ## `CApertureOrderSet`
 
 Hands a chosen ordering to the vista, which keeps its own when the sender is no order row.
@@ -56,7 +60,9 @@ It is one ShellEngine call, `LVistaPort.LEngineTallyRead`, worded by Core's `LCa
 Before a vista arrives it reads empty.
 A fresh draft has no chosen row, so it reads as cited nowhere.
 A failure shows the panel's load failure key and answers an empty chip.
-Only the situation, example and reference lists call it, since only their vistas count a tally.
+Only the situation, example, reference and deck accession lists call it.
+Only their vistas count a tally.
+An entry vista, as the accession holds, answers its row count and no citation count.
 
 ## `CApertureRestore`
 
@@ -274,9 +280,12 @@ Entering the editor hands the chosen row to it, and with no row the panel closes
 ## `CPanelRowSelect`
 
 After the leave question the row is opened.
-It answers whether the panel now holds the row.
-A null id, a refused leave question and a refused load all answer false.
+It answers a `CPanelOutcome`, so a caller tells a declined question from a failure.
+Opened says the panel now holds the row.
+Stayed says the leave question was refused.
+Failed says the id was null or the load was refused.
 `CPanelBin` takes this gate as its seam, so a delete by id selects the row by the same path.
+The bin counts only Opened as a selected row.
 A panel standing on a tab first records the station the click leaves.
 `LPanelStationAttach` hands in the navigation's record, and a sub-panel never gets one.
 `LPanelChosenRead` answers the station, and zero says there is no place to come back to.
@@ -460,13 +469,14 @@ It then tells the driver through `CYunjingWorkspaceChanged`.
 
 ## Stamp
 
-Commit: `52c21d68b4c4`
-- `CAperture.cs` `7645b95c3ccac75e`
+Commit: `fe7e11daae88`
+- `CAperture.cs` `bba61e77c7623e57`
 - `CDiptych.cs` `a0f45daf855a9029`
 - `CEntryList.cs` `4e3ce97f8049b525`
 - `CFavorite.cs` `54ea336508512b06`
-- `CPanel.cs` `478bdc517d85618b`
+- `CPanel.cs` `bbeabfec9aa05957`
 - `CPanelBin.cs` `64a8e4a91337bcb9`
+- `CPanelOutcome.cs` `45880f2b8e1e33f3`
 - `CPhonology.cs` `631e15a40aae7054`
 - `CXiesheng.cs` `082a17a504e62c8b`
 - `CYunjing.cs` `4ffaeae361caa525`

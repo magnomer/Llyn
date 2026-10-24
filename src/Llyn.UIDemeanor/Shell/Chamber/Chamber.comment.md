@@ -15,6 +15,8 @@ It holds the window's state and routes each key, and `BMural` turns that state i
 It delegates the rest, so each piece has one reason to change.
 `BWardrobe` holds the look choices, `BDocket` the open boxes, `BKeymapWindow` the key table and `BEstablishment` the status line.
 `BMirror` holds the Conduct state the roof shows and the roof built from it.
+`BLibrary` is built when the window opens with an atelier.
+It is the panel while the Library tab is in front.
 The layout comes from the `AWindow` blueprint, and the window only fills the parts it names.
 The constructor finds `AWindow`, then `ASParley`, which help and the other boxes use.
 The mural it builds then finds the parts it draws.
@@ -27,7 +29,9 @@ The courier exists only with an atelier, so a refused start has no Joplin items.
 ## `BWindowOpen`
 
 Reads the size and observes it.
-With an atelier it subscribes to arrivals, has `BMirrorOpen` subscribe the mirrored state, then subscribes to establishment changes.
+With an atelier it builds the library panel.
+It subscribes to navigation changes, which tell it whether the Library tab is in front.
+It then subscribes to arrivals, has `BMirrorOpen` subscribe the mirrored state, then subscribes to establishment changes.
 Each subscription but the arrival one and the workspace-open one comes through `BObserverCreate`, so it runs on the loop's thread.
 Work from the loop's thread runs at once, and other work is deferred onto the loop.
 A tab arrival closes any open roof menu, so a menu never stays over the new tab.
@@ -52,15 +56,18 @@ Draws and syncs the frame once when anything marked it changed since the last ba
 A size, a key and an arrival each mark it.
 So do an establishment and a mirrored state change.
 It hands `BMuralDraw` the size, the focus, the roof, the navigation and the courier state.
-It adds the boxes, the glyphs, the marks, its key lookup and the width measure.
+It adds the boxes, the panel's texts from `BLibrary`, the glyphs, the marks, its key lookup and the width measure.
 Without a mark no frame is built, so a burst of keys costs one frame.
 
 ## `BWindowKeyObserve`
 
-The key is looked up in the window's table at the current focus, and a found row runs its action.
+The key is looked up in the window's table, then the library's, at the current focus.
+A found row runs its action only while its live state is shown, so a dim row does nothing.
 At a box or help focus, a key the table lacks goes to the top box.
 At the window and roof focus, such a key goes to the roof.
 The frame is marked changed when the roof used the key.
+At the window focus, a key neither table nor roof took goes to the library panel.
+That holds only while the Library tab is in front.
 At the notice focus, every key without a row does nothing.
 The frame is marked changed after a key that reaches a box.
 Quit goes through the atelier's quit confirmation, and only a yes completes the exit task.
@@ -73,7 +80,7 @@ Hands the box to the docket, which runs it.
 ## `BWindowHelpShow`
 
 Opens help as a box with one Close button, for the focus that asked.
-For each page, help reads the window's rows of that page's focus, then the roof's rows.
+For each page, help reads the window's rows of that page's focus, then the library's, then the roof's rows.
 It adds the rows of the box with the same focus, or else the top box.
 Those rows list the body's keys first.
 The window page reads no box, since it is not about one.
@@ -87,7 +94,8 @@ Without an atelier or a navigation state it does nothing.
 
 ## `BWindowKeymapFind`
 
-The legend looks in the window's table first, then in the roof's, then in the top box's table.
+The legend looks in the window's table first, then in the library's.
+Then it looks in the roof's, then in the top box's table.
 
 ## `BMirror`
 
@@ -98,7 +106,8 @@ Each change also marks the frame changed through a callback.
 So a verdict is computed once on its event and an open menu stays open across it.
 The window reads the roof, the navigation and the courier state, and never writes them.
 The product menu comes from a callback that receives the courier state reader.
-A look choice reaches the window through a second callback, which drops the canvas.
+A look choice reaches the window through a restyle callback, which drops the canvas.
+The library's menus come from an area callback and stand between the tab menu and `Options`.
 
 ## `BMirrorOpen`
 
@@ -121,7 +130,7 @@ The first open names the root the wardrobe already holds, so it changes no choic
 
 ## `BMirrorMenuBuild`
 
-Builds the roof's three menus, the product menu, the tab menu and `Options`.
+Builds the roof's menus, the product menu, the tab menu, the library's menus and `Options`.
 It runs again after any state a menu shows changes, and the roof applies the result.
 A look choice gives the roof new menus only when the wardrobe accepted the name.
 It then drops the canvas and calls the size observer again.
@@ -244,12 +253,14 @@ It keeps the tab navigation and the status line, which never change after constr
 
 Draws the small-console notice at the notice focus, and otherwise the whole frame.
 The roof, the navigation and the courier state come in at each draw.
-So do the boxes, the glyphs, the marks, the key lookup and the measure.
+So do the panel's texts, which draw after the scaffold and before the status line.
+The boxes, the glyphs, the marks, the key lookup and the measure come in too.
 
 ## `BMuralFrameBuild`
 
 Places the `AWindow` blueprint for the current size and draws its frames with the glyph set each names.
-The status line, the legend, the roof and the tab drawing follow.
+The panel's texts follow the frames.
+The status line, the legend, the roof and the tab drawing come next.
 The open boxes draw last, in stack order, so the top box covers the rest.
 The legend is built for the current focus.
 The left half is half the width, and the right half takes the rest.
@@ -272,13 +283,13 @@ The legend sits on the last row at column 0.
 
 ## Stamp
 
-Commit: `5813c19fd19c`
+Commit: `fe7e11daae88`
 - `BDocket.cs` `2f1ab27227907c41`
 - `BEstablishment.cs` `f0b09dc75cb89774`
 - `BKeymapWindow.cs` `ac57c5af4fc27418`
-- `BMirror.cs` `c5d61ad35d8927a0`
-- `BMural.cs` `694702d575d8e626`
+- `BMirror.cs` `2d5cfafbf7bb9ee3`
+- `BMural.cs` `ad365a42d80ac8d4`
 - `BNavigation.cs` `c45d372cb6483331`
 - `BNotice.cs` `7a5f8cc1b48d424d`
 - `BWardrobe.cs` `3aa4f791074e68eb`
-- `BWindow.cs` `a23a035a01c9f736`
+- `BWindow.cs` `5140fcc9db0a0e77`

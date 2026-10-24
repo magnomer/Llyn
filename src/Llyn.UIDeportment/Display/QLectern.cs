@@ -21,9 +21,10 @@ public sealed class QLectern
         _qLecternEmpty = QContract.QContractFind<TextBlock>(surface, "PDisplayEmpty");
         _qLecternContents = QContract.QContractFind<ScrollViewer>(surface, "PDisplayContents");
 
-        display.CDisplayOpened += QLecternContentsRefine;
-        display.CDisplayClosed += QLecternEmptyRefine;
-        _ = new QLecternHeader(surface, display, atelier, envoy);
+        Action empty = () => QLecternEmptyRefine(display);
+        display.CDisplayOpened += empty;
+        display.CDisplayClosed += empty;
+        _ = new QLecternHeader(surface, display, display.CDisplayGrasp, atelier, envoy);
         QLecternGrasp grasp = new(surface, display.CDisplayGrasp);
         display.CDisplayOpened += grasp.QLecternGraspRefine;
         display.CDisplayClosed += grasp.QLecternGraspRefine;
@@ -94,14 +95,15 @@ public sealed class QLectern
 
     public QCompass QLecternCompass { get; }
 
-    private void QLecternContentsRefine()
+    private void QLecternEmptyRefine(CDisplay display)
     {
-        _qLecternEmpty.Visibility = Visibility.Collapsed;
-        _qLecternContents.Visibility = Visibility.Visible;
-    }
+        if (!display.CDisplayBlank)
+        {
+            _qLecternEmpty.Visibility = Visibility.Collapsed;
+            _qLecternContents.Visibility = Visibility.Visible;
+            return;
+        }
 
-    private void QLecternEmptyRefine()
-    {
         _qLecternContents.Visibility = Visibility.Collapsed;
         _qLecternEmpty.Visibility = Visibility.Visible;
     }

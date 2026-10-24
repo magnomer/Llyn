@@ -12,8 +12,10 @@ The share holds two equal columns, each a `double` frame in the `side` theme.
 Each frame has a rule above its last inner row.
 The third row is `AEstablishment`, the opening line, with a left margin of one cell.
 The last row is `ALegend`, whose theme `legend` gives the roles `legend-number` and `legend-label`.
-The second frame holds a blank text and `AVoyage`, the history row at its foot.
+The first frame is `AIndex`, where the library list draws.
+The second frame holds `ADisplay`, the reading area, and `AVoyage`, the history row at its foot.
 The window finds `ARoof`, `AEstablishment`, `ALegend` and `AVoyage` by name, so renaming one breaks the window.
+`BLibrary` finds `AIndex` and `ADisplay` by name when it draws, so renaming either breaks the Library tab.
 
 ## `ANotice.xaml`
 
@@ -60,10 +62,10 @@ One `double` frame in the `dialog` theme holds a split with one weighted row, `A
 
 ## Stamp
 
-Commit: `78fc0ebfff7c`
+Commit: `fe7e11daae88`
 - `ANotice.xaml` `30a72b1b0e5d1943`
 - `ASDrive.xaml` `543d46f27c3a4ffe`
 - `ASNavigation.xaml` `140013786dd77412`
 - `ASParley.xaml` `9c08cc18227e74bb`
 - `ASPathfinder.xaml` `45f2634d1372f979`
-- `AWindow.xaml` `f9ce2a25d49162ae`
+- `AWindow.xaml` `4ee13fd4901c1e66`

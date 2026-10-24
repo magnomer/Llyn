@@ -4,9 +4,9 @@
     <Split Rows="1,*,1,1">
         <Text x:Name="ARoof" Theme="roof" />
         <Split Columns="*,*">
-            <Frame Theme="side" Glyphs="double" Rows="*,1" />
+            <Frame x:Name="AIndex" Theme="side" Glyphs="double" Rows="*,1" />
             <Frame Theme="side" Glyphs="double" Rows="*,1">
-                <Text />
+                <Text x:Name="ADisplay" />
                 <Text x:Name="AVoyage" Theme="side" />
             </Frame>
         </Split>

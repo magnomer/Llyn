@@ -14,6 +14,8 @@ public sealed class CDisplayGrasp
         _cDisplayGraspRule = rule;
     }
 
+    public event Action<CBulletin>? CDisplayFavoriteChanged;
+
     public event Action<CBulletin>? CDisplayGraspChanged;
 
     public int CDisplayGraspStep => _cDisplayGraspRule.CRuleGraspStep;
@@ -27,7 +29,20 @@ public sealed class CDisplayGrasp
     internal void LDisplayGraspAttach()
     {
         _cDisplayGraspRule.CRuleChosenAttach(
+            CSubject.CSubjectFavorite, bulletin => CDisplayFavoriteChanged?.Invoke(bulletin));
+        _cDisplayGraspRule.CRuleChosenAttach(
             CSubject.CSubjectGrasp, bulletin => CDisplayGraspChanged?.Invoke(bulletin));
+    }
+
+    public bool CDisplayFavoriteRead()
+    {
+        return _cDisplayGraspRule.CRuleFavoriteRead(_cDisplayGraspRule.CRuleChosen);
+    }
+
+    public bool CDisplayFavoriteToggle(bool marked)
+    {
+        _cDisplayGraspRule.CRuleFavoriteSave(_cDisplayGraspRule.CRuleChosen, marked);
+        return CDisplayFavoriteRead();
     }
 
     public CGrasp CDisplayGraspRead()

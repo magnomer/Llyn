@@ -11,6 +11,8 @@ public sealed class QLecternHeader
 {
     private readonly CDisplay _qLecternHeaderArea;
 
+    private readonly CDisplayGrasp _qLecternHeaderGrasp;
+
     private readonly CAtelier _qLecternAtelier;
 
     private readonly CEnvoy _qLecternEnvoy;
@@ -25,14 +27,17 @@ public sealed class QLecternHeader
 
     private readonly ToggleButton _qLecternFavorite;
 
-    public QLecternHeader(FrameworkElement surface, CDisplay display, CAtelier atelier, CEnvoy envoy)
+    public QLecternHeader(
+        FrameworkElement surface, CDisplay display, CDisplayGrasp grasp, CAtelier atelier, CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(surface);
         ArgumentNullException.ThrowIfNull(display);
+        ArgumentNullException.ThrowIfNull(grasp);
         ArgumentNullException.ThrowIfNull(atelier);
         ArgumentNullException.ThrowIfNull(envoy);
 
         _qLecternHeaderArea = display;
+        _qLecternHeaderGrasp = grasp;
         _qLecternAtelier = atelier;
         _qLecternEnvoy = envoy;
         _qLecternHeadword = QContract.QContractFind<TextBlock>(surface, "PDisplayHeadword");
@@ -50,13 +55,13 @@ public sealed class QLecternHeader
         display.CDisplayClosed += QLecternFontRefine;
         display.CDisplayClosed += QLecternFlagRefine;
         display.CDisplayClosed += QLecternFavoriteRefine;
-        display.CDisplayFavoriteChanged += QObserver.QObserverCreate<CBulletin>(surface, QLecternFavoriteRefine);
+        grasp.CDisplayFavoriteChanged += QObserver.QObserverCreate<CBulletin>(surface, QLecternFavoriteRefine);
     }
 
     private void QLecternFavoriteObserve(object sender, RoutedEventArgs e)
     {
         QLecternFavoriteRefine(
-            _qLecternHeaderArea.CDisplayFavoriteToggle(QLook.QLookCheckedRead(_qLecternFavorite.IsChecked)));
+            _qLecternHeaderGrasp.CDisplayFavoriteToggle(QLook.QLookCheckedRead(_qLecternFavorite.IsChecked)));
     }
 
     private void QLecternHeaderRefine()
@@ -85,7 +90,7 @@ public sealed class QLecternHeader
 
     private void QLecternFavoriteRefine()
     {
-        QLecternFavoriteRefine(_qLecternHeaderArea.CDisplayFavoriteRead());
+        QLecternFavoriteRefine(_qLecternHeaderGrasp.CDisplayFavoriteRead());
     }
 
     private void QLecternFavoriteRefine(bool marked)

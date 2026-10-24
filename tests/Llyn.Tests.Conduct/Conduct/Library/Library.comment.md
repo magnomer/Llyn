@@ -48,6 +48,7 @@ A malformed file shows the import failure.
 
 An envoy that answers the file question with a given file and the customs question through a given function.
 It records every question it is asked.
+It records `Markup` only for the `Markup.Title` key with the `.llx` suffix, and `Markup:Other` otherwise.
 The function drives the handed gate as a window would, then answers whether the user accepted.
 
 ## `TLibraryVista`
@@ -59,13 +60,14 @@ A create alone restores once, so the same notice after only a create raises once
 A workspace notice closes the chosen entry and tells the driver once.
 A settings notice raises the rows once.
 The menu offers four orderings.
+Every catalog order has its own non-blank word, and the headword order reads `Headword`.
 The window's exit gate closes the editor and stops the recording.
 The rows load answers the stored rows and the languages once the fill has run.
 
 ## Stamp
 
-Commit: `52c21d68b4c4`
+Commit: `fe7e11daae88`
 - `TCustoms.cs` `ff66ae9d6ea56f78`
 - `TLibrary.cs` `710723af57107f0a`
-- `TLibraryMarkup.cs` `4329941ca4943e9f`
-- `TLibraryVista.cs` `3ea7f5cc6a857b72`
+- `TLibraryMarkup.cs` `feb8f34b6d656343`
+- `TLibraryVista.cs` `d50afaa61f319844`

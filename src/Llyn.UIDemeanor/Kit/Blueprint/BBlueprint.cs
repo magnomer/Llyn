@@ -20,7 +20,7 @@ public abstract class BBlueprint
         ["Glyphs"] =
         [
             "x:Key", "Frame", "Rule", "Favorite", "Clip", "Order", "Pending", "History",
-            "Submenu", "Ellipsis", "Dot", "Arrow", "Scroll", "Check", "Radio",
+            "Submenu", "Ellipsis", "Dot", "Arrow", "Scroll", "Check", "Radio", "Grasp", "Fold", "Media",
         ],
     };
 

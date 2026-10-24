@@ -318,7 +318,7 @@ public sealed class TWindowLayer
         string[] items = [.. panel.BRoofMenuItems.OfType<BRoofItem>().Select(static item => item.BRoofItemLabel)];
         string[] choices =
         [
-            .. chooser.BSParleyBodyDraw(marks, 0, 0, 80, false, "dialog", measure)
+            .. chooser.BSParleyBodyDraw(marks, 0, 0, 80, 24, false, "dialog", measure)
                 .Select(static text => text.BCanvasTextValue),
         ];
 

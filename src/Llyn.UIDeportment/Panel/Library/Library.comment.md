@@ -35,6 +35,8 @@ The rail is introduced last, with the atelier's navigation for its trail and the
 `QLibraryIndexIntroduce` builds the entry list over the page's controls and refills it on each announcement of new rows.
 The list is medium, so it lives here and not in Conduct.
 `QLibraryIndexRefine` hands the rows to the list with the library's empty verdict.
+It first points the empty notice at the aperture's key.
+So a query shows the unmatched wording and no query the vacant one.
 Conduct counts the rows, so the empty notice needs no count kept here.
 The form taking rows paints what the area answered ready, so the paint asks Conduct nothing.
 The parameterless form reads them, and a flag-fill Refine hands in what its load answered.
@@ -54,7 +56,8 @@ The editor and the display stop through `CLibrary`'s closure, which the atelier'
 The rail folds its own button pairs from the scribe flag it is handed.
 `QLibraryIndexObserve` puts the panel on the clicked row's entry, and the gate records the station first.
 The click hands over the row's item id, so no control decides the request.
-A sender without a row selects none, which leaves the panel on no entry.
+A sender without a row hands over a null id.
+The gate refuses it and leaves the panel as it stood.
 `QLibraryRowRefine` fills one row through the shared index fill, then subscribes its click once.
 The click is removed first, so a refill never doubles it.
 The search field hands its text to the query gate.
@@ -201,10 +204,10 @@ It is the same announcement whether the store happened in this panel's editor or
 
 ## Stamp
 
-Commit: `78fc0ebfff7c`
+Commit: `fe7e11daae88`
 - `QDuplex.cs` `ca987539dd4da4cd`
 - `QIndex.cs` `c11007a0de35b95b`
 - `QIndexItem.cs` `f2e8778b89af3698`
-- `QLibrary.cs` `4a192cc1f0241228`
+- `QLibrary.cs` `a910ad050387a37d`
 - `QMarkup.cs` `54a943d6b580db9a`
 - `QWing.cs` `cd859f18f3ed85d6`

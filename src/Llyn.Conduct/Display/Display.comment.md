@@ -8,19 +8,20 @@ One display per editor or wing builds its rules and its areas once, so every dri
 
 ## `CDisplay`
 
-The header area owns the entry's life on the lectern, the favourite gate and the change events.
+The header area owns the entry's life on the lectern and the change events.
 It builds the rules first, then the sound area over those rules and itself.
 Then it builds the accent, playback, grasp, card and route areas and the compass over the same rules.
 Each part is handed only the ports that part calls.
 A refused read is shown through the envoy, so every driver over this display shows it once.
 The area keeps the shown header, and the blank header stands while nothing is shown.
+`CDisplayBlank` says whether the blank header stands, so a driver need not compare headers.
 The lectern names the entry's lexical unit and freedom by the keys the static `LEntryPort` formats give.
 The rime-book and script box openings stand on `CFold`, built over the shown entry.
 `CFold` shares the rules' repaint memory, so its notices share the lectern's memory.
 The rules stay internal, so no driver names them.
 The editor's esteem, sound sheet and sound facts take the rules from here, so all share one shown draft.
 
-The favourite, frequency, paradigm and reflex events count only for the chosen entry.
+The frequency, paradigm and reflex events count only for the chosen entry.
 They are raised on the engine's thread, and a driver marshals each onto its own thread before it reads.
 The script, fanqie and workspace bulletins count for any entry, since their sections redraw whole.
 `CDisplayEntryChanged` counts the chosen entry's own bulletins and any example, situation, reference, author, tag, register or settings bulletin.
@@ -55,8 +56,6 @@ Nothing chosen reloads nothing, and a refused load leaves the view as it stands.
 An entry gone from the store closes the view.
 `CDisplayWorkspaceResonate` closes the view once the workspace was swapped.
 
-`CDisplayFavoriteToggle` returns a fresh favourite read after asking the rules to store the mark.
-A refused mark thus answers the old value, and the display reports the failure.
 `CDisplayFrequencyRead` answers the chosen entry's frequency chip, or null when none stands.
 Conduct chooses the key of the one-off wording, and the driver's lookup turns it into text.
 
@@ -93,14 +92,19 @@ An id with no accent in the shown draft, or no shown draft, plays nothing and sh
 
 ## `CDisplayGrasp`
 
-The grasp area is split from the header by concern, since the grasp touches no other part of the header.
+The grasp area holds the reader's own marks on the entry, the grasp and the favourite.
+The editor's `CEsteem` holds the same marks.
+It is split from the header by concern, since the marks touch no other part of the header.
 It holds no state, and every member works on the entry the rules say is chosen.
-The grasp rule and the chosen entry both stay in `CRule`.
+The grasp rule, the favourite rule and the chosen entry all stay in `CRule`.
+`CDisplayFavoriteChanged` counts only for the chosen entry, and is raised on the engine's thread like the header's events.
+`CDisplayFavoriteToggle` returns a fresh favourite read after asking the rules to store the mark.
+A refused mark thus answers the old value, and the display reports the failure.
 `CDisplayGraspStep` is never negative, since `CRule` raises a negative engine limit to zero.
 The star control takes it as its limit, so it names no engine constant.
 `CDisplayGraspFill`, `CDisplayGraspUnrated` and `CDisplayGraspHit` are ready tables.
 The driver hands them to the control once, so drawing and pointing request no logic.
-`LDisplayGraspAttach` subscribes the grasp subject of the current vista once per vista.
+`LDisplayGraspAttach` subscribes the favourite and grasp subjects of the current vista once per vista.
 `CDisplayGraspRead` never answers a step below zero or above `CDisplayGraspStep`, since the stars draw only that range.
 The read with a step answers the wording for the step under the pointer, or empty while nothing is chosen.
 `CDisplayGraspSet` answers the stored stars.
@@ -182,7 +186,6 @@ It passes the engine's answers on unread and computes no fill, count or hit itse
 `CRuleGraspFormat` words a step, or answers empty when no entry is given.
 `CRuleDraftLoad` reloads the chosen entry's draft from the vista and hands it on, or null once the entry is gone.
 A refused load calls nothing and shows `Sound.LoadFailed` once through the repaint memory.
-The page keeps what it shows, so no draft is paired with an id it was not loaded for.
 `CRuleEntryLoad` loads one entry for a pick, chooses it on the vista, and answers its draft.
 The wing opens that draft in the area, since this class no longer knows the area.
 A gone entry chooses nothing and answers null, so the side stands on no entry and the area closes.
@@ -208,10 +211,10 @@ Any other name is the unknown tier, so the chip always finds a brush and a name.
 
 ## Stamp
 
-Commit: `bd299c638b2c`
-- `CDisplay.cs` `3702d795243d94ff`
+Commit: `fe7e11daae88`
+- `CDisplay.cs` `40fcc488d0d4913c`
 - `CDisplayAccent.cs` `63df02164d2dda07`
-- `CDisplayGrasp.cs` `f1de44be2fed43a2`
+- `CDisplayGrasp.cs` `053ae7529332c02f`
 - `CDisplayPlayback.cs` `7fd2ed66c09e90e7`
 - `CDisplayRoute.cs` `2b36821ac6c75d95`
 - `CGrasp.cs` `726f35d01c119673`

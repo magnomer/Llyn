@@ -26,7 +26,8 @@ A declined leave question opens no fresh entry, so the fields then land on the h
 ## `CLibraryEntryExport`
 
 Chooses the row by id, then runs the export gate on it.
-It answers the path written, or null when the row did not open, the reader cancelled or the export failed.
+It answers the path written.
+It answers null when the row did not open, the reader cancelled or the export failed.
 
 ## `CLibraryMarkupImport`
 
@@ -133,6 +134,6 @@ The side only passes the draft across, so it never keeps it.
 
 ## Stamp
 
-Commit: `78fc0ebfff7c`
-- `CLibrary.cs` `dfed08c8f774c7f4`
+Commit: `fe7e11daae88`
+- `CLibrary.cs` `b458f56088ad4b77`
 - `CWing.cs` `1e096be3dc635adc`

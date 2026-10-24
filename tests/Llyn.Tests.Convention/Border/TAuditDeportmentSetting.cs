@@ -215,6 +215,7 @@ internal static class TAuditDeportmentSetting
                 "CFold",
                 "CPanel",
                 "CPanelBin",
+                "CPanelOutcome",
                 "CAperture",
                 "CDiptych",
                 "CAtlas",

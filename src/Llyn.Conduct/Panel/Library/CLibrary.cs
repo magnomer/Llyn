@@ -41,7 +41,7 @@ public sealed class CLibrary
             _cLibrarySettingsPort,
             _cLibraryVistaPort,
             "List.LoadFailed", "Scribe", editor.CEditorDesk.LDeskChangeCheck, editor.LEditorFinish,
-            shownSeam);
+            shownSeam, "List.Empty", "List.Unmatched");
         CLibraryPanel.CPanelCleared += () => editor.CEditorEntryOpen(null);
         CLibraryPanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
         editor.CEditorDisplay.CDisplayPanelAttach(CLibraryPanel);
@@ -198,7 +198,9 @@ public sealed class CLibrary
 
     public async Task<string?> CLibraryEntryExport(long id)
     {
-        return CLibraryPanel.CPanelRowSelect(id) ? await CLibraryPortraitExport() : null;
+        return CLibraryPanel.CPanelRowSelect(id) == CPanelOutcome.CPanelOutcomeOpened
+            ? await CLibraryPortraitExport()
+            : null;
     }
 
     public async Task<int?> CLibraryMarkupImport()

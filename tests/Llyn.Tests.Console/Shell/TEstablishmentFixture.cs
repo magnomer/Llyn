@@ -70,6 +70,7 @@ internal static class TEstablishmentFixture
                 static () => { },
                 static () => { },
                 static () => { }),
+            static () => [],
             static () => { },
             static () => { },
             static () => { });
