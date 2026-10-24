@@ -10,9 +10,9 @@ Tab, Tab and Enter press the first button, and Shift+Tab from the field reaches 
 Shift+Tab then Tab lands in the field again.
 Enter on a folder row enters it, Enter on `..\` and Backspace in the list climb.
 A file prompt lists the folders and only the wanted suffixes, and typing narrows the list.
-Enter in the field accepts a path relative to the folder shown.
 A missing file shows an alert and the prompt stays open.
 A folder that cannot be read at the start shows its parent with the alert.
+When no folder can be read, Choose answers nothing.
 An entry that cannot be read keeps the folder shown and shows the alert.
 An empty folder lists only `..\`.
 A folder name too long for the row is clipped on the left.
@@ -20,11 +20,21 @@ A wide file name is clipped by cells.
 The help lists the path keys, among them the parent folder.
 With no folder given, the prompt starts in the workspace, for the markup file and the folder question both.
 
+`TPathfinderRun` ends every key script with up to four F10 presses, each sent only while the run is still going.
+A key left over after the answer may open a box in the window.
+One F10 would then close that box, and the run would wait for a key forever.
+
 ## `TPathfinderMedium`
 
 The save prompt, with the formats Llyn Markup and HTML.
 Enter in the field saves the offered name with the suffix of the chosen format.
-Right changes the format and the suffix, and the list shows only that format's files.
+Tab goes from the field to the Format row and then to the list.
+The Format row draws `lit` while it holds the focus.
+Shift+Tab goes back the same way.
+Right in the field leaves the format as it is.
+Right on the Format row changes the format and the suffix, and the list shows only that format's files.
+A format change keeps the typed folder in view.
+Opening a folder row clears a typed text with a folder part, and keeps a bare name.
 A name typed after Right stays at the end of the name, and Right then Left keeps the typed name.
 A suffix typed by the user is kept as typed, and a name without one gets the suffix.
 Enter on an empty field asks nothing and saves nothing, and the prompt stays open for a name.
@@ -32,6 +42,19 @@ An existing file asks `Replace it?`, Yes saves, and No reopens the prompt.
 Escape answers null and still reports the format that was chosen.
 `BSPathfinderMediumRemove` strips a known suffix in any case and leaves other text.
 `BSPathfinderMediumMove` clamps at both ends.
+
+## `TPathfinderPath`
+
+How a typed path is joined to the folder shown, through `BSPathfinderPath` and through the prompt.
+Enter in the field accepts a path relative to the folder shown, and a typed path with the open button.
+The list follows the folder part of the typed text, and Enter on its row reads against that folder.
+A typed folder that cannot be read lists only `..\` and shows no alert.
+A segment after it narrows that `..\` away like any other row.
+A path that starts with one separator takes the drive, or the server and share, of the folder shown.
+A drive with a relative path reads against the folder shown on the same drive.
+On another drive it reads from that drive's root.
+A drive alone is its root.
+A `..` stops at a drive root and at a network share, and a `.` is dropped.
 
 ## `TDrive`
 
@@ -41,9 +64,20 @@ Escape keeps the folder.
 A drive seam that throws shows no list and no alert.
 The help shows the drive legend.
 
+## `TCapsulePathfinder`
+
+The path prompt as it reads and writes the console Capsule.
+It sits apart from `TCapsule` because it drives the prompt, not the wardrobe.
+A prompt with no given folder starts in the stored folder.
+Accepting it there keeps the stored theme, so each save rewrites only its own field.
+A prompt given a folder stores the folder of its accepted answer.
+An accepted file stores its parent folder, and the next prompt starts there.
+
 ## Stamp
 
-Commit: `78fc0ebfff7c`
+Commit: `5813c19fd19c`
+- `TCapsulePathfinder.cs` `3dea711812f94ba1`
 - `TDrive.cs` `24a2ced50fe8bc01`
-- `TPathfinder.cs` `5fea131179bbb3c3`
-- `TPathfinderMedium.cs` `203702d0be1b9c65`
+- `TPathfinder.cs` `e0b8cab11201e2ed`
+- `TPathfinderMedium.cs` `d81d764df3af1e9d`
+- `TPathfinderPath.cs` `5d29d55b63342f9c`

@@ -64,11 +64,19 @@ internal sealed class BMirror
         atelier.CAtelierNavigation.CNavigationChanged +=
             BObserver.BObserverCreate<CNavigationState>(BMirrorNavigationObserve);
         atelier.CAtelierLedger.CLedgerChanged += BObserver.BObserverCreate<CLedgerState>(BMirrorLedgerObserve);
+        atelier.CAtelierWorkspace.CWorkspaceOpened += BMirrorWorkspaceObserve;
         if (courier is not null)
         {
             courier.CCourierChanged += BObserver.BObserverCreate<CCourierState>(BMirrorCourierObserve);
             BMirrorCourierObserve(courier.CCourierRead());
         }
+    }
+
+    private void BMirrorWorkspaceObserve()
+    {
+        _bMirrorWardrobe.BWardrobeRootRefine(_bMirrorAtelier?.CAtelierPathRead());
+        BMirrorRoof.BRoofApply(BMirrorMenuBuild());
+        _bMirrorRestyled();
     }
 
     private void BMirrorNavigationObserve(CNavigationState state)

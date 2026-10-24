@@ -20,6 +20,7 @@ A file that cannot be read or parsed also answers the default, so the window alw
 A null or blank root has no file, so nothing is written.
 It writes a pending file first and moves it over the old one.
 A crash therefore never leaves half a file.
+A save that fails removes its pending file, so a read-only store leaves nothing beside it.
 A folder that cannot be written throws, and the caller decides what a lost save means.
 
 ## `LCapsuleContent`
@@ -50,8 +51,8 @@ The main window's restored rectangle and whether it stood maximized when it clos
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `LCapsule.cs` `4ee2424a2987f7df`
+Commit: `5813c19fd19c`
+- `LCapsule.cs` `59b790cc1328bb57`
 - `LCapsuleColumn.cs` `44bd0b0b1df9a41e`
 - `LCapsuleContent.cs` `f8a00a21a8ac6543`
 - `LCapsulePress.cs` `635404bd8698189a`

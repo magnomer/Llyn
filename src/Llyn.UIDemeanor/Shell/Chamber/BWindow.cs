@@ -35,7 +35,7 @@ internal sealed class BWindow
         BLoop loop,
         BLocalizationCatalog catalog,
         CAtelier? atelier,
-        CEnvoy envoy,
+        BEnvoy envoy,
         BBlueprint blueprint,
         (string?, BTheme) theme,
         Func<string, BTheme?> themes,
@@ -60,7 +60,8 @@ internal sealed class BWindow
         _bWindowHelpBlueprint = BContract.BContractBlueprintFind(blueprint, "ASParley");
         string glyphs = _bWindowHelpBlueprint.BBlueprintPartChildren is [{ BBlueprintPartGlyphs: string set }]
             ? set : string.Empty;
-        _bWindowWardrobe = new BWardrobe(theme, themes, blueprint.BBlueprintGlyphs, glyphs, capsule, atelier);
+        _bWindowWardrobe = new BWardrobe(
+            theme, themes, envoy.BEnvoyThemeShow, blueprint.BBlueprintGlyphs, glyphs, capsule, atelier);
         _bWindowTabs = new BNavigation(blueprint, atelier);
         _bWindowEstablishment = new BEstablishment(_bWindowBlueprint, catalog);
         _bWindowMural = new BMural(blueprint, _bWindowBlueprint, catalog, _bWindowTabs, _bWindowEstablishment);

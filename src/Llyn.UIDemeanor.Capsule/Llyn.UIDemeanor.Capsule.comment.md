@@ -19,6 +19,7 @@ A file that cannot be read or parsed also answers the default, so the console al
 A null or blank root has no file, so nothing is written.
 It writes a pending file first and moves it over the old one.
 A crash therefore never leaves half a file.
+A save that fails removes its pending file, so a read-only store leaves nothing beside it.
 A folder that cannot be written throws, and the caller decides what a lost save means.
 
 ## `LCapsuleSetting`
@@ -31,7 +32,7 @@ The folder member holds the folder the path prompt last accepted.
 
 ## Stamp
 
-Commit: `78fc0ebfff7c`
-- `LCapsuleConsole.cs` `d876aac5d0f89340`
+Commit: `5813c19fd19c`
+- `LCapsuleConsole.cs` `fd322f5762eca4f8`
 - `LCapsuleSetting.cs` `38a4c0859e1a71e9`
 - `Llyn.UIDemeanor.Capsule.csproj` `c26a2a97a04873fe`

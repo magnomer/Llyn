@@ -1,5 +1,6 @@
 using Llyn.Conduct;
 using Llyn.UIDemeanor;
+using Llyn.UITerminal;
 using Xunit;
 
 namespace Llyn.Tests;
@@ -12,6 +13,7 @@ public sealed class TPathfinderMedium
         new('\0', ConsoleKey.RightArrow, false, false, false);
     private static readonly ConsoleKeyInfo TPathfinderMediumLeft = new('\0', ConsoleKey.LeftArrow, false, false, false);
     private static readonly ConsoleKeyInfo TPathfinderMediumDown = new('\0', ConsoleKey.DownArrow, false, false, false);
+    private static readonly ConsoleKeyInfo TPathfinderMediumTab = new('\t', ConsoleKey.Tab, false, false, false);
     private static readonly ConsoleKeyInfo TPathfinderMediumBack = new('\t', ConsoleKey.Tab, true, false, false);
     private static readonly ConsoleKeyInfo[] TPathfinderMediumErase =
         [.. Enumerable.Repeat(new ConsoleKeyInfo('\b', ConsoleKey.Backspace, false, false, false), 5)];
@@ -37,10 +39,65 @@ public sealed class TPathfinderMedium
     public void PathfinderSave_Right_ChangesFormatAndSuffix()
     {
         string? answer = TPathfinder.TPathfinderRun(
-            [], _ => [TPathfinderMediumRight, TPathfinderMediumEnter], TPathfinderMediumConsult, out var shots);
+            [], _ => [TPathfinderMediumTab, TPathfinderMediumRight, TPathfinderMediumEnter], TPathfinderMediumConsult,
+            out var shots);
 
         Assert.Equal("~\\entry.html|CPortraitMediumHtml", answer);
         Assert.Contains(shots, static shot => shot.Contains("Format HTML", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void PathfinderSave_FieldRight_KeepsFormat()
+    {
+        string? answer = TPathfinder.TPathfinderRun(
+            [], _ => [TPathfinderMediumRight, TPathfinderMediumEnter], TPathfinderMediumConsult, out _);
+
+        Assert.Equal("~\\entry.llx|CPortraitMediumMarkup", answer);
+    }
+
+    [Fact]
+    public void PathfinderSave_TabTab_ReachesList()
+    {
+        string? answer = TPathfinder.TPathfinderRun(
+            ["a.llx"],
+            _ => [TPathfinderMediumTab, TPathfinderMediumTab, TPathfinderMediumDown, TPathfinderMediumEnter,
+                TPathfinderMediumEnter],
+            TPathfinderMediumConsult,
+            out _);
+
+        Assert.Equal("~\\a.llx|CPortraitMediumMarkup", answer);
+    }
+
+    [Fact]
+    public void PathfinderSave_ShiftTabFromList_PassesFormatToField()
+    {
+        string? answer = TPathfinder.TPathfinderRun(
+            [],
+            _ => [TPathfinderMediumDown, TPathfinderMediumBack, TPathfinderMediumRight, TPathfinderMediumBack,
+                TPathfinderMediumRight, TPathfinderMediumEnter],
+            TPathfinderMediumConsult,
+            out _);
+
+        Assert.Equal("~\\entry.html|CPortraitMediumHtml", answer);
+    }
+
+    [Fact]
+    public void PathfinderSave_TabToFormat_DrawsFormatLit()
+    {
+        BLocalizationCatalog catalog = new();
+        catalog.BLocalizationCatalogApply(TInterface.TLocalizationLoad("en"));
+        BSPathfinder pathfinder = new(
+            new ABootstrap().BBlueprintParts["ASPathfinder"], catalog, "C:\\", null, static _ => ([], []),
+            static _ => false, static _ => { }, static () => null, new BSPathfinderMedium(TPathfinderMediumChoices));
+        Func<string?> format = () => pathfinder.BSParleyBodyDraw(
+                new Dictionary<string, IReadOnlyList<string>>(), 0, 0, 72, true, "dialog", new BCanvasWidth(false))
+            .First(static text => text.BCanvasTextValue.StartsWith("Format", StringComparison.Ordinal))
+            .BCanvasTextRole;
+        Assert.NotEqual("lit", format());
+
+        pathfinder.BSParleyBodyObserve(TPathfinderMediumTab);
+
+        Assert.Equal("lit", format());
     }
 
     [Fact]
@@ -48,7 +105,8 @@ public sealed class TPathfinderMedium
     {
         string? answer = TPathfinder.TPathfinderRun(
             [],
-            _ => [TPathfinderMediumRight, TPathfinder.TPathfinderKeyBuild('x'), TPathfinderMediumEnter],
+            _ => [TPathfinderMediumTab, TPathfinderMediumRight, TPathfinder.TPathfinderKeyBuild('x'),
+                TPathfinderMediumEnter],
             TPathfinderMediumConsult,
             out var shots);
 
@@ -76,8 +134,8 @@ public sealed class TPathfinderMedium
             [],
             _ =>
             [
-                TPathfinder.TPathfinderKeyBuild('x'), TPathfinderMediumRight, TPathfinderMediumLeft,
-                TPathfinderMediumRight, TPathfinderMediumEnter,
+                TPathfinder.TPathfinderKeyBuild('x'), TPathfinderMediumTab, TPathfinderMediumRight,
+                TPathfinderMediumLeft, TPathfinderMediumRight, TPathfinderMediumEnter,
             ],
             TPathfinderMediumConsult,
             out _);
@@ -152,7 +210,7 @@ public sealed class TPathfinderMedium
     {
         TPathfinder.TPathfinderRun(
             ["a.llx", "b.html"],
-            _ => [TPathfinderMediumRight, TPathfinderMediumEscape],
+            _ => [TPathfinderMediumTab, TPathfinderMediumRight, TPathfinderMediumEscape],
             TPathfinderMediumConsult,
             out var shots);
 
@@ -161,10 +219,52 @@ public sealed class TPathfinderMedium
     }
 
     [Fact]
+    public void PathfinderSave_RightWithTypedFolder_ListsThatFolder()
+    {
+        TPathfinder.TPathfinderRun(
+            ["b\\", "b\\x.html", "y.html"],
+            _ => [.. TPathfinderMediumErase, .. "b\\".Select(TPathfinder.TPathfinderKeyBuild), TPathfinderMediumTab,
+                TPathfinderMediumRight, TPathfinderMediumEscape],
+            TPathfinderMediumConsult,
+            out var shots);
+
+        Assert.Contains("x.html", shots[^1], StringComparison.Ordinal);
+        Assert.DoesNotContain("y.html", shots[^1], StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void PathfinderSave_TypedFolderRowEnter_ClearsField()
+    {
+        string? answer = TPathfinder.TPathfinderRun(
+            ["a\\", "a\\w\\"],
+            _ => [.. TPathfinderMediumErase, .. "a\\w".Select(TPathfinder.TPathfinderKeyBuild), TPathfinderMediumDown,
+                TPathfinderMediumEnter, TPathfinder.TPathfinderKeyBuild('n'), TPathfinderMediumBack,
+                TPathfinderMediumBack, TPathfinderMediumEnter],
+            TPathfinderMediumConsult,
+            out _);
+
+        Assert.Equal("~\\a\\w\\n.llx|CPortraitMediumMarkup", answer);
+    }
+
+    [Fact]
+    public void PathfinderSave_NameFolderRowEnter_KeepsName()
+    {
+        string? answer = TPathfinder.TPathfinderRun(
+            ["b\\"],
+            _ => [TPathfinderMediumDown, TPathfinderMediumDown, TPathfinderMediumEnter, TPathfinderMediumBack,
+                TPathfinderMediumBack, TPathfinderMediumEnter],
+            TPathfinderMediumConsult,
+            out _);
+
+        Assert.Equal("~\\b\\entry.llx|CPortraitMediumMarkup", answer);
+    }
+
+    [Fact]
     public void PathfinderSave_Escape_AnswersNullWithCurrentMedium()
     {
         string? answer = TPathfinder.TPathfinderRun(
-            [], _ => [TPathfinderMediumRight, TPathfinderMediumEscape], TPathfinderMediumConsult, out _);
+            [], _ => [TPathfinderMediumTab, TPathfinderMediumRight, TPathfinderMediumEscape], TPathfinderMediumConsult,
+            out _);
 
         Assert.Equal("|CPortraitMediumHtml", answer);
     }
@@ -187,7 +287,11 @@ public sealed class TPathfinderMedium
     {
         string? answer = TPathfinder.TPathfinderRun(
             ["entry.llx"],
-            _ => [TPathfinderMediumEnter, TPathfinderMediumEscape, TPathfinderMediumRight, TPathfinderMediumEnter],
+            _ =>
+            [
+                TPathfinderMediumEnter, TPathfinderMediumEscape, TPathfinderMediumTab, TPathfinderMediumRight,
+                TPathfinderMediumEnter,
+            ],
             TPathfinderMediumConsult,
             out _);
 
@@ -238,5 +342,4 @@ public sealed class TPathfinderMedium
             envoy.CEnvoyFileRead(Path.Combine(root, "entry.llx"), TPathfinderMediumChoices);
         return $"{file}|{medium}";
     }
-
 }

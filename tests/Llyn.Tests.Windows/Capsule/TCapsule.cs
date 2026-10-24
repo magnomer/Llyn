@@ -25,6 +25,28 @@ public sealed class TCapsule
         Assert.False(File.Exists(Path.Combine(workspace.TWorkspaceFolder, "capsule.json.tmp")));
     }
 
+    [Fact]
+    public void CapsuleSave_ReadOnlyFile_LeavesNoPending()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        string path = Path.Combine(workspace.TWorkspaceFolder, "capsule.json");
+        TInterfaceCapsule.TCapsuleSave(
+            workspace.TWorkspaceFolder, TInterfaceCapsule.TCapsuleContentCreate(null, false));
+        File.SetAttributes(path, FileAttributes.ReadOnly);
+        try
+        {
+            _ = Assert.ThrowsAny<System.Exception>(() => TInterfaceCapsule.TCapsuleSave(
+                workspace.TWorkspaceFolder, TInterfaceCapsule.TCapsuleContentCreate(null, true)));
+
+            Assert.False(TInterfaceCapsule.TCapsuleRead(workspace.TWorkspaceFolder).LCapsuleContentLinked);
+            Assert.False(File.Exists(path + ".tmp"));
+        }
+        finally
+        {
+            File.SetAttributes(path, FileAttributes.Normal);
+        }
+    }
+
     [Theory]
     [InlineData(null)]
     [InlineData("{ not json")]

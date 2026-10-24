@@ -55,7 +55,23 @@ public sealed class LCapsuleConsole
 
         string path = Path.Combine(root, LCapsuleConsoleName);
         string pending = path + ".tmp";
-        File.WriteAllText(pending, JsonSerializer.Serialize(state, LCapsuleConsoleOptions));
-        File.Move(pending, path, true);
+        try
+        {
+            File.WriteAllText(pending, JsonSerializer.Serialize(state, LCapsuleConsoleOptions));
+            File.Move(pending, path, true);
+        }
+        finally
+        {
+            try
+            {
+                File.Delete(pending);
+            }
+            catch (IOException)
+            {
+            }
+            catch (UnauthorizedAccessException)
+            {
+            }
+        }
     }
 }

@@ -28,7 +28,7 @@ The courier exists only with an atelier, so a refused start has no Joplin items.
 
 Reads the size and observes it.
 With an atelier it subscribes to arrivals, has `BMirrorOpen` subscribe the mirrored state, then subscribes to establishment changes.
-Each subscription but the arrival one comes through `BObserverCreate`, so it runs on the loop's thread.
+Each subscription but the arrival one and the workspace-open one comes through `BObserverCreate`, so it runs on the loop's thread.
 Work from the loop's thread runs at once, and other work is deferred onto the loop.
 A tab arrival closes any open roof menu, so a menu never stays over the new tab.
 It opens nothing, since subscribing and opening are two roles.
@@ -110,6 +110,15 @@ Each ledger change applies the ledger's texts to the catalog and keeps the ledge
 It then gives the roof new menus, as the GUI settings do.
 Without a courier only navigation and ledger are heard.
 
+It also hears each workspace open directly, since a change runs on the loop from a roof row.
+
+## `BMirrorWorkspaceObserve`
+
+Each workspace open hands the wardrobe the open root, as the GUI posture rereads its root.
+So a workspace change mid-run gives the window the new workspace's look.
+The roof then gets new menus and the canvas is dropped once, as a look choice does.
+The first open names the root the wardrobe already holds, so it changes no choice.
+
 ## `BMirrorMenuBuild`
 
 Builds the roof's three menus, the product menu, the tab menu and `Options`.
@@ -140,15 +149,35 @@ Holds the look the user can change during the run.
 That is the theme, the glyph set and the width of ambiguous characters.
 A choice answers false for a name it does not know, so a bad name changes nothing.
 The theme is replaced whole with its name.
-The theme seam answers null after a failed load has been shown, so the current theme stays.
-The glyph set in use is named, and the marks are that set's glyphs.
+A theme that fails to load leaves the current theme in place.
+A theme the user chooses reports its failure, so the theme box shows the reason.
+A stored theme that fails is not the user's failure, so it falls back without a report.
+That one rule holds at start and on a workspace change.
+The glyph set in use is named, and the marks are read from that set's glyphs.
 The initial set comes from the glyph set of the `ASParley` child, and is empty when that has none.
 The glyph sets it hands the blueprint map every set name to the set in use.
 So frames draw the chosen set whatever set they name.
 Ambiguous width is `narrow` or `wide`, and it builds the canvas width measure everything else shares.
 The choices outlive the run in the console Capsule under the workspace root.
-On start each stored name goes through its own choice, so a name this build does not know falls back.
+The wardrobe holds that root, and every save goes there.
 A choice that succeeds is stored at once, so a crash later in the run keeps it.
+
+## `BWardrobeRootRefine`
+
+Takes a workspace root and applies the look stored under it.
+The constructor calls it with the start root.
+A root equal to the held one changes nothing.
+So a stale stored name is tried once per root.
+Each stored name goes through its own choice.
+A field the file lacks returns that choice to its default.
+A name this build does not know returns that choice to its default too.
+A stale name and a missing one mean the same, since neither names a look this build can show.
+So the new workspace's look is replaced whole, as Deportment's `QPosture` replaces its content.
+Keeping the old value would carry one workspace's look into another.
+The default glyph set is the one the constructor was given.
+The reset writes nothing, so the new workspace's file stays as it was.
+A stored theme equal to the current one is skipped, so the theme is not loaded again.
+Saves after it go to the new root alone, so no state merges across workspaces.
 
 ## `BWardrobeSave`
 
@@ -243,13 +272,13 @@ The legend sits on the last row at column 0.
 
 ## Stamp
 
-Commit: `78fc0ebfff7c`
+Commit: `5813c19fd19c`
 - `BDocket.cs` `2f1ab27227907c41`
 - `BEstablishment.cs` `f0b09dc75cb89774`
 - `BKeymapWindow.cs` `ac57c5af4fc27418`
-- `BMirror.cs` `7cd7718e386c989c`
+- `BMirror.cs` `c5d61ad35d8927a0`
 - `BMural.cs` `694702d575d8e626`
 - `BNavigation.cs` `c45d372cb6483331`
 - `BNotice.cs` `7a5f8cc1b48d424d`
-- `BWardrobe.cs` `421e8dba291e606e`
-- `BWindow.cs` `3904105e70def229`
+- `BWardrobe.cs` `3aa4f791074e68eb`
+- `BWindow.cs` `a23a035a01c9f736`

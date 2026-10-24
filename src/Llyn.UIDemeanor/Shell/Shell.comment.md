@@ -93,7 +93,8 @@ With the window's envoy it opens a `BWindow` on an attached atelier instead.
 It builds one console Capsule and hands it to both the window and the envoy.
 So the wardrobe and the path prompt write one file.
 It also hands the window a theme loader over the kept theme seam.
-A theme that fails to load is shown in the theme box, and the loader answers null.
+A theme that fails to load throws, and the wardrobe decides whether the theme box shows it.
+The window gets the envoy's theme box as the wardrobe's report.
 The window starts with the default theme's name only when the first load worked.
 So the menu does not mark the spare palette as a named choice.
 It opens as the loop's first work item and opens the atelier as the second.
@@ -151,6 +152,6 @@ It refuses a thread with no loop, since the marshal would have nowhere to go.
 
 ## Stamp
 
-Commit: `78fc0ebfff7c`
-- `BBootstrap.cs` `b3911f158f5b35d7`
+Commit: `5813c19fd19c`
+- `BBootstrap.cs` `0952aad2621c697b`
 - `BObserver.cs` `55a41481c90c90c6`

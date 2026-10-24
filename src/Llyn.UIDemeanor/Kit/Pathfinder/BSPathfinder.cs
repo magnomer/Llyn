@@ -17,13 +17,15 @@ internal sealed class BSPathfinder : BSParleyBody
     private readonly Func<string?> _bsPathfinderDrive;
     private readonly BSPathfinderMedium? _bsPathfinderMedium;
     private readonly BKeymap _bsPathfinderPathKeymap;
+    private readonly BKeymap _bsPathfinderFormatKeymap;
     private readonly BKeymap _bsPathfinderListKeymap;
     private readonly string _bsPathfinderOrigin;
     private BKeymap _bsPathfinderKeymap;
     private readonly BField _bsPathfinderField;
     private (string? BSPathfinderSightFolder, IReadOnlyList<string> BSPathfinderSightEntries) _bsPathfinderSight =
         (null, []);
-    private IReadOnlyList<string> _bsPathfinderShown = [];
+    private (string? BSPathfinderPreviewFolder, IReadOnlyList<string> BSPathfinderPreviewEntries) _bsPathfinderPreview =
+        (null, []);
     private int _bsPathfinderLit;
     private string? _bsPathfinderAlert;
 
@@ -77,37 +79,49 @@ internal sealed class BSPathfinder : BSParleyBody
             owned.BSPathfinderMediumMove(step);
             BSPathfinderEntriesRefine(BSPathfinderFolderShown, _bsPathfinderSight.BSPathfinderSightFolder);
         };
-        BKeymapRow[] formats = medium is null ? [] :
-        [
-            new(ConsoleKey.LeftArrow, 0, focus, "Pathfinder.Format", _ => format(-1), shown),
-            new(ConsoleKey.RightArrow, 0, focus, "Pathfinder.Format", _ => format(1), shown),
-        ];
-        _bsPathfinderPathKeymap = new BKeymap(
+        _bsPathfinderFormatKeymap = new BKeymap(
         [
             new(ConsoleKey.Tab, 0, focus, "Window.Help.Part", _ => BSParleyBodyResume(true), shown),
+            new(ConsoleKey.Tab, ConsoleModifiers.Shift, focus, "Window.Help.Part",
+                _ => BSParleyBodyResume(false), shown),
+            new(ConsoleKey.LeftArrow, 0, focus, "Pathfinder.Format", _ => format(-1), shown),
+            new(ConsoleKey.RightArrow, 0, focus, "Pathfinder.Format", _ => format(1), shown),
+            new(ConsoleKey.Enter, 0, focus, "Window.Help.Run", _ => BSPathfinderTypedAccept(), shown),
+            new(ConsoleKey.F1, ConsoleModifiers.Alt, focus, "Pathfinder.Drive", drives, shown),
+        ]);
+        _bsPathfinderPathKeymap = new BKeymap(
+        [
+            new(ConsoleKey.Tab, 0, focus, "Window.Help.Part", _ =>
+            {
+                if (medium is null)
+                {
+                    BSParleyBodyResume(true);
+                    return;
+                }
+
+                _bsPathfinderKeymap = _bsPathfinderFormatKeymap;
+            }, shown),
             new(ConsoleKey.DownArrow, 0, focus, "Window.Help.Item", _ => BSParleyBodyResume(true), shown),
             new(ConsoleKey.Enter, 0, focus, "Window.Help.Run", _ => BSPathfinderTypedAccept(), shown),
-            .. formats,
             new(ConsoleKey.F1, ConsoleModifiers.Alt, focus, "Pathfinder.Drive", drives, shown),
         ]);
         _bsPathfinderListKeymap = new BKeymap(
         [
-            new(ConsoleKey.Tab, ConsoleModifiers.Shift, focus, "Window.Help.Part",
-                _ => BSParleyBodyResume(false), shown),
+            new(ConsoleKey.Tab, ConsoleModifiers.Shift, focus, "Window.Help.Part", _ => _bsPathfinderKeymap =
+                medium is null ? _bsPathfinderPathKeymap : _bsPathfinderFormatKeymap, shown),
             new(ConsoleKey.UpArrow, 0, focus, "Window.Help.Item", _ => BSPathfinderLitMove(-1), shown),
             new(ConsoleKey.DownArrow, 0, focus, "Window.Help.Item", _ => BSPathfinderLitMove(1), shown),
             new(ConsoleKey.Enter, 0, focus, "Window.Help.Run", _ => BSPathfinderLitAccept(), shown),
             new(ConsoleKey.Backspace, 0, focus, "Pathfinder.Climb",
-                _ => BSPathfinderFolderOpen(BSPathfinderPath.BSPathfinderPathResolve(BSPathfinderFolderShown, "..")),
+                _ => BSPathfinderFolderOpen(BSPathfinderPath.BSPathfinderPathResolve(BSPathfinderFolderPreview, "..")),
                 shown),
-            .. formats,
             new(ConsoleKey.F1, ConsoleModifiers.Alt, focus, "Pathfinder.Drive", drives, shown),
         ]);
         _bsPathfinderKeymap = _bsPathfinderPathKeymap;
         string origin = BSPathfinderPath.BSPathfinderPathResolve(folder, string.Empty);
         for (string start = origin; ; start = BSPathfinderPath.BSPathfinderPathResolve(start, ".."))
         {
-            if (BSPathfinderEntriesRefine(start, null))
+            if (BSPathfinderEntriesRefine(start, start))
             {
                 origin = start;
                 break;
@@ -132,20 +146,24 @@ internal sealed class BSPathfinder : BSParleyBody
 
     private string BSPathfinderFolderShown => _bsPathfinderSight.BSPathfinderSightFolder ?? _bsPathfinderOrigin;
 
+    private string BSPathfinderFolderPreview =>
+        _bsPathfinderPreview.BSPathfinderPreviewFolder ?? BSPathfinderFolderShown;
+
     internal void BSPathfinderAccept()
     {
+        IReadOnlyList<string> shown = _bsPathfinderPreview.BSPathfinderPreviewEntries;
         if (_bsPathfinderField.BFieldText.Length > 0)
         {
             BSPathfinderTypedAccept();
         }
         else if (_bsPathfinderSuffixes is null && _bsPathfinderMedium is null)
         {
-            _bsPathfinderChoose(BSPathfinderFolderShown);
+            BSPathfinderTypedAccept();
         }
-        else if (_bsPathfinderLit < _bsPathfinderShown.Count && !_bsPathfinderShown[_bsPathfinderLit].EndsWith('\\'))
+        else if (_bsPathfinderLit < shown.Count && !shown[_bsPathfinderLit].EndsWith('\\'))
         {
             _bsPathfinderChoose(BSPathfinderPath.BSPathfinderPathResolve(
-                BSPathfinderFolderShown, _bsPathfinderShown[_bsPathfinderLit]));
+                BSPathfinderFolderPreview, shown[_bsPathfinderLit]));
         }
     }
 
@@ -211,7 +229,7 @@ internal sealed class BSPathfinder : BSParleyBody
                 path.BBlueprintPartTheme);
         }
 
-        IReadOnlyList<string> shown = _bsPathfinderShown;
+        IReadOnlyList<string> shown = _bsPathfinderPreview.BSPathfinderPreviewEntries;
         int top = Math.Max(_bsPathfinderLit - list.BBlueprintPartHeight + 1, 0);
         for (int line = 0; line < list.BBlueprintPartHeight; line++)
         {
@@ -239,7 +257,7 @@ internal sealed class BSPathfinder : BSParleyBody
             medium.BBlueprintPartColumn,
             medium.BBlueprintPartWidth,
             measure.BCanvasWidthClamp(format, medium.BBlueprintPartWidth),
-            medium.BBlueprintPartTheme);
+            focused && _bsPathfinderKeymap == _bsPathfinderFormatKeymap ? "lit" : medium.BBlueprintPartTheme);
         yield return new BCanvasText(
             alert.BBlueprintPartRow,
             alert.BBlueprintPartColumn,
@@ -251,7 +269,7 @@ internal sealed class BSPathfinder : BSParleyBody
             folder.BBlueprintPartColumn,
             folder.BBlueprintPartWidth,
             measure.BCanvasWidthShorten(
-                BSPathfinderFolderShown,
+                BSPathfinderFolderPreview,
                 folder.BBlueprintPartWidth,
                 glyphs.GetValueOrDefault("Ellipsis") is [string trail, ..] ? trail : "…"),
             folder.BBlueprintPartTheme);
@@ -259,41 +277,38 @@ internal sealed class BSPathfinder : BSParleyBody
 
     private bool BSPathfinderFolderOpen(string folder)
     {
-        return BSPathfinderEntriesRefine(folder, folder);
+        if (!BSPathfinderEntriesRefine(folder, folder))
+        {
+            return false;
+        }
+
+        if (_bsPathfinderPreview.BSPathfinderPreviewFolder is not null)
+        {
+            _bsPathfinderField.BFieldClear();
+            BSPathfinderShownRefine(string.Empty);
+        }
+
+        return true;
     }
 
     private bool BSPathfinderEntriesRefine(string folder, string? navigated)
     {
-        IReadOnlyList<string> folders;
-        IReadOnlyList<string> files;
-        try
-        {
-            (folders, files) = _bsPathfinderListing(folder);
-        }
-        catch (Exception)
+        if (BSPathfinderEntries.BSPathfinderEntriesRead(
+                _bsPathfinderListing, _bsPathfinderSuffixes, _bsPathfinderMedium, folder, string.Empty)
+            is not IReadOnlyList<string> entries)
         {
             _bsPathfinderAlert = _bsPathfinderCatalog.BLocalizationTextRead("Pathfinder.Unreadable");
             return false;
         }
 
-        Func<string, string> name = entry => entry[(entry.LastIndexOfAny(['\\', '/']) + 1)..];
-        StringComparer order = StringComparer.OrdinalIgnoreCase;
-        IReadOnlyList<string>? asked = _bsPathfinderMedium is BSPathfinderMedium medium
-            ? [medium.BSPathfinderMediumChoice.CPortraitChoiceSuffix]
-            : _bsPathfinderSuffixes;
-        IEnumerable<string> shown = asked is IReadOnlyList<string> suffixes
-            ? files.Select(name)
-                .Where(file => suffixes.Any(suffix => file.EndsWith(suffix, StringComparison.OrdinalIgnoreCase)))
-                .Order(order)
-            : [];
-        _bsPathfinderSight =
-            (navigated, ["..\\", .. folders.Select(name).Order(order).Select(static entry => entry + "\\"), .. shown]);
+        _bsPathfinderSight = (navigated, entries);
         if (_bsPathfinderMedium is null)
         {
             _bsPathfinderField.BFieldClear();
         }
 
-        BSPathfinderShownRefine(string.Empty);
+        string typed = _bsPathfinderField.BFieldText;
+        BSPathfinderShownRefine(typed[..(typed.LastIndexOfAny(['\\', '/']) + 1)]);
         return true;
     }
 
@@ -339,14 +354,14 @@ internal sealed class BSPathfinder : BSParleyBody
 
     private void BSPathfinderLitAccept()
     {
-        IReadOnlyList<string> shown = _bsPathfinderShown;
+        IReadOnlyList<string> shown = _bsPathfinderPreview.BSPathfinderPreviewEntries;
         if (_bsPathfinderLit >= shown.Count)
         {
             return;
         }
 
         string entry = shown[_bsPathfinderLit];
-        string path = BSPathfinderPath.BSPathfinderPathResolve(BSPathfinderFolderShown, entry);
+        string path = BSPathfinderPath.BSPathfinderPathResolve(BSPathfinderFolderPreview, entry);
         if (entry.EndsWith('\\'))
         {
             BSPathfinderFolderOpen(path);
@@ -363,17 +378,22 @@ internal sealed class BSPathfinder : BSParleyBody
 
     private void BSPathfinderShownRefine(string text)
     {
-        string segment = text[(text.LastIndexOfAny(['\\', '/']) + 1)..];
-        _bsPathfinderShown =
-        [
-            .. _bsPathfinderSight.BSPathfinderSightEntries
-                .Where(entry => entry.StartsWith(segment, StringComparison.OrdinalIgnoreCase)),
-        ];
+        int cut = text.LastIndexOfAny(['\\', '/']) + 1;
+        string segment = text[cut..];
+        string? folder =
+            cut == 0 ? null : BSPathfinderPath.BSPathfinderPathResolve(BSPathfinderFolderShown, text[..cut]);
+        _bsPathfinderPreview = folder is null
+            ? (null, [.. _bsPathfinderSight.BSPathfinderSightEntries
+                .Where(entry => entry.StartsWith(segment, StringComparison.OrdinalIgnoreCase))])
+            : (folder, BSPathfinderEntries.BSPathfinderEntriesRead(
+                    _bsPathfinderListing, _bsPathfinderSuffixes, _bsPathfinderMedium, folder, segment)
+                ?? ("..\\".StartsWith(segment, StringComparison.OrdinalIgnoreCase) ? ["..\\"] : []));
         _bsPathfinderLit = 0;
     }
 
     private void BSPathfinderLitMove(int step)
     {
-        _bsPathfinderLit = Math.Clamp(_bsPathfinderLit + step, 0, Math.Max(_bsPathfinderShown.Count - 1, 0));
+        _bsPathfinderLit = Math.Clamp(
+            _bsPathfinderLit + step, 0, Math.Max(_bsPathfinderPreview.BSPathfinderPreviewEntries.Count - 1, 0));
     }
 }

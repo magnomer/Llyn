@@ -5,12 +5,12 @@ namespace Llyn.Tests;
 
 public sealed class TPathfinder
 {
-    private static readonly ConsoleKeyInfo TPathfinderEnter = new('\r', ConsoleKey.Enter, false, false, false);
+    internal static readonly ConsoleKeyInfo TPathfinderEnter = new('\r', ConsoleKey.Enter, false, false, false);
     private static readonly ConsoleKeyInfo TPathfinderEscape = new('\e', ConsoleKey.Escape, false, false, false);
-    private static readonly ConsoleKeyInfo TPathfinderExit = new('\0', ConsoleKey.F10, false, false, false);
-    private static readonly ConsoleKeyInfo TPathfinderDown = new('\0', ConsoleKey.DownArrow, false, false, false);
+    internal static readonly ConsoleKeyInfo TPathfinderExit = new('\0', ConsoleKey.F10, false, false, false);
+    internal static readonly ConsoleKeyInfo TPathfinderDown = new('\0', ConsoleKey.DownArrow, false, false, false);
     private static readonly ConsoleKeyInfo TPathfinderTab = new('\t', ConsoleKey.Tab, false, false, false);
-    private static readonly ConsoleKeyInfo TPathfinderBack = new('\t', ConsoleKey.Tab, true, false, false);
+    internal static readonly ConsoleKeyInfo TPathfinderBack = new('\t', ConsoleKey.Tab, true, false, false);
     private static readonly ConsoleKeyInfo TPathfinderErase = new('\b', ConsoleKey.Backspace, false, false, false);
 
     [Fact]
@@ -155,32 +155,6 @@ public sealed class TPathfinder
     }
 
     [Fact]
-    public void PathfinderMedia_FieldEnter_AcceptsRelativePath()
-    {
-        string? answer = TPathfinderRun(
-            ["b\\", "b\\x.mp3"],
-            root => [.. TPathfinderTextBuild(root), TPathfinderEnter, .. TPathfinderTextBuild("b\\x.mp3"),
-                TPathfinderEnter],
-            TPathfinderMediaConsult,
-            out _);
-
-        Assert.Equal("~\\b\\x.mp3", answer);
-    }
-
-    [Fact]
-    public void PathfinderMedia_OpenWithTypedPath_AcceptsTypedPath()
-    {
-        string? answer = TPathfinderRun(
-            ["a.mp3", "b\\", "b\\a.mp3"],
-            root => [.. TPathfinderTextBuild(root), TPathfinderEnter, .. TPathfinderTextBuild("b\\a.mp3"),
-                TPathfinderBack, TPathfinderEnter],
-            TPathfinderMediaConsult,
-            out _);
-
-        Assert.Equal("~\\b\\a.mp3", answer);
-    }
-
-    [Fact]
     public void PathfinderFolder_Help_ListsPathKeys()
     {
         ConsoleKeyInfo help = new('\0', ConsoleKey.F1, false, false, false);
@@ -205,7 +179,7 @@ public sealed class TPathfinder
             TPathfinderMediaConsult,
             out var shots);
 
-        string[] first = shots[0].Split('\n');
+        string[] first = shots[^2].Split('\n');
         string[] last = shots[^1].Split('\n');
         int alert = Array.FindIndex(
             last, static row => row.Contains("The file could not be found.", StringComparison.Ordinal));
@@ -241,6 +215,19 @@ public sealed class TPathfinder
 
         Assert.Equal("~", answer);
         Assert.Contains(shots, static shot => shot.Contains("The folder could not be read.", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void PathfinderFolder_UnreadableShownChoose_AnswersNothing()
+    {
+        string? answer = TPathfinderRun(
+            [],
+            _ => [TPathfinderTab, TPathfinderTab, TPathfinderEnter, TPathfinderEscape],
+            TPathfinderFolderConsult,
+            out _,
+            static path => throw new UnauthorizedAccessException(path));
+
+        Assert.Null(answer);
     }
 
     [Fact]
@@ -340,6 +327,7 @@ public sealed class TPathfinder
             }
 
             TConsoleFake console = new() { TConsoleFakeTerminal = true };
+            using CancellationTokenSource finished = new();
             Task feeder = Task.Run(() =>
             {
                 SpinWait.SpinUntil(
@@ -354,11 +342,18 @@ public sealed class TPathfinder
                     SpinWait.SpinUntil(() => console.TConsoleFakeFrames.Count > count, 5000);
                 }
 
-                console.TConsoleFakeKeys.Add(TPathfinderExit);
+                for (int exit = 0; exit < 4 && !finished.IsCancellationRequested; exit++)
+                {
+                    int count = console.TConsoleFakeFrames.Count;
+                    console.TConsoleFakeKeys.Add(TPathfinderExit);
+                    SpinWait.SpinUntil(
+                        () => console.TConsoleFakeFrames.Count > count || finished.IsCancellationRequested, 5000);
+                }
             });
 
             object? answer = TEnvoy.TEnvoyRun(
                 console, envoy => ask(envoy, root), prime: prime, folder: folder, drives: drives);
+            finished.Cancel();
             feeder.Wait();
             shots = [.. console.TConsoleFakeShots.Select(static shot => string.Join('\n', shot))
                 .Where(static shot => shot.Contains("[ Cancel ]", StringComparison.Ordinal)
@@ -376,7 +371,7 @@ public sealed class TPathfinder
         return envoy.CEnvoyFolderRead(root);
     }
 
-    private static string? TPathfinderMediaConsult(BEnvoy envoy, string _)
+    internal static string? TPathfinderMediaConsult(BEnvoy envoy, string _)
     {
         return envoy.CEnvoyMediaRead("Cue.Pick", [".mp3"]);
     }

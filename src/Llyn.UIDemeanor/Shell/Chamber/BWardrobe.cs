@@ -10,54 +10,50 @@ namespace Llyn.UIDemeanor;
 
 internal sealed class BWardrobe
 {
+    private static readonly IReadOnlyDictionary<string, IReadOnlyList<string>> BWardrobeMarksNone =
+        new Dictionary<string, IReadOnlyList<string>>();
+
+    private const string BWardrobeAmbiguousDefault = "narrow";
+
     private readonly (string?, BTheme) _bWardrobeThemeDefault;
+    private readonly string _bWardrobeGlyphDefault;
     private readonly Func<string, BTheme?> _bWardrobeThemeSeam;
+    private readonly Action<string> _bWardrobeThemeReport;
     private readonly IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<string>>> _bWardrobeSets;
     private readonly LCapsuleConsole _bWardrobeCapsule;
-    private readonly CAtelier? _bWardrobeAtelier;
+    private string? _bWardrobeRoot;
     private (string, BTheme)? _bWardrobeThemeChosen;
 
     internal BWardrobe(
         (string?, BTheme) theme,
         Func<string, BTheme?> themes,
+        Action<string> report,
         IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<string>>> sets,
         string glyphs,
         LCapsuleConsole capsule,
         CAtelier? atelier)
     {
         ArgumentNullException.ThrowIfNull(themes);
+        ArgumentNullException.ThrowIfNull(report);
         ArgumentNullException.ThrowIfNull(sets);
         ArgumentNullException.ThrowIfNull(capsule);
 
         _bWardrobeThemeDefault = theme;
         _bWardrobeThemeSeam = themes;
+        _bWardrobeThemeReport = report;
         _bWardrobeSets = sets;
         _bWardrobeCapsule = capsule;
-        _bWardrobeAtelier = atelier;
+        _bWardrobeGlyphDefault = glyphs;
         BWardrobeGlyphApply(glyphs);
-
-        LCapsuleSetting stored = capsule.LCapsuleConsoleRead(atelier?.CAtelierPathRead());
-        if (stored.LCapsuleSettingTheme is string chosen)
-        {
-            _ = BWardrobeThemeSelect(chosen);
-        }
-
-        if (stored.LCapsuleSettingGlyph is string glyph)
-        {
-            _ = BWardrobeGlyphSelect(glyph);
-        }
-
-        if (stored.LCapsuleSettingAmbiguous is string ambiguous)
-        {
-            _ = BWardrobeAmbiguousSelect(ambiguous);
-        }
+        BWardrobeRootRefine(atelier?.CAtelierPathRead());
     }
 
     internal (string?, BTheme) BWardrobeTheme => _bWardrobeThemeChosen ?? _bWardrobeThemeDefault;
 
     internal string BWardrobeGlyphName { get; private set; }
 
-    internal IReadOnlyDictionary<string, IReadOnlyList<string>> BWardrobeMarks { get; private set; }
+    internal IReadOnlyDictionary<string, IReadOnlyList<string>> BWardrobeMarks =>
+        _bWardrobeSets.GetValueOrDefault(BWardrobeGlyphName) ?? BWardrobeMarksNone;
 
     internal IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<string>>> BWardrobeGlyphSets
     {
@@ -65,7 +61,7 @@ internal sealed class BWardrobe
         private set;
     }
 
-    internal string BWardrobeAmbiguousName { get; private set; } = "narrow";
+    internal string BWardrobeAmbiguousName { get; private set; } = BWardrobeAmbiguousDefault;
 
     internal BCanvasWidth BWardrobeWidth { get; private set; } = new(false);
 
@@ -76,15 +72,36 @@ internal sealed class BWardrobe
             return false;
         }
 
-        BWardrobeAmbiguousName = name;
-        BWardrobeWidth = new BCanvasWidth(name == "wide");
+        BWardrobeAmbiguousApply(name);
         BWardrobeSave(stored => stored with { LCapsuleSettingAmbiguous = name });
         return true;
     }
 
+    private void BWardrobeAmbiguousApply(string name)
+    {
+        BWardrobeAmbiguousName = name;
+        BWardrobeWidth = new BCanvasWidth(name == "wide");
+    }
+
     internal bool BWardrobeThemeSelect(string name)
     {
-        if (_bWardrobeThemeSeam(name) is not BTheme theme)
+        return BWardrobeThemeApply(name, _bWardrobeThemeReport);
+    }
+
+    private bool BWardrobeThemeApply(string name, Action<string> report)
+    {
+        BTheme? loaded;
+        try
+        {
+            loaded = _bWardrobeThemeSeam(name);
+        }
+        catch (Exception exception)
+        {
+            report(exception.Message);
+            return false;
+        }
+
+        if (loaded is not BTheme theme)
         {
             return false;
         }
@@ -106,9 +123,35 @@ internal sealed class BWardrobe
         return true;
     }
 
+    internal void BWardrobeRootRefine(string? root)
+    {
+        if (string.Equals(root, _bWardrobeRoot, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        _bWardrobeRoot = root;
+        LCapsuleSetting stored = _bWardrobeCapsule.LCapsuleConsoleRead(root);
+        if (stored.LCapsuleSettingTheme is not string theme
+            || (theme != BWardrobeTheme.Item1 && !BWardrobeThemeApply(theme, static _ => { })))
+        {
+            _bWardrobeThemeChosen = null;
+        }
+
+        if (stored.LCapsuleSettingGlyph is not string glyph || !BWardrobeGlyphSelect(glyph))
+        {
+            BWardrobeGlyphApply(_bWardrobeGlyphDefault);
+        }
+
+        if (stored.LCapsuleSettingAmbiguous is not string ambiguous || !BWardrobeAmbiguousSelect(ambiguous))
+        {
+            BWardrobeAmbiguousApply(BWardrobeAmbiguousDefault);
+        }
+    }
+
     private void BWardrobeSave(Func<LCapsuleSetting, LCapsuleSetting> choice)
     {
-        string? root = _bWardrobeAtelier?.CAtelierPathRead();
+        string? root = _bWardrobeRoot;
         LCapsuleSetting stored = _bWardrobeCapsule.LCapsuleConsoleRead(root);
         LCapsuleSetting chosen = choice(stored);
         if (chosen == stored)
@@ -128,11 +171,10 @@ internal sealed class BWardrobe
         }
     }
 
-    [MemberNotNull(nameof(BWardrobeGlyphName), nameof(BWardrobeMarks), nameof(BWardrobeGlyphSets))]
+    [MemberNotNull(nameof(BWardrobeGlyphName), nameof(BWardrobeGlyphSets))]
     private void BWardrobeGlyphApply(string name)
     {
         BWardrobeGlyphName = name;
-        BWardrobeMarks = _bWardrobeSets.GetValueOrDefault(name) ?? new Dictionary<string, IReadOnlyList<string>>();
         BWardrobeGlyphSets = _bWardrobeSets.ToDictionary(
             static set => set.Key, set => _bWardrobeSets.GetValueOrDefault(name, set.Value));
     }

@@ -270,18 +270,7 @@ public sealed class BBootstrap
         Func<string, (IReadOnlyList<string>, IReadOnlyList<string>)>? folder,
         Func<string[]>? drives)
     {
-        Func<string, BTheme?> themes = name =>
-        {
-            try
-            {
-                return new BTheme(theme.BBootstrapThemeSeam(name));
-            }
-            catch (Exception exception)
-            {
-                envoy.BEnvoyThemeShow(exception.Message);
-                return null;
-            }
-        };
+        Func<string, BTheme?> themes = name => new BTheme(theme.BBootstrapThemeSeam(name));
         LCapsuleConsole capsule = new();
         BWindow window = new(
             _bBootstrapConsole,

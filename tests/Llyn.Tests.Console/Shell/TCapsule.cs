@@ -2,15 +2,16 @@ using Llyn.Conduct;
 using Llyn.ShellEngine;
 using Llyn.UIDemeanor;
 using Llyn.UIDemeanor.Capsule;
+using Llyn.UITerminal;
 using Xunit;
 
 namespace Llyn.Tests;
 
 public sealed class TCapsule
 {
-    private static readonly ConsoleKeyInfo TCapsuleEnter = new('\r', ConsoleKey.Enter, false, false, false);
-    private static readonly ConsoleKeyInfo TCapsuleEscape = new('\e', ConsoleKey.Escape, false, false, false);
-    private static readonly ConsoleKeyInfo TCapsuleExit = new('\0', ConsoleKey.F10, false, false, false);
+    internal static readonly ConsoleKeyInfo TCapsuleEnter = new('\r', ConsoleKey.Enter, false, false, false);
+    internal static readonly ConsoleKeyInfo TCapsuleEscape = new('\e', ConsoleKey.Escape, false, false, false);
+    internal static readonly ConsoleKeyInfo TCapsuleExit = new('\0', ConsoleKey.F10, false, false, false);
 
     private static readonly IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<string>>>
         TCapsuleSets = new Dictionary<string, IReadOnlyDictionary<string, IReadOnlyList<string>>>
@@ -74,12 +75,26 @@ public sealed class TCapsule
         BTheme spare = new(BTheme.BThemeSpareRead);
 
         BWardrobe wardrobe = new(
-            (BTheme.BThemeDefault, spare), static _ => null, TCapsuleSets, "plain", capsule, atelier);
+            (BTheme.BThemeDefault, spare), static _ => null, static _ => { }, TCapsuleSets, "plain", capsule, atelier);
 
         Assert.Equal(BTheme.BThemeDefault, wardrobe.BWardrobeTheme.Item1);
         Assert.Equal("plain", wardrobe.BWardrobeGlyphName);
         Assert.Equal("narrow", wardrobe.BWardrobeAmbiguousName);
         Assert.Equal(stored, capsule.LCapsuleConsoleRead(atelier.CAtelierPathRead()));
+    }
+
+    [Fact]
+    public void CapsuleWardrobe_ChosenThemeFails_Reports()
+    {
+        List<string> reported = [];
+        BTheme spare = new(BTheme.BThemeSpareRead);
+        BWardrobe wardrobe = new(
+            (BTheme.BThemeDefault, spare), static _ => throw new FileNotFoundException("gone"), reported.Add,
+            TCapsuleSets, "plain", new LCapsuleConsole(), null);
+
+        Assert.False(wardrobe.BWardrobeThemeSelect("console-dark"));
+        Assert.Equal(["gone"], reported);
+        Assert.Equal(BTheme.BThemeDefault, wardrobe.BWardrobeTheme.Item1);
     }
 
     [Fact]
@@ -93,13 +108,15 @@ public sealed class TCapsule
         capsule.LCapsuleConsoleSave(root, new LCapsuleSetting(LCapsuleSettingFolder: root));
         BTheme spare = new(BTheme.BThemeSpareRead);
         Func<string, BTheme?> themes = name => name == "dusk" ? spare : null;
-        BWardrobe first = new((BTheme.BThemeDefault, spare), themes, TCapsuleSets, "plain", capsule, atelier);
+        BWardrobe first = new(
+            (BTheme.BThemeDefault, spare), themes, static _ => { }, TCapsuleSets, "plain", capsule, atelier);
 
         Assert.True(first.BWardrobeThemeSelect("dusk"));
         Assert.True(first.BWardrobeGlyphSelect("fancy"));
         Assert.True(first.BWardrobeAmbiguousSelect("wide"));
         BWardrobe second = new(
-            (BTheme.BThemeDefault, spare), themes, TCapsuleSets, "plain", new LCapsuleConsole(), atelier);
+            (BTheme.BThemeDefault, spare), themes, static _ => { }, TCapsuleSets, "plain", new LCapsuleConsole(),
+            atelier);
 
         Assert.Equal("dusk", second.BWardrobeTheme.Item1);
         Assert.Equal("fancy", second.BWardrobeGlyphName);
@@ -108,111 +125,180 @@ public sealed class TCapsule
     }
 
     [Fact]
-    public void CapsulePathfinder_NoFolder_StartsInStored()
+    public void CapsuleWindow_WorkspaceChange_AdoptsItsLook()
     {
-        string stored = Directory.CreateTempSubdirectory("llyn-capsule-").FullName;
-        try
-        {
-            TConsoleFake console = new() { TConsoleFakeTerminal = true };
-            console.TConsoleFakeKeys.Add(TCapsuleEscape);
-            console.TConsoleFakeKeys.Add(TCapsuleEnter);
-            console.TConsoleFakeKeys.Add(TCapsuleExit);
-            List<string> asked = [];
-            string? theme = null;
+        using TWorkspace first = TWorkspace.TWorkspacePrepare();
+        using TWorkspace second = TWorkspace.TWorkspacePrepare();
+        LCapsuleSetting stored = new(LCapsuleSettingGlyph: "ascii");
+        new LCapsuleConsole().LCapsuleConsoleSave(second.TWorkspaceFolder, stored);
+        BTheme spare = new(BTheme.BThemeSpareRead);
 
-            object? answer = TEnvoy.TEnvoyRun(
-                console,
-                envoy =>
-                {
-                    _ = envoy.CEnvoyFolderRead(string.Empty);
-                    LCapsuleConsole capsule = new();
-                    capsule.LCapsuleConsoleSave(asked[0], new LCapsuleSetting("dusk", LCapsuleSettingFolder: stored));
-                    return envoy.CEnvoyFolderRead(string.Empty);
-                },
-                settled: engine => theme = new LCapsuleConsole()
-                    .LCapsuleConsoleRead(engine.LEngineWorkspace.LEngineWorkspaceRead()).LCapsuleSettingTheme,
-                folder: path =>
-                {
-                    asked.Add(path);
-                    return ([], []);
-                });
+        TConsoleFake console = TCapsuleChangeRun(first, second, _ => spare);
 
-            Assert.Equal(stored.TrimEnd('\\'), asked[^1].TrimEnd('\\'));
-            Assert.Equal(stored.TrimEnd('\\'), (answer as string)?.TrimEnd('\\'));
-            Assert.Equal("dusk", theme);
-        }
-        finally
-        {
-            Directory.Delete(stored, true);
-        }
+        Assert.Contains(
+            console.TConsoleFakeShots, static grid => string.Join('\n', grid).Contains($"+{new string('-', 25)} Llyn"));
+        Assert.Equal(stored, new LCapsuleConsole().LCapsuleConsoleRead(second.TWorkspaceFolder));
+        Assert.False(File.Exists(Path.Combine(first.TWorkspaceFolder, "console.json")));
     }
 
     [Fact]
-    public void CapsulePathfinder_FileAccepted_NextStartsInItsFolder()
+    public void CapsuleWindow_WorkspaceChangeMissingValue_ResetsToDefault()
     {
-        string parent = Directory.CreateTempSubdirectory("llyn-capsule-").FullName;
+        using TWorkspace first = TWorkspace.TWorkspacePrepare();
+        using TWorkspace second = TWorkspace.TWorkspacePrepare();
+        LCapsuleConsole capsule = new();
+        capsule.LCapsuleConsoleSave(first.TWorkspaceFolder, new LCapsuleSetting("dusk", "fancy", "wide"));
+        LCapsuleSetting stored = new(LCapsuleSettingFolder: second.TWorkspaceFolder);
+        capsule.LCapsuleConsoleSave(second.TWorkspaceFolder, stored);
+        BTheme spare = new(BTheme.BThemeSpareRead);
+        BWardrobe wardrobe = new(
+            (BTheme.BThemeDefault, spare), _ => spare, static _ => { }, TCapsuleSets, "plain", capsule, null);
+        wardrobe.BWardrobeRootRefine(first.TWorkspaceFolder);
+        Assert.Equal("dusk", wardrobe.BWardrobeTheme.Item1);
+
+        wardrobe.BWardrobeRootRefine(second.TWorkspaceFolder);
+
+        Assert.Equal(BTheme.BThemeDefault, wardrobe.BWardrobeTheme.Item1);
+        Assert.Equal("plain", wardrobe.BWardrobeGlyphName);
+        Assert.Equal("narrow", wardrobe.BWardrobeAmbiguousName);
+        Assert.Equal(stored, capsule.LCapsuleConsoleRead(second.TWorkspaceFolder));
+    }
+
+    [Fact]
+    public void CapsuleWindow_WorkspaceChangeStaleName_ResetsToDefault()
+    {
+        using TWorkspace first = TWorkspace.TWorkspacePrepare();
+        using TWorkspace second = TWorkspace.TWorkspacePrepare();
+        LCapsuleConsole capsule = new();
+        capsule.LCapsuleConsoleSave(first.TWorkspaceFolder, new LCapsuleSetting("dusk", "fancy", "wide"));
+        LCapsuleSetting stored = new("lost", "gone", "huge", second.TWorkspaceFolder);
+        capsule.LCapsuleConsoleSave(second.TWorkspaceFolder, stored);
+        BTheme spare = new(BTheme.BThemeSpareRead);
+        BWardrobe wardrobe = new(
+            (BTheme.BThemeDefault, spare), name => name == "dusk" ? spare : null, static _ => { }, TCapsuleSets,
+            "plain", capsule, null);
+        wardrobe.BWardrobeRootRefine(first.TWorkspaceFolder);
+        Assert.Equal("dusk", wardrobe.BWardrobeTheme.Item1);
+
+        wardrobe.BWardrobeRootRefine(second.TWorkspaceFolder);
+
+        Assert.Equal(BTheme.BThemeDefault, wardrobe.BWardrobeTheme.Item1);
+        Assert.Equal("plain", wardrobe.BWardrobeGlyphName);
+        Assert.Equal("narrow", wardrobe.BWardrobeAmbiguousName);
+        Assert.Equal(stored, capsule.LCapsuleConsoleRead(second.TWorkspaceFolder));
+    }
+
+    [Fact]
+    public void CapsuleWindow_WorkspaceChangeStaleTheme_FallsBackQuietly()
+    {
+        using TWorkspace first = TWorkspace.TWorkspacePrepare();
+        using TWorkspace second = TWorkspace.TWorkspacePrepare();
+        LCapsuleSetting stored = new("console-gone");
+        new LCapsuleConsole().LCapsuleConsoleSave(second.TWorkspaceFolder, stored);
+        BTheme spare = new(BTheme.BThemeSpareRead);
+
+        TConsoleFake console = TCapsuleChangeRun(
+            first, second, name => name == "console-gone" ? throw new FileNotFoundException("gone") : spare);
+
+        Assert.Contains(
+            console.TConsoleFakeShots, static grid => string.Join('\n', grid).Contains("Delete this entry?"));
+        Assert.DoesNotContain(
+            console.TConsoleFakeShots, static grid => string.Join('\n', grid).Contains("could not be loaded"));
+        Assert.Empty(console.TConsoleFakeError);
+        Assert.Equal(stored, new LCapsuleConsole().LCapsuleConsoleRead(second.TWorkspaceFolder));
+    }
+
+    [Fact]
+    public void CapsuleBootstrap_StaleTheme_FallsBackQuietly()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        new LCapsuleConsole().LCapsuleConsoleSave(workspace.TWorkspaceFolder, new LCapsuleSetting("console-gone"));
+        TConsoleFake console = new() { TConsoleFakeTerminal = true };
+        console.TConsoleFakeKeys.Add(TCapsuleExit);
+        console.TConsoleFakeKeys.Add(TCapsuleEscape);
+        console.TConsoleFakeKeys.Add(TCapsuleExit);
+
+        int code = TInvocation.TInvocationRun(console, workspace);
+
+        Assert.Equal(0, code);
+        Assert.Empty(console.TConsoleFakeError);
+        Assert.Equal("console-gone", new LCapsuleConsole()
+            .LCapsuleConsoleRead(workspace.TWorkspaceFolder).LCapsuleSettingTheme);
+    }
+
+    [Fact]
+    public void CapsuleConsole_ReadOnlyFile_LeavesNoPending()
+    {
+        string root = Directory.CreateTempSubdirectory("llyn-capsule-").FullName;
+        string path = Path.Combine(root, "console.json");
         try
         {
-            string file = Path.Combine(parent, "notes.llx");
-            File.WriteAllText(file, string.Empty);
-            TConsoleFake console = new() { TConsoleFakeTerminal = true };
-            foreach (ConsoleKeyInfo key in TPathfinder.TPathfinderTextBuild(file))
+            LCapsuleConsole capsule = new();
+            capsule.LCapsuleConsoleSave(root, new LCapsuleSetting("dusk"));
+            File.SetAttributes(path, FileAttributes.ReadOnly);
+
+            _ = Assert.ThrowsAny<Exception>(() => capsule.LCapsuleConsoleSave(root, new LCapsuleSetting("dark")));
+
+            Assert.Equal("dusk", capsule.LCapsuleConsoleRead(root).LCapsuleSettingTheme);
+            Assert.False(File.Exists(path + ".tmp"));
+        }
+        finally
+        {
+            File.SetAttributes(path, FileAttributes.Normal);
+            Directory.Delete(root, true);
+        }
+    }
+
+    private static TConsoleFake TCapsuleChangeRun(TWorkspace first, TWorkspace second, Func<string, BTheme?> themes)
+    {
+        using LEngine engine = new(
+            first.TWorkspaceRigCreate(), _ => second.TWorkspaceRigCreate(), static _ => { }, true);
+        TConsoleFake console = new() { TConsoleFakeTerminal = true };
+        console.TConsoleFakeKeys.Add(TCapsuleEnter);
+        console.TConsoleFakeKeys.Add(TCapsuleExit);
+        console.TConsoleFakeKeys.Add(TCapsuleEscape);
+        console.TConsoleFakeKeys.Add(TCapsuleExit);
+        console.TConsoleFakeKeys.Add(TCapsuleEscape);
+        console.TConsoleFakeKeys.Add(TCapsuleExit);
+        SynchronizationContext? context = SynchronizationContext.Current;
+        BLoop loop = new(static _ => { });
+        SynchronizationContext.SetSynchronizationContext(loop);
+        try
+        {
+            BLocalizationCatalog catalog = new();
+            catalog.BLocalizationCatalogApply(TInterface.TLocalizationLoad("en"));
+            ABootstrap bootstrap = new();
+            BEnvoy envoy = new(console, catalog, bootstrap);
+            using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, false);
+            LCapsuleConsole capsule = new();
+            BWindow window = new(
+                console,
+                loop,
+                catalog,
+                atelier,
+                envoy,
+                bootstrap,
+                (BTheme.BThemeDefault, new BTheme(BTheme.BThemeSpareRead)),
+                themes,
+                capsule);
+            envoy.BEnvoyWindowAttach(
+                window, atelier, File.Exists, static _ => ([], []), static () => [], capsule);
+            loop.BLoopDefer(window.BWindowOpen);
+            loop.BLoopDefer(window.BWindowAtelierOpen);
+            loop.BLoopDefer(() =>
             {
-                console.TConsoleFakeKeys.Add(key);
-            }
-
-            console.TConsoleFakeKeys.Add(TCapsuleEnter);
-            console.TConsoleFakeKeys.Add(TCapsuleEscape);
-            console.TConsoleFakeKeys.Add(TCapsuleExit);
-            List<string> asked = [];
-
-            object? answer = TEnvoy.TEnvoyRun(
-                console,
-                envoy =>
-                {
-                    string? opened = envoy.CEnvoyMarkupRead("Markup.Title", [".llx"]);
-                    _ = envoy.CEnvoyFolderRead(string.Empty);
-                    return opened;
-                },
-                folder: path =>
-                {
-                    asked.Add(path);
-                    return ([], []);
-                });
-
-            Assert.Equal(file, answer);
-            Assert.Equal(parent.TrimEnd('\\'), asked[^1].TrimEnd('\\'));
+                _ = atelier.CAtelierWorkspace.CWorkspaceChange(second.TWorkspaceFolder, envoy);
+                _ = envoy.CEnvoyConfirm("Scribe.DeleteConfirm");
+            });
+            loop.BLoopBatchAttach(window.BWindowBatchObserve);
+            loop.BLoopKeyAttach(console, window.BWindowKeyObserve);
+            loop.BLoopRun(window.BWindowExit);
         }
         finally
         {
-            Directory.Delete(parent, true);
+            SynchronizationContext.SetSynchronizationContext(context);
         }
-    }
 
-    [Fact]
-    public void CapsulePathfinder_Accepted_StoresFolder()
-    {
-        string given = Directory.CreateTempSubdirectory("llyn-capsule-").FullName;
-        try
-        {
-            TConsoleFake console = new() { TConsoleFakeTerminal = true };
-            console.TConsoleFakeKeys.Add(TCapsuleEnter);
-            console.TConsoleFakeKeys.Add(TCapsuleExit);
-            LCapsuleSetting? state = null;
-
-            object? answer = TEnvoy.TEnvoyRun(
-                console,
-                envoy => envoy.CEnvoyFolderRead(given),
-                settled: engine => state = new LCapsuleConsole()
-                    .LCapsuleConsoleRead(engine.LEngineWorkspace.LEngineWorkspaceRead()),
-                folder: static _ => ([], []));
-
-            Assert.NotNull(answer);
-            Assert.Equal(answer, state?.LCapsuleSettingFolder);
-        }
-        finally
-        {
-            Directory.Delete(given, true);
-        }
+        return console;
     }
 }

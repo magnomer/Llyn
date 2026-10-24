@@ -25,10 +25,29 @@ Every folder entry ends in `\`, and that ending is how the body tells a folder f
 Typing narrows the list to the entries that start with the last segment of the text.
 The lit row returns to the first on every narrowing or reload.
 
-The field and the list have a key table each, and `BSParleyBodyResume` picks one.
-Tab and Down from the field resume in the list, and Shift+Tab from the list resumes in the field.
+The prompt keeps two folders.
+The sight is the folder the prompt is in, and typed text resolves against it.
+The preview is the folder the list shows, read from the folder part of the typed text.
+So `Archive\wa` lists `Archive` narrowed by `wa`, and the folder line shows `Archive`.
+Enter on a row and Backspace in the list read against the preview.
+Had the typed text resolved against the preview, `Archive\wa` would become `Archive\Archive\wa`.
+The preview is replaced whole on every edit, so the list and its folder never disagree.
+A typed folder that cannot be read lists only `..\`, narrowed like any other row.
+It shows no alert, since the user is still typing.
+A reload keeps the folder part of the text, so a format change keeps the typed folder in view.
+Opening a folder clears a text that has a folder part.
+Its last segment only filtered the rows, so it is no name.
+A bare name with no separator stays, so a save keeps its name across folders.
+With no folder part the preview holds no folder, and `BSPathfinderFolderPreview` reads the folder shown.
+
+The field, the Format row and the list have a key table each, and `BSParleyBodyResume` picks one.
 The box calls `BSParleyBodyResume` when Tab hands the focus to the body, backwards on Shift.
-Left and Right change the format in save mode only.
+In save mode Tab goes from the field to the Format row and then to the list.
+Shift+Tab goes back the same way.
+Without a format, Tab goes from the field straight to the list.
+Down from the field goes to the list.
+Left and Right change the format on the Format row only.
+Enter on the Format row acts as Enter in the field.
 Alt+F1 asks for a drive and opens the one chosen.
 Backspace in the list climbs to the parent.
 
@@ -43,7 +62,9 @@ In save mode every file row is chosen, since the callback asks about the replace
 
 `BSPathfinderAccept` is the first button.
 With text in the field it acts as Enter in the field.
-A folder prompt with an empty field chooses the folder shown.
+A folder prompt with an empty field acts as Enter in the field too.
+So it chooses the folder shown only if that folder can be read.
+When no folder could be read at the start, the button chooses nothing.
 A file prompt with an empty field chooses the lit file and ignores a folder row.
 
 The field holds only the name.
@@ -70,6 +91,19 @@ The key is dropped and the prompt stays open.
 The user can still type a name or pick a row.
 This is held by `PathfinderSave_EmptyFieldEnter_AsksNothing`.
 
+## `BSPathfinderEntries`
+
+Reads the rows of one folder through the listing seam.
+That is `..\`, the folders, and the files that end in a wanted suffix.
+The wanted suffix is the chosen format's in save mode, and the asked suffixes otherwise.
+The read narrows its rows to those that start with the typed segment, ignoring case.
+A navigation reads with an empty segment, so it keeps every row.
+Narrowing is part of what the read answers, so it lives in the reader and not in the body.
+A listing that throws answers null, and the caller decides what that means.
+A navigation then shows the alert.
+A typed folder then lists `..\`, narrowed by the same test as the read.
+So a segment `x` under an unreadable folder lists nothing.
+
 ## `BSPathfinderMedium`
 
 The formats a save may take, with one chosen.
@@ -82,7 +116,13 @@ It also gives the catalog key to the format line.
 ## `BSPathfinderPath`
 
 Joins a typed path to the folder shown and cleans it.
-A rooted text, one that starts with a separator or has a colon second, ignores the folder.
+A text with a drive and a separator, or a network path, ignores the folder.
+A text that starts with one separator takes the root of the folder shown.
+That root is its drive, or its server and share.
+The disk would otherwise read it on the drive of the process.
+A drive with a relative path reads against the folder shown when both are on one drive.
+The folder shown stands in for the drive's current folder, as Windows keeps one per drive.
+On another drive such a path reads from that drive's root, and a drive alone is always its root.
 A `..` removes a segment and a `.` or an empty segment is dropped.
 A `..` never removes the root, which is the drive, or the server and share of a network path.
 A root keeps its trailing `\`.
@@ -102,8 +142,9 @@ Cancel closes it with no change of folder.
 
 ## Stamp
 
-Commit: `78fc0ebfff7c`
+Commit: `5813c19fd19c`
 - `BSDrive.cs` `3ecc448f2d525097`
-- `BSPathfinder.cs` `bc2655a729c8fc70`
+- `BSPathfinder.cs` `ca51c4d2ea990912`
+- `BSPathfinderEntries.cs` `2dfd992b55afaeb9`
 - `BSPathfinderMedium.cs` `589df3dc01859487`
-- `BSPathfinderPath.cs` `8d844395befa6f45`
+- `BSPathfinderPath.cs` `981c839a70e016b1`

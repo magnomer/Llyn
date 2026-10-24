@@ -202,22 +202,27 @@ The console Capsule and the two owners that store their choices in it.
 A saved state reads back equal, and no pending file stays behind.
 A missing file, a file that does not parse and a null document read the default state.
 A null root reads it too.
+A save over a read-only file throws, keeps the old state and leaves no pending file.
 Stored names this build does not know fall back to the defaults, and the stored file stays unchanged.
+A stored theme the build lacks prints no theme notice at exit.
+A workspace change mid-run draws the next box in the new workspace's stored glyph set.
+Neither workspace's file is written by the change.
+A theme, glyph set or width the new workspace's file lacks returns to its default, not the old workspace's value.
+A name in the new workspace's file that this build does not know returns that choice to its default too.
+A stored theme that fails to load on a workspace change shows no theme box.
+A chosen theme that fails reports its reason and keeps the current theme.
 Choices made in one wardrobe show in a new wardrobe over the same workspace, and the stored folder survives them.
-A prompt with no given folder starts in the stored folder.
-Accepting it there keeps the stored theme, so each save rewrites only its own field.
-A prompt given a folder stores the folder of its accepted answer.
-An accepted file stores its parent folder, and the next prompt starts there.
+Its Enter, Escape and F10 keys are shared with `TCapsulePathfinder`.
 
 ## Stamp
 
-Commit: `78fc0ebfff7c`
+Commit: `5813c19fd19c`
 - `TBootstrap.cs` `0bee69d6fe62b88c`
 - `TCabinet.cs` `ce20853cde2f2f7e`
-- `TCapsule.cs` `55ff82857c727d63`
+- `TCapsule.cs` `0ebaefa2b338fa0a`
 - `TEnvoy.cs` `1f73df710e3dd92c`
 - `TEstablishment.cs` `13a9c3ba60eb79bc`
-- `TEstablishmentFixture.cs` `c06bef0bc7339ba5`
+- `TEstablishmentFixture.cs` `b1f9d86adea3fca8`
 - `THelp.cs` `ad48e495cfa363ea`
 - `TRoof.cs` `d4ebea47cc21cee3`
 - `TWindow.cs` `43c3ae1cafdd3224`

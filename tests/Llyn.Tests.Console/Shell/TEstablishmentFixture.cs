@@ -51,7 +51,13 @@ internal static class TEstablishmentFixture
             atelier,
             envoy,
             new BWardrobe(
-                (BTheme.BThemeDefault, spare), _ => spare, bootstrap.BBlueprintGlyphs, string.Empty, new(), null),
+                (BTheme.BThemeDefault, spare),
+                _ => spare,
+                static _ => { },
+                bootstrap.BBlueprintGlyphs,
+                string.Empty,
+                new(),
+                null),
             window,
             new BNavigation(bootstrap, atelier),
             heard => BHeadquarter.BHeadquarterBuild(
