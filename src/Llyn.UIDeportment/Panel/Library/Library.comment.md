@@ -184,7 +184,9 @@ The file dialog that answers the library import's file question for the envoy.
 It owns no state and opens no file, because the workspace is the engine's to read.
 `QMarkupConsult` answers the file the reader picked, or null for a cancelled pick.
 A cancelled pick is not a failure and leaves the workspace exactly as it was.
-The format's own extension is offered first, with everything else still reachable.
+The gate hands in a title key and the suffixes it wants.
+The dialog's title is the catalog text of that key.
+The suffixes make the first filter, named `Export.Markup`, with everything else still reachable.
 Markup is plain text, so a file that carries it under another name is still importable.
 
 ## Inline notes
@@ -199,10 +201,10 @@ It is the same announcement whether the store happened in this panel's editor or
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `78fc0ebfff7c`
 - `QDuplex.cs` `ca987539dd4da4cd`
 - `QIndex.cs` `c11007a0de35b95b`
 - `QIndexItem.cs` `f2e8778b89af3698`
 - `QLibrary.cs` `4a192cc1f0241228`
-- `QMarkup.cs` `2a6d5e1d2cf25221`
+- `QMarkup.cs` `54a943d6b580db9a`
 - `QWing.cs` `cd859f18f3ed85d6`

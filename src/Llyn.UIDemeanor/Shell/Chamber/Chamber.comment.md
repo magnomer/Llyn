@@ -3,102 +3,10 @@
 The console main window and everything it owns directly.
 It mirrors Deportment's `Shell/Window`, so each window piece has the same name and seam on both families.
 It holds the window and its pieces, its drawing and the status line.
-It also holds the user-question port and the tab navigation.
+It also holds the tab navigation.
 It stands apart from `Rafter`, which holds the roof menu bar every tab shares.
 `Rafter` also holds the bar's menus and the boxes they open.
-
-## `BEnvoy`
-
-The window's answer to Conduct's `CEnvoy`, which asks through sublevel boxes drawn over the window.
-It answers confirms, failures, the leave question, a coinage name, the import dialog and the omission list.
-The other reads, such as file, workspace, folder, media and markup, still return null, and the press read false.
-It finds `ASParley` in the blueprint for its boxes.
-A box needs the window, which `BEnvoyWindowAttach` gives it.
-Without a window every show but the refusal falls back to a held notice, and every question gets no answer.
-The envoy holds notice lines under a lock, since a fault may come from another thread.
-
-## `BEnvoyParleyConsult`
-
-Builds one box and asks the window to run it.
-The box builds its own key rows from its buttons, so the caller passes no key table.
-A question has Yes and No buttons with No as the safe answer, and any other box has OK.
-The leave, coinage and import boxes name their own buttons, and the last is the safe one.
-It answers null when no window is attached or the window has exited.
-
-## `BEnvoyFaultShow`
-
-Shows a fault box in the `alert` role with the fault sentence and the reason.
-The log path is a path line between them when there is one.
-The fault handler of the box's own run is the one passed in.
-A box that cannot show holds the same lines as notices.
-
-## `BEnvoyRefusalShow`
-
-Shows the start refusal, the workspace when it is not empty, and the reason as an alert box with OK.
-It holds no notice when the box cannot show, since the bootstrap prints the three lines itself.
-
-## `BEnvoyRescueShow`
-
-Shows the rescue sentence, then the backup path and the reason when each is given, in a `dialog` box.
-A box that cannot show holds the same lines as notices.
-
-## `BEnvoyThemeShow`
-
-Shows a fixed English theme sentence and the reason in a `dialog` box.
-The sentence is English because the catalog holds no key for it.
-A box that cannot show holds the head, the sentence and the reason as one notice.
-
-## `CEnvoyConfirm`
-
-Asks in an alert box, or in a dialog box when a tally follows the question.
-Only Yes answers true, and Escape answers No.
-
-## `CEnvoyUnionConfirm`
-
-Asks a dialog box with the dropped and the kept name around the arrow.
-The arrow comes from the window's glyph set in use, so it follows a glyph choice.
-Without a window or an arrow mark it falls back to the `→` character.
-
-## `CEnvoyLeaveConfirm`
-
-Asks with Save, Discard and Cancel, and Cancel is the safe answer.
-Save answers true, Discard false and anything else null.
-
-## `CEnvoyCoinageRead`
-
-Asks for a name in a field, and the Create button is enabled only while the wording is valid.
-It answers the typed text when Create is pressed, and otherwise null.
-
-## `CEnvoyCustomsRead`
-
-Shows the import dialog with an Import button on F2 and a Cancel button.
-The Import button carries F2 and the legend `Legend.Import`, so the box has an F2 row.
-That row is dim while Import is disabled.
-Import starts enabled only if every row is ready.
-It answers true only when Import is pressed.
-
-## `BEnvoyWindowAttach`
-
-Gives the envoy the window it draws its boxes on.
-
-## `BEnvoyNoticeAdd`
-
-Holds one line until the console is restored.
-
-## `BEnvoyNoticePrint`
-
-Prints the held lines on stderr in order, then clears them.
-
-## `CEnvoyFailureShow`
-
-Shows the failure sentence in an alert box with OK.
-With a ledger notice the box adds the notice's sentence, and its label and path when both exist.
-A box that cannot show holds the same sentences after the `llyn: ` head, as strict mode prints them.
-
-## `CEnvoyOmissionShow`
-
-Shows the omissions in a box with a Close button.
-A box that cannot show holds one line per omission, with its line number and text, after the same head.
+It stands apart from `Envoy`, which holds the user-question port.
 
 ## `BWindow`
 
@@ -140,7 +48,9 @@ The canvas takes the wardrobe's ambiguous-width setting, so a wide choice change
 
 ## `BWindowBatchObserve`
 
-Draws and syncs the frame once when a size or a box key marked it changed since the last batch.
+Draws and syncs the frame once when anything marked it changed since the last batch.
+A size, a key and an arrival each mark it.
+So do an establishment and a mirrored state change.
 It hands `BMuralDraw` the size, the focus, the roof, the navigation and the courier state.
 It adds the boxes, the glyphs, the marks, its key lookup and the width measure.
 Without a mark no frame is built, so a burst of keys costs one frame.
@@ -236,7 +146,16 @@ The initial set comes from the glyph set of the `ASParley` child, and is empty w
 The glyph sets it hands the blueprint map every set name to the set in use.
 So frames draw the chosen set whatever set they name.
 Ambiguous width is `narrow` or `wide`, and it builds the canvas width measure everything else shares.
-The choices last for the run and are not saved.
+The choices outlive the run in the console Capsule under the workspace root.
+On start each stored name goes through its own choice, so a name this build does not know falls back.
+A choice that succeeds is stored at once, so a crash later in the run keeps it.
+
+## `BWardrobeSave`
+
+Stores one choice and leaves the other stored fields as they are.
+It writes nothing when the stored state already holds the choice.
+So applying the stored names on start writes no file.
+A folder that cannot be written loses the choice silently, and the run goes on with it.
 
 ## `BDocket`
 
@@ -324,14 +243,13 @@ The legend sits on the last row at column 0.
 
 ## Stamp
 
-Commit: `c1396871c007`
+Commit: `78fc0ebfff7c`
 - `BDocket.cs` `2f1ab27227907c41`
-- `BEnvoy.cs` `a4cf806121cce012`
 - `BEstablishment.cs` `f0b09dc75cb89774`
 - `BKeymapWindow.cs` `ac57c5af4fc27418`
 - `BMirror.cs` `7cd7718e386c989c`
 - `BMural.cs` `694702d575d8e626`
 - `BNavigation.cs` `c45d372cb6483331`
 - `BNotice.cs` `7a5f8cc1b48d424d`
-- `BWardrobe.cs` `79a636696cb2e9a9`
-- `BWindow.cs` `ce50e4cd09dbe945`
+- `BWardrobe.cs` `421e8dba291e606e`
+- `BWindow.cs` `3904105e70def229`

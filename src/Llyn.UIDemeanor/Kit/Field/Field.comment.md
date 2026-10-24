@@ -7,11 +7,17 @@ The console's line of typed text.
 A body for a sublevel box that takes one line of text.
 It keeps the typed text, and reports every change to the callback it was given.
 The callback lets the owner switch a button as the text changes.
+It may start with a given text, which is not reported to the callback.
 
 ## `BFieldText`
 
 The text typed so far, with the owner as its reader.
-Only a key the field observes changes it.
+Only a key the field observes, or `BFieldClear`, changes it.
+
+## `BFieldClear`
+
+Empties the text without calling the edit callback.
+The owner uses it when it has changed the text itself and has already refreshed what the callback would refresh.
 
 ## `BSParleyBodyObserve`
 
@@ -29,5 +35,5 @@ Cells are counted with the measure the box hands in, so the window's ambiguous-w
 
 ## Stamp
 
-Commit: `c1396871c007`
-- `BField.cs` `906bb39d3e9ae431`
+Commit: `78fc0ebfff7c`
+- `BField.cs` `16bdd439d402fe6d`

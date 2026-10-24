@@ -3,7 +3,7 @@
   "project": "Llyn",
   "source": {
     "path": "Llyn.comment.md",
-    "hash": "38ff5ce269b259f62c90f1f113db2b2a71d34d13e2a5942aed32fe0aaf6814b1"
+    "hash": "950357d7ce0c757b1e3f24c91cb5e201c650ee8372bcba21848487e53e28f3d8"
   },
   "layers": [
     { "id": "Veneer", "role": "surface", "path": "src/Llyn.UIVeneer", "exists": true, "tests": [] },
@@ -29,7 +29,7 @@
   "twins": [
     { "owner": "Core", "twin": "Core.Windows", "path": "src/Llyn.Core.Windows", "exists": true, "tests": [] }
   ],
-  "outside": ["src/Llyn.Launcher", "src/Llyn.UIDemeanor", "src/Llyn.UITerminal"],
+  "outside": ["src/Llyn.Launcher", "src/Llyn.UIDemeanor", "src/Llyn.UIDemeanor.Capsule", "src/Llyn.UITerminal"],
   "locales": [
     "localization/en.json",
     "localization/ko.json"

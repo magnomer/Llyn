@@ -1,7 +1,7 @@
 # Llyn.slnx
 Hash: `25d2b91966190340`
 
-Lists the thirteen source projects that `dotnet build Llyn.slnx` compiles.
+Lists the fifteen source projects that `dotnet build Llyn.slnx` compiles.
 This file is the single authoritative statement of the target structure.
 It states the target, and the source tree may lag it.
 The audits and convention tests measure the lag as falling ceilings.
@@ -11,6 +11,7 @@ The audits and convention tests measure the lag as falling ceilings.
 - Veneer → Deportment → Conduct → ShellEngine → Application → Core.
 - Deportment → Deportment.Capsule.
 - UITerminal → Demeanor → Conduct.
+- Demeanor → Demeanor.Capsule.
 - Each layer names only the layer directly below it.
 - A driver also names its own Capsule, and no other layer names it.
 - Data travels freely below Conduct and never crosses the cut above it.
@@ -106,7 +107,7 @@ The audits and convention tests measure the lag as falling ceilings.
 - Only Deportment names it.
   Conduct and every layer below never see GUI-only state.
 - Its types take `L`, since it handles no Veneer part and is no driver.
-- Demeanor may have its own Capsule by the same rules, and none exists yet.
+- Demeanor has its own Capsule, `Llyn.UIDemeanor.Capsule`, by the same rules.
 
 ## `<Project Path="src/Llyn.UIDemeanor/Llyn.UIDemeanor.csproj" />`
 
@@ -119,6 +120,19 @@ The audits and convention tests measure the lag as falling ceilings.
   Nothing forbids it.
 - Demeanor holds only what a CUI needs: cursor, key reading, redraw, prompts, screen size.
 - Demeanor names Conduct and its own Capsule, and nothing else.
+
+## `<Project Path="src/Llyn.UIDemeanor.Capsule/Llyn.UIDemeanor.Capsule.csproj" />`
+
+- Capsule is Demeanor's own storage.
+- It holds the console-only state that must outlive a run: theme, glyph set, wide-character setting and last folder.
+- It reads and writes that state on disk under the workspace root.
+- It holds no rule about what the state means.
+  Demeanor checks each stored name, falls back and decides.
+- It names no Llyn project.
+  It uses .NET alone.
+- Only Demeanor names it.
+  Conduct and every layer below never see console-only state.
+- Its types take `L`, since it handles no UITerminal part and is no driver.
 
 ## Driver
 

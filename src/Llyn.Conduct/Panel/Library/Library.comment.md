@@ -31,6 +31,7 @@ It answers the path written, or null when the row did not open, the reader cance
 ## `CLibraryMarkupImport`
 
 Asks the envoy for a markup file first, before the customs and omission questions.
+It names the title key `Markup.Title` and the one suffix `.llx`.
 A cancelled pick answers null and changes nothing.
 The engine reads the file, asks for the intakes through this panel, and stores the cargo in one call.
 A declined declaration stores nothing, so the rows are not refreshed, nothing is reported and it answers null.
@@ -132,6 +133,6 @@ The side only passes the draft across, so it never keeps it.
 
 ## Stamp
 
-Commit: `52c21d68b4c4`
-- `CLibrary.cs` `1c12b644fd16ce91`
+Commit: `78fc0ebfff7c`
+- `CLibrary.cs` `dfed08c8f774c7f4`
 - `CWing.cs` `1e096be3dc635adc`

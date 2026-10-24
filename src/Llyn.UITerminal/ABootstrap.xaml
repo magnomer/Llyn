@@ -5,6 +5,8 @@
     <Blueprint Source="Shell/ANotice.xaml" />
     <Blueprint Source="Shell/ASParley.xaml" />
     <Blueprint Source="Shell/ASNavigation.xaml" />
+    <Blueprint Source="Shell/ASPathfinder.xaml" />
+    <Blueprint Source="Shell/ASDrive.xaml" />
 
     <Glyphs
         x:Key="double"

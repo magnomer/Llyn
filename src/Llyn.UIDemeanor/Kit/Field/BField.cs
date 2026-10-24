@@ -8,11 +8,13 @@ internal sealed class BField : BSParleyBody
 {
     private readonly Action<string> _bFieldEdited;
 
-    internal BField(Action<string> edited)
+    internal BField(Action<string> edited, string text = "")
     {
         ArgumentNullException.ThrowIfNull(edited);
+        ArgumentNullException.ThrowIfNull(text);
 
         _bFieldEdited = edited;
+        BFieldText = text;
     }
 
     public int BSParleyBodyWidth => BSParley.BSParleyWidth;
@@ -21,7 +23,7 @@ internal sealed class BField : BSParleyBody
 
     public string BSParleyBodyPosition => string.Empty;
 
-    internal string BFieldText { get; private set; } = string.Empty;
+    internal string BFieldText { get; private set; }
 
     public bool BSParleyBodyObserve(ConsoleKeyInfo key)
     {
@@ -43,6 +45,11 @@ internal sealed class BField : BSParleyBody
         BFieldText = text;
         _bFieldEdited(text);
         return true;
+    }
+
+    internal void BFieldClear()
+    {
+        BFieldText = string.Empty;
     }
 
     public IEnumerable<BCanvasText> BSParleyBodyDraw(

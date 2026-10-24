@@ -102,9 +102,9 @@ internal sealed class QEnvoy : CEnvoy
         };
     }
 
-    public string? CEnvoyMarkupRead()
+    public string? CEnvoyMarkupRead(string key, IReadOnlyList<string> suffixes)
     {
-        return QMarkup.QMarkupConsult(QEnvoyOwner);
+        return QMarkup.QMarkupConsult(QEnvoyOwner, key, suffixes);
     }
 
     public bool CEnvoyCustomsRead(CSCustoms customs)

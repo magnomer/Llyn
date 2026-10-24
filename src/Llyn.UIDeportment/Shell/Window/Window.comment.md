@@ -86,7 +86,7 @@ So a failure raised under the modal print window sits above it and not behind it
 A call off the app's thread, or with no app, falls back to the main window.
 The window's posture keeps the print window's size, and the engine's store keeps the print setting.
 A failure box shows the localized headline and the notice's localized detail.
-Any label and path go on lines of their own.
+A label and a path, when the notice carries both, go on lines of their own.
 It asks Conduct nothing further.
 A failure with nothing more to say shows the headline alone.
 An empty detail line would read as a missing message.
@@ -98,6 +98,8 @@ A cancelled file, markup or folder dialog answers null, which the gate reads as 
 The save dialog lists the gate's formats in order and starts on the chosen one.
 Its one-based filter index picks the medium from that same list, so the filter and the format cannot drift apart.
 Dialog titles stay here, since only a windowed chooser has one.
+The markup question passes the gate's title key and wanted suffixes on to the dialog.
+The dialog words the title and the filter.
 The flashcard folder dialog opens in the folder the gate hands it and answers the chosen path as picked.
 The media dialog is an open dialog, titled by the gate's key and filtered to the gate's suffixes.
   It offers no all-files choice, so the phone gets only a file kind it plays.
@@ -119,16 +121,16 @@ The about line puts the menu away first.
 A message box over an open popup would leave the popup behind it.
 Conduct chooses the version line's wording key.
 The product's name titles the notice, as every notice of the window is titled.
-The build number is the one the assembly carries, since Conduct is framed away from reflection.
+The build number is Conduct's `CVersionText`, a compile-time constant, since Conduct is framed away from reflection.
 `version.json` at the repository root is the only place a version is written.
-`Directory.Build.props` reads it and stamps every assembly at compile time.
-Only the first three parts are shown, because the fourth is always zero.
+Conduct's project writes the constant from it before each compile, and `Directory.Build.props` stamps every assembly from it.
+The notice shows the text as written, which has three parts.
 Exit asks the window to close and does not end the process.
 That is the caption close's path, so unsaved work is still offered back and no gate stands here.
 
 ## `QNavigation`
 
-The window's tab buttons and the jumps panels ask for.
+The window's tab buttons and the voyage keys.
 Conduct's `CNavigation` decides which tab shows and keeps the voyage.
 This driver paints what it raises.
 The tabs are held here only with their buttons and panels.
@@ -203,10 +205,10 @@ Device pixels become layout units first, so a scaled display still lands the win
 
 ## Stamp
 
-Commit: `121691f60459`
+Commit: `78fc0ebfff7c`
 - `QCaption.cs` `a94cfc236ad84fe3`
-- `QEnvoy.cs` `ce0505b274893fb3`
-- `QHeadquarter.cs` `77429c1948810be1`
+- `QEnvoy.cs` `c603997dffa036fe`
+- `QHeadquarter.cs` `eff4f717bc13c623`
 - `QNavigation.cs` `e0176c86a339c36b`
 - `QPanelRoster.cs` `7d2d7adf6ae30d16`
 - `QWindow.cs` `2a23b08f87db77ad`

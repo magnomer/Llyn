@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Llyn.Conduct;
+using Llyn.UIDemeanor.Capsule;
 
 namespace Llyn.UIDemeanor;
 
@@ -136,7 +137,7 @@ public sealed class BBootstrap
             string key = CAtelier.CAtelierRefusalRead(busySeam(exception));
             if (_bBootstrapEnvoy is BEnvoy envoy && _bBootstrapTheme is { } theme)
             {
-                BBootstrapWindowAttach(envoy, theme, null);
+                BBootstrapWindowAttach(envoy, theme, null, null, null, null);
                 envoy.BEnvoyRefusalShow(key, workspace, exception.Message);
             }
 
@@ -196,15 +197,24 @@ public sealed class BBootstrap
         TaskScheduler.UnobservedTaskException += BBootstrapStrayObserve;
     }
 
-    public int BBootstrapAtelierRun(Func<bool, CAtelier> atelierSeam, Func<string, bool> presenceSeam)
+    public int BBootstrapAtelierRun(
+        Func<bool, CAtelier> atelierSeam,
+        Func<string, bool> presenceSeam,
+        Func<string, string[]> folderSeam,
+        Func<string, string[]> fileSeam,
+        Func<string[]> driveSeam)
     {
         ArgumentNullException.ThrowIfNull(atelierSeam);
         ArgumentNullException.ThrowIfNull(presenceSeam);
+        ArgumentNullException.ThrowIfNull(folderSeam);
+        ArgumentNullException.ThrowIfNull(fileSeam);
+        ArgumentNullException.ThrowIfNull(driveSeam);
 
         if (_bBootstrapEnvoy is BEnvoy envoy && _bBootstrapTheme is { } theme)
         {
             CAtelier shown = atelierSeam(false);
-            BWindow window = BBootstrapWindowAttach(envoy, theme, shown);
+            BWindow window = BBootstrapWindowAttach(
+                envoy, theme, shown, presenceSeam, folder => (folderSeam(folder), fileSeam(folder)), driveSeam);
             _bBootstrapLoop.BLoopDefer(() => BBootstrapNoticeShow(envoy));
             try
             {
@@ -255,7 +265,10 @@ public sealed class BBootstrap
         BEnvoy envoy,
         (BTheme BBootstrapThemeInitial, Func<string, Func<string, string>> BBootstrapThemeSeam,
             string? BBootstrapThemeReason) theme,
-        CAtelier? atelier)
+        CAtelier? atelier,
+        Func<string, bool>? presence,
+        Func<string, (IReadOnlyList<string>, IReadOnlyList<string>)>? folder,
+        Func<string[]>? drives)
     {
         Func<string, BTheme?> themes = name =>
         {
@@ -269,6 +282,7 @@ public sealed class BBootstrap
                 return null;
             }
         };
+        LCapsuleConsole capsule = new();
         BWindow window = new(
             _bBootstrapConsole,
             _bBootstrapLoop,
@@ -277,8 +291,9 @@ public sealed class BBootstrap
             envoy,
             _bBootstrapBlueprint,
             (theme.BBootstrapThemeReason is null ? BTheme.BThemeDefault : null, theme.BBootstrapThemeInitial),
-            themes);
-        envoy.BEnvoyWindowAttach(window);
+            themes,
+            capsule);
+        envoy.BEnvoyWindowAttach(window, atelier, presence, folder, drives, capsule);
         _bBootstrapLoop.BLoopDefer(window.BWindowOpen);
         _bBootstrapLoop.BLoopDefer(window.BWindowAtelierOpen);
         _bBootstrapLoop.BLoopBatchAttach(window.BWindowBatchObserve);

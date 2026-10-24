@@ -2,6 +2,7 @@ using System.Text;
 using Llyn.Conduct;
 using Llyn.ShellEngine;
 using Llyn.UIDemeanor;
+using Llyn.UIDemeanor.Capsule;
 using Llyn.UITerminal;
 using Xunit;
 
@@ -14,7 +15,9 @@ public sealed class TBlueprint
     {
         ABootstrap bootstrap = new();
 
-        Assert.Equal(["AWindow", "ANotice", "ASParley", "ASNavigation"], bootstrap.BBlueprintParts.Keys);
+        Assert.Equal(
+            ["AWindow", "ANotice", "ASParley", "ASNavigation", "ASPathfinder", "ASDrive"],
+            bootstrap.BBlueprintParts.Keys);
         Assert.Equal(["double", "single", "ascii"], bootstrap.BBlueprintGlyphs.Keys);
     }
 
@@ -40,7 +43,8 @@ public sealed class TBlueprint
         BLoop loop = new(static _ => { });
 
         Exception? fault = Record.Exception(
-            () => new BWindow(console, loop, catalog, atelier, envoy, bootstrap, (null, theme), _ => theme));
+            () => new BWindow(
+                console, loop, catalog, atelier, envoy, bootstrap, (null, theme), _ => theme, new LCapsuleConsole()));
 
         Assert.Null(fault);
     }

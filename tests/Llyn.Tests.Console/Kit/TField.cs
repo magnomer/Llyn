@@ -22,4 +22,16 @@ public sealed class TField
         Assert.Equal("가나다", field.BFieldText);
         Assert.Equal("가나다", edited);
     }
+
+    [Fact]
+    public void FieldClear_Text_EmptiesWithoutEdit()
+    {
+        int edits = 0;
+        BField field = new(_ => edits++, "abc");
+
+        field.BFieldClear();
+
+        Assert.Equal(string.Empty, field.BFieldText);
+        Assert.Equal(0, edits);
+    }
 }

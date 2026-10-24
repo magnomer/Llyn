@@ -150,7 +150,8 @@
     "bulletinType": "LBulletin",
     "conductRoot": "src/Llyn.Conduct",
     "capsuleInclude": [
-      "src/Llyn.UIDeportment.Capsule/*.cs"
+      "src/Llyn.UIDeportment.Capsule/*.cs",
+      "src/Llyn.UIDemeanor.Capsule/*.cs"
     ],
     "shellInclude": [
       "src/Llyn.UIVeneer/*.cs",

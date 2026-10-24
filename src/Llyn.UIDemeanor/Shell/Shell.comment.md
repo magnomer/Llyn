@@ -86,10 +86,12 @@ Takes the audit seam and observes unobserved task faults, as `QBootstrapFaultInt
 ## `BBootstrapAtelierRun`
 
 Runs the loop for one atelier and returns the exit code.
-It takes a seam and asks it for a detached atelier, so a command line never touches a stored layout.
+Strict mode asks the atelier seam for a detached atelier, so a command line never touches a stored layout.
 The seam is called after the invocation check, so a missing invocation throws before any atelier exists.
 With the window's envoy it opens a `BWindow` on an attached atelier instead.
 `BBootstrapWindowAttach` builds the window with the loop, the blueprint and the theme, and gives it to the envoy.
+It builds one console Capsule and hands it to both the window and the envoy.
+So the wardrobe and the path prompt write one file.
 It also hands the window a theme loader over the kept theme seam.
 A theme that fails to load is shown in the theme box, and the loader answers null.
 The window starts with the default theme's name only when the first load worked.
@@ -100,6 +102,9 @@ The held rescue and theme reason are shown as the next item.
 The loop ends when the window's exit task completes, and the run returns 0.
 The presence seam answers whether a path names an existing file.
 The strict run hands it to the invocation.
+The folder, file and drive seams list a folder's folders, list its files and name the logical drives.
+Only the window mode uses them, and `BBootstrapAtelierRun` joins the first two into one listing for the path prompt.
+The window mode also hands the presence seam on to that prompt.
 The strict invocation is the loop's first work item, and the loop ends when it completes.
 The item is awaited, since the import and export verbs finish asynchronously.
 A fault in that item prints the fault notice and ends the run with 4.
@@ -146,6 +151,6 @@ It refuses a thread with no loop, since the marshal would have nowhere to go.
 
 ## Stamp
 
-Commit: `c1396871c007`
-- `BBootstrap.cs` `afc1ac7a32f31ed8`
+Commit: `78fc0ebfff7c`
+- `BBootstrap.cs` `b3911f158f5b35d7`
 - `BObserver.cs` `55a41481c90c90c6`

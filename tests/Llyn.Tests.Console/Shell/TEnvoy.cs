@@ -1,6 +1,7 @@
 using Llyn.Conduct;
 using Llyn.ShellEngine;
 using Llyn.UIDemeanor;
+using Llyn.UIDemeanor.Capsule;
 using Llyn.UITerminal;
 using Xunit;
 
@@ -329,7 +330,9 @@ public sealed class TEnvoy
         string language = "en",
         Action<BWindow>? prime = null,
         Func<string, BTheme?>? themes = null,
-        Action<LEngine>? settled = null)
+        Action<LEngine>? settled = null,
+        Func<string, (IReadOnlyList<string>, IReadOnlyList<string>)>? folder = null,
+        Func<string[]>? drives = null)
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -345,6 +348,7 @@ public sealed class TEnvoy
             BEnvoy envoy = new(console, catalog, bootstrap);
             using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, false);
             BTheme spare = new(BTheme.BThemeSpareRead);
+            LCapsuleConsole capsule = new();
             BWindow window = new(
                 console,
                 loop,
@@ -353,8 +357,15 @@ public sealed class TEnvoy
                 envoy,
                 bootstrap,
                 (BTheme.BThemeDefault, spare),
-                themes ?? (_ => spare));
-            envoy.BEnvoyWindowAttach(window);
+                themes ?? (_ => spare),
+                capsule);
+            envoy.BEnvoyWindowAttach(
+                window,
+                atelier,
+                File.Exists,
+                folder ?? (static path => (Directory.GetDirectories(path), Directory.GetFiles(path))),
+                drives ?? Directory.GetLogicalDrives,
+                capsule);
             object? answer = null;
             loop.BLoopDefer(window.BWindowOpen);
             loop.BLoopDefer(window.BWindowAtelierOpen);

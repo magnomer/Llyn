@@ -56,13 +56,14 @@ public sealed class TWindowLayer
         Assert.Equal("  Llyn ", shot[0][..7]);
         Assert.Equal("║ Connect to Joplin       ║", shot[2].Substring(1, 27));
         Assert.Equal("║ Sync to Joplin          ║", shot[3].Substring(1, 27));
-        Assert.Equal($"╟{new string('─', 25)}╢", shot[4].Substring(1, 27));
-        Assert.Equal("║ About Llyn              ║", shot[5].Substring(1, 27));
-        Assert.Equal("║ Help                 F1 ║", shot[6].Substring(1, 27));
-        Assert.Equal("║ Keys                    ║", shot[7].Substring(1, 27));
+        Assert.Equal("║ Workspace…              ║", shot[4].Substring(1, 27));
+        Assert.Equal($"╟{new string('─', 25)}╢", shot[5].Substring(1, 27));
+        Assert.Equal("║ About Llyn              ║", shot[6].Substring(1, 27));
+        Assert.Equal("║ Help                 F1 ║", shot[7].Substring(1, 27));
         string[] uncovered = bare.TConsoleFakeShots[0];
-        Assert.Equal($"╟{new string('─', 25)}╢", uncovered[8].Substring(1, 27));
-        Assert.Equal("║ Quit                F10 ║", uncovered[9].Substring(1, 27));
+        Assert.Equal("║ Keys                    ║", uncovered[8].Substring(1, 27));
+        Assert.Equal($"╟{new string('─', 25)}╢", uncovered[9].Substring(1, 27));
+        Assert.Equal("║ Quit                F10 ║", uncovered[10].Substring(1, 27));
     }
 
     [Fact]
@@ -198,6 +199,7 @@ public sealed class TWindowLayer
             prime: static window =>
             {
                 window.BWindowKeyObserve(new ConsoleKeyInfo('\0', ConsoleKey.F9, false, false, false));
+                window.BWindowKeyObserve(new ConsoleKeyInfo('\0', ConsoleKey.DownArrow, false, false, false));
                 window.BWindowKeyObserve(new ConsoleKeyInfo('\0', ConsoleKey.DownArrow, false, false, false));
                 window.BWindowKeyObserve(new ConsoleKeyInfo('\0', ConsoleKey.DownArrow, false, false, false));
                 window.BWindowKeyObserve(new ConsoleKeyInfo('\r', ConsoleKey.Enter, false, false, false));

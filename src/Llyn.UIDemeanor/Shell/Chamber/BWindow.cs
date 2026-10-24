@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Llyn.Conduct;
+using Llyn.UIDemeanor.Capsule;
 
 namespace Llyn.UIDemeanor;
 
@@ -37,7 +38,8 @@ internal sealed class BWindow
         CEnvoy envoy,
         BBlueprint blueprint,
         (string?, BTheme) theme,
-        Func<string, BTheme?> themes)
+        Func<string, BTheme?> themes,
+        LCapsuleConsole capsule)
     {
         ArgumentNullException.ThrowIfNull(console);
         ArgumentNullException.ThrowIfNull(loop);
@@ -46,6 +48,7 @@ internal sealed class BWindow
         ArgumentNullException.ThrowIfNull(blueprint);
         ArgumentNullException.ThrowIfNull(theme.Item2);
         ArgumentNullException.ThrowIfNull(themes);
+        ArgumentNullException.ThrowIfNull(capsule);
 
         _bWindowConsole = console;
         _bWindowCatalog = catalog;
@@ -57,7 +60,7 @@ internal sealed class BWindow
         _bWindowHelpBlueprint = BContract.BContractBlueprintFind(blueprint, "ASParley");
         string glyphs = _bWindowHelpBlueprint.BBlueprintPartChildren is [{ BBlueprintPartGlyphs: string set }]
             ? set : string.Empty;
-        _bWindowWardrobe = new BWardrobe(theme, themes, blueprint.BBlueprintGlyphs, glyphs);
+        _bWindowWardrobe = new BWardrobe(theme, themes, blueprint.BBlueprintGlyphs, glyphs, capsule, atelier);
         _bWindowTabs = new BNavigation(blueprint, atelier);
         _bWindowEstablishment = new BEstablishment(_bWindowBlueprint, catalog);
         _bWindowMural = new BMural(blueprint, _bWindowBlueprint, catalog, _bWindowTabs, _bWindowEstablishment);
@@ -73,6 +76,7 @@ internal sealed class BWindow
             heard => BHeadquarter.BHeadquarterBuild(
                 catalog,
                 courier,
+                atelier?.CAtelierWorkspace,
                 envoy,
                 heard,
                 () => BHeadquarter.BHeadquarterAboutShow(

@@ -151,7 +151,11 @@ public sealed class TBootstrap
                     {
                         bootstrap.BBootstrapRescueConsult(true, "D:\\Llyn\\llyn.db.bak", "damaged");
                         return bootstrap.BBootstrapAtelierRun(
-                            detached => TInterfaceConduct.TAtelierCreate(engine, detached), File.Exists);
+                            detached => TInterfaceConduct.TAtelierCreate(engine, detached),
+                            File.Exists,
+                            Directory.GetDirectories,
+                            Directory.GetFiles,
+                            Directory.GetLogicalDrives);
                     }
                 });
         }

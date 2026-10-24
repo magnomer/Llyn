@@ -1,0 +1,9 @@
+<Blueprint
+    x:Name="ASDrive"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Frame x:Name="ADrive" Theme="dialog" Glyphs="double">
+        <Split Rows="*">
+            <Text x:Name="ADriveList" Theme="dialog" />
+        </Split>
+    </Frame>
+</Blueprint>

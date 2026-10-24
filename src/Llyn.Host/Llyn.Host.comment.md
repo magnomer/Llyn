@@ -58,12 +58,15 @@ So the WebView2 `.xml` documentation is not published.
 
 The file uses top-level statements, since a method named `Main` fails the name audit.
 The host builds the console start and the window start.
+The console start hands the UI four seams.
+They are the file presence check, the folder and file listings and the logical drives.
+So the console's path prompt reads the disk only through the host.
 It hands both to Guestroom with the process path and the answer of `LConsoleParent`.
 Guestroom picks the one that runs, so the host holds no branch.
 The choice reads no console and no operating system, since the launcher alone carries the user's intent.
 
 ## Stamp
 
-Commit: `92c4426f8506`
-- `LHost.cs` `f9729ff1dc7b2c5a`
-- `Llyn.Host.csproj` `227db85934ecef45`
+Commit: `78fc0ebfff7c`
+- `LHost.cs` `dfa8d8ed147ea95a`
+- `Llyn.Host.csproj` `2e9c42cd1033e477`

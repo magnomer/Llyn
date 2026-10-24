@@ -16,7 +16,7 @@ The loop's own threads read the keys and sizes, so the tests assert the grid the
 
 Pins the whole frame at 80 by 24, with two bordered halves, the roof and the legend.
 The status line below the halves reads `Joplin: Connect` and the tally, not the opening text.
-The legend shows `1` and `Help` at column 0 and `10` and `Quit` at column 72 in the last row.
+The legend shows `1Help` at column 0, `9Menu` at column 64 and `10Quit` at column 72 in the last row.
 
 ## `WindowSizeObserve_Grown_RedrawsFrameByHalves`
 
@@ -112,12 +112,11 @@ A failure with only a headline draws no detail line.
 A long path wraps at its separators, with the folder row and the file row.
 A failure shown under a confirm draws above it, and the confirm still answers.
 A fault box whose frame the console refuses reports to the run's own handler, so stderr holds that refusal.
-Work queued while a box is open still runs.
-A box changes the legend to `1Help` and `10Close`.
-Ctrl+C under a box ends the window, and the box answers its safe index.
 The leave question answers store, discard or stay.
 The coinage question answers the typed text, and Enter before typing waits for valid wording.
 Tab moves focus to the buttons and back, so letters typed between are ignored.
+The helper also takes the folder listing and drive seams that the path prompt reads.
+They default to the disk.
 
 ## `THelp`
 
@@ -139,6 +138,7 @@ Help lists only keys that are bound and not hidden, and a dim key draws in the `
 The roof menus and the boxes over the window, one layer above the other.
 A box over the window shows the Close legend, and queued work still runs under it.
 F9 opens the product menu, and a box drawn over it covers it.
+The product menu lists `Workspace…` under the Joplin items and above the first rule.
 Enter on About closes the menu first, then shows the version, so the menu never stays under the box.
 A box key pressed in an open menu, such as F1, F10 or Ctrl+C, closes the menu before it acts.
 A submenu opens beside its item on Right, Enter or its hotkey, and Left or Escape closes only the submenu.
@@ -160,6 +160,16 @@ Choosing a language saves it through the engine and relabels the menu bar.
 Choosing a theme redraws the whole window, and Settings selects the Settings tab.
 Up inside a submenu moves inside it, and the theme loader is asked for the named theme.
 
+## `TRoof`
+
+The roof menu after a change of its items, and the product menu's workspace item.
+When the lit item of an open submenu vanishes, the next live item is lit.
+When it was the last, the first live item is lit.
+The submenu stays open and draws only the items left.
+The product menu joins `Workspace…` to the Joplin items above a rule, with the hotkey `W`.
+Choosing it asks the envoy for the workspace, starting in the atelier's path.
+Without a courier the item stands first, followed by a rule.
+
 ## `TEstablishment`
 
 The status line and the Joplin items of the product menu.
@@ -178,13 +188,37 @@ Opening a workspace shows the line in the window.
 The mirror reads the courier state when it subscribes, so the Joplin items show though no workspace opened.
 A courier change keeps an open product menu open on its lit item, while Connect leaves it once attached.
 
+## `TEstablishmentFixture`
+
+The builders and readers the `TEstablishment` tests share.
+It builds the status line, the product menu and a mirror on an 80 by 24 window.
+Each takes the English catalog.
+It reads a drawn row back as plain text padded to 80 cells.
+The saved establishment and the idle courier state stay with the tests, since the tests read them directly.
+
+## `TCapsule`
+
+The console Capsule and the two owners that store their choices in it.
+A saved state reads back equal, and no pending file stays behind.
+A missing file, a file that does not parse and a null document read the default state.
+A null root reads it too.
+Stored names this build does not know fall back to the defaults, and the stored file stays unchanged.
+Choices made in one wardrobe show in a new wardrobe over the same workspace, and the stored folder survives them.
+A prompt with no given folder starts in the stored folder.
+Accepting it there keeps the stored theme, so each save rewrites only its own field.
+A prompt given a folder stores the folder of its accepted answer.
+An accepted file stores its parent folder, and the next prompt starts there.
+
 ## Stamp
 
-Commit: `c1396871c007`
-- `TBootstrap.cs` `015737479cbb0b7b`
+Commit: `78fc0ebfff7c`
+- `TBootstrap.cs` `0bee69d6fe62b88c`
 - `TCabinet.cs` `ce20853cde2f2f7e`
-- `TEnvoy.cs` `0da0d289d361384c`
-- `TEstablishment.cs` `b14c98e63112fda6`
+- `TCapsule.cs` `55ff82857c727d63`
+- `TEnvoy.cs` `1f73df710e3dd92c`
+- `TEstablishment.cs` `13a9c3ba60eb79bc`
+- `TEstablishmentFixture.cs` `c06bef0bc7339ba5`
 - `THelp.cs` `ad48e495cfa363ea`
+- `TRoof.cs` `d4ebea47cc21cee3`
 - `TWindow.cs` `43c3ae1cafdd3224`
-- `TWindowLayer.cs` `2296dba4b8ba91f2`
+- `TWindowLayer.cs` `ec6f209928683637`

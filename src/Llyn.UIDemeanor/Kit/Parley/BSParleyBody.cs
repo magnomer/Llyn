@@ -15,6 +15,10 @@ internal interface BSParleyBody
 
     bool BSParleyBodyObserve(ConsoleKeyInfo key);
 
+    void BSParleyBodyResume(bool backward)
+    {
+    }
+
     IEnumerable<BCanvasText> BSParleyBodyDraw(
         IReadOnlyDictionary<string, IReadOnlyList<string>> glyphs,
         int row,

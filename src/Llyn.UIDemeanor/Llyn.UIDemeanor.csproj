@@ -13,5 +13,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Llyn.Conduct\Llyn.Conduct.csproj" />
+    <ProjectReference Include="..\Llyn.UIDemeanor.Capsule\Llyn.UIDemeanor.Capsule.csproj" />
   </ItemGroup>
 </Project>

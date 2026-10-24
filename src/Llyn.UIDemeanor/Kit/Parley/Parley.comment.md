@@ -32,6 +32,7 @@ Left and Right move the lit button.
 Without a body, Tab does the same, backwards with Shift.
 The lit button skips disabled ones.
 With a body, Tab switches focus between the body and the buttons.
+When that hands the focus to the body, the body is told the direction through `BSParleyBodyResume`, backwards on Shift.
 
 ## `BSParleyDraw`
 
@@ -55,6 +56,9 @@ It may also offer a key table of its own, which the box lists in front of its ke
 It lists them only while the body holds the focus.
 Drawing receives the width measure, so a body never builds its own.
 Observing returns true when the body took the key.
+Resuming tells the body the focus has come back to it and from which side.
+The default does nothing, so a body with one part ignores it.
+A body with several parts, such as the path prompt, uses it to pick the part that opens first.
 
 ## `BSParleyButton`
 
@@ -70,8 +74,8 @@ A path line may break after a separator.
 
 ## Stamp
 
-Commit: `c1396871c007`
-- `BSParley.cs` `b17b8e05c66fc253`
-- `BSParleyBody.cs` `5eb86fd6533d3d1c`
+Commit: `78fc0ebfff7c`
+- `BSParley.cs` `b43e2623e121bf9d`
+- `BSParleyBody.cs` `b16181f26db83138`
 - `BSParleyButton.cs` `5228b2831c1f9269`
 - `BSParleyLine.cs` `34f3fd75cc4134ab`

@@ -39,6 +39,7 @@ internal static class TAuditPlatformSetting
         ["Llyn.UIDeportment.Capsule"] = "Llyn.UIDeportment.Capsule",
         ["Llyn.UIVeneer"] = "Llyn.Conduct",
         ["Llyn.UIDemeanor"] = "Llyn.UIDemeanor",
+        ["Llyn.UIDemeanor.Capsule"] = "Llyn.UIDemeanor.Capsule",
         ["Llyn.UITerminal"] = "Llyn.UITerminal",
         ["Llyn.Guestroom"] = "Llyn.Guestroom",
         ["Llyn.Host"] = "",
@@ -48,6 +49,7 @@ internal static class TAuditPlatformSetting
     public static readonly IReadOnlyDictionary<string, string> TAuditPlatformCapsule = new Dictionary<string, string>
     {
         ["Llyn.UIDeportment"] = "Llyn.UIDeportment.Capsule",
+        ["Llyn.UIDemeanor"] = "Llyn.UIDemeanor.Capsule",
     };
 
     public static readonly string[] TAuditPlatformProperties = ["UseWPF", "UseWindowsForms", "UseWinUI"];

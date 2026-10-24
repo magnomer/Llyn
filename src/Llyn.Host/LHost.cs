@@ -86,7 +86,11 @@ Func<int> console = () =>
 
             Action<Action> marshal = BObserver.BObserverCreate<Action>(static work => work());
             int run = bootstrap.BBootstrapAtelierRun(
-                detached => atelier(engine, settings, marshal, detached), File.Exists);
+                detached => atelier(engine, settings, marshal, detached),
+                File.Exists,
+                Directory.GetDirectories,
+                Directory.GetFiles,
+                Directory.GetLogicalDrives);
             engine.Dispose();
             return run;
         });

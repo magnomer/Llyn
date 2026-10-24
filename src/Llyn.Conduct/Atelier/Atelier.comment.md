@@ -135,10 +135,12 @@ Conduct recorded any fault already, so the driver only words the keys it carries
 `CEnvoyLeaveConfirm` answers true to store, false to discard, and null when the user stays.
 
 `CEnvoyMarkupRead` is the first question of the library import and answers null for a cancelled pick.
+The gate hands it a title key and the suffixes it accepts.
+So each driver words its own chooser and its filter.
 `CEnvoyCustomsRead` asks how each parsed entry of a markup file enters, one row per entry in file order.
 A decline stores nothing.
 `CEnvoyPressRead` puts up the print window and returns when it closes.
-The window prints or saves through the gate's own calls, so nothing is handed back.
+The window prints or saves through the gate's own calls, so the gate ignores the answer.
 Conduct disposes the session either way.
 `CEnvoyOmissionShow` lists what an import could not place, and the library asks it only when something was left behind.
 
@@ -228,7 +230,7 @@ A save the engine refuses answers no, so the window stays over the entry it fail
 ### Close and failures
 
 `LWorkspaceClose` runs every area close in build order.
-It then detaches the posture's save failure observer, before the atelier releases the posture.
+It then detaches the posture's save and read failure observers, before the atelier releases the posture.
 Only `CAtelier.CAtelierClose` calls it, before the leftover sweep.
 
 `LWorkspaceObserverAttach` shows the posture's `LPostureSaveFailed` as `Layout.SaveFailed` through the latest envoy.
@@ -251,10 +253,10 @@ The amount is written with one decimal in megabytes and as a whole number in kil
 
 ## Stamp
 
-Commit: `52c21d68b4c4`
-- `CAtelier.cs` `1b7cd5cad8052419`
+Commit: `78fc0ebfff7c`
+- `CAtelier.cs` `093c36d29c1eb1b4`
 - `CEntryBundle.cs` `5a3f6144e85000d5`
-- `CEnvoy.cs` `54422ae5955ae73f`
+- `CEnvoy.cs` `30b190ce680b289e`
 - `CPhonologyBundle.cs` `c969d9a57ef9c34d`
 - `CScreen.cs` `060eb21146468883`
 - `CWorkspace.cs` `569bc06686780096`

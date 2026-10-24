@@ -15,6 +15,7 @@ internal static class TAuditTruthSetting
     public static readonly string[] TAuditCapsuleInclude =
     [
         "src/Llyn.UIDeportment.Capsule/*.cs",
+        "src/Llyn.UIDemeanor.Capsule/*.cs",
     ];
 
     public static readonly string[] TAuditShellInclude =

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Llyn.Conduct;
+using Llyn.UIDemeanor.Capsule;
 
 namespace Llyn.UIDemeanor;
 
@@ -10,6 +11,7 @@ internal sealed class BEnvoy : CEnvoy
     private readonly BConsole _bEnvoyConsole;
     private readonly BLocalizationCatalog _bEnvoyCatalog;
     private readonly BBlueprintPart _bEnvoyParley;
+    private readonly BEnvoyPathfinder _bEnvoyPathfinder;
     private readonly List<string> _bEnvoyNotices = [];
     private BWindow? _bEnvoyWindow;
 
@@ -22,13 +24,21 @@ internal sealed class BEnvoy : CEnvoy
         _bEnvoyConsole = console;
         _bEnvoyCatalog = catalog;
         _bEnvoyParley = BContract.BContractBlueprintFind(blueprint, "ASParley");
+        _bEnvoyPathfinder = new BEnvoyPathfinder(catalog, blueprint, CEnvoyConfirm);
     }
 
-    internal void BEnvoyWindowAttach(BWindow window)
+    internal void BEnvoyWindowAttach(
+        BWindow window,
+        CAtelier? atelier,
+        Func<string, bool>? presence,
+        Func<string, (IReadOnlyList<string>, IReadOnlyList<string>)>? folder,
+        Func<string[]>? drives,
+        LCapsuleConsole capsule)
     {
         ArgumentNullException.ThrowIfNull(window);
 
         _bEnvoyWindow = window;
+        _bEnvoyPathfinder.BEnvoyPathfinderAttach(window, atelier, presence, folder, drives, capsule);
     }
 
     internal void BEnvoyNoticeAdd(string text)
@@ -215,9 +225,11 @@ internal sealed class BEnvoy : CEnvoy
         };
     }
 
-    public string? CEnvoyMarkupRead()
+    public string? CEnvoyMarkupRead(string key, IReadOnlyList<string> suffixes)
     {
-        return null;
+        ArgumentNullException.ThrowIfNull(suffixes);
+
+        return _bEnvoyPathfinder.BEnvoyPathfinderConsult(key, string.Empty, suffixes);
     }
 
     public bool CEnvoyCustomsRead(CSCustoms customs)
@@ -259,17 +271,17 @@ internal sealed class BEnvoy : CEnvoy
     public (string? CEnvoyFile, CPortraitMedium CEnvoyMedium) CEnvoyFileRead(
         string file, IReadOnlyList<CPortraitChoice> choices)
     {
-        return (null, default);
+        return _bEnvoyPathfinder.BEnvoyPathfinderConsult(file, choices);
     }
 
     public string? CEnvoyWorkspaceRead(string workspace)
     {
-        return null;
+        return _bEnvoyPathfinder.BEnvoyPathfinderConsult("Settings.Workspace", workspace, null);
     }
 
     public string? CEnvoyFolderRead(string folder)
     {
-        return null;
+        return _bEnvoyPathfinder.BEnvoyPathfinderConsult("Settings.Depot", folder, null);
     }
 
     public string? CEnvoyCoinageRead(string key)
@@ -286,7 +298,9 @@ internal sealed class BEnvoy : CEnvoy
 
     public string? CEnvoyMediaRead(string key, IReadOnlyList<string> suffixes)
     {
-        return null;
+        ArgumentNullException.ThrowIfNull(suffixes);
+
+        return _bEnvoyPathfinder.BEnvoyPathfinderConsult(key, string.Empty, suffixes);
     }
 
     private int? BEnvoyParleyConsult(

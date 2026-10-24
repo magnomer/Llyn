@@ -117,7 +117,9 @@
       "neighbour": [
         "Llyn.Conduct"
       ],
-      "capsule": [],
+      "capsule": [
+        "Llyn.UIDemeanor.Capsule"
+      ],
       "frame": [],
       "pure": false,
       "cut": true
@@ -144,6 +146,14 @@
     },
     {
       "name": "Llyn.UIDeportment.Capsule",
+      "neighbour": [],
+      "capsule": [],
+      "frame": [],
+      "pure": false,
+      "cut": true
+    },
+    {
+      "name": "Llyn.UIDemeanor.Capsule",
       "neighbour": [],
       "capsule": [],
       "frame": [],
@@ -201,7 +211,8 @@
     "src/Llyn.UIDeportment",
     "src/Llyn.UIDeportment.Capsule",
     "src/Llyn.UITerminal",
-    "src/Llyn.UIDemeanor"
+    "src/Llyn.UIDemeanor",
+    "src/Llyn.UIDemeanor.Capsule"
   ],
   "imports": [
     "Directory.Build.props",

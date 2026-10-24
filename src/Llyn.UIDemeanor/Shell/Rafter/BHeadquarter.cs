@@ -11,6 +11,7 @@ internal static class BHeadquarter
     internal static BRoofMenu BHeadquarterBuild(
         BLocalizationCatalog catalog,
         CCourier? courier,
+        CWorkspace? workspace,
         CEnvoy envoy,
         Func<CCourierState?> heard,
         Action about,
@@ -41,6 +42,16 @@ internal static class BHeadquarter
             BRoofItem[] attach = [courierItem("Roof.Llyn.Attach", messenger.CCourierAttach)];
             joplin.AddRange(attach.Where(_ => !state.CCourierStateAttached));
             joplin.Add(courierItem("Roof.Llyn.Send", messenger.CCourierSend));
+        }
+
+        if (workspace is CWorkspace held)
+        {
+            joplin.Add(item(
+                "Roof.Llyn.Workspace", "Roof.Llyn.Workspace.Hotkey", null, () => _ = held.CWorkspaceChange(envoy)));
+        }
+
+        if (joplin.Count > 0)
+        {
             joplin.Add(null);
         }
 

@@ -16,7 +16,7 @@ public interface CEnvoy
 
     bool? CEnvoyLeaveConfirm();
 
-    string? CEnvoyMarkupRead();
+    string? CEnvoyMarkupRead(string key, IReadOnlyList<string> suffixes);
 
     bool CEnvoyCustomsRead(CSCustoms customs);
 

@@ -67,6 +67,7 @@ internal sealed class BSParley
             if (_bsParleyBody is BSParleyBody owned)
             {
                 _bsParleyFocus = _bsParleyFocus is null ? owned : null;
+                _bsParleyFocus?.BSParleyBodyResume(key.Modifiers.HasFlag(ConsoleModifiers.Shift));
             }
             else
             {

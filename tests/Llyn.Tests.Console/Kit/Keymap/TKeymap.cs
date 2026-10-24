@@ -1,4 +1,5 @@
 using Llyn.UIDemeanor;
+using Llyn.UIDemeanor.Capsule;
 using Llyn.UITerminal;
 using Xunit;
 
@@ -161,7 +162,8 @@ public sealed class TKeymap
             new BEnvoy(console, catalog, bootstrap),
             bootstrap,
             (null, new BTheme(BTheme.BThemeSpareRead)),
-            static _ => null);
+            static _ => null,
+            new LCapsuleConsole());
         return window.BWindowKeymap;
     }
 }

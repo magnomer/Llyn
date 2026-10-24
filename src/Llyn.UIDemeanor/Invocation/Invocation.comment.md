@@ -21,7 +21,7 @@ It is a property named after its type, as the naming rule asks.
 
 ## `BInvocationParse`
 
-Reads the arguments by the grammar of plan `08` section 2, and every failure is a usage error.
+Reads the arguments, and every failure is a usage error.
 An option is a dash, a name and an optional colon and value.
 A name is lowercase ASCII, starts with a letter and goes on in letters and digits.
 The value is everything after the first colon, so `-workspace:C:\Notes` keeps its drive colon.
@@ -30,6 +30,7 @@ An abbreviation is an unknown option, since no name is matched by its prefix.
 The verbs are help, version, workspace, find, new, delete, import and export.
 A second verb is a usage error.
 The qualifiers headword, language, pronunciation, note, to and as need a value.
+So do `-color`, `-format`, `-find`, `-new`, `-delete`, `-import` and `-export`.
 An option given twice is a usage error.
 An empty value counts as missing, since no option here takes empty text.
 `-version`, `-yes`, `-no` and `-quiet` forbid a value.
@@ -75,12 +76,13 @@ Names are ASCII, so padding by characters aligns the column by cells.
 
 ## `BInvocationVersionObserve`
 
-Calls `CAtelierAboutRead`, the gate the GUI's about box calls, and hands its key on.
+Calls `CAtelierAboutRead`, the gate the GUI's about box calls, with the catalog lookup and hands its lines on.
 
 ## `BInvocationVersionPrint`
 
-Prints the product, the about text and the build on one stdout line.
-The build is the assembly version to three parts, as the GUI's about box shows it.
+Prints the about lines on one stdout line, joined by a space.
+They hold the product name, then the version word and number.
+The number is the build's `CVersion` text, as the GUI's about box shows it.
 
 ## `BInvocationWorkspaceObserve`
 
@@ -200,6 +202,7 @@ The `-workspace` value, or a refusal when none was typed.
 ## `CEnvoyMarkupRead`
 
 The `-import` value, or a refusal when none was typed.
+The title key and the suffixes the gate hands in are not used, since there is no chooser to word.
 
 ## `CEnvoyCustomsRead`
 
@@ -235,7 +238,7 @@ The `[y/N]` mark is a fixed affordance like `llyn: `, so no catalog carries it.
 
 ## Stamp
 
-Commit: `52c21d68b4c4`
-- `BEnvoyStrict.cs` `96e35e37f7f80fbe`
-- `BInvocation.cs` `90acd4da8f2cdaac`
+Commit: `78fc0ebfff7c`
+- `BEnvoyStrict.cs` `a236d99c43c04fb8`
+- `BInvocation.cs` `2a72663f5acc0cfb`
 - `BInvocationGlobal.cs` `af318fc2fd36320e`

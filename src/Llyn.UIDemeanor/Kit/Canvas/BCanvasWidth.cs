@@ -46,6 +46,58 @@ internal sealed class BCanvasWidth
         return width;
     }
 
+    public string BCanvasWidthClamp(string text, int cells)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        StringBuilder kept = new();
+        int used = 0;
+        for (int index = 0, length; index < text.Length; index += length)
+        {
+            length = StringInfo.GetNextTextElementLength(text, index);
+            int size = BCanvasWidthResolve(text.AsSpan(index, length));
+            if (used + size > cells)
+            {
+                break;
+            }
+
+            kept.Append(text, index, length);
+            used += size;
+        }
+
+        return kept.Append(' ', Math.Max(cells - used, 0)).ToString();
+    }
+
+    public string BCanvasWidthShorten(string text, int cells, string ellipsis)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+        ArgumentNullException.ThrowIfNull(ellipsis);
+
+        if (BCanvasWidthResolve(text) <= cells)
+        {
+            return BCanvasWidthClamp(text, cells);
+        }
+
+        int used = BCanvasWidthResolve(ellipsis);
+        int[] starts = StringInfo.ParseCombiningCharacters(text);
+        int from = text.Length;
+        for (int index = starts.Length - 1; index >= 0; index--)
+        {
+            int size = BCanvasWidthResolve(text.AsSpan(starts[index], from - starts[index]));
+            if (used + size > cells)
+            {
+                break;
+            }
+
+            used += size;
+            from = starts[index];
+        }
+
+        return used > cells
+            ? BCanvasWidthClamp(string.Empty, cells)
+            : BCanvasWidthClamp(ellipsis + text[from..], cells);
+    }
+
     public IReadOnlyList<string> BCanvasWidthDivide(string text, int span, string? separators = null)
     {
         ArgumentNullException.ThrowIfNull(text);

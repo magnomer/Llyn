@@ -147,9 +147,9 @@ public sealed class TLibraryMarkup
         string? file, Func<CSCustoms, bool> customs, List<string> asked) =>
         TEngineFake.TEngineCreate<CEnvoy>(new Dictionary<string, Func<object?[]?, object?>>
         {
-            ["CEnvoyMarkupRead"] = _ =>
+            ["CEnvoyMarkupRead"] = args =>
             {
-                asked.Add("Markup");
+                asked.Add(args is ["Markup.Title", IReadOnlyList<string> and [".llx"]] ? "Markup" : "Markup:Other");
                 return file;
             },
             ["CEnvoyCustomsRead"] = args =>

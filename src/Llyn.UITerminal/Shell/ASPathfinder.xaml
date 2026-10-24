@@ -1,0 +1,13 @@
+<Blueprint
+    x:Name="ASPathfinder"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Frame x:Name="APathfinder" Theme="dialog" Glyphs="double">
+        <Split Rows="1,*,1,1,1">
+            <Text x:Name="APathfinderPath" Theme="dialog" />
+            <Text x:Name="APathfinderList" Theme="dialog" />
+            <Text x:Name="APathfinderMedium" Theme="dialog" />
+            <Text x:Name="APathfinderAlert" Theme="alert" />
+            <Text x:Name="APathfinderFolder" Theme="dialog" />
+        </Split>
+    </Frame>
+</Blueprint>

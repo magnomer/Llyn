@@ -76,7 +76,7 @@ internal sealed class BEnvoyStrict : CEnvoy
         return answer;
     }
 
-    public string? CEnvoyMarkupRead()
+    public string? CEnvoyMarkupRead(string key, IReadOnlyList<string> suffixes)
     {
         string? path = _bEnvoyStrictInvocation.BInvocationValueRead("import");
         BEnvoyStrictRefusal |= path is null;

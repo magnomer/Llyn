@@ -16,33 +16,36 @@ public sealed class TEstablishment
     [Fact]
     public void EstablishmentDraw_NothingHeard_ShowsOpening()
     {
-        BEstablishment establishment = TEstablishmentCreate();
+        BEstablishment establishment = TEstablishmentFixture.TEstablishmentCreate();
 
-        Assert.Equal(" Opening…".PadRight(80), TEstablishmentDraw(establishment, TEstablishmentIdle));
+        Assert.Equal(
+            " Opening…".PadRight(80), TEstablishmentFixture.TEstablishmentDraw(establishment, TEstablishmentIdle));
     }
 
     [Fact]
     public void EstablishmentDraw_NoToken_ShowsConnectAndMutedTally()
     {
-        BEstablishment establishment = TEstablishmentCreate();
+        BEstablishment establishment = TEstablishmentFixture.TEstablishmentCreate();
         establishment.BEstablishmentObserve(TEstablishmentSaved);
 
         IReadOnlyList<BCanvasText> texts =
-            establishment.BEstablishmentDraw(TEstablishmentIdle, TEstablishmentGlyphs, new BCanvasWidth(false));
+            establishment.BEstablishmentDraw(
+                TEstablishmentIdle, TEstablishmentFixture.TEstablishmentGlyphs, new BCanvasWidth(false));
 
         Assert.Equal(
             " Joplin: Connect".PadRight(62) + "12 entries · 3 KB ",
-            TEstablishmentRowBuild(texts));
+            TEstablishmentFixture.TEstablishmentRowBuild(texts));
         Assert.Equal("muted", texts.Single(static text => text.BCanvasTextValue.Contains('·')).BCanvasTextRole);
     }
 
     [Fact]
     public void EstablishmentDraw_TokenStored_ShowsConnected()
     {
-        BEstablishment establishment = TEstablishmentCreate();
+        BEstablishment establishment = TEstablishmentFixture.TEstablishmentCreate();
         establishment.BEstablishmentObserve(TEstablishmentSaved);
 
-        string row = TEstablishmentDraw(establishment, TEstablishmentIdle with { CCourierStateAttached = true });
+        string row = TEstablishmentFixture.TEstablishmentDraw(
+            establishment, TEstablishmentIdle with { CCourierStateAttached = true });
 
         Assert.StartsWith(" Joplin: Connected ", row, StringComparison.Ordinal);
     }
@@ -50,12 +53,12 @@ public sealed class TEstablishment
     [Fact]
     public void EstablishmentDraw_CourierLine_FollowsSeparatorUntilCleared()
     {
-        BEstablishment establishment = TEstablishmentCreate();
+        BEstablishment establishment = TEstablishmentFixture.TEstablishmentCreate();
         establishment.BEstablishmentObserve(TEstablishmentSaved);
 
-        string shown = TEstablishmentDraw(
+        string shown = TEstablishmentFixture.TEstablishmentDraw(
             establishment, new CCourierState(true, false, false, "Sending entries to Joplin…"));
-        string cleared = TEstablishmentDraw(establishment, TEstablishmentIdle);
+        string cleared = TEstablishmentFixture.TEstablishmentDraw(establishment, TEstablishmentIdle);
 
         Assert.StartsWith(" Joplin: Connect / Sending entries to Joplin… ", shown, StringComparison.Ordinal);
         Assert.DoesNotContain("/", cleared, StringComparison.Ordinal);
@@ -64,11 +67,11 @@ public sealed class TEstablishment
     [Fact]
     public void EstablishmentDraw_LongCourierLine_CutsWithEllipsisAndKeepsRightEnd()
     {
-        BEstablishment establishment = TEstablishmentCreate();
+        BEstablishment establishment = TEstablishmentFixture.TEstablishmentCreate();
         establishment.BEstablishmentObserve(
             TEstablishmentSaved with { CEstablishmentUnsaved = 2, CEstablishmentPending = true });
 
-        string row = TEstablishmentDraw(
+        string row = TEstablishmentFixture.TEstablishmentDraw(
             establishment, TEstablishmentIdle with { CCourierStateLine = new string('x', 120) });
 
         string head = " Joplin: Connect / ";
@@ -81,14 +84,14 @@ public sealed class TEstablishment
     [Fact]
     public void EstablishmentDraw_NoRoom_KeepsEllipsis()
     {
-        BEstablishment establishment = TEstablishmentCreate();
-        BEstablishment roomy = TEstablishmentCreate();
+        BEstablishment establishment = TEstablishmentFixture.TEstablishmentCreate();
+        BEstablishment roomy = TEstablishmentFixture.TEstablishmentCreate();
         establishment.BEstablishmentObserve(TEstablishmentSaved with { CEstablishmentAmount = new string('9', 41) });
         roomy.BEstablishmentObserve(TEstablishmentSaved with { CEstablishmentAmount = new string('9', 40) });
 
         CCourierState sending = TEstablishmentIdle with { CCourierStateLine = "Sending" };
-        string row = TEstablishmentDraw(establishment, sending);
-        string fitted = TEstablishmentDraw(roomy, sending);
+        string row = TEstablishmentFixture.TEstablishmentDraw(establishment, sending);
+        string fitted = TEstablishmentFixture.TEstablishmentDraw(roomy, sending);
 
         string tally = $"12 entries · {new string('9', 41)} KB ";
         string wider = $"12 entries · {new string('9', 40)} KB ";
@@ -99,10 +102,11 @@ public sealed class TEstablishment
     [Fact]
     public void EstablishmentDraw_NoRoomAtAll_CountLeavesEllipsisVisible()
     {
-        BEstablishment establishment = TEstablishmentCreate();
+        BEstablishment establishment = TEstablishmentFixture.TEstablishmentCreate();
         establishment.BEstablishmentObserve(TEstablishmentSaved with { CEstablishmentAmount = new string('9', 50) });
 
-        string row = TEstablishmentDraw(establishment, TEstablishmentIdle with { CCourierStateLine = "Sending" });
+        string row = TEstablishmentFixture.TEstablishmentDraw(
+            establishment, TEstablishmentIdle with { CCourierStateLine = "Sending" });
 
         string head = " Joplin: Connect / …";
         string tally = $"12 entries · {new string('9', 50)} KB";
@@ -112,10 +116,11 @@ public sealed class TEstablishment
     [Fact]
     public void EstablishmentDraw_WideFirstCluster_KeepsEllipsisInRoom()
     {
-        BEstablishment establishment = TEstablishmentCreate();
+        BEstablishment establishment = TEstablishmentFixture.TEstablishmentCreate();
         establishment.BEstablishmentObserve(TEstablishmentSaved with { CEstablishmentAmount = new string('9', 40) });
 
-        string row = TEstablishmentDraw(establishment, TEstablishmentIdle with { CCourierStateLine = "전송" });
+        string row = TEstablishmentFixture.TEstablishmentDraw(
+            establishment, TEstablishmentIdle with { CCourierStateLine = "전송" });
 
         string tally = $"12 entries · {new string('9', 40)} KB ";
         Assert.Equal(" Joplin: Connect / …".PadRight(80 - tally.Length) + tally, row);
@@ -124,24 +129,28 @@ public sealed class TEstablishment
     [Fact]
     public void EstablishmentDraw_Unsaved_ShowsPendingMarkAndCount()
     {
-        BEstablishment establishment = TEstablishmentCreate();
+        BEstablishment establishment = TEstablishmentFixture.TEstablishmentCreate();
         establishment.BEstablishmentObserve(
             TEstablishmentSaved with { CEstablishmentUnsaved = 4, CEstablishmentPending = true });
 
         IReadOnlyList<BCanvasText> texts =
-            establishment.BEstablishmentDraw(TEstablishmentIdle, TEstablishmentGlyphs, new BCanvasWidth(false));
+            establishment.BEstablishmentDraw(
+                TEstablishmentIdle, TEstablishmentFixture.TEstablishmentGlyphs, new BCanvasWidth(false));
 
-        Assert.StartsWith(" Joplin: Connect  ● 4 unsaved ", TEstablishmentRowBuild(texts), StringComparison.Ordinal);
+        Assert.StartsWith(
+            " Joplin: Connect  ● 4 unsaved ",
+            TEstablishmentFixture.TEstablishmentRowBuild(texts),
+            StringComparison.Ordinal);
         Assert.Equal("pending", texts.Single(static text => text.BCanvasTextValue == "●").BCanvasTextRole);
     }
 
     [Fact]
     public void EstablishmentDraw_NoUnsaved_HidesPending()
     {
-        BEstablishment establishment = TEstablishmentCreate();
+        BEstablishment establishment = TEstablishmentFixture.TEstablishmentCreate();
         establishment.BEstablishmentObserve(TEstablishmentSaved);
 
-        string row = TEstablishmentDraw(establishment, TEstablishmentIdle);
+        string row = TEstablishmentFixture.TEstablishmentDraw(establishment, TEstablishmentIdle);
 
         Assert.DoesNotContain("unsaved", row, StringComparison.Ordinal);
         Assert.DoesNotContain("●", row, StringComparison.Ordinal);
@@ -150,13 +159,13 @@ public sealed class TEstablishment
     [Fact]
     public void EstablishmentDraw_NoNewRead_KeepsLastNumbers()
     {
-        BEstablishment establishment = TEstablishmentCreate();
+        BEstablishment establishment = TEstablishmentFixture.TEstablishmentCreate();
         establishment.BEstablishmentObserve(TEstablishmentSaved);
         establishment.BEstablishmentObserve(
             TEstablishmentSaved with { CEstablishmentEntry = 1, CEstablishmentEntryKey = "Establishment.EntryOne" });
 
-        string first = TEstablishmentDraw(establishment, TEstablishmentIdle);
-        string again = TEstablishmentDraw(establishment, TEstablishmentIdle);
+        string first = TEstablishmentFixture.TEstablishmentDraw(establishment, TEstablishmentIdle);
+        string again = TEstablishmentFixture.TEstablishmentDraw(establishment, TEstablishmentIdle);
 
         Assert.EndsWith("1 entry · 3 KB ", first, StringComparison.Ordinal);
         Assert.Equal(first, again);
@@ -171,7 +180,7 @@ public sealed class TEstablishment
         CCourier courier = CCourier.CCourierCreate(atelier);
         atelier.TAtelierStubOpen();
 
-        BRoofMenu menu = TEstablishmentMenuBuild(courier);
+        BRoofMenu menu = TEstablishmentFixture.TEstablishmentMenuBuild(courier);
 
         Assert.Equal(
             ["Connect to Joplin", "Sync to Joplin", null, "About Llyn"],
@@ -192,7 +201,7 @@ public sealed class TEstablishment
         CCourier courier = CCourier.CCourierCreate(atelier);
         atelier.TAtelierStubOpen();
 
-        BRoofMenu menu = TEstablishmentMenuBuild(courier);
+        BRoofMenu menu = TEstablishmentFixture.TEstablishmentMenuBuild(courier);
 
         Assert.Equal(
             ["Sync to Joplin", null, "About Llyn"],
@@ -207,7 +216,7 @@ public sealed class TEstablishment
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
         CCourier courier = CCourier.CCourierCreate(atelier);
         atelier.TAtelierStubOpen();
-        BRoofMenu menu = TEstablishmentMenuBuild(courier);
+        BRoofMenu menu = TEstablishmentFixture.TEstablishmentMenuBuild(courier);
         List<(bool, bool, bool, bool)> seen = [];
         courier.CCourierChanged += state => seen.Add((
             state.CCourierStateBusy,
@@ -224,7 +233,7 @@ public sealed class TEstablishment
     [Fact]
     public void HeadquarterBuild_NoCourier_LeavesJoplinOut()
     {
-        BRoofMenu menu = TEstablishmentMenuBuild(null);
+        BRoofMenu menu = TEstablishmentFixture.TEstablishmentMenuBuild(null);
 
         Assert.Equal("About Llyn", menu.BRoofMenuItems[0]?.BRoofItemLabel);
     }
@@ -253,14 +262,17 @@ public sealed class TEstablishment
         SynchronizationContext.SetSynchronizationContext(new BLoop(static _ => { }));
         try
         {
-            BMirror mirror = TEstablishmentMirrorCreate(atelier, courier);
-
+            BMirror mirror = TEstablishmentFixture.TEstablishmentMirrorCreate(atelier, courier);
+            BEstablishment establishment = TEstablishmentFixture.TEstablishmentCreate();
+            establishment.BEstablishmentObserve(TEstablishmentSaved);
             mirror.BMirrorOpen(atelier, courier);
 
             mirror.BMirrorRoof.BRoofOpen(0);
             IReadOnlyList<BCanvasText> texts =
-                mirror.BMirrorRoof.BRoofDraw(TEstablishmentGlyphs, new BCanvasWidth(false));
-            Assert.Equal(courier.CCourierRead(), mirror.BMirrorCourier);
+                mirror.BMirrorRoof.BRoofDraw(TEstablishmentFixture.TEstablishmentGlyphs, new BCanvasWidth(false));
+            Assert.Equal(new CCourierState(false, true, false, string.Empty), mirror.BMirrorCourier);
+            Assert.StartsWith(
+                " Joplin: Connect ", TEstablishmentFixture.TEstablishmentDraw(establishment, mirror.BMirrorCourier!));
             Assert.Contains(
                 texts, static text => text.BCanvasTextValue.Contains("Connect to Joplin", StringComparison.Ordinal));
             Assert.Contains(
@@ -286,7 +298,7 @@ public sealed class TEstablishment
         SynchronizationContext.SetSynchronizationContext(new BLoop(static _ => { }));
         try
         {
-            BMirror mirror = TEstablishmentMirrorCreate(atelier, courier);
+            BMirror mirror = TEstablishmentFixture.TEstablishmentMirrorCreate(atelier, courier);
             mirror.BMirrorOpen(atelier, courier);
             mirror.BMirrorRoof.BRoofOpen(0);
             _ = mirror.BMirrorRoof.BRoofKeyObserve(new ConsoleKeyInfo('\0', ConsoleKey.DownArrow, false, false, false));
@@ -295,7 +307,7 @@ public sealed class TEstablishment
             atelier.TAtelierStubOpen();
 
             IReadOnlyList<BCanvasText> texts =
-                mirror.BMirrorRoof.BRoofDraw(TEstablishmentGlyphs, new BCanvasWidth(false));
+                mirror.BMirrorRoof.BRoofDraw(TEstablishmentFixture.TEstablishmentGlyphs, new BCanvasWidth(false));
             Assert.True(courier.CCourierRead().CCourierStateAttached);
             Assert.Equal(BKeymapFocus.BKeymapFocusRoof, mirror.BMirrorRoof.BRoofKeymapFocus);
             Assert.Contains(texts, static text => text.BCanvasTextRole == "lit-other"
@@ -307,90 +319,5 @@ public sealed class TEstablishment
         {
             SynchronizationContext.SetSynchronizationContext(context);
         }
-    }
-
-    private static IReadOnlyDictionary<string, IReadOnlyList<string>> TEstablishmentGlyphs =>
-        new ABootstrap().BBlueprintGlyphs["single"];
-
-    private static BEstablishment TEstablishmentCreate()
-    {
-        ABootstrap bootstrap = new();
-        BBlueprintPart window = BContract.BContractBlueprintFind(bootstrap, "AWindow");
-        BBlueprint.BBlueprintPlace(window, 0, 0, 80, 24);
-        return new BEstablishment(window, TEstablishmentCatalogRead());
-    }
-
-    private static BLocalizationCatalog TEstablishmentCatalogRead()
-    {
-        BLocalizationCatalog catalog = new();
-        catalog.BLocalizationCatalogApply(TInterface.TLocalizationLoad("en"));
-        return catalog;
-    }
-
-    private static BRoofMenu TEstablishmentMenuBuild(CCourier? courier)
-    {
-        return BHeadquarter.BHeadquarterBuild(
-            TEstablishmentCatalogRead(),
-            courier,
-            TEnvoyFake.TEnvoyCreate(false, []),
-            () => courier?.CCourierRead(),
-            static () => { },
-            static () => { },
-            static () => { },
-            static () => { });
-    }
-
-    private static BMirror TEstablishmentMirrorCreate(CAtelier atelier, CCourier courier)
-    {
-        ABootstrap bootstrap = new();
-        BBlueprintPart window = BContract.BContractBlueprintFind(bootstrap, "AWindow");
-        BBlueprint.BBlueprintPlace(window, 0, 0, 80, 24);
-        BLocalizationCatalog catalog = TEstablishmentCatalogRead();
-        CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, []);
-        BTheme spare = new(BTheme.BThemeSpareRead);
-        return new BMirror(
-            catalog,
-            atelier,
-            envoy,
-            new BWardrobe((BTheme.BThemeDefault, spare), _ => spare, bootstrap.BBlueprintGlyphs, string.Empty),
-            window,
-            new BNavigation(bootstrap, atelier),
-            heard => BHeadquarter.BHeadquarterBuild(
-                catalog,
-                courier,
-                envoy,
-                heard,
-                static () => { },
-                static () => { },
-                static () => { },
-                static () => { }),
-            static () => { },
-            static () => { },
-            static () => { });
-    }
-
-    private static string TEstablishmentDraw(BEstablishment establishment, CCourierState courier)
-    {
-        return TEstablishmentRowBuild(
-            establishment.BEstablishmentDraw(courier, TEstablishmentGlyphs, new BCanvasWidth(false)));
-    }
-
-    private static string TEstablishmentRowBuild(IReadOnlyList<BCanvasText> texts)
-    {
-        char[] row = new string(' ', 80).ToCharArray();
-        foreach (BCanvasText text in texts)
-        {
-            for (int at = 0; at < text.BCanvasTextSpan && at < text.BCanvasTextValue.Length; at++)
-            {
-                row[text.BCanvasTextColumn + at] = text.BCanvasTextValue[at];
-            }
-
-            for (int at = text.BCanvasTextValue.Length; at < text.BCanvasTextSpan; at++)
-            {
-                row[text.BCanvasTextColumn + at] = ' ';
-            }
-        }
-
-        return new string(row);
     }
 }

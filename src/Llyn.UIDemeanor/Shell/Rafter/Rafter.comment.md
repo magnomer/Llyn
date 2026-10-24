@@ -81,6 +81,9 @@ Builds the product menu, `Llyn`.
 The Joplin items come first, only when there is a courier and its state has been heard.
 Attach shows only while not attached, and Send always shows.
 Both are dim until the courier state allows a request.
+The `Workspace…` item follows them, only when a workspace port is given, and it asks `CWorkspaceChange` through the envoy.
+Its hotkey comes from the catalog and it shows no shortcut.
+A rule follows the group above, and there is no rule when the group is empty.
 About, Help, Keys and Quit follow, with F1 and F10 as the shortcuts shown for Help and Quit.
 Keys opens help at the help focus, so it starts on the keys everywhere page.
 About shows the atelier's about lines in a `dialog` box with OK.
@@ -119,9 +122,9 @@ The console minimum fills the small-console sentence.
 
 ## Stamp
 
-Commit: `c1396871c007`
+Commit: `78fc0ebfff7c`
 - `BCabinet.cs` `9c7873781402935c`
-- `BHeadquarter.cs` `a260767573149ed0`
+- `BHeadquarter.cs` `34abc335bfdcbfb1`
 - `BRoof.cs` `0315392a65140e16`
 - `BRoofItem.cs` `e2a42521c4ed1f78`
 - `BRoofMenu.cs` `7ab739815c3a5874`

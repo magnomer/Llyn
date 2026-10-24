@@ -13,6 +13,8 @@
     <EmbeddedResource Include="Shell\ANotice.xaml" />
     <EmbeddedResource Include="Shell\ASParley.xaml" />
     <EmbeddedResource Include="Shell\ASNavigation.xaml" />
+    <EmbeddedResource Include="Shell\ASPathfinder.xaml" />
+    <EmbeddedResource Include="Shell\ASDrive.xaml" />
   </ItemGroup>
 
   <ItemGroup>

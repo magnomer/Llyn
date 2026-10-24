@@ -12,7 +12,8 @@ It is its own object, so the canvas holds one and stays whole in its file.
 
 Whether ambiguous characters such as `ǐ`, `★` and box drawing take two cells.
 The constructor takes it.
-The window builds its widths narrow.
+The wardrobe builds the window's width, narrow unless the user chose wide.
+The strict `-find` print builds its own narrow one.
 The setting holds for the object's life, so it has one writer, the constructor.
 
 ## `BCanvasWidthResolve`
@@ -23,6 +24,19 @@ A lone combining mark, enclosing mark, format or control character takes 0.
 A cluster holding U+FE0F asks for emoji presentation and takes 2.
 Every other character takes its cells from `BCanvasRange`.
 Categories come from the runtime that cuts the clusters, so both read one Unicode version.
+
+## `BCanvasWidthClamp`
+
+Cuts a text to at most the given cells and pads the rest with blanks.
+So the result is exactly that wide.
+It stops before the cluster that would overflow, so a wide character never splits and never leaves a half.
+
+## `BCanvasWidthShorten`
+
+Fits a text to the given cells and keeps its end.
+A text that fits is only clamped.
+Otherwise the ellipsis leads and the longest tail of whole clusters that fits after it follows.
+If the ellipsis alone does not fit, the result is blanks.
 
 ## `BCanvasWidthDivide`
 
@@ -85,9 +99,9 @@ Reserved code points in the wide blocks take 2, as the Unicode data lists them.
 
 ## Stamp
 
-Commit: `9a85a3ab82db`
+Commit: `78fc0ebfff7c`
 - `BCanvas.cs` `0f0b8d99716ec206`
 - `BCanvasCell.cs` `cb0d077c14c60990`
 - `BCanvasRange.cs` `07ec2bb6aa90b979`
 - `BCanvasText.cs` `025bd90e380a2df3`
-- `BCanvasWidth.cs` `cd8811f7dc154e6f`
+- `BCanvasWidth.cs` `5993d42a18ffa88e`

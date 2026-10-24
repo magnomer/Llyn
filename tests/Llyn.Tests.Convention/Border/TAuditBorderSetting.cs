@@ -19,6 +19,7 @@ internal static class TAuditBorderSetting
             ["Llyn.Infrastructure"] = ["Llyn.Core"],
             ["Llyn.Core.Windows"] = ["Llyn.Core"],
             ["Llyn.UIDeportment.Capsule"] = [],
+            ["Llyn.UIDemeanor.Capsule"] = [],
             ["Llyn.Guestroom"] = [],
             ["Llyn.Launcher"] = [],
         };
@@ -26,6 +27,7 @@ internal static class TAuditBorderSetting
     public static readonly IReadOnlyDictionary<string, string> TAuditBorderCapsule = new Dictionary<string, string>
     {
         ["Llyn.UIDeportment"] = "Llyn.UIDeportment.Capsule",
+        ["Llyn.UIDemeanor"] = "Llyn.UIDemeanor.Capsule",
     };
 
     public static readonly string[] TAuditBorderCut =
@@ -34,6 +36,7 @@ internal static class TAuditBorderSetting
         "Llyn.UIDeportment",
         "Llyn.UIDeportment.Capsule",
         "Llyn.UIDemeanor",
+        "Llyn.UIDemeanor.Capsule",
         "Llyn.UITerminal",
     ];
 
