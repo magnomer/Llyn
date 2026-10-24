@@ -48,6 +48,11 @@ public sealed class BConsoleStream : BConsole
         return Console.ReadKey(intercept: true);
     }
 
+    public override bool BConsoleKeyCheck()
+    {
+        return Console.KeyAvailable;
+    }
+
     public override void BConsoleWindowApply()
     {
         StrongBox<bool> control = new(Console.TreatControlCAsInput);

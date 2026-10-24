@@ -19,6 +19,8 @@ internal sealed class TConsoleFake : BConsole
 
     public bool TConsoleFakeAmbiguous { get; set; }
 
+    public bool TConsoleFakeBatch { get; set; }
+
     public string? TConsoleFakeAnswer { get; set; }
 
     public int TConsoleFakeWidth { get; set; } = 80;
@@ -167,6 +169,11 @@ internal sealed class TConsoleFake : BConsole
         }
 
         return key;
+    }
+
+    public override bool BConsoleKeyCheck()
+    {
+        return TConsoleFakeBatch && TConsoleFakeKeys.Count > 0;
     }
 
     public override void BConsoleWindowApply()

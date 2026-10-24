@@ -10,6 +10,8 @@ public abstract class BConsole
 
     public abstract ConsoleKeyInfo BConsoleKeyRead();
 
+    public abstract bool BConsoleKeyCheck();
+
     public abstract void BConsoleWindowApply();
 
     public abstract void BConsoleWindowRestore();

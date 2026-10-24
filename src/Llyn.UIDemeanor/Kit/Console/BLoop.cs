@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -78,14 +79,84 @@ public sealed class BLoop : SynchronizationContext
         ArgumentNullException.ThrowIfNull(console);
         ArgumentNullException.ThrowIfNull(observe);
 
+        bool settling = false;
+        Action<List<ConsoleKeyInfo>, bool>? apply = null;
+        apply = (keys, settle) =>
+        {
+            if (settling)
+            {
+                BLoopDefer(() => apply!(keys, settle));
+                return;
+            }
+
+            if (settle)
+            {
+                TaskCompletionSource marker = new();
+                BLoopDefer(marker.SetResult);
+                settling = true;
+                try
+                {
+                    BLoopRun(marker.Task);
+                }
+                finally
+                {
+                    settling = false;
+                }
+            }
+
+            for (int index = 0; index < keys.Count; index++)
+            {
+                try
+                {
+                    observe(keys[index]);
+                }
+                catch (Exception)
+                {
+                    List<ConsoleKeyInfo> rest = keys[(index + 1)..];
+                    if (rest.Count > 0)
+                    {
+                        BLoopDefer(() => apply!(rest, false));
+                    }
+
+                    throw;
+                }
+            }
+        };
+
         Thread reader = new(() =>
         {
             try
             {
+                bool typed = false;
                 while (true)
                 {
-                    ConsoleKeyInfo key = console.BConsoleKeyRead();
-                    BLoopDefer(() => observe(key));
+                    List<List<ConsoleKeyInfo>> runs = [];
+                    List<bool> settles = [];
+                    do
+                    {
+                        ConsoleKeyInfo key = console.BConsoleKeyRead();
+                        bool plain = !char.IsControl(key.KeyChar)
+                            && !key.Modifiers.HasFlag(ConsoleModifiers.Alt)
+                            && !key.Modifiers.HasFlag(ConsoleModifiers.Control);
+                        if (plain && typed && runs.Count > 0)
+                        {
+                            runs[^1].Add(key);
+                        }
+                        else
+                        {
+                            runs.Add([key]);
+                            settles.Add(!plain && typed);
+                        }
+
+                        typed = plain;
+                    }
+                    while (console.BConsoleKeyCheck());
+
+                    for (int run = 0; run < runs.Count; run++)
+                    {
+                        (List<ConsoleKeyInfo> keys, bool settle) = (runs[run], settles[run]);
+                        BLoopDefer(() => apply(keys, settle));
+                    }
                 }
             }
             catch (Exception exception)

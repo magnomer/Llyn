@@ -121,9 +121,13 @@ internal sealed class BMural
 
         foreach (BSParley parley in parleys)
         {
+            bool top = ReferenceEquals(parley, parleys[^1]);
             foreach (BCanvasText text in parley.BSParleyDraw(glyphs, width, height, measure))
             {
-                yield return text;
+                if (top || text.BCanvasTextRole != "caret")
+                {
+                    yield return text;
+                }
             }
         }
     }

@@ -97,6 +97,10 @@ public sealed class TLibraryRail
                 library.BLibraryObserve(TLibrary.TLibraryEnter);
 
                 library.BLibraryObserve(new ConsoleKeyInfo('q', ConsoleKey.Q, false, false, false));
+                BLoop loop = Assert.IsType<BLoop>(SynchronizationContext.Current);
+                TaskCompletionSource settled = new();
+                loop.BLoopDefer(settled.SetResult);
+                loop.BLoopRun(settled.Task.WaitAsync(TimeSpan.FromSeconds(10)));
 
                 string drawn = TLibrary.TLibraryDraw(library);
                 Assert.Contains("No entries match", drawn);

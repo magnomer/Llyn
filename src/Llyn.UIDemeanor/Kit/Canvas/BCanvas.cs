@@ -14,6 +14,9 @@ internal sealed class BCanvas
     private readonly int _bCanvasColumns;
     private BCanvasCell[] _bCanvasDrawn;
     private BCanvasCell[] _bCanvasShown;
+    private (int, int)? _bCanvasCaret;
+    private (int, int)? _bCanvasCaretShown;
+    private bool _bCanvasCaretSynced;
 
     internal BCanvas(BConsole console, BCanvasWidth width, BTheme theme, int columns, int rows)
     {
@@ -38,12 +41,21 @@ internal sealed class BCanvas
 
         List<BCanvasCell> drawn = [];
         drawn.AddRange(Enumerable.Repeat(new BCanvasCell(" ", 1, "text"), _bCanvasDrawn.Length));
+        _bCanvasCaret = null;
         foreach (BCanvasText placed in texts)
         {
             (int row, int column, int span) = (placed.BCanvasTextRow, placed.BCanvasTextColumn, placed.BCanvasTextSpan);
             (string text, string role) = (placed.BCanvasTextValue, placed.BCanvasTextRole);
             ArgumentNullException.ThrowIfNull(text);
             ArgumentNullException.ThrowIfNull(role);
+
+            if (role == "caret")
+            {
+                bool inside = row >= 0 && row * _bCanvasColumns < drawn.Count && column >= 0
+                    && column < _bCanvasColumns;
+                _bCanvasCaret = inside ? (row, column) : null;
+                continue;
+            }
 
             if (row < 0 || row * _bCanvasColumns >= drawn.Count || column < 0 || span <= 0)
             {
@@ -144,9 +156,33 @@ internal sealed class BCanvas
         }
 
         _bCanvasShown = _bCanvasDrawn;
-        if (frame.Length > 0)
+        bool printed = frame.Length > 0;
+        if (printed)
         {
             frame.Append("\e[0m");
+        }
+
+        if (_bCanvasCaret is (int row, int column))
+        {
+            if (printed || _bCanvasCaret != _bCanvasCaretShown || !_bCanvasCaretSynced)
+            {
+                if (printed && _bCanvasCaretShown is not null)
+                {
+                    frame.Insert(0, "\e[?25l");
+                }
+
+                frame.Append(CultureInfo.InvariantCulture, $"\e[{row + 1};{column + 1}H\e[?25h");
+            }
+        }
+        else if (_bCanvasCaretShown is not null || !_bCanvasCaretSynced)
+        {
+            frame.Append("\e[?25l");
+        }
+
+        _bCanvasCaretShown = _bCanvasCaret;
+        _bCanvasCaretSynced = true;
+        if (frame.Length > 0)
+        {
             _bCanvasConsole.BConsoleFramePrint(frame.ToString());
         }
     }

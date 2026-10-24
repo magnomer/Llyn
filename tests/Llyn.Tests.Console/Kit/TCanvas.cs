@@ -41,8 +41,52 @@ public sealed class TCanvas
         canvas.BCanvasSync();
         canvas.BCanvasSync();
 
-        Assert.Equal(["\e[1;1H\e[96;44mabcd\e[2;1H    \e[0m", "\e[2;3H\e[96;44mx\e[0m"], console.TConsoleFakeFrames);
+        Assert.Equal(
+            ["\e[1;1H\e[96;44mabcd\e[2;1H    \e[0m\e[?25l", "\e[2;3H\e[96;44mx\e[0m"], console.TConsoleFakeFrames);
         Assert.Equal(["abcd", "  x "], console.TConsoleFakeGrid);
+    }
+
+    [Fact]
+    public void CanvasSync_CaretMark_ShowsCursorAfterFrame()
+    {
+        TConsoleFake console = new() { TConsoleFakeWidth = 4, TConsoleFakeHeight = 1 };
+        BCanvas canvas = new(console, new BCanvasWidth(false), new BTheme(BTheme.BThemeSpareRead), 4, 1);
+        Action<string, int> sync = (text, column) =>
+        {
+            canvas.BCanvasFrameDraw([new(0, 0, 4, text, "text"), new(0, column, 0, string.Empty, "caret")]);
+            canvas.BCanvasSync();
+        };
+
+        sync("ab", 2);
+        sync("ab", 2);
+        sync("ab", 1);
+        sync("abc", 3);
+
+        Assert.Equal(
+            [
+                "\e[1;1H\e[96;44mab  \e[0m\e[1;3H\e[?25h",
+                "\e[1;2H\e[?25h",
+                "\e[?25l\e[1;3H\e[96;44mc\e[0m\e[1;4H\e[?25h",
+            ],
+            console.TConsoleFakeFrames);
+    }
+
+    [Fact]
+    public void CanvasSync_NoCaretMark_HidesCursor()
+    {
+        TConsoleFake console = new() { TConsoleFakeWidth = 4, TConsoleFakeHeight = 1 };
+        BCanvas canvas = new(console, new BCanvasWidth(false), new BTheme(BTheme.BThemeSpareRead), 4, 1);
+        canvas.BCanvasFrameDraw([new(0, 0, 4, "ab", "text"), new(0, 9, 0, string.Empty, "caret")]);
+        canvas.BCanvasSync();
+        canvas.BCanvasFrameDraw([new(0, 0, 4, "ab", "text"), new(0, 2, 0, string.Empty, "caret")]);
+        canvas.BCanvasSync();
+
+        canvas.BCanvasFrameDraw([new(0, 0, 4, "ab", "text")]);
+        canvas.BCanvasSync();
+        canvas.BCanvasSync();
+
+        Assert.EndsWith("\e[0m\e[?25l", console.TConsoleFakeFrames[0], StringComparison.Ordinal);
+        Assert.Equal(["\e[1;3H\e[?25h", "\e[?25l"], console.TConsoleFakeFrames[1..]);
     }
 
     [Fact]
