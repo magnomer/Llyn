@@ -52,7 +52,7 @@ public sealed class CDeskDraft
         !CDeskDraftFilling && _cDeskDraftTenure is LTenure held ? new LQuillAuthor(held) : null;
 
     internal LQuillExample? CDeskDraftExample =>
-        !CDeskDraftFilling && _cDeskDraftTenure is LTenure held ? new LQuillExample(held) : null;
+        !CDeskDraftFilling && _cDeskDraftTenure is LTenure held ? new LQuillExample(held, _cDeskDraftPort) : null;
 
     internal LQuillSentence? CDeskDraftSentence =>
         !CDeskDraftFilling && _cDeskDraftTenure is LTenure held ? new LQuillSentence(held) : null;

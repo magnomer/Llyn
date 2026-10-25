@@ -18,11 +18,11 @@ public sealed class TCardTranslation
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
         long sheet = TCard.TCardSheetAdd(desk);
 
-        CProspect rest = card.CCardTranslationAdd(sheet, " chat, zzyzx, , ch", 0);
+        CProspect rest = card.CCardTranslationAdd(false, sheet, " chat, zzyzx, , ch", 0);
 
         Assert.Equal("zzyzx, ch", rest.CProspectText);
         Assert.Equal([chat], TCard.TCardTranslationRead(desk, sheet));
-        Assert.Equal("ch", card.CCardTranslationAdd(sheet, "ch", 1).CProspectText);
+        Assert.Equal("ch", card.CCardTranslationAdd(false, sheet, "ch", 1).CProspectText);
     }
 
     [Fact]
@@ -34,8 +34,8 @@ public sealed class TCardTranslation
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
         long sheet = TCard.TCardSheetAdd(desk);
 
-        CProspect typed = card.CCardTranslationAdd(sheet, " chat ", 0);
-        CProspect blank = card.CCardTranslationAdd(sheet, "  ", 0);
+        CProspect typed = card.CCardTranslationAdd(false, sheet, " chat ", 0);
+        CProspect blank = card.CCardTranslationAdd(false, sheet, "  ", 0);
 
         Assert.Equal(" chat ", typed.CProspectText);
         Assert.Equal("chat", typed.CProspectWord);
@@ -57,15 +57,15 @@ public sealed class TCardTranslation
         desk.TDeskDefer(TInterface.TRequestLanguageCreate(desk.CDeskId, "Klingon"));
         long sheet = TCard.TCardSheetAdd(desk);
 
-        CProspect typed = card.CCardTranslationAdd(sheet, "chat", 0);
-        CProspect resolved = card.CCardTranslationResolve(sheet, "chat", 0, true);
+        CProspect typed = card.CCardTranslationAdd(false, sheet, "chat", 0);
+        CProspect resolved = card.CCardTranslationResolve(false, sheet, "chat", 0, true);
 
         Assert.Equal([.. languages, "Klingon"], typed.CProspectLanguages);
         Assert.Equal(typed.CProspectLanguages, resolved.CProspectLanguages);
         desk.TDeskDefer(TInterface.TRequestLanguageCreate(desk.CDeskId, languages[0]));
         Assert.Equal(
-            [.. languages.Skip(1), languages[0]], card.CCardTranslationAdd(sheet, "chat", 0).CProspectLanguages);
-        Assert.Empty(card.CCardTranslationAdd(sheet, " ", 0).CProspectLanguages);
+            [.. languages.Skip(1), languages[0]], card.CCardTranslationAdd(false, sheet, "chat", 0).CProspectLanguages);
+        Assert.Empty(card.CCardTranslationAdd(false, sheet, " ", 0).CProspectLanguages);
         Assert.Empty(card.CCardMentionRead("chat").CProspectLanguages);
     }
 
@@ -84,7 +84,7 @@ public sealed class TCardTranslation
         desk.CDeskStart(edited);
         CCard card = TInterfaceConductCard.TCardCreate(engine, desk, TEnvoyFake.TEnvoyCreate(false, []));
 
-        CProspect typed = card.CCardTranslationAdd(TCard.TCardSheetAdd(desk), "water", 0);
+        CProspect typed = card.CCardTranslationAdd(false, TCard.TCardSheetAdd(desk), "water", 0);
 
         CVistaRow row = Assert.Single(typed.CProspectRows);
         Assert.Equal(twin, row.CVistaRowId);
@@ -100,8 +100,8 @@ public sealed class TCardTranslation
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
         long sheet = TCard.TCardSheetAdd(desk);
 
-        card.CCardTranslationInsert(sheet, chat, string.Empty, string.Empty, 0);
-        card.CCardTranslationAdd(sheet, "chat,", 1);
+        card.CCardTranslationInsert(false, sheet, chat, string.Empty, string.Empty, 0);
+        card.CCardTranslationAdd(false, sheet, "chat,", 1);
 
         Assert.Equal([chat], TCard.TCardTranslationRead(desk, sheet));
     }
@@ -117,14 +117,14 @@ public sealed class TCardTranslation
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
         CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
-        caret.CCaretTranslationInsert(sheet, chat, string.Empty, string.Empty);
-        caret.CCaretTranslationInsert(sheet, gato, string.Empty, string.Empty);
-        caret.CCaretTranslation.CCaretTrailMove(sheet, -1);
+        caret.CCaretTranslationInsert(false, sheet, chat, string.Empty, string.Empty);
+        caret.CCaretTranslationInsert(false, sheet, gato, string.Empty, string.Empty);
+        caret.CCaretTranslation.CCaretTrailMove(false, sheet, -1);
 
-        caret.CCaretTranslationInsert(sheet, hund, string.Empty, string.Empty);
+        caret.CCaretTranslationInsert(false, sheet, hund, string.Empty, string.Empty);
 
         Assert.Equal([chat, hund, gato], TCard.TCardTranslationRead(desk, sheet));
-        Assert.Equal(gato, caret.CCaretTranslation.CCaretTrailRead(sheet));
+        Assert.Equal(gato, caret.CCaretTranslation.CCaretTrailRead(false, sheet));
     }
 
     [Fact]
@@ -136,8 +136,8 @@ public sealed class TCardTranslation
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
         long sheet = TCard.TCardSheetAdd(desk);
 
-        CProspect offered = card.CCardTranslationResolve(sheet, " chat ", 0, true);
-        CProspect blank = card.CCardTranslationResolve(sheet, " ", 0, true);
+        CProspect offered = card.CCardTranslationResolve(false, sheet, " chat ", 0, true);
+        CProspect blank = card.CCardTranslationResolve(false, sheet, " ", 0, true);
 
         Assert.Equal(" chat ", offered.CProspectText);
         Assert.Equal("chat", offered.CProspectWord);
@@ -159,8 +159,8 @@ public sealed class TCardTranslation
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
         long sheet = TCard.TCardSheetAdd(desk);
 
-        CProspect left = card.CCardTranslationResolve(sheet, "chat", 0, false);
-        CProspect kept = card.CCardTranslationResolve(sheet, "zzyzx", 1, false);
+        CProspect left = card.CCardTranslationResolve(false, sheet, "chat", 0, false);
+        CProspect kept = card.CCardTranslationResolve(false, sheet, "zzyzx", 1, false);
 
         Assert.Equal(string.Empty, left.CProspectText);
         Assert.False(left.CProspectShown);
@@ -224,14 +224,14 @@ public sealed class TCardTranslation
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
         long sheet = TCard.TCardSheetAdd(desk);
 
-        card.CCardTranslationInsert(sheet, null, "chien", "French", 0);
+        card.CCardTranslationInsert(false, sheet, null, "chien", "French", 0);
         long target = Assert.Single(TCard.TCardTranslationRead(desk, sheet));
 
         Assert.NotNull(engine.TEngineCourtFind(desk.CDeskId, target));
         Assert.Equal("chien", engine.TEngineDraftRead(target)?.LDraftContent.LEntryDraftHeadword);
         Assert.Equal("Input", engine.TEngineDraftRead(target)?.LDraftOrigin);
 
-        card.CCardTranslationRemove(sheet, target);
+        card.CCardTranslationRemove(false, sheet, target);
 
         Assert.Empty(TCard.TCardTranslationRead(desk, sheet));
         Assert.Null(engine.TEngineCourtFind(desk.CDeskId, target));
@@ -246,9 +246,9 @@ public sealed class TCardTranslation
         long chat = engine.TEngineTranslationCreate("chat", "French").LEntryId;
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
         long sheet = TCard.TCardSheetAdd(desk);
-        card.CCardTranslationInsert(sheet, chat, string.Empty, string.Empty, 0);
+        card.CCardTranslationInsert(false, sheet, chat, string.Empty, string.Empty, 0);
 
-        card.CCardTranslationRemove(sheet, chat);
+        card.CCardTranslationRemove(false, sheet, chat);
 
         Assert.Empty(TCard.TCardTranslationRead(desk, sheet));
         desk.TDeskDefer(TInterface.TRequestLanguageCreate(desk.CDeskId, "French"));
@@ -268,7 +268,7 @@ public sealed class TCardTranslation
         CCard card = TInterfaceConductCard.TCardCreate(engine, desk, TEnvoyFake.TEnvoyCreate(false, asked));
         long sheet = TCard.TCardSheetAdd(desk);
 
-        card.CCardTranslationInsert(sheet, null, " ", "French", 0);
+        card.CCardTranslationInsert(false, sheet, null, " ", "French", 0);
 
         Assert.Equal(["Input.TranslationFailed"], asked);
         Assert.Empty(TCard.TCardTranslationRead(desk, sheet));
@@ -282,7 +282,8 @@ public sealed class TCardTranslation
         engine.TEngineEntrySave(TInterface.TEntryDraftCreate("water", "English", "", "", [], []));
         engine.TEngineEntrySave(TInterface.TEntryDraftCreate("water", "English", "", "", [], []));
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
-        IReadOnlyList<CVistaRow> rows = card.CCardTranslationAdd(TCard.TCardSheetAdd(desk), "water", 0).CProspectRows;
+        IReadOnlyList<CVistaRow> rows =
+            card.CCardTranslationAdd(false, TCard.TCardSheetAdd(desk), "water", 0).CProspectRows;
         Assert.Equal(["water (1)", "water (2)"], rows.Select(row => row.CVistaRowName));
         Assert.All(rows, row => Assert.Equal("water", row.CVistaRowHeadword));
     }

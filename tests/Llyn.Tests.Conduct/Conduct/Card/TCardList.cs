@@ -49,7 +49,7 @@ public sealed class TCardList
         (CDesk desk, CCardList card) = TCardListPrepare(engine, 2);
         IReadOnlyList<long> held = TCardMeaningRead(desk);
 
-        card.CCardRemove(held[0]);
+        card.CCardRemove(false, held[0]);
 
         Assert.Equal([held[1]], TCardMeaningRead(desk));
     }
@@ -62,7 +62,7 @@ public sealed class TCardList
         (CDesk desk, CCardList card) = TCardListPrepare(engine, 1);
         long lone = Assert.Single(TCardMeaningRead(desk));
 
-        card.CCardRemove(lone);
+        card.CCardRemove(false, lone);
 
         Assert.Equal([lone], TCardMeaningRead(desk));
     }
@@ -75,7 +75,7 @@ public sealed class TCardList
         (CDesk desk, CCardList card) = TCardListPrepare(engine, 3);
         IReadOnlyList<long> held = TCardMeaningRead(desk);
 
-        card.CCardMove(held[2], " 1 ");
+        card.CCardMove(false, held[2], " 1 ");
 
         Assert.Equal([held[2], held[0], held[1]], TCardMeaningRead(desk));
     }
@@ -88,7 +88,7 @@ public sealed class TCardList
         (CDesk desk, CCardList card) = TCardListPrepare(engine, 3);
         IReadOnlyList<long> held = TCardMeaningRead(desk);
 
-        card.CCardMove(held[0], "9");
+        card.CCardMove(false, held[0], "9");
 
         Assert.Equal([held[1], held[2], held[0]], TCardMeaningRead(desk));
     }
@@ -101,7 +101,7 @@ public sealed class TCardList
         (CDesk desk, CCardList card) = TCardListPrepare(engine, 3);
         IReadOnlyList<long> held = TCardMeaningRead(desk);
 
-        card.CCardMove(held[2], "-4");
+        card.CCardMove(false, held[2], "-4");
 
         Assert.Equal([held[2], held[0], held[1]], TCardMeaningRead(desk));
     }
@@ -114,7 +114,7 @@ public sealed class TCardList
         (CDesk desk, CCardList card) = TCardListPrepare(engine, 3);
         IReadOnlyList<long> held = TCardMeaningRead(desk);
 
-        card.CCardMove(held[1], "2");
+        card.CCardMove(false, held[1], "2");
 
         Assert.Equal(held, TCardMeaningRead(desk));
     }
@@ -127,7 +127,7 @@ public sealed class TCardList
         (CDesk desk, CCardList card) = TCardListPrepare(engine, 3);
         IReadOnlyList<long> held = TCardMeaningRead(desk);
 
-        card.CCardMove(held[0], 1);
+        card.CCardMove(false, held[0], 1);
 
         Assert.Equal([held[1], held[0], held[2]], TCardMeaningRead(desk));
     }
@@ -140,7 +140,7 @@ public sealed class TCardList
         (CDesk desk, CCardList card) = TCardListPrepare(engine, 3);
         IReadOnlyList<long> held = TCardMeaningRead(desk);
 
-        card.CCardMove(held.Max() + 1, 0);
+        card.CCardMove(false, held.Max() + 1, 0);
 
         Assert.Equal(held, TCardMeaningRead(desk));
     }
@@ -153,7 +153,7 @@ public sealed class TCardList
         (CDesk desk, CCardList card) = TCardListPrepare(engine, 2);
         IReadOnlyList<long> held = TCardMeaningRead(desk);
 
-        card.CCardMove(held[0], "second");
+        card.CCardMove(false, held[0], "second");
 
         Assert.Equal(held, TCardMeaningRead(desk));
     }
@@ -166,7 +166,7 @@ public sealed class TCardList
         (CDesk desk, CCardList card) = TCardListPrepare(engine, 3);
         IReadOnlyList<long> held = TCardMeaningRead(desk);
 
-        card.CCardMove(held[0], "2nd");
+        card.CCardMove(false, held[0], "2nd");
 
         Assert.Equal(held, TCardMeaningRead(desk));
     }
@@ -180,7 +180,7 @@ public sealed class TCardList
         IReadOnlyList<long> held = TCardMeaningRead(desk);
         IReadOnlyList<long> collocations = TCardCollocationRead(desk);
 
-        card.CCardMove(held.Max() + 1, "1");
+        card.CCardMove(false, held.Max() + 1, "1");
 
         Assert.Equal(held, TCardMeaningRead(desk));
         Assert.Equal(collocations, TCardCollocationRead(desk));

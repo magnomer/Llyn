@@ -46,7 +46,11 @@ public sealed class TSituation
             TInterface.TSituationCreate(0, "in court", null, null));
 
         engine.TRequestEntryApply(entry.LEntryId, draft => TInterface.TSituationPickCreate(
-            draft.LDraftId, draft.LDraftContent.LEntryDraftCollocations[0].LCardDraftId, situation.LSituationId, 0));
+            draft.LDraftId,
+            draft.LDraftContent.LEntryDraftCollocations[0].LCardDraftId,
+            situation.LSituationId,
+            0,
+            LCardKind.LCardKindCollocation));
 
         Assert.NotEqual(
             TSituationCardRead(engine, entry.LEntryId, false).LCardDraftId,

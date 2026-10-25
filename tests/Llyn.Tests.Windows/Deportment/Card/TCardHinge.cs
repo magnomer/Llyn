@@ -102,8 +102,8 @@ public sealed class TCardHinge
         editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
         editor.TEditorFixtureOpen(water.LEntryId);
         CCardDraft draft = editor.TEditorDraftRead()!.CEntryDraftMeanings[0];
-        IReadOnlySet<long>? folded = null;
-        IReadOnlySet<long>? unfolded = null;
+        IReadOnlySet<(LCardKind, long)>? folded = null;
+        IReadOnlySet<(LCardKind, long)>? unfolded = null;
 
         TCardHingeRun(() =>
         {
@@ -119,7 +119,8 @@ public sealed class TCardHinge
             unfolded = engine.TEngineFoldRead(water.LEntryId);
         });
 
-        Assert.Equal(new HashSet<long> { draft.CCardDraftId }, folded);
+        Assert.Equal(
+            new HashSet<(LCardKind, long)> { (LCardKind.LCardKindMeaning, draft.CCardDraftId) }, folded);
         Assert.Empty(unfolded!);
     }
 

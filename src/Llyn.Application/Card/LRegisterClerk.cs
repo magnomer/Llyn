@@ -29,7 +29,7 @@ public sealed class LRegisterClerk
         return found;
     }
 
-    public LRegisterOffer LRegisterClerkFind(string text, string language, LDraft? draft, long card)
+    public LRegisterOffer LRegisterClerkFind(string text, string language, LDraft? draft, LCardKind kind, long card)
     {
         ArgumentNullException.ThrowIfNull(text);
 
@@ -41,7 +41,7 @@ public sealed class LRegisterClerk
 
         IReadOnlyList<LRegisterDraft> held = draft is null
             ? []
-            : LDraftClerkCard.LCardFind(draft.LDraftContent, card)?.LCardDraftRegister ?? [];
+            : LDraftClerkCard.LCardFind(draft.LDraftContent, kind, card)?.LCardDraftRegister ?? [];
 
         List<LRegisterRow> rows = [];
         foreach (LRegister register in LRegisterClerkFind(word, language))

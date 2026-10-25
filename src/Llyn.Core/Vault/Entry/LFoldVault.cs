@@ -4,11 +4,11 @@ namespace Llyn.Core;
 
 public interface LFoldVault
 {
-    void LFoldSave(long cardId);
+    void LFoldSave(LCardKind kind, long cardId);
 
-    void LFoldDelete(long cardId);
+    void LFoldDelete(LCardKind kind, long cardId);
 
-    IReadOnlySet<long> LFoldRead(long entryId);
+    IReadOnlySet<(LCardKind, long)> LFoldRead(long entryId);
 
     void LFoldReflexSpread(long entryId, bool opened);
 

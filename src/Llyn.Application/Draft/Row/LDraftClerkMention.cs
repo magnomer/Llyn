@@ -45,7 +45,7 @@ public sealed class LDraftClerkMention
 
         LMentionValidate(request.LRequestEntryId, request.LRequestSenseId);
 
-        return LMentionApply(draft, request.LRequestCardId, request.LRequestSentenceId, example =>
+        return LMentionApply(draft, request.LRequestSite, example =>
         {
             int end = request.LRequestOffset + request.LRequestLength;
             if (end > LMentionRuneRead(example.LExampleDraftText.LStateValueShow()).Count)
@@ -79,8 +79,7 @@ public sealed class LDraftClerkMention
 
         return LMentionApply(
             draft,
-            request.LRequestCardId,
-            request.LRequestSentenceId,
+            request.LRequestSite,
             example => LDraftClerkList.LDraftListRemove(
                 example.LExampleDraftMention, request.LRequestMentionId, static row => row.LMentionDraftId));
     }
@@ -89,7 +88,7 @@ public sealed class LDraftClerkMention
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        return LMentionApply(draft, request.LRequestCardId, request.LRequestSentenceId, example =>
+        return LMentionApply(draft, request.LRequestSite, example =>
             LDraftClerkList.LDraftListChange(
                 example.LExampleDraftMention,
                 request.LRequestMentionId,
@@ -142,14 +141,12 @@ public sealed class LDraftClerkMention
     }
 
     private static LDraft LMentionApply(
-        LDraft draft,
-        long cardId,
-        long sentenceId,
-        Func<LExampleDraft, IReadOnlyList<LMentionDraft>> change)
+        LDraft draft, LExampleSite site, Func<LExampleDraft, IReadOnlyList<LMentionDraft>> change)
     {
         ArgumentNullException.ThrowIfNull(draft);
+        ArgumentNullException.ThrowIfNull(site);
 
-        if (cardId == 0 && sentenceId == 0)
+        if (site is not LExampleSiteCard card)
         {
             LExample held = draft.LDraftExample ?? throw new LRefusal(LRefusal.LRefusalExample);
             LExampleDraft written = LExampleDraft.LExampleDraftCreate(held);
@@ -157,11 +154,19 @@ public sealed class LDraftClerkMention
             return draft with { LDraftExample = held with { LExampleMention = LMentionRead(change(written)) } };
         }
 
-        LEntryDraft content = LDraftClerkSentence.LSentenceChange(draft.LDraftContent, cardId, sentenceId, sentence =>
-        {
-            LExampleDraft example = sentence.LSentenceDraftExample ?? throw new LRefusal(LRefusal.LRefusalItem);
-            return sentence with { LSentenceDraftExample = example with { LExampleDraftMention = change(example) } };
-        });
+        LEntryDraft content = LDraftClerkSentence.LSentenceChange(
+            draft.LDraftContent,
+            card.LExampleSiteKind,
+            card.LExampleSiteHolder,
+            card.LExampleSiteSentence,
+            sentence =>
+            {
+                LExampleDraft example = sentence.LSentenceDraftExample ?? throw new LRefusal(LRefusal.LRefusalItem);
+                return sentence with
+                {
+                    LSentenceDraftExample = example with { LExampleDraftMention = change(example) },
+                };
+            });
 
         return draft with { LDraftContent = content };
     }

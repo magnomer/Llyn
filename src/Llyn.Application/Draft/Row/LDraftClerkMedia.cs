@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Llyn.Core;
 
 namespace Llyn.Application;
@@ -80,18 +79,22 @@ public sealed class LDraftClerkMedia
         {
             LRequestImageAddition sent => LDraftClerkCard.LCardChange(
                 content,
+                sent.LRequestKind,
                 sent.LRequestCardId,
                 card => card with { LCardDraftImage = LImageApply(card.LCardDraftImage, sent)! }),
             LRequestImagePick sent => LDraftClerkCard.LCardChange(
                 content,
+                sent.LRequestKind,
                 sent.LRequestCardId,
                 card => card with { LCardDraftImage = LImageApply(card.LCardDraftImage, sent)! }),
             LRequestImageRemoval sent => LDraftClerkCard.LCardChange(
                 content,
+                sent.LRequestKind,
                 sent.LRequestCardId,
                 card => card with { LCardDraftImage = LImageApply(card.LCardDraftImage, sent)! }),
             LRequestImageShift sent => LDraftClerkCard.LCardChange(
                 content,
+                sent.LRequestKind,
                 sent.LRequestCardId,
                 card => card with { LCardDraftImage = LImageApply(card.LCardDraftImage, sent)! }),
             LRequestImageLocation sent => LImageChange(content, sent),
@@ -130,27 +133,13 @@ public sealed class LDraftClerkMedia
         });
     }
 
-    public static int LImageEndRead(LDraft draft, long cardId)
+    public static int LImageEndRead(LDraft draft, LCardKind kind, long cardId)
     {
         ArgumentNullException.ThrowIfNull(draft);
 
         return draft.LDraftSituation is LSituation held
             ? held.LSituationImage.Count
-            : LDraftClerkCard.LCardFind(draft.LDraftContent, cardId)?.LCardDraftImage.Count ?? 0;
-    }
-
-    public static long? LImageCardFind(LDraft draft, long imageId)
-    {
-        ArgumentNullException.ThrowIfNull(draft);
-
-        if (draft.LDraftSituation is not null)
-        {
-            return 0;
-        }
-
-        return LDraftClerkCard.LCardFind(
-                draft.LDraftContent, card => card.LCardDraftImage.Any(row => row.LImageDraftId == imageId))
-            ?.LCardDraftId;
+            : LDraftClerkCard.LCardFind(draft.LDraftContent, kind, cardId)?.LCardDraftImage.Count ?? 0;
     }
 
     private IReadOnlyList<LVideoDraft>? LVideoApply(IReadOnlyList<LVideoDraft> videos, LRequest request)
@@ -198,18 +187,22 @@ public sealed class LDraftClerkMedia
         {
             LRequestVideoAddition sent => LDraftClerkCard.LCardChange(
                 content,
+                sent.LRequestKind,
                 sent.LRequestCardId,
                 card => card with { LCardDraftVideo = LVideoApply(card.LCardDraftVideo, sent)! }),
             LRequestVideoPick sent => LDraftClerkCard.LCardChange(
                 content,
+                sent.LRequestKind,
                 sent.LRequestCardId,
                 card => card with { LCardDraftVideo = LVideoApply(card.LCardDraftVideo, sent)! }),
             LRequestVideoRemoval sent => LDraftClerkCard.LCardChange(
                 content,
+                sent.LRequestKind,
                 sent.LRequestCardId,
                 card => card with { LCardDraftVideo = LVideoApply(card.LCardDraftVideo, sent)! }),
             LRequestVideoShift sent => LDraftClerkCard.LCardChange(
                 content,
+                sent.LRequestKind,
                 sent.LRequestCardId,
                 card => card with { LCardDraftVideo = LVideoApply(card.LCardDraftVideo, sent)! }),
             LRequestVideoLocation sent => LVideoChange(
@@ -237,13 +230,13 @@ public sealed class LDraftClerkMedia
         return new LVideoDraft(stored.LVideoLocation, stored.LVideoSpan, stored.LVideoId);
     }
 
-    public static int LVideoEndRead(LDraft draft, long cardId)
+    public static int LVideoEndRead(LDraft draft, LCardKind kind, long cardId)
     {
         ArgumentNullException.ThrowIfNull(draft);
 
         return draft.LDraftSituation is LSituation held
             ? held.LSituationVideo.Count
-            : LDraftClerkCard.LCardFind(draft.LDraftContent, cardId)?.LCardDraftVideo.Count ?? 0;
+            : LDraftClerkCard.LCardFind(draft.LDraftContent, kind, cardId)?.LCardDraftVideo.Count ?? 0;
     }
 
     public static (TimeSpan, TimeSpan?) LVideoSpanRead(LVideoDraft video)
@@ -251,20 +244,6 @@ public sealed class LDraftClerkMedia
         ArgumentNullException.ThrowIfNull(video);
 
         return LVideo.LVideoSpanRead(video.LVideoDraftSpan.LStateValuePlain);
-    }
-
-    public static long? LVideoCardFind(LDraft draft, long videoId)
-    {
-        ArgumentNullException.ThrowIfNull(draft);
-
-        if (draft.LDraftSituation is not null)
-        {
-            return 0;
-        }
-
-        return LDraftClerkCard.LCardFind(
-                draft.LDraftContent, card => card.LCardDraftVideo.Any(row => row.LVideoDraftId == videoId))
-            ?.LCardDraftId;
     }
 
     public static LEntryDraft LVideoChange(

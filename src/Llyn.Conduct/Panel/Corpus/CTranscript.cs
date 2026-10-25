@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Llyn.Application;
 using Llyn.ShellEngine;
 
 namespace Llyn.Conduct;
@@ -75,39 +76,39 @@ public sealed class CTranscript
             return;
         }
 
-        _cTranscriptDesk.CDeskDraft.CDeskDraftChip?.LQuillMentionAdd(0, 0, text, start, length, stored);
+        _cTranscriptDesk.CDeskDraft.CDeskDraftExample?.LQuillMentionAdd(text, start, length, stored);
     }
 
     public void CTranscriptSilenceSet(string text, int start, int length)
     {
-        _cTranscriptDesk.CDeskDraft.CDeskDraftChip?.LQuillMentionAdd(0, 0, text, start, length, 0);
+        _cTranscriptDesk.CDeskDraft.CDeskDraftExample?.LQuillMentionAdd(text, start, length, 0);
     }
 
     public void CTranscriptSenseSet(string text, int start, int length, long senseId)
     {
-        _cTranscriptDesk.CDeskDraft.CDeskDraftChip?.LQuillSenseSet(0, 0, text, start, length, senseId);
+        _cTranscriptDesk.CDeskDraft.CDeskDraftExample?.LQuillSenseSet(text, start, length, senseId);
     }
 
     public void CTranscriptMentionRemove(long mentionId)
     {
-        _cTranscriptDesk.CDeskDraft.CDeskDraftMention?.LQuillMentionRemove(0, 0, mentionId);
+        _cTranscriptDesk.CDeskDraft.CDeskDraftMention?.LQuillMentionRemove(mentionId);
     }
 
     public void CTranscriptMentionRemove(string text, int start, int length)
     {
-        _cTranscriptDesk.CDeskDraft.CDeskDraftChip?.LQuillMentionRemove(0, 0, text, start, length);
+        _cTranscriptDesk.CDeskDraft.CDeskDraftExample?.LQuillMentionRemove(text, start, length);
     }
 
     public bool CTranscriptMentionCheck(string text, int start, int length)
     {
         return _cTranscriptDesk.CDeskDraft.CDeskDraftTenure is LTenure held
-            && new LQuillMention(held).LQuillMentionCheck(0, 0, text, start, length);
+            && new LQuillMention(held).LQuillMentionCheck(text, start, length);
     }
 
     public bool CTranscriptSenseCheck(string text, int start, int length)
     {
         return _cTranscriptDesk.CDeskDraft.CDeskDraftTenure is LTenure held
-            && new LQuillMention(held).LQuillSenseCheck(0, 0, text, start, length);
+            && new LQuillMention(held).LQuillSenseCheck(text, start, length);
     }
 
     public CMentionSense? CTranscriptSenseRead(string text, int start, int length)
@@ -115,8 +116,7 @@ public sealed class CTranscript
         return CMention.LMentionSenseRead(
             _cTranscriptDraftPort,
             _cTranscriptDesk,
-            0,
-            0,
+            new LExampleSiteDraft(),
             text,
             start,
             length,
@@ -127,6 +127,10 @@ public sealed class CTranscript
     public IReadOnlyList<CMentionLabel> CTranscriptMentionRead()
     {
         return CMention.LMentionChipRead(
-            _cTranscriptDraftPort, _cTranscriptDesk, 0, 0, _cTranscriptEnvoy, _cTranscriptSettingsPort);
+            _cTranscriptDraftPort,
+            _cTranscriptDesk,
+            new LExampleSiteDraft(),
+            _cTranscriptEnvoy,
+            _cTranscriptSettingsPort);
     }
 }

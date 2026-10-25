@@ -44,7 +44,7 @@ internal static class TInterfaceConductCard
         CFolio.CFolioEntryRead(
             draft,
             targets,
-            new HashSet<long>(),
+            new HashSet<(LCardKind, long)>(),
             TInterfaceConduct.TMediaCreate(),
             [],
             TEngineFake.TEngineCreate<LDraftPort>(new Dictionary<string, System.Func<object?[]?, object?>>

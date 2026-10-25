@@ -108,6 +108,7 @@ The keys of a page come from a function, so help lists only what is bound.
 The window page also lists the pager's own rows.
 Rows with the same key and modifiers are listed once.
 A digit key is listed as its digit.
+Space is listed by its catalog word, as the other named keys are.
 Pages are built on every read, so a key's live state shows at once.
 Help opens on the box page for a box focus and on the keys everywhere page for the help focus.
 Otherwise it opens on the window page.
@@ -122,11 +123,11 @@ The console minimum fills the small-console sentence.
 
 ## Stamp
 
-Commit: `78fc0ebfff7c`
+Commit: `8c403d1df768`
 - `BCabinet.cs` `9c7873781402935c`
 - `BHeadquarter.cs` `34abc335bfdcbfb1`
 - `BRoof.cs` `0315392a65140e16`
 - `BRoofItem.cs` `e2a42521c4ed1f78`
 - `BRoofMenu.cs` `7ab739815c3a5874`
-- `BSHelp.cs` `70e5b0723e3a20e4`
-- `BSNavigation.cs` `ca9085841e92ebd5`
+- `BSHelp.cs` `506503bd57c683c5`
+- `BSNavigation.cs` `5446b242c408f4ac`

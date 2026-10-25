@@ -24,7 +24,7 @@ internal static class CFolio
     internal static CEntryDraft CFolioEntryRead(
         LEntryDraft draft,
         IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets,
-        IReadOnlySet<long> folds,
+        IReadOnlySet<(LCardKind, long)> folds,
         LMediaPort media,
         IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth, string LMeaningPath)> senses,
         LDraftPort drafts)
@@ -54,7 +54,7 @@ internal static class CFolio
         LEntryDraft draft,
         IReadOnlyList<LCardDraft> cards,
         IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets,
-        IReadOnlySet<long> folds,
+        IReadOnlySet<(LCardKind, long)> folds,
         LMediaPort media,
         string meaning,
         bool expressed,
@@ -90,7 +90,8 @@ internal static class CFolio
                 card.LCardDraftTag.Select(static row => new CTagDraft(row.LTagDraftId, row.LTagDraftText)).ToList(),
                 CFolioImageRead(card.LCardDraftImage, media),
                 CFolioVideoRead(card.LCardDraftVideo, media),
-                folds.Contains(card.LCardDraftId),
+                folds.Contains(
+                    (expressed ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning, card.LCardDraftId)),
                 card.LCardDraftStored,
                 card.LCardDraftSense
                     .Join(
@@ -102,11 +103,11 @@ internal static class CFolio
             .ToList();
     }
 
-    internal static int? CFolioPlaceRead(LEntryDraft content, long cardId, int place)
+    internal static int? CFolioPlaceRead(LEntryDraft content, bool collocated, int place)
     {
         ArgumentNullException.ThrowIfNull(content);
 
-        IReadOnlyList<LCardDraft> cards = CFolioListRead(content, cardId);
+        IReadOnlyList<LCardDraft> cards = CFolioListRead(content, collocated);
         IReadOnlyList<LCardDraft> shown = CFolioOrderRead(cards);
         if (place < 0 || place >= shown.Count)
         {
@@ -125,7 +126,7 @@ internal static class CFolio
         return null;
     }
 
-    internal static int? CFolioOrdinalRead(LEntryDraft content, long cardId, string ordinal)
+    internal static int? CFolioOrdinalRead(LEntryDraft content, bool collocated, string ordinal)
     {
         ArgumentNullException.ThrowIfNull(content);
         ArgumentNullException.ThrowIfNull(ordinal);
@@ -135,15 +136,15 @@ internal static class CFolio
             return null;
         }
 
-        int count = Math.Max(CFolioListRead(content, cardId).Count, 1);
+        int count = Math.Max(CFolioListRead(content, collocated).Count, 1);
         return Math.Clamp(wanted, 1, count) - 1;
     }
 
-    internal static int CFolioCountRead(LEntryDraft content, long cardId)
+    internal static int CFolioCountRead(LEntryDraft content, bool collocated)
     {
         ArgumentNullException.ThrowIfNull(content);
 
-        return CFolioListRead(content, cardId).Count;
+        return CFolioListRead(content, collocated).Count;
     }
 
     internal static IReadOnlyList<LCardDraft> CFolioOrderRead(IReadOnlyList<LCardDraft> cards)
@@ -153,11 +154,9 @@ internal static class CFolio
         return cards.OrderBy(static card => card.LCardDraftPosition).ToList();
     }
 
-    private static IReadOnlyList<LCardDraft> CFolioListRead(LEntryDraft content, long cardId)
+    private static IReadOnlyList<LCardDraft> CFolioListRead(LEntryDraft content, bool collocated)
     {
-        return content.LEntryDraftMeanings.Any(card => card.LCardDraftId == cardId)
-            ? content.LEntryDraftMeanings
-            : content.LEntryDraftCollocations;
+        return collocated ? content.LEntryDraftCollocations : content.LEntryDraftMeanings;
     }
 
     private static CSentenceDraft CFolioSentenceRead(LEntryDraft draft, LSentenceDraft sentence, LDraftPort drafts)

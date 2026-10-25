@@ -107,11 +107,11 @@ public sealed class TEngineLiveryPage
             []));
         LEntryDraft held = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(entry.LEntryId));
         long folded = held.LEntryDraftMeanings[0].LCardDraftId;
-        engine.TEngineFoldSave(entry.LEntryId, folded);
+        engine.TEngineFoldSave(entry.LEntryId, LCardKind.LCardKindMeaning, folded);
 
         LLiveryPage page = Assert.IsType<LLiveryPage>(engine.TLiveryRead(entry.LEntryId));
 
-        Assert.Equal([folded], page.LLiveryPageFold);
+        Assert.Equal([(LCardKind.LCardKindMeaning, folded)], page.LLiveryPageFold);
     }
 
     [Fact]

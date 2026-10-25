@@ -3,27 +3,32 @@ using Llyn.Core;
 namespace Llyn.Application;
 
 public sealed record LRequestSituationAddition(
-    long LRequestDraftId, long LRequestCardId, LStateWritten LRequestValue, int LRequestPosition)
+    long LRequestDraftId,
+    LCardKind LRequestKind,
+    long LRequestCardId,
+    LStateWritten LRequestValue,
+    int LRequestPosition)
     : LRequest(LRequestDraftId)
 {
     public override string LRequestKey => nameof(LRequestSituationAddition);
 }
 
 public sealed record LRequestSituationPick(
-    long LRequestDraftId, long LRequestCardId, long LRequestSituationId, int LRequestPosition)
+    long LRequestDraftId, LCardKind LRequestKind, long LRequestCardId, long LRequestSituationId, int LRequestPosition)
     : LRequest(LRequestDraftId)
 {
     public override string LRequestKey => nameof(LRequestSituationPick);
 }
 
-public sealed record LRequestSituationRemoval(long LRequestDraftId, long LRequestCardId, long LRequestSituationId)
+public sealed record LRequestSituationRemoval(
+    long LRequestDraftId, LCardKind LRequestKind, long LRequestCardId, long LRequestSituationId)
     : LRequest(LRequestDraftId)
 {
     public override string LRequestKey => nameof(LRequestSituationRemoval);
 }
 
 public sealed record LRequestSituationShift(
-    long LRequestDraftId, long LRequestCardId, long LRequestSituationId, int LRequestPosition)
+    long LRequestDraftId, LCardKind LRequestKind, long LRequestCardId, long LRequestSituationId, int LRequestPosition)
     : LRequest(LRequestDraftId)
 {
     public override string LRequestKey => nameof(LRequestSituationShift);

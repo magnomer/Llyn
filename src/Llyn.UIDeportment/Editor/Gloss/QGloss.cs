@@ -35,7 +35,7 @@ internal sealed class QGloss
         if (sender is FrameworkElement { DataContext: QPassage row }
             && _qGlossSentence.QSentenceCardFind(row) is QPlacard card)
         {
-            _cSentence.CSentenceGlossAdd(card.QPlacardId, row.QPassageRow);
+            _cSentence.CSentenceGlossAdd(card.QPlacardCollocated, card.QPlacardId, row.QPassageRow);
         }
     }
 
@@ -45,7 +45,8 @@ internal sealed class QGloss
             && e.Source is FrameworkElement { DataContext: QPassage row }
             && _qGlossSentence.QSentenceCardFind(row) is QPlacard card)
         {
-            _cSentence.CSentenceGlossRemove(card.QPlacardId, row.QPassageRow, gloss.QRenditionId);
+            _cSentence.CSentenceGlossRemove(
+                card.QPlacardCollocated, card.QPlacardId, row.QPassageRow, gloss.QRenditionId);
         }
     }
 
@@ -54,7 +55,7 @@ internal sealed class QGloss
         if (QGlossSentenceFind(gloss) is (QPlacard card, QPassage row))
         {
             _cSentence.CSentenceGlossSet(
-                card.QPlacardId, row.QPassageRow, gloss.QRenditionId, text);
+                card.QPlacardCollocated, card.QPlacardId, row.QPassageRow, gloss.QRenditionId, text);
         }
     }
 

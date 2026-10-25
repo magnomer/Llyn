@@ -17,14 +17,14 @@ public sealed class TCardMention
         using LEngine engine = workspace.TWorkspaceEngineStart();
         (long entry, long sense) = TMentionEntryCreate(engine);
         (CDesk desk, CSentence sentence, long sheet, long row) = TMentionPrepare(engine);
-        sentence.CSentenceMentionAdd(sheet, row, TMentionText, 13, 6, entry);
+        sentence.CSentenceMentionAdd(false, sheet, row, TMentionText, 13, 6, entry);
 
-        Assert.True(sentence.CSentenceSenseCheck(sheet, row, TMentionText, 13, 6));
-        CMentionSense menu = sentence.CSentenceSenseRead(sheet, row, TMentionText, 13, 6)!;
+        Assert.True(sentence.CSentenceSenseCheck(false, sheet, row, TMentionText, 13, 6));
+        CMentionSense menu = sentence.CSentenceSenseRead(false, sheet, row, TMentionText, 13, 6)!;
         Assert.Equal("Mention.Sense", menu.CMentionSenseKey);
         Assert.Equal(new CMeaning(0, "Mention.Whole", 0), menu.CMentionSenseRow[0]);
         Assert.Equal([0L, sense], menu.CMentionSenseRow.Select(static meaning => meaning.CMeaningId));
-        sentence.CSentenceSenseSet(sheet, row, TMentionText, 13, 6, sense);
+        sentence.CSentenceSenseSet(false, sheet, row, TMentionText, 13, 6, sense);
 
         Assert.Equal(sense, Assert.Single(TMentionRead(desk, sheet)).LMentionDraftSense);
         Assert.Equal(
@@ -42,12 +42,12 @@ public sealed class TCardMention
         using LEngine engine = workspace.TWorkspaceEngineStart();
         (_, CSentence sentence, long sheet, long row) = TMentionPrepare(engine);
 
-        sentence.CSentenceMentionAdd(sheet, row, TMentionText, 13, 6, 0);
+        sentence.CSentenceMentionAdd(false, sheet, row, TMentionText, 13, 6, 0);
 
-        Assert.True(sentence.CSentenceMentionCheck(sheet, row, TMentionText, 13, 6));
-        Assert.False(sentence.CSentenceMentionCheck(sheet, row, TMentionText, 0, 3));
-        Assert.False(sentence.CSentenceSenseCheck(sheet, row, TMentionText, 13, 6));
-        Assert.Null(sentence.CSentenceSenseRead(sheet, row, TMentionText, 13, 6));
+        Assert.True(sentence.CSentenceMentionCheck(false, sheet, row, TMentionText, 13, 6));
+        Assert.False(sentence.CSentenceMentionCheck(false, sheet, row, TMentionText, 0, 3));
+        Assert.False(sentence.CSentenceSenseCheck(false, sheet, row, TMentionText, 13, 6));
+        Assert.Null(sentence.CSentenceSenseRead(false, sheet, row, TMentionText, 13, 6));
     }
 
     [Fact]
@@ -57,12 +57,12 @@ public sealed class TCardMention
         using LEngine engine = workspace.TWorkspaceEngineStart();
         (long entry, _) = TMentionEntryCreate(engine);
         (CDesk desk, CSentence sentence, long sheet, long row) = TMentionPrepare(engine);
-        sentence.CSentenceMentionAdd(sheet, row, TMentionText, 13, 6, entry);
-        sentence.CSentenceMentionAdd(sheet, row, TMentionText, 29, 4, 0);
+        sentence.CSentenceMentionAdd(false, sheet, row, TMentionText, 13, 6, entry);
+        sentence.CSentenceMentionAdd(false, sheet, row, TMentionText, 29, 4, 0);
 
-        sentence.CSentenceMentionRemove(sheet, row, TMentionText, 13, 6);
+        sentence.CSentenceMentionRemove(false, sheet, row, TMentionText, 13, 6);
         long silent = Assert.Single(TMentionRead(desk, sheet)).LMentionDraftId;
-        sentence.CSentenceMentionRemove(sheet, row, silent);
+        sentence.CSentenceMentionRemove(false, sheet, row, silent);
 
         Assert.Empty(TMentionRead(desk, sheet));
     }
@@ -74,8 +74,8 @@ public sealed class TCardMention
         using LEngine engine = workspace.TWorkspaceEngineStart();
         (long entry, _) = TMentionEntryCreate(engine);
         (CDesk desk, CSentence sentence, long sheet, long row) = TMentionPrepare(engine);
-        sentence.CSentenceMentionAdd(sheet, row, TMentionText, 13, 6, entry);
-        sentence.CSentenceMentionAdd(sheet, row, TMentionText, 29, 4, 0);
+        sentence.CSentenceMentionAdd(false, sheet, row, TMentionText, 13, 6, entry);
+        sentence.CSentenceMentionAdd(false, sheet, row, TMentionText, 29, 4, 0);
 
         IReadOnlyList<CMentionLabel> labels =
             sentence.CSentenceMentionRead(TInterfaceConductCard.TCardEntryRead(desk.TDeskRead()!.LDraftContent))[
@@ -145,7 +145,7 @@ public sealed class TCardMention
         using LEngine engine = workspace.TWorkspaceEngineStart();
         (long entry, _) = TMentionEntryCreate(engine);
         (CDesk desk, CSentence sentence, long sheet, long row) = TMentionPrepare(engine);
-        sentence.CSentenceMentionAdd(sheet, row, TMentionText, 13, 6, entry);
+        sentence.CSentenceMentionAdd(false, sheet, row, TMentionText, 13, 6, entry);
         CEntryDraft shown = TInterfaceConductCard.TCardEntryRead(desk.TDeskRead()!.LDraftContent);
         long line = Assert.Single(shown.CEntryDraftMeanings[^1].CCardDraftSentence).CSentenceDraftLine;
 
@@ -256,7 +256,7 @@ public sealed class TCardMention
         desk.TDeskDefer(TInterface.TSentenceAdditionCreate(desk.CDeskId, sheet, 0));
         long row = TInterface.TRequestCardFind(desk.TDeskRead()!.LDraftContent, sheet)
             .LCardDraftSentence[0].LSentenceDraftId;
-        sentence.CSentenceTextSet(sheet, row, TMentionText);
+        sentence.CSentenceTextSet(false, sheet, row, TMentionText);
         return (desk, sentence, sheet, row);
     }
 

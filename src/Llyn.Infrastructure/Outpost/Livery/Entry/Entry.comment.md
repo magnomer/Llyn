@@ -204,7 +204,7 @@ No cards write nothing, not even the heading.
 ### `LLiveryFaceAppend`
 
 It writes one card as a `llyn-card` block, followed by a blank line.
-A stored card opens through `LLiveryFoldFormat`, open unless `LLiveryPageFold` holds its id.
+A stored card opens through `LLiveryFoldFormat`, open unless `LLiveryPageFold` holds its id under the Meaning kind.
 Its head sits inside a `summary`, so a folded card keeps its number and title.
 A blank line follows the head, so Markdown parses the body inside the HTML block.
 A card with no stored id stays a plain div, since it has nothing to fold.
@@ -302,7 +302,7 @@ No collocations write nothing, not even the heading.
 ### `LLiveryRowAppend`
 
 It is the one row writer for a homed list and the unlinked band alike.
-Each row is a `details`, open unless `LLiveryPageFold` holds its id.
+Each row is a `details`, open unless `LLiveryPageFold` holds its id under the Collocation kind.
 Its summary holds the phrase, then any stored meaning, so a folded row still reads as phrase and meaning.
 A row carries no number and no child cards, like the Portrait row.
 
@@ -366,9 +366,9 @@ So a stored line break survives inside one paragraph without inline HTML.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
-- `LLiveryCard.cs` `2ce8b8cbd4fcb572`
-- `LLiveryCollocation.cs` `f0a101a7eda446ba`
+Commit: `8c403d1df768`
+- `LLiveryCard.cs` `d50b57d93a292313`
+- `LLiveryCollocation.cs` `bbed45e8cb02d38b`
 - `LLiveryEtymology.cs` `8037c0b43dfd6fec`
 - `LLiveryHeader.cs` `759bcc84399d7e72`
 - `LLiveryInflection.cs` `41638ef2745a54c8`

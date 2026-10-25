@@ -6,7 +6,7 @@ namespace Llyn.Tests;
 
 public sealed class TLecternMention
 {
-    private const string TLecternMentionSentence = "The water is cold.";
+    internal const string TLecternMentionSentence = "The water is cold.";
 
     private const string TLecternMentionFoot = "Word: ←→ move  Enter look up  Esc stop";
 
@@ -127,121 +127,49 @@ public sealed class TLecternMention
     }
 
     [Fact]
-    public void LecternMentionFind_ManyAnswers_OpensTheMenuUnderTheWordAndOpensThePick()
+    public void LecternMentionUpDown_LeavingTheSentenceAndComingBack_DoesNotReturnTheCursor()
     {
+        const string other = "The sky is blue.";
         TLecternCard.TLecternCardRun(
-            static (engine, _) =>
-            {
-                engine.TEngineEntrySave(TLecternMentionCreate("water", [], "liquid"));
-                engine.TEngineEntrySave(TLecternMentionCreate("water", [], "to pour"));
-                TLecternMentionSave(engine, TLecternMentionSentence, []);
-            },
+            static (engine, _) => engine.TEngineEntrySave(TLecternMentionCreate(
+                "about", [TLecternSentenceCreate(TLecternMentionSentence, []), TLecternSentenceCreate(other, [])])),
             static (send, rows, lit, _, console) =>
             {
                 TLecternMentionSeek(send, rows, console, TLecternMentionSentence);
                 send(ConsoleKey.Enter);
-                TLecternMentionSend(console, lit, ConsoleKey.RightArrow);
-                send(ConsoleKey.RightArrow);
-                List<string> menu = [];
-                TLecternMentionSettle(console, menu, ConsoleKey.DownArrow, ConsoleKey.Enter);
-
-                send(ConsoleKey.Enter);
-
-                int line = menu.FindIndex(static row =>
-                    row.Contains(TLecternMentionSentence, StringComparison.Ordinal));
-                Assert.True(line >= 0);
-                int word = menu[line].IndexOf("water", StringComparison.Ordinal);
-                Assert.Equal('╔', menu[line + 1][word]);
-                Assert.Contains("Which entry?", menu[line + 1], StringComparison.Ordinal);
-                Assert.Equal(2, menu.Count(static row => row.Contains("water  English", StringComparison.Ordinal)));
-                Assert.StartsWith("water", rows()[0], StringComparison.Ordinal);
-                Assert.Contains(rows(), static row => row is "liquid" or "to pour");
-                Assert.DoesNotContain(console.TConsoleFakeGrid, static row =>
-                    row.Contains("Which entry?", StringComparison.Ordinal));
-            });
-    }
-
-    [Fact]
-    public void LecternMentionFind_MenuEscape_ClosesTheMenuAndKeepsTheCursor()
-    {
-        TLecternCard.TLecternCardRun(
-            static (engine, _) =>
-            {
-                engine.TEngineEntrySave(TLecternMentionCreate("water", [], "liquid"));
-                engine.TEngineEntrySave(TLecternMentionCreate("water", [], "to pour"));
-                TLecternMentionSave(engine, TLecternMentionSentence, []);
-            },
-            static (send, rows, lit, _, console) =>
-            {
-                TLecternMentionSeek(send, rows, console, TLecternMentionSentence);
-                send(ConsoleKey.Enter);
-                TLecternMentionSend(console, lit, ConsoleKey.RightArrow);
-                List<string> menu = [];
-                TLecternMentionSettle(console, menu, ConsoleKey.Escape);
-
-                send(ConsoleKey.Enter);
-
-                Assert.NotEmpty(menu);
-                Assert.Equal(("w", "lit"), lit());
-                Assert.Contains(rows(), static row => row.EndsWith(TLecternMentionSentence, StringComparison.Ordinal));
-                Assert.DoesNotContain(console.TConsoleFakeGrid, static row =>
-                    row.Contains("Which entry?", StringComparison.Ordinal));
                 Assert.True(TLecternMentionCheck(console));
+
+                send(ConsoleKey.DownArrow);
+                Assert.Equal((other, "lit"), lit());
+                send(ConsoleKey.UpArrow);
+
+                Assert.Equal((TLecternMentionSentence, "lit"), lit());
+                Assert.False(TLecternMentionCheck(console));
             });
     }
 
     [Fact]
-    public void LecternMentionFind_Landing_ClosesTheMenu()
+    public void LecternMentionRefresh_OtherEntryWithTheSameItemName_DropsTheCursor()
     {
-        long landing = 0;
+        long other = 0;
         TLecternCard.TLecternCardRun(
             (engine, _) =>
             {
-                landing = engine.TEngineEntrySave(TLecternMentionCreate("water", [], "liquid")).LEntryId;
-                engine.TEngineEntrySave(TLecternMentionCreate("water", [], "to pour"));
                 TLecternMentionSave(engine, TLecternMentionSentence, []);
+                other = TLecternMentionSave(engine, "Zebras run fast.", [], "zebra");
             },
             (send, rows, lit, atelier, console) =>
             {
                 TLecternMentionSeek(send, rows, console, TLecternMentionSentence);
                 send(ConsoleKey.Enter);
-                TLecternMentionSend(console, lit, ConsoleKey.RightArrow);
-                SynchronizationContext loop = SynchronizationContext.Current!;
-                List<string> menu = [];
-                TLecternMentionSettle(console, menu);
-                _ = Task.Run(() =>
-                {
-                    if (SpinWait.SpinUntil(() => menu.Count > 0, TimeSpan.FromSeconds(30)))
-                    {
-                        loop.Post(_ => atelier.CAtelierNavigation.CNavigationEntryOpen(landing), null);
-                    }
-                });
+                send(ConsoleKey.RightArrow);
+                Assert.True(TLecternMentionCheck(console));
 
-                send(ConsoleKey.Enter);
+                atelier.CAtelierNavigation.CNavigationEntryOpen(other);
 
-                Assert.NotEmpty(menu);
-                Assert.StartsWith("water", rows()[0], StringComparison.Ordinal);
-                Assert.Contains("liquid", rows());
-                Assert.DoesNotContain(console.TConsoleFakeGrid, static row =>
-                    row.Contains("Which entry?", StringComparison.Ordinal));
-            });
-    }
-
-    [Fact]
-    public void LecternMentionFind_NoEntry_OpensNoMenuAndKeepsTheCursor()
-    {
-        TLecternCard.TLecternCardRun(
-            static (engine, _) => TLecternMentionSave(engine, TLecternMentionSentence, []),
-            static (send, rows, lit, _, console) =>
-            {
-                TLecternMentionSeek(send, rows, console, TLecternMentionSentence);
-                send(ConsoleKey.Enter);
-
-                send(ConsoleKey.Enter);
-
-                Assert.Equal(("T", "lit"), lit());
-                Assert.DoesNotContain(console.TConsoleFakeShots, static shot => shot.Any(static row =>
-                    row.Contains("Which entry?", StringComparison.Ordinal)));
+                Assert.Contains(rows(), static row => row.Contains("Zebras run fast.", StringComparison.Ordinal));
+                Assert.False(TLecternMentionCheck(console));
+                Assert.NotEqual("Z", lit()?.Item1);
             });
     }
 
@@ -300,7 +228,7 @@ public sealed class TLecternMention
             });
     }
 
-    private static LEntryDraft TLecternMentionCreate(
+    internal static LEntryDraft TLecternMentionCreate(
         string headword, IReadOnlyList<LSentenceDraft> sentences, string meaning = "a thing") =>
         TInterface.TEntryDraftCreate(
             headword,
@@ -310,18 +238,11 @@ public sealed class TLecternMention
             [TInterface.TCardCreate(meaning, 1) with { LCardDraftSentence = sentences }],
             []);
 
-    private static void TLecternMentionSave(LEngine engine, string text, IReadOnlyList<LMentionDraft> mentions) =>
-        engine.TEngineEntrySave(TLecternMentionCreate(
-            "about",
-            [
-                TInterfaceExample.TSentenceDraftCreate(text) with
-                {
-                    LSentenceDraftExample =
-                        TInterfaceExample.TExampleDraftCreate(text) with { LExampleDraftMention = mentions },
-                },
-            ]));
+    internal static long TLecternMentionSave(
+        LEngine engine, string text, IReadOnlyList<LMentionDraft> mentions, string headword = "about") =>
+        engine.TEngineEntrySave(TLecternMentionCreate(headword, [TLecternSentenceCreate(text, mentions)])).LEntryId;
 
-    private static void TLecternMentionSeek(
+    internal static void TLecternMentionSeek(
         Action<ConsoleKey> send, Func<IReadOnlyList<string>> rows, TConsoleFake console, string text)
     {
         for (int step = 0; step < 30; step++)
@@ -338,10 +259,10 @@ public sealed class TLecternMention
         Assert.Fail($"The example '{text}' was never lit.");
     }
 
-    private static bool TLecternMentionCheck(TConsoleFake console) =>
+    internal static bool TLecternMentionCheck(TConsoleFake console) =>
         console.TConsoleFakeGrid.Any(static row => row.Contains(TLecternMentionFoot, StringComparison.Ordinal));
 
-    private static void TLecternMentionSend(TConsoleFake console, Func<(string, string)?> lit, ConsoleKey key)
+    internal static void TLecternMentionSend(TConsoleFake console, Func<(string, string)?> lit, ConsoleKey key)
     {
         Func<string> roles = () =>
         {
@@ -353,32 +274,10 @@ public sealed class TLecternMention
         Assert.True(SpinWait.SpinUntil(() => roles() != before, TimeSpan.FromSeconds(10)));
     }
 
-    private static void TLecternMentionSettle(TConsoleFake console, List<string> menu, params ConsoleKey[] keys)
-    {
-        _ = Task.Run(() =>
+    private static LSentenceDraft TLecternSentenceCreate(string text, IReadOnlyList<LMentionDraft> mentions) =>
+        TInterfaceExample.TSentenceDraftCreate(text) with
         {
-            string[] grid = [];
-            Func<bool> shown = () =>
-            {
-                try
-                {
-                    grid = [.. console.TConsoleFakeGrid];
-                    return grid.Any(static row => row.Contains("Which entry?", StringComparison.Ordinal));
-                }
-                catch (InvalidOperationException)
-                {
-                    return false;
-                }
-            };
-            if (SpinWait.SpinUntil(shown, TimeSpan.FromSeconds(30)))
-            {
-                menu.AddRange(grid);
-            }
-
-            foreach (ConsoleKey key in keys)
-            {
-                console.TConsoleFakeKeys.Add(TLectern.TLecternKeyCreate(key));
-            }
-        });
-    }
+            LSentenceDraftExample =
+                TInterfaceExample.TExampleDraftCreate(text) with { LExampleDraftMention = mentions },
+        };
 }

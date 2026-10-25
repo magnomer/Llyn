@@ -139,7 +139,8 @@ internal sealed class QRegister
         if (e.OriginalSource is TextBox { DataContext: QInlet<QRegisterChip> caret } box
             && QRegisterCardFind(caret) is QPlacard card)
         {
-            _qRegisterProffer.QProfferRegisterRefine(card, _cCaret.CCaretRegisterAdd(card.QPlacardId, box.Text));
+            _qRegisterProffer.QProfferRegisterRefine(
+                card, _cCaret.CCaretRegisterAdd(card.QPlacardCollocated, card.QPlacardId, box.Text));
         }
     }
 
@@ -147,7 +148,7 @@ internal sealed class QRegister
     {
         if (sender is FrameworkElement { DataContext: QRegisterChip chip } && QRegisterCardFind(chip) is QPlacard card)
         {
-            _cCard.CCardRegisterRemove(card.QPlacardId, chip.QRegisterChipId);
+            _cCard.CCardRegisterRemove(card.QPlacardCollocated, card.QPlacardId, chip.QRegisterChipId);
         }
     }
 
@@ -161,7 +162,8 @@ internal sealed class QRegister
         }
 
         e.Handled = true;
-        _qRegisterProffer.QProfferRegisterRefine(card, _cCaret.CCaretRegisterSettle(card.QPlacardId, box.Text));
+        _qRegisterProffer.QProfferRegisterRefine(
+            card, _cCaret.CCaretRegisterSettle(card.QPlacardCollocated, card.QPlacardId, box.Text));
     }
 
     internal void QRegisterEraseObserve(object sender, KeyEventArgs e)
@@ -177,7 +179,7 @@ internal sealed class QRegister
             box.CaretIndex,
             box.Text.Length,
             box.SelectionLength,
-            step => _cCaret.CCaretRegister.CCaretTrailDelete(card.QPlacardId, step));
+            step => _cCaret.CCaretRegister.CCaretTrailDelete(card.QPlacardCollocated, card.QPlacardId, step));
     }
 
     internal void QRegisterCaretRefine(object sender, KeyEventArgs e)
@@ -194,7 +196,8 @@ internal sealed class QRegister
             box.SelectionLength,
             step =>
             {
-                (bool moved, long? anchor) = _cCaret.CCaretRegister.CCaretTrailMove(card.QPlacardId, step);
+                (bool moved, long? anchor) =
+                    _cCaret.CCaretRegister.CCaretTrailMove(card.QPlacardCollocated, card.QPlacardId, step);
                 QRegisterAnchorShow(card, anchor);
                 return moved;
             },
@@ -211,7 +214,8 @@ internal sealed class QRegister
         if (sender is TextBox { DataContext: QInlet<QRegisterChip> row } box
             && QRegisterCardFind(row) is QPlacard card)
         {
-            _qRegisterProffer.QProfferRegisterRefine(card, _cCaret.CCaretRegisterSettle(card.QPlacardId, box.Text));
+            _qRegisterProffer.QProfferRegisterRefine(
+                card, _cCaret.CCaretRegisterSettle(card.QPlacardCollocated, card.QPlacardId, box.Text));
         }
     }
 

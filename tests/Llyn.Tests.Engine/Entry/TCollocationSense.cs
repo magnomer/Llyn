@@ -273,7 +273,8 @@ public sealed class TCollocationSense
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LEntry entry = TCollocationSenseSave(engine);
         LEntryDraft held = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(entry.LEntryId));
-        engine.TEngineFoldSave(entry.LEntryId, held.LEntryDraftCollocations[0].LCardDraftId);
+        engine.TEngineFoldSave(
+            entry.LEntryId, LCardKind.LCardKindCollocation, held.LEntryDraftCollocations[0].LCardDraftId);
         LLiveryPage page = Assert.IsType<LLiveryPage>(engine.TLiveryRead(entry.LEntryId));
 
         string body = TInterface.TLiveryFormat(page, static key => key).LLiveryNoteBody;

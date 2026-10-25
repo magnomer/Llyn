@@ -37,13 +37,13 @@ internal static class LSheetDeck
     }
 
     private static void LSheetFaceAppend(
-        StringBuilder sheet, LPortraitSection face, long id, IReadOnlySet<long> fold)
+        StringBuilder sheet, LPortraitSection face, long id, IReadOnlySet<(LCardKind, long)> fold)
     {
         bool stored = id > 0;
         if (stored)
         {
             sheet.Append("<details class=\"card\"")
-                .Append(fold.Contains(id) ? string.Empty : " open")
+                .Append(fold.Contains((LCardKind.LCardKindMeaning, id)) ? string.Empty : " open")
                 .Append(">\n<summary>");
         }
         else

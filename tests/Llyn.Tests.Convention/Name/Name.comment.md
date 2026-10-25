@@ -161,10 +161,10 @@ So a prefix followed by an underscore alone, or a trailing underscore, cannot sl
 
 ## Stamp
 
-Commit: `90a13c9590ba`
-- `TAuditName.cs` `f792b24acaff5b40`
+Commit: `8c403d1df768`
+- `TAuditName.cs` `9745ed82d31609bc`
 - `TAuditNameFilter.cs` `94d5e4f62b0c181b`
-- `TAuditNameSetting.cs` `0a7c49402958360c`
+- `TAuditNameSetting.cs` `4cac7f8d0fcb05d6`
 - `TAuditNameWalker.cs` `23089b13ebf9ab23`
 - `TAuditRegistry.cs` `428c2b1c1830ca58`
 - `TAuditViolation.cs` `545a2ac20b7bb981`

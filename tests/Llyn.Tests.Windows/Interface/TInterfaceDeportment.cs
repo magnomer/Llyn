@@ -88,6 +88,7 @@ internal static class TInterfaceDeportment
         CStateWording blank = new(string.Empty, null, false, null);
         return new QPlacard(
             string.Empty,
+            false,
             [],
             [],
             [],
@@ -125,7 +126,7 @@ internal static class TInterfaceDeportment
 
     internal static object TCardFoldCreate(CCardDraft draft)
     {
-        QPlacard card = new(string.Empty, [], [], [], [], static row => row.QPlacardDefinition, draft);
+        QPlacard card = new(string.Empty, false, [], [], [], [], static row => row.QPlacardDefinition, draft);
         card.QPlacardFoldShow(draft.CCardDraftFolded);
         return card;
     }

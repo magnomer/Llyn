@@ -12,13 +12,14 @@ public sealed class CCaretTrail
 
     private readonly Func<LCardDraft, IEnumerable<long>> _cCaretTrailRow;
 
-    private readonly Action<long, long> _cCaretTrailRemoval;
+    private readonly Action<LCardKind, long, long> _cCaretTrailRemoval;
 
-    private readonly Dictionary<long, IReadOnlyList<long>> _cCaretTrailKept = [];
+    private readonly Dictionary<(bool, long), IReadOnlyList<long>> _cCaretTrailKept = [];
 
     private LTenure? _cCaretTrailTenure;
 
-    internal CCaretTrail(CDesk desk, Func<LCardDraft, IEnumerable<long>> row, Action<long, long> removal)
+    internal CCaretTrail(
+        CDesk desk, Func<LCardDraft, IEnumerable<long>> row, Action<LCardKind, long, long> removal)
     {
         ArgumentNullException.ThrowIfNull(desk);
         ArgumentNullException.ThrowIfNull(row);
@@ -29,41 +30,42 @@ public sealed class CCaretTrail
         _cCaretTrailRemoval = removal;
     }
 
-    public (bool CCaretMoved, long? CCaretAnchor) CCaretTrailMove(long cardId, int step)
+    public (bool CCaretMoved, long? CCaretAnchor) CCaretTrailMove(bool collocated, long cardId, int step)
     {
-        (IReadOnlyList<long> row, int place) = LCaretTrailResolve(cardId);
+        (IReadOnlyList<long> row, int place) = LCaretTrailResolve(collocated, cardId);
         int target = place + step;
         if (target < 0 || target > row.Count)
         {
             return (false, place < row.Count ? row[place] : null);
         }
 
-        _cCaretTrailKept[cardId] = row.Skip(target).ToList();
+        _cCaretTrailKept[(collocated, cardId)] = row.Skip(target).ToList();
         return (true, target < row.Count ? row[target] : null);
     }
 
-    public void CCaretTrailDelete(long cardId, int step)
+    public void CCaretTrailDelete(bool collocated, long cardId, int step)
     {
-        (IReadOnlyList<long> row, int place) = LCaretTrailResolve(cardId);
+        (IReadOnlyList<long> row, int place) = LCaretTrailResolve(collocated, cardId);
         int target = place + (step < 0 ? step : step - 1);
         if (target >= 0 && target < row.Count)
         {
-            _cCaretTrailRemoval(cardId, row[target]);
+            _cCaretTrailRemoval(
+                collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning, cardId, row[target]);
         }
     }
 
-    public long? CCaretTrailRead(long cardId)
+    public long? CCaretTrailRead(bool collocated, long cardId)
     {
-        (IReadOnlyList<long> row, int place) = LCaretTrailResolve(cardId);
+        (IReadOnlyList<long> row, int place) = LCaretTrailResolve(collocated, cardId);
         return place < row.Count ? row[place] : null;
     }
 
-    internal int CCaretTrailResolve(long cardId)
+    internal int CCaretTrailResolve(bool collocated, long cardId)
     {
-        return LCaretTrailResolve(cardId).CCaretPosition;
+        return LCaretTrailResolve(collocated, cardId).CCaretPosition;
     }
 
-    private (IReadOnlyList<long> CCaretRow, int CCaretPosition) LCaretTrailResolve(long cardId)
+    private (IReadOnlyList<long> CCaretRow, int CCaretPosition) LCaretTrailResolve(bool collocated, long cardId)
     {
         LTenure? tenure = _cCaretTrailDesk.CDeskDraft.CDeskDraftTenure;
         if (!ReferenceEquals(tenure, _cCaretTrailTenure))
@@ -73,13 +75,12 @@ public sealed class CCaretTrail
         }
 
         IReadOnlyList<long> row = tenure?.LTenureRead() is LDraft held
-            && held.LDraftContent.LEntryDraftMeanings
-                .Concat(held.LDraftContent.LEntryDraftCollocations)
+            && (collocated ? held.LDraftContent.LEntryDraftCollocations : held.LDraftContent.LEntryDraftMeanings)
                 .FirstOrDefault(card => card.LCardDraftId == cardId) is LCardDraft card
             ? _cCaretTrailRow(card).ToList()
             : [];
         int place = row.Count;
-        if (_cCaretTrailKept.TryGetValue(cardId, out IReadOnlyList<long>? trail))
+        if (_cCaretTrailKept.TryGetValue((collocated, cardId), out IReadOnlyList<long>? trail))
         {
             List<long> ids = [.. row];
             foreach (long kept in trail)
@@ -93,7 +94,7 @@ public sealed class CCaretTrail
             }
         }
 
-        _cCaretTrailKept[cardId] = row.Skip(place).ToList();
+        _cCaretTrailKept[(collocated, cardId)] = row.Skip(place).ToList();
         return (row, place);
     }
 }

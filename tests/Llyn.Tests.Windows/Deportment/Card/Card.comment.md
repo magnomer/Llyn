@@ -23,7 +23,9 @@ A folded card hides its body, checks its hinge and closes its header.
 A folded card without a title shows the peek and keeps its title box shown and focusable.
 So a writer can type a title without unfolding the card first.
 A card that is not stored hides its hinge and keeps its body.
-A hinge click on a stored card hands the card's id and the checked state to the editor's list gate.
+A hinge click on a stored card hands the card's kind, its id and the checked state on.
+They go to the editor's list gate.
+The stored folds are read back as kind and id pairs, and the writing card folds as a meaning.
 When no stored entry is held the gate refuses the write, and the hinge returns to unchecked.
 No refresh would repaint it, so the hinge must put itself back.
 An unfolded hinge draws the expand icon turned half a turn, which the app reads as open.
@@ -82,8 +84,11 @@ A folded reading card hides its body and checks its hinge.
 Its header rounds all four corners and drops its bottom line.
 A folded card without a title shows its meaning as the peek, and the title and kind caption give way.
 A hinge click bubbles to the card list and reaches the display's fold gate.
+The gate is told whether the card is a collocation, so the fold is kept under the right kind.
 It is refused while the display has no entry chosen, and the hinge returns to unchecked.
-A click on a "see" line opens the row it names and hands its id on for the scroll.
+A click on a "see" line opens the collocation row it names.
+It leaves no fold of that kind stored, and hands its id on for the scroll.
+The test folds a collocation first and reads the stored folds back after the click.
 A closed collocation row hides its body and checks its hinge.
 It shows its phrase, its meaning on one line, its flags and its example and "also" markers.
 An open row unchecks its hinge and wraps its meaning.
@@ -106,11 +111,11 @@ The route keeps the unit it had, and Enter starts again from the first character
 
 ## Stamp
 
-Commit: `cb8ab7e8feb4`
+Commit: `8c403d1df768`
 - `TBerthSeat.cs` `75eb74163de8d120`
-- `TCardHinge.cs` `d2e41474db5dfd42`
+- `TCardHinge.cs` `2430c80151e0f823`
 - `TCardOrdinal.cs` `788665234082c696`
 - `TCardRow.cs` `618531bdc90512ef`
 - `TCaretKey.cs` `6eaf4b7930a95206`
-- `TLecternHinge.cs` `84da2bf5782fe891`
+- `TLecternHinge.cs` `e629303503b96e76`
 - `TLecternWord.cs` `8607f59a4fdb2afa`

@@ -72,6 +72,8 @@ The menu is painted after the chips, because what is marked may have changed.
 ## `QSlate`
 
 This is the dropdown of stored tags a typed tag may already name.
+Each gate names its card by the placard's collocation flag and id.
+The engine finds a card by kind and id.
 It is one popup the editor owns rather than one per card.
 Only one card is typed into at a time.
 The popup is retargeted at the caret that opened it.
@@ -138,12 +140,12 @@ It follows `QFreedomItem` in everything.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `8c403d1df768`
 - `QFreedom.cs` `5a8c8788e06e7771`
 - `QFreedomItem.cs` `27469f2726afbac9`
 - `QMarker.cs` `bc66173895303014`
 - `QMarkerChip.cs` `a6a4933f59feee16`
-- `QSlate.cs` `9f1366df0ab88fe5`
+- `QSlate.cs` `69c7afc18bb1c890`
 - `QSlateItem.cs` `c878e65582837e82`
 - `QUnit.cs` `65408138208702ba`
 - `QUnitItem.cs` `47f0e19bc6379784`

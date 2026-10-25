@@ -9,7 +9,9 @@ It reads the rows of the contents list and the place of a card on the page.
 It holds no state, and only the display builds one over its rules.
 A repaint reads it, so a lasting name fault shows once through the repaint memory.
 `CCompassCardFind` answers which card list of the shown entry holds the card, and at which place.
-The engine finds the card's owning list, and a switch maps that owner to the compass part.
+The card is named by a `collocated` flag and its id.
+The card port finds the card's owning list under that kind.
+A switch maps that owner to the compass part.
 A linked collocation answers the place of the top-level meaning holding its home, where the page shows its row.
 Its home is its first link to a meaning the draft still holds.
 The engine's collocation layout answers the home, so the compass only finds the meaning listing the card.
@@ -61,7 +63,7 @@ One row of the floating contents, ready to show.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `CCompass.cs` `f7cbeae6562a563d`
+Commit: `8c403d1df768`
+- `CCompass.cs` `8233879a9e295abb`
 - `CCompassPart.cs` `8ca6c8843e2b6a56`
 - `CCompassRow.cs` `55e13f23dc73ca46`

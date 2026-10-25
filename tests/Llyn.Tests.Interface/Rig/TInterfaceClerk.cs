@@ -38,16 +38,17 @@ internal static partial class TInterface
         LSpeechClerk.LSpeechFind(values, held, typed);
 
     internal static bool TGlossEmptyCheck(LDraft draft, long cardId, long sentenceId) =>
-        LDraftClerkGloss.LGlossEmptyCheck(draft, cardId, sentenceId);
+        LDraftClerkGloss.LGlossEmptyCheck(draft, TExampleSiteCreate(LCardKind.LCardKindMeaning, cardId, sentenceId));
 
     internal static int TCardEndRead(LEntryDraft content, LCardKind kind) =>
         LDraftClerkCard.LCardEndRead(content, kind);
 
-    internal static bool TCardLoneCheck(LEntryDraft content, long id) =>
-        LDraftClerkCard.LCardLoneCheck(content, id);
+    internal static bool TCardLoneCheck(LEntryDraft content, long id, LCardKind kind = LCardKind.LCardKindMeaning) =>
+        LDraftClerkCard.LCardLoneCheck(content, kind, id);
 
-    internal static int? TCardShiftRead(LEntryDraft content, long id, int place) =>
-        LDraftClerkCard.LCardShiftRead(content, id, place);
+    internal static int? TCardShiftRead(
+        LEntryDraft content, long id, int place, LCardKind kind = LCardKind.LCardKindMeaning) =>
+        LDraftClerkCard.LCardShiftRead(content, kind, id, place);
 
     internal static LSpeechDraft TSpeechCreate(long value, string name) =>
         value > 0 ? LSpeechDraft.LSpeechDraftCreate(value, name) : LSpeechDraft.LSpeechDraftCreate(name);

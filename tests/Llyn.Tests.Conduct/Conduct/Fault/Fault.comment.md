@@ -106,6 +106,7 @@ It keeps `TFaultWrite` within the line limit, and the rows join the sweep there.
 Port rows fault the port member the gate itself calls, over `TInterfaceConduct.TAtelierFaultCreate`.
 Favorite and grasp rows read back the gate's own read, since it answers the written mark.
 Card fold rows fault `LCardPort.LEngineFoldSave` and read back the first meaning's fold from a fresh card read.
+The gates name the card by kind and id, so the rows pass the meaning kind.
 They read the gate's verdict beside the fold, so a refused write must also answer false.
 The reading view row reads the leaf, and the editor row reads the held card draft.
 Tag and register creation read back the panel's row count, which a created row would raise.
@@ -228,11 +229,11 @@ This arrange step answers the gate call and an optional read-back of the state t
 
 ## Stamp
 
-Commit: `cb8ab7e8feb4`
+Commit: `8c403d1df768`
 - `TDisplayFailure.cs` `493a1638fda5b76e`
 - `TFault.cs` `fa397c15b685eb43`
 - `TFaultList.cs` `e993e6b5885af5a2`
-- `TFaultMark.cs` `23a787d14def8d87`
+- `TFaultMark.cs` `49690789b8e6973c`
 - `TFaultPortrait.cs` `548737d4700eceaf`
 - `TFaultRow.cs` `94662f8cc5a1e773`
 - `TFaultStage.cs` `2894647223e0a2fc`

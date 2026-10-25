@@ -18,9 +18,9 @@ public sealed class TCardSituation
         CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
 
-        string rest = caret.CCaretSituationAdd(sheet, "Hearth, ,  Kitchen, Ga").CProfferText;
-        string settled = caret.CCaretSituationSettle(sheet, " Hearth ").CProfferText;
-        string blank = caret.CCaretSituationSettle(sheet, "   ").CProfferText;
+        string rest = caret.CCaretSituationAdd(false, sheet, "Hearth, ,  Kitchen, Ga").CProfferText;
+        string settled = caret.CCaretSituationSettle(false, sheet, " Hearth ").CProfferText;
+        string blank = caret.CCaretSituationSettle(false, sheet, "   ").CProfferText;
 
         Assert.Equal("Ga", rest);
         Assert.Equal(string.Empty, settled);
@@ -40,12 +40,12 @@ public sealed class TCardSituation
         CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
 
-        caret.CCaretSituationInsert(sheet, hearth.LSituationId);
-        caret.CCaretSituationInsert(sheet, hearth.LSituationId);
+        caret.CCaretSituationInsert(false, sheet, hearth.LSituationId);
+        caret.CCaretSituationInsert(false, sheet, hearth.LSituationId);
 
         Assert.Equal(hearth.LSituationId, Assert.Single(TCardSituationRead(desk, sheet)).LSituationDraftId);
 
-        card.CCardSituationRemove(sheet, hearth.LSituationId);
+        card.CCardSituationRemove(false, sheet, hearth.LSituationId);
 
         Assert.Empty(TCardSituationRead(desk, sheet));
     }
@@ -60,13 +60,13 @@ public sealed class TCardSituation
         CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
         long other = TCard.TCardSheetAdd(desk);
-        caret.CCaretSituationInsert(sheet, hearth.LSituationId);
+        caret.CCaretSituationInsert(false, sheet, hearth.LSituationId);
 
         Assert.DoesNotContain(
-            caret.CCaretSituationAdd(sheet, "Hear").CProfferRows,
+            caret.CCaretSituationAdd(false, sheet, "Hear").CProfferRows,
             row => row.CProfferRowId == hearth.LSituationId);
         Assert.Contains(
-            caret.CCaretSituationAdd(other, "Hear").CProfferRows,
+            caret.CCaretSituationAdd(false, other, "Hear").CProfferRows,
             row => row.CProfferRowId == hearth.LSituationId);
     }
 
@@ -80,7 +80,7 @@ public sealed class TCardSituation
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
         CCaret caret = new(desk, card, new CLedgerNoticed());
 
-        CProffer offer = caret.CCaretSituationAdd(0, " HEAR ");
+        CProffer offer = caret.CCaretSituationAdd(false, 0, " HEAR ");
 
         Assert.Equal(" HEAR ", offer.CProfferText);
         Assert.True(offer.CProfferShown);
@@ -96,8 +96,8 @@ public sealed class TCardSituation
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
         CCaret caret = new(desk, card, new CLedgerNoticed());
 
-        CProffer blank = caret.CCaretSituationAdd(0, "   ");
-        CProffer unmatched = caret.CCaretSituationAdd(0, "zzq");
+        CProffer blank = caret.CCaretSituationAdd(false, 0, "   ");
+        CProffer unmatched = caret.CCaretSituationAdd(false, 0, "zzq");
 
         Assert.Equal("   ", blank.CProfferText);
         Assert.False(blank.CProfferShown);
@@ -119,7 +119,7 @@ public sealed class TCardSituation
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
         CCaret caret = new(desk, card, new CLedgerNoticed());
 
-        CProffer offer = caret.CCaretSituationAdd(0, "room");
+        CProffer offer = caret.CCaretSituationAdd(false, 0, "room");
 
         Assert.Equal(8, offer.CProfferRows.Count);
         Assert.All(offer.CProfferRows, static row => Assert.Equal("Room", row.CProfferRowMark));
@@ -133,16 +133,16 @@ public sealed class TCardSituation
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
         CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
-        caret.CCaretSituationSettle(sheet, "Hearth, Kitchen");
-        caret.CCaretSituation.CCaretTrailMove(sheet, -1);
+        caret.CCaretSituationSettle(false, sheet, "Hearth, Kitchen");
+        caret.CCaretSituation.CCaretTrailMove(false, sheet, -1);
 
-        caret.CCaretSituationSettle(sheet, "Garden");
+        caret.CCaretSituationSettle(false, sheet, "Garden");
 
         IReadOnlyList<LSituationDraft> held = TCardSituationRead(desk, sheet);
         Assert.Equal(
             ["Hearth", "Garden", "Kitchen"],
             held.Select(static row => row.LSituationDraftTitle.LStateValueShown));
-        Assert.Equal(held[2].LSituationDraftId, caret.CCaretSituation.CCaretTrailRead(sheet));
+        Assert.Equal(held[2].LSituationDraftId, caret.CCaretSituation.CCaretTrailRead(false, sheet));
     }
 
     [Fact]
@@ -153,19 +153,19 @@ public sealed class TCardSituation
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
         CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
-        caret.CCaretSituationSettle(sheet, "Hearth, Kitchen, Garden");
-        caret.CCaretSituation.CCaretTrailMove(sheet, -1);
+        caret.CCaretSituationSettle(false, sheet, "Hearth, Kitchen, Garden");
+        caret.CCaretSituation.CCaretTrailMove(false, sheet, -1);
 
-        caret.CCaretSituation.CCaretTrailDelete(sheet, -1);
+        caret.CCaretSituation.CCaretTrailDelete(false, sheet, -1);
         IReadOnlyList<LSituationDraft> before = TCardSituationRead(desk, sheet);
-        caret.CCaretSituation.CCaretTrailDelete(sheet, 1);
+        caret.CCaretSituation.CCaretTrailDelete(false, sheet, 1);
         IReadOnlyList<LSituationDraft> after = TCardSituationRead(desk, sheet);
-        caret.CCaretSituation.CCaretTrailDelete(sheet, 1);
+        caret.CCaretSituation.CCaretTrailDelete(false, sheet, 1);
 
         Assert.Equal(["Hearth", "Garden"], before.Select(static row => row.LSituationDraftTitle.LStateValueShown));
         Assert.Equal(["Hearth"], after.Select(static row => row.LSituationDraftTitle.LStateValueShown));
         Assert.Single(TCardSituationRead(desk, sheet));
-        Assert.Null(caret.CCaretSituation.CCaretTrailRead(sheet));
+        Assert.Null(caret.CCaretSituation.CCaretTrailRead(false, sheet));
     }
 
     private static IReadOnlyList<LSituationDraft> TCardSituationRead(CDesk desk, long sheet)

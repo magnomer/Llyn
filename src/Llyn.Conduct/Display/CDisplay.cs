@@ -97,7 +97,6 @@ public sealed class CDisplay
             LDisplayRule, CDisplayCard, entries.CEntryBundleMention, settings, envoy);
         CDisplayCompass = new CCompass(
             LDisplayRule,
-            entries.CEntryBundleEntry,
             entries.CEntryBundleVista,
             entries.CEntryBundleCard,
             settings,

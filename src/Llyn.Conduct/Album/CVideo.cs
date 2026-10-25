@@ -1,4 +1,5 @@
 using System;
+using Llyn.Core;
 
 namespace Llyn.Conduct;
 
@@ -23,14 +24,16 @@ public sealed class CVideo
         _cVideoDesk.CDeskDraft.CDeskDraftEasel?.LEaselSpanSet(videoId, span);
     }
 
-    public void CVideoAdd(long? cardId)
+    public void CVideoAdd(bool collocated, long? cardId)
     {
-        _cVideoDesk.CDeskDraft.CDeskDraftEasel?.LEaselVideoAdd(cardId ?? 0);
+        _cVideoDesk.CDeskDraft.CDeskDraftEasel?.LEaselVideoAdd(
+            collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning, cardId ?? 0);
     }
 
-    public void CVideoRemove(long videoId)
+    public void CVideoRemove(bool collocated, long? cardId, long videoId)
     {
-        _cVideoDesk.CDeskDraft.CDeskDraftEasel?.LEaselVideoRemove(videoId);
+        _cVideoDesk.CDeskDraft.CDeskDraftEasel?.LEaselVideoRemove(
+            collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning, cardId ?? 0, videoId);
     }
 
     public void CVideoFileSet(long videoId, string? file)

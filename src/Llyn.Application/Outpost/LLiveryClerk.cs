@@ -16,7 +16,7 @@ public static class LLiveryClerk
         LAccentSheet accent,
         IReadOnlyList<LReflexGuise> guise,
         IReadOnlyList<string> folded,
-        IReadOnlySet<long> fold,
+        IReadOnlySet<(LCardKind, long)> fold,
         IReadOnlyList<LTranscriptionDraft> transcription,
         LGlyph? glyph,
         IReadOnlyList<LGlyphCell> cell,

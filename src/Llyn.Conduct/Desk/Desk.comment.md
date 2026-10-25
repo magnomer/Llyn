@@ -95,6 +95,7 @@ The quills are also null while the desk fills its controls, so a fill's echo wri
 It stays open during a fill, since the field read runs then, and each edit gate checks the fill itself.
 The speech quill keeps the pending part typed into the field, so the desk holds one per tenure.
 The reference, author, example, sentence, mention and transcription quills are built fresh for each use.
+The example quill also takes the desk's draft port.
 The errand, easel, chip and speech quills are built when a tenure starts and dropped when it ends.
 
 It raises the draft announcements, so the fill flag and the echo it guards live together.
@@ -162,7 +163,7 @@ It is internal so the test relay reads the draft the way the event hands it.
 So a fold made in the reading view or another editor repaints this editor's chevrons.
 A draft never stored hears nothing, since none of its cards can hold a fold yet.
 A fold is not an edit, so the bulletin never touches the tenure or its undo.
-`LEntryFoldRead` reads every folded card id in one read.
+`LEntryFoldRead` reads every folded card in one read, each as its kind and id.
 A draft never stored answers an empty set.
 A refused read shows `Fold.ReadFailed` once until the user acts, and answers an empty set so the cards still draw.
 A refused read of the link targets shows `Input.FindFailed` the same way and draws the cards without targets.
@@ -291,12 +292,12 @@ The subject maps through `CCatalog.LCatalogSubjectRead`, so a subject it does no
 
 ## Stamp
 
-Commit: `44d0e95bcfcc`
+Commit: `8c403d1df768`
 - `CDesk.cs` `9f036c7e380e9b97`
 - `CDeskChronicle.cs` `fc6b9a85af7d4b71`
-- `CDeskDraft.cs` `bf7d16d5e2c74ad0`
+- `CDeskDraft.cs` `a573193758b55776`
 - `CEditor.cs` `efc620f117523040`
-- `CEntry.cs` `4fec1c6854ba5856`
+- `CEntry.cs` `e31c3a9b2544d976`
 - `CErrand.cs` `8f73391eb2be162b`
 - `CEsteem.cs` `b08f4e56adee1280`
 - `CSession.cs` `b50233150aac7538`

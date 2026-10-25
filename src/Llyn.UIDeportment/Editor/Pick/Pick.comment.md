@@ -30,6 +30,8 @@ The epithet is empty when the setting is off or the entry keeps none.
 ## `QProffer`
 
 This driver serves the Situation caret, the Register caret and the citation field of a sentence row alike.
+Each gate names its card by the placard's collocation flag and id.
+The engine finds a card by kind and id.
 A Situation is a workspace entity with a description, a kind and a usage count.
 Two cards naming the same wording should name the same Situation, or the workspace would hold two that read alike.
 The list opens as the wording is typed, because a user cannot pick from a catalogue they were never shown.
@@ -105,6 +107,8 @@ The second placement puts it above the frame, for a caret near the foot of the s
 ## `QProspect`
 
 This driver offers the Entries a typed translation may link to.
+Each gate names its card by the placard's collocation flag and id.
+The engine finds a card by kind and id.
 It sits beside the Proffer popup the editor also owns.
 The pronunciation lookup and the part-of-speech menu share the shape.
 A typed translation opens it at a card's link caret, offering matches and then a create row per language.
@@ -171,8 +175,8 @@ A data trigger and a string format stood there before.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `QProffer.cs` `875c85b3480be680`
+Commit: `8c403d1df768`
+- `QProffer.cs` `f72afd0afca95d56`
 - `QProfferItem.cs` `6f1e3475b8b807f2`
-- `QProspect.cs` `66d7ea4b8766e3f4`
+- `QProspect.cs` `c287a482572994a8`
 - `QProspectItem.cs` `b3438f13d3fd6256`

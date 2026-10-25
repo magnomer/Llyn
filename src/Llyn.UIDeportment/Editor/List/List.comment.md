@@ -104,11 +104,14 @@ The expression and definition fields follow the same rule.
 ### `QCardRemoveObserve`
 
 Removal sends identity rather than editing the presentation collection.
+The identity is the card's collocation flag and id.
 Conduct decides whether removal is allowed.
 
 ### `QCardRefine`
 
 Each draft claims one existing card by id or receives a new presentation item.
+The caller says whether the list is the collocation list, and a new card is built with that flag.
+The same flag reads the card's caret anchors.
 The supplied draft order is authoritative.
 Reconciliation keeps its longest leading sequence found in the existing order, removing others and appending the remainder.
 Only that kept sequence retains controls and caret.
@@ -167,9 +170,10 @@ It is heard both when the button comes up and when capture is lost.
 Capture can be taken away by another window or a menu without the button coming up.
 A ghost left painted over the list would outlive its drag.
 
-### QCardDrag.cs: `_cCardList.CCardMove(gesture.QCardGestureId, target)`
+### QCardDrag.cs: `_cCardList.CCardMove(collocated, gesture.QCardGestureId, target)`
 
 The place goes to the one move gate the position badge also uses.
+The flag is read off the dragged item, which is a collocation placard or not.
 It is sent on every pointer move, even when the place is unchanged.
 The gate sends nothing for an unchanged place or a card the draft lacks.
 The list is moved by the answer, because moving it first would show an order the engine may refuse.
@@ -233,6 +237,7 @@ So one long drag passes every card it crosses.
 This is the driver of a card's position badge, which reorders a card by its typed number.
 The list gate decides whether a badge may open, since a list of one offers none.
 The typed number goes to the list gate, and the engine owns the numbering.
+Open, close and settle name the card by its collocation flag and id.
 Escape tells the gate the badge closed, and settling tells it the typed text.
 Each handler is removed before it is added, so a refill never subscribes twice.
 
@@ -275,14 +280,14 @@ The card arrives through the bulletin, already named and placed, so the form nev
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `8c403d1df768`
 - `QBond.cs` `884c7c93369269b3`
 - `QBondItem.cs` `91b81f9342fbd78b`
-- `QCard.cs` `0d49c2111824076a`
-- `QCardDrag.cs` `92a726938dbd6e90`
+- `QCard.cs` `87fdd0e31ff54533`
+- `QCardDrag.cs` `ea423f6c8d2c949f`
 - `QCardFold.cs` `e15e8aeeda7c7de4`
 - `QCardGesture.cs` `aadadf014410a661`
 - `QCardGhost.cs` `a8d2e5cedb6f2ce5`
-- `QCardPosition.cs` `58c299a080be75f9`
+- `QCardPosition.cs` `4c0868252612d5ba`
 - `QCollocation.cs` `5c35cece54f82067`
 - `QMeaning.cs` `2a619d7b05708280`

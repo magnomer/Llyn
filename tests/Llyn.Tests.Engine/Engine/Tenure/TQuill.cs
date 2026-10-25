@@ -30,7 +30,7 @@ public sealed class TQuill
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LTenure tenure = TQuillExampleStart(engine, TInterfaceState.TStateValueResolve(null, true));
 
-        tenure.TQuillExampleCreate().TQuillExampleSet("a dog");
+        tenure.TQuillExampleCreate(engine).TQuillExampleSet("a dog");
 
         LExample held = tenure.TTenureRead()!.LDraftExample!;
         Assert.Equal("a dog", held.LExampleText.TStateValueShow());
@@ -45,7 +45,7 @@ public sealed class TQuill
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LTenure tenure = TQuillExampleStart(engine, TInterfaceState.TStateValueCreate("a cat"));
 
-        tenure.TQuillExampleCreate().TQuillSpeakerSet("French");
+        tenure.TQuillExampleCreate(engine).TQuillSpeakerSet("French");
 
         Assert.Equal("French", tenure.TTenureRead()!.LDraftExample!.LExampleLanguage);
     }
@@ -65,7 +65,7 @@ public sealed class TQuill
             LStateMark.LStateMarkUnspecified));
         LTenure tenure = TQuillExampleStart(engine, TInterfaceState.TStateValueCreate("a cat"));
 
-        tenure.TQuillExampleCreate().TQuillReferenceSet(reference.LReferenceId);
+        tenure.TQuillExampleCreate(engine).TQuillReferenceSet(reference.LReferenceId);
 
         Assert.Equal(
             reference.LReferenceId, tenure.TTenureRead()!.LDraftExample!.LExampleSource.TStateAnchorShow());
@@ -184,10 +184,10 @@ public sealed class TQuill
         using TWorkspace second = TWorkspace.TWorkspaceCreate();
         using LEngine engine = first.TWorkspaceEngineStart();
         LTenure tenure = TQuillEntryStart(engine);
-        LQuillChip chip = tenure.TQuillChipCreate(engine);
+        LQuillExample example = tenure.TQuillExampleCreate(engine);
         engine.TEngineWorkspaceOpen(second.TWorkspaceFolder);
 
-        LRefusal refusal = Assert.Throws<LRefusal>(() => chip.TQuillReferenceFind("Field"));
+        LRefusal refusal = Assert.Throws<LRefusal>(() => example.TQuillReferenceFind("Field"));
 
         Assert.Equal(LRefusal.LRefusalStale, refusal.LRefusalReason);
     }
@@ -198,10 +198,10 @@ public sealed class TQuill
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LTenure tenure = TQuillEntryStart(engine);
-        LQuillChip chip = tenure.TQuillChipCreate(engine);
+        LQuillExample example = tenure.TQuillExampleCreate(engine);
         tenure.TTenureCancel();
 
-        LReferenceOffer offer = chip.TQuillReferenceFind("Field");
+        LReferenceOffer offer = example.TQuillReferenceFind("Field");
 
         Assert.Empty(offer.LReferenceOfferRows);
     }

@@ -54,3 +54,28 @@ The `finally` block uses it too, so a run broken off by an error or Ctrl+C leave
 
 A failing run still finishes every project, and no later run starts.
 The help text said execution stops at the first failure, and now says what the loop does.
+
+## Default scope
+
+Generation 6 leaves the convention project out of a plain run, a run given symbol names and a `-Platform` run.
+`-All` adds it and `-Convention` runs it alone; `-Main` still works and names the default.
+`Test.json` is raised to generation 6 to match.
+
+## Folder switches
+
+Every folder under the tests folder that holds a test project, at any depth, gives a switch built in the `dynamicparam` block, so the script names no folder.
+The switch is the last dot-separated part of the folder name: `Infrastructure` gives `-Infrastructure`, `Llyn.Tests.Console` gives `-Console`.
+Folders that share a name share the switch, and `bin` and `obj` folders are not walked.
+A name a fixed parameter or alias already takes gives no switch, so `Llyn.Tests.Convention` is left to `-Convention`.
+Several switches may be given, and only the projects inside their folders run.
+They cannot be combined with `-All`, `-Convention`, `-Main`, `-Platform` or `-Project`.
+`-Help` lists the switches the tree gives.
+A `dynamicparam` block needs the body in a named block, so the body sits in `end`, left at the margin so the help text prints as it reads.
+The generation stays 6: these switches are part of it.
+
+## TestSrc and TestAudit
+
+`TestSrc.ps1` runs `Test.ps1` with no scope option, the default: every test project except the convention project.
+`TestAudit.ps1` runs `Test.ps1 -Convention`, the convention project, which holds the audits, only.
+Each passes every other argument on unchanged and returns the exit code of `Test.ps1`.
+They hold no test logic of their own, so `Test.ps1` stays the one test script.

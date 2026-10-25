@@ -8,6 +8,11 @@ It stands apart from Video because a picture is decoded lazily, only once its ro
 The driver for Image rows in a card and in a situation.
 The rows sit in a template, so the card list hands their buttons here rather than to the card.
 Each click hands one raw value to one image gate, and the engine finds the card a row belongs to.
+A card's add and remove name the card by its collocation flag and id.
+The engine finds a card by kind and id.
+So a row built for a card remembers that flag and its card's id.
+The remove click sends both back with the row id.
+A row built bare, as in a situation or a reading line, holds the meaning flag and no card id.
 Each owner builds its own driver and hands it its own gate.
 
 ### `QImageRowRefine`
@@ -25,7 +30,8 @@ Only a field the keyboard is in has been typed into.
 
 ### `QImageFreshObserve`
 
-A Situation has no card, so the add names a null card, and the draft routes it.
+A Situation has no card, so the add names a meaning flag and a null card.
+The draft routes it.
 Null is Conduct's word for no card, so no magic id is sent.
 
 ### `QImageOpenObserve`
@@ -148,8 +154,8 @@ A row already loaded does nothing on a repeat load.
 
 ## Stamp
 
-Commit: `cb8ab7e8feb4`
-- `QImage.cs` `55e72165eb5d301b`
-- `QImageItem.cs` `fa9abceaf5f13420`
+Commit: `8c403d1df768`
+- `QImage.cs` `5a19e6bfbfb5d7fb`
+- `QImageItem.cs` `b0193f844e268a9b`
 - `QImageLazy.cs` `1ff9279b6097bd60`
 - `QImagePending.cs` `0cdc26e686b37582`

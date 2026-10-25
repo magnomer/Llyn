@@ -33,14 +33,15 @@ The Source lines are read on every card read, so a Source edited elsewhere reads
 `CDisplayFoldToggle` makes one save or delete call and answers whether the port returned without throwing.
 A nonpositive card id still yields true, without confirming a stored row change.
 An unsaved card writes nothing, since the clerk skips its nonpositive id.
-The card id is the leaf's own `CLeafId`, handed back unread.
+The card is named by the leaf's own `CLeafCollocated` and `CLeafId`, handed back unread.
+The gate maps the flag to the card kind the port saves and deletes under.
 No entry chosen writes nothing and answers false.
 A refused write shows `Fold.SaveFailed` every time, since the user acted, and answers false.
 The caller puts its chevron back on false, since no bulletin will repaint it.
 The port raises the fold bulletin.
 So this view and every other view on the entry repaint from the store alike.
 Folding is no edit, so it never dirties a draft and never enters undo.
-`LDisplayFoldRead` answers the ids of every folded card, Meanings and Collocations together.
+`LDisplayFoldRead` answers every folded card as a kind and id pair, Meanings and Collocations together.
 No entry chosen answers an empty set, which keeps the cards drawable.
 `CDisplayIncomingRead` has the engine name each usage and its epithet in one read.
 Each usage maps through `COeuvre.COeuvreUsageRead`, the one map the vita's citations share.
@@ -70,7 +71,8 @@ Linked collocations show inside the leaf of the top-level meaning above their ho
 
 One meaning or collocation card of the reading view, ready to paint.
 Every text arrives worded and every row arrives mapped, so the leaf fill only looks keys up and paints.
-`CLeafId` is handed back unread to the fold gate.
+`CLeafId` and `CLeafCollocated` are handed back unread to the fold gate.
+`CLeafCollocated` says which list the id belongs to, since the fold is looked up by kind and id.
 `CLeafTitle` carries the unknown mark's key while unknown and is muted while never written.
 A muted title leaves the card's kind caption in its place.
 `CLeafMeaning` is muted while never written, so its line folds.
@@ -100,6 +102,8 @@ The phrase and the three markers are empty on a meaning leaf, since only colloca
 ### `LLeafRead`
 
 It maps the cards of one list to their ready form.
+The caller says whether the list is the collocations, and the map keeps that flag on each leaf.
+The nested homed collocations are always read as collocations.
 The layout is the engine's answer for where each collocation sits, so the map applies no link rule itself.
 It only looks up each card's homed collocations, stub lines, phrase and markers by the card's id.
 The nested collocations and the Other collocations read through the same map with the same layout.
@@ -115,7 +119,8 @@ Each card's links are its own entry of the target map, which the engine keys by 
 A card missing from the map has no links, since a refused target read answers an empty map.
 Each picture row carries the address `media` resolves, so the page loads it without asking.
 Each sentence line is composed through `examples`, which also answers its line key against the shown entry.
-The folded ids come from one entry read, independent of the lexical card draft.
+The folded cards come from one entry read as kind and id pairs.
+Each leaf looks itself up by its own kind.
 
 ## `CLeafChip`
 
@@ -143,9 +148,9 @@ A row quoting no Example has no text to divide and no Source line.
 
 ## Stamp
 
-Commit: `44d0e95bcfcc`
-- `CDisplayCard.cs` `abe8c60ddf8df8a9`
-- `CLeaf.cs` `e748f3a16fe4e1c2`
+Commit: `8c403d1df768`
+- `CDisplayCard.cs` `0b89f56e13599ec2`
+- `CLeaf.cs` `b468cd0181946ad4`
 - `CLeafChip.cs` `d604e4f1c5b56d4f`
 - `CLeafLine.cs` `247bfa9b404d5d91`
 - `CLecternCard.cs` `4f3140b154d29b23`

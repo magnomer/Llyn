@@ -239,11 +239,11 @@ A method a driver itself names `nameof` resolves to a symbol and is not one.
 
 ## Stamp
 
-Commit: `90a13c9590ba`
-- `TAssayControl.cs` `7665198e484be7fd`
-- `TAssayRelay.cs` `4d5cbd221728c8e7`
-- `TAssaySink.cs` `921bd5e11c87862f`
-- `TAssayTruth.cs` `74d379ab6ea10564`
+Commit: `8c403d1df768`
+- `TAssayControl.cs` `065e9fa6d18090dc`
+- `TAssayRelay.cs` `f4f232d8e0412019`
+- `TAssaySink.cs` `3bfb09db25c8f6f2`
+- `TAssayTruth.cs` `8afb77d51791d442`
 - `TAssayZeroing.cs` `1421a9346abb4fa4`
 - `TAuditTruthRelay.cs` `55ad73318110b1ce`
 - `TAuditTruthSink.cs` `9c23cfa573bae31a`

@@ -50,12 +50,14 @@ A kind none of them knows is a programming error, not a refusal.
 ## `LDraftClerk.LCardResolve`
 
 A request that named card zero is applied to the first Meaning card, made when the draft has none.
+A sentence request settled this way is retargeted to the Meaning kind.
 A browsing panel planting a Tag, Register, Situation, Example or Source into a fresh entry asks this way.
 The panel need not read the draft back to learn which card the reset made.
 
 ## `LDraftClerk.LSentenceResolve`
 
 A request that named sentence zero is applied to the card's first sentence row, made when the card has none.
+The card is looked up by the kind and id the request names.
 A card the draft does not hold is refused, as any card request is.
 
 ## `LDraftClerkEntry`
@@ -339,8 +341,8 @@ Otherwise the draft changed from elsewhere, so its parts become the committed on
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `LDraftClerk.cs` `1c2b0568241d423d`
+Commit: `8c403d1df768`
+- `LDraftClerk.cs` `26781ddf47706177`
 - `LDraftClerkEntry.cs` `162ea5dbe85d7507`
 - `LDraftClerkEquality.cs` `acf584c41544af70`
 - `LDraftClerkList.cs` `aa0f8b2734e80cb2`

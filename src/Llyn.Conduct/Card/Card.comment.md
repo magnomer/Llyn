@@ -5,6 +5,9 @@ It is split by role, so each class keeps one kind of field or row.
 The gates hold the interaction only, and the draft rules live below in the Application clerks.
 `CFolio` holds the maps from engine drafts to the shapes every driver shows.
 Every gate that edits the draft does nothing while the desk fills it, so an echoed field writes nothing back.
+A card is addressed by a `collocated` flag and its id, because the two lists are separate.
+The gate maps the flag to the engine's card kind.
+So no driver sends a kind, and no gate searches both lists for an id.
 
 ## `CCard`
 
@@ -19,7 +22,7 @@ The source search shows `Input.FindFailed` once until the user acts, through the
 `CCardTranslationAdd`, `CCardTranslationResolve` and `CCardTranslationInsert` are internal.
 Drivers reach them through `CCaret`, which supplies the position from the translation trail.
 So no driver holds or sends a place in the translation row.
-`CCardTranslationRemove` stays public, and `CCaret` also hands it to the translation trail.
+`CCardTranslationRemove` stays public with the flag, and an internal overload takes the engine's kind for the translation trail.
 
 `CCardTranslationAdd` hears every change of the translation field.
 The quill links each completed word that resolves to one entry and answers what the field keeps.
@@ -72,6 +75,8 @@ A failure shows the create failure and leaves the citation as it was.
 The caret of the chip rows of a card, kept in Conduct so no view holds it.
 It owns one `CCaretTrail` each for situation, tag, register and translation, and `CCaretRead` answers all four.
 The editor builds it over its desk and its `CCard`.
+Every gate takes the `collocated` flag with the card id.
+It passes the kind on to the quill and to the trail.
 The add, settle and insert gates read the insert position from the row's trail, so the view sends none.
 A settle differs from an add only in handing the text as settled.
 With no chip quill the gates answer the text and an empty, closed dropdown.
@@ -88,7 +93,11 @@ The translation gates forward to `CCard` with the trail's position, and keep tha
 ## `CCaretTrail`
 
 The caret inside one row of a card's chips, as the ids that lie at and after it.
-The row is read from the held draft every time, so the trail never keeps a stale row.
+The row is read every time from the held draft's list of the card's kind.
+So the trail never keeps a stale row.
+The kept ids are keyed by kind and card id.
+So a meaning and a collocation with one id keep separate carets.
+The removal it was built with takes the kind, the card and the chip.
 A new tenure clears every kept trail.
 The caret sits after the last chip until the user moves it, and a trail never leaves the row.
 A trail holds ids, not an index.
@@ -117,7 +126,8 @@ The fold gate goes to the card port instead, since a fold is view state and no e
 The new card's place is the clerk's default, not a count the view hands in.
 A card alone in its list is kept by the clerk's rule, so the view sends every press.
 
-`CCardFoldToggle` names the held entry by its stored id, and a draft never stored sends nothing.
+`CCardFoldToggle` names the held entry by its stored id and the card by kind and id.
+A draft never stored sends nothing.
 It never dirties the draft, makes a revision or enters undo.
 The port raises the fold bulletin, and `CEntryDraftChanged` then hands every card its new fold.
 True means the port returned without throwing, not that a stored row changed.
@@ -134,6 +144,7 @@ The engine's own ordinal rule counts its raw list, which may not be in position 
 Text that is no number sends nothing.
 
 `CCardPositionOpen` marks a card as being moved and answers true only when its list holds more than one card.
+The mark is keyed by flag and card id.
 A card alone in its list, or a desk with no held draft, answers false and marks nothing.
 `CCardPositionClose` drops the mark and is safe for a card never marked.
 `CCardPositionSettle` takes the typed ordinal only for a marked card, and removes the mark in the same call.
@@ -162,7 +173,8 @@ The unit and freedom rows are worded through static port members, so no port is 
 The one map from an engine entry draft to the shape every driver shows.
 It is split from `CCard` since the gates and the maps change for different reasons.
 `CFolioTargetRead`, `CFolioGlossRead`, `CFolioImageRead` and `CFolioVideoRead` are shared with the reading view, repertoire and mention map.
-`CFolioEntryRead` receives link targets keyed by card and folded card ids from one store read.
+`CFolioEntryRead` receives link targets keyed by card id.
+It also receives the folded cards as kind and id pairs, from one store read.
 It also receives picture and video addresses through `media`, and the meaning scan.
 So each card carries its links, fold and media ready.
 
@@ -175,18 +187,19 @@ Only the collocation sheet passes `expressed` as true, so a meaning card shows i
 A card's situation link carries no media, so its picture and video lists stay empty.
 Links join the linked sense ids to `senses`, so a link to a vanished meaning is dropped.
 A linked meaning carries depth zero, since the chip shows only its name and path.
-Fold state comes from `folds`, while fold eligibility comes from `LCardDraftStored`, true for a stored card.
+Fold state comes from `folds` under the sheet's kind, collocation when `expressed` is true.
+Fold eligibility comes from `LCardDraftStored`, true for a stored card.
 
 `CFolioOrderRead` is the one order, by the engine's position with ties kept in the engine's order.
 The sheet map, the place map, the reading view and the contents share it, so those paths agree.
-`CFolioPlaceRead` turns a handed place into the engine index for the same card, and answers null outside the list.
+`CFolioPlaceRead` turns a handed place into the engine index within the flagged list, and answers null outside it.
 `CFolioOrdinalRead` counts from one and pulls a number past either end to that end.
 It answers a place, not an engine index, so the badge number and the shown order agree.
 Text that is not a whole number answers null.
 `CFolioNameRead` words the shown name of a picture or video.
 It is the file name of the resolved address, else of the written location, else the address or location itself.
 No caption is stored yet, so none comes first.
-`CFolioListRead` is the list holding `cardId`, the collocations when no meaning holds it.
+`CFolioListRead` is the collocations or the meanings by the flag, and searches nothing.
 `CFolioCountRead` is the length of that list, so the position gate asks the same list the move uses.
 
 A sentence row with no example yet words the empty text, so its field shows the example hint.
@@ -205,7 +218,7 @@ The add gate alone checks its row index, since Conduct defines what that index m
 
 `CSentenceReferenceChanged` fires on the driver's thread through the editor's marshal.
 `LSentenceObserverAttach` hears the reference subject on every tenure the desk starts.
-`CSentenceAdd` takes `below`, the index of the pressed row in the card's sentences.
+`CSentenceAdd` takes `below`, the index of the pressed row in the sentences of the card of that flag and id.
 `CFolio` maps sentences in the engine's order, so that index is the engine's.
 A stale or foreign index sends nothing, and the new row takes the next place.
 `CSentenceCitationSet` carries a stored Source's id, so nothing is resolved from its byline.
@@ -220,7 +233,8 @@ So Conduct maps the silence to the engine's Entry 0, and the driver never sends 
 `CSentenceSenseSet` lets ShellEngine persist pending typing and narrow the Mention under the selection.
 The mention and sense checks read the held draft even while the desk fills.
 `CSentenceSenseRead` answers null when no linked Mention lies under the selection, so no menu opens.
-The shared read in `CMention` chooses the fallback `Display.Unknown`.
+The gate hands `CMention` a card site of kind, card and sentence.
+The shared read there chooses the fallback `Display.Unknown`.
 A failed read shows `Mention.FindFailed` and answers null.
 
 `CSentenceMentionRead` takes the shown entry and answers one entry for every sentence it shows, keyed by line key.
@@ -241,13 +255,13 @@ Its lists are empty when none are known.
 
 ## Stamp
 
-Commit: `44d0e95bcfcc`
-- `CCard.cs` `73aa7858dc403d5e`
-- `CCardField.cs` `1c45a2b59a846aaf`
-- `CCardList.cs` `676fda163fb37d36`
+Commit: `8c403d1df768`
+- `CCard.cs` `e82fc6e3d26800a4`
+- `CCardField.cs` `802f5433f0bc0fd7`
+- `CCardList.cs` `0b09d5d23ac7ddac`
 - `CCardSpeech.cs` `c33bd983a66825f2`
-- `CCaret.cs` `cf2769876b6c7b6e`
-- `CCaretTrail.cs` `0ac8e0459942d0a7`
-- `CFolio.cs` `a2050317950ffecb`
-- `CSentence.cs` `8f61d4ecec65d2c6`
+- `CCaret.cs` `125ebb0d5877da7c`
+- `CCaretTrail.cs` `a5bbdb676340e773`
+- `CFolio.cs` `19cd7259536a1175`
+- `CSentence.cs` `2d4729454df2f4db`
 - `CSentenceFrame.cs` `dcb9e108a9b63eb9`

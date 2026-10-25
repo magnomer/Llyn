@@ -174,6 +174,19 @@ public sealed class TLecternHeader
     }
 
     [Fact]
+    public void LecternLineDivide_OwnedPieces_TrimTheTrailingSpaceOfEachRow()
+    {
+        BCanvasWidth measure = new(false);
+        BLecternLine line = new([("The water ", "text", "Item"), ("is cold.", "text", "Item")], 0);
+
+        IReadOnlyList<BLecternLine> rows = line.BLecternLineDivide(10, measure);
+
+        Assert.Equal(
+            ["The water", "is cold."],
+            rows.Select(static row => Assert.Single(row.BLecternLinePieces).BLecternLineText));
+    }
+
+    [Fact]
     public void LecternLineDivide_ItemAndLongWord_KeepTheItemWholeAndCutTheWord()
     {
         BCanvasWidth measure = new(false);

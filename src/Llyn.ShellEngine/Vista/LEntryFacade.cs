@@ -149,11 +149,6 @@ public sealed class LEntryFacade : LEntryPort, LGraspPort
         return LEngineGlyphResolve(character, language).LEntryId;
     }
 
-    public (LOwner, int)? LEngineCardFind(LEntryDraft draft, long id)
-    {
-        return LDraftClerkCard.LCardOwnerFind(draft, id);
-    }
-
     public int LEngineGraspStep => LGraspClerk.LGraspClerkStep;
 
     public string LEngineGraspFormat(int step)

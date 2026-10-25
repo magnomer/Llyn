@@ -11,7 +11,7 @@ public sealed record LLiveryPage(
     LAccentSheet LLiveryPageAccent,
     IReadOnlyList<LReflexGuise> LLiveryPageGuise,
     IReadOnlyList<string> LLiveryPageFolded,
-    IReadOnlySet<long> LLiveryPageFold,
+    IReadOnlySet<(LCardKind, long)> LLiveryPageFold,
     IReadOnlyList<LTranscriptionDraft> LLiveryPageTranscription,
     LGlyph? LLiveryPageGlyph,
     IReadOnlyList<LGlyphCell> LLiveryPageCell,

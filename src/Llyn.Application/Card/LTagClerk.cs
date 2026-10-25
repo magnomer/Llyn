@@ -36,7 +36,7 @@ public sealed class LTagClerk
         return LCatalogTag.LCatalogTagSort(found, order);
     }
 
-    public LTagOffer LTagClerkFind(string text, LDraft? draft, long card)
+    public LTagOffer LTagClerkFind(string text, LDraft? draft, LCardKind kind, long card)
     {
         ArgumentNullException.ThrowIfNull(text);
 
@@ -48,7 +48,7 @@ public sealed class LTagClerk
 
         IReadOnlyList<LTagDraft> held = draft is null
             ? []
-            : LDraftClerkCard.LCardFind(draft.LDraftContent, card)?.LCardDraftTag ?? [];
+            : LDraftClerkCard.LCardFind(draft.LDraftContent, kind, card)?.LCardDraftTag ?? [];
 
         List<LTagRow> rows = [];
         foreach (LTag tag in LTagClerkFind(word, LCatalogOrder.LCatalogOrderUsage))

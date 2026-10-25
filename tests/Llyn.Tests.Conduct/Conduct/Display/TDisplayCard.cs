@@ -253,16 +253,16 @@ public sealed class TDisplayCard
             [TInterface.TCardCreate("still water", 1)]));
         CWing wing = TDisplayWingPrepare(atelier, []);
         CCompass area = wing.CWingDisplay.CDisplayCompass;
-        Assert.Null(area.CCompassCardFind(1));
+        Assert.Null(area.CCompassCardFind(false, 1));
         wing.CWingEntryOpen(water.LEntryId);
         LEntryDraft shown = wing.CWingDisplay.LDisplayRule.CVoice.CVoiceShown!;
 
-        (CCompassPart, int)? sea = area.CCompassCardFind(shown.LEntryDraftMeanings[1].LCardDraftId);
-        (CCompassPart, int)? still = area.CCompassCardFind(shown.LEntryDraftCollocations[0].LCardDraftId);
+        (CCompassPart, int)? sea = area.CCompassCardFind(false, shown.LEntryDraftMeanings[1].LCardDraftId);
+        (CCompassPart, int)? still = area.CCompassCardFind(true, shown.LEntryDraftCollocations[0].LCardDraftId);
 
         Assert.Equal((CCompassPart.CCompassPartMeaning, 1), sea);
         Assert.Equal((CCompassPart.CCompassPartCollocation, 0), still);
-        Assert.Null(area.CCompassCardFind(987654));
+        Assert.Null(area.CCompassCardFind(false, 987654));
     }
 
     [Fact]

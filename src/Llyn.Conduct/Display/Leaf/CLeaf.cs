@@ -9,6 +9,7 @@ namespace Llyn.Conduct;
 
 public sealed record CLeaf(
     long CLeafId,
+    bool CLeafCollocated,
     int CLeafPosition,
     CStateWording CLeafTitle,
     CStateWording CLeafMeaning,
@@ -38,6 +39,7 @@ public sealed record CLeaf(
     internal static IReadOnlyList<CLeaf> LLeafRead(
         LEntryDraft shown,
         IReadOnlyList<LCardDraft> cards,
+        bool collocated,
         LCollocationLayout? layout,
         LSentenceOrder order,
         string mark,
@@ -48,7 +50,7 @@ public sealed record CLeaf(
         string heading,
         IReadOnlyDictionary<long, string> citations,
         IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets,
-        IReadOnlySet<long> folds,
+        IReadOnlySet<(LCardKind, long)> folds,
         LMediaPort media,
         LExamplePort examples)
     {
@@ -56,9 +58,11 @@ public sealed record CLeaf(
         ArgumentNullException.ThrowIfNull(targets);
         ArgumentNullException.ThrowIfNull(folds);
 
+        LCardKind kind = collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning;
         return CFolio.CFolioOrderRead(cards)
             .Select(card => new CLeaf(
                 card.LCardDraftId,
+                collocated,
                 card.LCardDraftPosition,
                 CStateWording.LStateWordingRead(CFolio.CFolioStateRead(card.LCardDraftTitle), null),
                 CStateWording.LStateWordingRead(CFolio.CFolioStateRead(card.LCardDraftMeaning), null),
@@ -71,11 +75,12 @@ public sealed record CLeaf(
                     .ToList(),
                 CFolio.CFolioImageRead(card.LCardDraftImage, media),
                 CFolio.CFolioVideoRead(card.LCardDraftVideo, media),
-                folds.Contains(card.LCardDraftId),
+                folds.Contains((kind, card.LCardDraftId)),
                 card.LCardDraftStored,
                 LLeafRead(
                     shown,
                     layout?.LCollocationLayoutHome.GetValueOrDefault(card.LCardDraftId, []) ?? [],
+                    true,
                     layout, order, mark, stub, example, exampleOne, also, heading, citations, targets, folds, media,
                     examples),
                 (layout?.LCollocationLayoutStub.GetValueOrDefault(card.LCardDraftId, []) ?? [])

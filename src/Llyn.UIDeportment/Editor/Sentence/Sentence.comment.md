@@ -85,6 +85,7 @@ A change also announces visibility, the written verdict and the gap, since all t
 This is the citation field of an Example row.
 A citation is either a stored Source or nothing, so the field never keeps a line that matches no Source.
 One list of Sources serves every row on the form.
+The lookup and the commit name the row's card by the placard's collocation flag and id.
 The list is refilled when the sentence facet's Sources change and when a workspace opens.
 Each event is hooked once, so a refill leaves one handler.
 
@@ -134,6 +135,8 @@ A row already bound is left alone, so a refill binds nothing twice.
 
 This is the sentence row's driver for adding, dropping, typing, mention commands and the frame.
 It walks the editor's two card lists and holds the Conduct facets once introduced.
+Each gate names its card by the placard's collocation flag and id.
+The engine finds a card by kind and id.
 The mention dropdown is handed in because it was built with this driver.
 
 ### `QSentenceOrder`
@@ -182,9 +185,9 @@ The silence gate is its own, so no magic id is sent for a mention with no target
 
 ## Stamp
 
-Commit: `44d0e95bcfcc`
-- `QCitation.cs` `e6b98c5149776382`
+Commit: `8c403d1df768`
+- `QCitation.cs` `a6f4014c0b0806dc`
 - `QExample.cs` `bf40c0f67bf2e9b8`
 - `QPassage.cs` `57505d44cd07c7c6`
-- `QSentence.cs` `c63c186076724d3d`
+- `QSentence.cs` `389de76f9480178d`
 - `QSentenceFrame.cs` `9af5d661b1716af6`

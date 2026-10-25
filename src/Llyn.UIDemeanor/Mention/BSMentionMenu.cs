@@ -85,8 +85,13 @@ internal sealed class BSMentionMenu : BSParleyBody
         ArgumentNullException.ThrowIfNull(navigation);
         ArgumentNullException.ThrowIfNull(measure);
 
-        string title = catalog.BLocalizationTextRead(offer?.CMentionOfferKey ?? "Mention.Title");
-        BSMentionMenu body = new(offer?.CMentionOfferEntry ?? [], title, navigation, measure);
+        if (offer is null || offer.CMentionOfferEntry.Count == 0)
+        {
+            return;
+        }
+
+        string title = catalog.BLocalizationTextRead(offer.CMentionOfferKey);
+        BSMentionMenu body = new(offer.CMentionOfferEntry, title, navigation, measure);
         BSParley parley = new(blueprint, title, "dialog", [], [], 0, body) { BSParleyAnchor = anchor };
         navigation.CNavigationArrived += body.BSMentionMenuClose;
         try

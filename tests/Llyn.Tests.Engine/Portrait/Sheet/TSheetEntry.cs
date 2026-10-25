@@ -219,7 +219,7 @@ public sealed class TSheetEntry
             [TInterface.TCardCreate("to come apart", 1), TInterface.TCardCreate("to stop", 2)],
             []));
         LEntryDraft held = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(entry.LEntryId));
-        engine.TEngineFoldSave(entry.LEntryId, held.LEntryDraftMeanings[0].LCardDraftId);
+        engine.TEngineFoldSave(entry.LEntryId, LCardKind.LCardKindMeaning, held.LEntryDraftMeanings[0].LCardDraftId);
 
         string sheet = TSheetTextFormat(engine, entry);
 

@@ -26,49 +26,49 @@ public sealed class LQuillCard
             _lQuillCardTenure.LTenureId, kind, 0, LDraftClerkCard.LCardEndRead(held.LDraftContent, kind)));
     }
 
-    public void LQuillCardRemove(long card)
+    public void LQuillCardRemove(LCardKind kind, long card)
     {
         if (_lQuillCardTenure.LTenureRead() is not LDraft held
-            || LDraftClerkCard.LCardLoneCheck(held.LDraftContent, card))
+            || LDraftClerkCard.LCardLoneCheck(held.LDraftContent, kind, card))
         {
             return;
         }
 
-        _lQuillCardTenure.LTenureRequestApply(new LRequestCardRemoval(_lQuillCardTenure.LTenureId, card));
+        _lQuillCardTenure.LTenureRequestApply(new LRequestCardRemoval(_lQuillCardTenure.LTenureId, kind, card));
     }
 
-    public void LQuillCardMove(long card, int place)
+    public void LQuillCardMove(LCardKind kind, long card, int place)
     {
         if (_lQuillCardTenure.LTenureRead() is LDraft held
-            && LDraftClerkCard.LCardShiftRead(held.LDraftContent, card, place) is int target)
+            && LDraftClerkCard.LCardShiftRead(held.LDraftContent, kind, card, place) is int target)
         {
             _lQuillCardTenure.LTenureRequestApply(
-                new LRequestCardShift(_lQuillCardTenure.LTenureId, card, 0, target));
+                new LRequestCardShift(_lQuillCardTenure.LTenureId, kind, card, 0, target));
         }
     }
 
-    public void LCardTitleSet(long card, string text)
+    public void LCardTitleSet(LCardKind kind, long card, string text)
     {
         ArgumentNullException.ThrowIfNull(text);
 
         _lQuillCardTenure.LTenureRequestDefer(
-            new LRequestCardTitle(_lQuillCardTenure.LTenureId, card, new LStateWritten(text)));
+            new LRequestCardTitle(_lQuillCardTenure.LTenureId, kind, card, new LStateWritten(text)));
     }
 
-    public void LCardExpressionSet(long card, string text)
+    public void LCardExpressionSet(LCardKind kind, long card, string text)
     {
         ArgumentNullException.ThrowIfNull(text);
 
         _lQuillCardTenure.LTenureRequestDefer(
-            new LRequestCardExpression(_lQuillCardTenure.LTenureId, card, new LStateWritten(text)));
+            new LRequestCardExpression(_lQuillCardTenure.LTenureId, kind, card, new LStateWritten(text)));
     }
 
-    public void LCardMeaningSet(long card, string text)
+    public void LCardMeaningSet(LCardKind kind, long card, string text)
     {
         ArgumentNullException.ThrowIfNull(text);
 
         _lQuillCardTenure.LTenureRequestDefer(
-            new LRequestCardMeaning(_lQuillCardTenure.LTenureId, card, new LStateWritten(text)));
+            new LRequestCardMeaning(_lQuillCardTenure.LTenureId, kind, card, new LStateWritten(text)));
     }
 
     public void LCardSenseAttach(long card, long sense)

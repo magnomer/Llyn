@@ -31,7 +31,8 @@ A Latin headword with no saved glyph row prints no glyph section, as the view sh
 A Han headword prints its characters there.
 
 A collocation's first link decides the meaning it prints under, and no other-collocations band appears.
-It prints as an open row, headed by its phrase, in a list headed by the row count.
+It prints as an open row, headed by its phrase.
+The list is headed by the plain collocations heading, with no count.
 Each further link adds a see-line under its meaning.
 A collocation linked to no meaning shows under the Other heading as a row, not a numbered card.
 That row carries the phrase as heading, the meaning as its line, and its stored fold.
@@ -152,10 +153,10 @@ A selected Example in the corpus view opens the press over the Example text.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
+Commit: `8c403d1df768`
 - `TCitationPage.cs` `bbba4a3d7bb84873`
 - `TPortraitClerk.cs` `c69cf83f9713e596`
-- `TPortraitEntry.cs` `89ef6416dc54ad18`
+- `TPortraitEntry.cs` `0ba74d6b0bd111a9`
 - `TPortraitExporting.cs` `bc7bcef2e8061fb9`
 - `TPortraitFolio.cs` `e9389e56a2c4ecb1`
 - `TPortraitOutline.cs` `3312559e8e1f3164`

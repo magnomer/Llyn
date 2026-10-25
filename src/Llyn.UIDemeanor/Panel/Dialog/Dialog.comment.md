@@ -18,7 +18,8 @@ Under 112 cells the lit row's loss text sits on one line under the table.
 Only the lit row shows lit cells, and only while the body has focus.
 The position text reads `n of m` for the lit row.
 The state is read from the `CSCustoms` on every draw, so the body keeps no copy.
-Cell widths use the measure the box hands in.
+Cell widths use the measure the box hands in, so a wide character takes the cells the terminal gives it.
+The body keeps its own fixed height and ignores the height the box offers.
 
 ## `BSCustomsOmission`
 
@@ -27,9 +28,10 @@ Each row shows the line number right-aligned in 6 cells, then the text.
 It has no cells, so Up and Down only scroll its page of 9 rows.
 It takes the size of `BSCustoms`, so both boxes look alike.
 It has no position text.
+Its rows are measured with the box's measure too.
 
 ## Stamp
 
-Commit: `c1396871c007`
-- `BSCustoms.cs` `333a3b3c32a382e9`
-- `BSCustomsOmission.cs` `d4d471f74ee64ba8`
+Commit: `8c403d1df768`
+- `BSCustoms.cs` `f3b0200db4c70517`
+- `BSCustomsOmission.cs` `61d6a3e15512125a`

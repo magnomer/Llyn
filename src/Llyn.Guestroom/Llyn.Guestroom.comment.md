@@ -22,6 +22,6 @@ A console start never reaches either of them.
 
 ## Stamp
 
-Commit: `ed7d18d90760`
-- `LGuestroom.cs` `c7e21533102a3f4c`
+Commit: `8c403d1df768`
+- `LGuestroom.cs` `0753b0888ba3bee8`
 - `Llyn.Guestroom.csproj` `c26a2a97a04873fe`

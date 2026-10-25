@@ -91,7 +91,7 @@ public sealed class TLecternHinge
         long card = engine.TEngineEntryLoad(water.LEntryId)!.LEntryDraftMeanings[0].LCardDraftId;
         CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), true);
         wing.CWingEntryOpen(water.LEntryId);
-        IReadOnlySet<long>? folded = null;
+        IReadOnlySet<(LCardKind, long)>? folded = null;
 
         TCardHinge.TCardHingeRun(() =>
         {
@@ -111,7 +111,7 @@ public sealed class TLecternHinge
             folded = engine.TEngineFoldRead(water.LEntryId);
         });
 
-        Assert.Equal(new HashSet<long> { card }, folded);
+        Assert.Equal(new HashSet<(LCardKind, long)> { (LCardKind.LCardKindMeaning, card) }, folded);
     }
 
     [Fact]
@@ -124,6 +124,7 @@ public sealed class TLecternHinge
         long card = engine.TEngineEntryLoad(water.LEntryId)!.LEntryDraftMeanings[0].LCardDraftId;
         CLeaf leaf = new(
             card,
+            false,
             1,
             TCardHinge.TCardHingeTitle,
             TCardHinge.TCardHingeMeaning,
@@ -145,7 +146,7 @@ public sealed class TLecternHinge
             string.Empty);
         CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), true);
         bool? shown = null;
-        IReadOnlySet<long>? folded = null;
+        IReadOnlySet<(LCardKind, long)>? folded = null;
 
         TCardHinge.TCardHingeRun(() =>
         {
@@ -176,13 +177,19 @@ public sealed class TLecternHinge
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
-        LEntry water = TCardHinge.TCardHingePrepare(engine);
-        long card = engine.TEngineEntryLoad(water.LEntryId)!.LEntryDraftMeanings[0].LCardDraftId;
-        engine.TEngineFoldSave(water.LEntryId, card);
+        LEntry water = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "water",
+            "English",
+            string.Empty,
+            string.Empty,
+            [TInterface.TCardCreate("a liquid", 1)],
+            [TInterface.TCardCreate("set off", 1)]));
+        long card = engine.TEngineEntryLoad(water.LEntryId)!.LEntryDraftCollocations[0].LCardDraftId;
+        engine.TEngineFoldSave(water.LEntryId, LCardKind.LCardKindCollocation, card);
         CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), true);
         wing.CWingEntryOpen(water.LEntryId);
         long? noticed = null;
-        IReadOnlySet<long>? folded = null;
+        IReadOnlySet<(LCardKind, long)>? folded = null;
 
         TCardHinge.TCardHingeRun(() =>
         {
@@ -250,8 +257,8 @@ public sealed class TLecternHinge
     {
         TCardHinge.TCardHingeRun(() =>
         {
-            CLeaf row = TLecternRowCreate(2, true, [], string.Empty);
-            CLeaf meaning = TLecternRowCreate(1, false, [row], "Collocations");
+            CLeaf row = TLecternRowCreate(2, true, true, [], string.Empty);
+            CLeaf meaning = TLecternRowCreate(1, false, false, [row], "Collocations");
             FrameworkElementFactory card = new(typeof(StackPanel));
             card.AppendChild(new FrameworkElementFactory(typeof(TextBlock)) { Name = "PCardHeading" });
             card.AppendChild(new FrameworkElementFactory(typeof(ItemsControl)) { Name = "PCardHome" });
@@ -269,7 +276,7 @@ public sealed class TLecternHinge
 
     private static ContentPresenter TLecternRowRead(bool folded)
     {
-        CLeaf leaf = TLecternRowCreate(7, folded, [], string.Empty);
+        CLeaf leaf = TLecternRowCreate(7, true, folded, [], string.Empty);
         FrameworkElementFactory row = new(typeof(StackPanel));
         row.AppendChild(new FrameworkElementFactory(typeof(ToggleButton)) { Name = "PCardHinge" });
         row.AppendChild(new FrameworkElementFactory(typeof(TextBlock)) { Name = "PCardPhrase" });
@@ -286,10 +293,12 @@ public sealed class TLecternHinge
         return container;
     }
 
-    private static CLeaf TLecternRowCreate(long id, bool folded, IReadOnlyList<CLeaf> collocation, string heading)
+    private static CLeaf TLecternRowCreate(
+        long id, bool collocated, bool folded, IReadOnlyList<CLeaf> collocation, string heading)
     {
         return new CLeaf(
             id,
+            collocated,
             1,
             TCardHinge.TCardHingeBlank,
             TCardHinge.TCardHingeMeaning,
@@ -315,6 +324,7 @@ public sealed class TLecternHinge
     {
         CLeaf leaf = new(
             7,
+            false,
             1,
             title,
             TCardHinge.TCardHingeMeaning,

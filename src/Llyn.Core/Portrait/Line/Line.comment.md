@@ -92,7 +92,7 @@ The meanings are the whole meaning tree, and the collocations are those that may
 Under a meaning, the collocations whose home it is follow its child cards as one list child.
 The list is headed by the label's heading word as it stands.
 After the list come the see-lines of the collocations that link it without it being their home.
-The folds are the cards whose fold is stored, handed on to the rows.
+The folds are the cards whose fold is stored, as kind and id pairs, handed on to the rows.
 An unset field becomes empty text and an unknown one becomes the mark, as the display does.
 Media whose location was never written is skipped, because the display draws no empty plate.
 
@@ -100,7 +100,7 @@ Media whose location was never written is skipped, because the display draws no 
 
 One row per collocation, in the given order.
 A homed list and the unlinked band share this one row shape.
-A row whose collocation is in the folds carries the fold, and the rest stand open.
+A row whose collocation is in the folds under the Collocation kind carries the fold, and the rest stand open.
 
 ## `LPortraitRowCreate`
 
@@ -174,8 +174,8 @@ A row with no example holds only the frame line.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
-- `LPortraitCard.cs` `fca823bbddee1ad3`
+Commit: `8c403d1df768`
+- `LPortraitCard.cs` `3c1ca0222dd046a8`
 - `LPortraitLabel.cs` `0dc4501554f04f66`
 - `LPortraitLegend.cs` `a249935f5a5769be`
 - `LPortraitLine.cs` `b47739206ec6efc2`

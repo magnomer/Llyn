@@ -36,10 +36,13 @@ An author draft carries no source and no credits, because an author is a shared 
 A new one has id zero.
 `LDraftCreditRead` gives the credits as editor rows knowing their place and whether they can move.
 The source editor splices its own blank row in, so it never counts the credits itself.
-`LDraftMentionFind` gives the Mention the span lies inside, in the example the ids name, or none.
-`LDraftExampleRead` gives the example a Mention request with these ids would edit.
-Card and sentence both zero name the example the draft holds itself, as the corpus panel sends.
-Other ids name a sentence row on a meaning or a collocation, at any depth.
+`LDraftExampleRead` gives the example a Mention request would edit, in two forms.
+With no ids it gives the example the draft holds itself, as the corpus panel sends.
+It gives none when the draft holds none.
+With a card kind, a card id and a sentence id it gives the example of that sentence row.
+The kind picks the meanings or the collocations to search.
+The row is found at any depth under the card list of that kind.
+A card id of the other kind finds nothing.
 It locates the row exactly as the draft clerk does, so a find and its request agree.
 `LDraftNormalize` drops every unreadable value to unspecified.
 It is called only after the user agreed to lose what the store could not read.
@@ -67,9 +70,9 @@ It is a record, so two readings compare by value and a tenure raises its bulleti
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `8c403d1df768`
 - `LClaim.cs` `4bf25b6887736f62`
 - `LCourt.cs` `9660b9f2ce0f287e`
-- `LDraft.cs` `0a01948b8927be6d`
+- `LDraft.cs` `9a4c1cda19eb42c0`
 - `LOutcome.cs` `a1f449a024fa30b3`
 - `LTenureState.cs` `cf447781d6e742b6`

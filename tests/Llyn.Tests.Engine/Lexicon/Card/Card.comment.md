@@ -72,9 +72,10 @@ The Images and Videos a Situation shows are covered by `TSituationMedia`.
 
 Rewriting a Situation shows its new title on every card that references it, Meaning and Collocation alike.
 A Situation is one shared row, so no card may keep the old wording.
-A request names its card by id alone.
-So a Meaning and a Collocation of one entry must never share an id.
-A pick aimed at the Collocation of a fresh entry once landed on its Meaning, since both were number 1.
+A request names its card by kind and id.
+So a pick aimed at the Collocation of a fresh entry lands on the Collocation.
+A Meaning is number 1 as well.
+The Meaning then keeps no Situation.
 A card reads its Situations in the order they sit on it, and a pick at position 0 goes first.
 The order is the one the user arranged, so a read must not fall back to creation order.
 Editing, reordering and adding Situations through a card keeps the id of each edited one.
@@ -186,11 +187,11 @@ The player is told these moments, so a bad span must play the film rather than r
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `8c403d1df768`
 - `TImage.cs` `a00f8c19ff29160b`
 - `TMeaning.cs` `e0969500a3c587ad`
 - `TRegister.cs` `5bd3654d88a91a40`
-- `TSituation.cs` `82bd50332a683fac`
+- `TSituation.cs` `330635d9363c2e16`
 - `TSituationMedia.cs` `a05133ab1254cfa8`
 - `TTag.cs` `0200895230f0ca8f`
 - `TTranslation.cs` `f7b6241d9396bff9`

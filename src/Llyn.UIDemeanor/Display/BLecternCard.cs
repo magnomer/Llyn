@@ -65,7 +65,8 @@ internal sealed class BLecternCard
                 return null;
             }
 
-            string item = "Fold" + leaf.CLeafId.ToString(CultureInfo.InvariantCulture);
+            string item = (leaf.CLeafCollocated ? "FoldCollocation" : "FoldMeaning")
+                + leaf.CLeafId.ToString(CultureInfo.InvariantCulture);
             _ = _bLecternCardFold.TryAdd(item, leaf);
             return item;
         };
@@ -96,7 +97,7 @@ internal sealed class BLecternCard
     internal string? BLecternFoldToggle(string item)
     {
         CLeaf leaf = _bLecternCardFold[item];
-        _ = _bLecternDisplay.CDisplayCard.CDisplayFoldToggle(leaf.CLeafId, !leaf.CLeafFolded);
+        _ = _bLecternDisplay.CDisplayCard.CDisplayFoldToggle(leaf.CLeafCollocated, leaf.CLeafId, !leaf.CLeafFolded);
         return item;
     }
 
@@ -108,8 +109,8 @@ internal sealed class BLecternCard
     internal string? BLecternSeeOpen(string item)
     {
         (CLeaf leaf, int index) = _bLecternCardSee[item];
-        bool opened = _bLecternDisplay.CDisplayCard.CDisplayFoldToggle(leaf.CLeafSee[index].CLeafSeeId, false);
-        string fold = "Fold" + leaf.CLeafSee[index].CLeafSeeId.ToString(CultureInfo.InvariantCulture);
+        bool opened = _bLecternDisplay.CDisplayCard.CDisplayFoldToggle(true, leaf.CLeafSee[index].CLeafSeeId, false);
+        string fold = "FoldCollocation" + leaf.CLeafSee[index].CLeafSeeId.ToString(CultureInfo.InvariantCulture);
         return opened && _bLecternCardFold.ContainsKey(fold) ? fold : null;
     }
 

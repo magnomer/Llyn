@@ -30,11 +30,15 @@ The save prompt, with the formats Llyn Markup and HTML.
 Enter in the field saves the offered name with the suffix of the chosen format.
 Tab goes from the field to the Format row and then to the list.
 The Format row draws `lit` while it holds the focus.
+Tab twice reaches the list, where Down and Enter pick a row.
 Shift+Tab goes back the same way.
+From the list it passes the Format row on its way to the field.
 Right in the field leaves the format as it is.
 Right on the Format row changes the format and the suffix, and the list shows only that format's files.
+With a folder typed in the field, Right on the Format row lists that folder in the new format.
 A format change keeps the typed folder in view.
-Opening a folder row clears a typed text with a folder part, and keeps a bare name.
+Opening a folder row clears a typed text with a folder part.
+It keeps a bare name, so the save lands in that folder.
 A name typed after Right stays at the end of the name, and Right then Left keeps the typed name.
 A suffix typed by the user is kept as typed, and a name without one gets the suffix.
 Enter on an empty field asks nothing and saves nothing, and the prompt stays open for a name.
@@ -75,9 +79,9 @@ An accepted file stores its parent folder, and the next prompt starts there.
 
 ## Stamp
 
-Commit: `5813c19fd19c`
+Commit: `8c403d1df768`
 - `TCapsulePathfinder.cs` `3dea711812f94ba1`
 - `TDrive.cs` `24a2ced50fe8bc01`
 - `TPathfinder.cs` `e0b8cab11201e2ed`
-- `TPathfinderMedium.cs` `d81d764df3af1e9d`
+- `TPathfinderMedium.cs` `7c4bccc9a851f992`
 - `TPathfinderPath.cs` `5d29d55b63342f9c`

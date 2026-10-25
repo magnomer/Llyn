@@ -24,6 +24,9 @@ When no target qualifies, the first resolved row is selected.
 
 Row navigation and card spotlighting share the same scroll helper and `QCompassLead` offset.
 Spotlighting waits for layout, resolves the card through Conduct and animates only a generated container.
+The caller says whether the id names a collocation row or a meaning card.
+The lookup is by card kind and id.
+The lectern's see notice always names a collocation.
 
 ## `QCompassItem`
 
@@ -34,6 +37,6 @@ An unchanged current value raises no event.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `QCompass.cs` `27667124d0102300`
+Commit: `8c403d1df768`
+- `QCompass.cs` `f58cb411885a5b2e`
 - `QCompassItem.cs` `45e54ad36956b2ae`

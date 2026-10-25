@@ -21,6 +21,8 @@ The collocations linked to no meaning follow under the Other heading as the same
 The speech chips follow the order `LEntryChip.LEntryChipRead` gives.
 That order is the lexical unit, the freedom, then the named speeches.
 Unit and freedom take their words from the label.
+A unit or freedom the label has no word for is left out.
+The stored folds are read as kind and id pairs, so a Meaning and a Collocation never share a fold.
 The DOCX and Markdown writers keep the chips on one plain line.
 A failing favorite check throws rather than showing the entry as no favorite.
 A false `fetch` reads stored frequencies only, so a push over every entry starts no network fetch.
@@ -173,8 +175,8 @@ HTML is the default.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
-- `LPortraitClerk.cs` `0516d1d97f04ef0a`
+Commit: `8c403d1df768`
+- `LPortraitClerk.cs` `144a027525b32845`
 - `LPortraitClerkCard.cs` `4fb506393af6c1af`
 - `LPortraitClerkCrest.cs` `5300e9670c77db79`
 - `LPortraitClerkLabel.cs` `2d3cf92501455e97`

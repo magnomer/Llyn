@@ -69,7 +69,8 @@ A name whose meaning must change is renamed everywhere in the same change.
 | `-Filter` | VSTest filter expression that selects the tests. | Test |
 | `-Project` | Single test project to run. | Test |
 | `-Convention`, `-c` | Run the convention test project only. | Test |
-| `-Main`, `-m` | Run every test project except the convention project. | Test |
+| `-Main`, `-m` | Run every test project except the convention project; the default. | Test |
+| `-<folder>` | Run only the test projects inside that folder under tests; several may be given. | Test |
 | `-List` | List the matching tests without running them. | Test |
 | `-Repeat` | Number of runs, stopping at the first failure. | Test |
 | `-Verbosity` | Logging level passed to `dotnet test`. | Test |

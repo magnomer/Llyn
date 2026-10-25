@@ -47,7 +47,7 @@ public sealed partial class TFault
                 long id = card.CDisplayCardRead().CLecternCardMeanings[0].CLeafId;
                 bool taken = false;
                 return (
-                    () => taken = card.CDisplayFoldToggle(id, true),
+                    () => taken = card.CDisplayFoldToggle(false, id, true),
                     () => (card.CDisplayCardRead().CLecternCardMeanings[0].CLeafFolded, taken));
             }),
         new(
@@ -60,7 +60,7 @@ public sealed partial class TFault
                 long id = editor.TEditorDraftRead()!.CEntryDraftMeanings[0].CCardDraftId;
                 bool taken = false;
                 return (
-                    () => taken = editor.TEditorFixtureEditor.CEditorList.CCardFoldToggle(id, true),
+                    () => taken = editor.TEditorFixtureEditor.CEditorList.CCardFoldToggle(false, id, true),
                     () => (editor.TEditorDraftRead()!.CEntryDraftMeanings[0].CCardDraftFolded, taken));
             }),
         new(

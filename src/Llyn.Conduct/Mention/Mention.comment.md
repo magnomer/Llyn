@@ -52,6 +52,8 @@ A failed search shows `Mention.FindFailed` and offers nothing, so no picker open
 ## `LMentionSenseRead`
 
 The sense menu for a selection, shared by the editor and the corpus transcript.
+The caller names the Example by a site.
+The site is a card's sentence in the editor and the draft's own Example in the transcript.
 It is titled by the key `Mention.Sense`.
 Its first row picks the whole Entry, worded by `Mention.Whole`, and the Meanings follow.
 A selection inside no linked Mention, or a desk without a live draft, answers nothing.
@@ -59,7 +61,7 @@ A failed read shows `Mention.FindFailed` and answers nothing, so no menu opens.
 
 ## `LMentionChipRead`
 
-The chip line of one Example of a desk's draft, ready to paint, keyed by card and sentence.
+The chip line of one Example of a desk's draft, ready to paint, named by the same kind of site.
 A desk without a live draft, or an Example with no Mentions, answers no chips.
 A failed read shows `Mention.FindFailed` and answers no chips.
 
@@ -95,7 +97,9 @@ The corpus excerpt and the lectern both hand the window this shape.
 
 The chip lines of the draft's sentence rows, keyed by line key, as the sentence area answers them.
 The engine mints each key through the draft port, as the position among the entry's sentences.
-The shown entry gives the keys, and the draft's content gives the labels, matched by card and sentence row.
+The shown entry gives the keys, and the draft's content gives the labels.
+They are matched by card kind, card and sentence row.
+So a meaning and a collocation with one id never meet.
 It keys one entry for every sentence of the meaning and collocation cards.
 A sentence the engine sent no line for gets an empty list, so a missing key never means stale.
 A line for a key matching no sentence is dropped, since no row shows it.
@@ -150,8 +154,8 @@ The Meanings follow in reading order.
 
 ## Stamp
 
-Commit: `44d0e95bcfcc`
-- `CMention.cs` `3978a6853539422a`
+Commit: `8c403d1df768`
+- `CMention.cs` `d256464d41af4676`
 - `CMentionLabel.cs` `f76e9d4f43ab824e`
 - `CMentionMark.cs` `e508634d8bf3ccb9`
 - `CMentionOffer.cs` `1cc7318417f1a177`

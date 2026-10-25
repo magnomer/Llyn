@@ -7,7 +7,8 @@ The quills and easel turn typed values and deliberate picks into tenure requests
 
 Image and video edits share the tenure's request path rather than writing the draft themselves.
 Additions read their end position from the held draft, so callers need not carry row counts.
-Removals find the owning card from the draft instead of trusting a caller's card id.
+Every card edit names the card by its kind and id, since the two lists number their cards apart.
+Removals take the owning card from the caller and apply nothing once no draft is held.
 Location edits share `LEaselRequestRun`, so images and videos honour the same deferral flag.
 
 ## `LQuillAncestor`
@@ -28,6 +29,7 @@ Relation, insertion, addition, removal and restoration all apply at once, since 
 ## `LQuillCard`
 
 Card placement and removal guards belong to `LDraftClerkCard`, keeping list decisions outside the request builder.
+Each edit names its card by kind and id.
 Structural edits apply immediately, while typed title, expression and meaning values defer.
 
 ## `LQuillChip`
@@ -42,6 +44,8 @@ A stale draft refuses the search, and the refusal reaches the Conduct caller tha
 
 Citation resolution precedes its request in one method, so callers cannot reverse those operations.
 Card sentences and the held Example use different reference requests.
+The Mention add, sense set and removal take a card sentence by kind, card and sentence.
+The same edits take an example site internally, so a card sentence and the held Example share one path.
 
 Translation resolution passes the draft's stored identity to the draft port.
 An unresolved translation keeps its typed text instead of clearing the field.
@@ -86,6 +90,9 @@ Every scan failure, a refusal included, reaches the caller.
 ## `LQuillSentence`
 
 Gloss language choices apply immediately, while gloss text defers.
+Gloss edits and the first-row preparation address a card sentence by kind, card and sentence.
+Without them they address the draft's own Example.
+Both forms share one private path over an example site.
 A supplied language takes precedence over text in `LSentenceGlossSet`.
 
 Gloss insertion reads its language through the engine rather than embedding a language in the request builder.
@@ -110,14 +117,14 @@ Typed text defers, while scheme picks apply immediately.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `LEasel.cs` `d253cf368264ecad`
+Commit: `8c403d1df768`
+- `LEasel.cs` `5262f25cced57f5a`
 - `LQuillAncestor.cs` `9a383e8186246a3b`
-- `LQuillCard.cs` `53194206db46ddde`
-- `LQuillChip.cs` `5e694dcede2881cb`
+- `LQuillCard.cs` `01ba2db86c718ee7`
+- `LQuillChip.cs` `0ae16ee256006cab`
 - `LQuillEntry.cs` `923cb6b552ca3f64`
 - `LQuillPronunciation.cs` `705a829d2b1a3d36`
 - `LQuillReflex.cs` `0f96dbb24c7d79be`
-- `LQuillSentence.cs` `0015d1ed21b5f7f1`
+- `LQuillSentence.cs` `dd417f90b4200ff2`
 - `LQuillSpeech.cs` `ea93b024c490dca1`
 - `LQuillTranscription.cs` `a15074db3fbc86b6`

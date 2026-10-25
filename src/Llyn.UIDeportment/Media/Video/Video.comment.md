@@ -22,6 +22,11 @@ It is public because the Veneer's display markup names it.
 The driver for Video rows in a card and in a situation.
 The rows sit in a template, so the card list hands their buttons here rather than to the card.
 Each click hands one raw value to one video gate, and the engine finds the card a row belongs to.
+A card's add and remove name the card by its collocation flag and id.
+The engine finds a card by kind and id.
+So a row built for a card remembers that flag and its card's id.
+The remove click sends both back with the row id.
+A row built bare, as in a situation or a reading line, holds the meaning flag and no card id.
 Each owner builds its own driver and hands it its own gate.
 
 ### `QVideoRowIntroduce`
@@ -34,7 +39,8 @@ A new row holds the engine's location and span, and nothing typed.
 
 ### `QVideoFreshObserve`
 
-A Situation has no card, so the add names a null card, and the draft routes it.
+A Situation has no card, so the add names a meaning flag and a null card.
+The draft routes it.
 
 ### `QVideoOpenObserve`
 
@@ -108,8 +114,8 @@ The playing flag is bound both ways, since the screen's own switch changes it.
 
 ## Stamp
 
-Commit: `cb8ab7e8feb4`
+Commit: `8c403d1df768`
 - `QMedia.cs` `321762919a3d50ca`
-- `QVideo.cs` `4893de8374e2efa7`
+- `QVideo.cs` `094441ca006e82be`
 - `QVideoFrame.cs` `035e9d17ffed88d5`
-- `QVideoItem.cs` `1ff235c980fd4c89`
+- `QVideoItem.cs` `d8fff67a4d97dbce`

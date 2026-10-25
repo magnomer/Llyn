@@ -65,7 +65,8 @@ internal sealed class QCitation
             && _qCitationSentence.QSentenceCardFind(row) is QPlacard card)
         {
             _qCitationProffer.QProfferCitationRefine(
-                box, _cCard.CCardReferenceFind(card.QPlacardId, row.QPassageRow, box.Text));
+                box,
+                _cCard.CCardReferenceFind(card.QPlacardCollocated, card.QPlacardId, row.QPassageRow, box.Text));
         }
     }
 
@@ -96,7 +97,7 @@ internal sealed class QCitation
         }
 
         e.Handled = true;
-        _cCard.CCardCitationSet(card.QPlacardId, row.QPassageRow, box.Text);
+        _cCard.CCardCitationSet(card.QPlacardCollocated, card.QPlacardId, row.QPassageRow, box.Text);
         _qCitationProffer.QProfferShutRefine();
         QCitationTextRefine(box);
     }

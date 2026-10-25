@@ -17,7 +17,7 @@ public static class LPortraitCard
         IReadOnlyDictionary<long, string> sources,
         IReadOnlyList<LCardDraft> meanings,
         IReadOnlyList<LCardDraft> collocations,
-        IReadOnlySet<long> folds)
+        IReadOnlySet<(LCardKind, long)> folds)
     {
         ArgumentNullException.ThrowIfNull(cards);
         ArgumentNullException.ThrowIfNull(kind);
@@ -101,7 +101,7 @@ public static class LPortraitCard
         LPortraitLabel label,
         IReadOnlyDictionary<long, LPortraitLink> targets,
         IReadOnlyDictionary<long, string> sources,
-        IReadOnlySet<long> folds)
+        IReadOnlySet<(LCardKind, long)> folds)
     {
         ArgumentNullException.ThrowIfNull(collocations);
         ArgumentNullException.ThrowIfNull(order);
@@ -113,7 +113,13 @@ public static class LPortraitCard
 
         return collocations
             .Select(collocation => LPortraitRowCreate(
-                collocation, order, language, label, targets, sources, folds.Contains(collocation.LCardDraftId)))
+                collocation,
+                order,
+                language,
+                label,
+                targets,
+                sources,
+                folds.Contains((LCardKind.LCardKindCollocation, collocation.LCardDraftId))))
             .ToList();
     }
 

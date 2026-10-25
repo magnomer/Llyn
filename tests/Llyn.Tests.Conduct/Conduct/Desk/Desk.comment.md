@@ -33,6 +33,8 @@ The draft announcement runs with the filling flag raised and lowers it afterward
 Covers the image and video gates over a desk, on the playwright's scenario and on the editor's cards.
 A pressed add appends a blank row after the rows held, and the driver hands no card.
 A removed row leaves its own list, and the owning card is found below Conduct.
+Add and remove gates take a flag for a collocation card.
+The playwright's calls pass false with no owning card.
 A chosen file lands at once, even under a long delay.
 A cancelled file dialog hands null, and the row stays blank.
 A chosen file that exists carries its ready address or screen, and a missing one carries none.
@@ -59,10 +61,10 @@ The quit decision asks only over unsaved work, and every editor hears the one an
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `8c403d1df768`
 - `TDesk.cs` `76919744adc4f5dc`
 - `TDeskChronicle.cs` `78a5a7c1f4c0db7e`
 - `TDeskDraft.cs` `10fa2f8f82605c92`
-- `TEaselDesk.cs` `d9a92700b2cd8765`
+- `TEaselDesk.cs` `ff56c313e73f77f3`
 - `TEntry.cs` `c7407ea7a0b1c9d5`
 - `TSession.cs` `b4e7142879e4bb5a`

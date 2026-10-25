@@ -24,6 +24,7 @@ Only the medium knows its dispatcher, so the marshal the area runs its notices t
 The Conduct builds its own entry editor, which this panel wraps for the editor view and the lectern.
 The display view builds the lectern over the editor's display, which Conduct attached to the panel.
 A stored Mention's sense, raised by `CMentionSenseChosen`, scrolls into view on that lectern's compass.
+A sense is a meaning card, so the spotlight is asked with the collocation flag false.
 The navigation's entry open lands in the library, so this display is the one showing the entry.
 The picker and the filter get the panel's aperture, titled `Order` and `Sieve`.
 The ordering menu is built once, from the orderings `CLibrary` offers.
@@ -204,10 +205,10 @@ It is the same announcement whether the store happened in this panel's editor or
 
 ## Stamp
 
-Commit: `fe7e11daae88`
+Commit: `8c403d1df768`
 - `QDuplex.cs` `ca987539dd4da4cd`
 - `QIndex.cs` `c11007a0de35b95b`
 - `QIndexItem.cs` `f2e8778b89af3698`
-- `QLibrary.cs` `a910ad050387a37d`
+- `QLibrary.cs` `f8dba6d9f58aa8ec`
 - `QMarkup.cs` `54a943d6b580db9a`
 - `QWing.cs` `cd859f18f3ed85d6`

@@ -154,7 +154,7 @@ A fact hands its own media port, so it can watch what the map asks and what the 
 ## `TCardEntryRead`
 
 Relays the entry draft map, so the facts pass engine drafts through the boundary.
-It hands no folded ids, so every card maps unfolded.
+It hands no folded cards, a set of kind and id pairs, so every card maps unfolded.
 It hands no link menu, so no card carries meaning links.
 It hands a draft port whose line find is the clerk's, so each sentence carries its line key.
 
@@ -505,10 +505,10 @@ The arrival opens relay a panel's open as the navigation runs it.
 
 ## Stamp
 
-Commit: `44d0e95bcfcc`
+Commit: `8c403d1df768`
 - `TInterfaceArea.cs` `bf5825a6e7d0f03b`
 - `TInterfaceConduct.cs` `f849d43f7cf1ffa9`
-- `TInterfaceConductCard.cs` `f6396e75afbb80c6`
+- `TInterfaceConductCard.cs` `1999f21c2d124dc1`
 - `TInterfaceConductDesk.cs` `ef7f5acb3c7aa03d`
 - `TInterfaceConductDialog.cs` `3c2d58ee2694a179`
 - `TInterfaceConductPanel.cs` `c7d7de34ba294c4c`

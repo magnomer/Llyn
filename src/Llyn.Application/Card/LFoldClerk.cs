@@ -14,24 +14,24 @@ public sealed class LFoldClerk
         _lFoldClerkFolds = rig.LRigKeeping.LRigKeepingFolds;
     }
 
-    public IReadOnlySet<long> LFoldClerkRead(long entryId)
+    public IReadOnlySet<(LCardKind, long)> LFoldClerkRead(long entryId)
     {
-        return entryId > 0 ? _lFoldClerkFolds.LFoldRead(entryId) : new HashSet<long>();
+        return entryId > 0 ? _lFoldClerkFolds.LFoldRead(entryId) : new HashSet<(LCardKind, long)>();
     }
 
-    public void LFoldClerkSave(long cardId)
+    public void LFoldClerkSave(LCardKind kind, long cardId)
     {
         if (cardId > 0)
         {
-            _lFoldClerkFolds.LFoldSave(cardId);
+            _lFoldClerkFolds.LFoldSave(kind, cardId);
         }
     }
 
-    public void LFoldClerkDelete(long cardId)
+    public void LFoldClerkDelete(LCardKind kind, long cardId)
     {
         if (cardId > 0)
         {
-            _lFoldClerkFolds.LFoldDelete(cardId);
+            _lFoldClerkFolds.LFoldDelete(kind, cardId);
         }
     }
 

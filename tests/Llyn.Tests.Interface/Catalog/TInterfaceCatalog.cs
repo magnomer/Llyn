@@ -61,7 +61,7 @@ internal static partial class TInterface
         string language,
         long card) =>
         engine.LEngineHearth.LEngineStaffHeld.LEngineStaffCatalog.LCatalogStaffRegister
-            .LRegisterClerkFind(text, language, null, card);
+            .LRegisterClerkFind(text, language, null, LCardKind.LCardKindMeaning, card);
 
     internal static IReadOnlyList<LTag> TEngineTagFind(
         this LEngine engine,
@@ -96,7 +96,8 @@ internal static partial class TInterface
 
     internal static long TEngineCitationResolve(
         this LEngine engine, long draftId, long cardId, long sentenceId, string title) =>
-        engine.LEngineReference.LEngineCitationResolve(draftId, cardId, sentenceId, title);
+        engine.LEngineReference.LEngineCitationResolve(
+            draftId, TExampleSiteCreate(LCardKind.LCardKindMeaning, cardId, sentenceId), title);
 
     internal static (string, string, string) TCatalogMarkFind(string text, string word) =>
         LCatalog.LCatalogMarkFind(text, word);

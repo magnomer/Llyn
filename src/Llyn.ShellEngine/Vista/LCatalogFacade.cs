@@ -37,14 +37,14 @@ public sealed class LCatalogFacade : LTagPort, LRegisterPort, LFavoritePort
         }
     }
 
-    public LTagOffer LEngineTagFind(LTenure held, long card, string text)
+    public LTagOffer LEngineTagFind(LTenure held, LCardKind kind, long card, string text)
     {
         ArgumentNullException.ThrowIfNull(held);
 
         LDraft? draft = held.LTenureRead();
         lock (_lCatalogFacadeGate)
         {
-            return LCatalogFacadeStaff.LEngineStaffCatalog.LCatalogStaffTag.LTagClerkFind(text, draft, card);
+            return LCatalogFacadeStaff.LEngineStaffCatalog.LCatalogStaffTag.LTagClerkFind(text, draft, kind, card);
         }
     }
 
@@ -80,7 +80,7 @@ public sealed class LCatalogFacade : LTagPort, LRegisterPort, LFavoritePort
         return created;
     }
 
-    public LRegisterOffer LEngineRegisterFind(LTenure held, long card, string text)
+    public LRegisterOffer LEngineRegisterFind(LTenure held, LCardKind kind, long card, string text)
     {
         ArgumentNullException.ThrowIfNull(held);
 
@@ -89,7 +89,7 @@ public sealed class LCatalogFacade : LTagPort, LRegisterPort, LFavoritePort
         lock (_lCatalogFacadeGate)
         {
             return LCatalogFacadeStaff.LEngineStaffCatalog.LCatalogStaffRegister
-                .LRegisterClerkFind(text, language, draft, card);
+                .LRegisterClerkFind(text, language, draft, kind, card);
         }
     }
 

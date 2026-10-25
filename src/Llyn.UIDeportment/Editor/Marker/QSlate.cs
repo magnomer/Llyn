@@ -95,7 +95,7 @@ internal sealed class QSlate
             return;
         }
 
-        _cCaret.CCaretTagInsert(card.QPlacardId, item.QSlateItemId);
+        _cCaret.CCaretTagInsert(card.QPlacardCollocated, card.QPlacardId, item.QSlateItemId);
         e.Handled = true;
         QSlateShutRefine();
         row.QInletClear();
@@ -144,7 +144,7 @@ internal sealed class QSlate
             return;
         }
 
-        _cCaret.CCaretTagInsert(card.QPlacardId, item.QSlateItemId);
+        _cCaret.CCaretTagInsert(card.QPlacardCollocated, card.QPlacardId, item.QSlateItemId);
         e.Handled = true;
         QSlateShutRefine();
         row.QInletClear();

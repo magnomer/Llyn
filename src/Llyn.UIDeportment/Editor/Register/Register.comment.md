@@ -18,6 +18,8 @@ The caret is the one row typed into, so it alone takes the entry template.
 ## `QRegister`
 
 This is the Register field's driver, split by role.
+Each gate names its card by the placard's collocation flag and id.
+The engine finds a card by kind and id.
 Each Observe hears one event and ends in one Conduct gate, and each Refine only changes the look.
 The first handler to handle a key ends its route, and the dropdown's key handlers come first.
 A chip or caret item's data context is the item, not the card.
@@ -63,7 +65,7 @@ The entry is built by `QBerth` beside the chips and stands where the card's care
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `QRegister.cs` `5cdca8325c982fd7`
+Commit: `8c403d1df768`
+- `QRegister.cs` `c4f5b453648729f2`
 - `QRegisterChip.cs` `4bd6be4435d3fe84`
 - `QRegisterSelector.cs` `6460ec5400d0447e`

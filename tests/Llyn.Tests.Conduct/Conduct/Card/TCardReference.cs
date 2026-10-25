@@ -19,7 +19,7 @@ public sealed class TCardReference
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
         (long sheet, long sentence) = TCard.TCardSentenceAdd(desk);
 
-        CProffer offer = card.CCardReferenceFind(sheet, sentence, " FIELD ");
+        CProffer offer = card.CCardReferenceFind(false, sheet, sentence, " FIELD ");
 
         Assert.Equal(" FIELD ", offer.CProfferText);
         Assert.True(offer.CProfferShown);
@@ -35,8 +35,8 @@ public sealed class TCardReference
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
         (long sheet, long sentence) = TCard.TCardSentenceAdd(desk);
 
-        CProffer blank = card.CCardReferenceFind(sheet, sentence, "   ");
-        CProffer unmatched = card.CCardReferenceFind(sheet, sentence, "zzq");
+        CProffer blank = card.CCardReferenceFind(false, sheet, sentence, "   ");
+        CProffer unmatched = card.CCardReferenceFind(false, sheet, sentence, "zzq");
 
         Assert.Equal("   ", blank.CProfferText);
         Assert.False(blank.CProfferShown);
@@ -54,16 +54,16 @@ public sealed class TCardReference
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
         (long sheet, long sentence) = TCard.TCardSentenceAdd(desk);
         (long other, long uncited) = TCard.TCardSentenceAdd(desk);
-        card.CCardCitationSet(sheet, sentence, "Field notes");
+        card.CCardCitationSet(false, sheet, sentence, "Field notes");
         string byline = card.CCardReferenceRead()
             .Single(row => row.CCatalogReferenceId == notes.LReferenceId).CCatalogReferenceByline;
 
-        CProffer cited = card.CCardReferenceFind(sheet, sentence, " " + byline + " ");
+        CProffer cited = card.CCardReferenceFind(false, sheet, sentence, " " + byline + " ");
 
         Assert.False(cited.CProfferShown);
         Assert.Empty(cited.CProfferRows);
         Assert.Contains(
-            card.CCardReferenceFind(other, uncited, byline).CProfferRows,
+            card.CCardReferenceFind(false, other, uncited, byline).CProfferRows,
             row => row.CProfferRowId == notes.LReferenceId);
     }
 
@@ -80,7 +80,7 @@ public sealed class TCardReference
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
         (long sheet, long sentence) = TCard.TCardSentenceAdd(desk);
 
-        CProffer offer = card.CCardReferenceFind(sheet, sentence, "diary");
+        CProffer offer = card.CCardReferenceFind(false, sheet, sentence, "diary");
 
         Assert.Equal(8, offer.CProfferRows.Count);
         Assert.All(offer.CProfferRows, static row => Assert.Equal("Diary", row.CProfferRowMark));
@@ -98,7 +98,7 @@ public sealed class TCardReference
         CCard card = TInterfaceConductCard.TCardCreate(engine, desk, TEnvoyFake.TEnvoyCreate(false, asked));
         (long sheet, long sentence) = TCard.TCardSentenceAdd(desk);
 
-        card.CCardCitationSet(sheet, sentence, "Field notes");
+        card.CCardCitationSet(false, sheet, sentence, "Field notes");
 
         Assert.Equal(["Reference.CreateFailed"], asked);
         LExampleDraft? example = TInterface.TRequestCardFind(desk.TDeskRead()!.LDraftContent, sheet)
@@ -134,8 +134,8 @@ public sealed class TCardReference
         desk.CDeskStart(null);
         CCard card = TInterfaceConductCard.TCardCreate(engine, desk, TEnvoyFake.TEnvoyCreate(false, []));
 
-        CProffer first = card.CCardReferenceFind(0, 0, "Field");
-        CProffer second = card.CCardReferenceFind(0, 0, "Field");
+        CProffer first = card.CCardReferenceFind(false, 0, 0, "Field");
+        CProffer second = card.CCardReferenceFind(false, 0, 0, "Field");
 
         Assert.Equal(["Input.FindFailed"], asked);
         Assert.Empty(first.CProfferRows);
@@ -150,7 +150,7 @@ public sealed class TCardReference
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
         (long sheet, long sentence) = TCard.TCardSentenceAdd(desk);
 
-        card.CCardCitationSet(sheet, sentence, "Field notes");
+        card.CCardCitationSet(false, sheet, sentence, "Field notes");
 
         LExampleDraft? example = TInterface.TRequestCardFind(desk.TDeskRead()!.LDraftContent, sheet)
             .LCardDraftSentence.Single(row => row.LSentenceDraftId == sentence).LSentenceDraftExample;

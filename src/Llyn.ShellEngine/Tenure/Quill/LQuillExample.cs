@@ -8,11 +8,18 @@ public sealed class LQuillExample
 {
     private readonly LTenure _lQuillExampleTenure;
 
-    public LQuillExample(LTenure tenure)
+    private readonly LDraftPort _lQuillExampleDrafts;
+
+    private readonly LQuillChip _lQuillExampleChip;
+
+    public LQuillExample(LTenure tenure, LDraftPort drafts)
     {
         ArgumentNullException.ThrowIfNull(tenure);
+        ArgumentNullException.ThrowIfNull(drafts);
 
         _lQuillExampleTenure = tenure;
+        _lQuillExampleDrafts = drafts;
+        _lQuillExampleChip = new LQuillChip(tenure, drafts);
     }
 
     public void LQuillExampleSet(string text)
@@ -35,5 +42,36 @@ public sealed class LQuillExample
     {
         _lQuillExampleTenure.LTenureRequestApply(
             new LRequestExampleReference(_lQuillExampleTenure.LTenureId, reference));
+    }
+
+    public LReferenceOffer LQuillReferenceFind(string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        return _lQuillExampleDrafts.LEngineReferenceFind(_lQuillExampleTenure, new LExampleSiteDraft(), text);
+    }
+
+    public void LQuillReferenceResolve(string title)
+    {
+        ArgumentNullException.ThrowIfNull(title);
+
+        long reference = _lQuillExampleDrafts.LEngineCitationResolve(
+            _lQuillExampleTenure, new LExampleSiteDraft(), title);
+        LExampleReferenceSet(reference);
+    }
+
+    public void LQuillMentionAdd(string text, int start, int length, long entry)
+    {
+        _lQuillExampleChip.LQuillMentionAdd(new LExampleSiteDraft(), text, start, length, entry);
+    }
+
+    public void LQuillSenseSet(string text, int start, int length, long sense)
+    {
+        _lQuillExampleChip.LQuillSenseSet(new LExampleSiteDraft(), text, start, length, sense);
+    }
+
+    public void LQuillMentionRemove(string text, int start, int length)
+    {
+        _lQuillExampleChip.LQuillMentionRemove(new LExampleSiteDraft(), text, start, length);
     }
 }

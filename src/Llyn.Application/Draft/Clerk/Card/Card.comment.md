@@ -5,7 +5,8 @@ They are tag, translation, register and situation chips and the collocation-to-m
 
 ## `LDraftClerkCard`
 
-Card edits share the recursive search, so requests reach nested cards without a second addressing rule.
+A card is addressed by its kind and id, since a Meaning and a Collocation may share an id.
+The kind picks the list, and the id is then searched through that list and its nested cards.
 Card-specific list edits share `LCardChange`, while shared-row renames visit every card through `LDraftRowChange`.
 Only a card addition mints an id, through the issuer the clerk hands in.
 Every other routine is pure and works on cards already named.
@@ -18,10 +19,11 @@ An expression request goes to `LCardExpressionChange`.
 
 ## `LDraftClerkCard.LCardExpressionChange`
 
-Expression edits refuse nonempty values only for top-level meanings, so nested meanings use the ordinary card change.
-An empty value sent to a top-level meaning hands the draft back unchanged.
+A Collocation takes the value through the ordinary card change.
+A Meaning carries no expression, so a nonempty value sent to one is refused as a card.
+An empty value sent to a Meaning the draft holds hands the draft back unchanged.
 Nothing typed is lost that way, and a request that writes every field of a meaning still applies.
-An expression for any other card goes through `LCardChange`.
+An empty value sent to a Meaning the draft lacks is refused like any missing card.
 
 ## `LDraftClerkCard.LCardInsert`
 
@@ -34,20 +36,21 @@ A place beyond either end of the list is read as that end.
 
 ## `LDraftClerkCard.LCardRemove`
 
-It drops the card named from the meanings, their children or the collocations, and refuses when none carries it.
+It drops the card named from the list its kind names, nested cards included, and refuses when none carries it.
 A removed meaning takes every collocation link to it and to its descendants with it.
 The list form hands the removed card back, so a move can put it somewhere else.
 
 ## `LDraftClerkCard.LCardMove`
 
 The card is taken out of wherever it sits, then put back under the parent named.
-Its kind is remembered from where it was found, so a card never changes list by moving.
+Its kind is the one the request names, so a card never changes list by moving.
 A parent inside the card being moved is gone by the time it is looked for.
 So the move refuses rather than loops.
 
 ## `LDraftClerkCard.LCardChange`
 
-It applies one change to the card named, wherever it nests, and refuses when no card carries the id.
+It applies one change to the card of that kind, wherever it nests.
+It refuses when no card of that kind carries the id.
 Only the lists on the way down to the changed card are copied, so the rest keep their reference.
 
 ## `LDraftClerkCard.LCardEndRead`
@@ -56,25 +59,27 @@ A card the user adds goes last, whoever asks for it.
 
 ## `LDraftClerkCard.LCardLoneCheck`
 
-It asks whether the card is the only one in the meanings or in the collocations.
+It asks whether the card is the only one in the list its kind names.
 Removing it would leave the list with nothing to type into, so a user edit keeps it.
 The removal request itself stays free to empty a list, as a replay or an import needs.
 
 ## `LDraftClerkCard.LCardShiftRead`
 
 It answers the place a card moves to in its own list, counting from zero, or null when nothing moves.
-A card in neither top-level list, a place outside its list, or the place it holds already answers null.
+A card not at the top of its kind's list answers null.
+So does a place outside the list, or the place the card holds already.
 So a list of one never moves, and the caller sends nothing.
 
 ## `LDraftClerkCard.LCardFind`
 
-The id find asks the match find for the card carrying that id.
-The match find tries each card before its children, so a parent wins over a child that also matches.
-The id find and the media finds share it, so no finder forgets the child cards.
+It searches the list the kind names for the card carrying that id.
+The search tries each card before its children, so a parent wins over a child that also matches.
+So a finder never forgets the child cards.
 
 ## `LDraftClerkCard.LCardOwnerFind`
 
-Only the meanings and the collocations are scanned, since a child card has no owner list of its own.
+Only the top of the list the kind names is scanned.
+A child card has no owner list of its own.
 
 ## `LDraftClerkCard.LCardPositionUpdate`
 
@@ -239,9 +244,9 @@ Two stored Situations reading the same way answer null too, since neither is the
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `LDraftClerkCard.cs` `b03badb861b0a014`
-- `LDraftClerkChip.cs` `b96e58b192f9a9ea`
-- `LDraftClerkSense.cs` `3cd3d97f842cc243`
-- `LRegisterChip.cs` `57d69f23b8552a78`
-- `LSituationChip.cs` `b7017af410e8ef14`
+Commit: `8c403d1df768`
+- `LDraftClerkCard.cs` `48d249cd1d682301`
+- `LDraftClerkChip.cs` `26c3f58717ca7889`
+- `LDraftClerkSense.cs` `1f7d9ffa61cd55a9`
+- `LRegisterChip.cs` `2faeb98c8ce03447`
+- `LSituationChip.cs` `c37ad28ad6ac1e53`

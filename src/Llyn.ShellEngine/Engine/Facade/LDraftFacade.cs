@@ -56,12 +56,12 @@ public sealed class LDraftFacade : LMarkdownPort
 
             foreach (LCardDraft card in draft.LEntryDraftMeanings)
             {
-                LEngineSentencePrepare(id, card, requests);
+                LEngineSentencePrepare(id, LCardKind.LCardKindMeaning, card, requests);
             }
 
             foreach (LCardDraft card in draft.LEntryDraftCollocations)
             {
-                LEngineSentencePrepare(id, card, requests);
+                LEngineSentencePrepare(id, LCardKind.LCardKindCollocation, card, requests);
             }
 
             LLanguageStaff staff = LDraftFacadeStaff.LEngineStaffLanguage;
@@ -83,11 +83,11 @@ public sealed class LDraftFacade : LMarkdownPort
         }
     }
 
-    private static void LEngineSentencePrepare(long id, LCardDraft card, List<LRequest> requests)
+    private static void LEngineSentencePrepare(long id, LCardKind kind, LCardDraft card, List<LRequest> requests)
     {
         if (!card.LCardDraftExemplified)
         {
-            requests.Add(new LRequestSentenceAddition(id, card.LCardDraftId, 0));
+            requests.Add(new LRequestSentenceAddition(id, kind, card.LCardDraftId, 0));
         }
     }
 

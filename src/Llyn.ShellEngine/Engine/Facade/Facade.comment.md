@@ -31,6 +31,8 @@ The requests that give a held entry draft the rows the editor always shows.
 They are one meaning card and one collocation card, one sentence under each card, and the first transcription row.
 The glyph section's own row is added too when the language has one.
 The glyph and scheme reads go to the language staff directly, so no sibling facade is needed.
+Each sentence request names the kind of the card it sits under.
+That kind is meaning or collocation, so the clerk finds the card in the right list.
 The tenure applies them in its prepare turn and asks again, since a new card needs its sentence.
 
 ## `LEngineDraftRead`
@@ -402,6 +404,7 @@ The occurrence, quotation, footnote, membership and cohort starts each make a fr
 Each links one catalog row to the entry's first card before anyone sees it.
 The row is a Situation, an Example, a Source, a Tag or a Register.
 The link is one pick or citation request applied at once, so the clerk's own rule applies unchanged.
+The request names the meaning kind, since the first card of a fresh entry is a meaning.
 A null row leaves the fresh entry blank.
 
 ## `LEngineTenureCommit`
@@ -529,12 +532,12 @@ The folder path is read there, so the caller hands nothing it gathered.
 
 ## Stamp
 
-Commit: `52c21d68b4c4`
-- `LDraftFacade.cs` `e6ad399867a18e7e`
+Commit: `8c403d1df768`
+- `LDraftFacade.cs` `a771096d717386db`
 - `LLanguageFacade.cs` `22bf9bcec6db6495`
 - `LRequestFacade.cs` `9a08f1ac9c85e708`
 - `LScriptFacade.cs` `0868062d56c4daf9`
 - `LSettingsFacade.cs` `53cfb98424acac7c`
-- `LTenureFacade.cs` `c7d7ee4457051f6e`
+- `LTenureFacade.cs` `f24d1a7fa021e4fa`
 - `LVocabularyFacade.cs` `f1299bc555399645`
 - `LWorkspaceFacade.cs` `9cce824f83d9406d`

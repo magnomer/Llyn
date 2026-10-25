@@ -88,10 +88,14 @@ The route gate decides whether the click is handled.
 
 ### `QLecternHingeObserve`
 
+The item says whether it is a collocation row.
+The gate is given that flag with the id.
+So the engine looks the card up by kind and id.
 The gate verdict goes to `QLook.QLookCheckedRefine`, which puts a refused hinge back.
 
 ### `QLecternSeeObserve`
 
+The line always names a collocation, so the gate and the spotlight both receive the collocation flag.
 The notice is raised regardless of the gate verdict, so a refused unfold still requests the contents spotlight.
 
 ## `QLecternEntry`
@@ -159,10 +163,10 @@ The label column joins the shared `PReadingLabel` width only while its section s
 
 ## Stamp
 
-Commit: `cb8ab7e8feb4`
+Commit: `8c403d1df768`
 - `QGraspStar.cs` `b96249bbb783b9db`
-- `QLectern.cs` `bd10cde4904921d7`
-- `QLecternCard.cs` `ad85713f9bc3d89e`
+- `QLectern.cs` `3f54ab28b14b945a`
+- `QLecternCard.cs` `a9fbc005100e07da`
 - `QLecternEntry.cs` `f13d612b00f01fd0`
 - `QLecternEtymology.cs` `4eac208cc78d309e`
 - `QLecternFrequency.cs` `557735b484228775`

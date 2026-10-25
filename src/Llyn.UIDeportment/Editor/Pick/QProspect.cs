@@ -108,7 +108,11 @@ internal sealed class QProspect
                 if (_qProspectLink.QLinkCardFind(caret) is QPlacard owner)
                 {
                     _cCaret.CCaretTranslationInsert(
-                        owner.QPlacardId, item.QProspectItemId, item.QProspectItemHeadword, item.QProspectItemLanguage);
+                        owner.QPlacardCollocated,
+                        owner.QPlacardId,
+                        item.QProspectItemId,
+                        item.QProspectItemHeadword,
+                        item.QProspectItemLanguage);
                     QProspectShutRefine();
                     caret.QInletClear();
                 }
@@ -118,6 +122,7 @@ internal sealed class QProspect
                 if (_qProspectSentence.QSentenceCardFind(row) is QPlacard card)
                 {
                     _cSentence.CSentenceMentionAdd(
+                        card.QPlacardCollocated,
                         card.QPlacardId,
                         row.QPassageRow,
                         box.Text,
@@ -182,7 +187,11 @@ internal sealed class QProspect
                 if (_qProspectLink.QLinkCardFind(row) is QPlacard card)
                 {
                     _cCaret.CCaretTranslationInsert(
-                        card.QPlacardId, item.QProspectItemId, item.QProspectItemHeadword, item.QProspectItemLanguage);
+                        card.QPlacardCollocated,
+                        card.QPlacardId,
+                        item.QProspectItemId,
+                        item.QProspectItemHeadword,
+                        item.QProspectItemLanguage);
                     e.Handled = true;
                     QProspectShutRefine();
                     row.QInletClear();

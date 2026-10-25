@@ -12,12 +12,18 @@ internal sealed class QVideoItem : INotifyPropertyChanged
     private CVideoDraft _qVideoItemDraft;
     private bool _qVideoItemPlaying;
 
-    internal QVideoItem(CVideoDraft written)
+    internal QVideoItem(CVideoDraft written, bool collocated = false, long? holder = null)
     {
         ArgumentNullException.ThrowIfNull(written);
 
         _qVideoItemDraft = written;
+        QVideoItemCollocated = collocated;
+        QVideoItemHolder = holder;
     }
+
+    internal bool QVideoItemCollocated { get; }
+
+    internal long? QVideoItemHolder { get; }
 
     public CStateValue QVideoItemLocation => _qVideoItemDraft.CVideoDraftLocation;
 

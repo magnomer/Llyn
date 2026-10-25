@@ -30,6 +30,8 @@ The row comes back from the draft change with its new label.
 ## `QLink`
 
 This is the Translation field's driver, split by role.
+Each gate names its card by the placard's collocation flag and id.
+The engine finds a card by kind and id.
 Each Observe hears one event and ends in one Conduct gate, and each Refine only changes the look.
 The first handler to handle a key ends its route.
 Trim, blank, resolve and search rules live below Conduct, not here.
@@ -100,7 +102,7 @@ The Translation dropdown asks it too, since a pick on a Translation caret links 
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `8c403d1df768`
 - `QAnchor.cs` `942ece4b06597d3d`
-- `QLink.cs` `9a214d7c1db64364`
+- `QLink.cs` `2758881e6caaa885`
 - `QLinkSelector.cs` `ef1213a6712922a0`

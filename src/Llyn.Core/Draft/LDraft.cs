@@ -29,23 +29,17 @@ public sealed record LDraft(
         return LAuthorRow.LAuthorRowCreate(LDraftAuthor);
     }
 
-    public LMentionDraft? LDraftMentionFind(long cardId, long sentenceId, LMentionDraft span)
+    public LExampleDraft? LDraftExampleRead()
     {
-        ArgumentNullException.ThrowIfNull(span);
-
-        return LDraftExampleRead(cardId, sentenceId)?.LExampleDraftFind(span);
+        return LDraftExample is LExample held ? LExampleDraft.LExampleDraftCreate(held) : null;
     }
 
-    public LExampleDraft? LDraftExampleRead(long cardId, long sentenceId)
+    public LExampleDraft? LDraftExampleRead(LCardKind kind, long cardId, long sentenceId)
     {
-        if (cardId == 0 && sentenceId == 0)
-        {
-            return LDraftExample is LExample held ? LExampleDraft.LExampleDraftCreate(held) : null;
-        }
-
-        LSentenceDraft? sentence = LDraftSentenceRead(LDraftContent.LEntryDraftMeanings, cardId, sentenceId)
-            ?? LDraftSentenceRead(LDraftContent.LEntryDraftCollocations, cardId, sentenceId);
-        return sentence?.LSentenceDraftExample;
+        IReadOnlyList<LCardDraft> cards = kind == LCardKind.LCardKindCollocation
+            ? LDraftContent.LEntryDraftCollocations
+            : LDraftContent.LEntryDraftMeanings;
+        return LDraftSentenceRead(cards, cardId, sentenceId)?.LSentenceDraftExample;
     }
 
     public LDraft LDraftNormalize()

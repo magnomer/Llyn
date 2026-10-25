@@ -63,6 +63,7 @@ Created and Updated stamps sit below the header in the muted role.
 A Korean entry with a Hanja row draws one chip per character, and Enter on one opens its glyph entry.
 With a new draft open or closed meanwhile, Tab still leaves the focus on the index.
 Line division wraps long text at a word with an indent and keeps an item whole.
+Each row of an item drops its trailing space.
 A word longer than the width is cut into pieces, and a width of zero draws nothing.
 
 ## `TLecternIncoming`
@@ -87,19 +88,28 @@ A Chinese sentence with no spaces steps one character at a time.
 Escape leaves the cursor, keeps the line lit, and Enter starts it again from the first character.
 Enter on a word held by one entry opens that entry and asks nothing.
 A stored Mention opens its entry without a menu, even when other entries share the headword.
-A word held by several entries opens a menu under the word, headed `Which entry?`.
-Down and Enter pick one, and the pick opens that entry and closes the menu.
+Leaving the sentence with Down and coming back with Up does not bring the cursor back.
+Opening another entry whose item has the same name drops the cursor.
+A wrapped sentence scrolls with the cursor, and Enter on its last word opens that entry.
+
+## `TLecternMentionMenu`
+
+Covers the menu a word held by several entries opens.
+The menu opens under the word, headed `Which entry?`, and lists each entry with its language.
+The first row starts lit, and Enter opens that entry and closes the menu.
+Down and Up wrap round the rows, and Enter opens the lit one.
 Escape closes the menu and keeps the cursor on the word.
 A navigation to an entry while the menu stands closes the menu too.
 A word no entry holds opens no menu and keeps the cursor.
-A wrapped sentence scrolls with the cursor, and Enter on its last word opens that entry.
+Showing an absent offer or an offer with no entries opens no box at all.
 
 ## Stamp
 
-Commit: `cb8ab7e8feb4`
+Commit: `8c403d1df768`
 - `TLectern.cs` `d4aae2072b528891`
-- `TLecternCard.cs` `72799f85b1b642a7`
+- `TLecternCard.cs` `7d68406a05439905`
 - `TLecternEtymology.cs` `15a281b7d55640c7`
-- `TLecternHeader.cs` `4b478ee71bd7271b`
+- `TLecternHeader.cs` `fe35c98740c71504`
 - `TLecternIncoming.cs` `e1210568240b314b`
-- `TLecternMention.cs` `745c71cbfc7aabc2`
+- `TLecternMention.cs` `0b79af8ed9fcc6e1`
+- `TLecternMentionMenu.cs` `49dfccbd5a869061`

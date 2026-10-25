@@ -13,12 +13,13 @@ The body is as wide as its widest row or the title, plus 6 cells.
 The headword column is as wide as the widest headword, and the language follows it after 2 cells.
 The list scrolls so the lit row stays in the last visible line.
 A long row is clamped to the width.
-With no entries the menu is already answered, so the box closes at once and the keys stay hidden.
 The menu ends when navigation arrives somewhere, whatever caused it.
 
 ## `BSMentionMenuShow`
 
-Builds the title from the offer's key, or from the default mention title when there is no offer.
+With no offer, or an offer with no entries, it opens nothing.
+So no empty box flashes and no key is taken.
+Otherwise it builds the title from the offer's key.
 It opens a dialog box with no text and no buttons, placed at the given anchor.
 The menu is handed to the docket with the task of its choice.
 The call returns when the box is gone.
@@ -26,5 +27,5 @@ The arrival subscription is removed afterwards, even if the docket throws.
 
 ## Stamp
 
-Commit: `cb8ab7e8feb4`
-- `BSMentionMenu.cs` `0cdde20a39582bc0`
+Commit: `8c403d1df768`
+- `BSMentionMenu.cs` `ac35769e6d36c0b6`

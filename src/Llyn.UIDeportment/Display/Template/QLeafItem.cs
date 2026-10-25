@@ -46,6 +46,8 @@ internal sealed class QLeafItem
 
     internal long QLeafItemId => _qLeafItemCard.CLeafId;
 
+    internal bool QLeafItemCollocated => _qLeafItemCard.CLeafCollocated;
+
     internal string QLeafItemRank => _qLeafItemCard.CLeafPosition.ToString(CultureInfo.CurrentCulture);
 
     internal string QLeafItemTitle { get; }

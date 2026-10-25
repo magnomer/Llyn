@@ -111,14 +111,14 @@ internal sealed class QProffer
         {
             case FrameworkElement { DataContext: QInlet<QRegisterChip> caret }
                 when _qProfferRegister.QRegisterCardFind(caret) is QPlacard card:
-                _cCaret.CCaretRegisterInsert(card.QPlacardId, item.QProfferItemId);
+                _cCaret.CCaretRegisterInsert(card.QPlacardCollocated, card.QPlacardId, item.QProfferItemId);
                 e.Handled = true;
                 QProfferShutRefine();
                 card.QPlacardRegister.QInletClear();
                 break;
             case FrameworkElement { DataContext: QInlet<QContextChip> caret }
                 when _qProfferContext.QContextCardFind(caret) is QPlacard card:
-                _cCaret.CCaretSituationInsert(card.QPlacardId, item.QProfferItemId);
+                _cCaret.CCaretSituationInsert(card.QPlacardCollocated, card.QPlacardId, item.QProfferItemId);
                 e.Handled = true;
                 QProfferShutRefine();
                 card.QPlacardContext.QInletClear();
@@ -126,7 +126,7 @@ internal sealed class QProffer
             case FrameworkElement { DataContext: QPassage row }
                 when _qProfferSentence.QSentenceCardFind(row) is QPlacard card:
                 _cSentence.CSentenceCitationSet(
-                    card.QPlacardId, row.QPassageRow, item.QProfferItemId);
+                    card.QPlacardCollocated, card.QPlacardId, row.QPassageRow, item.QProfferItemId);
                 e.Handled = true;
                 QProfferShutRefine();
                 break;
@@ -178,14 +178,14 @@ internal sealed class QProffer
         {
             case FrameworkElement { DataContext: QInlet<QRegisterChip> caret }
                 when _qProfferRegister.QRegisterCardFind(caret) is QPlacard card:
-                _cCaret.CCaretRegisterInsert(card.QPlacardId, item.QProfferItemId);
+                _cCaret.CCaretRegisterInsert(card.QPlacardCollocated, card.QPlacardId, item.QProfferItemId);
                 e.Handled = true;
                 QProfferShutRefine();
                 card.QPlacardRegister.QInletClear();
                 break;
             case FrameworkElement { DataContext: QInlet<QContextChip> caret }
                 when _qProfferContext.QContextCardFind(caret) is QPlacard card:
-                _cCaret.CCaretSituationInsert(card.QPlacardId, item.QProfferItemId);
+                _cCaret.CCaretSituationInsert(card.QPlacardCollocated, card.QPlacardId, item.QProfferItemId);
                 e.Handled = true;
                 QProfferShutRefine();
                 card.QPlacardContext.QInletClear();
@@ -193,7 +193,7 @@ internal sealed class QProffer
             case FrameworkElement { DataContext: QPassage row }
                 when _qProfferSentence.QSentenceCardFind(row) is QPlacard card:
                 _cSentence.CSentenceCitationSet(
-                    card.QPlacardId, row.QPassageRow, item.QProfferItemId);
+                    card.QPlacardCollocated, card.QPlacardId, row.QPassageRow, item.QProfferItemId);
                 e.Handled = true;
                 QProfferShutRefine();
                 break;

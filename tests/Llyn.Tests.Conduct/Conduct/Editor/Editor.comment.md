@@ -32,6 +32,8 @@ It answers the editor wrapped in the fixture relay, so the tests reach its facet
 Covers the editor's typed field gates over an input editor on a real workspace, with no delay.
 A meaning's title and definition and a collocation's expression land as typed once the deferred requests are flushed.
 The expression is typed on a collocation, because a meaning refuses one.
+Each card gate takes a flag saying whether the id is a collocation's.
+So its id is read in the right list.
 A card's links read back in the card's order, with their resolved headwords.
 The changed-draft notification carries a card's resolved link.
 A card without links reads none.
@@ -90,9 +92,9 @@ These two hostile cases build the marks on a stored entry over `TDisplayGrasp.TG
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `8c403d1df768`
 - `TEditor.cs` `6f943e488d6bccfd`
-- `TEditorField.cs` `110bea561ec984df`
+- `TEditorField.cs` `846031195c853678`
 - `TEditorFresh.cs` `0f095b23c43c4cd3`
 - `TEditorUnit.cs` `38c4aeb9ce8622e6`
 - `TEsteem.cs` `5ddb21513d0a534a`

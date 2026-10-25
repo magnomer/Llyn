@@ -20,5 +20,5 @@ The omission list draws the heading, each line number right-aligned and its text
 
 ## Stamp
 
-Commit: `c1396871c007`
-- `TCustoms.cs` `ac8885984dfb4078`
+Commit: `8c403d1df768`
+- `TCustoms.cs` `80fe0672c16367af`

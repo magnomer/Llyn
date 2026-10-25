@@ -8,6 +8,9 @@ Real workspaces exercise restoration alongside fake ports that isolate failures 
 The tests distinguish live volume from stored posture by reopening an atelier over the same engine.
 Faulting posture storage checks notice deduplication separately from recording every fault.
 Startup ordering protects view restoration from blank leftover drafts.
+The about lines are checked against an injected key lookup.
+So the test reads no localization.
+It pins the product term and the three-part assembly version.
 
 ## `TAtelierVista`
 
@@ -36,8 +39,8 @@ The capacity test records fifty-one stations to verify that only the oldest stat
 
 ## Stamp
 
-Commit: `52c21d68b4c4`
-- `TAtelier.cs` `3abc93a291997713`
+Commit: `8c403d1df768`
+- `TAtelier.cs` `c369d412b850cc79`
 - `TAtelierVista.cs` `9f1ef11ced7f4b40`
 - `TAtelierWorkspace.cs` `11be6151fca3b740`
 - `TNavigation.cs` `c6a168bfe7d17ce9`

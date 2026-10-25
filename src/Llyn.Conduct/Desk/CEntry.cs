@@ -94,11 +94,11 @@ public sealed class CEntry
         }
     }
 
-    private IReadOnlySet<long> LEntryFoldRead()
+    private IReadOnlySet<(LCardKind, long)> LEntryFoldRead()
     {
         if (_cEntryDesk.CDeskStoredRead() is not long id)
         {
-            return new HashSet<long>();
+            return new HashSet<(LCardKind, long)>();
         }
 
         try
@@ -108,7 +108,7 @@ public sealed class CEntry
         catch (Exception exception)
         {
             _cEntryNoticed.LLedgerRepaintShow(_cEntryEnvoy, _cEntrySettings, "Fold.ReadFailed", exception);
-            return new HashSet<long>();
+            return new HashSet<(LCardKind, long)>();
         }
     }
 

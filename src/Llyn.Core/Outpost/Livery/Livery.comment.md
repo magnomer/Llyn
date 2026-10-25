@@ -59,7 +59,7 @@ The stored data for one entry as view mode shows it.
 `LLiveryClerk.LLiveryClerkBuild` constructs it from the answers `LLiveryFacade.LEngineLiveryRead` gathers.
 `LCourierNote.LCourierEntrySend` hands one per entry to `LLivery.LLiveryFormat`.
 The guises hold one guise per reflex of the draft in draft order.
-`LLiveryPageFold` holds card ids and `LLiveryPageFolded` holds reflex languages.
+`LLiveryPageFold` holds folded cards as kind and id pairs, and `LLiveryPageFolded` holds reflex languages.
 A fold toggle changes the note, so the next push re-sends it.
 `LLiveryPageInflection` is null when the language has no inflection layout.
 The paradigm rows drop the layout's part of speech, so only that table carries those forms.
@@ -91,10 +91,10 @@ Categories come as initials, then rimes, then tones, and are empty without a fan
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `8c403d1df768`
 - `LLivery.cs` `791b17789a18977b`
 - `LLiveryDiwei.cs` `cead8ec76bdbd658`
 - `LLiveryLanguage.cs` `8bfba9621043bb14`
 - `LLiveryNote.cs` `82844d79aa7a10fe`
-- `LLiveryPage.cs` `84e31e75aa129c8d`
+- `LLiveryPage.cs` `ee06db01e4f47e46`
 - `LLiveryStem.cs` `94c0be6ac23776ec`

@@ -175,7 +175,8 @@ internal static class TInterfaceMention
         {
             ["LEngineMentionResolve"] = _ => throw new InvalidOperationException("no headwords"),
         });
-        return CMention.LMentionChipRead(drafts, desk, 0, 0, envoy, new LSettingsOutlet(engine));
+        return CMention.LMentionChipRead(
+            drafts, desk, new LExampleSiteDraft(), envoy, new LSettingsOutlet(engine));
     }
 
     internal static IReadOnlyList<CVistaRow> TQuotationFailRead(LEngine engine, CEnvoy envoy)
@@ -230,6 +231,6 @@ internal static class TInterfaceMention
             ["LEngineSenseRead"] = sense,
         });
         return CMention.LMentionSenseRead(
-            drafts, desk, 0, 0, "she knelt", 0, 3, envoy, new LSettingsOutlet(engine));
+            drafts, desk, new LExampleSiteDraft(), "she knelt", 0, 3, envoy, new LSettingsOutlet(engine));
     }
 }

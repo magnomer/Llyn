@@ -41,14 +41,14 @@ internal sealed class QVideo
 
     private void QVideoFreshObserve(object sender, RoutedEventArgs e)
     {
-        _cVideo.CVideoAdd(null);
+        _cVideo.CVideoAdd(false, null);
     }
 
     internal void QVideoAddObserve(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { DataContext: QPlacard card })
         {
-            _cVideo.CVideoAdd(card.QPlacardId);
+            _cVideo.CVideoAdd(card.QPlacardCollocated, card.QPlacardId);
         }
     }
 
@@ -56,7 +56,7 @@ internal sealed class QVideo
     {
         if (sender is FrameworkElement { DataContext: QVideoItem row })
         {
-            _cVideo.CVideoRemove(row.QVideoItemId);
+            _cVideo.CVideoRemove(row.QVideoItemCollocated, row.QVideoItemHolder, row.QVideoItemId);
         }
     }
 

@@ -8,6 +8,8 @@ The relay for the browsing seam, the find call of each browsed kind and the cata
 Each relay delegates to one engine or Core operation, or builds one row.
 `TCardChildSet` is one exception, since it builds the card itself.
 `TEngineCitationCreate` is the other, which creates the reference, raises a reference bulletin and returns the stored reference.
+The citation resolve relay names a Meaning card site.
+It becomes the draft site when card and sentence are both zero, through `TExampleSiteCreate`.
 The orderings and the matches under test are reached only here, so no test body calls them itself.
 The sort relays order rows as the matching catalog does.
 So a test pins the tie rule on rows it builds.
@@ -15,7 +17,8 @@ The create relays build browsed rows, so a sort test needs no engine.
 
 ## `TEngineRegisterFind`
 
-The card overload reads the offer that card's register field shows for a typed text, with no draft held.
+The card overload reads the offer a Meaning card's register field shows for a typed text.
+No draft is held.
 Without a draft no card already holds a Register.
 So every match is offered, and only the order and the limit decide the rows.
 
@@ -40,6 +43,6 @@ The two Fanqie tabs list no subject, and any tab not named lists entries.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `TInterfaceCatalog.cs` `18eb67a5e0766ebf`
+Commit: `8c403d1df768`
+- `TInterfaceCatalog.cs` `329dcac662f88b27`
 - `TInterfaceVista.cs` `2975d230d7b4d5be`

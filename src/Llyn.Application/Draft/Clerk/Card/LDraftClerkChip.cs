@@ -57,6 +57,7 @@ public sealed class LDraftClerkChip
 
         return LTagApply(
             content,
+            request.LRequestKind,
             request.LRequestCardId,
             tags => LDraftClerkList.LDraftHeldCheck(tags, static row => row.LTagDraftText, text)
                 ? tags
@@ -80,6 +81,7 @@ public sealed class LDraftClerkChip
 
         return LTagApply(
             content,
+            request.LRequestKind,
             request.LRequestCardId,
             tags => LDraftClerkList.LDraftHeldCheck(tags, static row => row.LTagDraftText, stored.LTagText)
                 ? tags
@@ -93,6 +95,7 @@ public sealed class LDraftClerkChip
 
         return LTagApply(
             content,
+            request.LRequestKind,
             request.LRequestCardId,
             tags => LDraftClerkList.LDraftListRemove(tags, request.LRequestTagId, static row => row.LTagDraftId));
     }
@@ -103,6 +106,7 @@ public sealed class LDraftClerkChip
 
         return LTagApply(
             content,
+            request.LRequestKind,
             request.LRequestCardId,
             tags => LDraftClerkList.LDraftListMove(
                 tags, request.LRequestTagId, request.LRequestPosition, static row => row.LTagDraftId));
@@ -127,10 +131,13 @@ public sealed class LDraftClerkChip
     }
 
     private static LEntryDraft LTagApply(
-        LEntryDraft content, long cardId, Func<IReadOnlyList<LTagDraft>, IReadOnlyList<LTagDraft>> change)
+        LEntryDraft content,
+        LCardKind kind,
+        long cardId,
+        Func<IReadOnlyList<LTagDraft>, IReadOnlyList<LTagDraft>> change)
     {
         return LDraftClerkCard.LCardChange(
-            content, cardId, card => card with { LCardDraftTag = change(card.LCardDraftTag) });
+            content, kind, cardId, card => card with { LCardDraftTag = change(card.LCardDraftTag) });
     }
 
     public static LEntryDraft LTranslationInsert(LEntryDraft content, LRequestTranslationPick request)
@@ -144,6 +151,7 @@ public sealed class LDraftClerkChip
 
         return LTranslationApply(
             content,
+            request.LRequestKind,
             request.LRequestCardId,
             translations => LDraftClerkList.LDraftListInsert(
                 translations,
@@ -159,6 +167,7 @@ public sealed class LDraftClerkChip
 
         return LTranslationApply(
             content,
+            request.LRequestKind,
             request.LRequestCardId,
             translations => LDraftClerkList.LDraftListRemove(translations, request.LRequestEntryId, static row => row));
     }
@@ -169,15 +178,16 @@ public sealed class LDraftClerkChip
 
         return LTranslationApply(
             content,
+            request.LRequestKind,
             request.LRequestCardId,
             translations => LDraftClerkList.LDraftListMove(
                 translations, request.LRequestEntryId, request.LRequestPosition, static row => row));
     }
 
     private static LEntryDraft LTranslationApply(
-        LEntryDraft content, long cardId, Func<IReadOnlyList<long>, IReadOnlyList<long>> change)
+        LEntryDraft content, LCardKind kind, long cardId, Func<IReadOnlyList<long>, IReadOnlyList<long>> change)
     {
         return LDraftClerkCard.LCardChange(
-            content, cardId, card => card with { LCardDraftTranslation = change(card.LCardDraftTranslation) });
+            content, kind, cardId, card => card with { LCardDraftTranslation = change(card.LCardDraftTranslation) });
     }
 }

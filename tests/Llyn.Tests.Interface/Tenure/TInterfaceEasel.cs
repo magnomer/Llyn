@@ -1,3 +1,4 @@
+using Llyn.Core;
 using Llyn.ShellEngine;
 
 namespace Llyn.Tests;
@@ -6,14 +7,16 @@ internal static partial class TInterface
 {
     internal static LEasel TEaselCreate(this LTenure tenure) => new(tenure);
 
-    internal static void TEaselImageAdd(this LEasel easel, long card)
+    internal static void TEaselImageAdd(
+        this LEasel easel, long card, LCardKind kind = LCardKind.LCardKindMeaning)
     {
-        easel.LEaselImageAdd(card);
+        easel.LEaselImageAdd(kind, card);
     }
 
-    internal static void TEaselImageRemove(this LEasel easel, long image)
+    internal static void TEaselImageRemove(
+        this LEasel easel, long image, long card = 0, LCardKind kind = LCardKind.LCardKindMeaning)
     {
-        easel.LEaselImageRemove(image);
+        easel.LEaselImageRemove(kind, card, image);
     }
 
     internal static void TEaselImageSet(this LEasel easel, long image, string location, bool deferred)
@@ -21,14 +24,16 @@ internal static partial class TInterface
         easel.LEaselImageSet(image, location, deferred);
     }
 
-    internal static void TEaselVideoAdd(this LEasel easel, long card)
+    internal static void TEaselVideoAdd(
+        this LEasel easel, long card, LCardKind kind = LCardKind.LCardKindMeaning)
     {
-        easel.LEaselVideoAdd(card);
+        easel.LEaselVideoAdd(kind, card);
     }
 
-    internal static void TEaselVideoRemove(this LEasel easel, long video)
+    internal static void TEaselVideoRemove(
+        this LEasel easel, long video, long card = 0, LCardKind kind = LCardKind.LCardKindMeaning)
     {
-        easel.LEaselVideoRemove(video);
+        easel.LEaselVideoRemove(kind, card, video);
     }
 
     internal static void TEaselVideoSet(this LEasel easel, long video, string location, bool deferred)

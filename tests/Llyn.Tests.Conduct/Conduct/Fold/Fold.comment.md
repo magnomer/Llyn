@@ -7,6 +7,8 @@ The editor and the reading view store and toggle it.
 
 Covers the card fold reads and gates of the reading view and the editor on a real workspace.
 Each entry holds two meanings and one collocation, so a fold names one card among several.
+A stored fold is a pair of card kind and id.
+A meaning and a collocation may share an id.
 Folds made through the engine relay arrange the store, and the gates are read back through it.
 
 ## `DisplayCardRead_FoldedCards_CarryEachCardsStoredFold`
@@ -100,6 +102,6 @@ The reading view then reads the rime-book box closed and the script box open.
 
 ## Stamp
 
-Commit: `cb8ab7e8feb4`
-- `TCardFold.cs` `8973f726ff8efcbd`
+Commit: `8c403d1df768`
+- `TCardFold.cs` `b3ad30f9ae0641b7`
 - `TFold.cs` `f6b04c2122dd3ec1`

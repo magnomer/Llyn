@@ -55,7 +55,8 @@ Any other tongue id must be in the user's tongue list, and the written text is t
 
 ## `LDraftClerkGloss`
 
-The Gloss requests, applied to the sentence a card row holds or to the corpus panel's own Example.
+The Gloss requests, applied to the Example a site names.
+The site is a sentence on a card, or the corpus panel's own Example.
 Every handler edits the Gloss list of one Example draft and hands the rest of the draft back untouched.
 The only service a Gloss edit needs is the issuer that names a new Gloss.
 
@@ -63,10 +64,11 @@ The only service a Gloss edit needs is the issuer that names a new Gloss.
 
 Routes every Gloss request to its handler, and answers null for any other request.
 The clerk then hands that request on to the situation fields.
-The private overload routes one list change to the Example the request names.
-Card 0 and sentence 0 name the draft's own Example, held by the corpus panel.
+The private overload routes one list change to the Example the request's site names.
+The draft site names the Example the corpus panel holds.
 Its stored rows are read as drafts and written back resolved.
-Any other pair names a card row, whose Example draft takes the changed list directly.
+The card site names a sentence row by card kind, card id and sentence id.
+That row's Example draft takes the changed list directly.
 
 ### `LGlossAdd`
 
@@ -74,9 +76,8 @@ Adds an empty Gloss in the requested language at the requested position, under a
 
 ### `LGlossEmptyCheck`
 
-Whether the draft holds that sentence's Example with no Gloss on it.
+Whether the draft holds the site's Example with no Gloss on it.
 A draft without that Example answers false, so nothing is seeded into it.
-The card and sentence are zero for the held Example itself.
 
 ### `LGlossChange`
 
@@ -109,7 +110,7 @@ The list overload answers the image list after one request, or null when the req
 An addition is a new row with the location sent and a minted id, at the place asked for.
 A pick copies the stored image under its own id, unless the list already holds it.
 A location change on a row the list does not hold is refused as an item.
-The entry overload applies the same edit to the card the request names.
+The entry overload applies the same edit to the card the request names by kind and id.
 A location change there reaches every card holding the picture instead.
 It answers null for any other request, so the clerk hands it on to the video rows.
 
@@ -120,22 +121,14 @@ Relocates the image in every card holding it, and refuses when none does.
 
 ### `LImageEndRead`
 
-The place after the last picture row, on the held Situation or on the card named.
+The place after the last picture row, on the held Situation or on the card named by kind and id.
 A card the draft lacks answers zero, and the addition then refuses it.
-
-### `LImageCardFind`
-
-The card holding the picture row is found among the Meanings, their children and then the Collocations.
-A child card counts, so a picture on a child can be removed like any other.
-A Situation draft answers card zero, since its rows hang on the draft itself.
-A row no card holds answers null.
-`LVideoCardFind` finds a video's card the same way.
 
 ### `LVideoApply`
 
 The list overload mirrors the image list, with no span on an addition.
 The location and the span change through the same routine with a different lambda.
-The entry overload applies the edit to the card named.
+The entry overload applies the edit to the card named by kind and id.
 A location or span change there reaches every card holding the video.
 It answers null for any other request, so the clerk refuses it as a kind it does not apply.
 
@@ -158,8 +151,9 @@ The text handlers of both panels call the shift routine here, so a Mention follo
 
 Routes every Mention request to its handler, and answers null for any other request.
 The clerk then hands that request on to the Glosses.
-The private overload locates the Example on the card row named.
-When card and sentence are both 0, it locates the Example on the draft panel.
+The private overload locates the Example the site names.
+A card site locates it on that card's sentence row.
+The draft site locates it on the draft panel.
 The panel holds an `LExample`, so its list is converted to drafts for the change and back afterwards.
 A row quoting no Example has no words to link and is refused.
 
@@ -333,6 +327,7 @@ The clerk then hands any other request on to the situation chips.
 ### `LSentenceAdd`
 
 A new row with a minted id, no Example and an empty frame, at the place asked for.
+Every routine finds the card by the kind and id the request names.
 `LSentenceRemove` and `LSentenceMove` refuse when the card holds no row with the id.
 
 ### `LSentenceSelect`
@@ -356,11 +351,11 @@ The Gloss and Mention classes reach a row's Example through here.
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `8c403d1df768`
 - `LDraftClerkAncestor.cs` `eba4a2434bad672d`
-- `LDraftClerkGloss.cs` `92c491993bdf9de1`
-- `LDraftClerkMedia.cs` `9ecb2b5075228d05`
-- `LDraftClerkMention.cs` `40b3a0ded1f2c470`
+- `LDraftClerkGloss.cs` `1f22e3e652322149`
+- `LDraftClerkMedia.cs` `efbd5ab8dfa835dc`
+- `LDraftClerkMention.cs` `aa2735a335945627`
 - `LDraftClerkReading.cs` `5ebb0dcc2c810c99`
 - `LDraftClerkReflex.cs` `6f8f9116225f8d3a`
-- `LDraftClerkSentence.cs` `0e5e7ed4ec851b28`
+- `LDraftClerkSentence.cs` `05629fbacc695765`

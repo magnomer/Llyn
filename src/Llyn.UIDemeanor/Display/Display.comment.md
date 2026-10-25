@@ -32,7 +32,9 @@ A piece with an item name is something the keys can light.
 Dividing wraps the line at the width by words, the continuation lines hanging by 2 cells.
 A piece that is an item is never split between words.
 A word wider than the room is cut by cell width.
-The trailing blanks of a plain last piece are trimmed, and neighbouring pieces of one role and item merge.
+Pieces with no space between them are kept together on one row when they fit.
+The trailing blanks of a last piece are trimmed, an item piece that is all blanks excepted.
+Neighbouring pieces of one role and item merge.
 
 ## `BLecternHeader`
 
@@ -49,11 +51,13 @@ Every mark comes from the glyph sets with a plain fallback.
 The meanings and the other collocations of the open entry.
 The cards are read when the entry opens or closes and when a fold changes.
 Only a stored card folds, so an unsaved card's header is no item.
-Each fold item names its card, each see line its row and each chip or link what it opens.
+Each fold item names its card by kind and id, so a meaning and a collocation never share an item.
+Each see line names its row, and each chip or link what it opens.
 Drawing sends nothing.
 A done fold raises the display's fold change, which reads the cards again.
 A refused fold leaves the cards as read, so its mark stays.
-A see line opens the row it names and lights that row, as the GUI spotlights it.
+A see line always names a collocation.
+It opens the row it names and lights that row, as the GUI spotlights it.
 A refused open, or a row not drawn, keeps the see line lit.
 A chip sends its origin, and a translation link sends its target id.
 An untitled card shows its kind, dim, while open and its definition while folded.
@@ -96,11 +100,11 @@ No usage draws no heading.
 
 ## Stamp
 
-Commit: `cb8ab7e8feb4`
+Commit: `8c403d1df768`
 - `BLectern.cs` `f87f06f1e21e21df`
-- `BLecternCard.cs` `18bd8463600c7ea6`
+- `BLecternCard.cs` `af2549c5017093b4`
 - `BLecternEtymology.cs` `eb1eccd28473ccfc`
 - `BLecternHeader.cs` `cadac381d7e22395`
 - `BLecternIncoming.cs` `c3aa3673f641cae6`
-- `BLecternLine.cs` `72d24daa8956f064`
+- `BLecternLine.cs` `87521ccffaaa93a5`
 - `BLecternMention.cs` `64b5db213f0e416c`

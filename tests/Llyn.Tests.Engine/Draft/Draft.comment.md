@@ -60,6 +60,9 @@ A settled list completes its last part too, and a blank settled list hands nothi
 A second transcription row under a scheme the draft already carries is refused, and the first stands.
 The gloss-empty check answers true only for an Example holding no Gloss.
 A request kind no switch knows throws an argument error and not a refusal.
+A collocation and a meaning may carry the same card id, so every request carries the card kind.
+A request of the collocation kind changes the collocation and leaves the meaning of that id as it was.
+The twin cases cover additions, removals, field sets, picks and shifts of every list a card holds.
 
 ## `TDraftExample.cs`
 
@@ -172,11 +175,11 @@ The card carries a negative id from the test counter, not one the engine minted.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `8c403d1df768`
 - `TClaim.cs` `3717bbbfffe16b67`
 - `TClaimClerk.cs` `79fcef1e200d2842`
 - `TDraftArchive.cs` `adeba8a2994531ab`
-- `TDraftClerk.cs` `280dc232c5a117a6`
+- `TDraftClerk.cs` `efcc969a25afff62`
 - `TDraftExample.cs` `3f1d3998d7a49532`
 - `TDraftLeftover.cs` `9e4e68a23d143a0c`
 - `TDraftReference.cs` `32f442cd70178839`

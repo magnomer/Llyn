@@ -35,7 +35,9 @@ No driver calls it, since `CCorpusPortraitPrint` chooses which side prints.
 ## `CAnthologyCitationRead`
 
 The Sources the transcript's citation drawer offers for the typed word, ready to show.
-It is the card sentence's citation find over the draft's own Example, so both fields offer alike.
+It is the citation find of the example quill over the draft's own Example.
+It names no card or sentence.
+It offers as the card sentence's field does.
 The engine trims, splits, caps and counts.
 A failed search shows `Example.FindFailed` once until the user acts, through the repaint memory.
 It then answers the typed word with no rows.
@@ -51,7 +53,7 @@ A failure shows `Reference.CreateFailed` and leaves the citation as it was.
 ## `CAnthologyGlossSet`
 
 The transcript's gloss text, deferred like the sentence text.
-It is the card sentence's gloss gate over the Example itself, with card and sentence zero.
+It is the sentence quill's gloss gate over the Example itself, which names no card or sentence.
 
 ## `CAnthologyGlossAdd`
 
@@ -248,7 +250,9 @@ Print is called by no driver, since `CCorpusPortraitPrint` chooses which side pr
 The corpus transcript's held Example and the gates that edit its Mentions.
 It is split from `CCorpus`, since none of its gates asks the leave question.
 The corpus owns the desk and the anthology, and this class only reads and edits through them.
-Every gate past the open addresses the transcript as card 0 and sentence 0, the Example's single text.
+Every gate past the open addresses the Example's single text.
+It goes through the example quill or the draft site.
+It names no card or sentence.
 It reports failures through the envoy, never through a seam a driver hands up.
 Every constructor argument is required, so a missing one fails at once.
 `CCorpus` builds it right after the anthology and attaches the desk's draft notice once at build.
@@ -311,8 +315,8 @@ A failed read shows `Mention.FindFailed`, through the shared read in `CMention`.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `CAnthology.cs` `d17fa57beb2ce7e8`
+Commit: `8c403d1df768`
+- `CAnthology.cs` `466c68e5ea67ce97`
 - `CCorpus.cs` `28fd61a422f56c0c`
 - `CQuotation.cs` `42aa5e1b796518f8`
-- `CTranscript.cs` `9f53a43104122ddb`
+- `CTranscript.cs` `ec7c7f5897c3022f`

@@ -121,7 +121,8 @@ public sealed class TPortraitEntry
         LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
             "set", "English", string.Empty, string.Empty, [TInterface.TCardCreate("to place", 1)], [collocation]));
         LEntryDraft saved = engine.TEngineEntryLoad(entry.LEntryId)!;
-        engine.TEngineFoldSave(entry.LEntryId, saved.LEntryDraftCollocations[0].LCardDraftId);
+        engine.TEngineFoldSave(
+            entry.LEntryId, LCardKind.LCardKindCollocation, saved.LEntryDraftCollocations[0].LCardDraftId);
 
         LPortraitPage page = engine.TEnginePortraitRead(entry.LEntryId, TInterface.TPortraitLabelRead());
 
@@ -152,7 +153,8 @@ public sealed class TPortraitEntry
         LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
             "set", "English", string.Empty, string.Empty, [meaning], [collocation]));
         LEntryDraft saved = engine.TEngineEntryLoad(entry.LEntryId)!;
-        engine.TEngineFoldSave(entry.LEntryId, saved.LEntryDraftCollocations[0].LCardDraftId);
+        engine.TEngineFoldSave(
+            entry.LEntryId, LCardKind.LCardKindCollocation, saved.LEntryDraftCollocations[0].LCardDraftId);
 
         LPortraitPage page = engine.TEnginePortraitRead(entry.LEntryId, TInterface.TPortraitLabelRead());
 

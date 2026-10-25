@@ -56,6 +56,9 @@ A swept draft can settle a court into a held draft, so no tenure may keep its st
 A failure after the start cancels the target, so the workspace holds both or neither.
 
 The find calls serve the chip fields a card makes as the user types.
+The tag, register and situation finds name the card by its kind and id.
+The reference find, the citation resolve, the Mention resolve and the sense read name a sentence by an example site.
+A site is either a sentence of a card, or the draft's own Example.
 `LEngineBylineFind` lists the Authors a typed credit may name, left out those the draft credits.
 Each name comes split around the typed word, ready to paint.
 `LEngineTagFind` offers stored Tags, and the register find offers stored Registers, ready to show.
@@ -71,7 +74,7 @@ The whole-draft overload takes the draft itself, so its keys and labels come fro
 `LEngineLineFind` gives the line key of one sentence of a shown entry, counted from one.
 It answers zero for a sentence the entry does not hold.
 Each chip carries the words it covers, the linked headword and the chosen sense.
-The card and sentence overload addresses one Example, and card 0 with sentence 0 addresses the draft's own Example.
+The site overload addresses one Example by its site, which may be the draft's own Example.
 `LEngineMentionDivide` is static, since Conduct divides a row's text while it maps the row and no port is at hand.
 Mention spans count code points while a text box counts UTF-16 units, so the engine converts.
 `LEngineUnitRead` gives the UTF-16 index of a code-point offset, and `LEngineOffsetRead` is its inverse.
@@ -218,11 +221,11 @@ A blank variety has no flag, so its key is empty and finds nothing.
 
 ## Stamp
 
-Commit: `44d0e95bcfcc`
+Commit: `8c403d1df768`
 - `LDeckOutlet.cs` `4fcdc01cf7e5aabb`
 - `LDeckPort.cs` `256cbea5290d73a0`
-- `LDraftOutlet.cs` `ea23c6d68f52ed75`
-- `LDraftPort.cs` `c22a4a4897d84afa`
+- `LDraftOutlet.cs` `9d4a1d329cea90b4`
+- `LDraftPort.cs` `9ce380608cb8624d`
 - `LMediaOutlet.cs` `601cc15907e2f22d`
 - `LMediaPort.cs` `8d313e317fe4b3e2`
 - `LPortraitOutlet.cs` `4b7d31ff3f0aa3c2`

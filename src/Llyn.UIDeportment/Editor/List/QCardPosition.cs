@@ -41,7 +41,7 @@ internal sealed class QCardPosition
             return;
         }
 
-        bool opened = _cCardList.CCardPositionOpen(card.QPlacardId);
+        bool opened = _cCardList.CCardPositionOpen(card.QPlacardCollocated, card.QPlacardId);
         if (!opened)
         {
             return;
@@ -69,7 +69,7 @@ internal sealed class QCardPosition
         if (e.Key is Key.Escape && sender is FrameworkElement { DataContext: QPlacard card })
         {
             e.Handled = true;
-            _cCardList.CCardPositionClose(card.QPlacardId);
+            _cCardList.CCardPositionClose(card.QPlacardCollocated, card.QPlacardId);
             card.QPlacardPositionHide();
         }
     }
@@ -81,7 +81,7 @@ internal sealed class QCardPosition
             return;
         }
 
-        bool settled = _cCardList.CCardPositionSettle(card.QPlacardId, box.Text);
+        bool settled = _cCardList.CCardPositionSettle(card.QPlacardCollocated, card.QPlacardId, box.Text);
         e.Handled = settled && e is KeyEventArgs;
         card.QPlacardPositionHide();
     }

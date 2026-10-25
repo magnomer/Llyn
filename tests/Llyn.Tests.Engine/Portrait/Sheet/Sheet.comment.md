@@ -84,7 +84,7 @@ No separate contour row remains, and the cascade writes the axis as an inline-fl
 
 ## Stamp
 
-Commit: `aae5349dbb94`
+Commit: `8c403d1df768`
 - `TPortraitSheet.cs` `0100401a8287c7ce`
-- `TSheetEntry.cs` `1b22334d2e3275b0`
+- `TSheetEntry.cs` `8d5452f0a0031a00`
 - `TSheetSound.cs` `040fee8dc22722d3`

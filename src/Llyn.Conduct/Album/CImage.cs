@@ -1,4 +1,5 @@
 using System;
+using Llyn.Core;
 
 namespace Llyn.Conduct;
 
@@ -18,14 +19,16 @@ public sealed class CImage
         _cImageDesk.CDeskDraft.CDeskDraftEasel?.LEaselImageSet(imageId, location, true);
     }
 
-    public void CImageAdd(long? cardId)
+    public void CImageAdd(bool collocated, long? cardId)
     {
-        _cImageDesk.CDeskDraft.CDeskDraftEasel?.LEaselImageAdd(cardId ?? 0);
+        _cImageDesk.CDeskDraft.CDeskDraftEasel?.LEaselImageAdd(
+            collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning, cardId ?? 0);
     }
 
-    public void CImageRemove(long imageId)
+    public void CImageRemove(bool collocated, long? cardId, long imageId)
     {
-        _cImageDesk.CDeskDraft.CDeskDraftEasel?.LEaselImageRemove(imageId);
+        _cImageDesk.CDeskDraft.CDeskDraftEasel?.LEaselImageRemove(
+            collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning, cardId ?? 0, imageId);
     }
 
     public void CImageFileSet(long imageId, string? file)

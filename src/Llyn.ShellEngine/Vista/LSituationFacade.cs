@@ -28,7 +28,7 @@ public sealed class LSituationFacade : LSituationPort
         }
     }
 
-    public LSituationOffer LEngineSituationFind(LTenure held, long card, string text)
+    public LSituationOffer LEngineSituationFind(LTenure held, LCardKind kind, long card, string text)
     {
         ArgumentNullException.ThrowIfNull(held);
 
@@ -36,7 +36,7 @@ public sealed class LSituationFacade : LSituationPort
         lock (_lSituationFacadeGate)
         {
             return LSituationFacadeStaff.LEngineStaffCatalog.LCatalogStaffSituation
-                .LSituationClerkFind(text, draft, card);
+                .LSituationClerkFind(text, draft, kind, card);
         }
     }
 

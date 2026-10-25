@@ -138,7 +138,8 @@ internal sealed class QLabel
         if (e.OriginalSource is TextBox { DataContext: QInlet<QLabelChip> caret } box
             && QLabelCardFind(caret) is QPlacard card)
         {
-            _qLabelSlate.QSlateRefine(card, _cCaret.CCaretTagAdd(card.QPlacardId, box.Text));
+            _qLabelSlate.QSlateRefine(
+                card, _cCaret.CCaretTagAdd(card.QPlacardCollocated, card.QPlacardId, box.Text));
         }
     }
 
@@ -146,7 +147,7 @@ internal sealed class QLabel
     {
         if (sender is FrameworkElement { DataContext: QLabelChip chip } && QLabelCardFind(chip) is QPlacard card)
         {
-            _cCard.CCardTagRemove(card.QPlacardId, chip.QLabelChipId);
+            _cCard.CCardTagRemove(card.QPlacardCollocated, card.QPlacardId, chip.QLabelChipId);
         }
     }
 
@@ -159,7 +160,7 @@ internal sealed class QLabel
             return;
         }
 
-        _cCaret.CCaretTagSettle(card.QPlacardId, box.Text);
+        _cCaret.CCaretTagSettle(card.QPlacardCollocated, card.QPlacardId, box.Text);
         e.Handled = true;
         _qLabelSlate.QSlateShutRefine();
         row.QInletClear();
@@ -178,7 +179,7 @@ internal sealed class QLabel
             box.CaretIndex,
             box.Text.Length,
             box.SelectionLength,
-            step => _cCaret.CCaretTag.CCaretTrailDelete(card.QPlacardId, step));
+            step => _cCaret.CCaretTag.CCaretTrailDelete(card.QPlacardCollocated, card.QPlacardId, step));
     }
 
     internal void QLabelCaretRefine(object sender, KeyEventArgs e)
@@ -195,7 +196,8 @@ internal sealed class QLabel
             box.SelectionLength,
             step =>
             {
-                (bool moved, long? anchor) = _cCaret.CCaretTag.CCaretTrailMove(card.QPlacardId, step);
+                (bool moved, long? anchor) =
+                    _cCaret.CCaretTag.CCaretTrailMove(card.QPlacardCollocated, card.QPlacardId, step);
                 QLabelAnchorShow(card, anchor);
                 return moved;
             },
@@ -212,7 +214,7 @@ internal sealed class QLabel
         if (sender is TextBox { DataContext: QInlet<QLabelChip> row } box
             && QLabelCardFind(row) is QPlacard card)
         {
-            _cCaret.CCaretTagSettle(card.QPlacardId, box.Text);
+            _cCaret.CCaretTagSettle(card.QPlacardCollocated, card.QPlacardId, box.Text);
             row.QInletClear();
         }
     }

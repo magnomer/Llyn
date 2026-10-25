@@ -15,126 +15,178 @@ internal static partial class TInterface
     internal static LRequest TRequestAuthorCreate(long draftId, string text) =>
         new LRequestAuthorName(draftId, text);
 
-    internal static LRequest TRequestTitleCreate(long draftId, long cardId, LStateValue value) =>
-        new LRequestCardTitle(draftId, cardId, value.TStateWrittenRead());
+    internal static LRequest TRequestTitleCreate(
+        long draftId, long cardId, LStateValue value, LCardKind kind = LCardKind.LCardKindMeaning) =>
+        new LRequestCardTitle(draftId, kind, cardId, value.TStateWrittenRead());
 
     internal static LRequest TRequestAdditionCreate(long draftId, LCardKind kind, long parentId, int position) =>
         new LRequestCardAddition(draftId, kind, parentId, position);
 
-    internal static LRequest TRequestRemovalCreate(long draftId, long cardId) =>
-        new LRequestCardRemoval(draftId, cardId);
+    internal static LRequest TRequestRemovalCreate(
+        long draftId, long cardId, LCardKind kind = LCardKind.LCardKindMeaning) =>
+        new LRequestCardRemoval(draftId, kind, cardId);
 
-    internal static LRequest TRequestShiftCreate(long draftId, long cardId, long parentId, int position) =>
-        new LRequestCardShift(draftId, cardId, parentId, position);
+    internal static LRequest TRequestShiftCreate(
+        long draftId, long cardId, long parentId, int position, LCardKind kind = LCardKind.LCardKindMeaning) =>
+        new LRequestCardShift(draftId, kind, cardId, parentId, position);
 
-    internal static LRequest TRequestExpressionCreate(long draftId, long cardId, LStateValue value) =>
-        new LRequestCardExpression(draftId, cardId, value.TStateWrittenRead());
+    internal static LRequest TRequestExpressionCreate(
+        long draftId, long cardId, LStateValue value, LCardKind kind = LCardKind.LCardKindMeaning) =>
+        new LRequestCardExpression(draftId, kind, cardId, value.TStateWrittenRead());
 
-    internal static LRequest TRequestMeaningCreate(long draftId, long cardId, LStateValue value) =>
-        new LRequestCardMeaning(draftId, cardId, value.TStateWrittenRead());
+    internal static LRequest TRequestMeaningCreate(
+        long draftId, long cardId, LStateValue value, LCardKind kind = LCardKind.LCardKindMeaning) =>
+        new LRequestCardMeaning(draftId, kind, cardId, value.TStateWrittenRead());
 
-    internal static LRequest TSentenceAdditionCreate(long draftId, long cardId, int position) =>
-        new LRequestSentenceAddition(draftId, cardId, position);
+    internal static LRequest TRequestSenseCreate(long draftId, long cardId, long senseId) =>
+        new LRequestSenseAddition(draftId, cardId, senseId);
+
+    internal static LRequest TSentenceAdditionCreate(
+        long draftId, long cardId, int position, LCardKind kind = LCardKind.LCardKindMeaning) =>
+        new LRequestSentenceAddition(draftId, kind, cardId, position);
 
     internal static LRequest TSentenceRemovalCreate(long draftId, long cardId, long sentenceId) =>
-        new LRequestSentenceRemoval(draftId, cardId, sentenceId);
+        new LRequestSentenceRemoval(draftId, LCardKind.LCardKindMeaning, cardId, sentenceId);
 
     internal static LRequest TSentenceShiftCreate(long draftId, long cardId, long sentenceId, int position) =>
-        new LRequestSentenceShift(draftId, cardId, sentenceId, position);
+        new LRequestSentenceShift(draftId, LCardKind.LCardKindMeaning, cardId, sentenceId, position);
 
     internal static LRequest TSentenceExampleCreate(long draftId, long cardId, long sentenceId, long exampleId) =>
-        new LRequestSentenceExample(draftId, cardId, sentenceId, exampleId);
+        new LRequestSentenceExample(draftId, LCardKind.LCardKindMeaning, cardId, sentenceId, exampleId);
 
     internal static LRequest TSentenceTextCreate(long draftId, long cardId, long sentenceId, LStateValue value) =>
-        new LRequestSentenceText(draftId, cardId, sentenceId, value.TStateWrittenRead());
+        new LRequestSentenceText(draftId, LCardKind.LCardKindMeaning, cardId, sentenceId, value.TStateWrittenRead());
 
     internal static LRequest TSentenceReferenceCreate(
         long draftId, long cardId, long sentenceId, long referenceId) =>
-        new LRequestSentenceReference(draftId, cardId, sentenceId, referenceId);
+        new LRequestSentenceReference(draftId, LCardKind.LCardKindMeaning, cardId, sentenceId, referenceId);
 
     internal static LRequest TMentionAdditionCreate(
-        long draftId, long cardId, long sentenceId, int offset, int length, long entryId, long senseId = 0) =>
-        new LRequestMentionAddition(draftId, cardId, sentenceId, offset, length, entryId, senseId);
+        long draftId,
+        long cardId,
+        long sentenceId,
+        int offset,
+        int length,
+        long entryId,
+        long senseId = 0,
+        LCardKind kind = LCardKind.LCardKindMeaning) =>
+        new LRequestMentionAddition(
+            draftId, TExampleSiteCreate(kind, cardId, sentenceId), offset, length, entryId, senseId);
 
     internal static LRequest TMentionRemovalCreate(long draftId, long cardId, long sentenceId, long mentionId) =>
-        new LRequestMentionRemoval(draftId, cardId, sentenceId, mentionId);
+        new LRequestMentionRemoval(
+            draftId, TExampleSiteCreate(LCardKind.LCardKindMeaning, cardId, sentenceId), mentionId);
 
-    internal static LRequest TImageAdditionCreate(long draftId, long cardId, int position) =>
-        new LRequestImageAddition(draftId, cardId, LStateWritten.LStateWrittenEmpty, position);
+    internal static LExampleSite TExampleSiteCreate(LCardKind kind, long cardId, long sentenceId) =>
+        cardId == 0 && sentenceId == 0 ? new LExampleSiteDraft() : new LExampleSiteCard(kind, cardId, sentenceId);
 
-    internal static LRequest TVideoAdditionCreate(long draftId, long cardId, int position) =>
-        new LRequestVideoAddition(draftId, cardId, LStateWritten.LStateWrittenEmpty, position);
+    internal static LRequest TImageAdditionCreate(
+        long draftId, long cardId, int position, LCardKind kind = LCardKind.LCardKindMeaning) =>
+        new LRequestImageAddition(draftId, kind, cardId, LStateWritten.LStateWrittenEmpty, position);
+
+    internal static LRequest TVideoAdditionCreate(
+        long draftId, long cardId, int position, LCardKind kind = LCardKind.LCardKindMeaning) =>
+        new LRequestVideoAddition(draftId, kind, cardId, LStateWritten.LStateWrittenEmpty, position);
 
     internal static LRequest TGlossAdditionCreate(
-        long draftId, long cardId, long sentenceId, string language, int position) =>
-        new LRequestGlossAddition(draftId, cardId, sentenceId, language, position);
+        long draftId,
+        long cardId,
+        long sentenceId,
+        string language,
+        int position,
+        LCardKind kind = LCardKind.LCardKindMeaning) =>
+        new LRequestGlossAddition(draftId, TExampleSiteCreate(kind, cardId, sentenceId), language, position);
 
     internal static LRequest TGlossRemovalCreate(long draftId, long cardId, long sentenceId, long glossId) =>
-        new LRequestGlossRemoval(draftId, cardId, sentenceId, glossId);
+        new LRequestGlossRemoval(draftId, TExampleSiteCreate(LCardKind.LCardKindMeaning, cardId, sentenceId), glossId);
 
     internal static LRequest TGlossTextCreate(
         long draftId, long cardId, long sentenceId, long glossId, LStateValue value) =>
-        new LRequestGlossText(draftId, cardId, sentenceId, glossId, value.TStateWrittenRead());
+        new LRequestGlossText(
+            draftId,
+            TExampleSiteCreate(LCardKind.LCardKindMeaning, cardId, sentenceId),
+            glossId,
+            value.TStateWrittenRead());
 
     internal static LRequest TGlossLanguageCreate(
         long draftId, long cardId, long sentenceId, long glossId, string language) =>
-        new LRequestGlossLanguage(draftId, cardId, sentenceId, glossId, language);
+        new LRequestGlossLanguage(
+            draftId, TExampleSiteCreate(LCardKind.LCardKindMeaning, cardId, sentenceId), glossId, language);
 
     internal static LRequest TMentionSenseCreate(
         long draftId, long cardId, long sentenceId, long mentionId, long senseId) =>
-        new LRequestMentionSense(draftId, cardId, sentenceId, mentionId, senseId);
+        new LRequestMentionSense(
+            draftId, TExampleSiteCreate(LCardKind.LCardKindMeaning, cardId, sentenceId), mentionId, senseId);
 
-    internal static LRequest TSituationAdditionCreate(long draftId, long cardId, string title, int position) =>
+    internal static LRequest TSituationAdditionCreate(
+        long draftId, long cardId, string title, int position, LCardKind kind = LCardKind.LCardKindMeaning) =>
         new LRequestSituationAddition(
-            draftId, cardId, TInterfaceState.TStateValueCreate(title).TStateWrittenRead(), position);
+            draftId, kind, cardId, TInterfaceState.TStateValueCreate(title).TStateWrittenRead(), position);
 
-    internal static LRequest TSituationPickCreate(long draftId, long cardId, long situationId, int position) =>
-        new LRequestSituationPick(draftId, cardId, situationId, position);
+    internal static LRequest TSituationPickCreate(
+        long draftId, long cardId, long situationId, int position, LCardKind kind = LCardKind.LCardKindMeaning) =>
+        new LRequestSituationPick(draftId, kind, cardId, situationId, position);
 
-    internal static LRequest TSituationRemovalCreate(long draftId, long cardId, long situationId) =>
-        new LRequestSituationRemoval(draftId, cardId, situationId);
+    internal static LRequest TSituationRemovalCreate(
+        long draftId, long cardId, long situationId, LCardKind kind = LCardKind.LCardKindMeaning) =>
+        new LRequestSituationRemoval(draftId, kind, cardId, situationId);
 
     internal static LRequest TSituationShiftCreate(long draftId, long cardId, long situationId, int position) =>
-        new LRequestSituationShift(draftId, cardId, situationId, position);
+        new LRequestSituationShift(draftId, LCardKind.LCardKindMeaning, cardId, situationId, position);
 
     internal static LRequest TSituationTitleCreate(long draftId, long situationId, LStateValue value) =>
         new LRequestSituationTitle(draftId, situationId, value.TStateWrittenRead());
 
-    internal static LRequest TRegisterAdditionCreate(long draftId, long cardId, string name, int position) =>
+    internal static LRequest TRegisterAdditionCreate(
+        long draftId, long cardId, string name, int position, LCardKind kind = LCardKind.LCardKindMeaning) =>
         new LRequestRegisterAddition(
-            draftId, cardId, TInterfaceState.TStateValueCreate(name).TStateWrittenRead(), position);
+            draftId, kind, cardId, TInterfaceState.TStateValueCreate(name).TStateWrittenRead(), position);
 
     internal static LRequest TRegisterPickCreate(long draftId, long cardId, long registerId, int position) =>
-        new LRequestRegisterPick(draftId, cardId, registerId, position);
+        new LRequestRegisterPick(draftId, LCardKind.LCardKindMeaning, cardId, registerId, position);
+
+    internal static LRequest TRegisterRemovalCreate(
+        long draftId, long cardId, long registerId, LCardKind kind = LCardKind.LCardKindMeaning) =>
+        new LRequestRegisterRemoval(draftId, kind, cardId, registerId);
 
     internal static LRequest TTagTextCreate(long draftId, long tagId, string text) =>
         new LRequestTagText(draftId, tagId, text);
 
-    internal static LRequest TTagAdditionCreate(long draftId, long cardId, string text, int position) =>
-        new LRequestTagAddition(draftId, cardId, text, position);
+    internal static LRequest TTagAdditionCreate(
+        long draftId, long cardId, string text, int position, LCardKind kind = LCardKind.LCardKindMeaning) =>
+        new LRequestTagAddition(draftId, kind, cardId, text, position);
 
     internal static LRequest TTagPickCreate(long draftId, long cardId, long tagId, int position) =>
-        new LRequestTagPick(draftId, cardId, tagId, position);
+        new LRequestTagPick(draftId, LCardKind.LCardKindMeaning, cardId, tagId, position);
 
-    internal static LRequest TTranslationPickCreate(long draftId, long cardId, long entryId, int position) =>
-        new LRequestTranslationPick(draftId, cardId, entryId, position);
+    internal static LRequest TTranslationPickCreate(
+        long draftId, long cardId, long entryId, int position, LCardKind kind = LCardKind.LCardKindMeaning) =>
+        new LRequestTranslationPick(draftId, kind, cardId, entryId, position);
 
     internal static LRequest TImageAdditionCreate(long draftId, long cardId, string location, int position) =>
         new LRequestImageAddition(
-            draftId, cardId, TInterfaceState.TStateValueCreate(location).TStateWrittenRead(), position);
+            draftId,
+            LCardKind.LCardKindMeaning,
+            cardId,
+            TInterfaceState.TStateValueCreate(location).TStateWrittenRead(),
+            position);
 
     internal static LRequest TImageRemovalCreate(long draftId, long cardId, long imageId) =>
-        new LRequestImageRemoval(draftId, cardId, imageId);
+        new LRequestImageRemoval(draftId, LCardKind.LCardKindMeaning, cardId, imageId);
 
     internal static LRequest TVideoRemovalCreate(long draftId, long cardId, long videoId) =>
-        new LRequestVideoRemoval(draftId, cardId, videoId);
+        new LRequestVideoRemoval(draftId, LCardKind.LCardKindMeaning, cardId, videoId);
 
     internal static LRequest TImageLocationCreate(long draftId, long imageId, LStateValue value) =>
         new LRequestImageLocation(draftId, imageId, value.TStateWrittenRead());
 
     internal static LRequest TVideoAdditionCreate(long draftId, long cardId, string location, int position) =>
         new LRequestVideoAddition(
-            draftId, cardId, TInterfaceState.TStateValueCreate(location).TStateWrittenRead(), position);
+            draftId,
+            LCardKind.LCardKindMeaning,
+            cardId,
+            TInterfaceState.TStateValueCreate(location).TStateWrittenRead(),
+            position);
 
     internal static LRequest TExampleTextCreate(long draftId, LStateValue value) =>
         new LRequestExampleText(draftId, value.TStateWrittenRead());

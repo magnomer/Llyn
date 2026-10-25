@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Llyn.Application;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -51,11 +52,10 @@ public sealed class CSentence
             CSubject.CSubjectReference, _ => marshal(() => CSentenceReferenceChanged?.Invoke()));
     }
 
-    public void CSentenceAdd(long cardId, int below)
+    public void CSentenceAdd(bool collocated, long cardId, int below)
     {
         if (_cSentenceDesk.CDeskDraft.CDeskDraftTenure?.LTenureRead() is not LDraft held
-            || held.LDraftContent.LEntryDraftMeanings
-                .Concat(held.LDraftContent.LEntryDraftCollocations)
+            || (collocated ? held.LDraftContent.LEntryDraftCollocations : held.LDraftContent.LEntryDraftMeanings)
                 .FirstOrDefault(card => card.LCardDraftId == cardId) is not LCardDraft card
             || below < 0
             || below >= card.LCardDraftSentence.Count)
@@ -63,55 +63,79 @@ public sealed class CSentence
             return;
         }
 
-        _cSentenceDesk.CDeskDraft.CDeskDraftSentence?.LQuillSentenceAdd(cardId, below + 1);
+        _cSentenceDesk.CDeskDraft.CDeskDraftSentence?.LQuillSentenceAdd(
+            collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning, cardId, below + 1);
     }
 
-    public void CSentenceRemove(long cardId, long sentenceId)
+    public void CSentenceRemove(bool collocated, long cardId, long sentenceId)
     {
-        _cSentenceDesk.CDeskDraft.CDeskDraftSentence?.LQuillSentenceRemove(cardId, sentenceId);
+        _cSentenceDesk.CDeskDraft.CDeskDraftSentence?.LQuillSentenceRemove(
+            collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning, cardId, sentenceId);
     }
 
-    public void CSentenceTextSet(long cardId, long sentenceId, string text)
+    public void CSentenceTextSet(bool collocated, long cardId, long sentenceId, string text)
     {
-        _cSentenceDesk.CDeskDraft.CDeskDraftSentence?.LQuillSentenceSet(cardId, sentenceId, text);
+        _cSentenceDesk.CDeskDraft.CDeskDraftSentence?.LQuillSentenceSet(
+            collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning, cardId, sentenceId, text);
     }
 
-    public void CSentenceParticleSet(long cardId, long sentenceId, string text)
+    public void CSentenceParticleSet(bool collocated, long cardId, long sentenceId, string text)
     {
-        _cSentenceDesk.CDeskDraft.CDeskDraftSentence?.LSentenceParticleSet(cardId, sentenceId, text);
+        _cSentenceDesk.CDeskDraft.CDeskDraftSentence?.LSentenceParticleSet(
+            collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning, cardId, sentenceId, text);
     }
 
-    public void CSentenceDependenceSet(long cardId, long sentenceId, string text)
+    public void CSentenceDependenceSet(bool collocated, long cardId, long sentenceId, string text)
     {
-        _cSentenceDesk.CDeskDraft.CDeskDraftSentence?.LSentenceDependenceSet(cardId, sentenceId, text);
+        _cSentenceDesk.CDeskDraft.CDeskDraftSentence?.LSentenceDependenceSet(
+            collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning, cardId, sentenceId, text);
     }
 
-    public void CSentenceCitationSet(long cardId, long sentenceId, long referenceId)
+    public void CSentenceCitationSet(bool collocated, long cardId, long sentenceId, long referenceId)
     {
-        _cSentenceDesk.CDeskDraft.CDeskDraftSentence?.LSentenceCitationSet(cardId, sentenceId, referenceId);
+        _cSentenceDesk.CDeskDraft.CDeskDraftSentence?.LSentenceCitationSet(
+            collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning,
+            cardId,
+            sentenceId,
+            referenceId);
     }
 
-    public void CSentenceGlossSet(long cardId, long sentenceId, long glossId, string text)
+    public void CSentenceGlossSet(bool collocated, long cardId, long sentenceId, long glossId, string text)
     {
-        _cSentenceDesk.CDeskDraft.CDeskDraftSentence?.LSentenceGlossSet(cardId, sentenceId, glossId, null, text);
+        _cSentenceDesk.CDeskDraft.CDeskDraftSentence?.LSentenceGlossSet(
+            collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning,
+            cardId,
+            sentenceId,
+            glossId,
+            null,
+            text);
     }
 
-    public void CSentenceLanguageSet(long cardId, long sentenceId, long glossId, string language)
+    public void CSentenceLanguageSet(bool collocated, long cardId, long sentenceId, long glossId, string language)
     {
-        _cSentenceDesk.CDeskDraft.CDeskDraftSentence?.LSentenceGlossSet(cardId, sentenceId, glossId, language, null);
+        _cSentenceDesk.CDeskDraft.CDeskDraftSentence?.LSentenceGlossSet(
+            collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning,
+            cardId,
+            sentenceId,
+            glossId,
+            language,
+            null);
     }
 
-    public void CSentenceGlossAdd(long cardId, long sentenceId)
+    public void CSentenceGlossAdd(bool collocated, long cardId, long sentenceId)
     {
-        _cSentenceDesk.CDeskDraft.CDeskDraftSentence?.LQuillGlossAdd(cardId, sentenceId);
+        _cSentenceDesk.CDeskDraft.CDeskDraftSentence?.LQuillGlossAdd(
+            collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning, cardId, sentenceId);
     }
 
-    public void CSentenceGlossRemove(long cardId, long sentenceId, long glossId)
+    public void CSentenceGlossRemove(bool collocated, long cardId, long sentenceId, long glossId)
     {
-        _cSentenceDesk.CDeskDraft.CDeskDraftSentence?.LSentenceGlossRemove(cardId, sentenceId, glossId);
+        _cSentenceDesk.CDeskDraft.CDeskDraftSentence?.LSentenceGlossRemove(
+            collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning, cardId, sentenceId, glossId);
     }
 
-    public void CSentenceMentionAdd(long cardId, long sentenceId, string text, int start, int length, long? entryId)
+    public void CSentenceMentionAdd(
+        bool collocated, long cardId, long sentenceId, string text, int start, int length, long? entryId)
     {
         if (entryId is not long stored)
         {
@@ -119,49 +143,93 @@ public sealed class CSentence
             return;
         }
 
-        _cSentenceDesk.CDeskDraft.CDeskDraftChip?.LQuillMentionAdd(cardId, sentenceId, text, start, length, stored);
+        _cSentenceDesk.CDeskDraft.CDeskDraftChip?.LQuillMentionAdd(
+            collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning,
+            cardId,
+            sentenceId,
+            text,
+            start,
+            length,
+            stored);
     }
 
-    public void CSentenceSilenceSet(long cardId, long sentenceId, string text, int start, int length)
+    public void CSentenceSilenceSet(bool collocated, long cardId, long sentenceId, string text, int start, int length)
     {
-        _cSentenceDesk.CDeskDraft.CDeskDraftChip?.LQuillMentionAdd(cardId, sentenceId, text, start, length, 0);
+        _cSentenceDesk.CDeskDraft.CDeskDraftChip?.LQuillMentionAdd(
+            collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning,
+            cardId,
+            sentenceId,
+            text,
+            start,
+            length,
+            0);
     }
 
-    public void CSentenceSenseSet(long cardId, long sentenceId, string text, int start, int length, long senseId)
+    public void CSentenceSenseSet(
+        bool collocated, long cardId, long sentenceId, string text, int start, int length, long senseId)
     {
-        _cSentenceDesk.CDeskDraft.CDeskDraftChip?.LQuillSenseSet(cardId, sentenceId, text, start, length, senseId);
+        _cSentenceDesk.CDeskDraft.CDeskDraftChip?.LQuillSenseSet(
+            collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning,
+            cardId,
+            sentenceId,
+            text,
+            start,
+            length,
+            senseId);
     }
 
-    public void CSentenceMentionRemove(long cardId, long sentenceId, long mentionId)
+    public void CSentenceMentionRemove(bool collocated, long cardId, long sentenceId, long mentionId)
     {
-        _cSentenceDesk.CDeskDraft.CDeskDraftMention?.LQuillMentionRemove(cardId, sentenceId, mentionId);
+        _cSentenceDesk.CDeskDraft.CDeskDraftMention?.LQuillMentionRemove(
+            collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning, cardId, sentenceId, mentionId);
     }
 
-    public void CSentenceMentionRemove(long cardId, long sentenceId, string text, int start, int length)
+    public void CSentenceMentionRemove(
+        bool collocated, long cardId, long sentenceId, string text, int start, int length)
     {
-        _cSentenceDesk.CDeskDraft.CDeskDraftChip?.LQuillMentionRemove(cardId, sentenceId, text, start, length);
+        _cSentenceDesk.CDeskDraft.CDeskDraftChip?.LQuillMentionRemove(
+            collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning,
+            cardId,
+            sentenceId,
+            text,
+            start,
+            length);
     }
 
-    public bool CSentenceMentionCheck(long cardId, long sentenceId, string text, int start, int length)
+    public bool CSentenceMentionCheck(
+        bool collocated, long cardId, long sentenceId, string text, int start, int length)
     {
         return _cSentenceDesk.CDeskDraft.CDeskDraftTenure is LTenure held
-            && new LQuillMention(held).LQuillMentionCheck(cardId, sentenceId, text, start, length);
+            && new LQuillMention(held).LQuillMentionCheck(
+                collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning,
+                cardId,
+                sentenceId,
+                text,
+                start,
+                length);
     }
 
-    public bool CSentenceSenseCheck(long cardId, long sentenceId, string text, int start, int length)
+    public bool CSentenceSenseCheck(
+        bool collocated, long cardId, long sentenceId, string text, int start, int length)
     {
         return _cSentenceDesk.CDeskDraft.CDeskDraftTenure is LTenure held
-            && new LQuillMention(held).LQuillSenseCheck(cardId, sentenceId, text, start, length);
+            && new LQuillMention(held).LQuillSenseCheck(
+                collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning,
+                cardId,
+                sentenceId,
+                text,
+                start,
+                length);
     }
 
     public CMentionSense? CSentenceSenseRead(
-        long cardId, long sentenceId, string text, int start, int length)
+        bool collocated, long cardId, long sentenceId, string text, int start, int length)
     {
         return CMention.LMentionSenseRead(
             _cSentenceDraftPort,
             _cSentenceDesk,
-            cardId,
-            sentenceId,
+            new LExampleSiteCard(
+                collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning, cardId, sentenceId),
             text,
             start,
             length,

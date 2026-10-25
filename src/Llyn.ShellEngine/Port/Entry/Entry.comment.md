@@ -16,6 +16,10 @@ So no reader applies the link rules itself.
 The caller hands in the translations it already read, so the flags cost no second read.
 The compass shows no flags, so it hands in an empty map.
 One entry-scoped fold read covers folded Meanings and Collocations together.
+A fold is keyed by the card's kind and id together.
+`LEngineCardFind` says which card list of the draft holds the card of a kind and id.
+It also says at which place, or null when it is in neither.
+It reads only the draft the caller holds.
 Card folds remain outside lexical edits and undo.
 Save and delete announce a fold bulletin for the entry on normal completion.
 This holds even when a nonpositive card id writes nothing.
@@ -36,7 +40,7 @@ The caller asks for confirmation beforehand, since the count is only known by re
 
 The slice a deportment sees when it loads one stored entry.
 It loads the entry, reads its stamps, its Source tally and its written reflexes.
-It also opens the entry a glyph cell names, words a lexical unit and places a card in its list.
+It also opens the entry a glyph cell names and words a lexical unit.
 `LEntryFacade` implements it itself, so no outlet forwards between Conduct and the engine.
 Member names keep the engine's `LEngine*` form.
 `LEngineEntryLoad` gives the stored entry as a draft, or null when it no longer stands.
@@ -48,8 +52,6 @@ The engine parses and words the stored stamps, so Conduct only copies them.
 `LEngineGlyphResolve` gives the id of the entry a glyph cell opens, made when none exists yet.
 `LEngineUnitFormat` and `LEngineFreedomFormat` give the localization key that names a unit or freedom, empty when none is chosen.
 They are static, since the key depends on no workspace, and the unit and freedom clerks own the wording.
-`LEngineCardFind` says which card list of the draft holds a card, and at which place, or null when neither does.
-It reads only the draft the caller holds.
 
 ## `LGraspPort`
 
@@ -86,10 +88,10 @@ The dependence labels and particles are those already saved in the language's ex
 
 ## Stamp
 
-Commit: `44d0e95bcfcc`
+Commit: `8c403d1df768`
 - `LAncestorPort.cs` `7e9777eb958ef99c`
-- `LCardPort.cs` `abe0d7c5966b542d`
-- `LEntryPort.cs` `f4a67592fdb729d6`
+- `LCardPort.cs` `4754481e29621576`
+- `LEntryPort.cs` `45ee82ac8d86cff5`
 - `LGraspPort.cs` `9099a47b67179e94`
 - `LMarkdownPort.cs` `d966d5c1e2a4e15c`
 - `LMentionPort.cs` `7a0a2aadff6233b5`

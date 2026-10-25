@@ -69,7 +69,8 @@ internal static class LLiveryCard
         bool stored = card.LCardDraftId > 0;
         if (stored)
         {
-            sheet.Append(LLiveryFoldFormat("llyn-card", !page.LLiveryPageFold.Contains(card.LCardDraftId)));
+            bool opened = !page.LLiveryPageFold.Contains((LCardKind.LCardKindMeaning, card.LCardDraftId));
+            sheet.Append(LLiveryFoldFormat("llyn-card", opened));
         }
         else
         {

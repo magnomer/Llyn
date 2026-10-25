@@ -130,10 +130,12 @@ public sealed class LMentionClerk
         return LMentionSpan.LMentionSpanRead(text, start, length);
     }
 
-    public static LMentionDraft? LMentionSpanFind(LDraft? draft, long cardId, long sentenceId, LMentionDraft span)
+    public static LMentionDraft? LMentionSpanFind(
+        LDraft? draft, LExampleSite site, LMentionDraft span)
     {
+        ArgumentNullException.ThrowIfNull(site);
         ArgumentNullException.ThrowIfNull(span);
-        return draft?.LDraftMentionFind(cardId, sentenceId, span);
+        return site.LExampleSiteRead(draft)?.LExampleDraftFind(span);
     }
 
     public IReadOnlyList<LMentionLabel> LMentionClerkResolve(string text, IReadOnlyList<LMentionDraft> mentions)
@@ -202,9 +204,11 @@ public sealed class LMentionClerk
         return lines;
     }
 
-    public IReadOnlyList<LMentionLabel> LMentionClerkResolve(LDraft? draft, long cardId, long sentenceId)
+    public IReadOnlyList<LMentionLabel> LMentionClerkResolve(
+        LDraft? draft, LExampleSite site)
     {
-        return LMentionClerkResolve(draft?.LDraftExampleRead(cardId, sentenceId));
+        ArgumentNullException.ThrowIfNull(site);
+        return LMentionClerkResolve(site.LExampleSiteRead(draft));
     }
 
     private IReadOnlyList<LMentionLabel> LMentionClerkResolve(LExampleDraft? example)

@@ -215,12 +215,14 @@ The clerk owns nonpositive-id filtering, so this adapter takes ids as supplied.
 
 `LFoldSave` selects each parent card before insertion, which avoids missing-parent foreign-key failures.
 Conflict handling makes repeated folding idempotent.
-Shared card identity lets only the owning card table contribute a mark.
+The kind picks the one card table, so an id of the other kind never marks a card.
 
-`LFoldDelete` works on both card tables with the same id, so callers need not supply the card kind.
+`LFoldDelete` deletes from the one fold table the kind names.
+An unknown kind throws, as in `LFoldSave`.
 Lexical card rows remain untouched.
 
 `LFoldRead` combines both card kinds into an entry-scoped set in one query.
+Each row carries its kind beside the id, so a Meaning and a Collocation with one id stay two marks.
 The Meaning join also includes sub-meanings carrying that entry parent.
 
 The reflex, box and stem spread methods follow one rule: a row means opened, and no row means closed.
@@ -257,13 +259,13 @@ So a draft handed back to the engine updates that row rather than reading as a n
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `8c403d1df768`
 - `LAncestorArchive.cs` `190e9703f2a0033d`
 - `LEntryArchive.cs` `b6b08d8105ccbbba`
 - `LEntryLoader.cs` `b31b67e2a6b3587e`
 - `LEntryLoaderCard.cs` `8f7544d1b4dd3a83`
 - `LEntryLoaderReading.cs` `d637332d8f11d2c5`
 - `LEntryQueryArchive.cs` `ed0a6c5e048971e1`
-- `LFoldArchive.cs` `f066ca03fb72b2a4`
+- `LFoldArchive.cs` `240afb2b002e63e4`
 - `LLacunaArchive.cs` `a55a2ef1f0c5bbbf`
 - `LNoteArchive.cs` `74e55e205494b7b9`

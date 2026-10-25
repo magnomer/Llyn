@@ -138,7 +138,7 @@ public sealed class TLecternCard
                 Assert.Equal(1, TLectern.TLecternNoticeRead(console, "The card fold could not be written."));
                 Assert.Equal(("→ set off see 1", "lit"), lit());
             },
-            "ALTER TABLE sense_fold RENAME TO sense_fold_gone;",
+            "ALTER TABLE collocation_fold RENAME TO collocation_fold_gone;",
             notice: "could not be");
     }
 

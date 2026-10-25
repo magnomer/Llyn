@@ -229,10 +229,10 @@ public sealed class QCompass
         }
     }
 
-    public void QCompassSpotlightRefine(long id)
+    public void QCompassSpotlightRefine(bool collocated, long id)
     {
         _qCompassContents.Dispatcher.BeginInvoke(
-            DispatcherPriority.Loaded, () => QCompassSpotlightRefine(_qCompassArea.CCompassCardFind(id)));
+            DispatcherPriority.Loaded, () => QCompassSpotlightRefine(_qCompassArea.CCompassCardFind(collocated, id)));
     }
 
     private void QCompassSpotlightRefine((CCompassPart, int)? place)

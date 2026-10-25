@@ -64,6 +64,7 @@ public sealed class LSituationChip
         LSituation? stored = LSituationChipResolve(_lSituationChipVault, title);
         return LSituationChipApply(
             content,
+            request.LRequestKind,
             request.LRequestCardId,
             situations =>
             {
@@ -107,6 +108,7 @@ public sealed class LSituationChip
 
         return LSituationChipApply(
             content,
+            request.LRequestKind,
             request.LRequestCardId,
             situations => LDraftClerkList.LDraftListInsert(
                 situations,
@@ -122,6 +124,7 @@ public sealed class LSituationChip
 
         return LSituationChipApply(
             content,
+            request.LRequestKind,
             request.LRequestCardId,
             situations => LDraftClerkList.LDraftListRemove(
                 situations, request.LRequestSituationId, static row => row.LSituationDraftId));
@@ -133,6 +136,7 @@ public sealed class LSituationChip
 
         return LSituationChipApply(
             content,
+            request.LRequestKind,
             request.LRequestCardId,
             situations => LDraftClerkList.LDraftListMove(
                 situations,
@@ -220,10 +224,11 @@ public sealed class LSituationChip
 
     private static LEntryDraft LSituationChipApply(
         LEntryDraft content,
+        LCardKind kind,
         long cardId,
         Func<IReadOnlyList<LSituationDraft>, IReadOnlyList<LSituationDraft>> change)
     {
         return LDraftClerkCard.LCardChange(
-            content, cardId, card => card with { LCardDraftSituation = change(card.LCardDraftSituation) });
+            content, kind, cardId, card => card with { LCardDraftSituation = change(card.LCardDraftSituation) });
     }
 }

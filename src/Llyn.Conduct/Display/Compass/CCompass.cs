@@ -13,8 +13,6 @@ public sealed class CCompass
 
     private readonly CLedgerNoticed _cCompassNoticed;
 
-    private readonly LEntryPort _cCompassEntryPort;
-
     private readonly LVistaPort _cCompassVistaPort;
 
     private readonly LCardPort _cCompassCardPort;
@@ -25,14 +23,12 @@ public sealed class CCompass
 
     internal CCompass(
         CRule display,
-        LEntryPort entries,
         LVistaPort vistas,
         LCardPort cards,
         LSettingsPort settings,
         CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(display);
-        ArgumentNullException.ThrowIfNull(entries);
         ArgumentNullException.ThrowIfNull(vistas);
         ArgumentNullException.ThrowIfNull(cards);
         ArgumentNullException.ThrowIfNull(settings);
@@ -40,17 +36,17 @@ public sealed class CCompass
 
         _cCompassVoice = display.CVoice;
         _cCompassNoticed = display.CRuleNoticed;
-        _cCompassEntryPort = entries;
         _cCompassVistaPort = vistas;
         _cCompassCardPort = cards;
         _cCompassSettings = settings;
         _cCompassEnvoy = envoy;
     }
 
-    public (CCompassPart, int)? CCompassCardFind(long id)
+    public (CCompassPart, int)? CCompassCardFind(bool collocated, long id)
     {
+        LCardKind kind = collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning;
         if (_cCompassVoice.CVoiceShown is not LEntryDraft shown
-            || _cCompassEntryPort.LEngineCardFind(shown, id) is not (LOwner owner, _))
+            || _cCompassCardPort.LEngineCardFind(shown, kind, id) is not (LOwner owner, _))
         {
             return null;
         }

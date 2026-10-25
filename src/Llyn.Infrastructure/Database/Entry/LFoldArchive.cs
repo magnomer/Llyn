@@ -16,21 +16,27 @@ public sealed class LFoldArchive : LFoldVault
         _lFoldArchiveDatabase = database;
     }
 
-    public void LFoldSave(long cardId)
+    public void LFoldSave(LCardKind kind, long cardId)
     {
         using LDatabaseSession session = _lFoldArchiveDatabase.LDatabaseSessionStart();
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
-            command.CommandText =
-                """
-                INSERT INTO sense_fold (sense_parent)
-                SELECT sense_id FROM sense WHERE sense_id = $card
-                ON CONFLICT (sense_parent) DO NOTHING;
-
-                INSERT INTO collocation_fold (collocation_parent)
-                SELECT collocation_id FROM collocation WHERE collocation_id = $card
-                ON CONFLICT (collocation_parent) DO NOTHING;
-                """;
+            command.CommandText = kind switch
+            {
+                LCardKind.LCardKindMeaning =>
+                    """
+                    INSERT INTO sense_fold (sense_parent)
+                    SELECT sense_id FROM sense WHERE sense_id = $card
+                    ON CONFLICT (sense_parent) DO NOTHING;
+                    """,
+                LCardKind.LCardKindCollocation =>
+                    """
+                    INSERT INTO collocation_fold (collocation_parent)
+                    SELECT collocation_id FROM collocation WHERE collocation_id = $card
+                    ON CONFLICT (collocation_parent) DO NOTHING;
+                    """,
+                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null),
+            };
             command.Parameters.AddWithValue("$card", cardId);
             command.ExecuteNonQuery();
         }
@@ -38,16 +44,17 @@ public sealed class LFoldArchive : LFoldVault
         session.LDatabaseSessionCommit();
     }
 
-    public void LFoldDelete(long cardId)
+    public void LFoldDelete(LCardKind kind, long cardId)
     {
         using LDatabaseSession session = _lFoldArchiveDatabase.LDatabaseSessionStart();
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
-            command.CommandText =
-                """
-                DELETE FROM sense_fold WHERE sense_parent = $card;
-                DELETE FROM collocation_fold WHERE collocation_parent = $card;
-                """;
+            command.CommandText = kind switch
+            {
+                LCardKind.LCardKindMeaning => "DELETE FROM sense_fold WHERE sense_parent = $card;",
+                LCardKind.LCardKindCollocation => "DELETE FROM collocation_fold WHERE collocation_parent = $card;",
+                _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null),
+            };
             command.Parameters.AddWithValue("$card", cardId);
             command.ExecuteNonQuery();
         }
@@ -55,29 +62,30 @@ public sealed class LFoldArchive : LFoldVault
         session.LDatabaseSessionCommit();
     }
 
-    public IReadOnlySet<long> LFoldRead(long entryId)
+    public IReadOnlySet<(LCardKind, long)> LFoldRead(long entryId)
     {
         using LDatabaseSession session = _lFoldArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT sense_fold.sense_parent
+            SELECT 0, sense_fold.sense_parent
             FROM sense_fold
             JOIN sense ON sense.sense_id = sense_fold.sense_parent
             WHERE sense.entry_parent = $entry
-            UNION
-            SELECT collocation_fold.collocation_parent
+            UNION ALL
+            SELECT 1, collocation_fold.collocation_parent
             FROM collocation_fold
             JOIN collocation ON collocation.collocation_id = collocation_fold.collocation_parent
             WHERE collocation.entry_parent = $entry;
             """;
         command.Parameters.AddWithValue("$entry", entryId);
 
-        HashSet<long> folded = [];
+        HashSet<(LCardKind, long)> folded = [];
         using SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
-            folded.Add(reader.GetInt64(0));
+            LCardKind kind = reader.GetInt64(0) == 0 ? LCardKind.LCardKindMeaning : LCardKind.LCardKindCollocation;
+            folded.Add((kind, reader.GetInt64(1)));
         }
 
         return folded;

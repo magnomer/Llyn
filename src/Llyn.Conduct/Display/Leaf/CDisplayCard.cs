@@ -78,39 +78,40 @@ public sealed class CDisplayCard
         string exampleOne = _cDisplaySettings.LEngineTextRead("Display.CollocationExampleOne");
         string also = _cDisplaySettings.LEngineTextRead("Display.CollocationAlso");
         string heading = _cDisplaySettings.LEngineTextRead("Display.CollocationHeading");
-        IReadOnlySet<long> folds = LDisplayFoldRead();
+        IReadOnlySet<(LCardKind, long)> folds = LDisplayFoldRead();
         LMediaPort media = _cDisplayRule.CRuleMediaPort;
         LCollocationLayout layout = _cDisplayCardPort.LEngineCollocationRead(shown, targets);
         IReadOnlyList<CLeaf> others = CLeaf.LLeafRead(
             shown,
-            layout.LCollocationLayoutOther, layout, order, mark, stub, example, exampleOne, also, heading, citations,
-            targets, folds, media, _cDisplayExamplePort);
+            layout.LCollocationLayoutOther, true, layout, order, mark, stub, example, exampleOne, also, heading,
+            citations, targets, folds, media, _cDisplayExamplePort);
         return new CLecternCard(
             CLeaf.LLeafRead(
                 shown,
-                shown.LEntryDraftMeanings, layout, order, mark, stub, example, exampleOne, also, heading, citations,
-                targets, folds, media, _cDisplayExamplePort),
+                shown.LEntryDraftMeanings, false, layout, order, mark, stub, example, exampleOne, also, heading,
+                citations, targets, folds, media, _cDisplayExamplePort),
             others,
             shown.LEntryDraftDefined,
             others.Count > 0);
     }
 
-    public bool CDisplayFoldToggle(long cardId, bool folded)
+    public bool CDisplayFoldToggle(bool collocated, long cardId, bool folded)
     {
         if (_cDisplayRule.CRuleChosen is not long id)
         {
             return false;
         }
 
+        LCardKind kind = collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning;
         try
         {
             if (folded)
             {
-                _cDisplayCardPort.LEngineFoldSave(id, cardId);
+                _cDisplayCardPort.LEngineFoldSave(id, kind, cardId);
             }
             else
             {
-                _cDisplayCardPort.LEngineFoldDelete(id, cardId);
+                _cDisplayCardPort.LEngineFoldDelete(id, kind, cardId);
             }
 
             return true;
@@ -123,11 +124,11 @@ public sealed class CDisplayCard
         return false;
     }
 
-    private IReadOnlySet<long> LDisplayFoldRead()
+    private IReadOnlySet<(LCardKind, long)> LDisplayFoldRead()
     {
         if (_cDisplayRule.CRuleChosen is not long id)
         {
-            return new HashSet<long>();
+            return new HashSet<(LCardKind, long)>();
         }
 
         try
@@ -137,7 +138,7 @@ public sealed class CDisplayCard
         catch (Exception exception)
         {
             LDisplayNoticed.LLedgerRepaintShow(_cDisplayEnvoy, _cDisplaySettings, "Fold.ReadFailed", exception);
-            return new HashSet<long>();
+            return new HashSet<(LCardKind, long)>();
         }
     }
 

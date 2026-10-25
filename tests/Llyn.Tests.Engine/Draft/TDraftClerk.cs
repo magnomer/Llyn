@@ -117,6 +117,271 @@ public sealed class TDraftClerk
     }
 
     [Fact]
+    public void DraftClerkApply_GlossAdditionOnCollocationSharingMeaningIds_ChangesTheCollocationOnly()
+    {
+        LDraftClerk clerk = TInterface.TDraftClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
+        (LDraft draft, long card, long sentence) = TDraftTwinCreate();
+
+        LDraft applied = clerk.TDraftClerkApply(
+            draft, TInterface.TGlossAdditionCreate(
+                draft.LDraftId, card, sentence, "French", 0, LCardKind.LCardKindCollocation));
+
+        Assert.Empty(TTwinExampleRead(applied.LDraftContent.LEntryDraftMeanings).LExampleDraftGloss);
+        Assert.Single(TTwinExampleRead(applied.LDraftContent.LEntryDraftCollocations).LExampleDraftGloss);
+    }
+
+    [Fact]
+    public void DraftClerkApply_MentionAdditionOnCollocationSharingMeaningIds_ChangesTheCollocationOnly()
+    {
+        LDraftClerk clerk = TInterface.TDraftClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
+        (LDraft draft, long card, long sentence) = TDraftTwinCreate();
+
+        LDraft applied = clerk.TDraftClerkApply(
+            draft, TInterface.TMentionAdditionCreate(
+                draft.LDraftId, card, sentence, 0, 3, 0, 0, LCardKind.LCardKindCollocation));
+
+        Assert.Empty(TTwinExampleRead(applied.LDraftContent.LEntryDraftMeanings).LExampleDraftMention);
+        Assert.Single(TTwinExampleRead(applied.LDraftContent.LEntryDraftCollocations).LExampleDraftMention);
+    }
+
+    [Fact]
+    public void DraftClerkApply_SentenceAdditionOnCollocationSharingMeaningIds_ChangesTheCollocationOnly()
+    {
+        LDraftClerk clerk = TInterface.TDraftClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
+        (LDraft draft, long card, _) = TDraftTwinCreate();
+
+        LDraft applied = clerk.TDraftClerkApply(
+            draft, TInterface.TSentenceAdditionCreate(draft.LDraftId, card, 1, LCardKind.LCardKindCollocation));
+
+        Assert.Single(applied.LDraftContent.LEntryDraftMeanings[0].LCardDraftSentence);
+        Assert.Equal(2, applied.LDraftContent.LEntryDraftCollocations[0].LCardDraftSentence.Count);
+    }
+
+    [Fact]
+    public void DraftClerkApply_TitleOnCollocationSharingMeaningIds_ChangesTheCollocationOnly()
+    {
+        LDraftClerk clerk = TInterface.TDraftClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
+        (LDraft draft, long card, _) = TDraftTwinCreate();
+
+        LDraft applied = clerk.TDraftClerkApply(
+            draft, TInterface.TRequestTitleCreate(
+                draft.LDraftId, card, TInterfaceState.TStateValueCreate("blaze"), LCardKind.LCardKindCollocation));
+
+        Assert.Equal(
+            draft.LDraftContent.LEntryDraftMeanings[0].LCardDraftTitle,
+            applied.LDraftContent.LEntryDraftMeanings[0].LCardDraftTitle);
+        Assert.Equal(
+            TInterfaceState.TStateValueCreate("blaze"),
+            applied.LDraftContent.LEntryDraftCollocations[0].LCardDraftTitle);
+    }
+
+    [Fact]
+    public void DraftClerkApply_ExpressionOnCollocationSharingMeaningIds_ChangesTheCollocationOnly()
+    {
+        LDraftClerk clerk = TInterface.TDraftClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
+        (LDraft draft, long card, _) = TDraftTwinCreate();
+
+        LDraft applied = clerk.TDraftClerkApply(
+            draft, TInterface.TRequestExpressionCreate(
+                draft.LDraftId, card, TInterfaceState.TStateValueCreate("set alight"), LCardKind.LCardKindCollocation));
+
+        Assert.Equal(
+            draft.LDraftContent.LEntryDraftMeanings[0].LCardDraftExpression,
+            applied.LDraftContent.LEntryDraftMeanings[0].LCardDraftExpression);
+        Assert.Equal(
+            TInterfaceState.TStateValueCreate("set alight"),
+            applied.LDraftContent.LEntryDraftCollocations[0].LCardDraftExpression);
+    }
+
+    [Fact]
+    public void DraftClerkApply_RemovalOfCollocationSharingMeaningIds_RemovesTheCollocationOnly()
+    {
+        LDraftClerk clerk = TInterface.TDraftClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
+        (LDraft draft, long card, _) = TDraftTwinCreate();
+
+        LDraft applied = clerk.TDraftClerkApply(
+            draft, TInterface.TRequestRemovalCreate(draft.LDraftId, card, LCardKind.LCardKindCollocation));
+
+        Assert.Single(applied.LDraftContent.LEntryDraftMeanings);
+        Assert.Empty(applied.LDraftContent.LEntryDraftCollocations);
+    }
+
+    [Fact]
+    public void DraftClerkApply_SenseAdditionOnCollocationSharingMeaningIds_ChangesTheCollocationOnly()
+    {
+        LDraftClerk clerk = TInterface.TDraftClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
+        (LDraft draft, long card, _) = TDraftTwinCreate();
+
+        LDraft applied = clerk.TDraftClerkApply(draft, TInterface.TRequestSenseCreate(draft.LDraftId, card, card));
+
+        Assert.Equal(
+            draft.LDraftContent.LEntryDraftMeanings[0].LCardDraftSense,
+            applied.LDraftContent.LEntryDraftMeanings[0].LCardDraftSense);
+        Assert.Equal([card], applied.LDraftContent.LEntryDraftCollocations[0].LCardDraftSense);
+    }
+
+    [Fact]
+    public void DraftClerkApply_TagAdditionOnCollocationSharingMeaningIds_ChangesTheCollocationOnly()
+    {
+        LDraftClerk clerk = TInterface.TDraftClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
+        (LDraft draft, long card, _) = TDraftTwinCreate();
+
+        LDraft applied = clerk.TDraftClerkApply(
+            draft, TInterface.TTagAdditionCreate(draft.LDraftId, card, "blaze", 0, LCardKind.LCardKindCollocation));
+
+        TTwinChangeCheck(draft, applied, static row => row.LCardDraftTag.Count);
+    }
+
+    [Fact]
+    public void DraftClerkApply_TranslationPickOnCollocationSharingMeaningIds_ChangesTheCollocationOnly()
+    {
+        LDraftClerk clerk = TInterface.TDraftClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
+        (LDraft draft, long card, _) = TDraftTwinCreate();
+
+        LDraft applied = clerk.TDraftClerkApply(
+            draft, TInterface.TTranslationPickCreate(draft.LDraftId, card, 9041, 0, LCardKind.LCardKindCollocation));
+
+        TTwinChangeCheck(draft, applied, static row => row.LCardDraftTranslation.Count);
+    }
+
+    [Fact]
+    public void DraftClerkApply_RegisterRemovalOnCollocationSharingMeaningIds_ChangesTheCollocationOnly()
+    {
+        LDraftClerk clerk = TInterface.TDraftClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
+        (LDraft held, long card, _) = TDraftTwinCreate();
+        LRegisterDraft register = TInterface.TRegisterDraftCreate(
+            TInterfaceState.TStateValueCreate("archaic"), TInterface.TIdentityCreate());
+        LDraft draft = held with
+        {
+            LDraftContent = held.LDraftContent with
+            {
+                LEntryDraftMeanings =
+                    [held.LDraftContent.LEntryDraftMeanings[0] with { LCardDraftRegister = [register] }],
+                LEntryDraftCollocations =
+                    [held.LDraftContent.LEntryDraftCollocations[0] with { LCardDraftRegister = [register] }],
+            },
+        };
+
+        LDraft applied = clerk.TDraftClerkApply(
+            draft,
+            TInterface.TRegisterRemovalCreate(
+                draft.LDraftId, card, register.LRegisterDraftId, LCardKind.LCardKindCollocation));
+
+        TTwinChangeCheck(draft, applied, static row => row.LCardDraftRegister.Count, -1);
+    }
+
+    [Fact]
+    public void DraftClerkApply_SituationRemovalOnCollocationSharingMeaningIds_ChangesTheCollocationOnly()
+    {
+        LDraftClerk clerk = TInterface.TDraftClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
+        (LDraft draft, long card, _) = TDraftTwinCreate();
+        long situation = draft.LDraftContent.LEntryDraftCollocations[0].LCardDraftSituation[0].LSituationDraftId;
+
+        LDraft applied = clerk.TDraftClerkApply(
+            draft, TInterface.TSituationRemovalCreate(draft.LDraftId, card, situation, LCardKind.LCardKindCollocation));
+
+        TTwinChangeCheck(draft, applied, static row => row.LCardDraftSituation.Count, -1);
+    }
+
+    [Fact]
+    public void DraftClerkApply_ImageAdditionOnCollocationSharingMeaningIds_ChangesTheCollocationOnly()
+    {
+        LDraftClerk clerk = TInterface.TDraftClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
+        (LDraft draft, long card, _) = TDraftTwinCreate();
+
+        LDraft applied = clerk.TDraftClerkApply(
+            draft, TInterface.TImageAdditionCreate(draft.LDraftId, card, 0, LCardKind.LCardKindCollocation));
+
+        TTwinChangeCheck(draft, applied, static row => row.LCardDraftImage.Count);
+    }
+
+    [Fact]
+    public void DraftClerkApply_VideoAdditionOnCollocationSharingMeaningIds_ChangesTheCollocationOnly()
+    {
+        LDraftClerk clerk = TInterface.TDraftClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
+        (LDraft draft, long card, _) = TDraftTwinCreate();
+
+        LDraft applied = clerk.TDraftClerkApply(
+            draft, TInterface.TVideoAdditionCreate(draft.LDraftId, card, 0, LCardKind.LCardKindCollocation));
+
+        TTwinChangeCheck(draft, applied, static row => row.LCardDraftVideo.Count);
+    }
+
+    [Fact]
+    public void DraftClerkApply_ShiftOfCollocationSharingMeaningIds_MovesTheCollocationOnly()
+    {
+        LDraftClerk clerk = TInterface.TDraftClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
+        (LDraft held, long card, _) = TDraftTwinCreate();
+        LCardDraft other = held.LDraftContent.LEntryDraftMeanings[0] with
+        {
+            LCardDraftId = card + 1,
+            LCardDraftPosition = 2,
+        };
+        LDraft draft = held with
+        {
+            LDraftContent = held.LDraftContent with
+            {
+                LEntryDraftMeanings = [.. held.LDraftContent.LEntryDraftMeanings, other],
+                LEntryDraftCollocations = [.. held.LDraftContent.LEntryDraftCollocations, other],
+            },
+        };
+
+        LDraft applied = clerk.TDraftClerkApply(
+            draft, TInterface.TRequestShiftCreate(draft.LDraftId, card, 0, 1, LCardKind.LCardKindCollocation));
+
+        Assert.Equal(card, applied.LDraftContent.LEntryDraftMeanings[0].LCardDraftId);
+        Assert.Equal(card + 1, applied.LDraftContent.LEntryDraftCollocations[0].LCardDraftId);
+        Assert.Equal(card, applied.LDraftContent.LEntryDraftCollocations[1].LCardDraftId);
+    }
+
+    [Fact]
+    public void CardShiftRead_CollocationSharingMeaningIds_ReadsTheCollocationList()
+    {
+        (LDraft held, long card, _) = TDraftTwinCreate();
+        LCardDraft other = held.LDraftContent.LEntryDraftCollocations[0] with
+        {
+            LCardDraftId = card + 1,
+            LCardDraftPosition = 2,
+        };
+        LEntryDraft content = held.LDraftContent with
+        {
+            LEntryDraftCollocations = [.. held.LDraftContent.LEntryDraftCollocations, other],
+        };
+
+        Assert.Equal(1, TInterface.TCardShiftRead(content, card, 1, LCardKind.LCardKindCollocation));
+        Assert.Null(TInterface.TCardShiftRead(content, card, 1));
+    }
+
+    private static void TTwinChangeCheck(LDraft draft, LDraft applied, Func<LCardDraft, int> count, int step = 1)
+    {
+        Assert.Equal(
+            count(draft.LDraftContent.LEntryDraftMeanings[0]), count(applied.LDraftContent.LEntryDraftMeanings[0]));
+        Assert.Equal(
+            count(draft.LDraftContent.LEntryDraftCollocations[0]) + step,
+            count(applied.LDraftContent.LEntryDraftCollocations[0]));
+    }
+
+    private static (LDraft, long, long) TDraftTwinCreate()
+    {
+        LDraft held = TInterface.TDraftNestedCreate("Input", "kindle");
+        LCardDraft meaning = held.LDraftContent.LEntryDraftMeanings[0];
+        LSentenceDraft sentence = meaning.LCardDraftSentence[0];
+        LDraft draft = held with
+        {
+            LDraftContent = held.LDraftContent with
+            {
+                LEntryDraftMeanings = [meaning with { LCardDraftChild = [] }],
+                LEntryDraftCollocations = [meaning with { LCardDraftChild = [] }],
+            },
+        };
+
+        return (draft, meaning.LCardDraftId, sentence.LSentenceDraftId);
+    }
+
+    private static LExampleDraft TTwinExampleRead(IReadOnlyList<LCardDraft> cards) =>
+        cards[0].LCardDraftSentence[0].LSentenceDraftExample!;
+
+    [Fact]
     public void DraftClerkApply_UnknownRequestKind_ThrowsArgument()
     {
         LDraftClerk clerk = TInterface.TDraftClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));

@@ -184,7 +184,7 @@ public sealed class CAnthology
 
         return _cAnthologyDesk.LDeskRepaintRead(
             _cAnthologyLedger.LLedgerRepaint,
-            () => _cAnthologyDesk.CDeskDraft.CDeskDraftChip?.LQuillReferenceFind(0, 0, word) is LReferenceOffer offer
+            () => _cAnthologyDesk.CDeskDraft.CDeskDraftExample?.LQuillReferenceFind(word) is LReferenceOffer offer
                 ? CCard.LCardProfferRead(offer)
                 : new CProffer(word, [], false),
             new CProffer(word, [], false),
@@ -202,7 +202,7 @@ public sealed class CAnthology
 
         try
         {
-            _cAnthologyDesk.CDeskDraft.CDeskDraftChip?.LQuillReferenceResolve(title);
+            _cAnthologyDesk.CDeskDraft.CDeskDraftExample?.LQuillReferenceResolve(title);
         }
         catch (Exception exception)
         {
@@ -212,27 +212,27 @@ public sealed class CAnthology
 
     public void CAnthologyGlossSet(long glossId, string text)
     {
-        _cAnthologyDesk.CDeskDraft.CDeskDraftSentence?.LSentenceGlossSet(0, 0, glossId, null, text);
+        _cAnthologyDesk.CDeskDraft.CDeskDraftSentence?.LSentenceGlossSet(glossId, null, text);
     }
 
     public void CAnthologyLanguageSet(long glossId, string language)
     {
-        _cAnthologyDesk.CDeskDraft.CDeskDraftSentence?.LSentenceGlossSet(0, 0, glossId, language, null);
+        _cAnthologyDesk.CDeskDraft.CDeskDraftSentence?.LSentenceGlossSet(glossId, language, null);
     }
 
     public void CAnthologyGlossAdd(int below)
     {
-        _cAnthologyDesk.CDeskDraft.CDeskDraftSentence?.LQuillGlossInsert(0, 0, below + 1);
+        _cAnthologyDesk.CDeskDraft.CDeskDraftSentence?.LQuillGlossInsert(below + 1);
     }
 
     public bool CAnthologyGlossPrepare()
     {
-        return _cAnthologyDesk.CDeskDraft.CDeskDraftSentence?.LQuillGlossPrepare(0, 0) == true;
+        return _cAnthologyDesk.CDeskDraft.CDeskDraftSentence?.LQuillGlossPrepare() == true;
     }
 
     public void CAnthologyGlossRemove(long glossId)
     {
-        _cAnthologyDesk.CDeskDraft.CDeskDraftSentence?.LSentenceGlossRemove(0, 0, glossId);
+        _cAnthologyDesk.CDeskDraft.CDeskDraftSentence?.LSentenceGlossRemove(glossId);
     }
 
     public string CAnthologyTextSet(string text)

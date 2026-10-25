@@ -106,7 +106,8 @@ public sealed class QLecternCard
         {
             QLook.QLookCheckedRefine(
                 hinge,
-                _qLecternCardArea.CDisplayFoldToggle(card.QLeafItemId, QLook.QLookCheckedRead(hinge.IsChecked)));
+                _qLecternCardArea.CDisplayFoldToggle(
+                    card.QLeafItemCollocated, card.QLeafItemId, QLook.QLookCheckedRead(hinge.IsChecked)));
         }
     }
 
@@ -116,7 +117,7 @@ public sealed class QLecternCard
 
         if (QSender.QSenderSourceRead<QLeafSee>(e) is QLeafSee see)
         {
-            e.Handled = _qLecternCardArea.CDisplayFoldToggle(see.QLeafSeeId, false);
+            e.Handled = _qLecternCardArea.CDisplayFoldToggle(true, see.QLeafSeeId, false);
             QLecternSeeNotice?.Invoke(see.QLeafSeeId);
         }
     }

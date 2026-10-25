@@ -105,7 +105,8 @@ Selection lengths count Unicode code points rather than UTF-16 code units.
 A caret within a mention resolves to that draft mention, and so does an exact selection of it.
 A wider selection or a later unrelated selection does not match a mention merely because it overlaps or follows it.
 An Example draft answers a selection wholly inside one of its Mentions, and nothing for one running past its end.
-A card id and a sentence id name the example a Mention request would edit.
+A card kind, a card id and a sentence id name the example a Mention request would edit.
+A Collocation that shares its id with a Meaning reads its own Example, not the Meaning's.
 A sentence id the card lacks reads nothing, and zero ids read nothing too.
 
 ## `TSentence`
@@ -153,11 +154,11 @@ It falls back to the marker first rather than refusing to lay the row out.
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `8c403d1df768`
 - `TExample.cs` `a9f3021b68f07b9d`
 - `TExampleLine.cs` `12fd9a19c0177a20`
 - `TMention.cs` `cb740644a69ee697`
 - `TMentionFinding.cs` `ab0e214226ad13fc`
-- `TMentionSpan.cs` `fe6960d3e17c668e`
+- `TMentionSpan.cs` `032d03cfc0dd7363`
 - `TSentence.cs` `6b1a3fcdaa01b3d5`
 - `TSentenceOrder.cs` `8167c86b34858bbf`

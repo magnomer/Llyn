@@ -14,10 +14,11 @@ public sealed class TFold
         LEntryDraft entry = TFoldEntryCreate(engine, "word", out long entryId);
         long meaning = entry.LEntryDraftMeanings[0].LCardDraftId;
 
-        engine.TEngineFoldSave(entryId, meaning);
+        engine.TEngineFoldSave(entryId, LCardKind.LCardKindMeaning, meaning);
 
-        Assert.Contains(meaning, engine.TEngineFoldRead(entryId));
-        Assert.DoesNotContain(entry.LEntryDraftMeanings[1].LCardDraftId, engine.TEngineFoldRead(entryId));
+        Assert.Contains((LCardKind.LCardKindMeaning, meaning), engine.TEngineFoldRead(entryId));
+        Assert.DoesNotContain(
+            (LCardKind.LCardKindMeaning, entry.LEntryDraftMeanings[1].LCardDraftId), engine.TEngineFoldRead(entryId));
     }
 
     [Fact]
@@ -28,9 +29,28 @@ public sealed class TFold
         LEntryDraft entry = TFoldEntryCreate(engine, "word", out long entryId);
         long collocation = entry.LEntryDraftCollocations[0].LCardDraftId;
 
-        engine.TEngineFoldSave(entryId, collocation);
+        engine.TEngineFoldSave(entryId, LCardKind.LCardKindCollocation, collocation);
 
-        Assert.Equal([collocation], engine.TEngineFoldRead(entryId));
+        Assert.Equal([(LCardKind.LCardKindCollocation, collocation)], engine.TEngineFoldRead(entryId));
+    }
+
+    [Fact]
+    public void FoldSave_MeaningSharingCollocationId_LeavesCollocationUnfolded()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LEntryDraft entry = TFoldEntryCreate(engine, "word", out long entryId);
+        long meaning = entry.LEntryDraftMeanings[0].LCardDraftId;
+        workspace.TWorkspaceScriptRun(
+            "UPDATE collocation SET collocation_id = " + meaning + " WHERE collocation_id = "
+            + entry.LEntryDraftCollocations[0].LCardDraftId + ";");
+        Assert.Equal(meaning, engine.TEngineEntryLoad(entryId)!.LEntryDraftCollocations[0].LCardDraftId);
+
+        engine.TEngineFoldSave(entryId, LCardKind.LCardKindMeaning, meaning);
+
+        Assert.Equal([(LCardKind.LCardKindMeaning, meaning)], engine.TEngineFoldRead(entryId));
+        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense_fold;"));
+        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM collocation_fold;"));
     }
 
     [Fact]
@@ -41,11 +61,11 @@ public sealed class TFold
         LEntryDraft entry = TFoldEntryCreate(engine, "word", out long entryId);
         long meaning = entry.LEntryDraftMeanings[0].LCardDraftId;
         long collocation = entry.LEntryDraftCollocations[0].LCardDraftId;
-        engine.TEngineFoldSave(entryId, meaning);
-        engine.TEngineFoldSave(entryId, collocation);
+        engine.TEngineFoldSave(entryId, LCardKind.LCardKindMeaning, meaning);
+        engine.TEngineFoldSave(entryId, LCardKind.LCardKindCollocation, collocation);
 
-        engine.TEngineFoldDelete(entryId, meaning);
-        engine.TEngineFoldDelete(entryId, collocation);
+        engine.TEngineFoldDelete(entryId, LCardKind.LCardKindMeaning, meaning);
+        engine.TEngineFoldDelete(entryId, LCardKind.LCardKindCollocation, collocation);
 
         Assert.Empty(engine.TEngineFoldRead(entryId));
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense_fold;"));
@@ -62,14 +82,15 @@ public sealed class TFold
         long firstMeaning = first.LEntryDraftMeanings[1].LCardDraftId;
         long firstCollocation = first.LEntryDraftCollocations[0].LCardDraftId;
         long secondMeaning = second.LEntryDraftMeanings[0].LCardDraftId;
-        engine.TEngineFoldSave(firstId, firstMeaning);
-        engine.TEngineFoldSave(firstId, firstCollocation);
-        engine.TEngineFoldSave(secondId, secondMeaning);
+        engine.TEngineFoldSave(firstId, LCardKind.LCardKindMeaning, firstMeaning);
+        engine.TEngineFoldSave(firstId, LCardKind.LCardKindCollocation, firstCollocation);
+        engine.TEngineFoldSave(secondId, LCardKind.LCardKindMeaning, secondMeaning);
 
-        engine.TEngineFoldDelete(secondId, secondMeaning);
+        engine.TEngineFoldDelete(secondId, LCardKind.LCardKindMeaning, secondMeaning);
 
         Assert.Equal(
-            new[] { firstMeaning, firstCollocation }.Order(),
+            new[] { (LCardKind.LCardKindMeaning, firstMeaning), (LCardKind.LCardKindCollocation, firstCollocation) }
+                .Order(),
             engine.TEngineFoldRead(firstId).Order());
         Assert.Empty(engine.TEngineFoldRead(secondId));
     }
@@ -82,12 +103,12 @@ public sealed class TFold
         LEntryDraft entry = TFoldEntryCreate(engine, "word", out long entryId);
         long kept = entry.LEntryDraftMeanings[0].LCardDraftId;
         long dropped = entry.LEntryDraftMeanings[1].LCardDraftId;
-        engine.TEngineFoldSave(entryId, kept);
-        engine.TEngineFoldSave(entryId, dropped);
+        engine.TEngineFoldSave(entryId, LCardKind.LCardKindMeaning, kept);
+        engine.TEngineFoldSave(entryId, LCardKind.LCardKindMeaning, dropped);
 
         engine.TEngineEntryUpdate(entryId, entry with { LEntryDraftMeanings = [entry.LEntryDraftMeanings[0]] });
 
-        Assert.Equal([kept], engine.TEngineFoldRead(entryId));
+        Assert.Equal([(LCardKind.LCardKindMeaning, kept)], engine.TEngineFoldRead(entryId));
         Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense_fold;"));
     }
 
@@ -98,7 +119,7 @@ public sealed class TFold
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LEntryDraft entry = TFoldEntryCreate(engine, "word", out long entryId);
         long meaning = entry.LEntryDraftMeanings[0].LCardDraftId;
-        engine.TEngineFoldSave(entryId, meaning);
+        engine.TEngineFoldSave(entryId, LCardKind.LCardKindMeaning, meaning);
 
         engine.TEngineEntryDelete(entryId);
 
@@ -115,8 +136,10 @@ public sealed class TFold
         using LEngine engine = workspace.TWorkspaceEngineStart();
         TFoldEntryCreate(engine, "word", out long entryId);
 
-        engine.TEngineFoldSave(entryId, cardId);
-        engine.TEngineFoldDelete(entryId, cardId);
+        engine.TEngineFoldSave(entryId, LCardKind.LCardKindMeaning, cardId);
+        engine.TEngineFoldSave(entryId, LCardKind.LCardKindCollocation, cardId);
+        engine.TEngineFoldDelete(entryId, LCardKind.LCardKindMeaning, cardId);
+        engine.TEngineFoldDelete(entryId, LCardKind.LCardKindCollocation, cardId);
 
         Assert.Empty(engine.TEngineFoldRead(entryId));
         Assert.Empty(engine.TEngineFoldRead(cardId));
@@ -140,8 +163,8 @@ public sealed class TFold
             }
         });
 
-        engine.TEngineFoldSave(entryId, meaning);
-        engine.TEngineFoldDelete(entryId, meaning);
+        engine.TEngineFoldSave(entryId, LCardKind.LCardKindMeaning, meaning);
+        engine.TEngineFoldDelete(entryId, LCardKind.LCardKindMeaning, meaning);
 
         Assert.Equal([entryId, entryId], raised);
     }

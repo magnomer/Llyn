@@ -66,6 +66,8 @@ So a fact reads which refusal the gate showed.
 The relays for the clerks of the application ring, built over a rig of fakes.
 Each relay is transparent and carries no test logic of its own.
 Most relays pass one clerk call through, so only the builders and the odd ones are described here.
+The card relays default to the Meaning kind, so a Collocation test names its kind.
+The gloss emptiness check takes a site, and the relay builds it from a card and a sentence id.
 
 ## `TRigClerkCreate`
 
@@ -232,12 +234,12 @@ One reversal is shared between hiding and restoring.
 
 ## Stamp
 
-Commit: `52c21d68b4c4`
+Commit: `8c403d1df768`
 - `TClockFake.cs` `dffa2b2fcf999593`
 - `TEngineFake.cs` `364e90d7a21a82f8`
 - `TEngineFault.cs` `deab7d5e61cdcbfb`
 - `TEnvoyFake.cs` `6d5bffee0960fa06`
-- `TInterfaceClerk.cs` `08c1766833cedf3f`
+- `TInterfaceClerk.cs` `aef7298e67077c3f`
 - `TPhonographFake.cs` `78d1f82eea929e6a`
 - `TPostureFake.cs` `85c13ab0bfe0439a`
 - `TRigFake.cs` `ac2dfbafea247d4e`

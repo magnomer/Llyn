@@ -16,7 +16,7 @@ public sealed class TCardSentence
         (CDesk desk, CSentence sentence) = TSentencePrepare(engine);
         (long sheet, long first) = TSentenceCardAdd(desk);
 
-        sentence.CSentenceAdd(sheet, 0);
+        sentence.CSentenceAdd(false, sheet, 0);
 
         LCardDraft card = TInterface.TRequestCardFind(desk.TDeskRead()!.LDraftContent, sheet);
         Assert.Equal(2, card.LCardDraftSentence.Count);
@@ -31,7 +31,7 @@ public sealed class TCardSentence
         (CDesk desk, CSentence sentence) = TSentencePrepare(engine);
         (long sheet, long first) = TSentenceCardAdd(desk);
 
-        sentence.CSentenceRemove(sheet, first);
+        sentence.CSentenceRemove(false, sheet, first);
 
         Assert.Empty(TInterface.TRequestCardFind(desk.TDeskRead()!.LDraftContent, sheet).LCardDraftSentence);
     }
@@ -44,9 +44,9 @@ public sealed class TCardSentence
         (CDesk desk, CSentence sentence) = TSentencePrepare(engine);
         (long sheet, long first) = TSentenceCardAdd(desk);
 
-        sentence.CSentenceTextSet(sheet, first, "a cat sleeps");
-        sentence.CSentenceParticleSet(sheet, first, "of");
-        sentence.CSentenceDependenceSet(sheet, first, "Something");
+        sentence.CSentenceTextSet(false, sheet, first, "a cat sleeps");
+        sentence.CSentenceParticleSet(false, sheet, first, "of");
+        sentence.CSentenceDependenceSet(false, sheet, first, "Something");
 
         LSentenceDraft row = TInterface.TRequestCardFind(desk.TDeskRead()!.LDraftContent, sheet)
             .LCardDraftSentence.Single(held => held.LSentenceDraftId == first);
@@ -64,7 +64,7 @@ public sealed class TCardSentence
         (CDesk desk, CSentence sentence) = TSentencePrepare(engine);
         (long sheet, long first) = TSentenceCardAdd(desk);
 
-        sentence.CSentenceCitationSet(sheet, first, notes.LReferenceId);
+        sentence.CSentenceCitationSet(false, sheet, first, notes.LReferenceId);
 
         LSentenceDraft row = TInterface.TRequestCardFind(desk.TDeskRead()!.LDraftContent, sheet)
             .LCardDraftSentence.Single(held => held.LSentenceDraftId == first);
@@ -94,7 +94,7 @@ public sealed class TCardSentence
             engine, "Input", TEnvoyFake.TEnvoyCreate(false, []), "Input", CSubject.CSubjectEntry);
         CSentence sentence = TInterfaceConductCard.TSentenceCreate(engine, desk);
 
-        sentence.CSentenceAdd(1, 0);
+        sentence.CSentenceAdd(false, 1, 0);
 
         Assert.False(desk.CDeskHeld);
     }
@@ -107,9 +107,9 @@ public sealed class TCardSentence
         long cat = engine.TEngineTranslationCreate("cat", "English").LEntryId;
         (CDesk desk, CSentence sentence) = TSentencePrepare(engine);
         (long sheet, long row) = TSentenceCardAdd(desk);
-        sentence.CSentenceTextSet(sheet, row, "a cat sat");
+        sentence.CSentenceTextSet(false, sheet, row, "a cat sat");
 
-        sentence.CSentenceMentionAdd(sheet, row, "a cat sat", 2, 3, cat);
+        sentence.CSentenceMentionAdd(false, sheet, row, "a cat sat", 2, 3, cat);
 
         LExampleDraft? example = TInterface.TRequestCardFind(desk.TDeskRead()!.LDraftContent, sheet)
             .LCardDraftSentence[0].LSentenceDraftExample;

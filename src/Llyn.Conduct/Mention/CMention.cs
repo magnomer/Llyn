@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Llyn.Application;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -84,8 +85,8 @@ public sealed class CMention
     }
 
     internal static CMentionSense? LMentionSenseRead(
-        LDraftPort drafts, CDesk desk, long cardId, long sentenceId, string text, int start, int length,
-        CEnvoy envoy, LSettingsPort settings)
+        LDraftPort drafts, CDesk desk, LExampleSite site, string text, int start, int length, CEnvoy envoy,
+        LSettingsPort settings)
     {
         ArgumentNullException.ThrowIfNull(drafts);
         ArgumentNullException.ThrowIfNull(desk);
@@ -97,7 +98,7 @@ public sealed class CMention
 
         try
         {
-            return drafts.LEngineSenseRead(held, cardId, sentenceId, text, start, length, "Display.Unknown") is { } rows
+            return drafts.LEngineSenseRead(held, site, text, start, length, "Display.Unknown") is { } rows
                 ? new CMentionSense(
                     "Mention.Sense",
                     [
@@ -114,7 +115,11 @@ public sealed class CMention
     }
 
     internal static IReadOnlyList<CMentionLabel> LMentionChipRead(
-        LDraftPort drafts, CDesk desk, long cardId, long sentenceId, CEnvoy envoy, LSettingsPort settings)
+        LDraftPort drafts,
+        CDesk desk,
+        LExampleSite site,
+        CEnvoy envoy,
+        LSettingsPort settings)
     {
         ArgumentNullException.ThrowIfNull(drafts);
         ArgumentNullException.ThrowIfNull(desk);
@@ -126,7 +131,7 @@ public sealed class CMention
 
         try
         {
-            return LMentionLabelRead(drafts.LEngineMentionResolve(held, cardId, sentenceId));
+            return LMentionLabelRead(drafts.LEngineMentionResolve(held, site));
         }
         catch (Exception exception)
         {
@@ -188,22 +193,25 @@ public sealed class CMention
         ArgumentNullException.ThrowIfNull(lines);
         ArgumentNullException.ThrowIfNull(drafts);
 
-        Dictionary<(long, long), long> held = [];
-        foreach (LCardDraft card in content.LEntryDraftMeanings.Concat(content.LEntryDraftCollocations))
+        Dictionary<(bool, long, long), long> held = [];
+        foreach ((bool collocated, LCardDraft card) in content.LEntryDraftMeanings.Select(static card => (false, card))
+            .Concat(content.LEntryDraftCollocations.Select(static card => (true, card))))
         {
             foreach (LSentenceDraft sentence in card.LCardDraftSentence)
             {
-                held[(card.LCardDraftId, sentence.LSentenceDraftId)] = drafts.LEngineLineFind(content, sentence);
+                held[(collocated, card.LCardDraftId, sentence.LSentenceDraftId)] =
+                    drafts.LEngineLineFind(content, sentence);
             }
         }
 
         Dictionary<long, IReadOnlyList<CMentionLabel>> read = [];
-        foreach (CCardDraft card in shown.CEntryDraftMeanings.Concat(shown.CEntryDraftCollocations))
+        foreach ((bool collocated, CCardDraft card) in shown.CEntryDraftMeanings.Select(static card => (false, card))
+            .Concat(shown.CEntryDraftCollocations.Select(static card => (true, card))))
         {
             foreach (CSentenceDraft sentence in card.CCardDraftSentence)
             {
                 read[sentence.CSentenceDraftLine] =
-                    held.TryGetValue((card.CCardDraftId, sentence.CSentenceDraftId), out long line)
+                    held.TryGetValue((collocated, card.CCardDraftId, sentence.CSentenceDraftId), out long line)
                     && lines.TryGetValue(line, out IReadOnlyList<LMentionLabel>? labels)
                         ? LMentionLabelRead(labels)
                         : [];

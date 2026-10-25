@@ -9,35 +9,38 @@ public sealed record LRequestCardAddition(
     public override string LRequestKey => nameof(LRequestCardAddition);
 }
 
-public sealed record LRequestCardRemoval(long LRequestDraftId, long LRequestCardId)
+public sealed record LRequestCardRemoval(long LRequestDraftId, LCardKind LRequestKind, long LRequestCardId)
     : LRequest(LRequestDraftId)
 {
     public override string LRequestKey => nameof(LRequestCardRemoval);
 }
 
 public sealed record LRequestCardShift(
-    long LRequestDraftId, long LRequestCardId, long LRequestParentId, int LRequestPosition)
+    long LRequestDraftId, LCardKind LRequestKind, long LRequestCardId, long LRequestParentId, int LRequestPosition)
     : LRequest(LRequestDraftId)
 {
     public override string LRequestKey => nameof(LRequestCardShift);
 }
 
-public sealed record LRequestCardTitle(long LRequestDraftId, long LRequestCardId, LStateWritten LRequestValue)
+public sealed record LRequestCardTitle(
+    long LRequestDraftId, LCardKind LRequestKind, long LRequestCardId, LStateWritten LRequestValue)
     : LRequest(LRequestDraftId)
 {
-    public override string LRequestKey => $"{nameof(LRequestCardTitle)}:{LRequestCardId}";
+    public override string LRequestKey => $"{nameof(LRequestCardTitle)}:{LRequestKind}:{LRequestCardId}";
 }
 
-public sealed record LRequestCardExpression(long LRequestDraftId, long LRequestCardId, LStateWritten LRequestValue)
+public sealed record LRequestCardExpression(
+    long LRequestDraftId, LCardKind LRequestKind, long LRequestCardId, LStateWritten LRequestValue)
     : LRequest(LRequestDraftId)
 {
-    public override string LRequestKey => $"{nameof(LRequestCardExpression)}:{LRequestCardId}";
+    public override string LRequestKey => $"{nameof(LRequestCardExpression)}:{LRequestKind}:{LRequestCardId}";
 }
 
-public sealed record LRequestCardMeaning(long LRequestDraftId, long LRequestCardId, LStateWritten LRequestValue)
+public sealed record LRequestCardMeaning(
+    long LRequestDraftId, LCardKind LRequestKind, long LRequestCardId, LStateWritten LRequestValue)
     : LRequest(LRequestDraftId)
 {
-    public override string LRequestKey => $"{nameof(LRequestCardMeaning)}:{LRequestCardId}";
+    public override string LRequestKey => $"{nameof(LRequestCardMeaning)}:{LRequestKind}:{LRequestCardId}";
 }
 
 public sealed record LRequestSenseAddition(long LRequestDraftId, long LRequestCardId, long LRequestSenseId)

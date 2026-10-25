@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Llyn.Application;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -62,23 +63,23 @@ public sealed class LDraftOutlet : LDraftPort
     public IReadOnlyList<LBylineRow> LEngineBylineFind(long draft, string query) =>
         _lDraftOutletEngine.LEngineAuthor.LEngineBylineFind(draft, query);
 
-    public LTagOffer LEngineTagFind(LTenure held, long card, string text) =>
-        _lDraftOutletEngine.LEngineCatalog.LEngineTagFind(held, card, text);
+    public LTagOffer LEngineTagFind(LTenure held, LCardKind kind, long card, string text) =>
+        _lDraftOutletEngine.LEngineCatalog.LEngineTagFind(held, kind, card, text);
 
-    public LRegisterOffer LEngineRegisterFind(LTenure held, long card, string text) =>
-        _lDraftOutletEngine.LEngineCatalog.LEngineRegisterFind(held, card, text);
+    public LRegisterOffer LEngineRegisterFind(LTenure held, LCardKind kind, long card, string text) =>
+        _lDraftOutletEngine.LEngineCatalog.LEngineRegisterFind(held, kind, card, text);
 
-    public LSituationOffer LEngineSituationFind(LTenure held, long card, string text) =>
-        _lDraftOutletEngine.LEngineSituation.LEngineSituationFind(held, card, text);
+    public LSituationOffer LEngineSituationFind(LTenure held, LCardKind kind, long card, string text) =>
+        _lDraftOutletEngine.LEngineSituation.LEngineSituationFind(held, kind, card, text);
 
-    public LReferenceOffer LEngineReferenceFind(LTenure held, long card, long sentence, string text) =>
-        _lDraftOutletEngine.LEngineReference.LEngineReferenceFind(held, card, sentence, text);
+    public LReferenceOffer LEngineReferenceFind(LTenure held, LExampleSite site, string text) =>
+        _lDraftOutletEngine.LEngineReference.LEngineReferenceFind(held, site, text);
 
-    public long LEngineCitationResolve(LTenure held, long card, long sentence, string title)
+    public long LEngineCitationResolve(LTenure held, LExampleSite site, string title)
     {
         ArgumentNullException.ThrowIfNull(held);
 
-        return _lDraftOutletEngine.LEngineReference.LEngineCitationResolve(held.LTenureId, card, sentence, title);
+        return _lDraftOutletEngine.LEngineReference.LEngineCitationResolve(held.LTenureId, site, title);
     }
 
     public string LEngineBylineRead(string? text) => LAuthorFacade.LEngineBylineRead(text);
@@ -98,15 +99,15 @@ public sealed class LDraftOutlet : LDraftPort
     public IReadOnlyDictionary<long, IReadOnlyList<LMentionLabel>> LEngineMentionResolve(LDraft draft) =>
         _lDraftOutletEngine.LEngineMention.LEngineMentionResolve(draft);
 
-    public IReadOnlyList<LMentionLabel> LEngineMentionResolve(LTenure held, long card, long sentence) =>
-        _lDraftOutletEngine.LEngineMention.LEngineMentionResolve(held, card, sentence);
+    public IReadOnlyList<LMentionLabel> LEngineMentionResolve(LTenure held, LExampleSite site) =>
+        _lDraftOutletEngine.LEngineMention.LEngineMentionResolve(held, site);
 
     public long LEngineLineFind(LEntryDraft shown, LSentenceDraft sentence) =>
         _lDraftOutletEngine.LEngineMention.LEngineLineFind(shown, sentence);
 
     public IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)>? LEngineSenseRead(
-        LTenure held, long card, long sentence, string text, int start, int length, string key) =>
-        _lDraftOutletEngine.LEngineCard.LEngineSenseRead(held, card, sentence, text, start, length, key);
+        LTenure held, LExampleSite site, string text, int start, int length, string key) =>
+        _lDraftOutletEngine.LEngineCard.LEngineSenseRead(held, site, text, start, length, key);
 
     public IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth, string LMeaningPath)>
         LEngineMeaningScan(LTenure held, string key) =>

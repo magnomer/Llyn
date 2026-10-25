@@ -62,7 +62,7 @@ The target chip, incoming language and gloss each open with that flag.
 An incoming usage links its entry's note under the incoming heading and carries the owner chip.
 A video file becomes one video parcel behind a Markdown link, with no `<video>` tag left.
 A stored open card is an open `details` block with its number chip inside a `summary`.
-A folded card is a `details` block with a `summary` and no `open` attribute.
+A folded card, stored by kind and id, is a `details` block with a `summary` and no `open` attribute.
 A card with no stored id stays a plain `div` with no `summary`.
 
 ## `TEngineLiveryInflection.cs`
@@ -116,7 +116,7 @@ The folded-language format fact lives here too, since it shares the folding pack
 A stored entry keeps its header, favorite, grasp and both stamps.
 A missing entry reads null.
 A folded reflex language keeps the folded list, the reflex order and the guise folded flags.
-Only a folded stored card's id is in `LLiveryPageFold`.
+Only a folded stored card is in `LLiveryPageFold`, as a pair of card kind and id.
 A stored fanqie row keeps the one group `LEngineFanqieDivide` answers.
 Only the opened box is in `LLiveryPageOpened`.
 A script page reads no script before the fetch, then keeps the one style group afterwards.
@@ -134,9 +134,9 @@ Each box keeps its tongue and gloss spans, and the headword closes the tree in `
 
 ## Stamp
 
-Commit: `aae5349dbb94`
+Commit: `8c403d1df768`
 - `TEngineLivery.cs` `171299b8324074fb`
-- `TEngineLiveryCard.cs` `e96a6501a7a378a6`
+- `TEngineLiveryCard.cs` `12ba4eabe11334f0`
 - `TEngineLiveryInflection.cs` `f92f64ecc5403946`
 - `TEngineLiveryLanguage.cs` `93be9c93139a750d`
-- `TEngineLiveryPage.cs` `4cdafc88e834f0f8`
+- `TEngineLiveryPage.cs` `433fe6f13379fac4`

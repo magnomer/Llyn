@@ -5,15 +5,21 @@
     Runs every test project under the tests folder from the repository root.
     The test projects are discovered on disk, not through the solution: every
     *.csproj at any depth under the tests folder, outside bin and obj folders. By
-    default every project runs, the convention test project included. -Main
-    skips the convention project and -Convention runs it alone.
+    default every project runs except the convention test project. -All adds the
+    convention project and -Convention runs it alone.
     -Platform picks the test projects mapped to one platform in Test.json; the
-    convention project still runs beside them unless -Main is given. A Windows
+    convention project runs beside them only when -All is given. A Windows
     project on a host that is not Windows is skipped with a notice line.
     Given symbol names, only the tests a change inside those symbols can affect
     run: TraceSymbol.ps1 finds them, and each test project runs with a filter that
     selects them. A project with no affected test is skipped. The convention
-    project runs whole, since its audits read every source file.
+    project, when -All or -Convention selects it, runs whole, since its audits
+    read every source file.
+    Every folder under the tests folder that holds a test project gives a switch,
+    named by the last dot-separated part of the folder name: a folder Infrastructure
+    gives -Infrastructure, a folder Llyn.Tests.Console gives -Console. Given one or
+    more such switches, only the test projects inside those folders run. -Help
+    lists the switches this tree gives.
     Supports VSTest filters, test discovery, repeated runs for investigating
     intermittent failures, and additional arguments passed to dotnet test.
 
@@ -40,13 +46,13 @@
     Name of a single test project to run. Defaults to all. Overrides the scope switches and -Platform.
 .PARAMETER Platform
     All (default), Internal or Windows. A platform other than All runs only the test projects Test.json
-    maps to it, and the convention project unless -Main is given. Cannot be combined with -Convention.
+    maps to it, and the convention project when -All is given. Cannot be combined with -Convention.
 .PARAMETER All
-    Run every test project, the convention project included. This is the default. Alias: -a.
+    Run every test project, the convention project included. Alias: -a.
 .PARAMETER Convention
     Run the convention test project only. Alias: -c.
 .PARAMETER Main
-    Run every test project except the convention project. Alias: -m.
+    Run every test project except the convention project. This is the default. Alias: -m.
 .PARAMETER NoBuild
     Pass --no-build to dotnet test. This also prevents restore.
 .PARAMETER NoRestore
@@ -63,24 +69,27 @@
     Display this help and exit without running tests. The alias -? is supported.
 .EXAMPLE
     test
-    Run the full Debug test suite once, the convention tests included.
+    Run the Debug test suite once, without the convention tests.
 .EXAMPLE
     test LTwin
-    Run the tests a change inside LTwin can affect, and the convention tests.
-.EXAMPLE
-    test LTwin -m
     Run the tests a change inside LTwin can affect, without the convention tests.
 .EXAMPLE
-    test -m
-    Run the Debug test suite once, without the convention tests.
+    test LTwin -a
+    Run the tests a change inside LTwin can affect, and the convention tests.
+.EXAMPLE
+    test -a
+    Run the full Debug test suite once, the convention tests included.
 .EXAMPLE
     test -c
     Run the convention tests only.
 .EXAMPLE
-    test -Platform Internal
+    test -Infrastructure -Application
+    Run only the test projects inside the Infrastructure and Application folders.
+.EXAMPLE
+    test -Platform Internal -a
     Run the portable tests and the convention tests.
 .EXAMPLE
-    test -Platform Windows -m
+    test -Platform Windows
     Run the Windows tests only.
 .EXAMPLE
     test -Configuration Release
@@ -102,7 +111,7 @@
     Forward logger and results-directory options to dotnet test.
 #>
 #requires -Version 5.1
-# TEST - TEST GENERATION 5.
+# TEST - TEST GENERATION 6.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the executed outcome changes.
 # A generation names how the family finds and runs the tests. Two projects on the same generation
@@ -121,6 +130,11 @@
 # Generation 5: everything in generation 4, except that every project builds first, one by one, and then
 # all run at once in their own processes; every failing project is named, not only the first, and the
 # first failing project in discovery order gives the exit code.
+# Generation 6: everything in generation 5, except that the convention project runs only when -All or
+# -Convention selects it; a plain run, a run given symbol names and a -Platform run all leave it out,
+# and -Main names that default. Every folder under the tests folder that holds a test project gives a
+# switch named by the last dot-separated part of its name, and one or more such switches run only the
+# test projects inside those folders.
 # Every project-specific value lives in Test.json, so this file is identical in every project at
 # this generation.
 [CmdletBinding()]
@@ -166,6 +180,75 @@ param(
     [switch]$Help
 )
 
+dynamicparam {
+    # Every folder under the tests folder that holds a test project, at any depth, gives one switch,
+    # named by the last dot-separated part of the folder name: Infrastructure gives -Infrastructure and
+    # Llyn.Tests.Console gives -Console. Folders that share a name share the switch. A name that a fixed
+    # parameter or alias already takes, or that is no plain identifier, gives no switch. The map from
+    # switch to folders is kept for the script body; a tree that cannot be read gives no switches, and
+    # the body then reports the cause.
+    $script:testFolders = @{}
+    $dictionary = [System.Management.Automation.RuntimeDefinedParameterDictionary]::new()
+    try {
+        $config = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'Test.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+        $testsRoot = [System.IO.Path]::GetFullPath((Join-Path (Join-Path $PSScriptRoot '..') ([string]$config.tests)))
+        $taken = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+        foreach ($parameter in $MyInvocation.MyCommand.Parameters.Values) {
+            $null = $taken.Add($parameter.Name)
+            foreach ($alias in $parameter.Aliases) {
+                $null = $taken.Add($alias)
+            }
+        }
+
+        $pending = [System.Collections.Generic.Stack[string]]::new()
+        $pending.Push($testsRoot)
+        while ($pending.Count -gt 0) {
+            $folder = $pending.Pop()
+            foreach ($child in [System.IO.Directory]::GetDirectories($folder)) {
+                $leaf = [System.IO.Path]::GetFileName($child)
+                if ($leaf -ne 'bin' -and $leaf -ne 'obj') {
+                    $pending.Push($child)
+                }
+            }
+
+            if ([System.IO.Directory]::GetFiles($folder, '*.csproj').Count -eq 0) {
+                continue
+            }
+
+            for ($owner = $folder; $owner.Length -gt $testsRoot.Length; $owner = [System.IO.Path]::GetDirectoryName($owner)) {
+                $switchName = @([System.IO.Path]::GetFileName($owner) -split '\.')[-1]
+                if ($switchName -notmatch '^[A-Za-z_][A-Za-z0-9_]*$' -or $taken.Contains($switchName)) {
+                    continue
+                }
+
+                # The map ignores case, as parameter names do, so Console and console share one switch.
+                if (-not $script:testFolders.ContainsKey($switchName)) {
+                    $script:testFolders[$switchName] = [System.Collections.Generic.List[string]]::new()
+                }
+
+                if (-not $script:testFolders[$switchName].Contains($owner)) {
+                    $script:testFolders[$switchName].Add($owner)
+                }
+            }
+        }
+    }
+    catch {
+        $script:testFolders = @{}
+    }
+
+    foreach ($switchName in $script:testFolders.Keys) {
+        $attributes = [System.Collections.ObjectModel.Collection[System.Attribute]]::new()
+        $attributes.Add([System.Management.Automation.ParameterAttribute]::new())
+        $dictionary.Add($switchName, [System.Management.Automation.RuntimeDefinedParameter]::new($switchName, [switch], $attributes))
+    }
+
+    return $dictionary
+}
+
+# A script with a dynamicparam block keeps its body in a named block. The body is left at the margin,
+# so the help text below prints as it reads.
+end {
+
 if ($Help) {
     @'
 NAME
@@ -180,13 +263,13 @@ SYNTAX
         [-All | -Convention | -Main]
         [-NoBuild] [-NoRestore] [-List]
         [-Repeat <count>] [-Verbosity <level>]
-        [-AdditionalArguments <arguments[]>] [-Help]
+        [-AdditionalArguments <arguments[]>] [-<folder> ...] [-Help]
 
 OPTIONS
     <name>
         Symbol to start from: a type, method, property or field. Several are
         allowed. Runs only the tests a change inside them can affect, found by
-        TraceSymbol.ps1, and the convention project whole.
+        TraceSymbol.ps1, and with -All the convention project whole.
 
     -Configuration <Debug|Release>
         Build configuration. Defaults to Debug.
@@ -200,18 +283,18 @@ OPTIONS
 
     -Platform <All|Internal|Windows>
         Run the test projects Test.json maps to the platform, and the
-        convention project unless -Main is given. Defaults to All, every
+        convention project when -All is given. Defaults to All, every
         project. A Windows project on a host that is not Windows is skipped
         with a notice line. Cannot be combined with -Convention.
 
     -All, -a
-        Run every test project, the convention project included. Default.
+        Run every test project, the convention project included.
 
     -Convention, -c
         Run the convention test project only.
 
     -Main, -m
-        Run every test project except the convention project.
+        Run every test project except the convention project. Default.
 
     -NoBuild
         Reuse existing build output and skip restore.
@@ -235,6 +318,11 @@ OPTIONS
     -Help, -?
         Display this help and exit without running tests.
 
+    -<folder>
+        Run only the test projects inside the folders under the tests folder
+        whose name, after its last dot, is <folder>. Several may be given. Cannot be combined with -All, -Convention, -Main, -Platform or
+        -Project. FOLDERS below lists the switches this tree gives.
+
 TIME LIMIT
     Each run is timed from its start. At 10 minutes the projects still
     running are named once; at 15 minutes each is killed with its whole
@@ -242,24 +330,24 @@ TIME LIMIT
 
 EXAMPLES
     test
-        Run the full Debug test suite once, the convention tests included.
+        Run the Debug test suite once, without the convention tests.
 
     test LTwin
-        Run the tests a change inside LTwin can affect, and the convention tests.
-
-    test LTwin -m
         Run the tests a change inside LTwin can affect, without the convention tests.
 
-    test -m
-        Run the Debug test suite once, without the convention tests.
+    test LTwin -a
+        Run the tests a change inside LTwin can affect, and the convention tests.
+
+    test -a
+        Run the full Debug test suite once, the convention tests included.
 
     test -c
         Run the convention tests only.
 
-    test -Platform Internal
+    test -Platform Internal -a
         Run the portable tests and the convention tests.
 
-    test -Platform Windows -m
+    test -Platform Windows
         Run the Windows tests only.
 
     test -Configuration Release
@@ -280,11 +368,39 @@ EXAMPLES
 
     test -AdditionalArguments '--logger', 'trx'
         Forward additional options to dotnet test.
+
+    test -Infrastructure -Application
+        Run only the test projects inside the Infrastructure and Application
+        folders.
 '@ | Write-Host
+
+    # The folder switches come from the tree, so the help names the ones this tree gives.
+    Write-Host ''
+    Write-Host 'FOLDERS'
+    if ($script:testFolders.Count -eq 0) {
+        Write-Host '    No folder under the tests folder gives a switch.'
+    }
+    else {
+        Write-Host '    Each switch runs only the test projects inside its folders. Several'
+        Write-Host '    may be given, and each adds its folders.'
+        Write-Host ''
+        $helpRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..')).TrimEnd('\', '/') + [System.IO.Path]::DirectorySeparatorChar
+        $switchNames = [string[]]@($script:testFolders.Keys)
+        [System.Array]::Sort($switchNames, [System.StringComparer]::Ordinal)
+        foreach ($switchName in $switchNames) {
+            Write-Host ("    -{0}" -f $switchName)
+            $folders = $script:testFolders[$switchName].ToArray()
+            [System.Array]::Sort($folders, [System.StringComparer]::Ordinal)
+            foreach ($folder in $folders) {
+                Write-Host ("        {0}" -f $folder.Substring($helpRoot.Length))
+            }
+        }
+    }
+
     exit 0
 }
 
-Write-Host 'TEST - TEST GENERATION 5' -ForegroundColor Blue
+Write-Host 'TEST - TEST GENERATION 6' -ForegroundColor Blue
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
@@ -336,8 +452,8 @@ function Read-TestConfig {
         }
     }
 
-    if ([int]$config.generation -ne 5) {
-        throw "The test configuration is generation $($config.generation); this script is generation 5."
+    if ([int]$config.generation -ne 6) {
+        throw "The test configuration is generation $($config.generation); this script is generation 6."
     }
 
     return $config
@@ -345,6 +461,12 @@ function Read-TestConfig {
 
 if (@($All, $Convention, $Main | Where-Object { $_ }).Count -gt 1) {
     throw '-All, -Convention and -Main cannot be combined.'
+}
+
+# A folder switch names its folders outright, so no other scope option applies beside it.
+$folderSwitches = @($script:testFolders.Keys | Where-Object { $PSBoundParameters.ContainsKey($_) -and $PSBoundParameters[$_] })
+if ($folderSwitches.Count -gt 0 -and ($All -or $Convention -or $Main -or $Platform -ne 'All' -or -not [string]::IsNullOrWhiteSpace($Project))) {
+    throw 'A folder switch cannot be combined with -All, -Convention, -Main, -Platform or -Project.'
 }
 
 if ($Convention -and $Platform -ne 'All') {
@@ -364,7 +486,15 @@ $projects = @(
         Sort-Object -Property @{ Expression = { Get-OrdinalKey $_.Name } }
 )
 
-if (-not [string]::IsNullOrWhiteSpace($Project)) {
+if ($folderSwitches.Count -gt 0) {
+    # A project runs when it lies inside any folder of any switch given.
+    $folders = @(foreach ($switchName in $folderSwitches) { $script:testFolders[$switchName] | ForEach-Object { $_ + [System.IO.Path]::DirectorySeparatorChar } })
+    $projects = @($projects | Where-Object {
+        $path = $_.FullName
+        @($folders | Where-Object { $path.StartsWith($_, [System.StringComparison]::OrdinalIgnoreCase) }).Count -gt 0
+    })
+}
+elseif (-not [string]::IsNullOrWhiteSpace($Project)) {
     $projects = @($projects | Where-Object { $_.BaseName -eq $Project })
     if ($projects.Count -eq 0) {
         throw "Test project was not found under tests: $Project"
@@ -393,7 +523,8 @@ else {
         $projects = @($projects | Where-Object { $platformProjects -contains $_.BaseName -or $_.BaseName -eq [string]$config.convention })
     }
 
-    if ($Main) {
+    # The convention project runs only when -All asks for it; -Main names this default.
+    if (-not $All) {
         $projects = @($projects | Where-Object { $_.BaseName -ne [string]$config.convention })
     }
 }
@@ -753,7 +884,7 @@ try {
 finally {
     # A run broken off, by an error or by Ctrl+C, leaves its projects running; each is killed with its tree.
     foreach ($entry in $running) {
-        Stop-ProcessTree -Process $entry.Process
+        $null = Stop-ProcessTree -Process $entry.Process
     }
 
     # A process that outlives its project may still hold an output file for a moment, so the removal is
@@ -787,3 +918,4 @@ if ($exitCode -eq 0) {
 }
 
 exit $exitCode
+}

@@ -3,6 +3,7 @@
 These tests isolate entry card gates and draft wording from window behavior.
 Real workspace tests inspect held drafts to distinguish completed edits from pending input and suggestions.
 Typed chip cases go through a `CCaret` built over the desk, the card and a `CLedgerNoticed`.
+Card and caret calls pass `false` for the collocation flag, so these cases stay on the meaning cards.
 Caret cases check that settles and picks land before the anchor and deletes take the chip beside the caret.
 
 ## `TCard`
@@ -84,14 +85,14 @@ A caret moved back inserts a picked row before its anchor and leaves the anchor 
 
 ## Stamp
 
-Commit: `cb8ab7e8feb4`
+Commit: `8c403d1df768`
 - `TCard.cs` `b54f5d3767d484e4`
-- `TCardList.cs` `4700acc755d2cbf7`
-- `TCardReference.cs` `7b728c701dd3e0de`
-- `TCardRegister.cs` `29d5a23e7a3154ed`
-- `TCardSentence.cs` `04006230f6c0a70c`
-- `TCardSituation.cs` `b2a9d424150ea278`
+- `TCardList.cs` `9d1b8dcf0fd446e1`
+- `TCardReference.cs` `f8c14a236c5f5248`
+- `TCardRegister.cs` `7b6c2f10bb0fb535`
+- `TCardSentence.cs` `d1a5ad65440da628`
+- `TCardSituation.cs` `a3a2cb6b7d517506`
 - `TCardSpeech.cs` `8c3b0ecae8677f2f`
-- `TCardTag.cs` `31ae11a1a0c653f8`
-- `TCardTranslation.cs` `ddd040b0bc5727f3`
-- `TCaretTrail.cs` `5f29ea437b4b1160`
+- `TCardTag.cs` `3c980561f910678d`
+- `TCardTranslation.cs` `4b84fdd8de1d9064`
+- `TCaretTrail.cs` `4c9e1085cbdf6aa5`

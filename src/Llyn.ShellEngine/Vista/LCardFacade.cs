@@ -52,11 +52,11 @@ public sealed class LCardFacade : LCardPort
     }
 
     public IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)>? LEngineSenseRead(
-        LTenure held, long card, long sentence, string text, int start, int length, string key)
+        LTenure held, LExampleSite site, string text, int start, int length, string key)
     {
         ArgumentNullException.ThrowIfNull(held);
 
-        return new LQuillMention(held).LQuillSenseRead(card, sentence, text, start, length) is long entry
+        return new LQuillMention(held).LQuillSenseRead(site, text, start, length) is long entry
             ? LEngineMeaningRead(entry, key)
             : null;
     }
@@ -201,7 +201,7 @@ public sealed class LCardFacade : LCardPort
         }
     }
 
-    public IReadOnlySet<long> LEngineFoldRead(long entryId)
+    public IReadOnlySet<(LCardKind, long)> LEngineFoldRead(long entryId)
     {
         lock (_lCardFacadeGate)
         {
@@ -209,24 +209,29 @@ public sealed class LCardFacade : LCardPort
         }
     }
 
-    public void LEngineFoldSave(long entryId, long cardId)
+    public void LEngineFoldSave(long entryId, LCardKind kind, long cardId)
     {
         lock (_lCardFacadeGate)
         {
-            LCardFacadeStaff.LEngineStaffEntry.LEntryStaffFold.LFoldClerkSave(cardId);
+            LCardFacadeStaff.LEngineStaffEntry.LEntryStaffFold.LFoldClerkSave(kind, cardId);
         }
 
         _lCardFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectFold, entryId);
     }
 
-    public void LEngineFoldDelete(long entryId, long cardId)
+    public void LEngineFoldDelete(long entryId, LCardKind kind, long cardId)
     {
         lock (_lCardFacadeGate)
         {
-            LCardFacadeStaff.LEngineStaffEntry.LEntryStaffFold.LFoldClerkDelete(cardId);
+            LCardFacadeStaff.LEngineStaffEntry.LEntryStaffFold.LFoldClerkDelete(kind, cardId);
         }
 
         _lCardFacadeHearth.LEngineBulletinRaise(LSubject.LSubjectFold, entryId);
+    }
+
+    public (LOwner, int)? LEngineCardFind(LEntryDraft draft, LCardKind kind, long id)
+    {
+        return LDraftClerkCard.LCardOwnerFind(draft, kind, id);
     }
 
     internal static ArgumentOutOfRangeException LEngineOwnerRaise(LOwner owner)

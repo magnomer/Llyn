@@ -61,7 +61,7 @@ public sealed class TCorpusMention
             TEnvoyFake.TEnvoyCreate(false, asked),
             args =>
             {
-                keys.Add((string)args![6]!);
+                keys.Add((string)args![5]!);
                 return new List<(long LMeaningId, string LMeaningName, int LMeaningDepth)>
                 {
                     (1, "first", 0),

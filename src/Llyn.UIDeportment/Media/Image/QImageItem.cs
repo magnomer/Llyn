@@ -17,10 +17,12 @@ internal sealed class QImageItem : INotifyPropertyChanged, QImagePending
     private ImageSource? _qImageItemPreview;
     private readonly long _qImageItemRow;
 
-    internal QImageItem(CImageDraft written)
+    internal QImageItem(CImageDraft written, bool collocated = false, long? holder = null)
     {
         ArgumentNullException.ThrowIfNull(written);
 
+        QImageItemCollocated = collocated;
+        QImageItemHolder = holder;
         _qImageItemRow = written.CImageDraftId;
         _qImageItemLocation = written.CImageDraftWording;
         _qImageItemAddress = written.CImageDraftAddress;
@@ -58,6 +60,10 @@ internal sealed class QImageItem : INotifyPropertyChanged, QImagePending
     }
 
     internal long QImageItemId => _qImageItemRow;
+
+    internal bool QImageItemCollocated { get; }
+
+    internal long? QImageItemHolder { get; }
 
     internal string QImageItemName => _qImageItemName;
 

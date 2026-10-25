@@ -78,8 +78,9 @@ internal sealed class QCardDrag
         }
 
         int target = gesture.QCardGestureResolve(e);
+        bool collocated = gesture.QCardGestureItem is QPlacard { QPlacardCollocated: true };
 
-        _cCardList.CCardMove(gesture.QCardGestureId, target);
+        _cCardList.CCardMove(collocated, gesture.QCardGestureId, target);
     }
 
     private void QCardDragReset(object sender, MouseEventArgs e)

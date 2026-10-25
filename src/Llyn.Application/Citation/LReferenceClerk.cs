@@ -79,11 +79,11 @@ public sealed class LReferenceClerk
         return titled ?? signed;
     }
 
-    public long? LReferenceClerkResolve(string title, LDraft draft, long card, long sentence)
+    public long? LReferenceClerkResolve(string title, LDraft draft, LExampleSite site)
     {
         ArgumentNullException.ThrowIfNull(title);
         ArgumentNullException.ThrowIfNull(draft);
-        return LReferenceClerkResolve(title, LReferenceHeldRead(draft, card, sentence) ?? 0);
+        return LReferenceClerkResolve(title, LReferenceHeldRead(draft, site) ?? 0);
     }
 
     public LReference? LReferenceClerkRead(long id)
@@ -137,12 +137,13 @@ public sealed class LReferenceClerk
         return LCatalogReference.LCatalogReferenceSort(rows, order);
     }
 
-    public LReferenceOffer LReferenceCitationFind(string text, LDraft? draft, long card, long sentence)
+    public LReferenceOffer LReferenceCitationFind(
+        string text, LDraft? draft, LExampleSite site)
     {
         ArgumentNullException.ThrowIfNull(text);
 
         string word = text.Trim();
-        long? held = LReferenceHeldRead(draft, card, sentence);
+        long? held = LReferenceHeldRead(draft, site);
         List<LReferenceRow> rows = [];
         foreach (LCatalogReference row in LReferenceCitationFind(word, held))
         {
@@ -185,9 +186,10 @@ public sealed class LReferenceClerk
         return found;
     }
 
-    private static long? LReferenceHeldRead(LDraft? draft, long card, long sentence)
+    private static long? LReferenceHeldRead(LDraft? draft, LExampleSite site)
     {
-        return draft?.LDraftExampleRead(card, sentence)?.LExampleDraftReference.LStateAnchorShown;
+        ArgumentNullException.ThrowIfNull(site);
+        return site.LExampleSiteRead(draft)?.LExampleDraftReference.LStateAnchorShown;
     }
 
     public IReadOnlyList<LCatalogReference> LReferenceOeuvreFind(

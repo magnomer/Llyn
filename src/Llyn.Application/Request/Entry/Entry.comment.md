@@ -68,11 +68,17 @@ A chip is added or removed whole, and the list is short, so a delta would save n
 
 ## `LRequestCard.cs`
 
-Every card request names its card by `LRequestCardId`, real or minted, except the addition, which has no card yet.
+Every card request names its card by `LRequestKind` and `LRequestCardId`, real or minted.
+The addition alone names no card, because it has none yet.
+The kind is part of the address because a Meaning and a Collocation may carry the same id.
+The field requests of a card key by kind and id.
+So a deferred edit replaces only its own card's field.
+The sense requests name only the Collocation, so they carry no kind.
 Addition, Removal and Shift are the three structural nouns every list uses.
 
 ### `LRequestCardAddition`
 
+The kind names the list, Meanings or Collocations.
 The `LRequestParentId` is zero for the top of that list, or the meaning card the new card nests under.
 The position is zero-based and clamped to the list.
 The engine mints the card's id and answers with it in the returned draft and the bulletin.
@@ -146,7 +152,8 @@ So nothing is parsed on the way in.
 
 ## `LRequestSituation.cs`
 
-The four structural records name the card and the chip, and the three field records name only the situation.
+The four structural records name the card by kind and id, and the chip.
+The three field records name only the situation.
 A situation is one row however many cards link it, so a field edit reaches every card holding that id.
 The situation panel sends each field record with the id of the draft's own situation.
 
@@ -189,13 +196,13 @@ Span and Location both replace their field wherever the draft holds the video.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `8c403d1df768`
 - `LRequest.cs` `b8f283cebcac168b`
 - `LRequestAuthor.cs` `7ac4d468b465a9f4`
-- `LRequestCard.cs` `7fc40afb2afaa6e8`
+- `LRequestCard.cs` `d291693f38b4dcf8`
 - `LRequestEntry.cs` `1f35805b14c35770`
-- `LRequestImage.cs` `2e60398607e76ed3`
+- `LRequestImage.cs` `910f4de3390ddf06`
 - `LRequestReference.cs` `c3e01736e791b25c`
-- `LRequestSituation.cs` `7a9f784ced047010`
-- `LRequestTag.cs` `9faa8a436f5964ce`
-- `LRequestVideo.cs` `b406e17e4ce90dfc`
+- `LRequestSituation.cs` `559a0a874ae74da6`
+- `LRequestTag.cs` `2d90c8e7e33a8964`
+- `LRequestVideo.cs` `aad1a1d68e6f4e5e`

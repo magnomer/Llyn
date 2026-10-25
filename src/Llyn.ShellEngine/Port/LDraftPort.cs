@@ -41,15 +41,15 @@ public interface LDraftPort
 
     IReadOnlyList<LBylineRow> LEngineBylineFind(long draft, string query);
 
-    LTagOffer LEngineTagFind(LTenure held, long card, string text);
+    LTagOffer LEngineTagFind(LTenure held, LCardKind kind, long card, string text);
 
-    LRegisterOffer LEngineRegisterFind(LTenure held, long card, string text);
+    LRegisterOffer LEngineRegisterFind(LTenure held, LCardKind kind, long card, string text);
 
-    LSituationOffer LEngineSituationFind(LTenure held, long card, string text);
+    LSituationOffer LEngineSituationFind(LTenure held, LCardKind kind, long card, string text);
 
-    LReferenceOffer LEngineReferenceFind(LTenure held, long card, long sentence, string text);
+    LReferenceOffer LEngineReferenceFind(LTenure held, LExampleSite site, string text);
 
-    long LEngineCitationResolve(LTenure held, long card, long sentence, string title);
+    long LEngineCitationResolve(LTenure held, LExampleSite site, string title);
 
     string LEngineBylineRead(string? text);
 
@@ -68,12 +68,12 @@ public interface LDraftPort
 
     IReadOnlyDictionary<long, IReadOnlyList<LMentionLabel>> LEngineMentionResolve(LDraft draft);
 
-    IReadOnlyList<LMentionLabel> LEngineMentionResolve(LTenure held, long card, long sentence);
+    IReadOnlyList<LMentionLabel> LEngineMentionResolve(LTenure held, LExampleSite site);
 
     long LEngineLineFind(LEntryDraft shown, LSentenceDraft sentence);
 
     IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)>? LEngineSenseRead(
-        LTenure held, long card, long sentence, string text, int start, int length, string key);
+        LTenure held, LExampleSite site, string text, int start, int length, string key);
 
     IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth, string LMeaningPath)>
         LEngineMeaningScan(LTenure held, string key);

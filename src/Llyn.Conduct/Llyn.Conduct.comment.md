@@ -28,5 +28,5 @@ The file is written only when the text differs, so an unchanged version recompil
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `Llyn.Conduct.csproj` `246ef06664a7ce7e`
+Commit: `8c403d1df768`
+- `Llyn.Conduct.csproj` `aa767fc9c5772586`

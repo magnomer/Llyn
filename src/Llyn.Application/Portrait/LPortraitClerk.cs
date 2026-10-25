@@ -86,7 +86,7 @@ public sealed class LPortraitClerk
         IReadOnlyDictionary<long, string> sources = LPortraitSourceScan();
 
         bool favorite = _lPortraitClerkFavorites.LFavoriteClerkCheck(entryId);
-        IReadOnlySet<long> folds = _lPortraitClerkFolds.LFoldClerkRead(entryId);
+        IReadOnlySet<(LCardKind, long)> folds = _lPortraitClerkFolds.LFoldClerkRead(entryId);
 
         IReadOnlyList<LFanqieRow> fanqie = LPortraitFanqieScan(entryId, language);
 

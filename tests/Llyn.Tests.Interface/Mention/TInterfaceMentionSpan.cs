@@ -23,8 +23,8 @@ internal static class TInterfaceMentionSpan
     internal static LMentionDraft? TExampleDraftFind(LExampleDraft example, LMentionDraft span) =>
         example.LExampleDraftFind(span);
 
-    internal static LExampleDraft? TDraftExampleRead(LDraft draft, long cardId, long sentenceId) =>
-        draft.LDraftExampleRead(cardId, sentenceId);
+    internal static LExampleDraft? TDraftExampleRead(LDraft draft, LCardKind kind, long cardId, long sentenceId) =>
+        draft.LDraftExampleRead(kind, cardId, sentenceId);
 
     internal static int TMentionUnitRead(string text, int offset) =>
         LMentionSpan.LMentionUnitRead(text, offset);

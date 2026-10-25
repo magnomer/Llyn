@@ -285,12 +285,12 @@ internal sealed class QCard
     {
         if (sender is FrameworkElement { DataContext: QPlacard card })
         {
-            _cCardList.CCardRemove(card.QPlacardId);
+            _cCardList.CCardRemove(card.QPlacardCollocated, card.QPlacardId);
         }
     }
 
     internal void QCardRefine(
-        ObservableCollection<QPlacard> cards, string prefix,
+        ObservableCollection<QPlacard> cards, string prefix, bool collocated,
         IReadOnlyList<CCardDraft> drafts, Func<QPlacard, CStateWording> peek)
     {
         List<QPlacard> free = [.. cards];
@@ -306,6 +306,7 @@ internal sealed class QCard
             {
                 card = new QPlacard(
                     prefix,
+                    collocated,
                     _qCardCitation.QCitationCatalog,
                     _qCardSentence.QSentenceParticle,
                     _qCardSentence.QSentenceDependence,
@@ -315,7 +316,7 @@ internal sealed class QCard
                 card.QCardSentence.QCardSentenceNotice += _qCardSentence.QSentenceGlossObserve;
             }
 
-            QCardDraftRefine(card, draft);
+            QCardDraftRefine(card, collocated, draft);
             shown.Add(card);
         }
 
@@ -344,13 +345,13 @@ internal sealed class QCard
         }
     }
 
-    private void QCardDraftRefine(QPlacard card, CCardDraft draft)
+    private void QCardDraftRefine(QPlacard card, bool collocated, CCardDraft draft)
     {
         card.QPlacardTitleShow(draft.CCardDraftTitle);
         card.QPlacardExpressionShow(draft.CCardDraftExpression);
         card.QPlacardDefinitionShow(draft.CCardDraftMeaning);
         card.QCardSentence.QCardSentenceShow(draft.CCardDraftSentence, _qCardSentence.QSentenceOrder);
-        IReadOnlyDictionary<CCaretTrail, long?> anchor = _cCaret.CCaretRead(draft.CCardDraftId);
+        IReadOnlyDictionary<CCaretTrail, long?> anchor = _cCaret.CCaretRead(collocated, draft.CCardDraftId);
         _qCardContext.QContextShow(card, draft, anchor[_cCaret.CCaretSituation]);
         QRegister.QRegisterShow(card, draft.CCardDraftRegister, anchor[_cCaret.CCaretRegister]);
         QLink.QLinkShow(card, draft.CCardDraftTranslation, anchor[_cCaret.CCaretTranslation]);
@@ -367,7 +368,9 @@ internal sealed class QCard
         if (sender is ToggleButton { DataContext: QPlacard card } hinge)
         {
             QLook.QLookCheckedRefine(
-                hinge, _cCardList.CCardFoldToggle(card.QPlacardId, QLook.QLookCheckedRead(hinge.IsChecked)));
+                hinge,
+                _cCardList.CCardFoldToggle(
+                    card.QPlacardCollocated, card.QPlacardId, QLook.QLookCheckedRead(hinge.IsChecked)));
         }
     }
 
@@ -375,7 +378,7 @@ internal sealed class QCard
     {
         if (sender is TextBox { IsKeyboardFocusWithin: true, DataContext: QPlacard card } box)
         {
-            _cCardField.CCardTitleSet(card.QPlacardId, box.Text);
+            _cCardField.CCardTitleSet(card.QPlacardCollocated, card.QPlacardId, box.Text);
         }
     }
 
@@ -383,7 +386,7 @@ internal sealed class QCard
     {
         if (sender is TextBox { IsKeyboardFocusWithin: true, DataContext: QPlacard card } box)
         {
-            _cCardField.CCardExpressionSet(card.QPlacardId, box.Text);
+            _cCardField.CCardExpressionSet(card.QPlacardCollocated, card.QPlacardId, box.Text);
         }
     }
 
@@ -391,7 +394,7 @@ internal sealed class QCard
     {
         if (sender is TextBox { IsKeyboardFocusWithin: true, DataContext: QPlacard card } box)
         {
-            _cCardField.CCardMeaningSet(card.QPlacardId, box.Text);
+            _cCardField.CCardMeaningSet(card.QPlacardCollocated, card.QPlacardId, box.Text);
         }
     }
 }

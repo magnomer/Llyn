@@ -119,7 +119,7 @@ A section past the end of the draft list counts as unstored.
 
 ### `LSheetFaceAppend`
 
-A stored card is a `details` element, open unless the fold set holds its id.
+A stored card is a `details` element, open unless the fold set holds its id under the Meaning kind.
 Its summary holds what `PLeaf` shows in the card header.
 The hinge is no element, since the style paints it after the summary.
 The rank always shows, and a titled card shows its title.
@@ -328,10 +328,10 @@ An unknown role throws, so a new Core role cannot pass uncoloured.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
+Commit: `8c403d1df768`
 - `LSheetBox.cs` `b32b74e843b28e08`
 - `LSheetCascade.cs` `c1ae5e1cfac739da`
-- `LSheetDeck.cs` `b6f318017bcde83c`
+- `LSheetDeck.cs` `741fe4790f692d58`
 - `LSheetEnsign.cs` `27a403c779ddd2cc`
 - `LSheetEntry.cs` `e2969340032e811c`
 - `LSheetHeader.cs` `51370f27bc7b37bc`

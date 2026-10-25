@@ -162,7 +162,8 @@ With no entry chosen, no usage is listed.
 A stored situation, register or tag raises its own tab.
 A link chip raises its entry in the library tab.
 A record never saved, a link to no entry and an empty click open nothing.
-Each card answers its list and place, and an unknown card or an empty view answers nothing.
+Each card answers its list and place, and the lookup is told whether the id is a collocation's.
+An unknown card or an empty view answers nothing.
 A line key read from one entry finds nothing once another entry is shown.
 That holds for a click and for the word cursor.
 
@@ -272,12 +273,12 @@ Saves an English noun whose paradigm asks for a plural nothing stores.
 
 ## Stamp
 
-Commit: `44d0e95bcfcc`
+Commit: `8c403d1df768`
 - `TCardSense.cs` `bc31f6cddd2ca6ae`
 - `TDisplay.cs` `c18d439ee37ac348`
 - `TDisplayAccent.cs` `bc384431fa7b13d5`
 - `TDisplayArea.cs` `660956a4da7b515e`
-- `TDisplayCard.cs` `078d33f702ae6442`
+- `TDisplayCard.cs` `74ecca3fd4af5f39`
 - `TDisplayGrasp.cs` `7f3390215a60e0ff`
 - `TDisplayMention.cs` `fe2130ecf737059c`
 - `TDisplayPlayback.cs` `4841acad0b56316f`

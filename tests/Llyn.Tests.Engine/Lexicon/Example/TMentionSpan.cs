@@ -169,9 +169,44 @@ public sealed class TMentionSpan
         LSentenceDraft sentence = card.LCardDraftSentence[0];
 
         LExampleDraft? read =
-            TInterfaceMentionSpan.TDraftExampleRead(draft, card.LCardDraftId, sentence.LSentenceDraftId);
+            TInterfaceMentionSpan.TDraftExampleRead(
+                draft, LCardKind.LCardKindMeaning, card.LCardDraftId, sentence.LSentenceDraftId);
 
         Assert.Same(sentence.LSentenceDraftExample, read);
+    }
+
+    [Fact]
+    public void DraftExampleRead_CollocationSharingMeaningIds_ReturnsTheCollocationExample()
+    {
+        LDraft held = TInterface.TDraftNestedCreate("editor", "kindle");
+        LCardDraft meaning = held.LDraftContent.LEntryDraftMeanings[0];
+        LSentenceDraft sentence = meaning.LCardDraftSentence[0];
+        LExampleDraft meant = TInterfaceExample.TExampleDraftCreate("the meaning sentence");
+        LExampleDraft collocated = TInterfaceExample.TExampleDraftCreate("the collocation sentence");
+        LDraft draft = held with
+        {
+            LDraftContent = held.LDraftContent with
+            {
+                LEntryDraftMeanings =
+                [
+                    meaning with { LCardDraftSentence = [sentence with { LSentenceDraftExample = meant }] },
+                ],
+                LEntryDraftCollocations =
+                [
+                    meaning with
+                    {
+                        LCardDraftChild = [],
+                        LCardDraftSentence = [sentence with { LSentenceDraftExample = collocated }],
+                    },
+                ],
+            },
+        };
+
+        LExampleDraft? read =
+            TInterfaceMentionSpan.TDraftExampleRead(
+                draft, LCardKind.LCardKindCollocation, meaning.LCardDraftId, sentence.LSentenceDraftId);
+
+        Assert.Same(collocated, read);
     }
 
     [Fact]
@@ -180,7 +215,8 @@ public sealed class TMentionSpan
         LDraft draft = TInterface.TDraftNestedCreate("editor", "kindle");
         long cardId = draft.LDraftContent.LEntryDraftMeanings[0].LCardDraftId;
 
-        Assert.Null(TInterfaceMentionSpan.TDraftExampleRead(draft, cardId, TInterface.TIdentityCreate()));
-        Assert.Null(TInterfaceMentionSpan.TDraftExampleRead(draft, 0, 0));
+        Assert.Null(TInterfaceMentionSpan.TDraftExampleRead(
+            draft, LCardKind.LCardKindMeaning, cardId, TInterface.TIdentityCreate()));
+        Assert.Null(TInterfaceMentionSpan.TDraftExampleRead(draft, LCardKind.LCardKindMeaning, 0, 0));
     }
 }

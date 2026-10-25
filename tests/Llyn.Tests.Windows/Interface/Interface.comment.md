@@ -59,6 +59,7 @@ So a reading-view box switch click reaches the display's real fold gate through 
 
 The card's peek is the definition, as a meaning list picks it.
 The draft also names the card's id.
+The placard is built as a meaning card, so its fold is kept under the meaning kind.
 
 ### `TCardHingeAttach`
 
@@ -76,6 +77,7 @@ It returns null when no row holds, or when the winner is no fixed `Freezable`.
 ### `TCardCreate`
 
 The blank draft carries no meaning links.
+The placard is built as a meaning card, not a collocation.
 
 ## `TInterfacePhonograph`
 
@@ -96,8 +98,8 @@ The wait is bounded, so a step that hangs fails the test rather than the whole r
 
 ## Stamp
 
-Commit: `cb8ab7e8feb4`
+Commit: `8c403d1df768`
 - `TInterfaceCapsule.cs` `062207ed6f90f438`
-- `TInterfaceDeportment.cs` `1b4c910293f5b5b2`
+- `TInterfaceDeportment.cs` `a9be73dc64c95d05`
 - `TInterfacePhonograph.cs` `888cd40c37da96bb`
 - `TWindow.cs` `20d60e5a8413b7cf`

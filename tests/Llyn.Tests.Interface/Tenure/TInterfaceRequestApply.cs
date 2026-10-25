@@ -38,12 +38,14 @@ internal static partial class TInterface
 
         foreach (LCardDraft card in held.LDraftContent.LEntryDraftMeanings)
         {
-            held = engine.LEngineRequest.LEngineRequestApply(new LRequestCardRemoval(draftId, card.LCardDraftId));
+            held = engine.LEngineRequest.LEngineRequestApply(
+                new LRequestCardRemoval(draftId, LCardKind.LCardKindMeaning, card.LCardDraftId));
         }
 
         foreach (LCardDraft card in held.LDraftContent.LEntryDraftCollocations)
         {
-            held = engine.LEngineRequest.LEngineRequestApply(new LRequestCardRemoval(draftId, card.LCardDraftId));
+            held = engine.LEngineRequest.LEngineRequestApply(
+                new LRequestCardRemoval(draftId, LCardKind.LCardKindCollocation, card.LCardDraftId));
         }
 
         Dictionary<long, long> senses = [];
@@ -131,15 +133,15 @@ internal static partial class TInterface
         long cardId = siblings[position].LCardDraftId;
 
         held = engine.LEngineRequest.LEngineRequestApply(
-            new LRequestCardTitle(draftId, cardId, card.LCardDraftTitle.TStateWrittenRead()));
+            new LRequestCardTitle(draftId, kind, cardId, card.LCardDraftTitle.TStateWrittenRead()));
         held = engine.LEngineRequest.LEngineRequestApply(
-            new LRequestCardExpression(draftId, cardId, card.LCardDraftExpression.TStateWrittenRead()));
+            new LRequestCardExpression(draftId, kind, cardId, card.LCardDraftExpression.TStateWrittenRead()));
         held = engine.LEngineRequest.LEngineRequestApply(
-            new LRequestCardMeaning(draftId, cardId, card.LCardDraftMeaning.TStateWrittenRead()));
+            new LRequestCardMeaning(draftId, kind, cardId, card.LCardDraftMeaning.TStateWrittenRead()));
 
         for (int index = 0; index < card.LCardDraftSentence.Count; index++)
         {
-            held = TRequestSentenceApply(engine, draftId, cardId, index, card.LCardDraftSentence[index]);
+            held = TRequestSentenceApply(engine, draftId, kind, cardId, index, card.LCardDraftSentence[index]);
         }
 
         for (int index = 0; index < card.LCardDraftSituation.Count; index++)
@@ -147,10 +149,10 @@ internal static partial class TInterface
             LSituationDraft situation = card.LCardDraftSituation[index];
             held = situation.LSituationDraftId > 0
                 ? engine.LEngineRequest.LEngineRequestApply(
-                    new LRequestSituationPick(draftId, cardId, situation.LSituationDraftId, index))
+                    new LRequestSituationPick(draftId, kind, cardId, situation.LSituationDraftId, index))
                 : engine.LEngineRequest.LEngineRequestApply(
                     new LRequestSituationAddition(
-                        draftId, cardId, situation.LSituationDraftTitle.TStateWrittenRead(), index));
+                        draftId, kind, cardId, situation.LSituationDraftTitle.TStateWrittenRead(), index));
 
             long situationId =
                 TRequestCardFind(held.LDraftContent, cardId).LCardDraftSituation[index].LSituationDraftId;
@@ -166,10 +168,10 @@ internal static partial class TInterface
             LRegisterDraft register = card.LCardDraftRegister[index];
             held = register.LRegisterDraftId > 0
                 ? engine.LEngineRequest.LEngineRequestApply(
-                    new LRequestRegisterPick(draftId, cardId, register.LRegisterDraftId, index))
+                    new LRequestRegisterPick(draftId, kind, cardId, register.LRegisterDraftId, index))
                 : engine.LEngineRequest.LEngineRequestApply(
                     new LRequestRegisterAddition(
-                        draftId, cardId, register.LRegisterDraftName.TStateWrittenRead(), index));
+                        draftId, kind, cardId, register.LRegisterDraftName.TStateWrittenRead(), index));
         }
 
         for (int index = 0; index < card.LCardDraftTag.Count; index++)
@@ -177,15 +179,15 @@ internal static partial class TInterface
             LTagDraft tag = card.LCardDraftTag[index];
             held = tag.LTagDraftId > 0
                 ? engine.LEngineRequest.LEngineRequestApply(
-                    new LRequestTagPick(draftId, cardId, tag.LTagDraftId, index))
+                    new LRequestTagPick(draftId, kind, cardId, tag.LTagDraftId, index))
                 : engine.LEngineRequest.LEngineRequestApply(
-                    new LRequestTagAddition(draftId, cardId, tag.LTagDraftText, index));
+                    new LRequestTagAddition(draftId, kind, cardId, tag.LTagDraftText, index));
         }
 
         for (int index = 0; index < card.LCardDraftTranslation.Count; index++)
         {
             held = engine.LEngineRequest.LEngineRequestApply(
-                new LRequestTranslationPick(draftId, cardId, card.LCardDraftTranslation[index], index));
+                new LRequestTranslationPick(draftId, kind, cardId, card.LCardDraftTranslation[index], index));
         }
 
         for (int index = 0; index < card.LCardDraftImage.Count; index++)
@@ -193,9 +195,10 @@ internal static partial class TInterface
             LImageDraft image = card.LCardDraftImage[index];
             held = image.LImageDraftId > 0
                 ? engine.LEngineRequest.LEngineRequestApply(
-                    new LRequestImagePick(draftId, cardId, image.LImageDraftId, index))
+                    new LRequestImagePick(draftId, kind, cardId, image.LImageDraftId, index))
                 : engine.LEngineRequest.LEngineRequestApply(
-                    new LRequestImageAddition(draftId, cardId, image.LImageDraftLocation.TStateWrittenRead(), index));
+                    new LRequestImageAddition(
+                        draftId, kind, cardId, image.LImageDraftLocation.TStateWrittenRead(), index));
         }
 
         for (int index = 0; index < card.LCardDraftVideo.Count; index++)
@@ -203,9 +206,10 @@ internal static partial class TInterface
             LVideoDraft video = card.LCardDraftVideo[index];
             held = video.LVideoDraftId > 0
                 ? engine.LEngineRequest.LEngineRequestApply(
-                    new LRequestVideoPick(draftId, cardId, video.LVideoDraftId, index))
+                    new LRequestVideoPick(draftId, kind, cardId, video.LVideoDraftId, index))
                 : engine.LEngineRequest.LEngineRequestApply(
-                    new LRequestVideoAddition(draftId, cardId, video.LVideoDraftLocation.TStateWrittenRead(), index));
+                    new LRequestVideoAddition(
+                        draftId, kind, cardId, video.LVideoDraftLocation.TStateWrittenRead(), index));
 
             long videoId = TRequestCardFind(held.LDraftContent, cardId).LCardDraftVideo[index].LVideoDraftId;
             held = engine.LEngineRequest.LEngineRequestApply(
@@ -237,10 +241,10 @@ internal static partial class TInterface
     }
 
     private static LDraft TRequestSentenceApply(
-        LEngine engine, long draftId, long cardId, int position, LSentenceDraft sentence)
+        LEngine engine, long draftId, LCardKind kind, long cardId, int position, LSentenceDraft sentence)
     {
         LDraft held = engine.LEngineRequest.LEngineRequestApply(
-            new LRequestSentenceAddition(draftId, cardId, position));
+            new LRequestSentenceAddition(draftId, kind, cardId, position));
         long sentenceId = TRequestCardFind(held.LDraftContent, cardId).LCardDraftSentence[position].LSentenceDraftId;
 
         if (sentence.LSentenceDraftExample is LExampleDraft example)
@@ -248,25 +252,25 @@ internal static partial class TInterface
             if (example.LExampleDraftId > 0)
             {
                 held = engine.LEngineRequest.LEngineRequestApply(
-                    new LRequestSentenceExample(draftId, cardId, sentenceId, example.LExampleDraftId));
+                    new LRequestSentenceExample(draftId, kind, cardId, sentenceId, example.LExampleDraftId));
             }
 
-            held = engine.LEngineRequest.LEngineRequestApply(
-                new LRequestSentenceText(draftId, cardId, sentenceId, example.LExampleDraftText.TStateWrittenRead()));
+            held = engine.LEngineRequest.LEngineRequestApply(new LRequestSentenceText(
+                draftId, kind, cardId, sentenceId, example.LExampleDraftText.TStateWrittenRead()));
 
             if (!example.LExampleDraftReference.LStateAnchorEmpty)
             {
                 held = engine.LEngineRequest.LEngineRequestApply(new LRequestSentenceReference(
-                    draftId, cardId, sentenceId, example.LExampleDraftReference.LStateAnchorShow()));
+                    draftId, kind, cardId, sentenceId, example.LExampleDraftReference.LStateAnchorShow()));
             }
         }
 
         held = engine.LEngineRequest.LEngineRequestApply(
             new LRequestSentenceParticle(
-                draftId, cardId, sentenceId, sentence.LSentenceDraftParticle.TStateWrittenRead()));
+                draftId, kind, cardId, sentenceId, sentence.LSentenceDraftParticle.TStateWrittenRead()));
         held = engine.LEngineRequest.LEngineRequestApply(
             new LRequestSentenceDependence(
-                draftId, cardId, sentenceId, sentence.LSentenceDraftDependence.TStateWrittenRead()));
+                draftId, kind, cardId, sentenceId, sentence.LSentenceDraftDependence.TStateWrittenRead()));
 
         return held;
     }
@@ -285,11 +289,11 @@ internal static partial class TInterface
         LCardDraft card = held.LDraftContent.LEntryDraftMeanings[0];
         int position = card.LCardDraftSentence.Count;
         held = engine.LEngineRequest.LEngineRequestApply(
-            new LRequestSentenceAddition(draftId, card.LCardDraftId, position));
+            new LRequestSentenceAddition(draftId, LCardKind.LCardKindMeaning, card.LCardDraftId, position));
         long sentenceId =
             TRequestCardFind(held.LDraftContent, card.LCardDraftId).LCardDraftSentence[position].LSentenceDraftId;
         engine.LEngineRequest.LEngineRequestApply(
-            new LRequestSentenceExample(draftId, card.LCardDraftId, sentenceId, exampleId));
+            new LRequestSentenceExample(draftId, LCardKind.LCardKindMeaning, card.LCardDraftId, sentenceId, exampleId));
         return engine.LEngineDraft.LEngineDraftCommit(draftId).LOutcomeEntry;
     }
 

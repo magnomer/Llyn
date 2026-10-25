@@ -147,8 +147,6 @@ The entry count comes from the query clerk and the bytes from the workspace cler
 `LEngineUsageRead` hands the usage clerk's counts and itemized rows under the gate, and `LEngineTallyRead` its citation lines.
 Itemized rows carry the epithet the settings ask for.
 
-`LEngineCardFind` says which card list of a draft holds a card, and at which place, or null when neither does.
-The card clerk scans the draft.
 
 ## `LCardFacade`
 
@@ -161,7 +159,13 @@ It returns the exception so switch arms can throw it directly.
 `LEngineMeaningRead` by entry leaves reading order and fallback naming to `LMeaningClerkSort`.
 The caller supplies the fallback localization key, and the settings facade supplies its wording.
 
-`LEngineSenseRead` answers null when no linked Mention lies under the selection, so no sense menu opens.
+`LEngineSenseRead` names the sentence by an example site.
+It answers null when no linked Mention lies under the selection, so no sense menu opens.
+
+`LEngineCardFind` says which card list of a draft holds the card of a kind and id.
+It also says at which place, or null when neither does.
+The card clerk scans the draft.
+It sits here with the folds, which are keyed the same way.
 
 `LEngineMeaningScan` reads the Meanings of the held draft, not of the store, so unsaved Meanings are offered.
 `LMeaningClerkScan` owns reading order, fallback naming and paths, with the wording of the key.
@@ -201,6 +205,8 @@ Missing stored targets are omitted, preventing blank chips.
 `LEngineIncomingRead` gives both incoming card kinds the hearth's current epithet setting.
 
 `LEngineFoldRead` covers folded cards of both kinds for one entry under the shared gate.
+Each card is a kind and id pair.
+Save and delete take the kind with the card id.
 Folding and unfolding bypass the held draft, so they cannot dirty lexical data or enter undo.
 Both raise an entry-scoped fold bulletin after the gate is released, so other views of the entry re-read their folds.
 Even an ignored nonpositive card id raises that bulletin.
@@ -213,7 +219,8 @@ It implements the tag, register and favorite ports.
 
 `LEngineTagRead` reads every Tag once, in alphabetical order.
 
-`LEngineTagFind` for a card offers the stored Tags its tag field offers for the text it keeps.
+`LEngineTagFind` for a card is named by kind and id.
+It offers the stored Tags its tag field offers for the text it keeps.
 Those the held draft's card already shows are left out.
 The draft is read before the gate is taken, as the tenure guards itself.
 
@@ -303,12 +310,13 @@ Start returns the held Reference with its credits.
 
 `LEngineCitationResolve` finds or creates the Reference a typed citation names, under one hold of the gate.
 The reference clerk reads the Reference cited now off the held draft, so no shell carries it in.
-Zero card and sentence ids name the draft's own Example, as on the corpus panel.
+The sentence is named by an example site.
+The draft's own Example is a site too, as on the corpus panel.
 The clerk decides the match, and only a created Reference is announced.
 
 `LEngineReferenceFind` has several forms.
 By query and order it lists rows already carrying name, credits and citation count.
-For a card sentence it offers the stored Sources its citation field shows, ready to show.
+For an example site it offers the stored Sources its citation field shows, ready to show.
 That offer reads the Source the sentence cites off the held draft, so its own byline offers nothing.
 By vista it reads query and order off the vista and marks the chosen row.
 With no argument it lists every Source ordered by author.
@@ -361,7 +369,8 @@ Draft start and commit run through the `LSituationCitation` the citation clerk h
 Start returns the held Situation.
 
 `LEngineSituationFind` by query and order lists Situations as rows already carrying how many places reference them.
-The card form offers the stored Situations its field shows for the text it keeps, ready to show.
+The card form is named by kind and id.
+It offers the stored Situations its field shows for the text it keeps, ready to show.
 Those the held draft's card already links are left out.
 The draft is read before the gate is taken, as the tenure guards itself.
 The vista form lists the repertoire panel's rows and marks the chosen one.
@@ -379,7 +388,8 @@ The facade for mention operations.
 Every find and resolve takes the gate and hands the work to `LMentionClerk`, which holds the rules.
 The span and offset reads are pure and take no gate.
 It calls no sibling facade, so `LEngine` builds it among the first.
-The resolve over one Example reads the held draft before the gate is taken, as the other held reads do.
+The resolve over one Example site reads the held draft before the gate is taken.
+The other held reads do the same.
 The whole-draft resolve takes the draft itself, so it reads nothing from a tenure.
 
 `LEngineMentionFind` runs the clerk's find over a stored Example.
@@ -393,23 +403,23 @@ The engine measures it so the shell never counts.
 
 `LEngineUnitRead` and `LEngineOffsetRead` convert between a code-point offset and a UTF-16 index.
 
-`LEngineMentionResolve` gives the clerk's mention line for one Example of the held draft.
-Card 0 and sentence 0 address the draft's own Example.
-Without a card it gives the lines for every sentence row of the held draft, keyed by line key.
+`LEngineMentionResolve` gives the clerk's mention line for one example site of the held draft.
+That site may be the draft's own Example.
+Over a draft alone it gives the lines for every sentence row of the held draft, keyed by line key.
 
 `LEngineLinkRead` gives the entry a clicked link names, or null when it names none.
 A link names its entry only through a stored id, so an empty id names nothing.
 
 ## Stamp
 
-Commit: `44d0e95bcfcc`
+Commit: `8c403d1df768`
 - `LAuthorFacade.cs` `a7c57e4576ed1f96`
-- `LCardFacade.cs` `fd835262e150b403`
-- `LCatalogFacade.cs` `8545ab05f0c69039`
-- `LEntryFacade.cs` `c0d6c5fdd16cd585`
+- `LCardFacade.cs` `44b029069be762f1`
+- `LCatalogFacade.cs` `8e6b392a3c145ad5`
+- `LEntryFacade.cs` `5f07c42a75af1bd9`
 - `LExampleFacade.cs` `88a7cb35bf7ce026`
-- `LMentionFacade.cs` `51e1319dcfcc42a4`
-- `LReferenceFacade.cs` `b73762c75a1cefad`
-- `LSituationFacade.cs` `534a19d43f1ba0ba`
+- `LMentionFacade.cs` `b18aa79874b5e5b8`
+- `LReferenceFacade.cs` `64083a009e2f5e38`
+- `LSituationFacade.cs` `7453614407681e3e`
 - `LVistaFacade.cs` `aba8d22b409fa49e`
 - `LVistaRowFacade.cs` `c984c1184a7c7741`

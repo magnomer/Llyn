@@ -94,7 +94,7 @@ internal sealed class QLibrary
         _qLibraryDisplay.QDisplayIntroduce(
             atelier, envoy, volume, mentionMenu, _cLibrary.CLibraryEditor.CEditorDisplay);
         atelier.CAtelierMention.CMentionSenseChosen +=
-            _qLibraryDisplay.QDisplayLectern.QLecternCompass.QCompassSpotlightRefine;
+            id => _qLibraryDisplay.QDisplayLectern.QLecternCompass.QCompassSpotlightRefine(false, id);
 
         _qLibraryEditor.QEditorIntroduce(atelier, envoy, volume, mentionMenu, _cLibrary.CLibraryEditor);
 

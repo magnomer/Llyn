@@ -79,6 +79,9 @@ A new tenure clears both card lists, so no presentation item from the former dra
 ### `QEditorMeaningRefine`
 
 Ready meaning cards need no per-card link lookup.
+The meaning list is refined with the meaning flag.
+The collocation list is refined with the collocation flag.
+So each placard learns its kind where it is built.
 Their folded peek derives from definition wording, and a collocation's from expression wording.
 
 ### `QEditorTextObserve`
@@ -233,10 +236,10 @@ A click glides, and a layout change places the pill outright.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `8c403d1df768`
 - `QCadence.cs` `c49dba67646f341c`
 - `QEditor.cs` `5c3d48d48e2189bd`
-- `QEditorCard.cs` `716553e0e476c435`
+- `QEditorCard.cs` `a1ad14443bac626b`
 - `QEditorFont.cs` `4da791778932c52b`
 - `QEditorSound.cs` `37d1a4f52e9d1a42`
 - `QInput.cs` `3268e212c7a17a65`

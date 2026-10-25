@@ -40,8 +40,11 @@ Its last segment only filtered the rows, so it is no name.
 A bare name with no separator stays, so a save keeps its name across folders.
 With no folder part the preview holds no folder, and `BSPathfinderFolderPreview` reads the folder shown.
 
-The field, the Format row and the list have a key table each, and `BSParleyBodyResume` picks one.
-The box calls `BSParleyBodyResume` when Tab hands the focus to the body, backwards on Shift.
+The field, the Format row and the list have a key table each.
+The body swaps between them as one is current.
+The box calls `BSParleyBodyResume` when Tab hands the focus to the body.
+It lands on the field, or on the list when backwards on Shift.
+The Format row is reached only by Tab inside the body, and it draws lit while its table is current.
 In save mode Tab goes from the field to the Format row and then to the list.
 Shift+Tab goes back the same way.
 Without a format, Tab goes from the field straight to the list.
@@ -142,9 +145,9 @@ Cancel closes it with no change of folder.
 
 ## Stamp
 
-Commit: `5813c19fd19c`
-- `BSDrive.cs` `3ecc448f2d525097`
-- `BSPathfinder.cs` `ca51c4d2ea990912`
+Commit: `8c403d1df768`
+- `BSDrive.cs` `bbc1ca4283878f41`
+- `BSPathfinder.cs` `445cf6f14d0f17f6`
 - `BSPathfinderEntries.cs` `2dfd992b55afaeb9`
 - `BSPathfinderMedium.cs` `589df3dc01859487`
 - `BSPathfinderPath.cs` `981c839a70e016b1`

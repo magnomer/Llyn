@@ -189,10 +189,12 @@ A write for a nonpositive entry id writes nothing.
 ## `LFoldClerk.LFoldClerkRead`
 
 One entry read covers folded cards of both kinds.
+Each folded card is a kind and an id pair, since a Meaning and a Collocation may share an id.
 
 ## `LFoldClerk.LFoldClerkSave`
 
 Only positive card ids can acquire or lose persistent fold marks, through save and delete.
+Both take the card kind with the id.
 
 ## `LFoldClerk.LFoldClerkSpread`
 
@@ -275,6 +277,7 @@ An id naming no Example is refused.
 The reading-view find names only a line key, so text, language and Mentions come from the shown draft.
 `LMentionLineFind` mints the line key, the position counted from one among the shown entry's sentences.
 Those sentences run over the meaning cards first and then the collocation cards.
+Only the top-level cards of each list are walked, not their child cards.
 A key outside that range finds no row, so the answer is the bare offset.
 A sentence the shown entry does not hold gets key zero.
 The row's Example text is the text the line shows whenever the line shows words.
@@ -303,7 +306,8 @@ Offsets count code points, and this maps a code-point offset to a UTF-16 index.
 
 The span find is static.
 So the tenure can call it under its own gate and never take the engine gate.
-It answers the Mention the span lies inside, in the Example one sentence field holds.
+It answers the Mention the span lies inside, in the Example the site names.
+The site is a card sentence or the draft's own Example.
 It answers none without a draft.
 
 ## `LMentionClerk.LMentionClerkResolve`
@@ -316,7 +320,7 @@ The offsets count code points, so the span is cut at the UTF-16 units the senten
 The draft form answers the mention line of every sentence row on every card, keyed by its line key.
 A row with no Example yet answers an empty line, so its chips are cleared.
 A missing draft answers no rows.
-The card and sentence form answers one Example's line, where card 0 and sentence 0 address the draft's own Example.
+The site form answers one Example's line, for a card sentence or the draft's own Example.
 A missing draft or Example answers an empty line.
 
 ## `LMentionClerk.LMentionSenseRead`
@@ -357,6 +361,7 @@ A blank text offers nothing, since an empty query would list the whole shelf.
 A Register whose trimmed name is blank is skipped.
 A Register the card already links by id is left out.
 No draft or no such card holds nothing, so every match is offered.
+The card is found by its kind and id.
 Each row is split around the word by `LCatalog.LCatalogMarkFind`.
 At most `LCatalog.LCatalogOfferLimit` rows are kept, in the shelf's usage order.
 So the most marked Registers are offered, never the earliest stored.
@@ -427,6 +432,7 @@ The Tags come in usage order, and a Tag whose trimmed text is blank is skipped.
 A Tag is held when a chip reads its trimmed text, the rule `LDraftHeldCheck` owns, and is left out.
 At most `LCatalog.LCatalogOfferLimit` rows are kept.
 No draft or no such card holds nothing, so every match is offered.
+The card is found by its kind and id.
 Each row is split around the word by `LCatalog.LCatalogMarkFind`.
 The offer shows only when some Tag is left.
 
@@ -521,13 +527,13 @@ The rows are twinned and given their epithet when `epithet` asks for it.
 
 ## Stamp
 
-Commit: `44d0e95bcfcc`
+Commit: `8c403d1df768`
 - `LCardClerk.cs` `bdb3cac0e6820774`
 - `LCardClerkField.cs` `9bb3e1536c7cc7cd`
 - `LCardEquality.cs` `7b2fe6cd813afde8`
-- `LFoldClerk.cs` `9d2f0fde4a8aa1e1`
+- `LFoldClerk.cs` `95e87b3b392cb557`
 - `LMeaningClerk.cs` `598fe8f393d8d254`
-- `LMentionClerk.cs` `283273171501d408`
-- `LRegisterClerk.cs` `8a24d2adadc14ffc`
-- `LTagClerk.cs` `ddc8ee276f94f7fd`
+- `LMentionClerk.cs` `b38b6a236f108ba6`
+- `LRegisterClerk.cs` `7244ddf600540ddd`
+- `LTagClerk.cs` `2bc32514c1332d84`
 - `LTranslationClerk.cs` `b6bfa9297962f513`

@@ -40,6 +40,7 @@ public sealed class LRegisterChip
         LRegister? stored = LRegisterChipResolve(_lRegisterChipVault, name);
         return LRegisterChipApply(
             content,
+            request.LRequestKind,
             request.LRequestCardId,
             registers =>
             {
@@ -79,6 +80,7 @@ public sealed class LRegisterChip
 
         return LRegisterChipApply(
             content,
+            request.LRequestKind,
             request.LRequestCardId,
             registers => LDraftClerkList.LDraftListInsert(
                 registers, register, stored.LRegisterId, request.LRequestPosition, static row => row.LRegisterDraftId));
@@ -90,6 +92,7 @@ public sealed class LRegisterChip
 
         return LRegisterChipApply(
             content,
+            request.LRequestKind,
             request.LRequestCardId,
             registers => LDraftClerkList.LDraftListRemove(
                 registers, request.LRequestRegisterId, static row => row.LRegisterDraftId));
@@ -101,6 +104,7 @@ public sealed class LRegisterChip
 
         return LRegisterChipApply(
             content,
+            request.LRequestKind,
             request.LRequestCardId,
             registers => LDraftClerkList.LDraftListMove(
                 registers, request.LRequestRegisterId, request.LRequestPosition, static row => row.LRegisterDraftId));
@@ -154,10 +158,11 @@ public sealed class LRegisterChip
 
     private static LEntryDraft LRegisterChipApply(
         LEntryDraft content,
+        LCardKind kind,
         long cardId,
         Func<IReadOnlyList<LRegisterDraft>, IReadOnlyList<LRegisterDraft>> change)
     {
         return LDraftClerkCard.LCardChange(
-            content, cardId, card => card with { LCardDraftRegister = change(card.LCardDraftRegister) });
+            content, kind, cardId, card => card with { LCardDraftRegister = change(card.LCardDraftRegister) });
     }
 }

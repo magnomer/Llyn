@@ -55,7 +55,7 @@ public sealed class TEasel
         easel.TEaselImageAdd(child);
         long image = TInterface.TRequestCardFind(tenure.TTenureRead()!.LDraftContent, child)
             .LCardDraftImage[0].LImageDraftId;
-        easel.TEaselImageRemove(image);
+        easel.TEaselImageRemove(image, child);
 
         Assert.Empty(TInterface.TRequestCardFind(tenure.TTenureRead()!.LDraftContent, child).LCardDraftImage);
     }
@@ -128,7 +128,7 @@ public sealed class TEasel
         easel.TEaselVideoAdd(child);
         long video = TInterface.TRequestCardFind(tenure.TTenureRead()!.LDraftContent, child)
             .LCardDraftVideo[0].LVideoDraftId;
-        easel.TEaselVideoRemove(video);
+        easel.TEaselVideoRemove(video, child);
 
         Assert.Empty(TInterface.TRequestCardFind(tenure.TTenureRead()!.LDraftContent, child).LCardDraftVideo);
     }

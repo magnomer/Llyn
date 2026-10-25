@@ -232,8 +232,8 @@ Any other name is the unknown tier, so the chip always finds a brush and a name.
 
 ## Stamp
 
-Commit: `44d0e95bcfcc`
-- `CDisplay.cs` `14790bbc535748fe`
+Commit: `8c403d1df768`
+- `CDisplay.cs` `5728738cf9391b19`
 - `CDisplayAccent.cs` `63df02164d2dda07`
 - `CDisplayGrasp.cs` `1608230d12b1eee3`
 - `CDisplayPlayback.cs` `7fd2ed66c09e90e7`

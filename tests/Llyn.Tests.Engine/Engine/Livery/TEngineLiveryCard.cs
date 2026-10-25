@@ -189,7 +189,7 @@ public sealed class TEngineLiveryCard
         LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
             "break", "English", string.Empty, string.Empty, [TInterface.TCardCreate("a sense", 1)], []));
         LEntryDraft held = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(entry.LEntryId));
-        engine.TEngineFoldSave(entry.LEntryId, held.LEntryDraftMeanings[0].LCardDraftId);
+        engine.TEngineFoldSave(entry.LEntryId, LCardKind.LCardKindMeaning, held.LEntryDraftMeanings[0].LCardDraftId);
         LLiveryPage page = Assert.IsType<LLiveryPage>(engine.TLiveryRead(entry.LEntryId));
 
         string body = TInterface.TLiveryFormat(page, static key => key).LLiveryNoteBody;

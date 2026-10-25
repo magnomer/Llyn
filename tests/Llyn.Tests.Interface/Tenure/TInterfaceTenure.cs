@@ -80,7 +80,7 @@ internal static partial class TInterface
 
     internal static void TTenureGlossInsert(this LTenure tenure, int position)
     {
-        new LQuillSentence(tenure).LQuillGlossInsert(0, 0, position);
+        new LQuillSentence(tenure).LQuillGlossInsert(position);
     }
 
     internal static void TTenureHeadwordSet(this LTenure tenure, string text)

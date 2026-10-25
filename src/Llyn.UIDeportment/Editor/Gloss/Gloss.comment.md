@@ -70,6 +70,8 @@ It is resolved once when the list is built, so the menu paints without a per-row
 ## `QGloss`
 
 This class hands the Gloss gestures of a card's sentence row, raw, to one sentence gate.
+Each gate names its card by the placard's collocation flag and id.
+The engine finds a card by kind and id.
 It has no control of its own to wire.
 It holds the sentence driver, which finds the card of a pressed sentence row.
 The engine chooses a new Gloss's language and place.
@@ -99,8 +101,8 @@ It unchecks the pill, so the menu closes once a language is picked.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `QGloss.cs` `29e3b6ba402afc04`
+Commit: `8c403d1df768`
+- `QGloss.cs` `d6438de2c1027bd8`
 - `QGlossCommand.cs` `f1f508e8d22a6c14`
 - `QGlossConverter.cs` `807ab4503b57cfbf`
 - `QLanguageItem.cs` `d39f5081980f1ecd`

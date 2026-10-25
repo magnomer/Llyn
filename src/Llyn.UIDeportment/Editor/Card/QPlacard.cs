@@ -20,6 +20,7 @@ internal sealed class QPlacard : INotifyPropertyChanged
 
     internal QPlacard(
         string prefix,
+        bool collocated,
         ObservableCollection<QCitationItem> catalog,
         ObservableCollection<string> particles,
         ObservableCollection<string> dependences,
@@ -32,6 +33,7 @@ internal sealed class QPlacard : INotifyPropertyChanged
         _qPlacardPrefix = prefix;
         _qPlacardPeek = peek;
         QPlacardId = draft.CCardDraftId;
+        QPlacardCollocated = collocated;
         _qPlacardTitle = draft.CCardDraftTitle;
         _qPlacardDefinition = draft.CCardDraftMeaning;
         _qPlacardExpression = draft.CCardDraftExpression;
@@ -73,6 +75,8 @@ internal sealed class QPlacard : INotifyPropertyChanged
         static (row, fresh) => fresh.QRegisterChipText == row.QRegisterChipText ? row : fresh);
 
     public long QPlacardId { get; }
+
+    public bool QPlacardCollocated { get; }
 
     public int QPlacardPosition
     {
@@ -183,7 +187,7 @@ internal sealed class QPlacard : INotifyPropertyChanged
             rows,
             static row => row.QImageItemId,
             static draft => draft.CImageDraftId,
-            static draft => new QImageItem(draft),
+            draft => new QImageItem(draft, QPlacardCollocated, QPlacardId),
             (row, draft) =>
             {
                 row.QImageItemShow(draft);
@@ -198,7 +202,7 @@ internal sealed class QPlacard : INotifyPropertyChanged
             rows,
             static row => row.QVideoItemId,
             static draft => draft.CVideoDraftId,
-            static draft => new QVideoItem(draft),
+            draft => new QVideoItem(draft, QPlacardCollocated, QPlacardId),
             (row, draft) =>
             {
                 row.QVideoItemShow(draft);

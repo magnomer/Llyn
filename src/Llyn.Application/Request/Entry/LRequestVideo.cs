@@ -3,27 +3,32 @@ using Llyn.Core;
 namespace Llyn.Application;
 
 public sealed record LRequestVideoAddition(
-    long LRequestDraftId, long LRequestCardId, LStateWritten LRequestValue, int LRequestPosition)
+    long LRequestDraftId,
+    LCardKind LRequestKind,
+    long LRequestCardId,
+    LStateWritten LRequestValue,
+    int LRequestPosition)
     : LRequest(LRequestDraftId)
 {
     public override string LRequestKey => nameof(LRequestVideoAddition);
 }
 
 public sealed record LRequestVideoPick(
-    long LRequestDraftId, long LRequestCardId, long LRequestVideoId, int LRequestPosition)
+    long LRequestDraftId, LCardKind LRequestKind, long LRequestCardId, long LRequestVideoId, int LRequestPosition)
     : LRequest(LRequestDraftId)
 {
     public override string LRequestKey => nameof(LRequestVideoPick);
 }
 
-public sealed record LRequestVideoRemoval(long LRequestDraftId, long LRequestCardId, long LRequestVideoId)
+public sealed record LRequestVideoRemoval(
+    long LRequestDraftId, LCardKind LRequestKind, long LRequestCardId, long LRequestVideoId)
     : LRequest(LRequestDraftId)
 {
     public override string LRequestKey => nameof(LRequestVideoRemoval);
 }
 
 public sealed record LRequestVideoShift(
-    long LRequestDraftId, long LRequestCardId, long LRequestVideoId, int LRequestPosition)
+    long LRequestDraftId, LCardKind LRequestKind, long LRequestCardId, long LRequestVideoId, int LRequestPosition)
     : LRequest(LRequestDraftId)
 {
     public override string LRequestKey => nameof(LRequestVideoShift);

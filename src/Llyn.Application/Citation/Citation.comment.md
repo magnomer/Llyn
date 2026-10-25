@@ -294,7 +294,7 @@ The held Reference wins when its title or byline answers, so re-entering an unch
 Bylines repeat across works by one author, and only this rule stops a silent switch to a sibling.
 Otherwise a title match beats a byline match, since a byline leaves the title out once credits exist.
 Ties go to the oldest id, so the same line always lands on the same Reference.
-The draft form takes the Reference the draft's Example cites now as the held one.
+The draft form takes the Reference cited by the Example at the site as the held one.
 The engine hands the draft over, so the shell never reads the held Reference itself.
 A draft without a cited Reference holds zero, which no Reference carries.
 
@@ -308,7 +308,7 @@ The credits and the counts are read whole rather than one Source at a time.
 
 ## `LReferenceClerk.LReferenceCitationFind`
 
-Card and sentence 0 name the draft's own Example, which the corpus transcript writes.
+The site names a card sentence or the draft's own Example, which the corpus transcript writes.
 Each byline is split around the trimmed word by `LCatalog.LCatalogMarkFind`.
 The offer keeps at most `LCatalog.LCatalogOfferLimit` rows, the cap every chip dropdown shares.
 Each row carries its usage count ready to show, as `LCatalog.LCatalogUsageFormat` writes it.
@@ -395,6 +395,7 @@ Each title is split around the typed word by the catalog's mark rule.
 At most the catalog's offer limit of rows are kept, in usage order.
 Each row carries its usage count ready to show, as `LCatalog.LCatalogUsageFormat` writes it.
 No draft or no such card holds nothing, so every match is offered.
+The card is found by its kind and id.
 
 ## `LSituationClerk.LSituationClerkDelete`
 
@@ -423,7 +424,7 @@ What the list no longer names is detached and keeps its record.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `8c403d1df768`
 - `LAuthorCitation.cs` `41c8fed28c3f1b8c`
 - `LAuthorClerk.cs` `1e45c458df96b5fa`
 - `LCitationClerk.cs` `719e7a45d58a0b0f`
@@ -431,6 +432,6 @@ Commit: `c2f335c331fe`
 - `LExampleClerk.cs` `2bdb72e5f03e7834`
 - `LFavoriteClerk.cs` `b3e702513de3e864`
 - `LReferenceCitation.cs` `22b01c63bf1fb4b6`
-- `LReferenceClerk.cs` `d1cede303d81f15c`
+- `LReferenceClerk.cs` `9e40dc9160b9b513`
 - `LSituationCitation.cs` `4c94190b8ce67d40`
-- `LSituationClerk.cs` `40f7ee6f8d7cafb8`
+- `LSituationClerk.cs` `e05ff68196f2e351`

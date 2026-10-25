@@ -13,6 +13,8 @@ They run the shared sense menu read over a scripted draft port.
 They run the corpus, favorites, quotation and occurrence rows reads over failing ports.
 They run the chip read over a failing draft port.
 They run the display word find over a failing or recording mention port.
+The chip reads name the draft site, not a card and a sentence id.
+A held Example has no card.
 They map a click result and add a Mention to an Example, so a test builds no engine record itself.
 They run the unit read of a piece and the shared open of a find answer.
 Each relay is transparent.
@@ -70,10 +72,11 @@ The relays for mentions and the text spans they cover.
 They build mentions and mention drafts, and resolve, divide and read the spans a test checks.
 The span finds on an example draft are relayed here too.
 The example read off a whole draft is relayed here too.
+It names the card kind beside the card and sentence ids.
 Each relay is transparent.
 
 ## Stamp
 
-Commit: `44d0e95bcfcc`
-- `TInterfaceMention.cs` `41a1c79826f0188b`
-- `TInterfaceMentionSpan.cs` `412ff102b50a4db0`
+Commit: `8c403d1df768`
+- `TInterfaceMention.cs` `7434261212c52a69`
+- `TInterfaceMentionSpan.cs` `8af97bb1443ad468`

@@ -29,16 +29,19 @@ public sealed class LDraftClerkSentence
             LRequestSentenceExample sent => LSentenceSelect(content, sent),
             LRequestSentenceText sent => LExampleChange(
                 content,
+                sent.LRequestKind,
                 sent.LRequestCardId,
                 sent.LRequestSentenceId,
                 example => LDraftClerkMention.LMentionUpdate(example, LStateValue.LStateValueRead(sent.LRequestValue))),
             LRequestSentenceParticle sent => LSentenceChange(
                 content,
+                sent.LRequestKind,
                 sent.LRequestCardId,
                 sent.LRequestSentenceId,
                 sentence => sentence with { LSentenceDraftParticle = LStateValue.LStateValueRead(sent.LRequestValue) }),
             LRequestSentenceDependence sent => LSentenceChange(
                 content,
+                sent.LRequestKind,
                 sent.LRequestCardId,
                 sent.LRequestSentenceId,
                 sentence => sentence with
@@ -47,6 +50,7 @@ public sealed class LDraftClerkSentence
                 }),
             LRequestSentenceReference sent => LExampleChange(
                 content,
+                sent.LRequestKind,
                 sent.LRequestCardId,
                 sent.LRequestSentenceId,
                 example => example with
@@ -69,6 +73,7 @@ public sealed class LDraftClerkSentence
 
         return LSentenceApply(
             content,
+            request.LRequestKind,
             request.LRequestCardId,
             sentences => LDraftClerkList.LDraftListAdd(sentences, sentence, request.LRequestPosition));
     }
@@ -79,6 +84,7 @@ public sealed class LDraftClerkSentence
 
         return LSentenceApply(
             content,
+            request.LRequestKind,
             request.LRequestCardId,
             sentences => LDraftClerkList.LDraftListRemove(
                 sentences, request.LRequestSentenceId, static row => row.LSentenceDraftId));
@@ -90,6 +96,7 @@ public sealed class LDraftClerkSentence
 
         return LSentenceApply(
             content,
+            request.LRequestKind,
             request.LRequestCardId,
             sentences => LDraftClerkList.LDraftListMove(
                 sentences, request.LRequestSentenceId, request.LRequestPosition, static row => row.LSentenceDraftId));
@@ -111,17 +118,22 @@ public sealed class LDraftClerkSentence
 
         return LSentenceChange(
             content,
+            request.LRequestKind,
             request.LRequestCardId,
             request.LRequestSentenceId,
             sentence => sentence with { LSentenceDraftExample = example });
     }
 
     public LEntryDraft LExampleChange(
-        LEntryDraft content, long cardId, long sentenceId, Func<LExampleDraft, LExampleDraft> change)
+        LEntryDraft content,
+        LCardKind kind,
+        long cardId,
+        long sentenceId,
+        Func<LExampleDraft, LExampleDraft> change)
     {
         ArgumentNullException.ThrowIfNull(change);
 
-        return LSentenceChange(content, cardId, sentenceId, sentence =>
+        return LSentenceChange(content, kind, cardId, sentenceId, sentence =>
         {
             LExampleDraft? example = change(sentence.LSentenceDraftExample ?? new LExampleDraft(
                 LStateValue.LStateValueUnspecified,
@@ -143,10 +155,15 @@ public sealed class LDraftClerkSentence
     }
 
     public static LEntryDraft LSentenceChange(
-        LEntryDraft content, long cardId, long sentenceId, Func<LSentenceDraft, LSentenceDraft> change)
+        LEntryDraft content,
+        LCardKind kind,
+        long cardId,
+        long sentenceId,
+        Func<LSentenceDraft, LSentenceDraft> change)
     {
         return LSentenceApply(
             content,
+            kind,
             cardId,
             sentences => LDraftClerkList.LDraftListChange(
                 sentences, sentenceId, static row => row.LSentenceDraftId, change)
@@ -155,10 +172,11 @@ public sealed class LDraftClerkSentence
 
     private static LEntryDraft LSentenceApply(
         LEntryDraft content,
+        LCardKind kind,
         long cardId,
         Func<IReadOnlyList<LSentenceDraft>, IReadOnlyList<LSentenceDraft>> change)
     {
         return LDraftClerkCard.LCardChange(
-            content, cardId, card => card with { LCardDraftSentence = change(card.LCardDraftSentence) });
+            content, kind, cardId, card => card with { LCardDraftSentence = change(card.LCardDraftSentence) });
     }
 }

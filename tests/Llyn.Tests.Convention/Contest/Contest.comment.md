@@ -162,11 +162,11 @@ So a second shell writer can never hide behind the first.
 
 ## Stamp
 
-Commit: `90a13c9590ba`
+Commit: `8c403d1df768`
 - `TAssayContesting.cs` `977da0d0e60fb28d`
 - `TAssayContestingCarrier.cs` `565860d3d28c6128`
-- `TAssayContestingMarkup.cs` `e13753e75ac68939`
-- `TAssayOrigin.cs` `dedca0570e91b8d3`
+- `TAssayContestingMarkup.cs` `a5293e36062a8105`
+- `TAssayOrigin.cs` `be57f8199e1d6303`
 - `TAuditLookupWalker.cs` `6d59d41f701cec4c`
 - `TAuditOriginHolder.cs` `6992920120af377a`
 - `TAuditOriginSite.cs` `0313b780b83a82fa`

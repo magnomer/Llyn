@@ -24,7 +24,7 @@ public sealed class LQuillChip
         _lQuillChipMention = new LQuillMention(tenure);
     }
 
-    public string LQuillTagAdd(long card, string text, int position, bool settled)
+    public string LQuillTagAdd(LCardKind kind, long card, string text, int position, bool settled)
     {
         ArgumentNullException.ThrowIfNull(text);
 
@@ -32,27 +32,28 @@ public sealed class LQuillChip
         return LDraftClerkList.LDraftListParse(text, settled, part =>
         {
             _lQuillChipTenure.LTenureRequestApply(
-                new LRequestTagAddition(_lQuillChipTenure.LTenureId, card, part, placed++));
+                new LRequestTagAddition(_lQuillChipTenure.LTenureId, kind, card, part, placed++));
             return true;
         });
     }
 
-    public LTagOffer LQuillTagFind(long card, string kept)
+    public LTagOffer LQuillTagFind(LCardKind kind, long card, string kept)
     {
-        return _lQuillChipDrafts.LEngineTagFind(_lQuillChipTenure, card, kept);
+        return _lQuillChipDrafts.LEngineTagFind(_lQuillChipTenure, kind, card, kept);
     }
 
-    public void LQuillTagInsert(long card, long tag, int position)
+    public void LQuillTagInsert(LCardKind kind, long card, long tag, int position)
     {
-        _lQuillChipTenure.LTenureRequestApply(new LRequestTagPick(_lQuillChipTenure.LTenureId, card, tag, position));
+        _lQuillChipTenure.LTenureRequestApply(
+            new LRequestTagPick(_lQuillChipTenure.LTenureId, kind, card, tag, position));
     }
 
-    public void LQuillTagRemove(long card, long tag)
+    public void LQuillTagRemove(LCardKind kind, long card, long tag)
     {
-        _lQuillChipTenure.LTenureRequestApply(new LRequestTagRemoval(_lQuillChipTenure.LTenureId, card, tag));
+        _lQuillChipTenure.LTenureRequestApply(new LRequestTagRemoval(_lQuillChipTenure.LTenureId, kind, card, tag));
     }
 
-    public string LQuillSituationAdd(long card, string text, int position, bool settled)
+    public string LQuillSituationAdd(LCardKind kind, long card, string text, int position, bool settled)
     {
         ArgumentNullException.ThrowIfNull(text);
 
@@ -60,29 +61,29 @@ public sealed class LQuillChip
         return LDraftClerkList.LDraftListParse(text, settled, part =>
         {
             _lQuillChipTenure.LTenureRequestApply(new LRequestSituationAddition(
-                _lQuillChipTenure.LTenureId, card, new LStateWritten(part), placed++));
+                _lQuillChipTenure.LTenureId, kind, card, new LStateWritten(part), placed++));
             return true;
         });
     }
 
-    public LSituationOffer LQuillSituationFind(long card, string kept)
+    public LSituationOffer LQuillSituationFind(LCardKind kind, long card, string kept)
     {
-        return _lQuillChipDrafts.LEngineSituationFind(_lQuillChipTenure, card, kept);
+        return _lQuillChipDrafts.LEngineSituationFind(_lQuillChipTenure, kind, card, kept);
     }
 
-    public void LQuillSituationInsert(long card, long situation, int position)
-    {
-        _lQuillChipTenure.LTenureRequestApply(
-            new LRequestSituationPick(_lQuillChipTenure.LTenureId, card, situation, position));
-    }
-
-    public void LQuillSituationRemove(long card, long situation)
+    public void LQuillSituationInsert(LCardKind kind, long card, long situation, int position)
     {
         _lQuillChipTenure.LTenureRequestApply(
-            new LRequestSituationRemoval(_lQuillChipTenure.LTenureId, card, situation));
+            new LRequestSituationPick(_lQuillChipTenure.LTenureId, kind, card, situation, position));
     }
 
-    public string LQuillRegisterAdd(long card, string text, int position, bool settled)
+    public void LQuillSituationRemove(LCardKind kind, long card, long situation)
+    {
+        _lQuillChipTenure.LTenureRequestApply(
+            new LRequestSituationRemoval(_lQuillChipTenure.LTenureId, kind, card, situation));
+    }
+
+    public string LQuillRegisterAdd(LCardKind kind, long card, string text, int position, bool settled)
     {
         ArgumentNullException.ThrowIfNull(text);
 
@@ -90,52 +91,47 @@ public sealed class LQuillChip
         return LDraftClerkList.LDraftListParse(text, settled, part =>
         {
             _lQuillChipTenure.LTenureRequestApply(new LRequestRegisterAddition(
-                _lQuillChipTenure.LTenureId, card, new LStateWritten(part), placed++));
+                _lQuillChipTenure.LTenureId, kind, card, new LStateWritten(part), placed++));
             return true;
         });
     }
 
-    public LRegisterOffer LQuillRegisterFind(long card, string kept)
+    public LRegisterOffer LQuillRegisterFind(LCardKind kind, long card, string kept)
     {
-        return _lQuillChipDrafts.LEngineRegisterFind(_lQuillChipTenure, card, kept);
+        return _lQuillChipDrafts.LEngineRegisterFind(_lQuillChipTenure, kind, card, kept);
     }
 
-    public void LQuillRegisterInsert(long card, long register, int position)
+    public void LQuillRegisterInsert(LCardKind kind, long card, long register, int position)
     {
         _lQuillChipTenure.LTenureRequestApply(
-            new LRequestRegisterPick(_lQuillChipTenure.LTenureId, card, register, position));
+            new LRequestRegisterPick(_lQuillChipTenure.LTenureId, kind, card, register, position));
     }
 
-    public void LQuillRegisterRemove(long card, long register)
+    public void LQuillRegisterRemove(LCardKind kind, long card, long register)
     {
-        _lQuillChipTenure.LTenureRequestApply(new LRequestRegisterRemoval(_lQuillChipTenure.LTenureId, card, register));
+        _lQuillChipTenure.LTenureRequestApply(
+            new LRequestRegisterRemoval(_lQuillChipTenure.LTenureId, kind, card, register));
     }
 
-    public LReferenceOffer LQuillReferenceFind(long card, long sentence, string text)
+    public LReferenceOffer LQuillReferenceFind(LCardKind kind, long card, long sentence, string text)
     {
         ArgumentNullException.ThrowIfNull(text);
 
-        return _lQuillChipDrafts.LEngineReferenceFind(_lQuillChipTenure, card, sentence, text);
+        return _lQuillChipDrafts.LEngineReferenceFind(
+            _lQuillChipTenure, new LExampleSiteCard(kind, card, sentence), text);
     }
 
-    public void LQuillCitationResolve(long card, long sentence, string title)
+    public void LQuillCitationResolve(LCardKind kind, long card, long sentence, string title)
     {
         ArgumentNullException.ThrowIfNull(title);
 
-        long reference = _lQuillChipDrafts.LEngineCitationResolve(_lQuillChipTenure, card, sentence, title);
+        long reference = _lQuillChipDrafts.LEngineCitationResolve(
+            _lQuillChipTenure, new LExampleSiteCard(kind, card, sentence), title);
         _lQuillChipTenure.LTenureRequestApply(
-            new LRequestSentenceReference(_lQuillChipTenure.LTenureId, card, sentence, reference));
+            new LRequestSentenceReference(_lQuillChipTenure.LTenureId, kind, card, sentence, reference));
     }
 
-    public void LQuillReferenceResolve(string title)
-    {
-        ArgumentNullException.ThrowIfNull(title);
-
-        long reference = _lQuillChipDrafts.LEngineCitationResolve(_lQuillChipTenure, 0, 0, title);
-        _lQuillChipTenure.LTenureRequestApply(new LRequestExampleReference(_lQuillChipTenure.LTenureId, reference));
-    }
-
-    public LTranslationOffer LQuillTranslationAdd(long card, string text, int position)
+    public LTranslationOffer LQuillTranslationAdd(LCardKind kind, long card, string text, int position)
     {
         ArgumentNullException.ThrowIfNull(text);
 
@@ -148,7 +144,7 @@ public sealed class LQuillChip
                 return false;
             }
 
-            LQuillTranslationInsert(card, entry.LEntryId, placed++);
+            LQuillTranslationInsert(kind, card, entry.LEntryId, placed++);
             return true;
         });
         return LQuillProspectFind(kept);
@@ -168,7 +164,7 @@ public sealed class LQuillChip
         return _lQuillChipDrafts.LEngineTranslationFind(_lQuillChipTenure, text, word, chosen);
     }
 
-    public string LQuillTranslationResolve(long card, string text, int position)
+    public string LQuillTranslationResolve(LCardKind kind, long card, string text, int position)
     {
         ArgumentNullException.ThrowIfNull(text);
 
@@ -178,33 +174,34 @@ public sealed class LQuillChip
             return text;
         }
 
-        LQuillTranslationInsert(card, entry.LEntryId, position);
+        LQuillTranslationInsert(kind, card, entry.LEntryId, position);
         return string.Empty;
     }
 
-    public void LQuillTranslationStart(long card, long entry, string headword, string language, int position)
+    public void LQuillTranslationStart(
+        LCardKind kind, long card, long entry, string headword, string language, int position)
     {
         if (entry != 0)
         {
-            LQuillTranslationInsert(card, entry, position);
+            LQuillTranslationInsert(kind, card, entry, position);
             return;
         }
 
         string origin = _lQuillChipTenure.LTenureRead()?.LDraftOrigin ?? string.Empty;
         LCourt court = _lQuillChipDrafts.LEngineCourtStart(_lQuillChipTenure.LTenureId, origin, headword, language);
-        LQuillTranslationInsert(card, court.LCourtTargetId, position);
+        LQuillTranslationInsert(kind, card, court.LCourtTargetId, position);
     }
 
-    public void LQuillTranslationInsert(long card, long entry, int position)
+    public void LQuillTranslationInsert(LCardKind kind, long card, long entry, int position)
     {
         _lQuillChipTenure.LTenureRequestApply(
-            new LRequestTranslationPick(_lQuillChipTenure.LTenureId, card, entry, position));
+            new LRequestTranslationPick(_lQuillChipTenure.LTenureId, kind, card, entry, position));
     }
 
-    public void LQuillTranslationRemove(long card, long entry)
+    public void LQuillTranslationRemove(LCardKind kind, long card, long entry)
     {
         _lQuillChipTenure.LTenureRequestApply(
-            new LRequestTranslationRemoval(_lQuillChipTenure.LTenureId, card, entry));
+            new LRequestTranslationRemoval(_lQuillChipTenure.LTenureId, kind, card, entry));
 
         if (_lQuillChipDrafts.LEngineCourtFind(_lQuillChipTenure.LTenureId, entry) is LCourt court)
         {
@@ -239,43 +236,60 @@ public sealed class LQuillChip
         return new LTranslationOffer(text, word, rows, rows.Count > 0, true, []);
     }
 
-    public void LQuillMentionAdd(long card, long sentence, string text, int start, int length, long entry)
+    public void LQuillMentionAdd(
+        LCardKind kind, long card, long sentence, string text, int start, int length, long entry)
+    {
+        LQuillMentionAdd(new LExampleSiteCard(kind, card, sentence), text, start, length, entry);
+    }
+
+    public void LQuillSenseSet(
+        LCardKind kind, long card, long sentence, string text, int start, int length, long sense)
+    {
+        LQuillSenseSet(new LExampleSiteCard(kind, card, sentence), text, start, length, sense);
+    }
+
+    public void LQuillMentionRemove(LCardKind kind, long card, long sentence, string text, int start, int length)
+    {
+        LQuillMentionRemove(new LExampleSiteCard(kind, card, sentence), text, start, length);
+    }
+
+    internal void LQuillMentionAdd(LExampleSite site, string text, int start, int length, long entry)
     {
         ArgumentNullException.ThrowIfNull(text);
 
         LMentionDraft span = _lQuillChipDrafts.LEngineSpanRead(text, start, length);
         _lQuillChipTenure.LTenureRequestApply(new LRequestMentionAddition(
-            _lQuillChipTenure.LTenureId, card, sentence, span.LMentionDraftOffset, span.LMentionDraftLength, entry, 0));
+            _lQuillChipTenure.LTenureId, site, span.LMentionDraftOffset, span.LMentionDraftLength, entry, 0));
     }
 
-    public void LQuillSenseSet(long card, long sentence, string text, int start, int length, long sense)
+    internal void LQuillSenseSet(LExampleSite site, string text, int start, int length, long sense)
     {
         ArgumentNullException.ThrowIfNull(text);
 
         _lQuillChipTenure.LTenurePersist();
-        if (_lQuillChipMention.LQuillMentionFind(card, sentence, _lQuillChipDrafts.LEngineSpanRead(text, start, length))
+        if (_lQuillChipMention.LQuillMentionFind(site, _lQuillChipDrafts.LEngineSpanRead(text, start, length))
             is not LMentionDraft found)
         {
             return;
         }
 
-        _lQuillChipTenure.LTenureRequestApply(new LRequestMentionSense(
-            _lQuillChipTenure.LTenureId, card, sentence, found.LMentionDraftId, sense));
+        _lQuillChipTenure.LTenureRequestApply(
+            new LRequestMentionSense(_lQuillChipTenure.LTenureId, site, found.LMentionDraftId, sense));
     }
 
-    public void LQuillMentionRemove(long card, long sentence, string text, int start, int length)
+    internal void LQuillMentionRemove(LExampleSite site, string text, int start, int length)
     {
         ArgumentNullException.ThrowIfNull(text);
 
         _lQuillChipTenure.LTenurePersist();
-        if (_lQuillChipMention.LQuillMentionFind(card, sentence, _lQuillChipDrafts.LEngineSpanRead(text, start, length))
+        if (_lQuillChipMention.LQuillMentionFind(site, _lQuillChipDrafts.LEngineSpanRead(text, start, length))
             is not LMentionDraft found)
         {
             return;
         }
 
-        _lQuillChipTenure.LTenureRequestApply(new LRequestMentionRemoval(
-            _lQuillChipTenure.LTenureId, card, sentence, found.LMentionDraftId));
+        _lQuillChipTenure.LTenureRequestApply(
+            new LRequestMentionRemoval(_lQuillChipTenure.LTenureId, site, found.LMentionDraftId));
     }
 
     private LTranslationOffer LQuillProspectFind(string kept)

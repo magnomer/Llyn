@@ -263,6 +263,7 @@ Each check passes pending and enabled and keeps held off, since a page never hol
 That is the check the view's `LEngineParadigmCheck` makes, so both show the same row text.
 It collects every language the page names, from the draft, its reflexes, targets, usages and glosses.
 The lineage and the relation list pass through unchanged, and no lineage language is collected.
+The fold set holds card kind and id pairs, and also passes through unchanged.
 Glosses are read from every card and every nested child card.
 It asks the flag function once per distinct language and keeps each path it answers as `LLiveryPageBanner`.
 A language the function answers null for gets no entry.
@@ -283,9 +284,9 @@ The switched, tallied and localize arguments pass unchanged to `LDiweiPageRead`,
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `8c403d1df768`
 - `LCourierClerk.cs` `eef468b0b538d2a2`
 - `LCourierLanguage.cs` `30d6bd5fcaad5e62`
 - `LCourierNote.cs` `d978ffb8d947f5b3`
 - `LCourierWarrant.cs` `f0cbd592b106bcaa`
-- `LLiveryClerk.cs` `5168fadb8f47bc2e`
+- `LLiveryClerk.cs` `aae0e7be00d8b022`

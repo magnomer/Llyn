@@ -15,7 +15,7 @@ public sealed class LEasel
         _lEaselTenure = tenure;
     }
 
-    public void LEaselImageAdd(long card)
+    public void LEaselImageAdd(LCardKind kind, long card)
     {
         if (_lEaselTenure.LTenureRead() is not LDraft held)
         {
@@ -24,18 +24,20 @@ public sealed class LEasel
 
         _lEaselTenure.LTenureRequestApply(new LRequestImageAddition(
             _lEaselTenure.LTenureId,
+            kind,
             card,
             LStateWritten.LStateWrittenEmpty,
-            LDraftClerkMedia.LImageEndRead(held, card)));
+            LDraftClerkMedia.LImageEndRead(held, kind, card)));
     }
 
-    public void LEaselImageRemove(long image)
+    public void LEaselImageRemove(LCardKind kind, long card, long image)
     {
-        if (_lEaselTenure.LTenureRead() is LDraft held
-            && LDraftClerkMedia.LImageCardFind(held, image) is long card)
+        if (_lEaselTenure.LTenureRead() is null)
         {
-            _lEaselTenure.LTenureRequestApply(new LRequestImageRemoval(_lEaselTenure.LTenureId, card, image));
+            return;
         }
+
+        _lEaselTenure.LTenureRequestApply(new LRequestImageRemoval(_lEaselTenure.LTenureId, kind, card, image));
     }
 
     public void LEaselImageSet(long image, string location, bool deferred)
@@ -44,7 +46,7 @@ public sealed class LEasel
             new LRequestImageLocation(_lEaselTenure.LTenureId, image, new LStateWritten(location)), deferred);
     }
 
-    public void LEaselVideoAdd(long card)
+    public void LEaselVideoAdd(LCardKind kind, long card)
     {
         if (_lEaselTenure.LTenureRead() is not LDraft held)
         {
@@ -53,18 +55,20 @@ public sealed class LEasel
 
         _lEaselTenure.LTenureRequestApply(new LRequestVideoAddition(
             _lEaselTenure.LTenureId,
+            kind,
             card,
             LStateWritten.LStateWrittenEmpty,
-            LDraftClerkMedia.LVideoEndRead(held, card)));
+            LDraftClerkMedia.LVideoEndRead(held, kind, card)));
     }
 
-    public void LEaselVideoRemove(long video)
+    public void LEaselVideoRemove(LCardKind kind, long card, long video)
     {
-        if (_lEaselTenure.LTenureRead() is LDraft held
-            && LDraftClerkMedia.LVideoCardFind(held, video) is long card)
+        if (_lEaselTenure.LTenureRead() is null)
         {
-            _lEaselTenure.LTenureRequestApply(new LRequestVideoRemoval(_lEaselTenure.LTenureId, card, video));
+            return;
         }
+
+        _lEaselTenure.LTenureRequestApply(new LRequestVideoRemoval(_lEaselTenure.LTenureId, kind, card, video));
     }
 
     public void LEaselVideoSet(long video, string location, bool deferred)

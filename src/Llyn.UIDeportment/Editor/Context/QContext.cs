@@ -139,7 +139,8 @@ internal sealed class QContext
         if (e.OriginalSource is TextBox { DataContext: QInlet<QContextChip> caret } box
             && QContextCardFind(caret) is QPlacard card)
         {
-            _qContextProffer.QProfferSituationRefine(card, _cCaret.CCaretSituationAdd(card.QPlacardId, box.Text));
+            _qContextProffer.QProfferSituationRefine(
+                card, _cCaret.CCaretSituationAdd(card.QPlacardCollocated, card.QPlacardId, box.Text));
         }
     }
 
@@ -147,7 +148,7 @@ internal sealed class QContext
     {
         if (sender is FrameworkElement { DataContext: QContextChip chip } && QContextCardFind(chip) is QPlacard card)
         {
-            _cCard.CCardSituationRemove(card.QPlacardId, chip.QContextChipId);
+            _cCard.CCardSituationRemove(card.QPlacardCollocated, card.QPlacardId, chip.QContextChipId);
         }
     }
 
@@ -160,7 +161,7 @@ internal sealed class QContext
             return;
         }
 
-        _cCaret.CCaretSituationSettle(card.QPlacardId, box.Text);
+        _cCaret.CCaretSituationSettle(card.QPlacardCollocated, card.QPlacardId, box.Text);
         e.Handled = true;
         _qContextProffer.QProfferShutRefine();
         card.QPlacardContext.QInletClear();
@@ -179,7 +180,7 @@ internal sealed class QContext
             box.CaretIndex,
             box.Text.Length,
             box.SelectionLength,
-            step => _cCaret.CCaretSituation.CCaretTrailDelete(card.QPlacardId, step));
+            step => _cCaret.CCaretSituation.CCaretTrailDelete(card.QPlacardCollocated, card.QPlacardId, step));
     }
 
     internal void QContextCaretRefine(object sender, KeyEventArgs e)
@@ -196,7 +197,8 @@ internal sealed class QContext
             box.SelectionLength,
             step =>
             {
-                (bool moved, long? anchor) = _cCaret.CCaretSituation.CCaretTrailMove(card.QPlacardId, step);
+                (bool moved, long? anchor) =
+                    _cCaret.CCaretSituation.CCaretTrailMove(card.QPlacardCollocated, card.QPlacardId, step);
                 QContextAnchorShow(card, anchor);
                 return moved;
             },
@@ -213,7 +215,7 @@ internal sealed class QContext
         if (sender is TextBox { DataContext: QInlet<QContextChip> row } box
             && QContextCardFind(row) is QPlacard card)
         {
-            _cCaret.CCaretSituationSettle(card.QPlacardId, box.Text);
+            _cCaret.CCaretSituationSettle(card.QPlacardCollocated, card.QPlacardId, box.Text);
             card.QPlacardContext.QInletClear();
         }
     }

@@ -78,7 +78,7 @@ public sealed class LSituationClerk
         return LCatalogSituation.LCatalogSituationSort(rows, order);
     }
 
-    public LSituationOffer LSituationClerkFind(string text, LDraft? draft, long card)
+    public LSituationOffer LSituationClerkFind(string text, LDraft? draft, LCardKind kind, long card)
     {
         ArgumentNullException.ThrowIfNull(text);
 
@@ -90,7 +90,7 @@ public sealed class LSituationClerk
 
         IReadOnlyList<LSituationDraft> held = draft is null
             ? []
-            : LDraftClerkCard.LCardFind(draft.LDraftContent, card)?.LCardDraftSituation ?? [];
+            : LDraftClerkCard.LCardFind(draft.LDraftContent, kind, card)?.LCardDraftSituation ?? [];
 
         List<LSituationRow> rows = [];
         foreach (LCatalogSituation found in LSituationClerkFind(word, LCatalogOrder.LCatalogOrderUsage))

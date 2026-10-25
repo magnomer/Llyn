@@ -70,6 +70,11 @@ The id is handed back unread to the fold gate when the hinge is clicked.
 
 It decides whether the hinge shows.
 
+### `QLeafItemCollocated`
+
+The flag is Conduct's verdict on whether the item is a collocation row.
+It travels with the id to the fold gate, since the lookup is by card kind and id.
+
 ### `QLeafItemRank`
 
 The badge formats the supplied position in the current culture and does not count the list.
@@ -137,11 +142,11 @@ Each film row is built as the vignette builds its own.
 
 ## Stamp
 
-Commit: `cb8ab7e8feb4`
+Commit: `8c403d1df768`
 - `QLeaf.cs` `4cff50c96c75b087`
 - `QLeafChip.cs` `afe238a03dea2f47`
 - `QLeafImage.cs` `ebc626cc614700b7`
-- `QLeafItem.cs` `98ed6ae004b9331a`
+- `QLeafItem.cs` `bc21302db5754fab`
 - `QLeafLine.cs` `40a0d4aad94c015f`
 - `QLeafSee.cs` `19c10c485fdc4d46`
 - `QLeafVideo.cs` `84c2368cbae3d081`

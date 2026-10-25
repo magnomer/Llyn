@@ -27,9 +27,9 @@ internal sealed record BLecternLine(
 
         void BLecternLineFinish()
         {
-            if (row is [.., (string text, string role, null)])
+            if (row is [.., (string text, string role, var owner)] && (owner is null || text.Trim(' ').Length > 0))
             {
-                row[^1] = (text.TrimEnd(' '), role, null);
+                row[^1] = (text.TrimEnd(' '), role, owner);
             }
 
             rows.Add(new BLecternLine([.. BLecternPieceNormalize(row)], rows.Count == 0 ? first : hang));

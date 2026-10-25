@@ -26,6 +26,7 @@ public static class LDraftClerkSense
 
         return LDraftClerkCard.LCardChange(
             content,
+            LCardKind.LCardKindCollocation,
             cardId,
             held => held with { LCardDraftSense = [.. held.LCardDraftSense, senseId] });
     }
@@ -44,6 +45,7 @@ public static class LDraftClerkSense
 
         return LDraftClerkCard.LCardChange(
             content,
+            LCardKind.LCardKindCollocation,
             cardId,
             held => held with { LCardDraftSense = held.LCardDraftSense.Where(id => id != senseId).ToList() });
     }

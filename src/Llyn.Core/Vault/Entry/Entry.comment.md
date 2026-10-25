@@ -99,7 +99,8 @@ Drops the entry's rows, so a hand-edited entry is asked afresh.
 Card folds and reflex-list, editor-box and series-member openings share one persistence boundary.
 `LFoldArchive` supplies the workspace database adapter.
 Marks remain separate from lexical card storage and the disposable reflex cache.
-Meanings and Collocations share card identity, so card folds need no kind parameter.
+A Meaning and a Collocation may carry one id.
+So a card fold is keyed by the card kind and the id.
 Reflex openings belong to entries, while editor-box openings belong to entry-and-box pairs.
 Series member openings belong to entry-and-series-key pairs, apart from the entry page's opening.
 Absent opening marks mean closed.
@@ -107,7 +108,7 @@ Repeated opening is idempotent, and missing stored entries acquire no mark.
 
 ## `LFoldSave`
 
-Repeated folding is idempotent, and missing stored cards acquire no mark.
+Repeated folding is idempotent, and missing stored cards of that kind acquire no mark.
 
 ## `LFoldDelete`
 
@@ -115,7 +116,7 @@ Unfolding removes view state without changing the card's lexical values.
 
 ## `LFoldRead`
 
-One entry-scoped read covers folded Meanings and Collocations together.
+One entry-scoped read covers folded Meanings and Collocations together, each as its kind and id.
 
 ## `LFoldReflexSpread`
 
@@ -152,11 +153,11 @@ Records that the entry was deleted under a revision and returns the stored tombs
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `8c403d1df768`
 - `LAncestorVault.cs` `51212f51c2784511`
 - `LEntryQueryVault.cs` `ee319777555535de`
 - `LEntryVault.cs` `1458c8742f54fbad`
-- `LFoldVault.cs` `d3f0ea93d9525715`
+- `LFoldVault.cs` `af788cd97ab069e3`
 - `LLacunaVault.cs` `bc31ece851bb9230`
 - `LRevisionVault.cs` `39a90a8856170c2c`
 - `LTombstoneVault.cs` `c3f460d349ff9054`

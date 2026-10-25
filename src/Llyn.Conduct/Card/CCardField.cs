@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Llyn.Core;
 using Llyn.ShellEngine;
 
 namespace Llyn.Conduct;
@@ -32,19 +33,22 @@ public sealed class CCardField
             ? new LQuillCard(held)
             : null;
 
-    public void CCardTitleSet(long cardId, string text)
+    public void CCardTitleSet(bool collocated, long cardId, string text)
     {
-        CCardFieldQuill?.LCardTitleSet(cardId, text);
+        CCardFieldQuill?.LCardTitleSet(
+            collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning, cardId, text);
     }
 
-    public void CCardExpressionSet(long cardId, string text)
+    public void CCardExpressionSet(bool collocated, long cardId, string text)
     {
-        CCardFieldQuill?.LCardExpressionSet(cardId, text);
+        CCardFieldQuill?.LCardExpressionSet(
+            collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning, cardId, text);
     }
 
-    public void CCardMeaningSet(long cardId, string text)
+    public void CCardMeaningSet(bool collocated, long cardId, string text)
     {
-        CCardFieldQuill?.LCardMeaningSet(cardId, text);
+        CCardFieldQuill?.LCardMeaningSet(
+            collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning, cardId, text);
     }
 
     public void CCardSenseAttach(long cardId, long senseId)

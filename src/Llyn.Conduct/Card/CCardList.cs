@@ -15,7 +15,7 @@ public sealed class CCardList
 
     private readonly CEnvoy _cCardListEnvoy;
 
-    private readonly HashSet<long> _cCardListMoving = [];
+    private readonly HashSet<(bool, long)> _cCardListMoving = [];
 
     internal CCardList(CDesk desk, LCardPort cards, LSettingsPort settings, CEnvoy envoy)
     {
@@ -45,27 +45,29 @@ public sealed class CCardList
         CCardListQuill?.LQuillCardAdd(LCardKind.LCardKindCollocation);
     }
 
-    public void CCardRemove(long cardId)
+    public void CCardRemove(bool collocated, long cardId)
     {
-        CCardListQuill?.LQuillCardRemove(cardId);
+        CCardListQuill?.LQuillCardRemove(
+            collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning, cardId);
     }
 
-    public bool CCardFoldToggle(long cardId, bool folded)
+    public bool CCardFoldToggle(bool collocated, long cardId, bool folded)
     {
         if (_cCardListDesk.CDeskStoredRead() is not long id)
         {
             return false;
         }
 
+        LCardKind kind = collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning;
         try
         {
             if (folded)
             {
-                _cCardListPort.LEngineFoldSave(id, cardId);
+                _cCardListPort.LEngineFoldSave(id, kind, cardId);
             }
             else
             {
-                _cCardListPort.LEngineFoldDelete(id, cardId);
+                _cCardListPort.LEngineFoldDelete(id, kind, cardId);
             }
 
             return true;
@@ -78,54 +80,55 @@ public sealed class CCardList
         return false;
     }
 
-    public void CCardMove(long cardId, int place)
+    public void CCardMove(bool collocated, long cardId, int place)
     {
         if (CCardListQuill is LQuillCard quill
             && _cCardListDesk.CDeskDraft.CDeskDraftTenure?.LTenureRead() is LDraft held
-            && CFolio.CFolioPlaceRead(held.LDraftContent, cardId, place) is int target)
+            && CFolio.CFolioPlaceRead(held.LDraftContent, collocated, place) is int target)
         {
-            quill.LQuillCardMove(cardId, target);
+            quill.LQuillCardMove(
+                collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning, cardId, target);
         }
     }
 
-    public void CCardMove(long cardId, string ordinal)
+    public void CCardMove(bool collocated, long cardId, string ordinal)
     {
         ArgumentNullException.ThrowIfNull(ordinal);
 
         if (_cCardListDesk.CDeskDraft.CDeskDraftTenure?.LTenureRead() is LDraft held
-            && CFolio.CFolioOrdinalRead(held.LDraftContent, cardId, ordinal) is int place)
+            && CFolio.CFolioOrdinalRead(held.LDraftContent, collocated, ordinal) is int place)
         {
-            CCardMove(cardId, place);
+            CCardMove(collocated, cardId, place);
         }
     }
 
-    public bool CCardPositionOpen(long cardId)
+    public bool CCardPositionOpen(bool collocated, long cardId)
     {
         if (_cCardListDesk.CDeskDraft.CDeskDraftTenure?.LTenureRead() is not LDraft held
-            || CFolio.CFolioCountRead(held.LDraftContent, cardId) <= 1)
+            || CFolio.CFolioCountRead(held.LDraftContent, collocated) <= 1)
         {
             return false;
         }
 
-        _cCardListMoving.Add(cardId);
+        _cCardListMoving.Add((collocated, cardId));
         return true;
     }
 
-    public void CCardPositionClose(long cardId)
+    public void CCardPositionClose(bool collocated, long cardId)
     {
-        _cCardListMoving.Remove(cardId);
+        _cCardListMoving.Remove((collocated, cardId));
     }
 
-    public bool CCardPositionSettle(long cardId, string ordinal)
+    public bool CCardPositionSettle(bool collocated, long cardId, string ordinal)
     {
         ArgumentNullException.ThrowIfNull(ordinal);
 
-        if (!_cCardListMoving.Remove(cardId))
+        if (!_cCardListMoving.Remove((collocated, cardId)))
         {
             return false;
         }
 
-        CCardMove(cardId, ordinal);
+        CCardMove(collocated, cardId, ordinal);
         return true;
     }
 }

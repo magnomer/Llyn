@@ -54,6 +54,8 @@ It clears the field and closes the menu after a pick, as a committed Enter does.
 ## `QLabel`
 
 This is the Tag field's driver, split by role.
+Each gate names its card by the placard's collocation flag and id.
+The engine finds a card by kind and id.
 Each Observe hears one event and ends in one card gate, and each Refine only changes the look.
 The first handler to handle a key ends its route.
 Trim, blank and duplicate checks live in the Application clerk, not here.
@@ -111,9 +113,9 @@ It answers null when no shown card holds the chip or caret.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `8c403d1df768`
 - `QCategory.cs` `960340e0bfc6cf17`
 - `QCategoryItem.cs` `97487f23cb2cc503`
-- `QLabel.cs` `39674e06beef5314`
+- `QLabel.cs` `86ad4f2cda00be3b`
 - `QLabelChip.cs` `2d54f1d4412aa557`
 - `QLabelSelector.cs` `a5c4bf2fefa4493a`

@@ -96,7 +96,8 @@ internal sealed class QSentence
     {
         if (QSentenceCardFind(row) is QPlacard card)
         {
-            _cSentence.CSentenceLanguageSet(card.QPlacardId, row.QPassageRow, gloss.QRenditionId, language);
+            _cSentence.CSentenceLanguageSet(
+                card.QPlacardCollocated, card.QPlacardId, row.QPassageRow, gloss.QRenditionId, language);
         }
     }
 
@@ -105,7 +106,7 @@ internal sealed class QSentence
         if (sender is TextBox { IsKeyboardFocusWithin: true, DataContext: QPassage row } box
             && QSentenceCardFind(row) is QPlacard card)
         {
-            _cSentence.CSentenceTextSet(card.QPlacardId, row.QPassageRow, box.Text);
+            _cSentence.CSentenceTextSet(card.QPlacardCollocated, card.QPlacardId, row.QPassageRow, box.Text);
         }
     }
 
@@ -115,7 +116,7 @@ internal sealed class QSentence
             && e.OriginalSource is TextBox box
             && QSentenceCardFind(row) is QPlacard card)
         {
-            _cSentence.CSentenceParticleSet(card.QPlacardId, row.QPassageRow, box.Text);
+            _cSentence.CSentenceParticleSet(card.QPlacardCollocated, card.QPlacardId, row.QPassageRow, box.Text);
         }
     }
 
@@ -125,7 +126,7 @@ internal sealed class QSentence
             && e.OriginalSource is TextBox box
             && QSentenceCardFind(row) is QPlacard card)
         {
-            _cSentence.CSentenceDependenceSet(card.QPlacardId, row.QPassageRow, box.Text);
+            _cSentence.CSentenceDependenceSet(card.QPlacardCollocated, card.QPlacardId, row.QPassageRow, box.Text);
         }
     }
 
@@ -159,7 +160,8 @@ internal sealed class QSentence
             return;
         }
 
-        _cSentence.CSentenceAdd(card.QPlacardId, card.QCardSentence.QCardSentenceFind(row));
+        _cSentence.CSentenceAdd(
+            card.QPlacardCollocated, card.QPlacardId, card.QCardSentence.QCardSentenceFind(row));
     }
 
     internal void QSentenceRemoveObserve(object sender, RoutedEventArgs e)
@@ -170,7 +172,7 @@ internal sealed class QSentence
             return;
         }
 
-        _cSentence.CSentenceRemove(card.QPlacardId, row.QPassageRow);
+        _cSentence.CSentenceRemove(card.QPlacardCollocated, card.QPlacardId, row.QPassageRow);
     }
 
     internal void QSentenceLinkRefine(object sender, ExecutedRoutedEventArgs e)
@@ -193,7 +195,12 @@ internal sealed class QSentence
         }
 
         if (_cSentence.CSentenceSenseRead(
-                card.QPlacardId, row.QPassageRow, box.Text, box.SelectionStart, box.SelectionLength)
+                card.QPlacardCollocated,
+                card.QPlacardId,
+                row.QPassageRow,
+                box.Text,
+                box.SelectionStart,
+                box.SelectionLength)
             is CMentionSense sense)
         {
             QMentionAsk ask = _qMentionMenu.QMentionMeaningRefine(
@@ -211,7 +218,13 @@ internal sealed class QSentence
         }
 
         _cSentence.CSentenceSenseSet(
-            card.QPlacardId, row.QPassageRow, box.Text, box.SelectionStart, box.SelectionLength, sense);
+            card.QPlacardCollocated,
+            card.QPlacardId,
+            row.QPassageRow,
+            box.Text,
+            box.SelectionStart,
+            box.SelectionLength,
+            sense);
     }
 
     internal void QSentenceSilenceObserve(object sender, ExecutedRoutedEventArgs e)
@@ -223,7 +236,12 @@ internal sealed class QSentence
         }
 
         _cSentence.CSentenceSilenceSet(
-            card.QPlacardId, row.QPassageRow, box.Text, box.SelectionStart, box.SelectionLength);
+            card.QPlacardCollocated,
+            card.QPlacardId,
+            row.QPassageRow,
+            box.Text,
+            box.SelectionStart,
+            box.SelectionLength);
     }
 
     internal void QSentenceUnlinkObserve(object sender, ExecutedRoutedEventArgs e)
@@ -236,12 +254,18 @@ internal sealed class QSentence
 
         if (e.Parameter is QMentionChip chip)
         {
-            _cSentence.CSentenceMentionRemove(card.QPlacardId, row.QPassageRow, chip.QMentionChipId);
+            _cSentence.CSentenceMentionRemove(
+                card.QPlacardCollocated, card.QPlacardId, row.QPassageRow, chip.QMentionChipId);
         }
         else if (e.Source is TextBox box)
         {
             _cSentence.CSentenceMentionRemove(
-                card.QPlacardId, row.QPassageRow, box.Text, box.SelectionStart, box.SelectionLength);
+                card.QPlacardCollocated,
+                card.QPlacardId,
+                row.QPassageRow,
+                box.Text,
+                box.SelectionStart,
+                box.SelectionLength);
         }
     }
 
@@ -257,7 +281,12 @@ internal sealed class QSentence
         e.CanExecute = e.Source is TextBox { DataContext: QPassage row } box
             && QSentenceCardFind(row) is QPlacard card
             && _cSentence.CSentenceSenseCheck(
-                card.QPlacardId, row.QPassageRow, box.Text, box.SelectionStart, box.SelectionLength);
+                card.QPlacardCollocated,
+                card.QPlacardId,
+                row.QPassageRow,
+                box.Text,
+                box.SelectionStart,
+                box.SelectionLength);
     }
 
     internal void QSentenceUnlinkRefine(object sender, CanExecuteRoutedEventArgs e)
@@ -266,6 +295,11 @@ internal sealed class QSentence
             || (e.Source is TextBox { DataContext: QPassage row } box
                 && QSentenceCardFind(row) is QPlacard card
                 && _cSentence.CSentenceMentionCheck(
-                    card.QPlacardId, row.QPassageRow, box.Text, box.SelectionStart, box.SelectionLength));
+                    card.QPlacardCollocated,
+                    card.QPlacardId,
+                    row.QPassageRow,
+                    box.Text,
+                    box.SelectionStart,
+                    box.SelectionLength));
     }
 }

@@ -53,7 +53,8 @@ The row record is one offered line.
 
 ## Stamp
 
-Commit: `bd299c638b2c`
+Commit: `8c403d1df768`
+- `LConsole.cs` `7b47aada32bef82a`
 - `LPhonograph.cs` `5b998ec62c526792`
 - `LUsher.cs` `3f38471976099398`
 - `Llyn.Core.csproj` `af732680c4489b17`

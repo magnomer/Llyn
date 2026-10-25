@@ -87,13 +87,13 @@ public sealed class LDraftClerk
             LRequestSituationPick { LRequestCardId: 0 } sent => LCardResolve(
                 content, id => sent with { LRequestCardId = id }),
             LRequestSentenceExample { LRequestCardId: 0 } sent => LCardResolve(
-                content, id => sent with { LRequestCardId = id }),
+                content, id => sent with { LRequestKind = LCardKind.LCardKindMeaning, LRequestCardId = id }),
             LRequestSentenceReference { LRequestCardId: 0 } sent => LCardResolve(
-                content, id => sent with { LRequestCardId = id }),
+                content, id => sent with { LRequestKind = LCardKind.LCardKindMeaning, LRequestCardId = id }),
             LRequestSentenceExample { LRequestSentenceId: 0 } sent => LSentenceResolve(
-                content, sent.LRequestCardId, id => sent with { LRequestSentenceId = id }),
+                content, sent.LRequestKind, sent.LRequestCardId, id => sent with { LRequestSentenceId = id }),
             LRequestSentenceReference { LRequestSentenceId: 0 } sent => LSentenceResolve(
-                content, sent.LRequestCardId, id => sent with { LRequestSentenceId = id }),
+                content, sent.LRequestKind, sent.LRequestCardId, id => sent with { LRequestSentenceId = id }),
             _ => _lDraftClerkSentence.LSentenceApply(content, request)
                 ?? _lDraftClerkSituation.LSituationChipApply(content, request)
                 ?? _lDraftClerkRegister.LRegisterChipApply(content, request)
@@ -116,13 +116,15 @@ public sealed class LDraftClerk
         return LDraftListApply(content, retarget(content.LEntryDraftMeanings[0].LCardDraftId));
     }
 
-    private LEntryDraft LSentenceResolve(LEntryDraft content, long cardId, Func<long, LRequest> retarget)
+    private LEntryDraft LSentenceResolve(
+        LEntryDraft content, LCardKind kind, long cardId, Func<long, LRequest> retarget)
     {
-        LCardDraft card = LDraftClerkCard.LCardFind(content, cardId) ?? throw new LRefusal(LRefusal.LRefusalCard);
+        LCardDraft card = LDraftClerkCard.LCardFind(content, kind, cardId)
+            ?? throw new LRefusal(LRefusal.LRefusalCard);
         if (card.LCardDraftSentence.Count == 0)
         {
-            content = _lDraftClerkSentence.LSentenceAdd(content, new LRequestSentenceAddition(0, cardId, 0));
-            card = LDraftClerkCard.LCardFind(content, cardId) ?? throw new LRefusal(LRefusal.LRefusalCard);
+            content = _lDraftClerkSentence.LSentenceAdd(content, new LRequestSentenceAddition(0, kind, cardId, 0));
+            card = LDraftClerkCard.LCardFind(content, kind, cardId) ?? throw new LRefusal(LRefusal.LRefusalCard);
         }
 
         return LDraftListApply(content, retarget(card.LCardDraftSentence[0].LSentenceDraftId));

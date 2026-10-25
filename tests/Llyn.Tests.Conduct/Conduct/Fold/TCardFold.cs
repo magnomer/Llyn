@@ -18,8 +18,8 @@ public sealed class TCardFold
         LEntry water = TCardFoldPrepare(engine, "water");
         LEntryDraft held = engine.TEngineEntryLoad(water.LEntryId)!;
         long entry = water.LEntryId;
-        engine.TEngineFoldSave(entry, held.LEntryDraftMeanings[1].LCardDraftId);
-        engine.TEngineFoldSave(entry, held.LEntryDraftCollocations[0].LCardDraftId);
+        engine.TEngineFoldSave(entry, LCardKind.LCardKindMeaning, held.LEntryDraftMeanings[1].LCardDraftId);
+        engine.TEngineFoldSave(entry, LCardKind.LCardKindCollocation, held.LEntryDraftCollocations[0].LCardDraftId);
         CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), true);
         wing.CWingEntryOpen(entry);
 
@@ -50,17 +50,17 @@ public sealed class TCardFold
         List<long> heard = [];
         wing.CWingDisplay.CDisplayFoldChanged += bulletin => heard.Add(bulletin.CBulletinId);
 
-        bool foldTaken = display.CDisplayFoldToggle(card, true);
+        bool foldTaken = display.CDisplayFoldToggle(false, card, true);
         bool folded = display.CDisplayCardRead().CLecternCardMeanings[0].CLeafFolded;
-        bool stored = engine.TEngineFoldRead(water.LEntryId).Contains(card);
-        bool unfoldTaken = display.CDisplayFoldToggle(card, false);
+        bool stored = engine.TEngineFoldRead(water.LEntryId).Contains((LCardKind.LCardKindMeaning, card));
+        bool unfoldTaken = display.CDisplayFoldToggle(false, card, false);
 
         Assert.True(foldTaken);
         Assert.True(unfoldTaken);
         Assert.True(folded);
         Assert.True(stored);
         Assert.Equal([water.LEntryId, water.LEntryId], heard);
-        Assert.DoesNotContain(card, engine.TEngineFoldRead(water.LEntryId));
+        Assert.DoesNotContain((LCardKind.LCardKindMeaning, card), engine.TEngineFoldRead(water.LEntryId));
         Assert.False(display.CDisplayCardRead().CLecternCardMeanings[0].CLeafFolded);
     }
 
@@ -71,7 +71,7 @@ public sealed class TCardFold
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LEntry water = TCardFoldPrepare(engine, "water");
         LEntryDraft held = engine.TEngineEntryLoad(water.LEntryId)!;
-        engine.TEngineFoldSave(water.LEntryId, held.LEntryDraftMeanings[0].LCardDraftId);
+        engine.TEngineFoldSave(water.LEntryId, LCardKind.LCardKindMeaning, held.LEntryDraftMeanings[0].LCardDraftId);
         TEditorFixture editor = TEditor.TEditorPrepare(engine, "library");
         List<CEntryDraft> shown = [];
         editor.TEditorFixtureEntry.CEntryDraftChanged += shown.Add;
@@ -97,14 +97,16 @@ public sealed class TCardFold
         List<CEntryDraft> shown = [];
         editor.TEditorFixtureEntry.CEntryDraftChanged += shown.Add;
 
-        bool foldTaken = editor.TEditorFixtureEditor.CEditorList.CCardFoldToggle(card, true);
+        bool foldTaken = editor.TEditorFixtureEditor.CEditorList.CCardFoldToggle(true, card, true);
 
         Assert.True(foldTaken);
-        Assert.Equal(new HashSet<long> { card }, engine.TEngineFoldRead(water.LEntryId));
+        Assert.Equal(
+            new HashSet<(LCardKind, long)> { (LCardKind.LCardKindCollocation, card) },
+            engine.TEngineFoldRead(water.LEntryId));
         Assert.True(Assert.Single(shown[^1].CEntryDraftCollocations).CCardDraftFolded);
         Assert.False(editor.TEditorFixtureDesk.CDeskDraft.CDeskDraftStorable);
 
-        bool unfoldTaken = editor.TEditorFixtureEditor.CEditorList.CCardFoldToggle(card, false);
+        bool unfoldTaken = editor.TEditorFixtureEditor.CEditorList.CCardFoldToggle(true, card, false);
 
         Assert.True(unfoldTaken);
         Assert.Empty(engine.TEngineFoldRead(water.LEntryId));
@@ -124,7 +126,7 @@ public sealed class TCardFold
         CCardDraft fresh = editor.TEditorDraftRead()!.CEntryDraftMeanings
             .Single(static card => !card.CCardDraftStored);
 
-        editor.TEditorFixtureEditor.CEditorList.CCardFoldToggle(fresh.CCardDraftId, true);
+        editor.TEditorFixtureEditor.CEditorList.CCardFoldToggle(false, fresh.CCardDraftId, true);
 
         Assert.False(fresh.CCardDraftFolded);
         Assert.Empty(engine.TEngineFoldRead(water.LEntryId));
@@ -144,7 +146,7 @@ public sealed class TCardFold
         CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), true);
         wing.CWingEntryOpen(water.LEntryId);
 
-        wing.CWingDisplay.CDisplayCard.CDisplayFoldToggle(held.LEntryDraftMeanings[0].LCardDraftId, true);
+        wing.CWingDisplay.CDisplayCard.CDisplayFoldToggle(false, held.LEntryDraftMeanings[0].LCardDraftId, true);
         wing.CWingEntryOpen(salt.LEntryId);
 
         CLecternCard card = wing.CWingDisplay.CDisplayCard.CDisplayCardRead();
@@ -169,7 +171,7 @@ public sealed class TCardFold
         CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), true);
         wing.CWingEntryOpen(water.LEntryId);
 
-        wing.CWingDisplay.CDisplayCard.CDisplayFoldToggle(held.LEntryDraftMeanings[1].LCardDraftId, true);
+        wing.CWingDisplay.CDisplayCard.CDisplayFoldToggle(false, held.LEntryDraftMeanings[1].LCardDraftId, true);
 
         Assert.Equal([false, true], shown[^1].CEntryDraftMeanings.Select(static card => card.CCardDraftFolded));
     }
@@ -190,10 +192,10 @@ public sealed class TCardFold
         wing.CWingDisplay.CDisplayFoldChanged += bulletin => heard.Add(bulletin.CBulletinId);
         TEditorFixture editor = TEditor.TEditorPrepare(engine, "library");
         editor.TEditorFixtureOpen(salt.LEntryId);
-        editor.TEditorFixtureEditor.CEditorList.CCardFoldToggle(kept.LEntryDraftMeanings[0].LCardDraftId, true);
+        editor.TEditorFixtureEditor.CEditorList.CCardFoldToggle(false, kept.LEntryDraftMeanings[0].LCardDraftId, true);
         editor.TEditorFixtureOpen(water.LEntryId);
 
-        editor.TEditorFixtureEditor.CEditorList.CCardFoldToggle(held.LEntryDraftMeanings[0].LCardDraftId, true);
+        editor.TEditorFixtureEditor.CEditorList.CCardFoldToggle(false, held.LEntryDraftMeanings[0].LCardDraftId, true);
 
         Assert.Equal([water.LEntryId], heard);
         Assert.True(wing.CWingDisplay.CDisplayCard.CDisplayCardRead().CLecternCardMeanings[0].CLeafFolded);
@@ -213,7 +215,8 @@ public sealed class TCardFold
         wing.CWingDisplay.CDisplayFoldChanged += bulletin => heard.Add(bulletin.CBulletinId);
         workspace.TWorkspaceScriptRun("ALTER TABLE sense_fold RENAME TO sense_fold_gone;");
 
-        bool taken = wing.CWingDisplay.CDisplayCard.CDisplayFoldToggle(held.LEntryDraftMeanings[0].LCardDraftId, true);
+        bool taken = wing.CWingDisplay.CDisplayCard.CDisplayFoldToggle(
+            false, held.LEntryDraftMeanings[0].LCardDraftId, true);
 
         Assert.Empty(heard);
         Assert.False(taken);
@@ -230,7 +233,7 @@ public sealed class TCardFold
         CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), true);
         long card = held.LEntryDraftMeanings[0].LCardDraftId;
 
-        bool taken = wing.CWingDisplay.CDisplayCard.CDisplayFoldToggle(card, true);
+        bool taken = wing.CWingDisplay.CDisplayCard.CDisplayFoldToggle(false, card, true);
 
         Assert.False(taken);
         Assert.Empty(engine.TEngineFoldRead(water.LEntryId));
@@ -246,7 +249,7 @@ public sealed class TCardFold
         TEditorFixture editor = TEditor.TEditorPrepare(engine, "library");
         long card = held.LEntryDraftMeanings[0].LCardDraftId;
 
-        bool taken = editor.TEditorFixtureEditor.CEditorList.CCardFoldToggle(card, true);
+        bool taken = editor.TEditorFixtureEditor.CEditorList.CCardFoldToggle(false, card, true);
 
         Assert.False(taken);
         Assert.Empty(engine.TEngineFoldRead(water.LEntryId));

@@ -13,16 +13,16 @@ public static class LDraftClerkCard
         return request switch
         {
             LRequestCardAddition sent => LCardInsert(content, sent, identity),
-            LRequestCardRemoval sent => LCardRemove(content, sent.LRequestCardId),
+            LRequestCardRemoval sent => LCardRemove(content, sent.LRequestKind, sent.LRequestCardId),
             LRequestCardShift sent => LCardMove(content, sent),
             LRequestCardTitle sent => LCardChange(
                 content,
-                sent.LRequestCardId,
+                sent.LRequestKind, sent.LRequestCardId,
                 card => card with { LCardDraftTitle = LStateValue.LStateValueRead(sent.LRequestValue) }),
             LRequestCardExpression sent => LCardExpressionChange(content, sent),
             LRequestCardMeaning sent => LCardChange(
                 content,
-                sent.LRequestCardId,
+                sent.LRequestKind, sent.LRequestCardId,
                 card => card with { LCardDraftMeaning = LStateValue.LStateValueRead(sent.LRequestValue) }),
             LRequestSenseAddition sent => LDraftClerkSense.LCardSenseAttach(
                 content, sent.LRequestCardId, sent.LRequestSenseId),
@@ -35,13 +35,15 @@ public static class LDraftClerkCard
     private static LEntryDraft LCardExpressionChange(LEntryDraft content, LRequestCardExpression request)
     {
         LStateValue expression = LStateValue.LStateValueRead(request.LRequestValue);
-        if (LCardFind(content.LEntryDraftMeanings, card => card.LCardDraftId == request.LRequestCardId) is null)
+        (LCardKind kind, long id) = (request.LRequestKind, request.LRequestCardId);
+        if (kind == LCardKind.LCardKindCollocation)
         {
-            return LCardChange(
-                content, request.LRequestCardId, card => card with { LCardDraftExpression = expression });
+            return LCardChange(content, kind, id, card => card with { LCardDraftExpression = expression });
         }
 
-        return expression.LStateValueEmpty ? content : throw new LRefusal(LRefusal.LRefusalCard);
+        return expression.LStateValueEmpty && LCardFind(content, kind, id) is not null
+            ? content
+            : throw new LRefusal(LRefusal.LRefusalCard);
     }
 
     public static LEntryDraft LCardInsert(LEntryDraft content, LRequestCardAddition request, LIdentity identity)
@@ -109,7 +111,7 @@ public static class LDraftClerkCard
         return LCardPositionUpdate(written);
     }
 
-    public static LEntryDraft LCardRemove(LEntryDraft content, long id)
+    public static LEntryDraft LCardRemove(LEntryDraft content, LCardKind kind, long id)
     {
         ArgumentNullException.ThrowIfNull(content);
 
@@ -118,16 +120,18 @@ public static class LDraftClerkCard
             throw new LRefusal(LRefusal.LRefusalCard);
         }
 
-        IReadOnlyList<LCardDraft>? meanings = LCardRemove(content.LEntryDraftMeanings, id, out LCardDraft? removed);
-        if (meanings is not null)
+        if (kind == LCardKind.LCardKindCollocation)
         {
-            return LDraftClerkSense.LCardSenseSweep(content with { LEntryDraftMeanings = meanings }, removed!);
+            IReadOnlyList<LCardDraft> collocations = LCardRemove(content.LEntryDraftCollocations, id, out _)
+                ?? throw new LRefusal(LRefusal.LRefusalCard);
+
+            return content with { LEntryDraftCollocations = collocations };
         }
 
-        IReadOnlyList<LCardDraft> collocations = LCardRemove(content.LEntryDraftCollocations, id, out _)
+        IReadOnlyList<LCardDraft> meanings = LCardRemove(content.LEntryDraftMeanings, id, out LCardDraft? removed)
             ?? throw new LRefusal(LRefusal.LRefusalCard);
 
-        return content with { LEntryDraftCollocations = collocations };
+        return LDraftClerkSense.LCardSenseSweep(content with { LEntryDraftMeanings = meanings }, removed!);
     }
 
     public static LEntryDraft LCardMove(LEntryDraft content, LRequestCardShift request)
@@ -140,20 +144,13 @@ public static class LDraftClerkCard
             throw new LRefusal(LRefusal.LRefusalCard);
         }
 
-        LCardDraft? moved;
-        LCardKind kind = LCardKind.LCardKindMeaning;
-        IReadOnlyList<LCardDraft>? cards = LCardRemove(content.LEntryDraftMeanings, request.LRequestCardId, out moved);
-        if (cards is not null)
-        {
-            content = content with { LEntryDraftMeanings = cards };
-        }
-        else
-        {
-            kind = LCardKind.LCardKindCollocation;
-            cards = LCardRemove(content.LEntryDraftCollocations, request.LRequestCardId, out moved)
-                ?? throw new LRefusal(LRefusal.LRefusalCard);
-            content = content with { LEntryDraftCollocations = cards };
-        }
+        LCardKind kind = request.LRequestKind;
+        IReadOnlyList<LCardDraft> cards = LCardRemove(
+            LCardListRead(content, kind), request.LRequestCardId, out LCardDraft? moved)
+            ?? throw new LRefusal(LRefusal.LRefusalCard);
+        content = kind == LCardKind.LCardKindCollocation
+            ? content with { LEntryDraftCollocations = cards }
+            : content with { LEntryDraftMeanings = cards };
 
         return LCardInsert(content, kind, request.LRequestParentId, request.LRequestPosition, moved!);
     }
@@ -187,7 +184,8 @@ public static class LDraftClerkCard
         return null;
     }
 
-    public static LEntryDraft LCardChange(LEntryDraft content, long id, Func<LCardDraft, LCardDraft> change)
+    public static LEntryDraft LCardChange(
+        LEntryDraft content, LCardKind kind, long id, Func<LCardDraft, LCardDraft> change)
     {
         ArgumentNullException.ThrowIfNull(content);
 
@@ -196,16 +194,20 @@ public static class LDraftClerkCard
             throw new LRefusal(LRefusal.LRefusalCard);
         }
 
-        IReadOnlyList<LCardDraft>? meanings = LCardChange(content.LEntryDraftMeanings, id, change);
-        if (meanings is not null)
+        if (kind == LCardKind.LCardKindCollocation)
         {
-            return content with { LEntryDraftMeanings = meanings };
+            return content with
+            {
+                LEntryDraftCollocations = LCardChange(content.LEntryDraftCollocations, id, change)
+                    ?? throw new LRefusal(LRefusal.LRefusalCard),
+            };
         }
 
-        IReadOnlyList<LCardDraft> collocations = LCardChange(content.LEntryDraftCollocations, id, change)
-            ?? throw new LRefusal(LRefusal.LRefusalCard);
-
-        return content with { LEntryDraftCollocations = collocations };
+        return content with
+        {
+            LEntryDraftMeanings = LCardChange(content.LEntryDraftMeanings, id, change)
+                ?? throw new LRefusal(LRefusal.LRefusalCard),
+        };
     }
 
     private static IReadOnlyList<LCardDraft>? LCardChange(
@@ -247,11 +249,13 @@ public static class LDraftClerkCard
             : content.LEntryDraftMeanings.Count;
     }
 
-    public static bool LCardLoneCheck(LEntryDraft content, long id)
+    public static bool LCardLoneCheck(LEntryDraft content, LCardKind kind, long id)
     {
         ArgumentNullException.ThrowIfNull(content);
 
-        return LCardLoneCheck(content.LEntryDraftMeanings, id) || LCardLoneCheck(content.LEntryDraftCollocations, id);
+        return LCardLoneCheck(
+            kind == LCardKind.LCardKindCollocation ? content.LEntryDraftCollocations : content.LEntryDraftMeanings,
+            id);
     }
 
     private static bool LCardLoneCheck(IReadOnlyList<LCardDraft> cards, long id)
@@ -259,18 +263,18 @@ public static class LDraftClerkCard
         return cards.Count == 1 && cards[0].LCardDraftId == id;
     }
 
-    public static int? LCardShiftRead(LEntryDraft content, long id, int place)
+    public static int? LCardShiftRead(LEntryDraft content, LCardKind kind, long id, int place)
     {
         ArgumentNullException.ThrowIfNull(content);
 
-        IReadOnlyList<LCardDraft> cards = LCardListRead(content, id);
+        IReadOnlyList<LCardDraft> cards = LCardListRead(content, kind);
         int current = LCardPlaceRead(cards, id);
         return current < 0 || place < 0 || place >= cards.Count || place == current ? null : place;
     }
 
-    private static IReadOnlyList<LCardDraft> LCardListRead(LEntryDraft content, long id)
+    private static IReadOnlyList<LCardDraft> LCardListRead(LEntryDraft content, LCardKind kind)
     {
-        return LCardPlaceRead(content.LEntryDraftMeanings, id) < 0
+        return kind == LCardKind.LCardKindCollocation
             ? content.LEntryDraftCollocations
             : content.LEntryDraftMeanings;
     }
@@ -288,41 +292,22 @@ public static class LDraftClerkCard
         return -1;
     }
 
-    public static LCardDraft? LCardFind(LEntryDraft content, long id)
-    {
-        return LCardFind(content, card => card.LCardDraftId == id);
-    }
-
-    public static LCardDraft? LCardFind(LEntryDraft content, Func<LCardDraft, bool> match)
+    public static LCardDraft? LCardFind(LEntryDraft content, LCardKind kind, long id)
     {
         ArgumentNullException.ThrowIfNull(content);
-        ArgumentNullException.ThrowIfNull(match);
 
-        return LCardFind(content.LEntryDraftMeanings, match)
-            ?? LCardFind(content.LEntryDraftCollocations, match);
+        return LCardFind(
+            kind == LCardKind.LCardKindCollocation ? content.LEntryDraftCollocations : content.LEntryDraftMeanings,
+            card => card.LCardDraftId == id);
     }
 
-    public static (LOwner, int)? LCardOwnerFind(LEntryDraft draft, long id)
+    public static (LOwner, int)? LCardOwnerFind(LEntryDraft draft, LCardKind kind, long id)
     {
         ArgumentNullException.ThrowIfNull(draft);
 
-        for (int index = 0; index < draft.LEntryDraftMeanings.Count; index++)
-        {
-            if (draft.LEntryDraftMeanings[index].LCardDraftId == id)
-            {
-                return (LOwner.LOwnerMeaning, index);
-            }
-        }
-
-        for (int index = 0; index < draft.LEntryDraftCollocations.Count; index++)
-        {
-            if (draft.LEntryDraftCollocations[index].LCardDraftId == id)
-            {
-                return (LOwner.LOwnerCollocation, index);
-            }
-        }
-
-        return null;
+        int index = LCardPlaceRead(LCardListRead(draft, kind), id);
+        LOwner owner = kind == LCardKind.LCardKindCollocation ? LOwner.LOwnerCollocation : LOwner.LOwnerMeaning;
+        return index < 0 ? null : (owner, index);
     }
 
     private static LCardDraft? LCardFind(IReadOnlyList<LCardDraft> cards, Func<LCardDraft, bool> match)

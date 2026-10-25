@@ -27,6 +27,14 @@ The surface never holds a Conduct meaning.
 
 The id is immutable and separates a card's address from its current list position.
 
+### `QPlacardCollocated`
+
+The list builds the placard with this flag, true for a collocation and false for a meaning.
+It is immutable and rides with the id to every gate.
+The engine finds a card by kind and id.
+The image and video rows the placard builds take the flag and the id.
+So a row's remove names its card.
+
 ### `QPlacardPosition`
 
 A changed position notifies both the badge and the generated header title.
@@ -126,7 +134,7 @@ So a pasted comma ends a chip as a typed one does.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `8c403d1df768`
 - `QCardSentence.cs` `751b9ed5cf54ff46`
 - `QInlet.cs` `d28fd837c72eaa8f`
-- `QPlacard.cs` `310806a03a6ed076`
+- `QPlacard.cs` `ae7ab8431b4db012`

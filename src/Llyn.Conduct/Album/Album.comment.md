@@ -11,12 +11,15 @@ They keep no state, so the editor and the playwright each build them fresh over 
 Typed locations and spans are deferred like every typed field.
 Add under a Situation's rows passes a null card, which Conduct maps to the engine's card 0.
 So the driver never sends a magic id.
+The collocated flag picks the card kind, a Collocation card or a Meaning card.
 The row lands after the rows held.
 A chosen file is sent at once rather than deferred, and a cancelled dialog hands null and sends nothing.
-Remove needs no card, since the engine finds the card holding the row.
+Remove takes the same flag and card as Add.
+So the engine addresses the row by kind, card and id.
+It no longer searches the draft for the card.
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `CImage.cs` `3945020400f272c3`
-- `CVideo.cs` `9a6acb191ec7945e`
+Commit: `8c403d1df768`
+- `CImage.cs` `6acac79e39de12ff`
+- `CVideo.cs` `3167de9b6b50680d`

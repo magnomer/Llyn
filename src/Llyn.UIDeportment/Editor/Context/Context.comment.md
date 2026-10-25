@@ -22,6 +22,8 @@ They wrap together as one run, which needs the item template chosen per item.
 ## `QContext`
 
 This is the Situation field's driver, split by role.
+Each gate names its card by the placard's collocation flag and id.
+The engine finds a card by kind and id.
 Each Observe hears one event and ends in one card gate, and each Refine only changes the look.
 The first handler to handle a key ends its route.
 The dropdown's key handlers come first, so an open dropdown hears a key before the entry does.
@@ -79,7 +81,7 @@ The dropdown asks it too, since a pick on a Situation caret lands on that card.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `QContext.cs` `ef1eb3f8f4dbe71b`
+Commit: `8c403d1df768`
+- `QContext.cs` `dfac3c28b43ce68c`
 - `QContextChip.cs` `b695c0bf977b4a31`
 - `QContextSelector.cs` `6ed10ad72c8e19f4`

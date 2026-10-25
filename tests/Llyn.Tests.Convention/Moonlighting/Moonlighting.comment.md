@@ -192,10 +192,10 @@ A deaf handler has a bulletin parameter the body never mentions.
 
 ## Stamp
 
-Commit: `90a13c9590ba`
+Commit: `8c403d1df768`
 - `TAssayCarrier.cs` `44fe74f05ccf40bc`
 - `TAssayHearing.cs` `7ca66e7cd6ca4cc3`
-- `TAssayLaundering.cs` `9f90ce311d0c887c`
+- `TAssayLaundering.cs` `eeb01ce89d2b4fec`
 - `TAssayMisfiring.cs` `4b1e417aa0f723e9`
 - `TAssayRelational.cs` `d83dcafcc2218a98`
 - `TAuditLaunderingWalker.cs` `a1fdc8f98a04be4b`

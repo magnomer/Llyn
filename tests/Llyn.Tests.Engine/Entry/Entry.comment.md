@@ -32,7 +32,8 @@ Its row is open and sits in a collocations block under the collocation heading.
 The further link adds a stub line to the second top-level meaning.
 With keys as their own text, the stub prints its bare key.
 No collocation is unhomed, so the Other section is absent.
-A stored fold on the collocation writes its row as a closed disclosure that still names the phrase.
+A stored fold on the collocation is saved with the collocation kind.
+It writes its row as a closed disclosure that still names the phrase.
 A collocation linked to no meaning writes an open row in a collocations block under the Other heading.
 That block carries no collocation heading of its own, and no numbered card title stands in for any such row.
 `TCollocationSenseCreate` builds the shared entry with meaning ids minted for the draft, so the links can name them.
@@ -171,8 +172,8 @@ An empty query lists everything, ordered by headword.
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `TCollocationSense.cs` `81360a78fa51777a`
+Commit: `8c403d1df768`
+- `TCollocationSense.cs` `1d440d218e98f1be`
 - `TEntryDraft.cs` `e7076b12c7cffecf`
 - `TEntryLoading.cs` `312bb2445f4a871e`
 - `TEntryQueryArchive.cs` `b3d51eb9f87237ac`

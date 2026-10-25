@@ -10,6 +10,8 @@ Child card facts hold a fresh entry instead, since only an entry has cards.
 `TEaselHold` is a wait no test outlives, so a deferred edit stays queued until the fact flushes it.
 An added picture or video row starts with no location and is dropped by its id.
 A row on a child card is dropped too, since the card find walks the children.
+The drop names the owning card with the row.
+So a row id shared by two cards removes only the named card's row.
 A typed picture location waits in the queue and lands on the flush.
 A chosen video file lands at once, even under a long delay.
 A typed timestamp lands on the video row.
@@ -99,6 +101,7 @@ It answers the workspace's audit file text, or empty while the file is missing o
 
 It covers the per-subject quills' edits to a held draft, one fact per edit.
 Each fact starts a tenure on a fresh workspace with no delay, so a deferred edit lands at once.
+The example quill is created with the engine in hand, which its source find needs to detect a stale draft.
 A typed author name or example text lands and marks the draft changed.
 Typed example text lands as known even over an unknown value.
 A picked speaker language lands on the held Example.
@@ -128,12 +131,12 @@ A typed phonetic reading and a typed respelling land on the primary pronunciatio
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `TEasel.cs` `f85c1bca81bff00c`
+Commit: `8c403d1df768`
+- `TEasel.cs` `6a7075afbbcbe909`
 - `TEngineGloss.cs` `c1402f7638e6237b`
 - `TEngineTenure.cs` `ac07d8236f6f41a4`
 - `TEngineTenureSubject.cs` `f6a05df885035ad7`
 - `TForay.cs` `c61708681cad4fd0`
 - `TForayFailure.cs` `039821f324ec1d94`
-- `TQuill.cs` `029c161022415d4b`
+- `TQuill.cs` `a6dc54947c9ad73c`
 - `TTenureField.cs` `b93c929cdeed7a0c`

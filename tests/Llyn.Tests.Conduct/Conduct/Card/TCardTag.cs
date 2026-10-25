@@ -19,7 +19,7 @@ public sealed class TCardTag
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
         CCaret caret = new(desk, card, new CLedgerNoticed());
 
-        CSlate slate = caret.CCaretTagAdd(0, " ani");
+        CSlate slate = caret.CCaretTagAdd(false, 0, " ani");
 
         Assert.Equal(" ani", slate.CSlateText);
         Assert.True(slate.CSlateShown);
@@ -49,7 +49,7 @@ public sealed class TCardTag
             }
         });
 
-        caret.CCaretTagAdd(sheet, "animal, ");
+        caret.CCaretTagAdd(false, sheet, "animal, ");
         failing = false;
 
         Assert.Equal(["Input.UpdateFailed"], asked);
@@ -64,8 +64,8 @@ public sealed class TCardTag
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
         CCaret caret = new(desk, card, new CLedgerNoticed());
 
-        CSlate blank = caret.CCaretTagAdd(0, "   ");
-        CSlate unmatched = caret.CCaretTagAdd(0, "zz");
+        CSlate blank = caret.CCaretTagAdd(false, 0, "   ");
+        CSlate unmatched = caret.CCaretTagAdd(false, 0, "zz");
 
         Assert.Equal("   ", blank.CSlateText);
         Assert.False(blank.CSlateShown);
@@ -87,7 +87,7 @@ public sealed class TCardTag
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
         CCaret caret = new(desk, card, new CLedgerNoticed());
 
-        CSlate slate = caret.CCaretTagAdd(0, "tag");
+        CSlate slate = caret.CCaretTagAdd(false, 0, "tag");
 
         Assert.Equal(8, slate.CSlateRows.Count);
         Assert.Equal("tag 1", slate.CSlateRows[0].CSlateRowMark + slate.CSlateRows[0].CSlateRowTail);
@@ -102,9 +102,9 @@ public sealed class TCardTag
         CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
 
-        caret.CCaretTagSettle(sheet, "  animal ");
-        caret.CCaretTagSettle(sheet, "animal");
-        caret.CCaretTagSettle(sheet, "   ");
+        caret.CCaretTagSettle(false, sheet, "  animal ");
+        caret.CCaretTagSettle(false, sheet, "animal");
+        caret.CCaretTagSettle(false, sheet, "   ");
 
         LTagDraft held = Assert.Single(TCardTagRead(desk, sheet));
         Assert.Equal("animal", held.LTagDraftText);
@@ -120,8 +120,8 @@ public sealed class TCardTag
         CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
 
-        caret.CCaretTagInsert(sheet, stored.LTagId);
-        caret.CCaretTagSettle(sheet, "animal");
+        caret.CCaretTagInsert(false, sheet, stored.LTagId);
+        caret.CCaretTagSettle(false, sheet, "animal");
 
         LTagDraft held = Assert.Single(TCardTagRead(desk, sheet));
         Assert.Equal(stored.LTagId, held.LTagDraftId);
@@ -135,9 +135,9 @@ public sealed class TCardTag
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
         CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
-        caret.CCaretTagSettle(sheet, "animal");
+        caret.CCaretTagSettle(false, sheet, "animal");
 
-        card.CCardTagRemove(sheet, TCardTagRead(desk, sheet)[0].LTagDraftId);
+        card.CCardTagRemove(false, sheet, TCardTagRead(desk, sheet)[0].LTagDraftId);
 
         Assert.Empty(TCardTagRead(desk, sheet));
     }
@@ -151,8 +151,8 @@ public sealed class TCardTag
         CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
 
-        string kept = caret.CCaretTagAdd(sheet, " ani").CSlateText;
-        string rest = caret.CCaretTagAdd(sheet, "animal, , plant,  wi").CSlateText;
+        string kept = caret.CCaretTagAdd(false, sheet, " ani").CSlateText;
+        string rest = caret.CCaretTagAdd(false, sheet, "animal, , plant,  wi").CSlateText;
 
         Assert.Equal(" ani", kept);
         Assert.Equal("wi", rest);
@@ -169,11 +169,11 @@ public sealed class TCardTag
         CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
         long other = TCard.TCardSheetAdd(desk);
-        caret.CCaretTagInsert(sheet, tag.LTagId);
+        caret.CCaretTagInsert(false, sheet, tag.LTagId);
 
         CSlateRow row = new(tag.LTagId, string.Empty, "ani", "mal");
-        Assert.DoesNotContain(row, caret.CCaretTagAdd(sheet, "ani").CSlateRows);
-        Assert.Contains(row, caret.CCaretTagAdd(other, "ani").CSlateRows);
+        Assert.DoesNotContain(row, caret.CCaretTagAdd(false, sheet, "ani").CSlateRows);
+        Assert.Contains(row, caret.CCaretTagAdd(false, other, "ani").CSlateRows);
     }
 
     [Fact]
@@ -185,15 +185,15 @@ public sealed class TCardTag
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
         CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
-        caret.CCaretTagSettle(sheet, "plant, wild");
-        caret.CCaretTag.CCaretTrailMove(sheet, -1);
+        caret.CCaretTagSettle(false, sheet, "plant, wild");
+        caret.CCaretTag.CCaretTrailMove(false, sheet, -1);
 
-        caret.CCaretTagInsert(sheet, stored.LTagId);
-        caret.CCaretTagInsert(sheet, stored.LTagId);
+        caret.CCaretTagInsert(false, sheet, stored.LTagId);
+        caret.CCaretTagInsert(false, sheet, stored.LTagId);
 
         Assert.Equal(["plant", "animal", "wild"], TCardTagRead(desk, sheet).Select(static tag => tag.LTagDraftText));
         Assert.DoesNotContain(
-            caret.CCaretTagAdd(sheet, "ani").CSlateRows, row => row.CSlateRowId == stored.LTagId);
+            caret.CCaretTagAdd(false, sheet, "ani").CSlateRows, row => row.CSlateRowId == stored.LTagId);
     }
 
     [Fact]
@@ -204,14 +204,14 @@ public sealed class TCardTag
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
         CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
-        caret.CCaretTagSettle(sheet, "plant, wild");
-        caret.CCaretTag.CCaretTrailMove(sheet, -1);
+        caret.CCaretTagSettle(false, sheet, "plant, wild");
+        caret.CCaretTag.CCaretTrailMove(false, sheet, -1);
 
-        caret.CCaretTagSettle(sheet, "animal");
+        caret.CCaretTagSettle(false, sheet, "animal");
 
         IReadOnlyList<LTagDraft> held = TCardTagRead(desk, sheet);
         Assert.Equal(["plant", "animal", "wild"], held.Select(static tag => tag.LTagDraftText));
-        Assert.Equal(held[2].LTagDraftId, caret.CCaretTag.CCaretTrailRead(sheet));
+        Assert.Equal(held[2].LTagDraftId, caret.CCaretTag.CCaretTrailRead(false, sheet));
     }
 
     [Fact]
@@ -222,19 +222,19 @@ public sealed class TCardTag
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
         CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
-        caret.CCaretTagSettle(sheet, "plant, wild, animal");
-        caret.CCaretTag.CCaretTrailMove(sheet, -1);
+        caret.CCaretTagSettle(false, sheet, "plant, wild, animal");
+        caret.CCaretTag.CCaretTrailMove(false, sheet, -1);
 
-        caret.CCaretTag.CCaretTrailDelete(sheet, -1);
+        caret.CCaretTag.CCaretTrailDelete(false, sheet, -1);
         IReadOnlyList<LTagDraft> before = TCardTagRead(desk, sheet);
-        caret.CCaretTag.CCaretTrailDelete(sheet, 1);
+        caret.CCaretTag.CCaretTrailDelete(false, sheet, 1);
         IReadOnlyList<LTagDraft> after = TCardTagRead(desk, sheet);
-        caret.CCaretTag.CCaretTrailDelete(sheet, 1);
+        caret.CCaretTag.CCaretTrailDelete(false, sheet, 1);
 
         Assert.Equal(["plant", "animal"], before.Select(static tag => tag.LTagDraftText));
         Assert.Equal(["plant"], after.Select(static tag => tag.LTagDraftText));
         Assert.Single(TCardTagRead(desk, sheet));
-        Assert.Null(caret.CCaretTag.CCaretTrailRead(sheet));
+        Assert.Null(caret.CCaretTag.CCaretTrailRead(false, sheet));
     }
 
     private static IReadOnlyList<LTagDraft> TCardTagRead(CDesk desk, long sheet)

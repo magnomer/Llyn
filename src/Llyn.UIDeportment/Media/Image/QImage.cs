@@ -59,14 +59,14 @@ internal sealed class QImage
 
     private void QImageFreshObserve(object sender, RoutedEventArgs e)
     {
-        _cImage.CImageAdd(null);
+        _cImage.CImageAdd(false, null);
     }
 
     internal void QImageAddObserve(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { DataContext: QPlacard card })
         {
-            _cImage.CImageAdd(card.QPlacardId);
+            _cImage.CImageAdd(card.QPlacardCollocated, card.QPlacardId);
         }
     }
 
@@ -74,7 +74,7 @@ internal sealed class QImage
     {
         if (sender is FrameworkElement { DataContext: QImageItem row })
         {
-            _cImage.CImageRemove(row.QImageItemId);
+            _cImage.CImageRemove(row.QImageItemCollocated, row.QImageItemHolder, row.QImageItemId);
         }
     }
 

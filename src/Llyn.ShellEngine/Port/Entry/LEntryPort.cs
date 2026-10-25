@@ -17,8 +17,6 @@ public interface LEntryPort
 
     long LEngineGlyphResolve(string character, string language);
 
-    (LOwner, int)? LEngineCardFind(LEntryDraft draft, long id);
-
     static string LEngineUnitFormat(LUnit unit)
     {
         return LUnitClerk.LUnitFormat(unit);

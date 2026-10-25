@@ -67,7 +67,7 @@ public sealed class LMentionFacade : LMentionPort
         return LEngineSpanRead(text, start, length).LMentionDraftLength > 0;
     }
 
-    public IReadOnlyList<LMentionLabel> LEngineMentionResolve(LTenure held, long card, long sentence)
+    public IReadOnlyList<LMentionLabel> LEngineMentionResolve(LTenure held, LExampleSite site)
     {
         ArgumentNullException.ThrowIfNull(held);
 
@@ -75,7 +75,7 @@ public sealed class LMentionFacade : LMentionPort
         lock (_lMentionFacadeGate)
         {
             return LMentionFacadeStaff.LEngineStaffCatalog.LCatalogStaffMention
-                .LMentionClerkResolve(draft, card, sentence);
+                .LMentionClerkResolve(draft, site);
         }
     }
 

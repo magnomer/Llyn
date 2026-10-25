@@ -152,7 +152,7 @@ internal sealed class QLink
         if (e.OriginalSource is TextBox { DataContext: QInlet<QLinkChip> caret } box
             && QLinkCardFind(caret) is QPlacard card)
         {
-            QLinkRefine(card, _cCaret.CCaretTranslationAdd(card.QPlacardId, box.Text));
+            QLinkRefine(card, _cCaret.CCaretTranslationAdd(card.QPlacardCollocated, card.QPlacardId, box.Text));
         }
     }
 
@@ -172,7 +172,7 @@ internal sealed class QLink
     {
         if (sender is FrameworkElement { DataContext: QLinkChip chip } && QLinkCardFind(chip) is QPlacard card)
         {
-            _cCard.CCardTranslationRemove(card.QPlacardId, chip.QLinkChipId);
+            _cCard.CCardTranslationRemove(card.QPlacardCollocated, card.QPlacardId, chip.QLinkChipId);
         }
     }
 
@@ -185,7 +185,8 @@ internal sealed class QLink
             return;
         }
 
-        CProspect prospect = _cCaret.CCaretTranslationResolve(card.QPlacardId, box.Text, true);
+        CProspect prospect = _cCaret.CCaretTranslationResolve(
+            card.QPlacardCollocated, card.QPlacardId, box.Text, true);
         e.Handled = true;
         QLinkRefine(card, prospect);
     }
@@ -203,7 +204,7 @@ internal sealed class QLink
             box.CaretIndex,
             box.Text.Length,
             box.SelectionLength,
-            step => _cCaret.CCaretTranslation.CCaretTrailDelete(card.QPlacardId, step));
+            step => _cCaret.CCaretTranslation.CCaretTrailDelete(card.QPlacardCollocated, card.QPlacardId, step));
     }
 
     private void QLinkCaretRefine(object sender, KeyEventArgs e)
@@ -220,7 +221,8 @@ internal sealed class QLink
             box.SelectionLength,
             step =>
             {
-                (bool moved, long? anchor) = _cCaret.CCaretTranslation.CCaretTrailMove(card.QPlacardId, step);
+                (bool moved, long? anchor) =
+                    _cCaret.CCaretTranslation.CCaretTrailMove(card.QPlacardCollocated, card.QPlacardId, step);
                 QLinkAnchorShow(card, anchor);
                 return moved;
             },
@@ -237,7 +239,8 @@ internal sealed class QLink
         if (sender is TextBox { DataContext: QInlet<QLinkChip> row } box
             && QLinkCardFind(row) is QPlacard card)
         {
-            QLinkRefine(card, _cCaret.CCaretTranslationResolve(card.QPlacardId, box.Text, false));
+            QLinkRefine(
+                card, _cCaret.CCaretTranslationResolve(card.QPlacardCollocated, card.QPlacardId, box.Text, false));
         }
     }
 

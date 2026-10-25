@@ -24,6 +24,8 @@ F10 closes the drop and is not taken, so the box can answer.
 A list of labels with a lit one, a top and a page.
 It is built with the label that starts lit, and the page must be positive.
 A drop with no labels, or built disabled, is not enabled and never opens.
+The labels shown run from the top for at most one page.
+The lit label is clamped into the list, so a start past the end lights the last.
 
 ## `BDropObserve`
 
@@ -39,6 +41,6 @@ An owner that picks the next label itself calls it with the gap.
 
 ## Stamp
 
-Commit: `9a85a3ab82db`
-- `BDrop.cs` `bab88970ad068492`
+Commit: `8c403d1df768`
+- `BDrop.cs` `660432d5fbd242da`
 - `BTable.cs` `8fdf9d20e2ea8f4c`

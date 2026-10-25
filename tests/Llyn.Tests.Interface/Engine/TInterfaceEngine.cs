@@ -142,17 +142,17 @@ internal static partial class TInterface
         engine.LEngineCatalog.LEngineFavoriteSave(entryId);
     }
 
-    internal static IReadOnlySet<long> TEngineFoldRead(this LEngine engine, long entryId) =>
+    internal static IReadOnlySet<(LCardKind, long)> TEngineFoldRead(this LEngine engine, long entryId) =>
         engine.LEngineCard.LEngineFoldRead(entryId);
 
-    internal static void TEngineFoldSave(this LEngine engine, long entryId, long cardId)
+    internal static void TEngineFoldSave(this LEngine engine, long entryId, LCardKind kind, long cardId)
     {
-        engine.LEngineCard.LEngineFoldSave(entryId, cardId);
+        engine.LEngineCard.LEngineFoldSave(entryId, kind, cardId);
     }
 
-    internal static void TEngineFoldDelete(this LEngine engine, long entryId, long cardId)
+    internal static void TEngineFoldDelete(this LEngine engine, long entryId, LCardKind kind, long cardId)
     {
-        engine.LEngineCard.LEngineFoldDelete(entryId, cardId);
+        engine.LEngineCard.LEngineFoldDelete(entryId, kind, cardId);
     }
 
     internal static LCollocationLayout TEngineCollocationRead(

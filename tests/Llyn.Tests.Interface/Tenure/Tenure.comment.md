@@ -7,6 +7,8 @@ They cover observers, requests, quills, easels, forays and the trove they fill.
 
 The relays for an easel, built over a tenure.
 An add relay passes the card the test names, and a situation test names zero.
+The card kind defaults to Meaning, so a Collocation test names it.
+A remove relay passes the kind and the card with the row, and the card defaults to zero.
 Each relay is transparent.
 
 ## TInterfaceForay
@@ -20,10 +22,12 @@ The save and the preview fetch pass on the foray's null for an outside failure.
 ## TInterfaceQuill
 
 The relays for the per-subject quills, each built over a tenure.
-The gloss relays name card zero and sentence zero, as the held Example does.
+The gloss relays name only the gloss, since the sentence quill holds its own place.
+The citation and translation relays name a Meaning card.
+The example quill is built over a tenure and an engine's draft outlet.
 The chip relays build the chip edits over a tenure and a draft port a test may fake.
 A second chip relay builds the chip over an engine's own draft outlet.
-The reference find relay asks the chip for a source offer by text at place zero.
+The reference find relay asks the example quill for a source offer by text.
 The situation relays build a situation quill over a tenure and set its title, kind and description.
 Each relay is transparent.
 
@@ -35,6 +39,11 @@ A factory name holds at most three components after the T prefix, counting the c
 A one-part record such as `LRequestNote` keeps `Request`, since it fits within the limit.
 A two-part record such as `LRequestSentenceAddition` drops `Request` to stay within the limit.
 The card records are the exception and keep `Request` but drop `Card` instead.
+Every card-bound factory takes a card kind that defaults to Meaning, so a Collocation test names it.
+The example-site records take a site from `TExampleSiteCreate`.
+It gives the draft site when card and sentence are both zero.
+It gives the card site otherwise.
+A sense addition is built by `TRequestSenseCreate`.
 `TRequestAuthorCreate` is a second exception, dropping `Name` from `LRequestAuthorName`.
 It duplicates `TAuthorNameCreate`, which follows the two-part rule for the same record.
 
@@ -48,7 +57,8 @@ Makes a held draft read as a fixture, one request at a time.
 Returns the draft as the engine last answered it.
 This is how a test written against the old whole-draft save is ported without losing its fixture.
 Headword, language and note are sent only when they differ, and speeches only when the fixture has some.
-Every card, pronunciation and transcription the draft holds is removed before the fixture's own are added.
+Every Meaning card, Collocation card, pronunciation and transcription the draft holds is removed before the fixture's own are added.
+Each card request carries the kind of the card it addresses.
 The fixture's rows therefore land where the fixture puts them.
 Syllables, forms, inflections, reflexes, Ancestor boxes, unit and freedom are not sent, so they stay as held.
 The ids the engine mints differ from the fixture's.
@@ -126,12 +136,12 @@ The trove is internal to the engine assembly, which opens its internals to this 
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `TInterfaceEasel.cs` `03424a4497abcd42`
+Commit: `8c403d1df768`
+- `TInterfaceEasel.cs` `85794cef9fa8c59f`
 - `TInterfaceForay.cs` `c27bc21fc41ef185`
-- `TInterfaceQuill.cs` `b786e2b50c587e5e`
-- `TInterfaceRequest.cs` `e69e88557559ec73`
-- `TInterfaceRequestApply.cs` `d699bb7ec75eb444`
-- `TInterfaceTenure.cs` `5d5b7864d0136076`
+- `TInterfaceQuill.cs` `cf4b85fcb5a0e059`
+- `TInterfaceRequest.cs` `d73be8223e74af37`
+- `TInterfaceRequestApply.cs` `19486760529f7682`
+- `TInterfaceTenure.cs` `5da235aa228ec8bc`
 - `TInterfaceTenureObserver.cs` `67d3fb0c717acc3b`
 - `TInterfaceTrove.cs` `235f0018d4f4689c`

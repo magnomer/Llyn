@@ -43,6 +43,8 @@ The leftover read and sweep, the request apply and the engine start over a hand-
 Most relays are transparent and carry no test logic of their own.
 A few rebuild a read or a write the engine no longer offers from the clerks it keeps.
 Court, chronicle, fold, grasp and favorite relays go through a facade, never a clerk.
+The fold relays key a fold by card kind and card id.
+So the read gives pairs, and the save and delete take the kind.
 The draft scan and save reach the held staff's claim clerk rather than inventing another draft inventory.
 
 ## `TEngineEntryFind`
@@ -209,9 +211,9 @@ Each relay is transparent, except that the author create and update also raise t
 
 ## Stamp
 
-Commit: `52c21d68b4c4`
+Commit: `8c403d1df768`
 - `TInterfaceContent.cs` `2f1032ea1bb4d887`
-- `TInterfaceEngine.cs` `612ac0e445010eab`
+- `TInterfaceEngine.cs` `6698141138c21ddd`
 - `TInterfaceEngineFanqie.cs` `3e7c158c1c15322e`
 - `TInterfaceEngineLanguage.cs` `60527ff66ae06733`
 - `TInterfaceEngineMarkup.cs` `26a61d688b58bff1`

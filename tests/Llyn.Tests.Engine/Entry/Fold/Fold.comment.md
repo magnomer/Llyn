@@ -7,6 +7,8 @@ This folder holds the tests of the engine's card, reflex list and box fold seams
 It covers the engine's card fold seam for Meaning and Collocation cards.
 A card is folded, read back per entry, and unfolded through `LEngine` relays alone.
 Both card kinds are covered, since each kind keeps its marks in a table of its own.
+A fold names its card by kind and id, and a read returns those pairs.
+A meaning whose id equals a collocation's folds only the meaning, so the collocation table stays empty.
 The per-entry read returns only that entry's folded cards, so two entries keep apart.
 An entry update dropping a card removes its mark, while the kept card stays folded.
 An id at or below zero, as an unsaved card carries, must write nothing and throw nothing.
@@ -33,6 +35,6 @@ The fold bulletin is raised on the entry, so other open views of it re-read thei
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `TFold.cs` `027d6fdeed161480`
+Commit: `8c403d1df768`
+- `TFold.cs` `d8e9dd27befc18c7`
 - `TFoldBox.cs` `cfb24f0580d8822c`

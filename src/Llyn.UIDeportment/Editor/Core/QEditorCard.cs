@@ -134,7 +134,11 @@ internal sealed class QEditorCard
     internal void QEditorMeaningRefine(CEntryDraft draft)
     {
         _qCard.QCardRefine(
-            _qEditorCardMeaning, "Meaning", draft.CEntryDraftMeanings, static card => card.QPlacardDefinition);
+            _qEditorCardMeaning,
+            "Meaning",
+            false,
+            draft.CEntryDraftMeanings,
+            static card => card.QPlacardDefinition);
     }
 
     internal void QEditorCollocationRefine(CEntryDraft draft)
@@ -142,6 +146,7 @@ internal sealed class QEditorCard
         _qCard.QCardRefine(
             _qEditorCardCollocation,
             "Collocation",
+            true,
             draft.CEntryDraftCollocations,
             static card => card.QPlacardExpression);
     }

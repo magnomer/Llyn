@@ -20,7 +20,7 @@ public sealed class LReferenceFacade : LReferencePort
         _lReferenceFacadeGate = _lReferenceFacadeHearth.LEngineGate;
     }
 
-    public long LEngineCitationResolve(long draftId, long cardId, long sentenceId, string title)
+    public long LEngineCitationResolve(long draftId, LExampleSite site, string title)
     {
         LReference stored;
         lock (_lReferenceFacadeGate)
@@ -29,7 +29,7 @@ public sealed class LReferenceFacade : LReferencePort
             _lReferenceFacadeDraft.LEngineDraftValidate(draftId);
 
             long? found = LReferenceFacadeStaff.LEngineStaffCatalog.LCatalogStaffReference.LReferenceClerkResolve(
-                title, _lReferenceFacadeDraft.LEngineDraftLoad(draftId), cardId, sentenceId);
+                title, _lReferenceFacadeDraft.LEngineDraftLoad(draftId), site);
             if (found is long id)
             {
                 return id;
@@ -58,7 +58,7 @@ public sealed class LReferenceFacade : LReferencePort
         }
     }
 
-    public LReferenceOffer LEngineReferenceFind(LTenure held, long card, long sentence, string text)
+    public LReferenceOffer LEngineReferenceFind(LTenure held, LExampleSite site, string text)
     {
         ArgumentNullException.ThrowIfNull(held);
 
@@ -66,7 +66,7 @@ public sealed class LReferenceFacade : LReferencePort
         lock (_lReferenceFacadeGate)
         {
             return LReferenceFacadeStaff.LEngineStaffCatalog.LCatalogStaffReference
-                .LReferenceCitationFind(text, draft, card, sentence);
+                .LReferenceCitationFind(text, draft, site);
         }
     }
 

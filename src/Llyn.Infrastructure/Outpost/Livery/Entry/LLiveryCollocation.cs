@@ -56,7 +56,7 @@ internal static class LLiveryCollocation
     {
         foreach (LCardDraft row in rows)
         {
-            bool opened = !page.LLiveryPageFold.Contains(row.LCardDraftId);
+            bool opened = !page.LLiveryPageFold.Contains((LCardKind.LCardKindCollocation, row.LCardDraftId));
             sheet.Append(LLiveryCard.LLiveryFoldFormat("llyn-collocation", opened))
                 .Append("<span class=\"llyn-phrase\">")
                 .Append(LLiveryHeader.LLiveryTextFormat(LLiveryPhraseFormat(row))).Append("</span>");

@@ -42,6 +42,6 @@ So a caller elsewhere that forwards its own parameter into the contract type is 
 
 ## Stamp
 
-Commit: `90a13c9590ba`
-- `TAssayContract.cs` `243acda031a8dfdb`
+Commit: `8c403d1df768`
+- `TAssayContract.cs` `6d42d21454d111ed`
 - `TAuditContractWalker.cs` `0da0456f202264dd`
