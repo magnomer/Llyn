@@ -211,9 +211,9 @@ Each relay is transparent, except that the author create and update also raise t
 
 ## Stamp
 
-Commit: `8c403d1df768`
+Commit: `36e31eb71c98`
 - `TInterfaceContent.cs` `2f1032ea1bb4d887`
-- `TInterfaceEngine.cs` `6698141138c21ddd`
+- `TInterfaceEngine.cs` `7fc869705a17bbb7`
 - `TInterfaceEngineFanqie.cs` `3e7c158c1c15322e`
 - `TInterfaceEngineLanguage.cs` `60527ff66ae06733`
 - `TInterfaceEngineMarkup.cs` `26a61d688b58bff1`

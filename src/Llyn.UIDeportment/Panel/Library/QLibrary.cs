@@ -46,9 +46,7 @@ internal sealed class QLibrary
         _qLibraryOrder = new QChoiceOrder(QContract.QContractFind<UserControl>(surface, "PLibraryOrder"), QOrder);
         _qLibraryFilter = new QChoiceFilter(QContract.QContractFind<UserControl>(surface, "PLibraryFilter"));
 
-        QInquiry.SetResourceReference(QField.QFieldHintProperty, "List.Search");
         QLibraryMarkup.SetValue(QLook.QLookIconProperty, QIcon.QIconResolve("import", 24));
-        QLibraryMarkup.Visibility = Visibility.Visible;
 
         QInquiry.TextChanged += QInquiryObserve;
         QLibraryMarkup.Click += QLibraryMarkupObserve;
@@ -64,6 +62,9 @@ internal sealed class QLibrary
 
     private Button QLibraryMarkup => QContract.QContractFind<Button>(
         QContract.QContractFind<UserControl>(_qLibrarySurface, "PLibraryRail"), "PPanelRailMarkup");
+
+    private Button QLibraryFresh => QContract.QContractFind<Button>(
+        QContract.QContractFind<UserControl>(_qLibrarySurface, "PLibraryRail"), "PPanelRailFresh");
 
     private Button QLibraryBin => QContract.QContractFind<Button>(_qLibrarySurface, "PLibraryBin");
 
@@ -81,7 +82,11 @@ internal sealed class QLibrary
             envoy,
             QObserver.QObserverCreate<Action>(static run => run()));
         CPanel panel = _cLibrary.CLibraryPanel;
-        _qLibraryOrder.QChoiceOrderIntroduce(panel.CPanelAperture, "Order", CLibrary.CLibraryOrderRead());
+        QInquiry.SetResourceReference(QField.QFieldHintProperty, _cLibrary.CLibrarySearchKey);
+        QLibraryMarkup.Visibility = QLook.QLookVisibleRead(_cLibrary.CLibraryImportExists);
+        QLibraryFresh.Visibility = QLook.QLookVisibleRead(_cLibrary.CLibraryNewExists);
+        _qLibraryOrder.QChoiceOrderIntroduce(
+            panel.CPanelAperture, _cLibrary.CLibrarySeriesKey, CLibrary.CLibraryOrderRead());
         _qLibraryFilter.QChoiceFilterIntroduce(panel.CPanelAperture, "Sieve");
         panel.CPanelChanged += QLibraryModeRefine;
         _cLibrary.CLibraryWorkspaceChanged += QLibraryWorkspaceRefine;
@@ -93,8 +98,6 @@ internal sealed class QLibrary
 
         _qLibraryDisplay.QDisplayIntroduce(
             atelier, envoy, volume, mentionMenu, _cLibrary.CLibraryEditor.CEditorDisplay);
-        atelier.CAtelierMention.CMentionSenseChosen +=
-            id => _qLibraryDisplay.QDisplayLectern.QLecternCompass.QCompassSpotlightRefine(false, id);
 
         _qLibraryEditor.QEditorIntroduce(atelier, envoy, volume, mentionMenu, _cLibrary.CLibraryEditor);
 

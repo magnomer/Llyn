@@ -21,25 +21,62 @@ public sealed class CCompass
 
     private readonly CEnvoy _cCompassEnvoy;
 
+    private readonly CDisplayCard _cCompassCard;
+
+    private readonly Func<CLectern> _cCompassShown;
+
+    private readonly Func<CFrequency?> _cCompassFrequency;
+
     internal CCompass(
         CRule display,
+        CDisplayCard card,
+        Func<CLectern> shown,
+        Func<CFrequency?> frequency,
         LVistaPort vistas,
         LCardPort cards,
         LSettingsPort settings,
         CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(display);
+        ArgumentNullException.ThrowIfNull(card);
+        ArgumentNullException.ThrowIfNull(shown);
+        ArgumentNullException.ThrowIfNull(frequency);
         ArgumentNullException.ThrowIfNull(vistas);
         ArgumentNullException.ThrowIfNull(cards);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(envoy);
 
+        _cCompassCard = card;
+        _cCompassShown = shown;
+        _cCompassFrequency = frequency;
         _cCompassVoice = display.CVoice;
         _cCompassNoticed = display.CRuleNoticed;
         _cCompassVistaPort = vistas;
         _cCompassCardPort = cards;
         _cCompassSettings = settings;
         _cCompassEnvoy = envoy;
+    }
+
+    public static IReadOnlyList<CCompassPart> CCompassOrder { get; } =
+    [
+        CCompassPart.CCompassPartSpeech,
+        CCompassPart.CCompassPartFrequency,
+        CCompassPart.CCompassPartMeaning,
+        CCompassPart.CCompassPartCollocation,
+        CCompassPart.CCompassPartIncoming,
+        CCompassPart.CCompassPartEtymology,
+        CCompassPart.CCompassPartNote,
+        CCompassPart.CCompassPartStamp,
+    ];
+
+    public event Action<CCompassPart, int>? CCompassSought;
+
+    internal void LCompassSoughtRefine(bool collocated, long id)
+    {
+        if (CCompassCardFind(collocated, id) is (CCompassPart part, int place))
+        {
+            CCompassSought?.Invoke(part, place);
+        }
     }
 
     public (CCompassPart, int)? CCompassCardFind(bool collocated, long id)
@@ -53,7 +90,7 @@ public sealed class CCompass
 
         IReadOnlyList<LCardDraft> meanings = shown.LEntryDraftMeanings;
         LCollocationLayout layout = _cCompassCardPort.LEngineCollocationRead(
-            shown, new Dictionary<long, IReadOnlyList<LTranslationTarget>>());
+            shown, new Dictionary<(LCardKind, long), IReadOnlyList<LTranslationTarget>>());
         long? home = layout.LCollocationLayoutHome
             .Where(pair => pair.Value.Any(card => card.LCardDraftId == id))
             .Select(static pair => (long?)pair.Key)
@@ -77,25 +114,21 @@ public sealed class CCompass
         return null;
     }
 
-    public IReadOnlyList<CCompassRow> CCompassRead(IReadOnlyList<CCompassPart> parts, Func<string, string> lookup)
+    public IReadOnlyList<CCompassRow> CCompassRead(Func<string, string> lookup)
     {
-        ArgumentNullException.ThrowIfNull(parts);
         ArgumentNullException.ThrowIfNull(lookup);
 
         LEntryDraft? shown = _cCompassVoice.CVoiceShown;
         LCollocationLayout? layout = shown is null
             ? null
             : _cCompassCardPort.LEngineCollocationRead(
-                shown, new Dictionary<long, IReadOnlyList<LTranslationTarget>>());
+                shown, new Dictionary<(LCardKind, long), IReadOnlyList<LTranslationTarget>>());
+        IEnumerable<CCompassPart> parts =
+            CCompassShown.Where(static part => LCompassKeyRead(part) is not null);
         List<CCompassRow> rows = [];
         foreach (CCompassPart part in parts)
         {
-            if (part == CCompassPart.CCompassPartCollocation && layout?.LCollocationLayoutOther.Count == 0)
-            {
-                continue;
-            }
-
-            rows.Add(new CCompassRow(part, null, lookup(LCompassKeyRead(part)), string.Empty, 0, false));
+            rows.Add(new CCompassRow(part, null, lookup(LCompassKeyRead(part)!), string.Empty, 0, false));
             if (shown is null
                 || layout is null
                 || part is not (CCompassPart.CCompassPartMeaning or CCompassPart.CCompassPartCollocation))
@@ -149,7 +182,61 @@ public sealed class CCompass
         return named;
     }
 
-    private static string LCompassKeyRead(CCompassPart part)
+    public static int CCompassLitRead(IReadOnlyList<(bool, bool)> rows)
+    {
+        ArgumentNullException.ThrowIfNull(rows);
+
+        IReadOnlyList<int> chosen = CCompassChosenRead([.. rows.Select(static row => row.Item1)]);
+        return chosen
+            .Where(index => rows[index].Item2)
+            .DefaultIfEmpty(chosen.Count > 0 ? chosen[0] : -1)
+            .Last();
+    }
+
+    private static IReadOnlyList<int> CCompassChosenRead(IReadOnlyList<bool> muted)
+    {
+        return [.. Enumerable.Range(0, muted.Count).Where(index => !muted[index])];
+    }
+
+    public IReadOnlyList<CCompassPart> CCompassShown { get; private set; } = [];
+
+    internal void LCompassShownRefine()
+    {
+        CCompassShown = LCompassShownRead(
+            _cCompassShown(),
+            _cCompassCard.CDisplayCardDrawn,
+            _cCompassCard.CDisplayCardUsages,
+            _cCompassCard.CDisplayCardEtymology,
+            _cCompassFrequency());
+    }
+
+    private static IReadOnlyList<CCompassPart> LCompassShownRead(
+        CLectern shown,
+        CLecternCard card,
+        IReadOnlyList<CUsage> usages,
+        CEtymologyState etymology,
+        CFrequency? frequency)
+    {
+        ArgumentNullException.ThrowIfNull(shown);
+        ArgumentNullException.ThrowIfNull(card);
+        ArgumentNullException.ThrowIfNull(usages);
+        ArgumentNullException.ThrowIfNull(etymology);
+
+        return CCompassOrder.Where(part => part switch
+        {
+            CCompassPart.CCompassPartSpeech => shown.CLecternMarked,
+            CCompassPart.CCompassPartFrequency => frequency is not null,
+            CCompassPart.CCompassPartMeaning => card.CLecternCardDefined,
+            CCompassPart.CCompassPartCollocation => card.CLecternCardCollocated,
+            CCompassPart.CCompassPartIncoming => usages.Count > 0,
+            CCompassPart.CCompassPartEtymology => etymology.CEtymologyStateAncestors.Count > 0,
+            CCompassPart.CCompassPartNote => shown.CLecternNoted,
+            CCompassPart.CCompassPartStamp => shown.CLecternStamped,
+            _ => throw new ArgumentOutOfRangeException(nameof(part), part, null),
+        }).ToList();
+    }
+
+    private static string? LCompassKeyRead(CCompassPart part)
     {
         return part switch
         {
@@ -159,6 +246,7 @@ public sealed class CCompass
             CCompassPart.CCompassPartCollocation => "Display.CollocationOther",
             CCompassPart.CCompassPartIncoming => "Display.Translated",
             CCompassPart.CCompassPartNote => "Display.Note",
+            CCompassPart.CCompassPartEtymology or CCompassPart.CCompassPartStamp => null,
             _ => throw new ArgumentOutOfRangeException(nameof(part), part, null),
         };
     }

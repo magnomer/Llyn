@@ -173,7 +173,7 @@ The unit and freedom rows are worded through static port members, so no port is 
 The one map from an engine entry draft to the shape every driver shows.
 It is split from `CCard` since the gates and the maps change for different reasons.
 `CFolioTargetRead`, `CFolioGlossRead`, `CFolioImageRead` and `CFolioVideoRead` are shared with the reading view, repertoire and mention map.
-`CFolioEntryRead` receives link targets keyed by card id.
+`CFolioEntryRead` receives link targets keyed by card kind and id.
 It also receives the folded cards as kind and id pairs, from one store read.
 It also receives picture and video addresses through `media`, and the meaning scan.
 So each card carries its links, fold and media ready.
@@ -182,7 +182,8 @@ So each card carries its links, fold and media ready.
 The empty text for a value with nothing legible is the engine's own, so the map keeps no fallback.
 
 `CFolioSheetRead` shapes the meaning or collocation cards.
-The tenure answers an entry of targets for every card, so a missing one is a fault and throws.
+The tenure answers targets for every card under its kind.
+So a missing entry is a fault and throws.
 Only the collocation sheet passes `expressed` as true, so a meaning card shows its expression as unspecified.
 A card's situation link carries no media, so its picture and video lists stay empty.
 Links join the linked sense ids to `senses`, so a link to a vanished meaning is dropped.
@@ -255,13 +256,13 @@ Its lists are empty when none are known.
 
 ## Stamp
 
-Commit: `8c403d1df768`
+Commit: `36e31eb71c98`
 - `CCard.cs` `e82fc6e3d26800a4`
 - `CCardField.cs` `802f5433f0bc0fd7`
 - `CCardList.cs` `0b09d5d23ac7ddac`
 - `CCardSpeech.cs` `c33bd983a66825f2`
 - `CCaret.cs` `125ebb0d5877da7c`
 - `CCaretTrail.cs` `a5bbdb676340e773`
-- `CFolio.cs` `19cd7259536a1175`
+- `CFolio.cs` `39455a7f4bbd2236`
 - `CSentence.cs` `2d4729454df2f4db`
 - `CSentenceFrame.cs` `dcb9e108a9b63eb9`

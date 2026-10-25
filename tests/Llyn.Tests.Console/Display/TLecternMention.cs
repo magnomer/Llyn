@@ -127,6 +127,42 @@ public sealed class TLecternMention
     }
 
     [Fact]
+    public void LecternMentionFind_StoredSenseFarBelow_ScrollsToItsCardAndLightsTheHeader()
+    {
+        TLecternCard.TLecternCardRun(
+            static (engine, save) =>
+            {
+                long water = save(
+                    "water",
+                    [
+                        .. Enumerable.Range(1, 12).Select(static index =>
+                            TInterface.TCardCreate("definition " + index, index) with
+                            {
+                                LCardDraftTitle = "sense" + index,
+                            }),
+                    ]);
+                long sense = engine.TEngineEntryLoad(water)!.LEntryDraftMeanings
+                    .Single(static card => card.LCardDraftPosition == 6).LCardDraftId;
+                TLecternMentionSave(
+                    engine,
+                    TLecternMentionSentence,
+                    [TInterfaceMentionSpan.TMentionDraftCreate(0, 4, 5, water, sense)]);
+            },
+            static (send, rows, lit, _, console) =>
+            {
+                TLecternMentionSeek(send, rows, console, TLecternMentionSentence);
+                send(ConsoleKey.Enter);
+                TLecternMentionSend(console, lit, ConsoleKey.RightArrow);
+
+                send(ConsoleKey.Enter);
+
+                Assert.EndsWith("sense6", rows()[0], StringComparison.Ordinal);
+                Assert.Equal(("▾ sense6", "lit"), lit());
+            },
+            height: 24);
+    }
+
+    [Fact]
     public void LecternMentionUpDown_LeavingTheSentenceAndComingBack_DoesNotReturnTheCursor()
     {
         const string other = "The sky is blue.";

@@ -30,13 +30,28 @@ internal sealed class BLecternHeader
 
     private CFrequency? _bLecternFrequency;
 
-    internal BLecternHeader(BLocalizationCatalog catalog, CDisplay display)
+    internal BLecternHeader(BLocalizationCatalog catalog, CDisplay display, Action changed)
     {
         ArgumentNullException.ThrowIfNull(catalog);
         ArgumentNullException.ThrowIfNull(display);
+        ArgumentNullException.ThrowIfNull(changed);
 
         _bLecternCatalog = catalog;
         _bLecternDisplay = display;
+        Func<Action, Action> refine = run => () =>
+        {
+            run();
+            changed();
+        };
+        display.CDisplayOpened += refine(BLecternFavoriteRefine);
+        display.CDisplayOpened += refine(BLecternGraspRefine);
+        display.CDisplayOpened += refine(BLecternFrequencyRefine);
+        display.CDisplayClosed += refine(BLecternFavoriteRefine);
+        display.CDisplayClosed += refine(BLecternGraspRefine);
+        display.CDisplayClosed += refine(BLecternFrequencyRefine);
+        display.CDisplayFrequencyChanged += _ => refine(BLecternFrequencyRefine)();
+        display.CDisplayGrasp.CDisplayFavoriteChanged += _ => refine(BLecternFavoriteRefine)();
+        display.CDisplayGrasp.CDisplayGraspChanged += _ => refine(BLecternGraspRefine)();
     }
 
     internal void BLecternFavoriteToggle()

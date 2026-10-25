@@ -23,6 +23,9 @@ Enter answers false on an empty list, and Insert and Ctrl+Down answer false when
 Without a query, a letter jumps to the next matching name.
 The glyph test pins that the ascii, double and single glyph sets carry the list marks with the same counts.
 The marks include the tree marks, which read `|- `- |` in ascii and `├─ └─ │` in single lines.
+The list can settle its lit row around a refine that drops or moves the row.
+When the settled row is gone, the row now in its place is lit, else the last.
+When it stays, the lit row goes on following the chosen row.
 
 ## `TLibrary`
 
@@ -36,6 +39,17 @@ A chosen entry that fails to load leaves the prompt up, and the delete key stays
 Ctrl+F7 and Ctrl+F8 each open a `BSParley` box, and only the order one carries a task that ends it.
 The menus are Entry and View, with their hotkeys.
 When the tab is not shown, keys, drawing and menus do nothing.
+
+## `TFavoriteTab`
+
+Drives the Favorite tab, which is the same `BLibrary` built over `CFavorite`.
+Each case marks a few entries in a real engine first, with a grasp where it matters.
+The Ctrl function keys pick the first four orderings, and Ctrl+F7 opens the chooser that holds the grasp ordering.
+The tab offers no new entry, so F7 is bound to nothing and the Entry menu holds only export.
+Its search hint and empty notice are its own wording.
+F6 on the chosen row unmarks it, so the row leaves the list.
+The lit row then stays at that place, or falls to the row above when the last row left.
+A grasp raised under the grasp ordering resorts the list, and the lit row follows its entry.
 
 ## `TLibraryRail`
 
@@ -60,8 +74,9 @@ These tests wait on the loop for the async work, up to 10 seconds.
 
 ## Stamp
 
-Commit: `cb8ab7e8feb4`
-- `TIndex.cs` `dadf98e3d8f50222`
+Commit: `36e31eb71c98`
+- `TFavoriteTab.cs` `26ec9f13f2410be0`
+- `TIndex.cs` `05d891386c816434`
 - `TLibrary.cs` `6535a9c30cf4468d`
 - `TLibraryRail.cs` `1b299a9ddc78a139`
 - `TLibraryRoof.cs` `d91256827a5a974b`

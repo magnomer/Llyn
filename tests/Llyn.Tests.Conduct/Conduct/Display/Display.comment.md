@@ -68,6 +68,18 @@ The flags name each language once, in first-seen order.
 The example count is two.
 The further paths name only the second meaning, though the first is linked twice.
 
+## `DisplayCardRead_MeaningSharingCollocationId_TakesNoCollocationMarkers`
+
+A meaning and a collocation may carry the same card id, since each kind numbers its own cards.
+The meaning must not take the collocation's phrase or markers by that id.
+The collocation homed under the first meaning keeps its own phrase.
+
+## `DisplayCardRead_MeaningSharingCollocationId_KeepsEachTranslation`
+
+A meaning and an Other collocation share an id but link different entries.
+Each card keeps only its own translation link, and the collocation alone carries its flag.
+The target map is keyed by kind and id, so the two never merge.
+
 ## `TCompassDraftCreate`
 
 An unsaved draft for the compass cases, with the meanings 41 and 42, and one collocation per `senses` item.
@@ -89,7 +101,10 @@ The unlinked collocation section is named `Display.CollocationOther`.
 A titled card keeps its title, an untitled one its kind, and an uncertain one the unknown mark.
 The collocation kind is looked up to the meaning wording, so the two twins carry one name and are numbered.
 Each card carries its number, its depth and its place in its section's list.
-With no draft shown, the parts are named through the lookup and carry no cards.
+With no draft shown, the compass names no part and gives no row, since only shown parts get rows.
+The compass reads the cards the card area last drew, so each case reads the cards before the compass.
+A part the entry does not show, such as the speech of an unmarked entry, gives no row.
+The page order of all parts is pinned apart: speech, frequency, meaning, collocation, incoming, etymology, note, stamp.
 A band at or below zero reads zero stars, the unknown tier and no rank.
 Its spare stars then fill the whole row.
 A band on the scale keeps its stars and tier, and its spare stars fill the row.
@@ -136,6 +151,23 @@ Conduct chooses the one-off key for the driver's frequency lookup, and an unrank
 The wing, entry and atelier builders here are shared with `TDisplayGrasp`.
 The atelier's media port only answers a stop, since closing the view stops its play.
 
+## `CompassRead_HiddenPartSharesACardLabel_NamesOnlyTheShownRows`
+
+A meaning titled like a part's own wording must not make that part show.
+Only the meaning part and its card give rows.
+
+## `CompassShown_EntryWithSomeParts_KeepsOnlyThoseInPageOrder`
+
+An entry with a speech, a note, a collocation card and a stored stamp shows exactly those parts.
+They come in page order.
+The card, usage and frequency reads come first, since the compass is refined from them.
+Closing the entry and reading again empties the shown parts.
+
+## `CompassShown_OpenOtherEntryBeforeReads_DropsPreviousEntryParts`
+
+Opening another entry empties what the first entry's reads left, before any read of the second.
+So the contents never show a part of the entry that was shown before.
+
 ## `TDisplayCard`
 
 Covers the reading view's card, media and chip reads and click gates.
@@ -164,6 +196,9 @@ A link chip raises its entry in the library tab.
 A record never saved, a link to no entry and an empty click open nothing.
 Each card answers its list and place, and the lookup is told whether the id is a collocation's.
 An unknown card or an empty view answers nothing.
+A "see" line on a folded collocation unfolds it, then raises the sought event with its part and place.
+A stored Mention's sense opened through the Library raises the sought event for its meaning.
+So the page can scroll to it.
 A line key read from one entry finds nothing once another entry is shown.
 That holds for a click and for the word cursor.
 
@@ -273,12 +308,12 @@ Saves an English noun whose paradigm asks for a plural nothing stores.
 
 ## Stamp
 
-Commit: `8c403d1df768`
-- `TCardSense.cs` `bc31f6cddd2ca6ae`
-- `TDisplay.cs` `c18d439ee37ac348`
+Commit: `36e31eb71c98`
+- `TCardSense.cs` `807f30e127fe9c46`
+- `TDisplay.cs` `b5edef95cb9836d8`
 - `TDisplayAccent.cs` `bc384431fa7b13d5`
-- `TDisplayArea.cs` `660956a4da7b515e`
-- `TDisplayCard.cs` `74ecca3fd4af5f39`
+- `TDisplayArea.cs` `b90e80d2cf004ae9`
+- `TDisplayCard.cs` `13469895b5876496`
 - `TDisplayGrasp.cs` `7f3390215a60e0ff`
 - `TDisplayMention.cs` `fe2130ecf737059c`
 - `TDisplayPlayback.cs` `4841acad0b56316f`

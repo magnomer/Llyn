@@ -189,6 +189,8 @@ The rows come already filtered, sorted and marked, so the list decides nothing a
 Vista, favorite, reflex and settings notices refill the rows.
 An entry notice selects and repaints, and a chosen entry reloads its draft.
 The default order is headword before any order is saved.
+The title, search and series keys are fixed here, and the favorites tab offers no new entry.
+The rows read sets the aperture's count even when the read fails, so the empty notice follows the rows shown.
 
 ## `LFavoriteClose`
 
@@ -469,11 +471,11 @@ It then tells the driver through `CYunjingWorkspaceChanged`.
 
 ## Stamp
 
-Commit: `fe7e11daae88`
+Commit: `36e31eb71c98`
 - `CAperture.cs` `bba61e77c7623e57`
 - `CDiptych.cs` `a0f45daf855a9029`
 - `CEntryList.cs` `4e3ce97f8049b525`
-- `CFavorite.cs` `54ea336508512b06`
+- `CFavorite.cs` `75c4ac13ebd91b45`
 - `CPanel.cs` `bbeabfec9aa05957`
 - `CPanelBin.cs` `64a8e4a91337bcb9`
 - `CPanelOutcome.cs` `45880f2b8e1e33f3`

@@ -157,7 +157,8 @@ The view shows collocations under top-level meanings, so homes and stubs are lif
 A stub line still names the path of the nested home, so the reader learns which sub-meaning holds it.
 Collocations keep draft order within each meaning.
 It also applies the phrase and marker rules to every collocation, keyed by its id.
-The flags come from `targets`, the translations the caller already read.
+The flags come from `targets`, the translations the caller already read, keyed by card kind and id.
+A collocation looks up the Collocation kind, so a Meaning of the same id lends no flags.
 The markers stay facts, a count and a list of paths, so the reader words them.
 The stub line carries the phrase, so a collocation with no expression is named by its title.
 It also carries the collocation's id, so the reading view can open that row and scroll to its home.
@@ -244,9 +245,9 @@ Two stored Situations reading the same way answer null too, since neither is the
 
 ## Stamp
 
-Commit: `8c403d1df768`
+Commit: `36e31eb71c98`
 - `LDraftClerkCard.cs` `48d249cd1d682301`
 - `LDraftClerkChip.cs` `26c3f58717ca7889`
-- `LDraftClerkSense.cs` `1f7d9ffa61cd55a9`
+- `LDraftClerkSense.cs` `e262bfdb8c626636`
 - `LRegisterChip.cs` `2faeb98c8ce03447`
 - `LSituationChip.cs` `c37ad28ad6ac1e53`

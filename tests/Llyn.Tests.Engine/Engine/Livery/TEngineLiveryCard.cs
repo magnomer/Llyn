@@ -58,9 +58,9 @@ public sealed class TEngineLiveryCard
         page = page with
         {
             LLiveryPageDraft = page.LLiveryPageDraft with { LEntryDraftMeanings = [card] },
-            LLiveryPageTarget = new Dictionary<long, IReadOnlyList<LTranslationTarget>>
+            LLiveryPageTarget = new Dictionary<(LCardKind, long), IReadOnlyList<LTranslationTarget>>
             {
-                [77] = [TInterface.TTranslationTargetCreate(3, "부수다", "Korean")],
+                [(LCardKind.LCardKindMeaning, 77)] =[TInterface.TTranslationTargetCreate(3, "부수다", "Korean")],
             },
             LLiveryPageSource = new Dictionary<long, string> { [9] = "Testing Tom (2024)" },
         };
@@ -104,9 +104,9 @@ public sealed class TEngineLiveryCard
         page = page with
         {
             LLiveryPageDraft = page.LLiveryPageDraft with { LEntryDraftMeanings = [card] },
-            LLiveryPageTarget = new Dictionary<long, IReadOnlyList<LTranslationTarget>>
+            LLiveryPageTarget = new Dictionary<(LCardKind, long), IReadOnlyList<LTranslationTarget>>
             {
-                [77] = [TInterface.TTranslationTargetCreate(3, "부수다", "Korean")],
+                [(LCardKind.LCardKindMeaning, 77)] =[TInterface.TTranslationTargetCreate(3, "부수다", "Korean")],
             },
             LLiveryPageIncoming =
                 [TInterface.TUsageCreate(1, LOwner.LOwnerMeaning, 42, "부수다", "Korean", none)],

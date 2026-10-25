@@ -24,6 +24,10 @@ public sealed class CDisplayCard
 
     private readonly CEnvoy _cDisplayEnvoy;
 
+    private readonly Action _cDisplayStored;
+
+    private readonly Action<bool, long> _cDisplaySought;
+
     internal CDisplayCard(
         CRule display,
         LCardPort cards,
@@ -32,7 +36,9 @@ public sealed class CDisplayCard
         LSentencePort sentences,
         LAncestorPort ancestors,
         LSettingsPort settings,
-        CEnvoy envoy)
+        CEnvoy envoy,
+        Action stored,
+        Action<bool, long> sought)
     {
         ArgumentNullException.ThrowIfNull(display);
         ArgumentNullException.ThrowIfNull(cards);
@@ -42,7 +48,11 @@ public sealed class CDisplayCard
         ArgumentNullException.ThrowIfNull(ancestors);
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(envoy);
+        ArgumentNullException.ThrowIfNull(stored);
+        ArgumentNullException.ThrowIfNull(sought);
 
+        _cDisplayStored = stored;
+        _cDisplaySought = sought;
         _cDisplayRule = display;
         _cDisplayCardPort = cards;
         _cDisplayReferencePort = references;
@@ -59,19 +69,35 @@ public sealed class CDisplayCard
 
     internal LEntryDraft? CDisplayCardShown => _cDisplayCardShown;
 
+    internal CLecternCard CDisplayCardDrawn { get; private set; } = new([], [], false, false);
+
+    internal IReadOnlyList<CUsage> CDisplayCardUsages { get; private set; } = [];
+
+    internal CEtymologyState CDisplayCardEtymology { get; private set; } = new([], [], []);
+
     private CLedgerNoticed LDisplayNoticed => _cDisplayRule.CRuleNoticed;
+
+    internal void CDisplayCardReset()
+    {
+        CDisplayCardDrawn = new CLecternCard([], [], false, false);
+        CDisplayCardUsages = [];
+        CDisplayCardEtymology = new CEtymologyState([], [], []);
+    }
 
     public CLecternCard CDisplayCardRead()
     {
         _cDisplayCardShown = LDisplayShown;
         if (_cDisplayCardShown is not LEntryDraft shown)
         {
-            return new CLecternCard([], [], false, false);
+            CDisplayCardDrawn = new CLecternCard([], [], false, false);
+            _cDisplayStored();
+            return CDisplayCardDrawn;
         }
 
         LSentenceOrder order = LDisplayOrderRead(shown.LEntryDraftLanguage);
         IReadOnlyDictionary<long, string> citations = LDisplayCitationRead(shown);
-        IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets = LDisplayTranslationRead(shown);
+        IReadOnlyDictionary<(LCardKind, long), IReadOnlyList<LTranslationTarget>> targets =
+            LDisplayTranslationRead(shown);
         string mark = _cDisplaySettings.LEngineTextRead("Display.Unknown");
         string stub = _cDisplaySettings.LEngineTextRead("Display.CollocationStub");
         string example = _cDisplaySettings.LEngineTextRead("Display.CollocationExample");
@@ -85,7 +111,7 @@ public sealed class CDisplayCard
             shown,
             layout.LCollocationLayoutOther, true, layout, order, mark, stub, example, exampleOne, also, heading,
             citations, targets, folds, media, _cDisplayExamplePort);
-        return new CLecternCard(
+        CDisplayCardDrawn = new CLecternCard(
             CLeaf.LLeafRead(
                 shown,
                 shown.LEntryDraftMeanings, false, layout, order, mark, stub, example, exampleOne, also, heading,
@@ -93,6 +119,8 @@ public sealed class CDisplayCard
             others,
             shown.LEntryDraftDefined,
             others.Count > 0);
+        _cDisplayStored();
+        return CDisplayCardDrawn;
     }
 
     public bool CDisplayFoldToggle(bool collocated, long cardId, bool folded)
@@ -124,6 +152,17 @@ public sealed class CDisplayCard
         return false;
     }
 
+    public bool CDisplaySeeOpen(long id)
+    {
+        if (!CDisplayFoldToggle(true, id, false))
+        {
+            return false;
+        }
+
+        _cDisplaySought(true, id);
+        return true;
+    }
+
     private IReadOnlySet<(LCardKind, long)> LDisplayFoldRead()
     {
         if (_cDisplayRule.CRuleChosen is not long id)
@@ -142,7 +181,8 @@ public sealed class CDisplayCard
         }
     }
 
-    private IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> LDisplayTranslationRead(LEntryDraft shown)
+    private IReadOnlyDictionary<(LCardKind, long), IReadOnlyList<LTranslationTarget>> LDisplayTranslationRead(
+        LEntryDraft shown)
     {
         try
         {
@@ -152,7 +192,7 @@ public sealed class CDisplayCard
         {
             LDisplayNoticed.LLedgerRepaintShow(
                 _cDisplayEnvoy, _cDisplaySettings, "Display.TranslationFailed", exception);
-            return new Dictionary<long, IReadOnlyList<LTranslationTarget>>();
+            return new Dictionary<(LCardKind, long), IReadOnlyList<LTranslationTarget>>();
         }
     }
 
@@ -184,32 +224,38 @@ public sealed class CDisplayCard
 
     public IReadOnlyList<CUsage> CDisplayIncomingRead()
     {
+        CDisplayCardUsages = [];
         if (_cDisplayRule.CRuleChosen is not long id)
         {
-            return [];
+            _cDisplayStored();
+            return CDisplayCardUsages;
         }
 
         try
         {
-            return _cDisplayCardPort.LEngineIncomingRead(id).Select(COeuvre.COeuvreUsageRead).ToList();
+            CDisplayCardUsages = _cDisplayCardPort.LEngineIncomingRead(id).Select(COeuvre.COeuvreUsageRead).ToList();
         }
         catch (Exception exception)
         {
             LDisplayNoticed.LLedgerRepaintShow(_cDisplayEnvoy, _cDisplaySettings, "Display.IncomingFailed", exception);
-            return [];
         }
+
+        _cDisplayStored();
+        return CDisplayCardUsages;
     }
 
     public CEtymologyState CDisplayEtymologyRead()
     {
+        CDisplayCardEtymology = new CEtymologyState([], [], []);
         if (LDisplayShown is not LEntryDraft shown || _cDisplayRule.CVoice.CVoiceEntry is not long id)
         {
-            return new CEtymologyState([], [], []);
+            _cDisplayStored();
+            return CDisplayCardEtymology;
         }
 
         try
         {
-            return new CEtymologyState(
+            CDisplayCardEtymology = new CEtymologyState(
                 CAncestor.CAncestorRead(
                     _cDisplayAncestorPort.LEngineLineageRead(id, shown.LEntryDraftAncestors), null),
                 [.. _cDisplayAncestorPort.LEngineRelationRead().Select(CAncestorChoice.CAncestorChoiceRead)],
@@ -219,7 +265,9 @@ public sealed class CDisplayCard
         catch (Exception exception)
         {
             LDisplayNoticed.LLedgerRepaintShow(_cDisplayEnvoy, _cDisplaySettings, "Display.AncestryFailed", exception);
-            return new CEtymologyState([], [], []);
         }
+
+        _cDisplayStored();
+        return CDisplayCardEtymology;
     }
 }

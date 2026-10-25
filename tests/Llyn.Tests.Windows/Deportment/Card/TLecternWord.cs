@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
 using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -63,6 +64,67 @@ public sealed class TLecternWord
 
             Assert.Equal("t", TLecternWordSend(line, Key.Enter));
             Assert.Empty(noticed);
+        });
+    }
+
+    [Fact]
+    public void LeafCardRefine_UnstoredChip_DisablesItAndKeepsTheStoredOne()
+    {
+        TCardHinge.TCardHingeRun(() =>
+        {
+            CLeaf leaf = new(
+                7, false, 1, TCardHinge.TCardHingeBlank, TCardHinge.TCardHingeMeaning,
+                [new CLeafChip(3, new CStateWording("at home", null, false, null), CSubject.CSubjectSituation, true)],
+                [],
+                [new CLeafChip(0, new CStateWording("nature", null, false, null), CSubject.CSubjectTag, false)],
+                [], [], [], [], false, true, [], [], TCardHinge.TCardHingeBlank, [], string.Empty, string.Empty,
+                string.Empty);
+            FrameworkElementFactory inner = new(typeof(StackPanel));
+            foreach ((string part, string label) in
+                     new[] { ("PCardSituation", "PSituationTitle"), ("PCardTag", "PTagLabel") })
+            {
+                FrameworkElementFactory chips = new(typeof(ItemsControl)) { Name = part };
+                chips.SetValue(Control.TemplateProperty, new ControlTemplate(typeof(ItemsControl))
+                {
+                    VisualTree = new FrameworkElementFactory(typeof(ItemsPresenter)),
+                });
+                chips.SetValue(ItemsControl.ItemTemplateProperty, new DataTemplate
+                {
+                    VisualTree = new FrameworkElementFactory(typeof(TextBlock)) { Name = label },
+                });
+                inner.AppendChild(chips);
+            }
+
+            FrameworkElementFactory contents = new(typeof(ContentControl)) { Name = "PCardContents" };
+            contents.SetValue(Control.TemplateProperty, new ControlTemplate(typeof(ContentControl))
+            {
+                VisualTree = new FrameworkElementFactory(typeof(ContentPresenter)),
+            });
+            contents.SetValue(ContentControl.ContentTemplateProperty, new DataTemplate { VisualTree = inner });
+            FrameworkElementFactory card = new(typeof(StackPanel));
+            card.AppendChild(contents);
+            ItemsControl list = TCardHinge.TCardHingeLoad(card);
+            list.ItemsSource = new[] { TInterfaceDeportment.TLeafItemCreate(leaf, leaf.CLeafMeaning) };
+            TCardHinge.TCardHingeSettle(list);
+            TInterfaceDeportment.TLeafCardRefine(
+                (ContentPresenter)list.ItemContainerGenerator.ContainerFromIndex(0), list.Items[0]);
+            TCardHinge.TCardHingeSettle(list);
+            Dictionary<string, bool> enabled = [];
+            Queue<DependencyObject> pending = new([list]);
+            while (pending.TryDequeue(out DependencyObject? node))
+            {
+                if (node is TextBlock { Text: "at home" or "nature" } chip)
+                {
+                    enabled[chip.Text] = chip.IsEnabled;
+                }
+
+                for (int index = 0; index < VisualTreeHelper.GetChildrenCount(node); index++)
+                {
+                    pending.Enqueue(VisualTreeHelper.GetChild(node, index));
+                }
+            }
+
+            Assert.Equal(new Dictionary<string, bool> { ["at home"] = true, ["nature"] = false }, enabled);
         });
     }
 

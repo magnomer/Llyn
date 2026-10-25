@@ -210,17 +210,12 @@ public sealed class LQuillChip
         }
     }
 
-    public IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> LQuillTranslationRead(LEntryDraft draft)
+    public IReadOnlyDictionary<(LCardKind, long), IReadOnlyList<LTranslationTarget>> LQuillTranslationRead(
+        LEntryDraft draft)
     {
-        ArgumentNullException.ThrowIfNull(draft);
-
-        IReadOnlyList<LCardDraft> cards = [.. draft.LEntryDraftMeanings, .. draft.LEntryDraftCollocations];
-        List<long> ids = cards.SelectMany(static card => card.LCardDraftTranslation).Distinct().ToList();
-        IReadOnlyList<LTranslationTarget> read = ids.Count == 0
-            ? []
-            : _lQuillChipTenure.LTenureEngine.LEngineCard.LEngineTargetRead(_lQuillChipTenure.LTenureId, ids);
-
-        return LCardFacade.LEngineTranslationResolve(cards, read);
+        return LCardFacade.LEngineTranslationResolve(
+            draft,
+            ids => _lQuillChipTenure.LTenureEngine.LEngineCard.LEngineTargetRead(_lQuillChipTenure.LTenureId, ids));
     }
 
     public LTranslationOffer LQuillMentionFind(string text)

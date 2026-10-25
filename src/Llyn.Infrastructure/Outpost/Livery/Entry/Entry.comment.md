@@ -247,6 +247,7 @@ An empty sentence writes nothing.
 
 Translation targets are chips in one paragraph.
 Each links its headword and adds its language, opening with the flag when one reads.
+Targets are looked up under the card's kind, so a Meaning and a Collocation of one id stay apart.
 A card with no targets writes nothing.
 
 ### `LLiveryBadgeAppend`
@@ -366,9 +367,9 @@ So a stored line break survives inside one paragraph without inline HTML.
 
 ## Stamp
 
-Commit: `8c403d1df768`
-- `LLiveryCard.cs` `d50b57d93a292313`
-- `LLiveryCollocation.cs` `bbed45e8cb02d38b`
+Commit: `36e31eb71c98`
+- `LLiveryCard.cs` `07bbb9d49c3ed52a`
+- `LLiveryCollocation.cs` `7c2874f59d638f66`
 - `LLiveryEtymology.cs` `8037c0b43dfd6fec`
 - `LLiveryHeader.cs` `759bcc84399d7e72`
 - `LLiveryInflection.cs` `41638ef2745a54c8`

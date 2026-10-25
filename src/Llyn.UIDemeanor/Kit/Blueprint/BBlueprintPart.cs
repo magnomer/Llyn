@@ -28,6 +28,8 @@ internal sealed class BBlueprintPart
 
     internal required IReadOnlyList<BBlueprintPart> BBlueprintPartChildren { get; init; }
 
+    internal bool BBlueprintPartFolded { get; set; }
+
     internal int BBlueprintPartRow { get; set; }
 
     internal int BBlueprintPartColumn { get; set; }

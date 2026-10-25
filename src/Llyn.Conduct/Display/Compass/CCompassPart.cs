@@ -12,5 +12,9 @@ public enum CCompassPart
 
     CCompassPartIncoming,
 
+    CCompassPartEtymology,
+
     CCompassPartNote,
+
+    CCompassPartStamp,
 }

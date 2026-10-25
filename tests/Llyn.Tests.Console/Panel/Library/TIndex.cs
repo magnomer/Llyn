@@ -94,7 +94,7 @@ public sealed class TIndex
         BIndex<CVistaRow> index = TIndexBuild(TIndexRows);
         index.BIndexObserve(TIndexDown);
 
-        index.BIndexRefine([.. TIndexRows.Reverse()], "Headword", false, string.Empty);
+        index.BIndexRefine([.. TIndexRows.Reverse()], "Order.Headword", false, string.Empty);
 
         string[] grid = TIndexShow(index, true);
         Assert.Contains(" 1 of 3 ", grid[^1], StringComparison.Ordinal);
@@ -107,9 +107,40 @@ public sealed class TIndex
         BIndex<CVistaRow> index = TIndexBuild(TIndexRows);
         index.BIndexObserve(TIndexDown);
 
-        index.BIndexRefine([TIndexRows[0], TIndexRows[1]], "Headword", false, string.Empty);
+        index.BIndexRefine([TIndexRows[0], TIndexRows[1]], "Order.Headword", false, string.Empty);
 
         Assert.Contains(" 2 of 2 ", TIndexShow(index, false)[^1], StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void IndexLitSettle_SettledRowGone_TakesTheRowInItsPlace()
+    {
+        BIndex<CVistaRow> index = TIndexBuild(TIndexRows);
+
+        index.BIndexLitSettle(
+            () => index.BIndexRefine([TIndexRows[0], TIndexRows[2]], "Order.Headword", false, string.Empty));
+
+        Assert.StartsWith("|  水 (2)", TIndexShow(index, true)[2], StringComparison.Ordinal);
+        Assert.Contains(" 2 of 2 ", TIndexShow(index, true)[^1], StringComparison.Ordinal);
+        index.BIndexLitSettle(() => index.BIndexRefine([TIndexRows[0]], "Order.Headword", false, string.Empty));
+        Assert.Contains(" 1 of 1 ", TIndexShow(index, true)[^1], StringComparison.Ordinal);
+        index.BIndexLitSettle(() => index.BIndexRefine([.. TIndexRows], "Order.Headword", false, string.Empty));
+        Assert.Contains(" 1 of 3 ", TIndexShow(index, true)[^1], StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void IndexLitSettle_SettledRowStays_LeavesLitFollowingChosen()
+    {
+        BIndex<CVistaRow> index = TIndexBuild(TIndexRows);
+        CVistaRow[] moved = [new(1, "apple", "English", string.Empty, "apple", true), TIndexRows[1] with
+        {
+            CVistaRowChosen = false,
+        }, TIndexRows[2]];
+
+        index.BIndexLitSettle(() => index.BIndexRefine(TIndexRows, "Order.Headword", false, string.Empty));
+        index.BIndexRefine(moved, "Order.Headword", false, string.Empty);
+
+        Assert.Contains(" 1 of 3 ", TIndexShow(index, true)[^1], StringComparison.Ordinal);
     }
 
     [Fact]
@@ -249,7 +280,7 @@ public sealed class TIndex
             shift);
         index.BIndexRefine(
             rows,
-            CCatalog.CCatalogOrderFormat(CCatalogOrder.CCatalogOrderHeadword),
+            "Order." + CCatalog.CCatalogOrderFormat(CCatalogOrder.CCatalogOrderHeadword),
             filtered,
             empty ? "List.Empty" : string.Empty);
         return index;

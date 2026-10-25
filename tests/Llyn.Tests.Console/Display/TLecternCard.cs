@@ -291,7 +291,8 @@ public sealed class TLecternCard
         string? script = null,
         int height = 60,
         bool open = true,
-        string? notice = null)
+        string? notice = null,
+        Func<LEngine, CAtelier>? build = null)
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -309,7 +310,7 @@ public sealed class TLecternCard
             catalog.BLocalizationCatalogApply(TInterface.TLocalizationLoad("en"));
             ABootstrap bootstrap = new();
             BEnvoy envoy = new(console, catalog, bootstrap);
-            using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+            using CAtelier atelier = build is null ? TInterfaceConduct.TAtelierCreate(engine) : build(engine);
             LCapsuleConsole capsule = new();
             BWindow window = new(
                 console,

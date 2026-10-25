@@ -6,13 +6,18 @@ This folder holds the reading view's card area with the cards, their chips and e
 
 The card area reads the cards, the usages pointing at the entry and the etymology map.
 It also folds or unfolds one card of the chosen entry.
-It holds no state.
+It keeps only the latest answer of its three reads.
+Those are the cards, the usages and the etymology state.
+The compass decides its shown parts from those answers, so the area cannot recompute them.
+Each of the three reads calls the compass refine once the answer is kept.
+So the contents follow the page.
+`CDisplayCardReset` empties the three answers when an entry opens or closes, so no part of a gone entry lingers.
 It takes the rules whole, since the shown draft and the chosen entry change after it is built.
 Every read here runs on a repaint and shows its failure through repaint memory, so a lasting fault shows once.
 
 ### `CDisplayCardRead`
 
-No shown draft answers no cards, with no section shown.
+No shown draft answers no cards, with no section shown, and that empty answer is kept and announced too.
 Each read records the draft it minted its line keys from.
 The route compares that draft with the shown draft on a click.
 Each linked collocation is a row in the leaf of the top-level meaning that holds its home.
@@ -41,11 +46,15 @@ The caller puts its chevron back on false, since no bulletin will repaint it.
 The port raises the fold bulletin.
 So this view and every other view on the entry repaint from the store alike.
 Folding is no edit, so it never dirties a draft and never enters undo.
+`CDisplaySeeOpen` opens a collocation row that a "see" line names.
+It unfolds the row through the same gate and answers false when the gate does.
+On success it announces the card as sought, so the page scrolls to the row it just opened.
 `LDisplayFoldRead` answers every folded card as a kind and id pair, Meanings and Collocations together.
 No entry chosen answers an empty set, which keeps the cards drawable.
 `CDisplayIncomingRead` has the engine name each usage and its epithet in one read.
 Each usage maps through `COeuvre.COeuvreUsageRead`, the one map the vita's citations share.
 A refused read shows `Display.IncomingFailed` once until the user acts, and answers no usages.
+The kept usages are cleared first, so a refused read never leaves the last entry's usages behind.
 
 ### `CDisplayEtymologyRead`
 
@@ -58,6 +67,7 @@ The language choices stay empty, since the reading view offers no picker.
 The state carries the shown headword, which stands at the foot of the map.
 No box is restorable here, since the reading view edits nothing.
 A refused read shows `Display.AncestryFailed` through repaint memory and answers an empty state.
+Like the other reads, it keeps its answer, empty or not, and refines the compass.
 
 ## `CLecternCard`
 
@@ -104,6 +114,9 @@ The phrase and the three markers are empty on a meaning leaf, since only colloca
 It maps the cards of one list to their ready form.
 The caller says whether the list is the collocations, and the map keeps that flag on each leaf.
 The nested homed collocations are always read as collocations.
+A collocation leaf takes its phrase, flags and markers from the layout.
+A meaning leaf takes its homed rows and stub lines.
+Each leaf ignores the other's share, so a shared id reads nothing across.
 The layout is the engine's answer for where each collocation sits, so the map applies no link rule itself.
 It only looks up each card's homed collocations, stub lines, phrase and markers by the card's id.
 The nested collocations and the Other collocations read through the same map with the same layout.
@@ -115,7 +128,8 @@ The heading is the plain caption with no count, and a meaning with no homed coll
 The cards come in the order `CFolio.CFolioOrderRead` sets, the order the editor's list shows.
 So the reading view, its contents and the editor number every card alike.
 The order, the unknown mark, the Source lines and the link targets are read once for the entry.
-Each card's links are its own entry of the target map, which the engine keys by every card.
+Each card's links are its own entry of the target map, which the engine keys by card kind and id.
+So a meaning and a collocation sharing an id never read each other's links.
 A card missing from the map has no links, since a refused target read answers an empty map.
 Each picture row carries the address `media` resolves, so the page loads it without asking.
 Each sentence line is composed through `examples`, which also answers its line key against the shown entry.
@@ -148,9 +162,9 @@ A row quoting no Example has no text to divide and no Source line.
 
 ## Stamp
 
-Commit: `8c403d1df768`
-- `CDisplayCard.cs` `0b89f56e13599ec2`
-- `CLeaf.cs` `b468cd0181946ad4`
+Commit: `36e31eb71c98`
+- `CDisplayCard.cs` `b0b3725d8dde7c80`
+- `CLeaf.cs` `380d9627a7ca6bb2`
 - `CLeafChip.cs` `d604e4f1c5b56d4f`
 - `CLeafLine.cs` `247bfa9b404d5d91`
 - `CLecternCard.cs` `4f3140b154d29b23`

@@ -23,7 +23,7 @@ internal static class CFolio
 
     internal static CEntryDraft CFolioEntryRead(
         LEntryDraft draft,
-        IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets,
+        IReadOnlyDictionary<(LCardKind, long), IReadOnlyList<LTranslationTarget>> targets,
         IReadOnlySet<(LCardKind, long)> folds,
         LMediaPort media,
         IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth, string LMeaningPath)> senses,
@@ -53,7 +53,7 @@ internal static class CFolio
     private static IReadOnlyList<CCardDraft> CFolioSheetRead(
         LEntryDraft draft,
         IReadOnlyList<LCardDraft> cards,
-        IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets,
+        IReadOnlyDictionary<(LCardKind, long), IReadOnlyList<LTranslationTarget>> targets,
         IReadOnlySet<(LCardKind, long)> folds,
         LMediaPort media,
         string meaning,
@@ -86,7 +86,8 @@ internal static class CFolio
                         row.LRegisterDraftId,
                         CStateWording.LStateWordingRead(CFolioStateRead(row.LRegisterDraftName), null)))
                     .ToList(),
-                CFolioTargetRead(targets[card.LCardDraftId]),
+                CFolioTargetRead(targets[
+                    (expressed ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning, card.LCardDraftId)]),
                 card.LCardDraftTag.Select(static row => new CTagDraft(row.LTagDraftId, row.LTagDraftText)).ToList(),
                 CFolioImageRead(card.LCardDraftImage, media),
                 CFolioVideoRead(card.LCardDraftVideo, media),

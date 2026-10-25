@@ -73,7 +73,7 @@ internal sealed class BIndex<BIndexRow>
         }
 
         _bIndexRows = rows;
-        _bIndexOrder = "Order." + order;
+        _bIndexOrder = order;
         _bIndexFiltered = filtered;
         _bIndexNotice = notice;
     }
@@ -81,6 +81,25 @@ internal sealed class BIndex<BIndexRow>
     internal void BIndexLitClear()
     {
         _bIndexLit = null;
+    }
+
+    internal void BIndexLitSettle(Action change)
+    {
+        ArgumentNullException.ThrowIfNull(change);
+
+        long? pinned = _bIndexLit;
+        int place = BIndexLitMove(_bIndexRows, 0);
+        long? settled = _bIndexRows.Count == 0 ? null : _bIndexKey(_bIndexRows[place]);
+        _bIndexLit = settled;
+        change();
+        if (settled is long kept && _bIndexRows.Any(entry => _bIndexKey(entry) == kept))
+        {
+            _bIndexLit = pinned;
+        }
+        else if (_bIndexRows.Count > 0)
+        {
+            _bIndexLit = _bIndexKey(_bIndexRows[Math.Min(place, _bIndexRows.Count - 1)]);
+        }
     }
 
     internal bool BIndexObserve(ConsoleKeyInfo key)

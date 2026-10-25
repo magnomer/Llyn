@@ -79,14 +79,16 @@ public sealed class TDisplay
             ],
             [TInterface.TCardDraftCreate(string.Empty, string.Empty, "a fire", [], [], [], [], [], 1)]);
         display.LDisplayRule.CVoice.TDisplaySoundShow(7, draft);
+        display.CDisplayCard.CDisplayCardRead();
 
         IReadOnlyList<CCompassRow> rows = display.CDisplayCompass.CCompassRead(
-            [CCompassPart.CCompassPartSpeech, CCompassPart.CCompassPartMeaning, CCompassPart.CCompassPartCollocation],
-            key => key == "Display.CollocationSingle" ? "Display.MeaningSingle" : key);
+                key => key == "Display.CollocationSingle" ? "Display.MeaningSingle" : key)
+            .Where(static row => row.CCompassRowPart is CCompassPart.CCompassPartSpeech
+                or CCompassPart.CCompassPartMeaning or CCompassPart.CCompassPartCollocation)
+            .ToList();
 
         Assert.Equal(
             [
-                "Speech.Title",
                 "Display.MeaningPlural",
                 "to light",
                 "Display.MeaningSingle (1)",
@@ -95,27 +97,58 @@ public sealed class TDisplay
                 "Display.MeaningSingle (2)",
             ],
             rows.Select(static row => row.CCompassRowName));
-        Assert.Equal(["", "", "1", "2", "3", "", "1"], rows.Select(static row => row.CCompassRowNumber));
-        Assert.Equal([0, 0, 1, 1, 1, 0, 1], rows.Select(static row => row.CCompassRowDepth));
-        Assert.Equal([null, null, 0, 1, 2, null, 0], rows.Select(static row => row.CCompassRowCard));
+        Assert.Equal(["", "1", "2", "3", "", "1"], rows.Select(static row => row.CCompassRowNumber));
+        Assert.Equal([0, 1, 1, 1, 0, 1], rows.Select(static row => row.CCompassRowDepth));
+        Assert.Equal([null, 0, 1, 2, null, 0], rows.Select(static row => row.CCompassRowCard));
         Assert.Equal(CCompassPart.CCompassPartCollocation, rows[^1].CCompassRowPart);
     }
 
     [Fact]
-    public void DisplayCompassRead_NothingShown_NamesOnlyTheParts()
+    public void DisplayCompassRead_NothingShown_NamesNoRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CDisplay display = new TEditorFixture(TInterfaceEditor.TEditorCreate(engine)).TEditorFixtureDisplay;
 
-        IReadOnlyList<CCompassRow> rows = display.CDisplayCompass.CCompassRead(
-            [CCompassPart.CCompassPartMeaning, CCompassPart.CCompassPartIncoming, CCompassPart.CCompassPartNote],
-            static key => "<" + key + ">");
+        IReadOnlyList<CCompassRow> rows = display.CDisplayCompass.CCompassRead(static key => "<" + key + ">");
 
+        Assert.Empty(rows);
+    }
+
+    [Fact]
+    public void CompassRead_PageOrder_FollowsTheOrder()
+    {
         Assert.Equal(
-            ["<Display.MeaningPlural>", "<Display.Translated>", "<Display.Note>"],
-            rows.Select(static row => row.CCompassRowName));
-        Assert.All(rows, static row => Assert.Null(row.CCompassRowCard));
+            [
+                CCompassPart.CCompassPartSpeech,
+                CCompassPart.CCompassPartFrequency,
+                CCompassPart.CCompassPartMeaning,
+                CCompassPart.CCompassPartCollocation,
+                CCompassPart.CCompassPartIncoming,
+                CCompassPart.CCompassPartEtymology,
+                CCompassPart.CCompassPartNote,
+                CCompassPart.CCompassPartStamp,
+            ],
+            CCompass.CCompassOrder);
+    }
+
+    [Fact]
+    public void CompassLitRead_MutedRowReached_LightsTheLastSelectableReached()
+    {
+        Assert.Equal(1, CCompass.CCompassLitRead([(false, true), (false, true), (true, true), (false, false)]));
+    }
+
+    [Fact]
+    public void CompassLitRead_NothingReached_LightsTheFirstSelectable()
+    {
+        Assert.Equal(1, CCompass.CCompassLitRead([(true, false), (false, false), (false, false)]));
+    }
+
+    [Fact]
+    public void CompassLitRead_AllMuted_LightsNone()
+    {
+        Assert.Equal(-1, CCompass.CCompassLitRead([(true, true)]));
+        Assert.Equal(-1, CCompass.CCompassLitRead([]));
     }
 
     [Theory]

@@ -36,11 +36,13 @@ internal static class TInterfaceConductCard
     internal static CEntryDraft TCardEntryRead(LEntryDraft draft) =>
         TCardEntryRead(
             draft,
-            draft.LEntryDraftMeanings.Concat(draft.LEntryDraftCollocations).ToDictionary(
-                static card => card.LCardDraftId, static IReadOnlyList<LTranslationTarget> (_) => []));
+            draft.LEntryDraftMeanings.Select(static card => (LCardKind.LCardKindMeaning, card.LCardDraftId))
+                .Concat(draft.LEntryDraftCollocations.Select(
+                    static card => (LCardKind.LCardKindCollocation, card.LCardDraftId)))
+                .ToDictionary(static key => key, static IReadOnlyList<LTranslationTarget> (_) => []));
 
     internal static CEntryDraft TCardEntryRead(
-        LEntryDraft draft, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets) =>
+        LEntryDraft draft, IReadOnlyDictionary<(LCardKind, long), IReadOnlyList<LTranslationTarget>> targets) =>
         CFolio.CFolioEntryRead(
             draft,
             targets,

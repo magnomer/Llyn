@@ -21,6 +21,9 @@ A result with one target names its id, and a result with several names none.
 ## `TCardMention`
 
 Covers the mention gates and reads of the sentence area over an entry desk on a real workspace.
+Sentence gate calls pass `false` for the collocation flag, so these cases stay on the meaning cards.
+The link targets handed to the display are keyed by card kind and id.
+Each Meaning and collocation card gets an empty list.
 A linked Mention offers its Entry's Meanings, and the sense gate narrows it to one, which its chip names.
 A silent Mention may be unlinked but offers no sense.
 A Mention drops by the selection over it and by its chip's id.
@@ -65,8 +68,8 @@ A link over an Entry keeps the selection's span and carries no sense.
 
 ## Stamp
 
-Commit: `8c403d1df768`
+Commit: `36e31eb71c98`
 - `TAtelierMention.cs` `3af14e590ada7db8`
-- `TCardMention.cs` `f375bc091a4161a9`
+- `TCardMention.cs` `2b81e2df5f75a181`
 - `TCorpusMention.cs` `a20176ffba3a7860`
 - `TTranscriptMention.cs` `2fef1d74f0e5c94c`

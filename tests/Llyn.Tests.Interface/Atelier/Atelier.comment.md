@@ -31,6 +31,11 @@ The settings overload builds an atelier over a fake settings port, for the ledge
 Its draft port answers the sweep and the observer attach and detach.
 The ledger can thus attach through a fake draft port.
 The draft port overload lets a fact hold the bulletin observers the port is handed and send a bulletin itself.
+The vista overload builds it over real outlets, with the given vista port swapped into the entry bundle.
+A fact can thus wrap the real vista port and change only what it loads.
+The opened overload builds it over real outlets and a media port.
+That port hands each opened location to the given callback.
+A fact can thus see which file or address the atelier asked the media port to open.
 The answers overload is for the text gates.
 Its draft, bundled entry and bundled sound ports answer from the map.
 The settings and portrait ports are outlets on the engine, and the media port answers from the map too.
@@ -505,10 +510,10 @@ The arrival opens relay a panel's open as the navigation runs it.
 
 ## Stamp
 
-Commit: `8c403d1df768`
+Commit: `36e31eb71c98`
 - `TInterfaceArea.cs` `bf5825a6e7d0f03b`
-- `TInterfaceConduct.cs` `f849d43f7cf1ffa9`
-- `TInterfaceConductCard.cs` `1999f21c2d124dc1`
+- `TInterfaceConduct.cs` `3077d72e4990c6a6`
+- `TInterfaceConductCard.cs` `f8e5f359beae4895`
 - `TInterfaceConductDesk.cs` `ef7f5acb3c7aa03d`
 - `TInterfaceConductDialog.cs` `3c2d58ee2694a179`
 - `TInterfaceConductPanel.cs` `c7d7de34ba294c4c`

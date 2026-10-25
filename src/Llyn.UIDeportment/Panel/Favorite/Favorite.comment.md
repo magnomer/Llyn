@@ -11,7 +11,8 @@ Browsing is the search, the ordering, the roster and the switch between reading 
 ### `QFavorite`
 
 The rail's print and export buttons sit inside the page, so their commands reach the bindings added here.
-The rail has the bin, no new-record button and the export button.
+The rail has the bin and the export button.
+Its new-record button is hidden, since `CFavorite` says no new entry exists here.
 The order menu hangs under the whole search bar.
 
 ### `QFavoriteIntroduce`
@@ -19,6 +20,8 @@ The order menu hangs under the whole search bar.
 Only the medium knows its dispatcher, so the marshal the area runs its notices through is built here.
 The display view builds the lectern over the editor's display, which Conduct attached to the panel.
 The ordering menu is built once, from the orderings `CFavorite` offers.
+The search hint, the ordering series and the new-record button's visibility all come from `CFavorite`.
+So the panel's wording and its lack of a new-record button are Conduct's decision, and the driver hard-codes neither.
 Nothing is read yet, since `QFavoriteVistaRefine` fills the panel when the workspace opens.
 Every change after that arrives as an announcement.
 So the panel is current whether or not its tab is in front.
@@ -118,6 +121,6 @@ The chosen mark is left aside.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `QFavorite.cs` `a697381d4473e6af`
+Commit: `36e31eb71c98`
+- `QFavorite.cs` `d7392332771f20f1`
 - `QRosterItem.cs` `ccf3353eb6ac254d`

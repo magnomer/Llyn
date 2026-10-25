@@ -49,7 +49,7 @@ public sealed record CLeaf(
         string also,
         string heading,
         IReadOnlyDictionary<long, string> citations,
-        IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets,
+        IReadOnlyDictionary<(LCardKind, long), IReadOnlyList<LTranslationTarget>> targets,
         IReadOnlySet<(LCardKind, long)> folds,
         LMediaPort media,
         LExamplePort examples)
@@ -69,7 +69,7 @@ public sealed record CLeaf(
                 card.LCardDraftSituation.Select(CLeafChip.LLeafChipRead).ToList(),
                 card.LCardDraftRegister.Select(CLeafChip.LLeafChipRead).ToList(),
                 card.LCardDraftTag.Select(CLeafChip.LLeafChipRead).ToList(),
-                CFolio.CFolioTargetRead(targets.GetValueOrDefault(card.LCardDraftId, [])),
+                CFolio.CFolioTargetRead(targets.GetValueOrDefault((kind, card.LCardDraftId), [])),
                 card.LCardDraftSentence
                     .Select(sentence => CLeafLine.LLeafLineRead(shown, sentence, order, mark, citations, examples))
                     .ToList(),
@@ -79,11 +79,12 @@ public sealed record CLeaf(
                 card.LCardDraftStored,
                 LLeafRead(
                     shown,
-                    layout?.LCollocationLayoutHome.GetValueOrDefault(card.LCardDraftId, []) ?? [],
+                    (collocated ? null : layout)?.LCollocationLayoutHome.GetValueOrDefault(card.LCardDraftId, [])
+                    ?? [],
                     true,
                     layout, order, mark, stub, example, exampleOne, also, heading, citations, targets, folds, media,
                     examples),
-                (layout?.LCollocationLayoutStub.GetValueOrDefault(card.LCardDraftId, []) ?? [])
+                ((collocated ? null : layout)?.LCollocationLayoutStub.GetValueOrDefault(card.LCardDraftId, []) ?? [])
                     .Select(line =>
                     {
                         CStateValue expression = CFolio.CFolioStateRead(line.LCollocationPhrase);
@@ -96,20 +97,23 @@ public sealed record CLeaf(
                     .ToList(),
                 CStateWording.LStateWordingRead(
                     CFolio.CFolioStateRead(
-                        layout?.LCollocationLayoutPhrase.GetValueOrDefault(card.LCardDraftId)
+                        (collocated ? layout : null)?.LCollocationLayoutPhrase.GetValueOrDefault(card.LCardDraftId)
                         ?? LStateValue.LStateValueUnspecified),
                     null),
-                layout?.LCollocationLayoutFlag.GetValueOrDefault(card.LCardDraftId, []) ?? [],
-                (layout?.LCollocationLayoutExample.GetValueOrDefault(card.LCardDraftId) ?? 0) switch
+                (collocated ? layout : null)?.LCollocationLayoutFlag.GetValueOrDefault(card.LCardDraftId, []) ?? [],
+                ((collocated ? layout : null)?.LCollocationLayoutExample.GetValueOrDefault(card.LCardDraftId) ?? 0)
+                switch
                 {
                     0 => string.Empty,
                     1 => string.Format(CultureInfo.CurrentCulture, exampleOne, 1),
                     int count => string.Format(CultureInfo.CurrentCulture, example, count),
                 },
-                (layout?.LCollocationLayoutAlso.GetValueOrDefault(card.LCardDraftId, []) ?? []) is { Count: > 0 } paths
+                ((collocated ? layout : null)?.LCollocationLayoutAlso.GetValueOrDefault(card.LCardDraftId, []) ?? [])
+                is { Count: > 0 } paths
                     ? string.Format(CultureInfo.CurrentCulture, also, string.Join(", ", paths))
                     : string.Empty,
-                (layout?.LCollocationLayoutHome.GetValueOrDefault(card.LCardDraftId, []) ?? []).Count > 0
+                ((collocated ? null : layout)?.LCollocationLayoutHome.GetValueOrDefault(card.LCardDraftId, []) ?? [])
+                .Count > 0
                     ? heading
                     : string.Empty))
             .ToList();

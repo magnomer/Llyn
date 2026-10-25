@@ -27,10 +27,10 @@ A name is lowercase ASCII, starts with a letter and goes on in letters and digit
 The value is everything after the first colon, so `-workspace:C:\Notes` keeps its drive colon.
 A bare word, a double dash, a slash, an equals sign or a capital letter is not an option.
 An abbreviation is an unknown option, since no name is matched by its prefix.
-The verbs are help, version, workspace, find, new, delete, import and export.
+The verbs are help, version, workspace, find, new, delete, import, export and show.
 A second verb is a usage error.
 The qualifiers headword, language, pronunciation, note, to and as need a value.
-So do `-color`, `-format`, `-find`, `-new`, `-delete`, `-import` and `-export`.
+So do `-color`, `-format`, `-find`, `-new`, `-delete`, `-import`, `-export` and `-show`.
 An option given twice is a usage error.
 An empty value counts as missing, since no option here takes empty text.
 `-version`, `-yes`, `-no` and `-quiet` forbid a value.
@@ -38,7 +38,7 @@ An empty value counts as missing, since no option here takes empty text.
 `-format` takes only the output formats, since the export file format belongs to `-as`.
 `-as` takes markup, html, markdown, docx or pdf.
 `-new` takes only `entry`.
-`-delete` and `-export` take an id, a whole number above zero.
+`-delete`, `-export` and `-show` take an id, a whole number above zero.
 `-help` takes no value or one verb's name.
 `-yes` with `-no` is a usage error, since no answer could honour both.
 A missing verb gives the `Invocation.Usage` line.
@@ -53,6 +53,7 @@ Plays the options in typed order, one handler per option that has work of its ow
 It is asynchronous, so the import and export verbs are awaited before the next option.
 Global options and qualifiers have no handler, since the envoy and the verbs read them where needed.
 The presence seam goes to the strict envoy it builds.
+The blueprint is needed only by `-show`, which builds a lectern as the console screen does.
 It returns 1 when the envoy recorded a refusal, else 0.
 
 ## `BInvocationLeased`
@@ -159,6 +160,23 @@ No path with no refusal recorded shows `Invocation.EntryMissing`, so a wrong id 
 
 Prints the path of the exported file on stdout.
 
+## `BInvocationLecternObserve`
+
+Prints the reading view of one entry, so a script reads what the lectern shows.
+It starts the Library as `-find` does and selects the row of the id.
+That opens the entry in the editor's display.
+A lectern is built over that display, so the printed page is the one the console screen draws.
+A row that does not open shows `Invocation.EntryMissing` unless the envoy already recorded a refusal, and the run exits 1.
+The width is the terminal's when stdout is a terminal, else 80 columns, so a pipe gets a stable page.
+The page is built with no glyph sets and plain width.
+So the output holds no wide or special marks beyond the text.
+
+## `BInvocationLecternPrint`
+
+Prints one stdout line per page line, its indent as blanks, then the pieces joined.
+Trailing blanks are trimmed.
+The roles and items of the pieces are dropped, since a pipe has no colour or cursor.
+
 ## `BEnvoyStrict`
 
 Implements `CEnvoy` for strict mode, answering every question without a screen.
@@ -238,7 +256,8 @@ The `[y/N]` mark is a fixed affordance like `llyn: `, so no catalog carries it.
 
 ## Stamp
 
-Commit: `78fc0ebfff7c`
+Commit: `36e31eb71c98`
 - `BEnvoyStrict.cs` `a236d99c43c04fb8`
-- `BInvocation.cs` `2a72663f5acc0cfb`
+- `BInvocation.cs` `840edc585703c77b`
 - `BInvocationGlobal.cs` `af318fc2fd36320e`
+- `BInvocationLectern.cs` `21c2a81e64831e7d`

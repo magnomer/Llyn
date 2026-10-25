@@ -45,6 +45,8 @@ public sealed class CLibrary
         CLibraryPanel.CPanelCleared += () => editor.CEditorEntryOpen(null);
         CLibraryPanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
         editor.CEditorDisplay.CDisplayPanelAttach(CLibraryPanel);
+        atelier.CAtelierMention.CMentionSenseChosen +=
+            id => editor.CEditorDisplay.CDisplayCompass.LCompassSoughtRefine(false, id);
         atelier.CAtelierNavigation.LNavigationTabAdd(
             "Library",
             CLibraryPanel.CPanelLeaveConfirm,
@@ -69,6 +71,16 @@ public sealed class CLibrary
     public CEditor CLibraryEditor { get; }
 
     public CPanel CLibraryPanel { get; }
+
+    public static string CLibraryTitleKey => "Navigation.Library";
+
+    public string CLibrarySearchKey => "List.Search";
+
+    public string CLibrarySeriesKey => "Order";
+
+    public bool CLibraryNewExists => true;
+
+    public bool CLibraryImportExists => true;
 
     internal void LLibraryVistaRestore()
     {

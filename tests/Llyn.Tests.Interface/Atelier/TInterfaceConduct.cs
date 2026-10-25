@@ -25,6 +25,41 @@ internal static class TInterfaceConduct
         static run => run(),
         detached);
 
+    internal static CAtelier TAtelierCreate(LEngine engine, LVistaPort vistas) => new(
+        new LPosture(engine),
+        new LDraftOutlet(engine),
+        TEntryBundleCreate(engine, vistas),
+        new LSettingsOutlet(engine),
+        TPhonologyBundleCreate(engine),
+        TEngineFake.TEngineCreate<LMediaPort>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["LEngineRecordingStop"] = _ => null,
+            ["LEngineLocationRead"] = _ => null,
+            ["LEngineScreenRead"] = _ => null,
+        }),
+        new LPortraitOutlet(engine),
+        static run => run());
+
+    internal static CAtelier TAtelierCreate(LEngine engine, Action<string> opened) => new(
+        new LPosture(engine),
+        new LDraftOutlet(engine),
+        TEntryBundleCreate(engine),
+        new LSettingsOutlet(engine),
+        TPhonologyBundleCreate(engine),
+        TEngineFake.TEngineCreate<LMediaPort>(new Dictionary<string, Func<object?[]?, object?>>
+        {
+            ["LEngineRecordingStop"] = _ => null,
+            ["LEngineLocationRead"] = _ => null,
+            ["LEngineScreenRead"] = _ => null,
+            ["LEngineLocationOpen"] = args =>
+            {
+                opened((string)args![0]!);
+                return null;
+            },
+        }),
+        new LPortraitOutlet(engine),
+        static run => run());
+
     internal static LVista TAtelierVistaStart(this CAtelier atelier, string tab, CCatalogOrder fallback) =>
         atelier.CAtelierVistaStart(tab, CSubject.CSubjectEntry, fallback);
 

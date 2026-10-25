@@ -87,7 +87,8 @@ A hinge click bubbles to the card list and reaches the display's fold gate.
 The gate is told whether the card is a collocation, so the fold is kept under the right kind.
 It is refused while the display has no entry chosen, and the hinge returns to unchecked.
 A click on a "see" line opens the collocation row it names.
-It leaves no fold of that kind stored, and hands its id on for the scroll.
+It leaves no fold of that kind stored, and the display announces the card's part and place as sought.
+The test listens to the compass's sought event, since the driver raises no notice of its own.
 The test folds a collocation first and reads the stored folds back after the click.
 A closed collocation row hides its body and checks its hinge.
 It shows its phrase, its meaning on one line, its flags and its example and "also" markers.
@@ -108,14 +109,16 @@ It raises one notice with the offer and the word start.
 Both water entries are offered, and the route's lead is the text from the word's start to the cursor.
 Escape clears the cursor, and a Right after it paints nothing.
 The route keeps the unit it had, and Enter starts again from the first character.
+The same class covers the card chips.
+A chip of a record never saved is disabled, and a stored chip stays enabled.
 
 ## Stamp
 
-Commit: `8c403d1df768`
+Commit: `36e31eb71c98`
 - `TBerthSeat.cs` `75eb74163de8d120`
 - `TCardHinge.cs` `2430c80151e0f823`
 - `TCardOrdinal.cs` `788665234082c696`
 - `TCardRow.cs` `618531bdc90512ef`
 - `TCaretKey.cs` `6eaf4b7930a95206`
-- `TLecternHinge.cs` `e629303503b96e76`
-- `TLecternWord.cs` `8607f59a4fdb2afa`
+- `TLecternHinge.cs` `392d89024afd2878`
+- `TLecternWord.cs` `a37e00dff71608c1`

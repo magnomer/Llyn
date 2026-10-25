@@ -77,6 +77,8 @@ internal sealed class QNavigation
             QNavigationChosenRefine(tab);
         }
 
+        QNavigationLibrary.SetResourceReference(ContentControl.ContentProperty, CLibrary.CLibraryTitleKey);
+        QNavigationFavorite.SetResourceReference(ContentControl.ContentProperty, CFavorite.CFavoriteTitleKey);
         QNavigationInput.Click += QNavigationObserve;
         QNavigationLibrary.Click += QNavigationObserve;
         QNavigationFavorite.Click += QNavigationObserve;

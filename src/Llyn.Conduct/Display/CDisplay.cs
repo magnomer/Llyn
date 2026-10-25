@@ -92,11 +92,16 @@ public sealed class CDisplay
             phonology.CPhonologyBundleSentence,
             entries.CEntryBundleAncestor,
             settings,
-            envoy);
+            envoy,
+            () => CDisplayCompass!.LCompassShownRefine(),
+            (collocated, id) => CDisplayCompass!.LCompassSoughtRefine(collocated, id));
         CDisplayRoute = new CDisplayRoute(
             LDisplayRule, CDisplayCard, entries.CEntryBundleMention, settings, envoy);
         CDisplayCompass = new CCompass(
             LDisplayRule,
+            CDisplayCard,
+            () => CDisplayShown,
+            () => CDisplayFrequencyHeld,
             entries.CEntryBundleVista,
             entries.CEntryBundleCard,
             settings,
@@ -142,6 +147,8 @@ public sealed class CDisplay
     public CDisplayRoute CDisplayRoute { get; }
 
     public CCompass CDisplayCompass { get; }
+
+    internal CFrequency? CDisplayFrequencyHeld { get; private set; }
 
     internal CRule LDisplayRule { get; }
 
@@ -225,7 +232,15 @@ public sealed class CDisplay
             stamp.Item1,
             LEntryPort.LEngineUnitFormat(draft.LEntryDraftUnit),
             LEntryPort.LEngineFreedomFormat(draft.LEntryDraftFreedom));
+        LDisplayHeldReset();
+        CDisplayCompass.LCompassShownRefine();
         CDisplayOpened?.Invoke();
+    }
+
+    private void LDisplayHeldReset()
+    {
+        CDisplayCard.CDisplayCardReset();
+        CDisplayFrequencyHeld = null;
     }
 
     private (bool, string, string) LDisplayStampRead(long id)
@@ -246,6 +261,8 @@ public sealed class CDisplay
     {
         LDisplayRule.CVoice.CVoiceClear();
         CDisplayShown = _cDisplayBlank;
+        LDisplayHeldReset();
+        CDisplayCompass.LCompassShownRefine();
         CDisplayClosed?.Invoke();
     }
 
@@ -268,6 +285,8 @@ public sealed class CDisplay
     {
         ArgumentNullException.ThrowIfNull(lookup);
 
-        return LDisplayRule.CRuleFrequencyRead(LDisplayRule.CRuleChosen, lookup("Frequency.Once"));
+        CDisplayFrequencyHeld = LDisplayRule.CRuleFrequencyRead(LDisplayRule.CRuleChosen, lookup("Frequency.Once"));
+        CDisplayCompass.LCompassShownRefine();
+        return CDisplayFrequencyHeld;
     }
 }

@@ -115,6 +115,8 @@ Each carries the collocation's id for the click.
 
 One situation, register or tag chip of a reading card.
 It carries the ready chip for the open gate, and the plain text the chip prints.
+A chip of a record never saved is disabled, since the gate has nothing to open for it.
+The console draws the same chip as plain text.
 
 ## `QLeafImage`
 
@@ -142,8 +144,8 @@ Each film row is built as the vignette builds its own.
 
 ## Stamp
 
-Commit: `8c403d1df768`
-- `QLeaf.cs` `4cff50c96c75b087`
+Commit: `36e31eb71c98`
+- `QLeaf.cs` `aacc93d2a1e6e423`
 - `QLeafChip.cs` `afe238a03dea2f47`
 - `QLeafImage.cs` `ebc626cc614700b7`
 - `QLeafItem.cs` `bc21302db5754fab`

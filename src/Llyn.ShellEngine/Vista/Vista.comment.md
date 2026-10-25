@@ -193,12 +193,15 @@ The bulletin leaves the shared gate before notifying readers.
 `LEngineTargetRead` by ids reads stored targets without any draft's court links.
 The owner overload supplements them with the owner's court links, so tentative targets can be named.
 
-`LEngineTranslationRead` keys every top-level meaning and collocation, even without translation targets.
+`LEngineTranslationRead` keys every meaning and collocation, nested ones included, by kind and id, even without translation targets.
+The kind is part of the key since a Meaning and a Collocation may share an id.
 Distinct target ids share one stored read, omitted when no ids exist.
 Storage failures propagate to the caller's failure boundary.
 
-The static `LEngineTranslationResolve` over cards keeps each card's link order and omits targets absent from the read.
-The supplied cards receive dictionary keys even when no links resolve.
+The static `LEngineTranslationResolve` over a draft takes the read as a function.
+So the facade and the tenure each supply their own store read.
+It keeps each card's link order and omits targets absent from the read.
+Every card of the draft receives a dictionary key even when no links resolve.
 
 Missing stored targets are omitted, preventing blank chips.
 
@@ -412,9 +415,9 @@ A link names its entry only through a stored id, so an empty id names nothing.
 
 ## Stamp
 
-Commit: `8c403d1df768`
+Commit: `36e31eb71c98`
 - `LAuthorFacade.cs` `a7c57e4576ed1f96`
-- `LCardFacade.cs` `44b029069be762f1`
+- `LCardFacade.cs` `9bc83163702b0bc8`
 - `LCatalogFacade.cs` `8e6b392a3c145ad5`
 - `LEntryFacade.cs` `5f07c42a75af1bd9`
 - `LExampleFacade.cs` `88a7cb35bf7ce026`

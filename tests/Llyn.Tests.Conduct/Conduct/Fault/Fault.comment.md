@@ -9,6 +9,7 @@ Covers the failure routes of the reading view's reads, on a real workspace with 
 The faked ports answer only the entry load, the collocation layout and a few housekeeping calls.
 So each read meets a refusal and shows its key through the fake envoy.
 The layout answer passes on the link targets the display hands in, and reaches no store.
+Those targets are keyed by card kind and id.
 The tests call reads rather than drawing WPF controls.
 A failed stamp read shows `Display.StampFailed`.
 A failed sentence order read shows `Display.OrderFailed`.
@@ -229,8 +230,8 @@ This arrange step answers the gate call and an optional read-back of the state t
 
 ## Stamp
 
-Commit: `8c403d1df768`
-- `TDisplayFailure.cs` `493a1638fda5b76e`
+Commit: `36e31eb71c98`
+- `TDisplayFailure.cs` `f0c7be12f4b663f4`
 - `TFault.cs` `fa397c15b685eb43`
 - `TFaultList.cs` `e993e6b5885af5a2`
 - `TFaultMark.cs` `49690789b8e6973c`

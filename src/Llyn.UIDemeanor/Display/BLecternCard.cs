@@ -33,12 +33,23 @@ internal sealed class BLecternCard
         _bLecternCardMention = mention;
     }
 
+    internal (CCompassPart, int)? BLecternCardSought { get; set; }
+
     internal void BLecternCardRefine()
     {
         _bLecternCardShown = _bLecternDisplay.CDisplayCard.CDisplayCardRead();
     }
 
-    internal void BLecternCardDraw(
+    internal void BLecternCardClear()
+    {
+        _bLecternCardFold.Clear();
+        _bLecternCardSee.Clear();
+        _bLecternCardChip.Clear();
+        _bLecternCardMention.BLecternMentionClear();
+    }
+
+    internal IReadOnlyDictionary<(CCompassPart, int?), int> BLecternCardDraw(
+        CCompassPart part,
         IReadOnlyDictionary<string, IReadOnlyList<string>> glyphs,
         int width,
         BCanvasWidth measure,
@@ -50,10 +61,7 @@ internal sealed class BLecternCard
         ArgumentNullException.ThrowIfNull(lines);
         ArgumentNullException.ThrowIfNull(meanings);
 
-        _bLecternCardFold.Clear();
-        _bLecternCardSee.Clear();
-        _bLecternCardChip.Clear();
-        _bLecternCardMention.BLecternMentionClear();
+        Dictionary<(CCompassPart, int?), int> places = [];
         CLecternCard shown = _bLecternCardShown;
         Func<CStateWording, string> word = wording => wording.CStateWordingKey is string key
             ? _bLecternCatalog.BLocalizationTextRead(key)
@@ -70,28 +78,34 @@ internal sealed class BLecternCard
             _ = _bLecternCardFold.TryAdd(item, leaf);
             return item;
         };
-        if (shown.CLecternCardDefined)
+        if (part == CCompassPart.CCompassPartMeaning && shown.CLecternCardDefined)
         {
             string heading = _bLecternCatalog.BLocalizationTextRead("Display.MeaningPlural");
             lines.Add(new BLecternLine([(string.Empty, "text", null)], 0));
+            places[(part, null)] = lines.Count;
             lines.Add(new BLecternLine([(heading, "heading", null)], 0));
-            foreach (CLeaf leaf in shown.CLecternCardMeanings)
+            for (int card = 0; card < shown.CLecternCardMeanings.Count; card++)
             {
+                places[(part, card)] = lines.Count;
                 meanings.Add(lines.Count);
-                BLecternLeafDraw(leaf, glyphs, width, measure, word, fold, lines);
+                BLecternLeafDraw(shown.CLecternCardMeanings[card], glyphs, width, measure, word, fold, lines);
             }
         }
 
-        if (shown.CLecternCardCollocated)
+        if (part == CCompassPart.CCompassPartCollocation && shown.CLecternCardCollocated)
         {
             string heading = _bLecternCatalog.BLocalizationTextRead("Display.CollocationOther");
             lines.Add(new BLecternLine([(string.Empty, "text", null)], 0));
+            places[(part, null)] = lines.Count;
             lines.Add(new BLecternLine([(heading, "heading", null)], 0));
-            foreach (CLeaf leaf in shown.CLecternCardOther)
+            for (int card = 0; card < shown.CLecternCardOther.Count; card++)
             {
-                BLecternRowDraw(leaf, 2, glyphs, width, measure, word, fold, lines);
+                places[(part, card)] = lines.Count;
+                BLecternRowDraw(shown.CLecternCardOther[card], 2, glyphs, width, measure, word, fold, lines);
             }
         }
+
+        return places;
     }
 
     internal string? BLecternFoldToggle(string item)
@@ -109,7 +123,7 @@ internal sealed class BLecternCard
     internal string? BLecternSeeOpen(string item)
     {
         (CLeaf leaf, int index) = _bLecternCardSee[item];
-        bool opened = _bLecternDisplay.CDisplayCard.CDisplayFoldToggle(true, leaf.CLeafSee[index].CLeafSeeId, false);
+        bool opened = _bLecternDisplay.CDisplayCard.CDisplaySeeOpen(leaf.CLeafSee[index].CLeafSeeId);
         string fold = "FoldCollocation" + leaf.CLeafSee[index].CLeafSeeId.ToString(CultureInfo.InvariantCulture);
         return opened && _bLecternCardFold.ContainsKey(fold) ? fold : null;
     }
@@ -255,8 +269,14 @@ internal sealed class BLecternCard
         List<(string, string, string?)> chips = [];
         Action<string, string, CLeafChip?, long?> chip = (text, role, origin, target) =>
         {
-            string item = "Chip" + _bLecternCardChip.Count.ToString(CultureInfo.InvariantCulture);
-            _bLecternCardChip.Add(item, (origin, target));
+            string? item = origin is { CLeafChipStored: false }
+                ? null
+                : "Chip" + _bLecternCardChip.Count.ToString(CultureInfo.InvariantCulture);
+            if (item is not null)
+            {
+                _bLecternCardChip.Add(item, (origin, target));
+            }
+
             chips.Add((chips.Count > 0 ? "  " : string.Empty, "text", null));
             chips.Add((text, role, item));
         };

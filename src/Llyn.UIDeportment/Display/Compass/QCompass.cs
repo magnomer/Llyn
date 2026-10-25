@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -23,7 +24,7 @@ public sealed class QCompass
 
     private readonly ObservableCollection<QCompassItem> _qCompassRows = [];
 
-    private readonly List<(CCompassPart, FrameworkElement)> _qCompassSections = [];
+    private readonly Dictionary<CCompassPart, FrameworkElement> _qCompassSections;
 
     private readonly CCompass _qCompassArea;
 
@@ -58,19 +59,17 @@ public sealed class QCompass
         _qCompassCollocations = QContract.QContractFind<ItemsControl>(view, "PDisplayCollocation");
         ToggleButton toggle = QContract.QContractFind<ToggleButton>(view, "PCompassSwitch");
         ItemsControl list = QContract.QContractFind<ItemsControl>(view, "PCompassList");
-        _qCompassSections.Add((CCompassPart.CCompassPartSpeech,
-            QContract.QContractFind<StackPanel>(view, "PDisplaySpeechSection")));
-        _qCompassSections.Add((CCompassPart.CCompassPartFrequency,
-            QContract.QContractFind<StackPanel>(view, "PDisplayFrequencySection")));
-        _qCompassSections.Add((CCompassPart.CCompassPartMeaning,
-            QContract.QContractFind<StackPanel>(view, "PDisplayMeaningSection")));
-        _qCompassSections.Add((CCompassPart.CCompassPartCollocation,
-            QContract.QContractFind<StackPanel>(view, "PDisplayCollocationSection")));
-        _qCompassSections.Add((CCompassPart.CCompassPartIncoming,
-            QContract.QContractFind<StackPanel>(view, "PDisplayIncomingSection")));
-        _qCompassSections.Add((CCompassPart.CCompassPartNote,
-            QContract.QContractFind<StackPanel>(view, "PDisplayNoteSection")));
-
+        _qCompassSections = new()
+        {
+            [CCompassPart.CCompassPartSpeech] = QContract.QContractFind<StackPanel>(view, "PDisplaySpeechSection"),
+            [CCompassPart.CCompassPartFrequency] =
+                QContract.QContractFind<StackPanel>(view, "PDisplayFrequencySection"),
+            [CCompassPart.CCompassPartMeaning] = QContract.QContractFind<StackPanel>(view, "PDisplayMeaningSection"),
+            [CCompassPart.CCompassPartCollocation] =
+                QContract.QContractFind<StackPanel>(view, "PDisplayCollocationSection"),
+            [CCompassPart.CCompassPartIncoming] = QContract.QContractFind<StackPanel>(view, "PDisplayIncomingSection"),
+            [CCompassPart.CCompassPartNote] = QContract.QContractFind<StackPanel>(view, "PDisplayNoteSection"),
+        };
         list.ItemsSource = _qCompassRows;
         _qCompassContents.ScrollChanged += QCompassScrollRefine;
         view.SizeChanged += QCompassSizeRefine;
@@ -78,6 +77,8 @@ public sealed class QCompass
         QContract.QContractFind<QIconImage>(view, "PCompassIcon").QIconSource = QIcon.QIconResolve("compass", 24);
         toggle.IsChecked = _qCompassOpened;
         toggle.Click += QCompassSwitchRefine;
+        area.CCompassSought += (part, index) => _qCompassContents.Dispatcher.BeginInvoke(
+            DispatcherPriority.Loaded, () => QCompassSpotlightRefine(part, index));
     }
 
     public void QCompassRefine()
@@ -93,16 +94,7 @@ public sealed class QCompass
 
     private void QCompassListRefine()
     {
-        List<CCompassPart> parts = [];
-        foreach ((CCompassPart part, FrameworkElement section) in _qCompassSections)
-        {
-            if (section.Visibility == Visibility.Visible)
-            {
-                parts.Add(part);
-            }
-        }
-
-        QCompassRowsRefine(_qCompassArea.CCompassRead(parts, QLocalizationCatalog.QLocalizationTextRead));
+        QCompassRowsRefine(_qCompassArea.CCompassRead(QLocalizationCatalog.QLocalizationTextRead));
         QCompassColumnRefine();
         QCompassCurrentRefine();
     }
@@ -110,6 +102,7 @@ public sealed class QCompass
     private void QCompassRowsRefine(IReadOnlyList<CCompassRow> rows)
     {
         _qCompassRows.Clear();
+        IReadOnlyList<CCompassPart> shown = _qCompassArea.CCompassShown;
         foreach (CCompassRow row in rows)
         {
             FrameworkElement? target = null;
@@ -122,11 +115,11 @@ public sealed class QCompass
             }
             else
             {
-                foreach ((CCompassPart part, FrameworkElement section) in _qCompassSections)
+                foreach (CCompassPart part in shown)
                 {
                     if (part == row.CCompassRowPart)
                     {
-                        target = section;
+                        target = _qCompassSections.GetValueOrDefault(part);
                     }
                 }
             }
@@ -167,29 +160,16 @@ public sealed class QCompass
 
     private void QCompassCurrentRefine()
     {
-        QCompassItem? current = null;
+        int current = CCompass.CCompassLitRead(
+        [
+            .. _qCompassRows.Select(row => (
+                row.QCompassItemMuted,
+                QCompassOffsetDraw(row.QCompassItemTarget) is double top && top <= QCompassEdge)),
+        ]);
 
-        foreach (QCompassItem row in _qCompassRows)
+        for (int index = 0; index < _qCompassRows.Count; index++)
         {
-            if (QCompassOffsetDraw(row.QCompassItemTarget) is not double top)
-            {
-                continue;
-            }
-
-            if (top <= QCompassEdge && !ReferenceEquals(current?.QCompassItemTarget, row.QCompassItemTarget))
-            {
-                current = row;
-            }
-        }
-
-        if (current is null && _qCompassRows.Count > 0)
-        {
-            current = _qCompassRows[0];
-        }
-
-        foreach (QCompassItem row in _qCompassRows)
-        {
-            row.QCompassItemCurrent = ReferenceEquals(row, current);
+            _qCompassRows[index].QCompassItemCurrent = index == current;
         }
     }
 
@@ -229,19 +209,8 @@ public sealed class QCompass
         }
     }
 
-    public void QCompassSpotlightRefine(bool collocated, long id)
+    private void QCompassSpotlightRefine(CCompassPart part, int index)
     {
-        _qCompassContents.Dispatcher.BeginInvoke(
-            DispatcherPriority.Loaded, () => QCompassSpotlightRefine(_qCompassArea.CCompassCardFind(collocated, id)));
-    }
-
-    private void QCompassSpotlightRefine((CCompassPart, int)? place)
-    {
-        if (place is not (CCompassPart part, int index))
-        {
-            return;
-        }
-
         ItemsControl cards = part == CCompassPart.CCompassPartCollocation
             ? _qCompassCollocations
             : _qCompassMeanings;

@@ -10,6 +10,7 @@ Subscription order is the redraw order, so the order of building matters.
 The reflex section precedes the sound section, so a fanqie notice rewrites the anchors first.
 The accent section draws its rows before it loads their flags, so late flags land on drawn rows.
 The card section redraws before the compass, so contents measurements follow the section updates.
+The compass hears the sought event itself, so the lectern wires no spotlight between the card section and the compass.
 `QRoster` is built after the compass because contents clicks need the compass instance.
 Fold notices refresh the card section, sound boxes and reflex hinge together.
 The empty notice and the contents swap on the open and the close alike.
@@ -55,7 +56,7 @@ The supplied hit table chooses the step for each half.
 ## `QLecternCard`
 
 The card driver consumes only the card, route and sound areas, keeping engine records outside presentation.
-Word offers and "see" clicks leave through notices, so the driver needs no window or contents reference.
+Word offers leave through a notice, so the driver needs no window or contents reference.
 Bubbling click and mention handlers cover cards generated inside templates.
 The word event of a sentence starts the keyboard word cursor, and the lectern needs no window for it.
 
@@ -74,10 +75,6 @@ After each move the line redraws its lit word from the route, which holds the cu
 Any other key is left alone.
 A click raises the same notice with no unit, so the menu stands at the click.
 
-### `QLecternSeeNotice`
-
-The lectern hands the notice to the contents spotlight, keeping scrolling outside the card driver.
-
 ### `QLecternLeafRefine`
 
 Clearing each item source before replacement forces templates to redraw even when the length is unchanged.
@@ -95,8 +92,10 @@ The gate verdict goes to `QLook.QLookCheckedRefine`, which puts a refused hinge 
 
 ### `QLecternSeeObserve`
 
-The line always names a collocation, so the gate and the spotlight both receive the collocation flag.
-The notice is raised regardless of the gate verdict, so a refused unfold still requests the contents spotlight.
+The line always names a collocation, so the gate opens it as one.
+The gate unfolds the row and itself announces the card as sought.
+So the click raises no notice of its own.
+A refused unfold answers false and leaves the click unhandled, so no spotlight is requested.
 
 ## `QLecternEntry`
 
@@ -163,10 +162,10 @@ The label column joins the shared `PReadingLabel` width only while its section s
 
 ## Stamp
 
-Commit: `8c403d1df768`
+Commit: `36e31eb71c98`
 - `QGraspStar.cs` `b96249bbb783b9db`
-- `QLectern.cs` `3f54ab28b14b945a`
-- `QLecternCard.cs` `a9fbc005100e07da`
+- `QLectern.cs` `722bac2f594d8991`
+- `QLecternCard.cs` `8d3780431c60b38b`
 - `QLecternEntry.cs` `f13d612b00f01fd0`
 - `QLecternEtymology.cs` `4eac208cc78d309e`
 - `QLecternFrequency.cs` `557735b484228775`

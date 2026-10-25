@@ -261,8 +261,35 @@ public sealed class TEngineLiveryPage
         LLiveryPage page = Assert.IsType<LLiveryPage>(engine.TLiveryRead(entry.LEntryId));
 
         long card = Assert.Single(page.LLiveryPageDraft.LEntryDraftMeanings).LCardDraftId;
-        LTranslationTarget found = Assert.Single(page.LLiveryPageTarget[card]);
+        LTranslationTarget found = Assert.Single(page.LLiveryPageTarget[(LCardKind.LCardKindMeaning, card)]);
         Assert.Equal((target.LEntryId, "부수다"), (found.LTranslationTargetId, found.LTranslationTargetHeadword));
+    }
+
+    [Fact]
+    public void LiveryRead_ChildCardWithStoredTarget_KeepsTarget()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LEntry target = engine.TEngineTranslationCreate("부수다", "Korean");
+        LCardDraft child = TInterface.TCardDraftCreate(
+            string.Empty, string.Empty, "to shatter", [], [], [target.LEntryId], [], [], 1) with
+        {
+            LCardDraftId = TInterface.TIdentityCreate(),
+        };
+        LCardDraft root = TInterface.TCardCreate("to come apart", 1) with
+        {
+            LCardDraftId = TInterface.TIdentityCreate(),
+            LCardDraftChild = [child],
+        };
+        LEntry entry = engine.TEngineEntrySave(
+            TInterface.TEntryDraftCreate("break", "English", string.Empty, string.Empty, [root], []));
+
+        LLiveryPage page = Assert.IsType<LLiveryPage>(engine.TLiveryRead(entry.LEntryId));
+
+        LCardDraft stored = Assert.Single(Assert.Single(page.LLiveryPageDraft.LEntryDraftMeanings).LCardDraftChild);
+        LTranslationTarget found = Assert.Single(
+            page.LLiveryPageTarget[(LCardKind.LCardKindMeaning, stored.LCardDraftId)]);
+        Assert.Equal(target.LEntryId, found.LTranslationTargetId);
     }
 
     [Fact]

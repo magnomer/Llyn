@@ -129,6 +129,23 @@ public sealed class TDraftCommitting
     }
 
     [Fact]
+    public void RequestApply_CollocationSituationPickOnCardZero_LandsOnFirstMeaning()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LSituation situation = engine.TEngineSituationCreate(TInterface.TSituationCreate(0, "in court", null, null));
+        LDraft started = engine.TEngineDraftStart("Input", null);
+
+        LDraft held = engine.TEngineRequestApply(TInterface.TSituationPickCreate(
+            started.LDraftId, 0, situation.LSituationId, 0, LCardKind.LCardKindCollocation));
+
+        LCardDraft first = Assert.Single(held.LDraftContent.LEntryDraftMeanings);
+        Assert.Equal(situation.LSituationId, Assert.Single(first.LCardDraftSituation).LSituationDraftId);
+        Assert.Empty(held.LDraftContent.LEntryDraftCollocations);
+    }
+
+    [Fact]
     public void RequestApply_ExampleOnSentenceZero_LandsOnFirstRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();

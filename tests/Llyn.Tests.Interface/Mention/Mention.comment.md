@@ -8,6 +8,7 @@ It also holds the relays for the text spans mentions cover.
 The relays that run the mention-related reads over failing or scripted ports.
 They build sentence gates whose chip line read fails, or answers any lines a fact hands, and one chip.
 Their draft port finds line keys with the clerk's own rule.
+`TMentionLineFind` relays the clerk's line rule for a sentence on a shown entry draft, child cards included.
 `TMentionLineRead` turns a stored meaning sentence row id into its line key on a desk's held draft.
 They run the shared sense menu read over a scripted draft port.
 They run the corpus, favorites, quotation and occurrence rows reads over failing ports.
@@ -77,6 +78,6 @@ Each relay is transparent.
 
 ## Stamp
 
-Commit: `8c403d1df768`
-- `TInterfaceMention.cs` `7434261212c52a69`
+Commit: `36e31eb71c98`
+- `TInterfaceMention.cs` `4b63e4409f7c872d`
 - `TInterfaceMentionSpan.cs` `8af97bb1443ad468`

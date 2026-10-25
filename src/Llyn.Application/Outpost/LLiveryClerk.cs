@@ -27,7 +27,7 @@ public static class LLiveryClerk
         LParadigmView? inflection,
         IReadOnlyList<LFanqieGroup> fanqie,
         IReadOnlyList<LScriptGroup> script,
-        IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> target,
+        IReadOnlyDictionary<(LCardKind, long), IReadOnlyList<LTranslationTarget>> target,
         IReadOnlyDictionary<long, string> source,
         IReadOnlyList<LUsage> incoming,
         IReadOnlyList<LLineage> lineage,

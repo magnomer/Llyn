@@ -15,6 +15,11 @@ The count goes to the aperture through `CApertureCountSet`, so the empty notice 
 The wings share the library's orderings, so no driver names an engine ordering.
 The window's exit gate runs `LLibraryClose`, which stops the editor and cancels the display's playback.
 Print opens no window when no entry is chosen.
+The title, search and series keys and the new and import flags are fixed here.
+So a driver builds the tab without naming a panel.
+The empty and unmatched notices are the list's own keys.
+A sense chosen through the mention area seeks that meaning on the reading view.
+So the Library tab jumps to a card named by id.
 
 ## `CLibraryEntryCreate`
 
@@ -134,6 +139,6 @@ The side only passes the draft across, so it never keeps it.
 
 ## Stamp
 
-Commit: `fe7e11daae88`
-- `CLibrary.cs` `b458f56088ad4b77`
+Commit: `36e31eb71c98`
+- `CLibrary.cs` `d35b55da46bb6e5a`
 - `CWing.cs` `1e096be3dc635adc`

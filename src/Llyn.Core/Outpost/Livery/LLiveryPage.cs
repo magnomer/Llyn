@@ -20,7 +20,7 @@ public sealed record LLiveryPage(
     LParadigmView? LLiveryPageInflection,
     IReadOnlyList<LFanqieGroup> LLiveryPageFanqie,
     IReadOnlyList<LScriptGroup> LLiveryPageScript,
-    IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> LLiveryPageTarget,
+    IReadOnlyDictionary<(LCardKind, long), IReadOnlyList<LTranslationTarget>> LLiveryPageTarget,
     IReadOnlyDictionary<long, string> LLiveryPageSource,
     IReadOnlyList<LUsage> LLiveryPageIncoming,
     IReadOnlyList<LLineage> LLiveryPageLineage,

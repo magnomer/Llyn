@@ -172,7 +172,7 @@ public sealed class TLecternHinge
     }
 
     [Fact]
-    public void LecternSeeClick_FoldedRow_OpensRowAndNoticesItsId()
+    public void LecternSeeClick_FoldedRow_OpensRowAndRaisesItsPlace()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -188,7 +188,8 @@ public sealed class TLecternHinge
         engine.TEngineFoldSave(water.LEntryId, LCardKind.LCardKindCollocation, card);
         CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), true);
         wing.CWingEntryOpen(water.LEntryId);
-        long? noticed = null;
+        List<(CCompassPart, int)> sought = [];
+        wing.CWingDisplay.CDisplayCompass.CCompassSought += (part, place) => sought.Add((part, place));
         IReadOnlySet<(LCardKind, long)>? folded = null;
 
         TCardHinge.TCardHingeRun(() =>
@@ -200,8 +201,7 @@ public sealed class TLecternHinge
             surface.Children.Add(new StackPanel { Name = "PDisplayMeaningSection" });
             surface.Children.Add(new ItemsControl { Name = "PDisplayCollocation" });
             surface.Children.Add(new StackPanel { Name = "PDisplayCollocationSection" });
-            TInterfaceDeportment.TLecternSeeAttach(
-                TInterfaceDeportment.TLecternCardCreate(wing.CWingDisplay, surface), id => noticed = id);
+            _ = TInterfaceDeportment.TLecternCardCreate(wing.CWingDisplay, surface);
             meanings.ItemsSource = new[] { TInterfaceDeportment.TLeafSeeCreate(card, "→ set off see 1") };
             TCardHinge.TCardHingeSettle(surface);
             ContentPresenter container = (ContentPresenter)meanings.ItemContainerGenerator.ContainerFromIndex(0);
@@ -212,7 +212,7 @@ public sealed class TLecternHinge
         });
 
         Assert.Empty(folded!);
-        Assert.Equal(card, noticed);
+        Assert.Equal([(CCompassPart.CCompassPartCollocation, 0)], sought);
     }
 
     [Fact]

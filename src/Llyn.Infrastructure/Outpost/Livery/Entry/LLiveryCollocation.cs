@@ -68,7 +68,7 @@ internal static class LLiveryCollocation
             }
 
             sheet.Append("</summary>\n\n");
-            LLiveryCard.LLiveryFieldAppend(sheet, page, row, note);
+            LLiveryCard.LLiveryFieldAppend(sheet, page, row, LCardKind.LCardKindCollocation, note);
             LLiveryCard.LLiveryBodyAppend(sheet, page, row, note);
             sheet.Append("</details>\n\n");
         }

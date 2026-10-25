@@ -11,6 +11,7 @@ The helper also stores that language in the engine, so the run reads the same la
 The whole run executes through `TConsoleFake.TConsoleFakeRun`, which gives the loop a thread of its own and a time limit.
 The synchronization context is restored on that thread after the run.
 Each grammar error asserts its sentence, exit 2 and an empty stdout.
+The help listing counts the `-show` line, so every later line moves down by one.
 The grammar cases include the write and export verbs, their qualifiers, the id forms and the missing `-to`.
 The build seam throws in those cases, so exit 2 also proves the workspace never opened.
 The verbs assert their stdout lines and exit 0, and a refused move exits 1.
@@ -33,6 +34,15 @@ A missing id exits 1 with the missing-entry sentence and keeps the other entries
 Each leased option exits 3 with the busy sentence when another engine holds the lease.
   Those are `-new`, `-delete`, `-import` and `-workspace` with a value.
 The entry stays in that case, as a find confirms.
+
+## `TInvocationLectern`
+
+Covers `-show` through the whole console start, with a real workspace.
+`-show` prints the entry's reading view on stdout, from the headword through the meanings to the note.
+It exits 0 with nothing on stderr.
+Every printed line is free of trailing blanks, so a script compares lines exactly.
+`-help:show` prints the one line for the verb.
+A missing id exits 1 with the missing-entry sentence and prints nothing on stdout.
 
 ## `TInvocationPortrait`
 
@@ -68,8 +78,9 @@ A failure prints its sentence even under `-quiet`, and an omission then prints n
 
 ## Stamp
 
-Commit: `cb8ab7e8feb4`
+Commit: `36e31eb71c98`
 - `TEnvoyStrict.cs` `36a77c55fd844082`
-- `TInvocation.cs` `f6d2b8972a2a575b`
+- `TInvocation.cs` `42aa50b5b7cfc622`
+- `TInvocationLectern.cs` `f30b793190565dfc`
 - `TInvocationPortrait.cs` `6dd3a46182199551`
 - `TInvocationWrite.cs` `5731f47f567fa54d`

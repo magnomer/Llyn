@@ -38,7 +38,7 @@ public sealed class CFavorite
             _cFavoriteSettingsPort,
             atelier.CAtelierEntryBundle.CEntryBundleVista,
             "Favorite.LoadFailed", "Scribe", editor.CEditorDesk.LDeskChangeCheck, editor.LEditorFinish,
-            shownSeam);
+            shownSeam, "Favorite.Empty", "List.Unmatched");
         CFavoritePanel.CPanelCleared += () => editor.CEditorEntryOpen(null);
         CFavoritePanel.CPanelEdited += id => editor.CEditorEntryOpen(id);
         editor.CEditorDisplay.CDisplayPanelAttach(CFavoritePanel);
@@ -66,6 +66,14 @@ public sealed class CFavorite
     public CEditor CFavoriteEditor { get; }
 
     public CPanel CFavoritePanel { get; }
+
+    public static string CFavoriteTitleKey => "Navigation.Favorite";
+
+    public string CFavoriteSearchKey => "Favorite.Search";
+
+    public string CFavoriteSeriesKey => "Series";
+
+    public bool CFavoriteNewExists => false;
 
     internal void LFavoriteVistaRestore()
     {
@@ -128,20 +136,21 @@ public sealed class CFavorite
 
     public IReadOnlyList<CVistaRow> CFavoriteRowsRead()
     {
-        if (CFavoritePanel.CPanelAperture.CApertureVista is not LVista vista)
-        {
-            return [];
-        }
-
+        IReadOnlyList<CVistaRow> rows;
         try
         {
-            return _cFavoritePort.LEngineFavoriteFind(vista).Select(CCatalog.LCatalogRowRead).ToList();
+            rows = CFavoritePanel.CPanelAperture.CApertureVista is LVista vista
+                ? _cFavoritePort.LEngineFavoriteFind(vista).Select(CCatalog.LCatalogRowRead).ToList()
+                : [];
         }
         catch (Exception exception)
         {
             CLedger.LLedgerFailureShow(_cFavoriteEnvoy, _cFavoriteSettingsPort, "Favorite.LoadFailed", exception);
-            return [];
+            rows = [];
         }
+
+        CFavoritePanel.CPanelAperture.CApertureCountSet(rows.Count);
+        return rows;
     }
 
     public Task<CEnsignSheet<IReadOnlyList<CVistaRow>>> CFavoriteRowsLoad(

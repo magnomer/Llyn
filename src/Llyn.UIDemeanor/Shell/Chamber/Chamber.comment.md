@@ -15,8 +15,12 @@ It holds the window's state and routes each key, and `BMural` turns that state i
 It delegates the rest, so each piece has one reason to change.
 `BWardrobe` holds the look choices, `BDocket` the open boxes, `BKeymapWindow` the key table and `BEstablishment` the status line.
 `BMirror` holds the Conduct state the roof shows and the roof built from it.
-`BLibrary` is built when the window opens with an atelier.
-It is the panel while the Library tab is in front.
+Two `BLibrary` panels are built when the window opens with an atelier.
+One serves the Library tab and one the Favorite tab.
+The Favorite panel is the same panel made over the favorite listing.
+The panel is the one named by the tab in front.
+Each panel asks whether it is the shown one.
+So the roof's library menus and every key lookup follow the shown panel, never a panel that is hidden.
 The layout comes from the `AWindow` blueprint, and the window only fills the parts it names.
 The constructor finds `AWindow`, then `ASParley`, which help and the other boxes use.
 The mural it builds then finds the parts it draws.
@@ -30,8 +34,9 @@ The courier exists only with an atelier, so a refused start has no Joplin items.
 ## `BWindowOpen`
 
 Reads the size and observes it.
-With an atelier it builds the library panel.
-It subscribes to navigation changes, which tell it whether the Library tab is in front.
+With an atelier it builds the two panels.
+It subscribes to navigation changes, which tell it which tab is in front.
+A tab with no panel leaves no panel shown.
 A state without a tab only refreshes the voyage, and the shown panel stays.
 It then subscribes to arrivals, has `BMirrorOpen` subscribe the mirrored state, then subscribes to establishment changes.
 Each subscription but the arrival one and the workspace-open one comes through `BObserverCreate`, so it runs on the loop's thread.
@@ -57,20 +62,21 @@ The canvas takes the wardrobe's ambiguous-width setting, so a wide choice change
 Draws and syncs the frame once when anything marked it changed since the last batch.
 A size, a key and an arrival each mark it.
 So do an establishment and a mirrored state change.
+It first folds the `AIndex` part when the shown panel reads the whole entry, so the lectern takes the room.
 It hands `BMuralDraw` the size, the focus, the roof, the navigation and the courier state.
 It adds the boxes, the panel's texts from `BLibrary`, the glyphs, the marks, its key lookup and the width measure.
 Without a mark no frame is built, so a burst of keys costs one frame.
 
 ## `BWindowKeyObserve`
 
-The key is looked up in the window's table, then the library's, at the current focus.
-At the lectern focus a key neither binds falls back to the same lookup at the window focus.
+The key is looked up in the window's table, then the shown panel's, at the current focus.
+At the lectern focus a key neither binds falls back to the same two lookups at the window focus.
 A found row runs its action only while its live state is shown, so a dim row does nothing.
 At a box or help focus, a key the table lacks goes to the top box.
 At the window, roof and lectern focus, such a key goes to the roof.
 The frame is marked changed when the roof used the key.
 At the window focus, a key neither table nor roof took goes to the library panel.
-That holds only while the Library tab is in front.
+That holds only while a panel is shown.
 At the notice focus, every key without a row does nothing.
 The frame is marked changed after a key that reaches a box.
 Quit goes through the atelier's quit confirmation, and only a yes completes the exit task.
@@ -83,10 +89,10 @@ Hands the box to the docket, which runs it.
 ## `BWindowHelpShow`
 
 Opens help as a box with one Close button, for the focus that asked.
-For each page, help reads the window's rows of that page's focus, then the library's, then the roof's rows.
+For each page, help reads the window's rows of that page's focus, then the shown panel's, then the roof's rows.
 It adds the rows of the box with the same focus, or else the top box.
 Those rows list the body's keys first.
-The window page also reads the library's lectern rows, so help lists the reading view's keys.
+The window page also reads the shown panel's lectern rows, so help lists the reading view's keys.
 The window page reads no box, since it is not about one.
 The box has the help focus, so its own rows are the keys inside help.
 
@@ -98,8 +104,8 @@ Without an atelier or a navigation state it does nothing.
 
 ## `BWindowKeymapFind`
 
-The legend looks in the window's table first, then in the library's.
-At the lectern focus it looks in the library's table first, then repeats the search at the window focus.
+The legend looks in the window's table first, then in the shown panel's.
+At the lectern focus it looks in the panel's table first, then repeats the search at the window focus.
 Then it looks in the roof's, then in the top box's table.
 
 ## `BMirror`
@@ -290,7 +296,7 @@ The legend sits on the last row at column 0.
 
 ## Stamp
 
-Commit: `cb8ab7e8feb4`
+Commit: `36e31eb71c98`
 - `BDocket.cs` `2f1ab27227907c41`
 - `BEstablishment.cs` `f0b09dc75cb89774`
 - `BKeymapWindow.cs` `ac57c5af4fc27418`
@@ -299,4 +305,4 @@ Commit: `cb8ab7e8feb4`
 - `BNavigation.cs` `c45d372cb6483331`
 - `BNotice.cs` `7a5f8cc1b48d424d`
 - `BWardrobe.cs` `3aa4f791074e68eb`
-- `BWindow.cs` `92575b1cb6b8b9e5`
+- `BWindow.cs` `e9268338577006f7`

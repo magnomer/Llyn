@@ -146,6 +146,8 @@ Before any change arrives, the tab whose panel the markup shows is marked.
 A change hides the tabs the session does not offer, marks the open tab and shows only its panel.
 A state with no open tab leaves the panels and the marked tab as they are.
 The icons are resolved here and set as the look's icon, which the tab style copies.
+The Library and Favorite tab captions take their title keys from Conduct.
+So the tab and its panel word the title alike.
 `Alt+Left` steps back and `Alt+Right` steps forward, each through one voyage gate.
 With Alt held the key arrives as a system key, so the arrow is read off `SystemKey`.
 The key binding is the GUI's own, so it stays here.
@@ -205,11 +207,11 @@ Device pixels become layout units first, so a scaled display still lands the win
 
 ## Stamp
 
-Commit: `78fc0ebfff7c`
+Commit: `36e31eb71c98`
 - `QCaption.cs` `a94cfc236ad84fe3`
 - `QEnvoy.cs` `c603997dffa036fe`
 - `QHeadquarter.cs` `eff4f717bc13c623`
-- `QNavigation.cs` `e0176c86a339c36b`
+- `QNavigation.cs` `7470d827236035a6`
 - `QPanelRoster.cs` `7d2d7adf6ae30d16`
 - `QWindow.cs` `2a23b08f87db77ad`
 - `QWindowScreen.cs` `eb76a072e3a88c02`

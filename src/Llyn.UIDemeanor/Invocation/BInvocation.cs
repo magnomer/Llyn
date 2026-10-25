@@ -55,6 +55,7 @@ internal sealed class BInvocation
             bool? isVerb = name switch
             {
                 "help" or "version" or "workspace" or "find" or "new" or "delete" or "import" or "export" => true,
+                "show" => true,
                 "yes" or "no" or "quiet" or "color" or "format" => false,
                 "headword" or "language" or "pronunciation" or "note" or "to" or "as" => false,
                 _ => null,
@@ -64,18 +65,18 @@ internal sealed class BInvocation
                 _ when isVerb is null => "Invocation.Unknown",
                 ("version" or "yes" or "no" or "quiet", not null) => "Invocation.ValueForbidden",
                 ("color" or "format" or "find" or "new" or "delete", null) => "Invocation.ValueMissing",
-                ("import" or "export" or "to" or "as", null) => "Invocation.ValueMissing",
+                ("import" or "export" or "show" or "to" or "as", null) => "Invocation.ValueMissing",
                 ("headword" or "language" or "pronunciation" or "note", null) => "Invocation.ValueMissing",
                 (_, "") => "Invocation.ValueMissing",
                 ("color", not ("auto" or "always" or "never")) => "Invocation.ValueUnknown",
                 ("format", not ("text" or "tsv" or "json")) => "Invocation.ValueUnknown",
                 ("as", not ("markup" or "html" or "markdown" or "docx" or "pdf")) => "Invocation.ValueUnknown",
                 ("new", not "entry") => "Invocation.ValueUnknown",
-                ("delete" or "export", _)
+                ("delete" or "export" or "show", _)
                     when !long.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out long id)
                     || id == 0 => "Invocation.ValueUnknown",
                 ("help", not (null or "help" or "version" or "workspace" or "find" or "new" or "delete"
-                    or "import" or "export")) => "Invocation.ValueUnknown",
+                    or "import" or "export" or "show")) => "Invocation.ValueUnknown",
                 _ => null,
             };
             fault ??= seen.Add(name) ? null : "Invocation.Repeat";
@@ -119,11 +120,13 @@ internal sealed class BInvocation
     }
 
     internal async Task<int> BInvocationRun(
-        CAtelier atelier, BConsole console, BLocalizationCatalog catalog, Func<string, bool> presence)
+        CAtelier atelier, BConsole console, BLocalizationCatalog catalog, BBlueprint blueprint,
+        Func<string, bool> presence)
     {
         ArgumentNullException.ThrowIfNull(atelier);
         ArgumentNullException.ThrowIfNull(console);
         ArgumentNullException.ThrowIfNull(catalog);
+        ArgumentNullException.ThrowIfNull(blueprint);
 
         BEnvoyStrict envoy = new(console, catalog, this, presence);
         foreach ((string name, string? value) in _bInvocationOptions)
@@ -156,6 +159,15 @@ internal sealed class BInvocation
                     await BInvocationExportObserve(
                         long.Parse(value!, NumberStyles.None, CultureInfo.InvariantCulture), atelier, envoy, console);
                     break;
+                case "show":
+                    CLibrary reading = CLibrary.CLibraryCreate(
+                        atelier, static () => false, envoy, BObserver.BObserverCreate<Action>(static run => run()));
+                    BInvocationLectern.BInvocationLecternObserve(
+                        long.Parse(value!, NumberStyles.None, CultureInfo.InvariantCulture), reading.CLibraryPanel,
+                        new BLectern(catalog, reading.CLibraryEditor.CEditorDisplay, atelier, static () => { },
+                            static () => false, static (_, _) => null, BContract.BContractBlueprintFind(blueprint,
+                            "ASParley"), static () => new BCanvasWidth(false)), envoy, console);
+                    break;
             }
         }
 
@@ -171,7 +183,7 @@ internal sealed class BInvocation
     {
         string[] names =
         [
-            "help", "version", "workspace", "find", "new", "delete", "import", "export",
+            "help", "version", "workspace", "find", "new", "delete", "import", "export", "show",
             "headword", "language", "pronunciation", "note", "to", "as",
             "yes", "no", "quiet", "color", "format",
         ];
@@ -193,6 +205,7 @@ internal sealed class BInvocation
                 "delete" => "Invocation.HelpDelete",
                 "import" => "Invocation.HelpImport",
                 "export" => "Invocation.HelpExport",
+                "show" => "Invocation.HelpShow",
                 "headword" => "Invocation.HelpHeadword",
                 "language" => "Invocation.HelpLanguage",
                 "pronunciation" => "Invocation.HelpPronunciation",

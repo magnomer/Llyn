@@ -78,7 +78,7 @@ public sealed class CEntry
             _cEntryDesk.LDeskRepaintRead(
                 _cEntryNoticed,
                 () => new LQuillChip(held, _cEntryDraftPort).LQuillTranslationRead(draft.LDraftContent),
-                new Dictionary<long, IReadOnlyList<LTranslationTarget>>(),
+                new Dictionary<(LCardKind, long), IReadOnlyList<LTranslationTarget>>(),
                 ".FindFailed"),
             LEntryFoldRead(),
             _cEntryMediaPort,

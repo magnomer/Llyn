@@ -27,6 +27,28 @@ public sealed class TMentionFinding
     }
 
     [Fact]
+    public void MentionLineFind_ChildCardSentence_AnswersItsLine()
+    {
+        LDraft held = TInterface.TDraftNestedCreate("Input", "kindle");
+        LCardDraft meaning = held.LDraftContent.LEntryDraftMeanings[0];
+        LSentenceDraft sentence = meaning.LCardDraftSentence[0] with
+        {
+            LSentenceDraftId = TInterface.TIdentityCreate(),
+        };
+        LCardDraft child = meaning with
+        {
+            LCardDraftId = TInterface.TIdentityCreate(),
+            LCardDraftSentence = [sentence],
+        };
+        LEntryDraft shown = held.LDraftContent with
+        {
+            LEntryDraftMeanings = [meaning with { LCardDraftChild = [child] }],
+        };
+
+        Assert.Equal(2, TInterfaceMention.TMentionLineFind(shown, sentence));
+    }
+
+    [Fact]
     public void MentionFind_TwoHomographEntries_ReturnsBothInHeadwordOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();

@@ -1,3 +1,4 @@
+using Llyn.Conduct;
 using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
@@ -77,6 +78,42 @@ public sealed class TLecternEtymology
         TLecternCard.TLecternCardRun(
             static (_, save) => save("brook", [TInterface.TCardCreate("a small stream", 1)]),
             static (_, rows, _, _, _) => Assert.DoesNotContain("Etymology", rows()));
+    }
+
+    [Fact]
+    public void LecternDraw_PageOrder_FollowsTheCompass()
+    {
+        Dictionary<CCompassPart, string> headings = new()
+        {
+            [CCompassPart.CCompassPartMeaning] = "Meanings",
+            [CCompassPart.CCompassPartIncoming] = "Links here",
+            [CCompassPart.CCompassPartEtymology] = "Etymology",
+            [CCompassPart.CCompassPartNote] = "Note",
+        };
+        TLecternCard.TLecternCardRun(
+            static (engine, save) =>
+            {
+                long brook = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+                    "brook", "English", string.Empty, "Last words.", [TInterface.TCardCreate("a small stream", 1)], [])
+                    with
+                    {
+                        LEntryDraftAncestors = [TInterface.TAncestorDraftCreate(-1, null, null, "brōc", "Old English")],
+                    }).LEntryId;
+                _ = save(
+                    "zebra", [TInterface.TCardCreate("a striped horse", 1) with { LCardDraftTranslation = [brook] }]);
+            },
+            (_, rows, _, _, _) =>
+            {
+                List<string> shown = [.. rows()];
+
+                Assert.Equal(
+                    CCompass.CCompassOrder.Where(headings.ContainsKey).Select(part => headings[part]),
+                    shown.Where(headings.ContainsValue));
+                Assert.True(
+                    shown.FindIndex(static row => row.StartsWith("Created", StringComparison.Ordinal))
+                    > shown.IndexOf("Note"));
+            },
+            height: 80);
     }
 
     private static void TLecternEtymologySave(LEngine engine, string gloss)

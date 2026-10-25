@@ -59,8 +59,6 @@ public sealed class QLecternCard
 
     internal event Action<QMention, CMentionOffer?, int?>? QLecternMentionNotice;
 
-    internal event Action<long>? QLecternSeeNotice;
-
     public void QLecternExampleRefine()
     {
         QFontFace.QFontExampleRefine(
@@ -117,8 +115,7 @@ public sealed class QLecternCard
 
         if (QSender.QSenderSourceRead<QLeafSee>(e) is QLeafSee see)
         {
-            e.Handled = _qLecternCardArea.CDisplayFoldToggle(true, see.QLeafSeeId, false);
-            QLecternSeeNotice?.Invoke(see.QLeafSeeId);
+            e.Handled = _qLecternCardArea.CDisplaySeeOpen(see.QLeafSeeId);
         }
     }
 

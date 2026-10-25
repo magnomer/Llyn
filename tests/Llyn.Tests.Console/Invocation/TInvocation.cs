@@ -86,13 +86,14 @@ public sealed class TInvocation
         int code = TInvocationRun(console, workspace, "-help");
 
         Assert.Equal(0, code);
-        Assert.Equal(20, console.TConsoleFakeOutput.Count);
+        Assert.Equal(21, console.TConsoleFakeOutput.Count);
         Assert.Equal(
             "Run llyn with one verb and any further options, each written as -name or -name:value.",
             console.TConsoleFakeOutput[0]);
         Assert.Equal("-version        Prints the version line.", console.TConsoleFakeOutput[2]);
-        Assert.Equal("-to             Names the file that -export writes.", console.TConsoleFakeOutput[13]);
-        Assert.Equal("-no             Answers no to every question.", console.TConsoleFakeOutput[16]);
+        Assert.StartsWith("-show           Prints", console.TConsoleFakeOutput[9], StringComparison.Ordinal);
+        Assert.Equal("-to             Names the file that -export writes.", console.TConsoleFakeOutput[14]);
+        Assert.Equal("-no             Answers no to every question.", console.TConsoleFakeOutput[17]);
         Assert.Empty(console.TConsoleFakeError);
     }
 

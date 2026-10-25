@@ -304,7 +304,9 @@ public abstract class BBlueprint
 
         bool across = part.BBlueprintPartAcross;
         int[] sizes = BBlueprintTrack.BBlueprintTrackDivide(
-            tracks, (across ? width : height) - (rule * (tracks.Count - 1)));
+            [.. tracks.Select((track, index) =>
+                index < children.Count && children[index].BBlueprintPartFolded ? new BBlueprintTrack(0, 0) : track)],
+            (across ? width : height) - (rule * (tracks.Count - 1)));
         int at = across ? column : row;
         List<int> rules = [];
         for (int index = 0; index < sizes.Length; index++)

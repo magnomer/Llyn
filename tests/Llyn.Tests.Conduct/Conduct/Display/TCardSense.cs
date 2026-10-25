@@ -94,9 +94,12 @@ public sealed class TCardSense
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CDisplay display = new TEditorFixture(TInterfaceEditor.TEditorCreate(engine)).TEditorFixtureDisplay;
         display.LDisplayRule.CVoice.TDisplaySoundShow(7, TCompassDraftCreate([41], [42], [42]));
+        display.CDisplayCard.CDisplayCardRead();
 
-        IReadOnlyList<CCompassRow> rows = display.CDisplayCompass.CCompassRead(
-            [CCompassPart.CCompassPartMeaning, CCompassPart.CCompassPartCollocation], static key => key);
+        IReadOnlyList<CCompassRow> rows = display.CDisplayCompass.CCompassRead(static key => key)
+            .Where(static row => row.CCompassRowPart is CCompassPart.CCompassPartMeaning
+                or CCompassPart.CCompassPartCollocation)
+            .ToList();
 
         Assert.Equal([0, 1, 2, 1, 2], rows.Select(static row => row.CCompassRowDepth));
         Assert.Equal([null, 0, 0, 1, 1], rows.Select(static row => row.CCompassRowCard));
@@ -115,9 +118,11 @@ public sealed class TCardSense
         using LEngine engine = workspace.TWorkspaceEngineStart();
         CDisplay display = new TEditorFixture(TInterfaceEditor.TEditorCreate(engine)).TEditorFixtureDisplay;
         display.LDisplayRule.CVoice.TDisplaySoundShow(7, TCompassDraftCreate([41], [42]));
+        display.CDisplayCard.CDisplayCardRead();
 
-        IReadOnlyList<CCompassRow> rows = display.CDisplayCompass.CCompassRead(
-            [CCompassPart.CCompassPartMeaning], static key => key);
+        IReadOnlyList<CCompassRow> rows = display.CDisplayCompass.CCompassRead(static key => key)
+            .Where(static row => row.CCompassRowPart == CCompassPart.CCompassPartMeaning)
+            .ToList();
 
         Assert.Equal(
             ["Display.CollocationHeading", "Display.CollocationHeading"],
@@ -206,9 +211,10 @@ public sealed class TCardSense
                     LCardDraftSense = [41, 42, 41],
                 },
             ]);
-        Dictionary<long, IReadOnlyList<LTranslationTarget>> targets = new()
+        Dictionary<(LCardKind, long), IReadOnlyList<LTranslationTarget>> targets = new()
         {
-            [51] = [new(1, "들다", "Korean"), new(2, "시작되다", "Korean"), new(3, "s'installer", "French")],
+            [(LCardKind.LCardKindCollocation, 51)] =
+                [new(1, "들다", "Korean"), new(2, "시작되다", "Korean"), new(3, "s'installer", "French")],
         };
 
         LCollocationLayout layout = engine.TEngineCollocationRead(draft, targets);
@@ -217,6 +223,81 @@ public sealed class TCardSense
         Assert.Equal(["Korean", "French"], layout.LCollocationLayoutFlag[51]);
         Assert.Equal(2, layout.LCollocationLayoutExample[51]);
         Assert.Equal(["2"], layout.LCollocationLayoutAlso[51]);
+    }
+
+    [Fact]
+    public void DisplayCardRead_MeaningSharingCollocationId_TakesNoCollocationMarkers()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        CDisplay display = new TEditorFixture(TInterfaceEditor.TEditorCreate(engine)).TEditorFixtureDisplay;
+        LEntryDraft draft = TInterface.TEntryDraftCreate(
+            "set",
+            "English",
+            string.Empty,
+            string.Empty,
+            [
+                TInterface.TCardDraftCreate("to place", string.Empty, "a state", [], [], [], [], [], 1, 41),
+                TInterface.TCardDraftCreate("to harden", string.Empty, "a change", [], [], [], [], [], 2, 51),
+            ],
+            [
+                TInterface.TCardDraftCreate(
+                    "set in",
+                    string.Empty,
+                    string.Empty,
+                    [TInterfaceExample.TSentenceDraftCreate("Winter set in.")],
+                    [], [], [], [], 1, 51) with
+                {
+                    LCardDraftSense = [41],
+                },
+            ]);
+        display.LDisplayRule.CVoice.TDisplaySoundShow(7, draft);
+
+        CLecternCard card = display.CDisplayCard.CDisplayCardRead();
+
+        CLeaf twin = card.CLecternCardMeanings[1];
+        Assert.Equal(51, twin.CLeafId);
+        Assert.Empty(twin.CLeafPhrase.CStateWordingText);
+        Assert.Empty(twin.CLeafExample);
+        CLeaf home = Assert.Single(card.CLecternCardMeanings[0].CLeafCollocation);
+        Assert.Equal("set in", home.CLeafPhrase.CStateWordingText);
+    }
+
+    [Fact]
+    public void DisplayCardRead_MeaningSharingCollocationId_KeepsEachTranslation()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LEntry eau = engine.TEngineEntrySave(TInterface.TEntryDraftCreate("eau", "French", "", "", [], []));
+        LEntry wasser = engine.TEngineEntrySave(TInterface.TEntryDraftCreate("Wasser", "German", "", "", [], []));
+        CDisplay display = new TEditorFixture(TInterfaceEditor.TEditorCreate(engine)).TEditorFixtureDisplay;
+        LEntryDraft draft = TInterface.TEntryDraftCreate(
+            "water",
+            "English",
+            string.Empty,
+            string.Empty,
+            [
+                TInterface.TCardDraftCreate("a liquid", string.Empty, string.Empty, [], [], [], [], [], 1, 51) with
+                {
+                    LCardDraftTranslation = [eau.LEntryId],
+                },
+            ],
+            [
+                TInterface.TCardDraftCreate("still water", string.Empty, string.Empty, [], [], [], [], [], 1, 51) with
+                {
+                    LCardDraftTranslation = [wasser.LEntryId],
+                },
+            ]);
+        display.LDisplayRule.CVoice.TDisplaySoundShow(7, draft);
+
+        CLecternCard card = display.CDisplayCard.CDisplayCardRead();
+
+        Assert.Equal(
+            eau.LEntryId,
+            Assert.Single(Assert.Single(card.CLecternCardMeanings).CLeafTranslation).CTranslationTargetId);
+        CLeaf other = Assert.Single(card.CLecternCardOther);
+        Assert.Equal(wasser.LEntryId, Assert.Single(other.CLeafTranslation).CTranslationTargetId);
+        Assert.Equal(["German"], other.CLeafFlag);
     }
 
     private static LEntryDraft TCompassDraftCreate(params long[][] senses)

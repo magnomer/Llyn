@@ -266,6 +266,54 @@ public sealed class TDisplayCard
     }
 
     [Fact]
+    public void DisplaySeeOpen_FoldedCollocation_UnfoldsItAndRaisesItsPlace()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        LEntry water = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "water", "English", string.Empty, string.Empty,
+            [TInterface.TCardCreate("a liquid", 1)], [TInterface.TCardCreate("still water", 1)]));
+        long card = engine.TEngineEntryLoad(water.LEntryId)!.LEntryDraftCollocations[0].LCardDraftId;
+        engine.TEngineFoldSave(water.LEntryId, LCardKind.LCardKindCollocation, card);
+        CWing wing = TDisplayWingPrepare(atelier, []);
+        wing.CWingEntryOpen(water.LEntryId);
+        List<(CCompassPart, int)> sought = [];
+        wing.CWingDisplay.CDisplayCompass.CCompassSought += (part, place) => sought.Add((part, place));
+
+        bool opened = wing.CWingDisplay.CDisplayCard.CDisplaySeeOpen(card);
+
+        Assert.True(opened);
+        Assert.Empty(engine.TEngineFoldRead(water.LEntryId));
+        Assert.Equal([(CCompassPart.CCompassPartCollocation, 0)], sought);
+    }
+
+    [Fact]
+    public void MentionSenseChosen_LibraryEntryOpened_RaisesTheSensePlace()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        LEntry water = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "water", "English", string.Empty, string.Empty,
+            [TInterface.TCardCreate("a liquid", 1), TInterface.TCardCreate("a sea", 2)], []));
+        long sense = engine.TEngineEntryLoad(water.LEntryId)!.LEntryDraftMeanings
+            .Single(static card => card.LCardDraftPosition == 2).LCardDraftId;
+        CLibrary library = CLibrary.CLibraryCreate(
+            atelier, static () => true, TEnvoyFake.TEnvoyCreate(false, []), static run => run());
+        library.TLibraryVistaRestore();
+        List<(CCompassPart, int)> sought = [];
+        library.CLibraryEditor.CEditorDisplay.CDisplayCompass.CCompassSought +=
+            (part, place) => sought.Add((part, place));
+
+        _ = TInterfaceMention.TMentionResultOpen(
+            atelier, new CMentionResult(2, new CMentionMark(water.LEntryId, sense), []), "a cat");
+
+        Assert.Equal("water", library.CLibraryEditor.CEditorDisplay.CDisplayShown.CLecternHeadword);
+        Assert.Equal([(CCompassPart.CCompassPartMeaning, 1)], sought);
+    }
+
+    [Fact]
     public void MentionFind_ShownEntryChanged_FindsNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

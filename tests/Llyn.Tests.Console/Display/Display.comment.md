@@ -32,6 +32,8 @@ A refused fold, or a row hidden under a folded card, keeps the see line lit.
 A digit lights that Meaning's header, and a digit past the last Meaning changes nothing.
 Enter on a translation opens the target entry, and a deleted target shows no link.
 An unlinked collocation folds to a closed row holding its phrase, definition peek and example count.
+A collocation's fold is stored apart from a meaning's, so the refused-fold case breaks the collocation fold table.
+The door can take its own atelier builder, so a case can observe what the atelier opens.
 
 ## `TLecternCardRun`
 
@@ -43,6 +45,19 @@ A script may run on the workspace after the tab opens, to break a table for a fa
 A notice text makes a helper close any dialog that shows it, as a user would.
 Each step runs work on the loop, lets the loop drain what the work posted, then draws the frame.
 
+## `TLecternCompass`
+
+Covers the contents dialog and the full view of the reading side.
+Alt and F3 opens the dialog over the page, listing the shown sections with each card under its number.
+The row lit on opening is the one for the page top, so scrolling to a Meaning lights that Meaning.
+Down moves the lit row and Enter closes the dialog, scrolls to the row and lights the card's header.
+Escape closes the dialog and moves nothing.
+A part the entry does not hold, such as a note or Other collocations, has no row.
+An Other collocation lists under its own heading.
+F3 widens the reading side over the whole window.
+F3 again gives the index back, and so does Escape.
+Enter on a see line far above scrolls to the row it names and lights its header.
+
 ## `TLecternEtymology`
 
 Covers the etymology section of the reading view.
@@ -51,6 +66,19 @@ A box shows its language, text, gloss and relation, and a borrowed ancestor carr
 Enter on a box that links an entry opens that entry.
 A long gloss wraps in the text column and keeps the tree trunk beside each wrapped row.
 An entry with no etymology draws no heading.
+The page order of the meaning, links, etymology and note headings follows the compass's page order.
+The stamps come after the note.
+
+## `TLecternNote`
+
+Covers the note section of the reading view.
+Every block kind keeps its own look and role, with a rule under a first-level heading.
+A long code line is cut at the width and never wrapped.
+Enter on a note link opens its address through the atelier and keeps the link lit.
+The foot shows the address.
+A scheme the page refuses draws as plain text, gets no item and opens nothing.
+A drawn item opens the address read when it was drawn.
+An entry with no note draws no heading.
 
 ## `TLecternHeader`
 
@@ -76,8 +104,12 @@ A video whose file is gone shows its name, the missing mark and its span in the 
 Conduct resolves no address for a file that is gone, which is the GUI's rule for drawing no preview.
 The driver checks no file, and Enter on that line does nothing.
 Enter on a see line lights the target Meaning.
-A tag or situation chip routes to Taxonomy or Repertoire, which the console has no panel for.
-So navigation refuses it and the entry stays open with the chip lit.
+A stored tag or situation chip routes to Taxonomy or Repertoire.
+With no panel for that tab, navigation refuses it and the entry stays open with the chip lit.
+With the Taxonomy panel built, Enter opens that tab and Alt and Left comes back to the entry.
+Following a translation and pressing Alt and Left also returns to the entry that held the link.
+A chip of a record never saved is no item, so Down never lights it.
+The test strips the situation's id through a wrapped vista port, to make that record unsaved.
 
 ## `TLecternMention`
 
@@ -87,6 +119,7 @@ Left and Right step one text element, and Control with an arrow jumps to a word 
 A Chinese sentence with no spaces steps one character at a time.
 Escape leaves the cursor, keeps the line lit, and Enter starts it again from the first character.
 Enter on a word held by one entry opens that entry and asks nothing.
+A Mention stored with a Meaning scrolls to that Meaning's card, far below, and lights its header.
 A stored Mention opens its entry without a menu, even when other entries share the headword.
 Leaving the sentence with Down and coming back with Up does not bring the cursor back.
 Opening another entry whose item has the same name drops the cursor.
@@ -105,11 +138,13 @@ Showing an absent offer or an offer with no entries opens no box at all.
 
 ## Stamp
 
-Commit: `8c403d1df768`
+Commit: `36e31eb71c98`
 - `TLectern.cs` `d4aae2072b528891`
-- `TLecternCard.cs` `7d68406a05439905`
-- `TLecternEtymology.cs` `15a281b7d55640c7`
+- `TLecternCard.cs` `3b2d6ba56615809a`
+- `TLecternCompass.cs` `87a0faa08413743a`
+- `TLecternEtymology.cs` `b501ad96e7386141`
 - `TLecternHeader.cs` `fe35c98740c71504`
-- `TLecternIncoming.cs` `e1210568240b314b`
-- `TLecternMention.cs` `0b79af8ed9fcc6e1`
+- `TLecternIncoming.cs` `bbbeec854e35affb`
+- `TLecternMention.cs` `c7b1cf0a550975dd`
 - `TLecternMentionMenu.cs` `49dfccbd5a869061`
+- `TLecternNote.cs` `7b4b709f751b5368`

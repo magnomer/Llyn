@@ -94,7 +94,7 @@ internal static class LLiveryCard
             sheet.Append(LLiveryLink.LLiveryMentionFormat(meaning, [], note)).Append("\n\n");
         }
 
-        LLiveryFieldAppend(sheet, page, card, note);
+        LLiveryFieldAppend(sheet, page, card, LCardKind.LCardKindMeaning, note);
         for (int place = 0; place < card.LCardDraftChild.Count; place++)
         {
             LCardDraft child = card.LCardDraftChild[place];
@@ -110,7 +110,7 @@ internal static class LLiveryCard
     }
 
     internal static void LLiveryFieldAppend(
-        StringBuilder sheet, LLiveryPage page, LCardDraft card, Func<long, string> note)
+        StringBuilder sheet, LLiveryPage page, LCardDraft card, LCardKind kind, Func<long, string> note)
     {
         List<string> situations = [];
         foreach (LSituationDraft situation in card.LCardDraftSituation)
@@ -126,7 +126,7 @@ internal static class LLiveryCard
         }
 
         LLiveryBadgeAppend(sheet, "llyn-register", registers);
-        LLiveryTargetAppend(sheet, page, card, note);
+        LLiveryTargetAppend(sheet, page, card, kind, note);
     }
 
     internal static void LLiveryBodyAppend(
@@ -214,9 +214,10 @@ internal static class LLiveryCard
     }
 
     private static void LLiveryTargetAppend(
-        StringBuilder sheet, LLiveryPage page, LCardDraft card, Func<long, string> note)
+        StringBuilder sheet, LLiveryPage page, LCardDraft card, LCardKind kind, Func<long, string> note)
     {
-        if (!page.LLiveryPageTarget.TryGetValue(card.LCardDraftId, out IReadOnlyList<LTranslationTarget>? targets)
+        if (!page.LLiveryPageTarget.TryGetValue(
+                (kind, card.LCardDraftId), out IReadOnlyList<LTranslationTarget>? targets)
             || targets.Count == 0)
         {
             return;

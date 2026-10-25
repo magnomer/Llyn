@@ -16,8 +16,6 @@ internal sealed class QDisplay
         _qDisplaySurface = surface;
     }
 
-    internal QLectern QDisplayLectern { get; private set; } = null!;
-
     private ScrollViewer QDisplayContents =>
         QContract.QContractFind<ScrollViewer>(_qDisplaySurface, "PDisplayContents");
 
@@ -42,7 +40,6 @@ internal sealed class QDisplay
         display.CDisplayOpened += QDisplaySwath.QSwathClear;
         display.CDisplayClosed += QDisplaySwath.QSwathClear;
         QLectern lectern = new(_qDisplaySurface, display, atelier, envoy);
-        QDisplayLectern = lectern;
         lectern.QLecternCard.QLecternMentionNotice += mentionMenu.QMentionOfferRefine;
         volume.QVolumeSliderAttach(_qDisplaySurface);
     }

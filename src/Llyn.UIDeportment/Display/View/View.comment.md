@@ -64,7 +64,7 @@ It builds the lectern that paints the page.
 It never loads a draft and never decides which entry is shown.
 Its constructor wires nothing, so the view stays inert until it is introduced.
 The lectern's sections pull and wire their own parts, so this class only joins the lectern to the window.
-The lectern is kept for the library's navigation, which reaches for card spotlights.
+The lectern is not kept, since a card spotlight now comes from the compass's own sought event.
 
 ### `QDisplayIntroduce`
 
@@ -99,8 +99,8 @@ The click is subscribed once.
 
 ## Stamp
 
-Commit: `cb8ab7e8feb4`
-- `QDisplay.cs` `f3277a1a27e96246`
+Commit: `36e31eb71c98`
+- `QDisplay.cs` `7f7d0c14cec5fecc`
 - `QDisplayCommand.cs` `7955796f874e383d`
 - `QGrasp.cs` `ae1cdd497f3e620a`
 - `QRoster.cs` `6a992ddf19fac54d`

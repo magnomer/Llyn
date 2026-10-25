@@ -121,10 +121,15 @@ public sealed class TCardMention
         desk.CDeskVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
         desk.CDeskStart(run.LEntryId);
         LEntryDraft content = desk.TDeskRead()!.LDraftContent;
-        Dictionary<long, IReadOnlyList<LTranslationTarget>> targets = [];
-        foreach (LCardDraft card in content.LEntryDraftMeanings.Concat(content.LEntryDraftCollocations))
+        Dictionary<(LCardKind, long), IReadOnlyList<LTranslationTarget>> targets = [];
+        foreach (LCardDraft card in content.LEntryDraftMeanings)
         {
-            targets[card.LCardDraftId] = [];
+            targets[(LCardKind.LCardKindMeaning, card.LCardDraftId)] = [];
+        }
+
+        foreach (LCardDraft card in content.LEntryDraftCollocations)
+        {
+            targets[(LCardKind.LCardKindCollocation, card.LCardDraftId)] = [];
         }
 
         CEntryDraft shown = TInterfaceConductCard.TCardEntryRead(content, targets);

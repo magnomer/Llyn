@@ -8,7 +8,7 @@ They cover its etymology map, card links and folds, grasp, markdown note, Mentio
 The slice for a shown entry's card links and stored card folds.
 `LCardFacade` implements it.
 Incoming links include both card kinds, with epithets chosen by settings.
-Top-level meanings and collocations each receive a translation key, even without resolved targets.
+Every meaning and collocation, nested ones included, receives a translation key of its kind and id, even without resolved targets.
 Missing targets are omitted rather than rendered as blank chips.
 `LEngineCollocationRead` places each collocation of the shown draft for the reading view and its compass.
 Homes, stubs, the other list and each row's phrase and markers come in one answer.
@@ -88,9 +88,9 @@ The dependence labels and particles are those already saved in the language's ex
 
 ## Stamp
 
-Commit: `8c403d1df768`
+Commit: `36e31eb71c98`
 - `LAncestorPort.cs` `7e9777eb958ef99c`
-- `LCardPort.cs` `4754481e29621576`
+- `LCardPort.cs` `e802c362adf7b971`
 - `LEntryPort.cs` `45ee82ac8d86cff5`
 - `LGraspPort.cs` `9099a47b67179e94`
 - `LMarkdownPort.cs` `d966d5c1e2a4e15c`

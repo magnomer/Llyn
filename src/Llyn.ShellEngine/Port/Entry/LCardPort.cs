@@ -7,10 +7,11 @@ public interface LCardPort
 {
     IReadOnlyList<LUsage> LEngineIncomingRead(long entryId);
 
-    IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> LEngineTranslationRead(LEntryDraft shown);
+    IReadOnlyDictionary<(LCardKind, long), IReadOnlyList<LTranslationTarget>> LEngineTranslationRead(
+        LEntryDraft shown);
 
     LCollocationLayout LEngineCollocationRead(
-        LEntryDraft shown, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets);
+        LEntryDraft shown, IReadOnlyDictionary<(LCardKind, long), IReadOnlyList<LTranslationTarget>> targets);
 
     IReadOnlySet<(LCardKind, long)> LEngineFoldRead(long entryId);
 

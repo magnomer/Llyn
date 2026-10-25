@@ -240,7 +240,7 @@ public sealed class BBootstrap
             try
             {
                 run.SetResult(await invocation.BInvocationRun(
-                    atelier, _bBootstrapConsole, _bBootstrapCatalog, presenceSeam));
+                    atelier, _bBootstrapConsole, _bBootstrapCatalog, _bBootstrapBlueprint, presenceSeam));
             }
             catch (Exception exception)
             {

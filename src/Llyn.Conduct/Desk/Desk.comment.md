@@ -153,7 +153,7 @@ It hands each field edit to a quill.
 A desk that holds no tenure or fills its view takes no edit.
 
 `CEntryDraftChanged` carries the content the desk prepared, never a second read of the draft.
-The chip quill resolves the cards' link targets for that same content.
+The chip quill resolves the cards' link targets for that same content, keyed by card kind and id.
 Each card also carries its stored fold and whether it can fold.
 Each sentence of a card carries its line key, which `LEntryDraftRead` asks the draft port for.
 `LEntryDraftRead` is the one shaping, used by both the prepared draft and the fold bulletin, so the two never drift.
@@ -292,12 +292,12 @@ The subject maps through `CCatalog.LCatalogSubjectRead`, so a subject it does no
 
 ## Stamp
 
-Commit: `8c403d1df768`
+Commit: `36e31eb71c98`
 - `CDesk.cs` `9f036c7e380e9b97`
 - `CDeskChronicle.cs` `fc6b9a85af7d4b71`
 - `CDeskDraft.cs` `a573193758b55776`
 - `CEditor.cs` `efc620f117523040`
-- `CEntry.cs` `e31c3a9b2544d976`
+- `CEntry.cs` `b002c6eb80602df8`
 - `CErrand.cs` `8f73391eb2be162b`
 - `CEsteem.cs` `b08f4e56adee1280`
 - `CSession.cs` `b50233150aac7538`

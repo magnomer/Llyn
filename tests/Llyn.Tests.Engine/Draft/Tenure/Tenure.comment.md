@@ -77,6 +77,8 @@ Saving an entry back exactly as loaded records no revision.
 An empty revision would move the workspace pointer and wake every panel for nothing.
 Card zero means the first Meaning card, and sentence zero the first sentence row of that card.
 The engine makes them when the draft has none.
+A situation pick naming card zero by the collocation kind still lands on the first Meaning card.
+It adds no collocation, since the kind cannot send a pick to a card the draft lacks.
 A stored sentence is history like a stored entry, so the round records a revision naming it.
 
 ## `TEstablishment.cs`
@@ -141,11 +143,11 @@ The kept read answers null.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `36e31eb71c98`
 - `TChronicle.cs` `47fd8579113e846b`
 - `TDraft.cs` `8490b5283bb57a47`
 - `TDraftCancelling.cs` `8e5113e3e3f1289b`
-- `TDraftCommitting.cs` `4030d1ada52d263e`
+- `TDraftCommitting.cs` `6cd5dee712aff104`
 - `TEstablishment.cs` `7c95814d06051070`
 - `TTenureLanguage.cs` `e4c5c6b4324fd3df`
 - `TTenureObserver.cs` `48226af69615022a`

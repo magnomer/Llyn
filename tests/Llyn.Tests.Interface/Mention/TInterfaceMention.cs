@@ -36,6 +36,9 @@ internal static class TInterfaceMention
                 .Single(sentence => sentence.LSentenceDraftId == row));
     }
 
+    internal static long TMentionLineFind(LEntryDraft shown, LSentenceDraft sentence) =>
+        LMentionClerk.LMentionLineFind(shown, sentence);
+
     internal static CSentence TSentenceLineCreate(
         LEngine engine, CDesk desk, CEnvoy envoy, IReadOnlyDictionary<long, IReadOnlyList<LMentionLabel>>? lines)
     {

@@ -6,7 +6,9 @@ Conduct supplies wording and row structure, while the driver resolves visible se
 ## `QCompass`
 
 Row rebuilding waits for dispatcher priority Loaded, allowing card containers to exist before targets are resolved.
-Only sections with visible local visibility are offered to Conduct.
+The driver offers Conduct no section list, since Conduct holds the shown parts and lists rows for those alone.
+The driver only maps each shown part to its section panel by name.
+A part with no panel here, the etymology and the stamp, resolves no target and so gets no row.
 Rows without a resolved target are omitted rather than retaining an unusable navigation entry.
 
 The open state lives in `_qCompassOpened`, so positioning does not read the toggle's checked state.
@@ -18,15 +20,16 @@ Offsets are measured from current target geometry rather than cached across layo
 Hidden targets, detached targets and failed ancestor transforms supply no offset.
 Navigation then leaves the scroll unchanged.
 
-The current row is the last distinct target at or above `QCompassEdge`.
-A row sharing the current target does not replace it, preserving the first row for that anchor.
-When no target qualifies, the first resolved row is selected.
+The current row is the one `CCompass.CCompassLitRead` names.
+It reads each row's muted flag and whether its target stands at or above `QCompassEdge`.
+The console contents reads the same rule, so both views light the same row.
+A muted heading row is never current, and when no target qualifies the first unmuted row is.
 
 Row navigation and card spotlighting share the same scroll helper and `QCompassLead` offset.
-Spotlighting waits for layout, resolves the card through Conduct and animates only a generated container.
-The caller says whether the id names a collocation row or a meaning card.
-The lookup is by card kind and id.
-The lectern's see notice always names a collocation.
+Spotlighting starts from the compass's sought event, which Conduct raises with the part and the card place.
+It waits for layout and animates only a generated container.
+The driver no longer resolves the card, so a stale id finds no place and moves nothing.
+The lectern's see notice and the Library reach it through the same event.
 
 ## `QCompassItem`
 
@@ -37,6 +40,6 @@ An unchanged current value raises no event.
 
 ## Stamp
 
-Commit: `8c403d1df768`
-- `QCompass.cs` `f58cb411885a5b2e`
+Commit: `36e31eb71c98`
+- `QCompass.cs` `c645021bb1068ef7`
 - `QCompassItem.cs` `45e54ad36956b2ae`

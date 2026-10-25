@@ -34,8 +34,13 @@ The list draws nothing under 3 cells wide or 4 high.
 
 ## `BLibrary`
 
-The tab itself, joining a `BIndex` to a `CLibrary`.
-The `CLibrary` is created here with the shown test.
+The tab itself, joining a `BIndex` to a browse panel.
+The Library tab creates a `CLibrary` here with the shown test.
+The Favorite tab hands in a `CFavorite` builder instead, and shares every other line of the tab.
+So the panel, editor, keys, row loads and wording all arrive from the owner.
+This class names no panel type in its body.
+The order wording takes the owner's series key, so the favorites tab words its orders apart from the Library.
+The first four orders take Ctrl with F3 to F6.
 So keys, menus and drawing go quiet when this tab is not shown.
 Each verdict comes from `CPanel` or the desk draft.
 Whether a key row is live, dim or hidden is read from them on every call.
@@ -50,6 +55,8 @@ Ctrl with F3 onward orders by each order in turn, Ctrl+F7 opens the order choose
 F2, F4, F7 and F8 are save, edit or view, new and delete.
 Save, edit and delete show dim when the desk draft or the panel will not allow them.
 New and view never show dim.
+New is absent when the owner offers no new entry.
+Import is absent when it offers no import, so the Favorite tab shows neither.
 The two F4 rows share a key, and only one is shown at a time.
 Each key row calls the changed callback after its action.
 `BLibraryObserve` calls it after every key it hands to the list.
@@ -60,6 +67,8 @@ The order chooser closes itself on a choice, by completing the task it hands to 
 The language chooser has no such task, so it stays until the user closes it.
 The language list is whatever the last load on workspace open returned.
 The tab owns a `BLectern`, the reading view, in the display part while the viewer shows.
+It hands the lectern the whole atelier, not only its navigation.
+So the lectern can open a note from the page.
 With no entry open the reading view draws the select prompt.
 The tab holds which side has the keys, the index or the reading side.
 The reading side holds the keys only while the tab is shown, the viewer shows and that side is chosen.
@@ -67,14 +76,21 @@ The reading side holds the keys only while the tab is shown, the viewer shows an
 Tab hands the keys to the reading side while the viewer shows, and Tab there hands them back.
 The index draws as focused only while it has the keys.
 F6 toggles the favourite mark, live only while the viewer shows and an entry is open.
+The toggle can drop the row from a favorites list, so the index settles its lit row around it.
+The settle keeps the lit row on its entry while the entry stays.
+Else it lights the row now at that place.
 As in the GUI, only an opened entry moves anything.
 Opening a row resets the reading view and gives it the keys.
 Enter on the index thus hands the focus to the reading side.
 The focus stays on the index while the scribe shows.
 A row that only stayed gives the reading side nothing.
+F3 widens the reading view to the whole tab, and gives it the keys.
+The index then draws nothing, and Tab no longer hands the keys back.
+F3 or Escape on the reading side narrows it back.
+The whole view counts only while the tab is shown and the viewer shows.
 
 ## Stamp
 
-Commit: `cb8ab7e8feb4`
-- `BIndex.cs` `7c395af6d6242090`
-- `BLibrary.cs` `72d32a63c719bc4c`
+Commit: `36e31eb71c98`
+- `BIndex.cs` `39d19828d017f18a`
+- `BLibrary.cs` `c110b4a72a0844fb`

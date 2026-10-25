@@ -22,9 +22,13 @@ internal sealed class BLectern
 
     private readonly BLecternEtymology _bLecternEtymology;
 
+    private readonly BLecternNote _bLecternNote;
+
     private readonly Action _bLecternChanged;
 
     private readonly List<int> _bLecternMeaning = [];
+
+    private readonly Dictionary<(CCompassPart, int?), int> _bLecternPart = [];
 
     private IReadOnlyList<BLecternLine> _bLecternFrame = [];
 
@@ -36,10 +40,12 @@ internal sealed class BLectern
 
     private (int, int)? _bLecternAnchor;
 
+    private (int, int) _bLecternEdge;
+
     internal BLectern(
         BLocalizationCatalog catalog,
         CDisplay display,
-        CNavigation navigation,
+        CAtelier atelier,
         Action changed,
         Func<bool> focused,
         Func<BSParley, Task?, int?> docket,
@@ -48,20 +54,22 @@ internal sealed class BLectern
     {
         ArgumentNullException.ThrowIfNull(catalog);
         ArgumentNullException.ThrowIfNull(display);
-        ArgumentNullException.ThrowIfNull(navigation);
+        ArgumentNullException.ThrowIfNull(atelier);
         ArgumentNullException.ThrowIfNull(changed);
         ArgumentNullException.ThrowIfNull(focused);
 
+        CNavigation navigation = atelier.CAtelierNavigation;
         _bLecternCatalog = catalog;
         _bLecternDisplay = display;
         _bLecternChanged = changed;
-        _bLecternHeader = new BLecternHeader(catalog, display);
+        _bLecternHeader = new BLecternHeader(catalog, display, changed);
         _bLecternMention = new BLecternMention(
             catalog, display, navigation, () => _bLecternLit, () => _bLecternAnchor, focused, changed, docket, parley,
             measure);
         _bLecternCard = new BLecternCard(catalog, display, _bLecternMention);
         _bLecternIncoming = new BLecternIncoming(catalog, display.CDisplayCard, navigation);
         _bLecternEtymology = new BLecternEtymology(catalog, display, changed);
+        _bLecternNote = new BLecternNote(catalog, atelier);
 
         const BKeymapFocus lectern = BKeymapFocus.BKeymapFocusLectern;
         Func<string?, Func<BKeymapLive>> lit = item => () =>
@@ -81,30 +89,30 @@ internal sealed class BLectern
             _bLecternChanged();
         };
         Func<BKeymapLive> fold = owned(_bLecternCard.BLecternFoldCheck);
-        const string press = "Window.Help.Press";
+        Func<Func<string, string?>, Func<string?, bool>, BKeymapRow> press = (open, check) =>
+            new(ConsoleKey.Enter, 0, lectern, "Window.Help.Press", follow(open), owned(check));
+        Action<ConsoleKeyInfo> contents = _ =>
+        {
+            BSCompass.BSCompassShow(
+                catalog, parley, docket, display.CDisplayCompass, _bLecternPart, _bLecternTop, BLecternLineShow,
+                _bLecternEdge, measure());
+            changed();
+        };
         BLecternKeymap = new BKeymap(
         [
             new(ConsoleKey.Enter, 0, lectern, "Favorite.Mark", BLecternFavoriteToggle, heart),
             new(ConsoleKey.Spacebar, 0, lectern, "Card.Fold", follow(_bLecternCard.BLecternFoldToggle), fold),
             new(ConsoleKey.Enter, 0, lectern, "Card.Fold", follow(_bLecternCard.BLecternFoldToggle), fold),
-            new(ConsoleKey.Enter, 0, lectern, press, follow(_bLecternCard.BLecternSeeOpen),
-                owned(_bLecternCard.BLecternSeeCheck)),
-            new(ConsoleKey.Enter, 0, lectern, press, follow(_bLecternCard.BLecternChipOpen),
-                owned(_bLecternCard.BLecternChipCheck)),
-            new(ConsoleKey.Enter, 0, lectern, press, follow(_bLecternHeader.BLecternGlyphOpen),
-                owned(_bLecternHeader.BLecternGlyphCheck)),
-            new(ConsoleKey.Enter, 0, lectern, press, follow(_bLecternIncoming.BLecternIncomingOpen),
-                owned(_bLecternIncoming.BLecternIncomingCheck)),
-            new(ConsoleKey.Enter, 0, lectern, press, follow(_bLecternEtymology.BLecternEtymologyOpen),
-                owned(_bLecternEtymology.BLecternEtymologyCheck)),
+            press(_bLecternCard.BLecternSeeOpen, _bLecternCard.BLecternSeeCheck),
+            press(_bLecternCard.BLecternChipOpen, _bLecternCard.BLecternChipCheck),
+            press(_bLecternHeader.BLecternGlyphOpen, _bLecternHeader.BLecternGlyphCheck),
+            press(_bLecternIncoming.BLecternIncomingOpen, _bLecternIncoming.BLecternIncomingCheck),
+            press(_bLecternEtymology.BLecternEtymologyOpen, _bLecternEtymology.BLecternEtymologyCheck),
+            press(_bLecternNote.BLecternNoteOpen, _bLecternNote.BLecternNoteCheck),
             .. _bLecternMention.BLecternMentionKeymap.BKeymapRead(lectern),
-            .. Enumerable.Range(0, 9).Select(index => new BKeymapRow(
-                ConsoleKey.D1 + index,
-                0,
-                lectern,
-                "Display.Meaning",
-                BLecternMeaningObserve,
-                held(() => index < _bLecternMeaning.Count))),
+            .. Enumerable.Range(0, 9).Select(index => new BKeymapRow(ConsoleKey.D1 + index, 0, lectern,
+                "Display.Meaning", BLecternMeaningObserve, held(() => index < _bLecternMeaning.Count))),
+            new(ConsoleKey.F3, ConsoleModifiers.Alt, lectern, "Contents.Title", contents, read),
             new(ConsoleKey.LeftArrow, 0, lectern, "Grasp.Mark", BLecternGraspMove, stars),
             new(ConsoleKey.RightArrow, 0, lectern, "Grasp.Mark", BLecternGraspMove, stars),
             new(ConsoleKey.UpArrow, 0, lectern, "Window.Help.Item", BLecternObserve, read),
@@ -115,22 +123,17 @@ internal sealed class BLectern
             new(ConsoleKey.End, 0, lectern, "Window.Help.Scroll", BLecternObserve, read),
         ]);
 
-        display.CDisplayOpened += BLecternFavoriteRefine;
-        display.CDisplayOpened += BLecternGraspRefine;
-        display.CDisplayOpened += BLecternFrequencyRefine;
-        display.CDisplayClosed += BLecternFavoriteRefine;
-        display.CDisplayClosed += BLecternGraspRefine;
-        display.CDisplayClosed += BLecternFrequencyRefine;
-        display.CDisplayFrequencyChanged += BLecternFrequencyRefine;
-        display.CDisplayGrasp.CDisplayFavoriteChanged += BLecternFavoriteRefine;
-        display.CDisplayGrasp.CDisplayGraspChanged += BLecternGraspRefine;
-
+        display.CDisplayCompass.CCompassSought += (part, place) =>
+        {
+            _bLecternCard.BLecternCardSought = (part, place);
+            changed();
+        };
+        display.CDisplayOpened += _bLecternIncoming.BLecternIncomingRefine;
+        display.CDisplayOpened += _bLecternHeader.BLecternGlyphRefine;
         display.CDisplayOpened += BLecternCardRefine;
-        display.CDisplayOpened += BLecternIncomingRefine;
-        display.CDisplayOpened += BLecternGlyphRefine;
+        display.CDisplayClosed += _bLecternIncoming.BLecternIncomingRefine;
+        display.CDisplayClosed += _bLecternHeader.BLecternGlyphRefine;
         display.CDisplayClosed += BLecternCardRefine;
-        display.CDisplayClosed += BLecternIncomingRefine;
-        display.CDisplayClosed += BLecternGlyphRefine;
         display.CDisplayFoldChanged += _ => BLecternCardRefine();
 
         Func<Action, Action<CBulletin>> resonate = run => BObserver.BObserverCreate<CBulletin>(_ => run());
@@ -187,12 +190,19 @@ internal sealed class BLectern
 
         _bLecternPage = Math.Max(1, height - 1);
         _bLecternFrame = BLecternPageBuild(glyphs, width, measure);
+        _bLecternEdge = (row, column + width);
         BLecternScroll(_bLecternTop);
-        if (_bLecternLit is string kept && BLecternItemsRead().All(found => found.Item1 != kept))
+        if (_bLecternCard.BLecternCardSought is (CCompassPart, int) place
+            && _bLecternPart.TryGetValue(place, out int found))
         {
-            _bLecternLit = null;
+            string? kept = _bLecternLit;
+            BLecternLineShow(found);
+            _bLecternLit = BLecternItemsRead().Any(item => item.Item1 == kept
+                && BLecternShownCheck(item.Item2)) ? kept : _bLecternLit;
         }
 
+        _bLecternCard.BLecternCardSought = null;
+        _bLecternLit = BLecternItemsRead().Any(item => item.Item1 == _bLecternLit) ? _bLecternLit : null;
         _bLecternAnchor = null;
         int last = Math.Min(_bLecternFrame.Count, _bLecternTop + _bLecternPage);
         for (int at = _bLecternTop; at < last; at++)
@@ -220,7 +230,9 @@ internal sealed class BLectern
         {
             string ellipsis = glyphs.GetValueOrDefault("Ellipsis") is [string trail, ..] ? trail : "~";
             string shown = measure.BCanvasWidthShorten(
-                _bLecternMention.BLecternMentionRead(glyphs) ?? _bLecternHeader.BLecternFootRead(_bLecternLit),
+                _bLecternMention.BLecternMentionRead(glyphs)
+                    ?? _bLecternNote.BLecternNoteRead(_bLecternLit)
+                    ?? _bLecternHeader.BLecternFootRead(_bLecternLit),
                 width,
                 ellipsis);
             texts.Add(new BCanvasText(row + height - 1, column, measure.BCanvasWidthResolve(shown), shown, "muted"));
@@ -257,62 +269,22 @@ internal sealed class BLectern
 
     private void BLecternMeaningObserve(ConsoleKeyInfo key)
     {
-        int line = _bLecternMeaning[key.Key - ConsoleKey.D1];
-        BLecternScroll(line);
-        _bLecternLit = _bLecternFrame[line].BLecternLinePieces
-            .Select(static piece => piece.BLecternLineItem)
-            .FirstOrDefault(static item => item is not null);
+        BLecternLineShow(_bLecternMeaning[key.Key - ConsoleKey.D1]);
         _bLecternChanged();
+    }
+
+    private void BLecternLineShow(int line)
+    {
+        BLecternScroll(line);
+        _bLecternLit = BLecternItemsRead()
+            .Where(found => found.Item2 >= line)
+            .Select(static found => found.Item1)
+            .FirstOrDefault();
     }
 
     private void BLecternCardRefine()
     {
         _bLecternCard.BLecternCardRefine();
-        _bLecternChanged();
-    }
-
-    private void BLecternIncomingRefine()
-    {
-        _bLecternIncoming.BLecternIncomingRefine();
-        _bLecternChanged();
-    }
-
-    private void BLecternGlyphRefine()
-    {
-        _bLecternHeader.BLecternGlyphRefine();
-        _bLecternChanged();
-    }
-
-    private void BLecternFavoriteRefine(CBulletin bulletin)
-    {
-        BLecternFavoriteRefine();
-    }
-
-    private void BLecternGraspRefine(CBulletin bulletin)
-    {
-        BLecternGraspRefine();
-    }
-
-    private void BLecternFrequencyRefine(CBulletin bulletin)
-    {
-        BLecternFrequencyRefine();
-    }
-
-    private void BLecternFavoriteRefine()
-    {
-        _bLecternHeader.BLecternFavoriteRefine();
-        _bLecternChanged();
-    }
-
-    private void BLecternGraspRefine()
-    {
-        _bLecternHeader.BLecternGraspRefine();
-        _bLecternChanged();
-    }
-
-    private void BLecternFrequencyRefine()
-    {
-        _bLecternHeader.BLecternFrequencyRefine();
         _bLecternChanged();
     }
 
@@ -322,25 +294,57 @@ internal sealed class BLectern
         _bLecternChanged();
     }
 
-    private IReadOnlyList<BLecternLine> BLecternPageBuild(
+    internal IReadOnlyList<BLecternLine> BLecternPageBuild(
         IReadOnlyDictionary<string, IReadOnlyList<string>> glyphs, int width, BCanvasWidth measure)
     {
+        Dictionary<(CCompassPart, int?), int> places = [];
         List<int> meanings = [];
+        List<IReadOnlyDictionary<(CCompassPart, int?), int>> cards = [];
         List<BLecternLine> page =
         [
             .. _bLecternHeader.BLecternHeaderBuild(glyphs, width, measure),
             .. _bLecternHeader.BLecternGlyphBuild(),
         ];
-        _bLecternCard.BLecternCardDraw(glyphs, width, measure, page, meanings);
-        page.AddRange(_bLecternIncoming.BLecternIncomingDraw(glyphs));
-        page.AddRange(_bLecternEtymology.BLecternEtymologyDraw(glyphs, width, measure));
-        page.AddRange(_bLecternHeader.BLecternStampBuild());
+        Func<CCompassPart, Action> card = part => () =>
+            cards.Add(_bLecternCard.BLecternCardDraw(part, glyphs, width, measure, page, meanings));
+        Dictionary<CCompassPart, Action> parts = new()
+        {
+            [CCompassPart.CCompassPartMeaning] = card(CCompassPart.CCompassPartMeaning),
+            [CCompassPart.CCompassPartCollocation] = card(CCompassPart.CCompassPartCollocation),
+            [CCompassPart.CCompassPartIncoming] = () => page.AddRange(_bLecternIncoming.BLecternIncomingDraw(glyphs)),
+            [CCompassPart.CCompassPartEtymology] = () =>
+                page.AddRange(_bLecternEtymology.BLecternEtymologyDraw(glyphs, width, measure)),
+            [CCompassPart.CCompassPartNote] = () => page.AddRange(
+                _bLecternNote.BLecternNoteDraw(_bLecternDisplay.CDisplayShown, glyphs, width, measure)),
+            [CCompassPart.CCompassPartStamp] = () => page.AddRange(_bLecternHeader.BLecternStampBuild()),
+        };
+        _bLecternCard.BLecternCardClear();
+        foreach (CCompassPart part in _bLecternDisplay.CDisplayCompass.CCompassShown)
+        {
+            if (parts.GetValueOrDefault(part) is Action draw)
+            {
+                places[(part, null)] = page.Count;
+                draw();
+            }
+        }
+
         List<int> starts = [];
         List<BLecternLine> frame = [];
         foreach (BLecternLine line in page)
         {
             starts.Add(frame.Count);
             frame.AddRange(line.BLecternLineDivide(width, measure));
+        }
+
+        foreach (((CCompassPart, int?) place, int at) in cards.SelectMany(static map => map))
+        {
+            places[place] = at;
+        }
+
+        _bLecternPart.Clear();
+        foreach (((CCompassPart, int?) place, int at) in places)
+        {
+            _bLecternPart.Add(place, at < starts.Count ? starts[at] : frame.Count);
         }
 
         _bLecternMeaning.Clear();

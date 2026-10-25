@@ -78,7 +78,7 @@ public static class LDraftClerkSense
 
     public static LCollocationLayout LCollocationLayoutRead(
         LEntryDraft content,
-        IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets)
+        IReadOnlyDictionary<(LCardKind, long), IReadOnlyList<LTranslationTarget>> targets)
     {
         ArgumentNullException.ThrowIfNull(content);
         ArgumentNullException.ThrowIfNull(targets);
@@ -94,7 +94,8 @@ public static class LDraftClerkSense
         {
             long id = collocation.LCardDraftId;
             phrases[id] = LCollocation.LCollocationPhraseRead(collocation);
-            flags[id] = LCollocation.LCollocationLanguageRead(targets.GetValueOrDefault(id, []));
+            flags[id] = LCollocation.LCollocationLanguageRead(
+                targets.GetValueOrDefault((LCardKind.LCardKindCollocation, id), []));
             examples[id] = LCollocation.LCollocationExampleRead(collocation);
             alsos[id] = LCollocation.LCollocationAlsoRead(meanings, collocation);
             if (LCollocation.LCollocationHomeRead(meanings, collocation, false) is long home)

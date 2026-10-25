@@ -102,7 +102,8 @@ Its batch, key and size observers attach to the loop.
 The held rescue and theme reason are shown as the next item.
 The loop ends when the window's exit task completes, and the run returns 0.
 The presence seam answers whether a path names an existing file.
-The strict run hands it to the invocation.
+The strict run hands it to the invocation, with the blueprint.
+The blueprint is there for the `show` verb, which draws the reading view the way the window does.
 The folder, file and drive seams list a folder's folders, list its files and name the logical drives.
 Only the window mode uses them, and `BBootstrapAtelierRun` joins the first two into one listing for the path prompt.
 The window mode also hands the presence seam on to that prompt.
@@ -152,6 +153,6 @@ It refuses a thread with no loop, since the marshal would have nowhere to go.
 
 ## Stamp
 
-Commit: `5813c19fd19c`
-- `BBootstrap.cs` `0952aad2621c697b`
+Commit: `36e31eb71c98`
+- `BBootstrap.cs` `3ab8b832f4245916`
 - `BObserver.cs` `55a41481c90c90c6`

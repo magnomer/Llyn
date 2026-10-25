@@ -246,6 +246,94 @@ public sealed class TDisplayArea
         Assert.Equal(["Frequency.Once"], keys);
     }
 
+    [Fact]
+    public void CompassRead_HiddenPartSharesACardLabel_NamesOnlyTheShownRows()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TDisplayAtelierCreate(engine);
+        LEntry lamp = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "lamp",
+            "English",
+            string.Empty,
+            string.Empty,
+            [TInterface.TCardDraftCreate("Speech.Title", string.Empty, "a light", [], [], [], [], [], 1)],
+            []));
+        CWing wing = TDisplayWingPrepare(atelier);
+        wing.CWingEntryOpen(lamp.LEntryId);
+        wing.CWingDisplay.CDisplayCard.CDisplayCardRead();
+
+        IReadOnlyList<CCompassRow> rows = wing.CWingDisplay.CDisplayCompass.CCompassRead(static key => key);
+
+        Assert.Equal(["Display.MeaningPlural", "Speech.Title"], rows.Select(static row => row.CCompassRowName));
+        Assert.Equal(
+            [CCompassPart.CCompassPartMeaning, CCompassPart.CCompassPartMeaning],
+            rows.Select(static row => row.CCompassRowPart));
+    }
+
+    [Fact]
+    public void CompassShown_EntryWithSomeParts_KeepsOnlyThoseInPageOrder()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TDisplayAtelierCreate(engine);
+        LEntry kindle = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "kindle",
+            "English",
+            string.Empty,
+            "a note",
+            [],
+            [TInterface.TCardCreate("a fire", 1)],
+            speeches: ["verb"]));
+        CWing wing = TDisplayWingPrepare(atelier);
+        CDisplay area = wing.CWingDisplay;
+
+        wing.CWingEntryOpen(kindle.LEntryId);
+        area.CDisplayCard.CDisplayCardRead();
+        area.CDisplayCard.CDisplayIncomingRead();
+        area.CDisplayFrequencyRead(static key => key);
+
+        Assert.Equal(
+            [
+                CCompassPart.CCompassPartSpeech,
+                CCompassPart.CCompassPartCollocation,
+                CCompassPart.CCompassPartNote,
+                CCompassPart.CCompassPartStamp,
+            ],
+            area.CDisplayCompass.CCompassShown);
+        area.CDisplayEntryClose();
+        area.CDisplayCard.CDisplayCardRead();
+        Assert.Empty(area.CDisplayCompass.CCompassShown);
+    }
+
+    [Fact]
+    public void CompassShown_OpenOtherEntryBeforeReads_DropsPreviousEntryParts()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TDisplayAtelierCreate(engine);
+        LEntry kindle = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "kindle",
+            "English",
+            string.Empty,
+            "a note",
+            [],
+            [TInterface.TCardCreate("a fire", 1)],
+            speeches: ["verb"]));
+        LEntry bare = TDisplayEntrySave(engine, "bare");
+        CWing wing = TDisplayWingPrepare(atelier);
+        CDisplay area = wing.CWingDisplay;
+        wing.CWingEntryOpen(kindle.LEntryId);
+        area.CDisplayCard.CDisplayCardRead();
+        area.CDisplayCard.CDisplayIncomingRead();
+        area.CDisplayFrequencyRead(static key => key);
+
+        wing.CWingEntryOpen(bare.LEntryId);
+
+        Assert.DoesNotContain(CCompassPart.CCompassPartSpeech, area.CDisplayCompass.CCompassShown);
+        Assert.DoesNotContain(CCompassPart.CCompassPartCollocation, area.CDisplayCompass.CCompassShown);
+    }
+
     internal static CAtelier TDisplayAtelierCreate(LEngine engine) =>
         TInterfaceConduct.TAtelierCreate(
             engine,

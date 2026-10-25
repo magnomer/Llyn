@@ -49,8 +49,6 @@ internal sealed class QFavorite
         _qFavoriteOrder = new QChoiceOrder(QContract.QContractFind<UserControl>(surface, "PFavoriteOrder"), QSeries);
         _qFavoriteFilter = new QChoiceFilter(QContract.QContractFind<UserControl>(surface, "PFavoriteFilter"));
 
-        QRecall.SetResourceReference(QField.QFieldHintProperty, "Favorite.Search");
-
         QRecall.TextChanged += QRecallObserve;
         _qFavoriteRail.QPanelRailStored += QFavoriteStoreObserve;
         _qFavoriteRail.QPanelRailToggled += QFavoriteScribeObserve;
@@ -64,6 +62,9 @@ internal sealed class QFavorite
     private ItemsControl QRoster => QContract.QContractFind<ItemsControl>(_qFavoriteSurface, "PRoster");
 
     private TextBlock QRosterEmpty => QContract.QContractFind<TextBlock>(_qFavoriteSurface, "PRosterEmpty");
+
+    private Button QFavoriteFresh => QContract.QContractFind<Button>(
+        QContract.QContractFind<UserControl>(_qFavoriteSurface, "PFavoriteRail"), "PPanelRailFresh");
 
     private Button QFavoriteBin => QContract.QContractFind<Button>(_qFavoriteSurface, "PFavoriteBin");
 
@@ -81,7 +82,10 @@ internal sealed class QFavorite
             envoy,
             QObserver.QObserverCreate<Action>(static run => run()));
         CPanel panel = _cFavorite.CFavoritePanel;
-        _qFavoriteOrder.QChoiceOrderIntroduce(panel.CPanelAperture, "Series", CFavorite.CFavoriteOrderRead());
+        QRecall.SetResourceReference(QField.QFieldHintProperty, _cFavorite.CFavoriteSearchKey);
+        QFavoriteFresh.Visibility = QLook.QLookVisibleRead(_cFavorite.CFavoriteNewExists);
+        _qFavoriteOrder.QChoiceOrderIntroduce(
+            panel.CPanelAperture, _cFavorite.CFavoriteSeriesKey, CFavorite.CFavoriteOrderRead());
         _qFavoriteFilter.QChoiceFilterIntroduce(panel.CPanelAperture, "Strainer");
         panel.CPanelChanged += QFavoriteModeUpdate;
         panel.CPanelAperture.CApertureRowsChanged += QRosterRefine;

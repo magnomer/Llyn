@@ -138,6 +138,7 @@ Slot `{1}` takes its value, the second verb, or the option that `Invocation.Qual
 `Invocation.Help` is the sentence above the option list.
 The other `Invocation.Help*` keys give the help text of one option, printed after the literal option name.
 `Invocation.HelpFind` names the four columns the option lists.
+`Invocation.HelpShow` words the `-show` option, which prints an entry's reading view as plain lines.
 `Invocation.HelpAs` lists the five file formats of `-export`, and `Invocation.HelpFormat` the three output formats.
 `Pathfinder.*` words the console path box, its path label, its key meanings and its replace question.
 `Pathfinder.Open`, `Pathfinder.Save` and `Pathfinder.Choose` label the admit button by what the box does.
@@ -150,6 +151,7 @@ The other `Invocation.Help*` keys give the help text of one option, printed afte
 `Display.Missing` marks a picture or video line whose file is gone, and `Display.EtymologyBorrowed` marks a borrowed ancestor.
 `Display.Word*` words the reading view's word cursor.
 `Display.WordCursor` takes the left and right arrow glyphs in slots `{0}` and `{1}`.
+`Display.Retreat` labels the F3 and Escape keys that leave the full view.
 `Mention.Open` labels the Enter key of the Mention menu, and `Window.Help.Tick` the Space key that ticks a choice.
 `Window.*` words the console window's notices and its help.
 `Window.Opening` is the line the window shows while it opens.
@@ -193,6 +195,6 @@ The person headers spell out person and number instead of the English abbreviati
 
 ## Stamp
 
-Commit: `cb8ab7e8feb4`
-- `en.json` `f2b36172879bb57c`
-- `ko.json` `42d788a1205c656b`
+Commit: `36e31eb71c98`
+- `en.json` `a6e596aaf73aa561`
+- `ko.json` `33632403f4104018`

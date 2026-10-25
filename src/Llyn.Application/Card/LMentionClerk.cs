@@ -61,9 +61,13 @@ public sealed class LMentionClerk
     {
         ArgumentNullException.ThrowIfNull(shown);
 
-        return [.. shown.LEntryDraftMeanings
-            .Concat(shown.LEntryDraftCollocations)
-            .SelectMany(static card => card.LCardDraftSentence)];
+        return [.. LMentionSentenceRead(shown.LEntryDraftMeanings.Concat(shown.LEntryDraftCollocations))];
+    }
+
+    private static IEnumerable<LSentenceDraft> LMentionSentenceRead(IEnumerable<LCardDraft> cards)
+    {
+        return cards.SelectMany(static card =>
+            card.LCardDraftSentence.Concat(LMentionSentenceRead(card.LCardDraftChild)));
     }
 
     public LMentionResult LMentionClerkFind(

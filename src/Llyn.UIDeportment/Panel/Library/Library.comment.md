@@ -17,14 +17,16 @@ The rail's buttons sit inside the page, so their commands reach these bindings.
 It hands `PLibraryRail` to a `QPanelRail`, `PLibraryOrder` to a `QChoiceOrder` and `PLibraryFilter` to a `QChoiceFilter`.
 The order menu hangs under the whole `POrder` bar.
 The import button is the rail's collapsed `PPanelRailMarkup`, found inside `PLibraryRail`.
-Only this panel imports, so it shows the button and sets its icon and click here.
+The `CLibrary` flags decide whether the import and new-record buttons show.
+Its keys word the search hint and the ordering series.
+The icon and click of the import button are set here.
 `QLibraryIntroduce` puts the panel to work through the Conduct `CLibrary`, which it builds over the atelier.
 It keeps the atelier and envoy for the catalog load, and hands the volume and mention menu on.
 Only the medium knows its dispatcher, so the marshal the area runs its notices through is built here.
 The Conduct builds its own entry editor, which this panel wraps for the editor view and the lectern.
 The display view builds the lectern over the editor's display, which Conduct attached to the panel.
-A stored Mention's sense, raised by `CMentionSenseChosen`, scrolls into view on that lectern's compass.
-A sense is a meaning card, so the spotlight is asked with the collocation flag false.
+A stored Mention's sense scrolls into view on that lectern's compass.
+`CLibrary` hears `CMentionSenseChosen` and raises the compass's sought event, so this driver subscribes to none.
 The navigation's entry open lands in the library, so this display is the one showing the entry.
 The picker and the filter get the panel's aperture, titled `Order` and `Sieve`.
 The ordering menu is built once, from the orderings `CLibrary` offers.
@@ -205,10 +207,10 @@ It is the same announcement whether the store happened in this panel's editor or
 
 ## Stamp
 
-Commit: `8c403d1df768`
+Commit: `36e31eb71c98`
 - `QDuplex.cs` `ca987539dd4da4cd`
 - `QIndex.cs` `c11007a0de35b95b`
 - `QIndexItem.cs` `f2e8778b89af3698`
-- `QLibrary.cs` `f8dba6d9f58aa8ec`
+- `QLibrary.cs` `df983721cd6fc312`
 - `QMarkup.cs` `54a943d6b580db9a`
 - `QWing.cs` `cd859f18f3ed85d6`

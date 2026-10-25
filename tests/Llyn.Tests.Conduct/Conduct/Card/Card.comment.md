@@ -85,8 +85,8 @@ A caret moved back inserts a picked row before its anchor and leaves the anchor 
 
 ## Stamp
 
-Commit: `8c403d1df768`
-- `TCard.cs` `b54f5d3767d484e4`
+Commit: `36e31eb71c98`
+- `TCard.cs` `f0f31fd8f14ccd7f`
 - `TCardList.cs` `9d1b8dcf0fd446e1`
 - `TCardReference.cs` `f8c14a236c5f5248`
 - `TCardRegister.cs` `7b6c2f10bb0fb535`

@@ -45,6 +45,8 @@ A `Frame` takes one cell for its border and one more between tracks as a rule.
 A `Split` shares its area between tracks with no rule.
 A part without tracks gives its whole area to every child.
 A track without a child still keeps its space.
+The exception is a folded child, whose track shrinks to zero cells so its space goes to the others.
+The running program sets the fold, not the file, so one blueprint serves both layouts.
 An area that runs out gives zero, never a negative size.
 
 ## `BBlueprintTrack`
@@ -58,6 +60,8 @@ The rest is shared by weight with a floor, and the last weighted track takes wha
 
 One parsed element with its attributes, children and the area `BBlueprintPlace` last gave it.
 Only the loader sets the parsed fields, and the area is set at each placing.
+`BBlueprintPartFolded` is the one field the program sets after loading, to give a part no room.
+A folded part still draws nothing of its own, since its area is empty.
 `BBlueprintPartRules` holds the rows of the rules a `Frame` draws between its tracks.
 
 ## `BBlueprintDraw`
@@ -70,7 +74,7 @@ A frame with no width or no height draws nothing.
 
 ## Stamp
 
-Commit: `cb8ab7e8feb4`
-- `BBlueprint.cs` `6a54a4f9170a6c2f`
-- `BBlueprintPart.cs` `b035683bf69306d2`
+Commit: `36e31eb71c98`
+- `BBlueprint.cs` `376bfb153703ee6e`
+- `BBlueprintPart.cs` `ccb55927f343148e`
 - `BBlueprintTrack.cs` `a5d6633e1bd337a1`

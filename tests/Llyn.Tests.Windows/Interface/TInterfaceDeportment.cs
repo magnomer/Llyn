@@ -165,9 +165,6 @@ internal static class TInterfaceDeportment
 
     internal static object TLeafSeeCreate(long id, string text) => new QLeafSee(id, text);
 
-    internal static void TLecternSeeAttach(QLecternCard card, Action<long> notice) =>
-        card.QLecternSeeNotice += notice;
-
     internal static void TLecternMentionAttach(
         QLecternCard card,
         QMention line,

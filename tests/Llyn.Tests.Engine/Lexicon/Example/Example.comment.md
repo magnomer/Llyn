@@ -76,6 +76,8 @@ Three homographs come back the same way, which is the order the word menu lists 
 An inflected form with no headword answers its span and no candidate.
 Japanese text picks the longest headword covering the click over the letter run.
 It falls back to the run where nothing matches.
+The chip line of a sentence is counted through the child cards too.
+A sentence on a child card answers its own line.
 
 ## `TMentionSpan`
 
@@ -154,11 +156,11 @@ It falls back to the marker first rather than refusing to lay the row out.
 
 ## Stamp
 
-Commit: `8c403d1df768`
+Commit: `36e31eb71c98`
 - `TExample.cs` `a9f3021b68f07b9d`
 - `TExampleLine.cs` `12fd9a19c0177a20`
 - `TMention.cs` `cb740644a69ee697`
-- `TMentionFinding.cs` `ab0e214226ad13fc`
+- `TMentionFinding.cs` `e28b0098936f7c5c`
 - `TMentionSpan.cs` `032d03cfc0dd7363`
 - `TSentence.cs` `6b1a3fcdaa01b3d5`
 - `TSentenceOrder.cs` `8167c86b34858bbf`

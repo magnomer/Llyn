@@ -236,6 +236,7 @@ internal static class QLeaf
             && QLook.QLookPartFind<TextBlock>(container, "PSituationTitle") is TextBlock title)
         {
             title.Text = situation.QLeafChipText;
+            container.IsEnabled = situation.QLeafChipOrigin.CLeafChipStored;
         }
     }
 
@@ -245,6 +246,7 @@ internal static class QLeaf
             && QLook.QLookPartFind<TextBlock>(container, "PRegisterLabel") is TextBlock label)
         {
             label.Text = register.QLeafChipText;
+            container.IsEnabled = register.QLeafChipOrigin.CLeafChipStored;
         }
     }
 
@@ -253,6 +255,7 @@ internal static class QLeaf
         if (item is QLeafChip tag && QLook.QLookPartFind<TextBlock>(container, "PTagLabel") is TextBlock label)
         {
             label.Text = tag.QLeafChipText;
+            container.IsEnabled = tag.QLeafChipOrigin.CLeafChipStored;
         }
     }
 

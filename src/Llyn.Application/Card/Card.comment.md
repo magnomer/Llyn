@@ -277,7 +277,7 @@ An id naming no Example is refused.
 The reading-view find names only a line key, so text, language and Mentions come from the shown draft.
 `LMentionLineFind` mints the line key, the position counted from one among the shown entry's sentences.
 Those sentences run over the meaning cards first and then the collocation cards.
-Only the top-level cards of each list are walked, not their child cards.
+Child cards are walked too, each right after its own sentences.
 A key outside that range finds no row, so the answer is the bare offset.
 A sentence the shown entry does not hold gets key zero.
 The row's Example text is the text the line shows whenever the line shows words.
@@ -527,13 +527,13 @@ The rows are twinned and given their epithet when `epithet` asks for it.
 
 ## Stamp
 
-Commit: `8c403d1df768`
+Commit: `36e31eb71c98`
 - `LCardClerk.cs` `bdb3cac0e6820774`
 - `LCardClerkField.cs` `9bb3e1536c7cc7cd`
 - `LCardEquality.cs` `7b2fe6cd813afde8`
 - `LFoldClerk.cs` `95e87b3b392cb557`
 - `LMeaningClerk.cs` `598fe8f393d8d254`
-- `LMentionClerk.cs` `b38b6a236f108ba6`
+- `LMentionClerk.cs` `972aa6efe68148d7`
 - `LRegisterClerk.cs` `7244ddf600540ddd`
 - `LTagClerk.cs` `2bc32514c1332d84`
 - `LTranslationClerk.cs` `b6bfa9297962f513`

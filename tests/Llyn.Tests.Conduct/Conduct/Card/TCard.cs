@@ -33,8 +33,7 @@ public sealed class TCard
             ],
             [TInterface.TCardCreate(string.Empty, 1)]);
 
-        CEntryDraft shaped = TInterfaceConductCard.TCardEntryRead(
-            draft, new Dictionary<long, IReadOnlyList<LTranslationTarget>> { [0] = [] });
+        CEntryDraft shaped = TInterfaceConductCard.TCardEntryRead(draft);
 
         CCardDraft meaning = Assert.Single(shaped.CEntryDraftMeanings);
         Assert.Equal(
@@ -62,8 +61,7 @@ public sealed class TCard
         };
         LEntryDraft draft = TInterface.TEntryDraftCreate("water", "English", string.Empty, string.Empty, [card], []);
 
-        CEntryDraft shaped = TInterfaceConductCard.TCardEntryRead(
-            draft, new Dictionary<long, IReadOnlyList<LTranslationTarget>> { [0] = [] });
+        CEntryDraft shaped = TInterfaceConductCard.TCardEntryRead(draft);
 
         IReadOnlyList<CSentenceDraft> rows = Assert.Single(shaped.CEntryDraftMeanings).CCardDraftSentence;
         Assert.Equal(new CStateWording(string.Empty, null, true, "Card.ExampleHint"), rows[0].CSentenceDraftText);
@@ -90,8 +88,7 @@ public sealed class TCard
         };
         LEntryDraft draft = TInterface.TEntryDraftCreate("water", "English", string.Empty, string.Empty, [card], []);
 
-        CEntryDraft shaped = TInterfaceConductCard.TCardEntryRead(
-            draft, new Dictionary<long, IReadOnlyList<LTranslationTarget>> { [0] = [] });
+        CEntryDraft shaped = TInterfaceConductCard.TCardEntryRead(draft);
 
         IReadOnlyList<CSentenceDraft> rows = Assert.Single(shaped.CEntryDraftMeanings).CCardDraftSentence;
         Assert.True(rows[0].CSentenceDraftCited);

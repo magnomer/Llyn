@@ -11,6 +11,10 @@ One display per editor or wing builds its rules and its areas once, so every dri
 The header area owns the entry's life on the lectern and the change events.
 It builds the rules first, then the sound area over those rules and itself.
 Then it builds the accent, playback, grasp, card and route areas and the compass over the same rules.
+The card area is handed a call into the compass.
+The compass is handed the card area, the shown header and the held chip.
+The card area stores its answers and the compass reads them.
+So the two cannot disagree about what stands on the page.
 Each part is handed only the ports that part calls.
 A refused read is shown through the envoy, so every driver over this display shows it once.
 The area keeps the shown header, and the blank header stands while nothing is shown.
@@ -30,6 +34,9 @@ Each of those can change what the draft shows, so a driver hands it to `CDisplay
 `CDisplayFoldChanged` counts only for the chosen entry, so a fold elsewhere leaves this view still.
 It carries no draft, since a fold is view state and no edit.
 `CDisplayOpened` follows an open once `CDisplayShown` holds its header.
+An open and a close first empty what the card area and the frequency read kept.
+Then they refine the compass's shown parts.
+So the contents never list a part of the entry that was shown before.
 `CDisplayClosed` follows a close that stopped playback, so every section empties.
 
 `LDisplayNavigationAttach` hands the route and sound areas' records, rime cells and series to the atelier's navigation.
@@ -58,6 +65,8 @@ An entry gone from the store closes the view.
 
 `CDisplayFrequencyRead` answers the chosen entry's frequency chip, or null when none stands.
 Conduct chooses the key of the one-off wording, and the driver's lookup turns it into text.
+The chip is kept as `CDisplayFrequencyHeld`, since the compass shows its part only while a chip stands.
+Each read refines the compass, so a chip that arrives late adds its part.
 
 ## `CDisplayAccent`
 
@@ -232,8 +241,8 @@ Any other name is the unknown tier, so the chip always finds a brush and a name.
 
 ## Stamp
 
-Commit: `8c403d1df768`
-- `CDisplay.cs` `5728738cf9391b19`
+Commit: `36e31eb71c98`
+- `CDisplay.cs` `97ce2b995eb05d8f`
 - `CDisplayAccent.cs` `63df02164d2dda07`
 - `CDisplayGrasp.cs` `1608230d12b1eee3`
 - `CDisplayPlayback.cs` `7fd2ed66c09e90e7`

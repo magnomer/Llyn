@@ -125,6 +125,8 @@ So `enabled` follows the morphology setting.
 The English verb break carries two break rows in the pack's slot order.
 Each has one shown cell and no tip.
 A card with a stored target keeps the target, and the linked entry keeps the incoming usage.
+The target map is keyed by card kind and id.
+A child card under a Meaning keeps its stored target too.
 A folded language writes its rows inside `<details>` with the `Reflex.More` summary, after the shown one.
 A linked Ancestor box prints as an HTML anchor in the lineage block under the etymology heading.
 The linked entry's own map nests above it in a stock.
@@ -134,9 +136,9 @@ Each box keeps its tongue and gloss spans, and the headword closes the tree in `
 
 ## Stamp
 
-Commit: `8c403d1df768`
+Commit: `36e31eb71c98`
 - `TEngineLivery.cs` `171299b8324074fb`
-- `TEngineLiveryCard.cs` `12ba4eabe11334f0`
+- `TEngineLiveryCard.cs` `1ed64c2aa8199036`
 - `TEngineLiveryInflection.cs` `f92f64ecc5403946`
 - `TEngineLiveryLanguage.cs` `93be9c93139a750d`
-- `TEngineLiveryPage.cs` `433fe6f13379fac4`
+- `TEngineLiveryPage.cs` `1a4ada8744458819`

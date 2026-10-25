@@ -14,25 +14,62 @@ internal sealed class BLibrary
     private readonly Func<bool> _bLibraryShown;
     private readonly Action _bLibraryChanged;
     private readonly Func<BCanvasWidth> _bLibraryMeasure;
-    private readonly CLibrary _cLibrary;
+    private readonly CPanel _bLibraryPanel;
+    private readonly CEditor _bLibraryEditor;
+    private readonly IReadOnlyList<CCatalogOrder> _bLibraryOrders;
+    private readonly string _bLibraryOrderKey;
+    private readonly Func<Task> _bLibraryPortrait;
+    private readonly Func<Task>? _bLibraryMarkup;
     private readonly BIndex<CVistaRow> _bIndex;
     private readonly BLectern _bLibraryLectern;
     private bool _bLibrarySide;
+    private bool _bLibraryWhole;
     private IReadOnlyList<string> _bLibraryLanguages = [];
 
     internal BLibrary(
-        BLocalizationCatalog catalog,
-        CAtelier atelier,
-        CEnvoy envoy,
-        BBlueprintPart parley,
-        Func<BSParley, Task?, int?> docket,
-        Func<bool> shown,
-        Action changed,
-        Func<BCanvasWidth> measure)
+        BLocalizationCatalog catalog, CAtelier atelier, CEnvoy envoy, BBlueprintPart parley,
+        Func<BSParley, Task?, int?> docket, Func<bool> shown, Action changed, Func<BCanvasWidth> measure)
+        : this(catalog, atelier, parley, docket, shown, changed, measure, CLibrary.CLibraryCreate(
+            atelier ?? throw new ArgumentNullException(nameof(atelier)),
+            shown,
+            envoy ?? throw new ArgumentNullException(nameof(envoy)),
+            BObserver.BObserverCreate<Action>(static run => run())))
+    {
+    }
+
+    private BLibrary(
+        BLocalizationCatalog catalog, CAtelier atelier, BBlueprintPart parley, Func<BSParley, Task?, int?> docket,
+        Func<bool> shown, Action changed, Func<BCanvasWidth> measure, CLibrary library)
+        : this(
+            catalog, atelier, parley, docket, shown, changed, measure,
+            CLibrary.CLibraryTitleKey, library.CLibrarySearchKey, library.CLibrarySeriesKey,
+            library.CLibraryPanel,
+            library.CLibraryEditor,
+            CLibrary.CLibraryOrderRead(),
+            library.CLibraryRowsRead,
+            library.CLibraryRowsLoad,
+            library.CLibraryPortraitExport,
+            library.CLibraryImportExists ? library.CLibraryMarkupImport : null,
+            library.CLibraryNewExists ? library.CLibraryPanel.CPanelEntryCreate : null)
+    {
+    }
+
+    private BLibrary(
+        BLocalizationCatalog catalog, CAtelier atelier, BBlueprintPart parley, Func<BSParley, Task?, int?> docket,
+        Func<bool> shown, Action changed, Func<BCanvasWidth> measure,
+        string title, string search, string series,
+        CPanel panel,
+        CEditor editor,
+        IReadOnlyList<CCatalogOrder> orders,
+        Func<IReadOnlyList<CVistaRow>> listed,
+        Func<Func<IReadOnlyList<CEnsignRow>, Action<string, Exception>, Action>,
+            Task<CEnsignSheet<IReadOnlyList<CVistaRow>>>> load,
+        Func<Task> portrait,
+        Func<Task>? markup,
+        Action? fresh)
     {
         ArgumentNullException.ThrowIfNull(catalog);
         ArgumentNullException.ThrowIfNull(atelier);
-        ArgumentNullException.ThrowIfNull(envoy);
         ArgumentNullException.ThrowIfNull(parley);
         ArgumentNullException.ThrowIfNull(docket);
         ArgumentNullException.ThrowIfNull(shown);
@@ -45,23 +82,26 @@ internal sealed class BLibrary
         _bLibraryShown = shown;
         _bLibraryChanged = changed;
         _bLibraryMeasure = measure;
-        _cLibrary = CLibrary.CLibraryCreate(
-            atelier, shown, envoy, BObserver.BObserverCreate<Action>(static run => run()));
-        CPanel panel = _cLibrary.CLibraryPanel;
+        _bLibraryPanel = panel;
+        _bLibraryEditor = editor;
+        _bLibraryOrders = orders;
+        _bLibraryOrderKey = series;
+        _bLibraryPortrait = portrait;
+        _bLibraryMarkup = markup;
         CAperture aperture = panel.CPanelAperture;
         _bIndex = new BIndex<CVistaRow>(
             catalog,
-            "Navigation.Library",
-            "List.Search",
+            title,
+            search,
             static row => (row.CVistaRowName, row.CVistaRowEpithet, row.CVistaRowLanguage, row.CVistaRowChosen),
             static row => row.CVistaRowId,
             aperture.CApertureQuerySet,
             BLibraryRowSelect);
-        CDisplay display = _cLibrary.CLibraryEditor.CEditorDisplay;
+        CDisplay display = editor.CEditorDisplay;
         _bLibraryLectern = new BLectern(
             catalog,
             display,
-            atelier.CAtelierNavigation,
+            atelier,
             changed,
             () => shown() && _bLibrarySide && panel.CPanelViewerChecked,
             docket,
@@ -80,47 +120,91 @@ internal sealed class BLibrary
             action();
             changed();
         };
-        CDeskDraft draft = _cLibrary.CLibraryEditor.CEditorDesk.CDeskDraft;
+        CDeskDraft draft = editor.CEditorDesk.CDeskDraft;
         Func<BKeymapLive> storable = gated(true, () => draft.CDeskDraftStorable);
         Func<BKeymapLive> scribe = () => gated(panel.CPanelViewerChecked, () => panel.CPanelModeEnabled)();
         Func<BKeymapLive> viewer = () => gated(panel.CPanelScribeChecked, static () => true)();
         Func<BKeymapLive> bin = gated(true, () => panel.CPanelBinEnabled);
         Func<BKeymapLive> favorite = gated(true, () => panel.CPanelViewerChecked && !display.CDisplayBlank);
         Func<BKeymapLive> reachable = () => gated(panel.CPanelViewerChecked, static () => true)();
-        Func<BKeymapLive> reading = () => gated(_bLibrarySide && panel.CPanelViewerChecked, static () => true)();
+        Func<BKeymapLive> reading = () =>
+            gated(_bLibrarySide && panel.CPanelViewerChecked && !_bLibraryWhole, static () => true)();
+        Func<BKeymapLive> whole = () => gated(BLibraryWhole, static () => true)();
+        Action<ConsoleKeyInfo> widen = pressed(() => (_bLibraryWhole, _bLibrarySide) = (true, true));
+        Action<ConsoleKeyInfo> narrow = pressed(() => _bLibraryWhole = false);
         List<BKeymapRow> rows =
         [
-            .. CLibrary.CLibraryOrderRead().Select((order, index) => new BKeymapRow(
+            .. orders.Take(4).Select((order, index) => new BKeymapRow(
                 ConsoleKey.F3 + index,
                 ConsoleModifiers.Control,
                 window,
-                "Order." + CCatalog.CCatalogOrderFormat(order),
+                $"{series}.{CCatalog.CCatalogOrderFormat(order)}",
                 pressed(() => aperture.CApertureOrderSet(order)),
                 live)),
-            new(ConsoleKey.F7, ConsoleModifiers.Control, window, "Order.Title", pressed(BLibraryOrderShow), live),
+            new(ConsoleKey.F7, ConsoleModifiers.Control, window, $"{series}.Title", pressed(BLibraryOrderShow), live),
             new(ConsoleKey.F8, ConsoleModifiers.Control, window, "Sieve.Title", pressed(BLibraryFilterShow), live),
             new(ConsoleKey.F2, 0, window, "Scribe.Save", pressed(BLibraryStoreObserve), storable),
             new(ConsoleKey.F4, 0, window, "Scribe.Edit", pressed(BLibraryScribeObserve), scribe),
             new(ConsoleKey.F4, 0, window, "Scribe.View", pressed(BLibraryViewerObserve), viewer),
-            new(ConsoleKey.F7, 0, window, "Scribe.New", pressed(BLibraryFreshObserve), live),
+            .. (BKeymapRow[])(fresh is Action create
+                ? [new(ConsoleKey.F7, 0, window, "Scribe.New", pressed(create), live)]
+                : []),
             new(ConsoleKey.F8, 0, window, "Scribe.Delete", pressed(BLibraryBinObserve), bin),
-            new(ConsoleKey.F6, 0, window, "Favorite.Mark", _bLibraryLectern.BLecternFavoriteToggle, favorite),
+            new(ConsoleKey.F6, 0, window, "Favorite.Mark", BLibraryFavoriteToggle, favorite),
             new(ConsoleKey.Tab, 0, window, "Window.Help.Part", pressed(() => _bLibrarySide = true), reachable),
             new(ConsoleKey.Tab, 0, lectern, "Window.Help.Part", pressed(() => _bLibrarySide = false), reading),
+            new(ConsoleKey.F3, 0, window, "Roof.View", widen, reachable),
+            new(ConsoleKey.F3, 0, lectern, "Roof.View", widen, reading),
             .. _bLibraryLectern.BLecternKeymap.BKeymapRead(lectern),
+            new(ConsoleKey.F3, 0, lectern, "Display.Retreat", narrow, whole),
+            new(ConsoleKey.Escape, 0, lectern, "Display.Retreat", narrow, whole),
         ];
         BLibraryKeymap = new BKeymap(rows);
 
-        aperture.CApertureRowsChanged += BLibraryRowsRefine;
+        aperture.CApertureRowsChanged += () => BLibraryRowsRefine(listed());
         panel.CPanelChanged += changed;
-        _cLibrary.CLibraryEditor.CEditorDesk.CDeskStateChanged += changed;
-        atelier.CAtelierWorkspace.CWorkspaceOpened += BLibraryVistaRefine;
+        editor.CEditorDesk.CDeskStateChanged += changed;
+        atelier.CAtelierWorkspace.CWorkspaceOpened +=
+            async () => BLibraryVistaRefine(await load(static (_, _) => static () => { }));
+    }
+
+    internal BLibrary(
+        BLocalizationCatalog catalog, CAtelier atelier, CEnvoy envoy, BBlueprintPart parley,
+        Func<BSParley, Task?, int?> docket, Func<bool> shown, Action changed, Func<BCanvasWidth> measure,
+        Func<CAtelier, Func<bool>, CEnvoy, Action<Action>, CFavorite> favorite)
+        : this(catalog, atelier, parley, docket, shown, changed, measure, (favorite
+            ?? throw new ArgumentNullException(nameof(favorite)))(
+            atelier ?? throw new ArgumentNullException(nameof(atelier)),
+            shown,
+            envoy ?? throw new ArgumentNullException(nameof(envoy)),
+            BObserver.BObserverCreate<Action>(static run => run())))
+    {
+        atelier.CAtelierWorkspace.CWorkspaceOpened += _bIndex.BIndexLitClear;
+    }
+
+    private BLibrary(
+        BLocalizationCatalog catalog, CAtelier atelier, BBlueprintPart parley, Func<BSParley, Task?, int?> docket,
+        Func<bool> shown, Action changed, Func<BCanvasWidth> measure, CFavorite favorite)
+        : this(
+            catalog, atelier, parley, docket, shown, changed, measure,
+            CFavorite.CFavoriteTitleKey, favorite.CFavoriteSearchKey, favorite.CFavoriteSeriesKey,
+            favorite.CFavoritePanel,
+            favorite.CFavoriteEditor,
+            CFavorite.CFavoriteOrderRead(),
+            favorite.CFavoriteRowsRead,
+            favorite.CFavoriteRowsLoad,
+            favorite.CFavoritePortraitExport,
+            null,
+            favorite.CFavoriteNewExists ? favorite.CFavoritePanel.CPanelEntryCreate : null)
+    {
     }
 
     internal BKeymap BLibraryKeymap { get; }
 
+    internal bool BLibraryWhole => _bLibraryShown() && _bLibraryWhole && _bLibraryPanel.CPanelViewerChecked;
+
     internal BKeymapFocus BLibraryKeymapFocus =>
-        _bLibraryShown() && _bLibrarySide && _cLibrary.CLibraryPanel.CPanelViewerChecked
+        _bLibraryShown() && _bLibrarySide && _bLibraryPanel.CPanelViewerChecked
             ? BKeymapFocus.BKeymapFocusLectern
             : BKeymapFocus.BKeymapFocusWindow;
 
@@ -146,20 +230,20 @@ internal sealed class BLibrary
         }
 
         BBlueprintPart index = BContract.BContractFind(window, "AIndex");
-        foreach (BCanvasText text in _bIndex.BIndexDraw(
+        foreach (BCanvasText text in BLibraryWhole ? Enumerable.Empty<BCanvasText>() : _bIndex.BIndexDraw(
             glyphs,
             index.BBlueprintPartRow,
             index.BBlueprintPartColumn,
             index.BBlueprintPartWidth,
             index.BBlueprintPartHeight,
-            focused && !(_bLibrarySide && _cLibrary.CLibraryPanel.CPanelViewerChecked),
+            focused && !(_bLibrarySide && _bLibraryPanel.CPanelViewerChecked),
             measure))
         {
             yield return text;
         }
 
         BBlueprintPart display = BContract.BContractFind(window, "ADisplay");
-        if (!_cLibrary.CLibraryPanel.CPanelViewerChecked)
+        if (!_bLibraryPanel.CPanelViewerChecked)
         {
             yield break;
         }
@@ -185,7 +269,7 @@ internal sealed class BLibrary
         }
 
         BLocalizationCatalog catalog = _bLibraryCatalog;
-        CPanel panel = _cLibrary.CLibraryPanel;
+        CPanel panel = _bLibraryPanel;
         Func<string, ConsoleKey?> letter = key => catalog.BLocalizationTextRead(key) is [char single]
             && char.IsAsciiLetter(single)
                 ? ConsoleKey.A + (char.ToUpperInvariant(single) - 'A')
@@ -198,7 +282,9 @@ internal sealed class BLibrary
                 catalog.BLocalizationTextRead("Roof.Entry"),
                 letter("Roof.Entry.Hotkey"),
                 [
-                    item("Roof.Entry.Import", BLibraryMarkupObserve, static () => true),
+                    .. (BRoofItem[])(_bLibraryMarkup is Func<Task> markup
+                        ? [item("Roof.Entry.Import", async () => await markup(), static () => true)]
+                        : []),
                     item("Roof.Entry.Export", BLibraryPortraitObserve, () => panel.CPanelPressAllowed),
                 ]),
             new BRoofMenu(
@@ -211,33 +297,26 @@ internal sealed class BLibrary
         ];
     }
 
-    private void BLibraryRowsRefine()
-    {
-        BLibraryRowsRefine(_cLibrary.CLibraryRowsRead());
-    }
-
     private void BLibraryRowsRefine(IReadOnlyList<CVistaRow> rows)
     {
-        CAperture aperture = _cLibrary.CLibraryPanel.CPanelAperture;
+        CAperture aperture = _bLibraryPanel.CPanelAperture;
         _bIndex.BIndexRefine(
             rows,
-            aperture.CApertureOrderWord,
+            $"{_bLibraryOrderKey}.{aperture.CApertureOrderWord}",
             aperture.CApertureFiltered,
             aperture.CApertureEmpty ? aperture.CApertureKey : string.Empty);
         _bLibraryChanged();
     }
 
-    private async void BLibraryVistaRefine()
+    private void BLibraryVistaRefine(CEnsignSheet<IReadOnlyList<CVistaRow>> sheet)
     {
-        CEnsignSheet<IReadOnlyList<CVistaRow>> sheet =
-            await _cLibrary.CLibraryRowsLoad(static (_, _) => static () => { });
         _bLibraryLanguages = sheet.CEnsignSheetLanguages;
         BLibraryRowsRefine(sheet.CEnsignSheetRows);
     }
 
     private void BLibraryRowSelect(CVistaRow row)
     {
-        CPanelOutcome outcome = _cLibrary.CLibraryPanel.CPanelRowSelect(row.CVistaRowId);
+        CPanelOutcome outcome = _bLibraryPanel.CPanelRowSelect(row.CVistaRowId);
         if (outcome == CPanelOutcome.CPanelOutcomeStayed)
         {
             _bIndex.BIndexLitClear();
@@ -252,49 +331,32 @@ internal sealed class BLibrary
         _bLibraryChanged();
     }
 
-    private void BLibraryFreshObserve()
-    {
-        _cLibrary.CLibraryPanel.CPanelEntryCreate();
-    }
+    private void BLibraryScribeObserve() => _bLibraryPanel.CPanelScribeToggle(true);
 
-    private void BLibraryScribeObserve()
-    {
-        _cLibrary.CLibraryPanel.CPanelScribeToggle(true);
-    }
+    private void BLibraryViewerObserve() => _bLibraryPanel.CPanelScribeToggle(false);
 
-    private void BLibraryViewerObserve()
-    {
-        _cLibrary.CLibraryPanel.CPanelScribeToggle(false);
-    }
+    private void BLibraryStoreObserve() => _bLibraryEditor.CEditorEntrySave();
 
-    private void BLibraryStoreObserve()
-    {
-        _cLibrary.CLibraryEditor.CEditorEntrySave();
-    }
+    private void BLibraryBinObserve() => _bLibraryPanel.CPanelBin.CPanelBinDelete();
 
-    private void BLibraryBinObserve()
+    private void BLibraryFavoriteToggle(ConsoleKeyInfo key)
     {
-        _cLibrary.CLibraryPanel.CPanelBin.CPanelBinDelete();
-    }
-
-    private async void BLibraryMarkupObserve()
-    {
-        await _cLibrary.CLibraryMarkupImport();
+        _bIndex.BIndexLitSettle(() => _bLibraryLectern.BLecternFavoriteToggle(key));
     }
 
     private async void BLibraryPortraitObserve()
     {
-        await _cLibrary.CLibraryPortraitExport();
+        await _bLibraryPortrait();
     }
 
     private void BLibraryOrderShow()
     {
-        CAperture aperture = _cLibrary.CLibraryPanel.CPanelAperture;
+        CAperture aperture = _bLibraryPanel.CPanelAperture;
         TaskCompletionSource chosen = new();
         BSChoiceOrder body = new(
             _bLibraryCatalog,
-            "Order",
-            CLibrary.CLibraryOrderRead(),
+            _bLibraryOrderKey,
+            _bLibraryOrders,
             () => aperture.CApertureOrderWord,
             order =>
             {
@@ -303,14 +365,14 @@ internal sealed class BLibrary
             },
             _bLibraryMeasure());
         BSParley parley = new(
-            _bLibraryParley, _bLibraryCatalog.BLocalizationTextRead("Order.Title"), "dialog", [],
+            _bLibraryParley, _bLibraryCatalog.BLocalizationTextRead($"{_bLibraryOrderKey}.Title"), "dialog", [],
             [new BSParleyButton(_bLibraryCatalog.BLocalizationTextRead("Order.Close"))], 0, body);
         _ = _bLibraryDocket(parley, chosen.Task);
     }
 
     private void BLibraryFilterShow()
     {
-        CAperture aperture = _cLibrary.CLibraryPanel.CPanelAperture;
+        CAperture aperture = _bLibraryPanel.CPanelAperture;
         BSChoiceFilter body = new(
             _bLibraryLanguages,
             aperture.CApertureFilter,

@@ -79,7 +79,7 @@ public sealed class LCardFacade : LCardPort
     }
 
     public LCollocationLayout LEngineCollocationRead(
-        LEntryDraft shown, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets)
+        LEntryDraft shown, IReadOnlyDictionary<(LCardKind, long), IReadOnlyList<LTranslationTarget>> targets)
     {
         return LDraftClerkSense.LCollocationLayoutRead(shown, targets);
     }
@@ -152,35 +152,51 @@ public sealed class LCardFacade : LCardPort
         }
     }
 
-    public IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> LEngineTranslationRead(LEntryDraft draft)
+    public IReadOnlyDictionary<(LCardKind, long), IReadOnlyList<LTranslationTarget>> LEngineTranslationRead(
+        LEntryDraft draft)
     {
-        ArgumentNullException.ThrowIfNull(draft);
-
-        IReadOnlyList<LCardDraft> cards = [.. draft.LEntryDraftMeanings, .. draft.LEntryDraftCollocations];
-        List<long> ids = cards.SelectMany(static card => card.LCardDraftTranslation).Distinct().ToList();
-        IReadOnlyList<LTranslationTarget> read = ids.Count == 0 ? [] : LEngineTargetRead(ids);
-        return LEngineTranslationResolve(cards, read);
+        return LEngineTranslationResolve(draft, LEngineTargetRead);
     }
 
-    internal static IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> LEngineTranslationResolve(
-        IReadOnlyList<LCardDraft> cards, IReadOnlyList<LTranslationTarget> read)
+    internal static IReadOnlyDictionary<(LCardKind, long), IReadOnlyList<LTranslationTarget>>
+        LEngineTranslationResolve(
+            LEntryDraft draft, Func<IReadOnlyList<long>, IReadOnlyList<LTranslationTarget>> read)
     {
+        ArgumentNullException.ThrowIfNull(draft);
+        ArgumentNullException.ThrowIfNull(read);
+
+        List<(LCardKind, LCardDraft)> cards = [];
+        LEngineTranslationResolve(cards, LCardKind.LCardKindMeaning, draft.LEntryDraftMeanings);
+        LEngineTranslationResolve(cards, LCardKind.LCardKindCollocation, draft.LEntryDraftCollocations);
+        List<long> ids = cards.SelectMany(static held => held.Item2.LCardDraftTranslation).Distinct().ToList();
+        IReadOnlyList<LTranslationTarget> answered = ids.Count == 0 ? [] : read(ids);
+
         Dictionary<long, LTranslationTarget> found = [];
-        foreach (LTranslationTarget target in read)
+        foreach (LTranslationTarget target in answered)
         {
             found[target.LTranslationTargetId] = target;
         }
 
-        Dictionary<long, IReadOnlyList<LTranslationTarget>> targets = [];
-        foreach (LCardDraft card in cards)
+        Dictionary<(LCardKind, long), IReadOnlyList<LTranslationTarget>> targets = [];
+        foreach ((LCardKind kind, LCardDraft card) in cards)
         {
-            targets[card.LCardDraftId] = card.LCardDraftTranslation
+            targets[(kind, card.LCardDraftId)] = card.LCardDraftTranslation
                 .Where(found.ContainsKey)
                 .Select(id => found[id])
                 .ToList();
         }
 
         return targets;
+    }
+
+    private static void LEngineTranslationResolve(
+        List<(LCardKind, LCardDraft)> cards, LCardKind kind, IReadOnlyList<LCardDraft> level)
+    {
+        foreach (LCardDraft card in level)
+        {
+            cards.Add((kind, card));
+            LEngineTranslationResolve(cards, kind, card.LCardDraftChild);
+        }
     }
 
     public IReadOnlyList<LTranslationTarget> LEngineTargetRead(long ownerId, IReadOnlyList<long> ids)

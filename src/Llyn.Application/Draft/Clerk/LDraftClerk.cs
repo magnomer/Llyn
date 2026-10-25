@@ -81,11 +81,11 @@ public sealed class LDraftClerk
         return request switch
         {
             LRequestTagPick { LRequestCardId: 0 } sent => LCardResolve(
-                content, id => sent with { LRequestCardId = id }),
+                content, id => sent with { LRequestKind = LCardKind.LCardKindMeaning, LRequestCardId = id }),
             LRequestRegisterPick { LRequestCardId: 0 } sent => LCardResolve(
-                content, id => sent with { LRequestCardId = id }),
+                content, id => sent with { LRequestKind = LCardKind.LCardKindMeaning, LRequestCardId = id }),
             LRequestSituationPick { LRequestCardId: 0 } sent => LCardResolve(
-                content, id => sent with { LRequestCardId = id }),
+                content, id => sent with { LRequestKind = LCardKind.LCardKindMeaning, LRequestCardId = id }),
             LRequestSentenceExample { LRequestCardId: 0 } sent => LCardResolve(
                 content, id => sent with { LRequestKind = LCardKind.LCardKindMeaning, LRequestCardId = id }),
             LRequestSentenceReference { LRequestCardId: 0 } sent => LCardResolve(

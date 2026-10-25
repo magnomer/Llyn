@@ -1,5 +1,6 @@
 using Llyn.Conduct;
 using Llyn.Core;
+using Llyn.ShellEngine;
 using Xunit;
 
 namespace Llyn.Tests;
@@ -134,37 +135,165 @@ public sealed class TLecternIncoming
     }
 
     [Fact]
-    public void LecternChipObserve_EnterOnTagAndSituation_KeepsTheEntryWithoutTheirTab()
+    public void LecternChipObserve_StoredTagWithoutConsolePanel_KeepsTheEntry()
     {
-        foreach (string chip in (string[])["#nature", "[at home]"])
-        {
-            TLecternCard.TLecternCardRun(
-                static (_, save) => save(
-                    "apple",
-                    [
-                        TInterface.TCardCreate("a round fruit", 1) with
-                        {
-                            LCardDraftSituation = [new LSituationDraft("at home", 0, "home", "place")],
-                            LCardDraftTag = [LTagDraft.LTagDraftCreate("nature")],
-                        },
-                    ]),
-                (send, rows, lit, atelier, _) =>
-                {
-                    List<string?> tabs = [];
-                    atelier.CAtelierNavigation.CNavigationChanged += state => tabs.Add(state.CNavigationStateTab);
-                    for (int step = 0; step < 20 && lit()?.Item1 != chip; step++)
+        TLecternCard.TLecternCardRun(
+            static (_, save) => save(
+                "apple",
+                [
+                    TInterface.TCardCreate("a round fruit", 1) with
                     {
-                        send(ConsoleKey.DownArrow);
-                    }
+                        LCardDraftTag = [LTagDraft.LTagDraftCreate("nature")],
+                    },
+                ]),
+            static (send, rows, lit, atelier, _) =>
+            {
+                List<string?> tabs = [];
+                atelier.CAtelierNavigation.CNavigationChanged += state => tabs.Add(state.CNavigationStateTab);
+                TLecternIncomingSeek(send, lit, "#nature");
 
-                    Assert.Equal((chip, "lit"), lit());
+                send(ConsoleKey.Enter);
 
-                    send(ConsoleKey.Enter);
+                Assert.Empty(tabs);
+                Assert.StartsWith("apple", rows()[0], StringComparison.Ordinal);
+                Assert.Equal(("#nature", "lit"), lit());
+            });
+    }
 
-                    Assert.Empty(tabs);
-                    Assert.StartsWith("apple", rows()[0], StringComparison.Ordinal);
-                    Assert.Equal((chip, "lit"), lit());
-                });
+    [Fact]
+    public void LecternChipObserve_StoredTagWithTaxonomy_OpensTheTabAndAltLeftComesBack()
+    {
+        TLecternCard.TLecternCardRun(
+            static (_, save) => save(
+                "apple",
+                [
+                    TInterface.TCardCreate("a round fruit", 1) with
+                    {
+                        LCardDraftTag = [LTagDraft.LTagDraftCreate("nature")],
+                    },
+                ]),
+            static (send, rows, lit, atelier, console) =>
+            {
+                List<string> asked = [];
+                _ = CTaxonomy.CTaxonomyCreate(
+                    atelier, static () => true, TEnvoyFake.TEnvoyCreate(true, asked), static run => run());
+                List<string?> tabs = [];
+                atelier.CAtelierNavigation.CNavigationChanged += state => tabs.Add(state.CNavigationStateTab);
+                TLecternIncomingSeek(send, lit, "#nature");
+
+                send(ConsoleKey.Enter);
+
+                Assert.Equal("Taxonomy", tabs[^1]);
+                Assert.Empty(asked);
+
+                console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\0', ConsoleKey.LeftArrow, false, true, false));
+
+                Assert.True(SpinWait.SpinUntil(
+                    () => rows().Count > 0 && tabs[^1] == "Library", TimeSpan.FromSeconds(10)));
+                Assert.StartsWith("apple", rows()[0], StringComparison.Ordinal);
+            });
+    }
+
+    [Fact]
+    public void LecternFollowObserve_TranslationThenAltLeft_ComesBackToTheEntry()
+    {
+        TLecternCard.TLecternCardRun(
+            static (engine, save) =>
+            {
+                long zebra = save("zebra", []);
+                _ = save(
+                    "apple", [TInterface.TCardCreate("a round fruit", 1) with { LCardDraftTranslation = [zebra] }]);
+            },
+            static (send, rows, lit, atelier, console) =>
+            {
+                TLecternIncomingSeek(send, lit, "→ zebra English");
+                send(ConsoleKey.Enter);
+                Assert.StartsWith("zebra", rows()[0], StringComparison.Ordinal);
+
+                console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\0', ConsoleKey.LeftArrow, false, true, false));
+
+                Assert.True(SpinWait.SpinUntil(
+                    () => rows()[0].StartsWith("apple", StringComparison.Ordinal), TimeSpan.FromSeconds(10)));
+            });
+    }
+
+    [Fact]
+    public void LecternChipDraw_UnstoredSituation_IsNoItem()
+    {
+        TLecternCard.TLecternCardRun(
+            static (_, save) => save(
+                "apple",
+                [
+                    TInterface.TCardCreate("a round fruit", 1) with
+                    {
+                        LCardDraftSituation = [new LSituationDraft("at home", 0, "home", "place")],
+                        LCardDraftTag = [LTagDraft.LTagDraftCreate("nature")],
+                    },
+                ]),
+            static (send, rows, lit, _, _) =>
+            {
+                Assert.Contains("[at home]", rows());
+                List<string?> seen = [];
+                for (int step = 0; step < 20; step++)
+                {
+                    seen.Add(lit()?.Item1);
+                    send(ConsoleKey.DownArrow);
+                }
+
+                Assert.Contains("#nature", seen);
+                Assert.DoesNotContain("[at home]", seen);
+            },
+            build: static engine =>
+            {
+                LVistaPort stored = engine.LEngineVista;
+                Func<LDraft?, LDraft?> strip = loaded => loaded is null ? null : loaded with
+                {
+                    LDraftContent = loaded.LDraftContent with
+                    {
+                        LEntryDraftMeanings =
+                        [
+                            .. loaded.LDraftContent.LEntryDraftMeanings.Select(static card => card with
+                            {
+                                LCardDraftSituation =
+                                [
+                                    .. card.LCardDraftSituation.Select(
+                                        static situation => situation with { LSituationDraftId = 0 }),
+                                ],
+                            }),
+                        ],
+                    },
+                };
+                return TInterfaceConduct.TAtelierCreate(
+                    engine,
+                    TEngineFake.TEngineCreate<LVistaPort>(new Dictionary<string, Func<object?[]?, object?>>
+                    {
+                        ["LEngineEntryFind"] = args => args!.Length == 1
+                            ? stored.LEngineEntryFind((LVista)args[0]!)
+                            : stored.LEngineEntryFind((LVista?)args[0], (LVista?)args[1]),
+                        ["LEngineNameResolve"] = args => stored.LEngineNameResolve((IReadOnlyList<string>)args![0]!),
+                        ["LEngineVistaLoad"] = args => strip(args!.Length == 1
+                            ? stored.LEngineVistaLoad((LVista)args[0]!)
+                            : stored.LEngineVistaLoad((LVista)args[0]!, (long?)args[1])),
+                        ["LEngineFileRead"] = args => stored.LEngineFileRead((LVista?)args![0]),
+                        ["LEngineSideSave"] = args =>
+                        {
+                            stored.LEngineSideSave((LVista)args![0]!);
+                            return null;
+                        },
+                        ["LEngineUsageRead"] = args => stored.LEngineUsageRead((LVista)args![0]!),
+                        ["LEngineTallyRead"] = args => stored.LEngineTallyRead((LVista)args![0]!),
+                        ["LEngineVistaDelete"] = args => stored.LEngineVistaDelete((LVista)args![0]!),
+                    }));
+            });
+    }
+
+    private static void TLecternIncomingSeek(Action<ConsoleKey> send, Func<(string, string)?> lit, string item)
+    {
+        for (int step = 0; step < 20 && lit()?.Item1 != item; step++)
+        {
+            send(ConsoleKey.DownArrow);
         }
+
+        Assert.Equal((item, "lit"), lit());
     }
 }

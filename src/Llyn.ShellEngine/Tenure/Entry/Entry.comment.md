@@ -52,7 +52,8 @@ An unresolved translation keeps its typed text instead of clearing the field.
 A new translation court inherits the owner draft's origin before its target is linked.
 Removal unlinks first, then deletes any matching court and its target draft.
 
-Translation target reads combine meaning and collocation links into one distinct-id engine read.
+Translation target reads combine the links of every meaning and collocation, nested cards included, into one distinct-id engine read.
+The tenure reads through the same resolution as the facade, so both key their answers alike.
 A target read failure, a refusal included, reaches the caller.
 
 Sense changes and span-based mention removals persist pending typing before finding the Mention.
@@ -117,11 +118,11 @@ Typed text defers, while scheme picks apply immediately.
 
 ## Stamp
 
-Commit: `8c403d1df768`
+Commit: `36e31eb71c98`
 - `LEasel.cs` `5262f25cced57f5a`
 - `LQuillAncestor.cs` `9a383e8186246a3b`
 - `LQuillCard.cs` `01ba2db86c718ee7`
-- `LQuillChip.cs` `0ae16ee256006cab`
+- `LQuillChip.cs` `304eddb966bcceff`
 - `LQuillEntry.cs` `923cb6b552ca3f64`
 - `LQuillPronunciation.cs` `705a829d2b1a3d36`
 - `LQuillReflex.cs` `0f96dbb24c7d79be`
