@@ -139,7 +139,7 @@ public sealed class QLecternEtymology
     {
         if (e.OriginalSource is FrameworkContentElement { DataContext: QEtymologyItem row })
         {
-            _qLecternEtymologyRoute.CDisplayChipOpen(null, row.QEtymologyItemAncestor.CAncestorEntry);
+            _qLecternEtymologyRoute.CDisplayChipOpen(row.QEtymologyItemAncestor.CAncestorEntry);
         }
     }
 

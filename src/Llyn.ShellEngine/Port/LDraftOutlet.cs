@@ -95,11 +95,14 @@ public sealed class LDraftOutlet : LDraftPort
     public bool LEngineSpanCheck(string text, int start, int length) =>
         _lDraftOutletEngine.LEngineMention.LEngineSpanCheck(text, start, length);
 
-    public IReadOnlyDictionary<long, IReadOnlyList<LMentionLabel>> LEngineMentionResolve(LTenure held) =>
-        _lDraftOutletEngine.LEngineMention.LEngineMentionResolve(held);
+    public IReadOnlyDictionary<long, IReadOnlyList<LMentionLabel>> LEngineMentionResolve(LDraft draft) =>
+        _lDraftOutletEngine.LEngineMention.LEngineMentionResolve(draft);
 
     public IReadOnlyList<LMentionLabel> LEngineMentionResolve(LTenure held, long card, long sentence) =>
         _lDraftOutletEngine.LEngineMention.LEngineMentionResolve(held, card, sentence);
+
+    public long LEngineLineFind(LEntryDraft shown, LSentenceDraft sentence) =>
+        _lDraftOutletEngine.LEngineMention.LEngineLineFind(shown, sentence);
 
     public IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)>? LEngineSenseRead(
         LTenure held, long card, long sentence, string text, int start, int length, string key) =>

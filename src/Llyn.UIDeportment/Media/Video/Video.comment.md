@@ -77,6 +77,11 @@ Only the fields whose value differs from the held draft are announced.
 
 A null screen hides the frame, so no empty player stands on the card.
 
+### `QVideoItemName`
+
+The name Conduct shows for the video, the console's line text.
+The screen carries it as its automation name, set beside its film and address.
+
 ### `QVideoItemUntil`
 
 Null when the timestamp named no end and the video plays out.
@@ -103,8 +108,8 @@ The playing flag is bound both ways, since the screen's own switch changes it.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `cb8ab7e8feb4`
 - `QMedia.cs` `321762919a3d50ca`
 - `QVideo.cs` `4893de8374e2efa7`
 - `QVideoFrame.cs` `035e9d17ffed88d5`
-- `QVideoItem.cs` `fbaade6a8cab3d7e`
+- `QVideoItem.cs` `1ff235c980fd4c89`

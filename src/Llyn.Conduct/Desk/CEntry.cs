@@ -82,7 +82,8 @@ public sealed class CEntry
                 ".FindFailed"),
             LEntryFoldRead(),
             _cEntryMediaPort,
-            _cEntryDraftPort.LEngineMeaningScan(held, "Display.Unknown"));
+            _cEntryDraftPort.LEngineMeaningScan(held, "Display.Unknown"),
+            _cEntryDraftPort);
     }
 
     private void LEntryDraftShow()

@@ -145,6 +145,7 @@ A row carrying no frame drops it whole.
 
 The control that knows its words draws the sentence, so a reader can click one.
 `QLeaf` sets its text, language and Mentions and keeps the frame out of the sentence.
+It is focusable, so Enter on it starts the word cursor.
 Its language is the Example's own, because the sentence may be written in a language the entry is not.
 Examples use the typography the language pack declares for them.
 The fallback for a pack that declares none is written once, with the rest of a card's measurements.
@@ -235,10 +236,10 @@ The stamp label is muted and small, because the stamps are a footnote.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `cb8ab7e8feb4`
 - `PDisplayCard.xaml` `9189158db876e2c7`
 - `PDisplayCollocation.xaml` `3319fa918b8df9eb`
-- `PDisplayExample.xaml` `57c0a5213712f0db`
+- `PDisplayExample.xaml` `73f08f8c15bc903c`
 - `PDisplayMeaning.xaml` `f965dfe515ea48aa`
 - `PDisplayRegister.xaml` `d128fa6b868d9cb7`
 - `PDisplaySituation.xaml` `da80ba1cee6b4e0f`

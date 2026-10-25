@@ -183,10 +183,15 @@ The sheet map, the place map, the reading view and the contents share it, so tho
 `CFolioOrdinalRead` counts from one and pulls a number past either end to that end.
 It answers a place, not an engine index, so the badge number and the shown order agree.
 Text that is not a whole number answers null.
+`CFolioNameRead` words the shown name of a picture or video.
+It is the file name of the resolved address, else of the written location, else the address or location itself.
+No caption is stored yet, so none comes first.
 `CFolioListRead` is the list holding `cardId`, the collocations when no meaning holds it.
 `CFolioCountRead` is the length of that list, so the position gate asks the same list the move uses.
 
 A sentence row with no example yet words the empty text, so its field shows the example hint.
+Each sentence row carries its row id and a line key from `LDraftPort.LEngineLineFind` on the shown draft.
+So `CFolioEntryRead` receives the draft port, and the line key is the engine's position among the entry's sentences.
 Images and videos carry the engine's empty verdict, so a reading card folds a picture nobody located.
 The address or screen comes from `media`, and videos carry the moments the engine reads from the span.
 The engine settles what may be reached, and the map only hands it the plain text.
@@ -218,7 +223,10 @@ The mention and sense checks read the held draft even while the desk fills.
 The shared read in `CMention` chooses the fallback `Display.Unknown`.
 A failed read shows `Mention.FindFailed` and answers null.
 
-`CSentenceMentionRead` answers one entry for every sentence of the held cards, and empty means no chips.
+`CSentenceMentionRead` takes the shown entry and answers one entry for every sentence it shows, keyed by line key.
+Empty means no chips.
+It resolves labels and mints keys from one draft, so a key is valid only against that draft.
+A shown sentence the draft no longer holds gets an empty list.
 A failed read shows `Mention.FindFailed` once and answers an empty list for every sentence.
 With no draft held it answers no entries.
 Each unlinked chip carries its own key, so the driver passes no silent word.
@@ -233,13 +241,13 @@ Its lists are empty when none are known.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `44d0e95bcfcc`
 - `CCard.cs` `73aa7858dc403d5e`
 - `CCardField.cs` `1c45a2b59a846aaf`
 - `CCardList.cs` `676fda163fb37d36`
 - `CCardSpeech.cs` `c33bd983a66825f2`
 - `CCaret.cs` `cf2769876b6c7b6e`
 - `CCaretTrail.cs` `0ac8e0459942d0a7`
-- `CFolio.cs` `9146a2e633f8019f`
-- `CSentence.cs` `ea7e08ddebc389f9`
+- `CFolio.cs` `a2050317950ffecb`
+- `CSentence.cs` `8f61d4ecec65d2c6`
 - `CSentenceFrame.cs` `dcb9e108a9b63eb9`

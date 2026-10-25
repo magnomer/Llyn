@@ -156,12 +156,13 @@ A fact hands its own media port, so it can watch what the map asks and what the 
 Relays the entry draft map, so the facts pass engine drafts through the boundary.
 It hands no folded ids, so every card maps unfolded.
 It hands no link menu, so no card carries meaning links.
+It hands a draft port whose line find is the clerk's, so each sentence carries its line key.
 
 ## `TInterfaceConductDesk`
 
 The relays for Conduct's desk area, its session and its errand.
 They build a desk or a session and reach the desk's starts, its tenure and the errand's maps.
-They read the held draft's sentence ids and build the editor's marks over a grasp port a fact fakes.
+They read the held draft's sentence line keys and build the editor's marks over a grasp port a fact fakes.
 They build the editor and run the recording search that the errand facts share.
 Each relay is transparent.
 
@@ -184,7 +185,8 @@ The variety, foray and held-draft relays likewise do nothing or answer nothing w
 
 ## `TDeskSentenceRead`
 
-The ids of every sentence row on the held draft's meaning and collocation cards, in ascending order.
+The line keys of every sentence row on the held draft's meaning and collocation cards, in ascending order.
+Each key comes from `LMentionClerk.LMentionLineFind`, so a fact compares keys and no stored row id.
 It answers none with no draft held, so a fact names no engine draft member itself.
 
 ## `TEsteemCreate`
@@ -503,11 +505,11 @@ The arrival opens relay a panel's open as the navigation runs it.
 
 ## Stamp
 
-Commit: `52c21d68b4c4`
+Commit: `44d0e95bcfcc`
 - `TInterfaceArea.cs` `bf5825a6e7d0f03b`
 - `TInterfaceConduct.cs` `f849d43f7cf1ffa9`
-- `TInterfaceConductCard.cs` `678838c33733ba58`
-- `TInterfaceConductDesk.cs` `85c44229ca35484b`
+- `TInterfaceConductCard.cs` `f6396e75afbb80c6`
+- `TInterfaceConductDesk.cs` `ef7f5acb3c7aa03d`
 - `TInterfaceConductDialog.cs` `3c2d58ee2694a179`
 - `TInterfaceConductPanel.cs` `c7d7de34ba294c4c`
 - `TInterfaceConductPortrait.cs` `c0b5da50cc1382f2`

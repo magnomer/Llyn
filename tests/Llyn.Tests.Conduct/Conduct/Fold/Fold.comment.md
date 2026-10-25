@@ -41,6 +41,11 @@ Both toggles answer true.
 A meaning added in the editor is unstored.
 Its fold gate stores nothing, and the card still reads open in the next draft.
 
+## `DisplayFoldToggle_SaveRefused_RaisesNoDisplayFold`
+
+The fold table is made unavailable, so the store refuses the write and the gate answers false.
+The reading view rereads its cards only on the display fold event, so a refused fold must raise none.
+
 ## `DisplayFoldToggle_OneEntry_LeavesAnotherEntrysCardsUnfolded`
 
 A fold on one entry leaves every card of another entry open, in the view and in the store.
@@ -95,6 +100,6 @@ The reading view then reads the rime-book box closed and the script box open.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `TCardFold.cs` `d4147bcd78f235d5`
+Commit: `cb8ab7e8feb4`
+- `TCardFold.cs` `8973f726ff8efcbd`
 - `TFold.cs` `f6b04c2122dd3ec1`

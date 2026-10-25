@@ -94,7 +94,8 @@ internal sealed class QCorpus : QChronicleHost
         _qCorpusSpeaker.QTranscriptSpeakerIntroduce(_cCorpus, atelier, envoy);
         _qCorpusGloss.QTranscriptGlossIntroduce(_cCorpus, _qCorpusSpeaker.QTranscriptSpeakerLanguage);
         _qCorpusExcerpt.QExcerptIntroduce(_cCorpus, _qCorpusSpeaker.QTranscriptSpeakerLanguage);
-        _qCorpusExcerpt.QExcerptMentionOffered += mentionMenu.QMentionOfferRefine;
+        _qCorpusExcerpt.QExcerptMentionOffered +=
+            (anchor, offer) => mentionMenu.QMentionOfferRefine(anchor, offer, null);
         _qCorpusCitation.QTranscriptCitationIntroduce(_cCorpus);
         _qCorpusPortrait.QCorpusPortraitIntroduce(_cCorpus);
 

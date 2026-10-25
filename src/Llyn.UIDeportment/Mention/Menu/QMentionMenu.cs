@@ -42,7 +42,7 @@ internal sealed class QMentionMenu
 
     private ListBox QMentionList { get; }
 
-    internal void QMentionOfferRefine(QMention anchor, CMentionOffer? offer)
+    internal void QMentionOfferRefine(QMention anchor, CMentionOffer? offer, int? unit)
     {
         ArgumentNullException.ThrowIfNull(anchor);
 
@@ -51,7 +51,7 @@ internal sealed class QMentionMenu
             return;
         }
 
-        QMentionEntryRefine(anchor, anchor.QMentionPlaceRead(offer.CMentionOfferUnit), offer);
+        QMentionEntryRefine(anchor, anchor.QMentionPlaceRead(unit ?? offer.CMentionOfferUnit), offer);
     }
 
     internal QMentionAsk QMentionMeaningRefine(FrameworkElement anchor, Rect place, CMentionSense sense)

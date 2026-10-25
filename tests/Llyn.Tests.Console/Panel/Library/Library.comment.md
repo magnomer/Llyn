@@ -2,6 +2,7 @@
 
 Tests of the Library tab's list, keys, menus and window routing.
 `TLibrary` holds the shared set-up, which starts a real engine, an atelier and a fake envoy.
+A test may pass a seed that fills the engine before the tab opens.
 
 ## `TIndex`
 
@@ -21,6 +22,7 @@ Ctrl+Down shifts the lit row one place down.
 Enter answers false on an empty list, and Insert and Ctrl+Down answer false when no callback is given.
 Without a query, a letter jumps to the next matching name.
 The glyph test pins that the ascii, double and single glyph sets carry the list marks with the same counts.
+The marks include the tree marks, which read `|- `- |` in ascii and `├─ └─ │` in single lines.
 
 ## `TLibrary`
 
@@ -58,8 +60,8 @@ These tests wait on the loop for the async work, up to 10 seconds.
 
 ## Stamp
 
-Commit: `fe7e11daae88`
-- `TIndex.cs` `ccb8298dbaf2fca6`
-- `TLibrary.cs` `4c7b3a96a53c4af7`
-- `TLibraryRail.cs` `c491ed0611d8f589`
+Commit: `cb8ab7e8feb4`
+- `TIndex.cs` `dadf98e3d8f50222`
+- `TLibrary.cs` `6535a9c30cf4468d`
+- `TLibraryRail.cs` `1b299a9ddc78a139`
 - `TLibraryRoof.cs` `d91256827a5a974b`

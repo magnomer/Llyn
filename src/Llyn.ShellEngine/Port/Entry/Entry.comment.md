@@ -71,7 +71,9 @@ A missing note parses to no blocks.
 
 The slice a deportment sees when it opens a Mention or a link.
 `LMentionFacade` implements it.
-`LEngineMentionFind` gives the Mention under an offset of a stored Example or of one sentence of the shown entry.
+`LEngineMentionFind` gives the Mention under an offset of a stored Example.
+It also gives the Mention under an offset of one sentence of the shown entry, named by its line key.
+A line key outside the shown entry's sentences answers the bare offset.
 `LEngineLinkRead` gives the entry a clicked link names, or null when it names none.
 A link names its entry only through a stored id, so an empty id names nothing.
 
@@ -84,11 +86,11 @@ The dependence labels and particles are those already saved in the language's ex
 
 ## Stamp
 
-Commit: `bd299c638b2c`
+Commit: `44d0e95bcfcc`
 - `LAncestorPort.cs` `7e9777eb958ef99c`
 - `LCardPort.cs` `abe0d7c5966b542d`
 - `LEntryPort.cs` `f4a67592fdb729d6`
 - `LGraspPort.cs` `9099a47b67179e94`
 - `LMarkdownPort.cs` `d966d5c1e2a4e15c`
-- `LMentionPort.cs` `fb0fed747dc2e183`
+- `LMentionPort.cs` `7a0a2aadff6233b5`
 - `LSentencePort.cs` `8284e49bd11eb19f`

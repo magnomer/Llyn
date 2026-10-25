@@ -169,8 +169,10 @@ public sealed class CSentence
             _cSentenceSettingsPort);
     }
 
-    public IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> CSentenceMentionRead()
+    public IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> CSentenceMentionRead(CEntryDraft shown)
     {
+        ArgumentNullException.ThrowIfNull(shown);
+
         if (_cSentenceDesk.CDeskDraft.CDeskDraftTenure is not LTenure held || held.LTenureRead() is not LDraft draft)
         {
             return new Dictionary<long, IReadOnlyList<CMentionLabel>>();
@@ -178,13 +180,15 @@ public sealed class CSentence
 
         try
         {
-            return CMention.LMentionLineRead(draft.LDraftContent, _cSentenceDraftPort.LEngineMentionResolve(held));
+            return CMention.LMentionLineRead(
+                shown, draft.LDraftContent, _cSentenceDraftPort.LEngineMentionResolve(draft), _cSentenceDraftPort);
         }
         catch (Exception exception)
         {
             CLedger.LLedgerFailureShow(_cSentenceEnvoy, _cSentenceSettingsPort, "Mention.FindFailed", exception);
             return CMention.LMentionLineRead(
-                draft.LDraftContent, new Dictionary<long, IReadOnlyList<LMentionLabel>>());
+                shown,
+                draft.LDraftContent, new Dictionary<long, IReadOnlyList<LMentionLabel>>(), _cSentenceDraftPort);
         }
     }
 

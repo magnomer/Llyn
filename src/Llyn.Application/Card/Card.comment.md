@@ -272,7 +272,11 @@ It bounds how many code points before the click a headword may begin in a langua
 
 The stored find reads the Example and asks the text find with its language and Mentions.
 An id naming no Example is refused.
-The reading-view find names only its sentence row, so text, language and Mentions come from the shown draft.
+The reading-view find names only a line key, so text, language and Mentions come from the shown draft.
+`LMentionLineFind` mints the line key, the position counted from one among the shown entry's sentences.
+Those sentences run over the meaning cards first and then the collocation cards.
+A key outside that range finds no row, so the answer is the bare offset.
+A sentence the shown entry does not hold gets key zero.
 The row's Example text is the text the line shows whenever the line shows words.
 An Example that names no language is read in the language of the shown entry.
 A row that is gone or quotes no Example answers the bare offset with no word.
@@ -309,7 +313,7 @@ The headwords are read in one batched call, each Meaning once however many Menti
 A Mention standing for nothing gets an empty name, for the line to substitute its own word.
 The offsets count code points, so the span is cut at the UTF-16 units the sentence maps them to.
 
-The draft form answers the mention line of every sentence row on every card, keyed by the row.
+The draft form answers the mention line of every sentence row on every card, keyed by its line key.
 A row with no Example yet answers an empty line, so its chips are cleared.
 A missing draft answers no rows.
 The card and sentence form answers one Example's line, where card 0 and sentence 0 address the draft's own Example.
@@ -517,13 +521,13 @@ The rows are twinned and given their epithet when `epithet` asks for it.
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `44d0e95bcfcc`
 - `LCardClerk.cs` `bdb3cac0e6820774`
 - `LCardClerkField.cs` `9bb3e1536c7cc7cd`
 - `LCardEquality.cs` `7b2fe6cd813afde8`
 - `LFoldClerk.cs` `9d2f0fde4a8aa1e1`
 - `LMeaningClerk.cs` `598fe8f393d8d254`
-- `LMentionClerk.cs` `262a4d4f6fe0e0b4`
+- `LMentionClerk.cs` `283273171501d408`
 - `LRegisterClerk.cs` `8a24d2adadc14ffc`
 - `LTagClerk.cs` `ddc8ee276f94f7fd`
 - `LTranslationClerk.cs` `b6bfa9297962f513`

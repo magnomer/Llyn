@@ -9,6 +9,10 @@ Caret cases check that settles and picks land before the anchor and deletes take
 
 Direct draft construction checks wording without requiring a workspace.
 Shared desk helpers keep field gate tests on immediate persistence.
+The shown name of a picture or video is the file name of its resolved address.
+Else it is the file name of its written location.
+When neither holds a file name, the address or the written location itself is the name.
+The written location is split at either slash or the drive colon, so Windows and Unix paths name alike.
 
 ## `TCardPrepare`
 
@@ -80,8 +84,8 @@ A caret moved back inserts a picked row before its anchor and leaves the anchor 
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `TCard.cs` `a1c183924f8ad673`
+Commit: `cb8ab7e8feb4`
+- `TCard.cs` `b54f5d3767d484e4`
 - `TCardList.cs` `4700acc755d2cbf7`
 - `TCardReference.cs` `7b728c701dd3e0de`
 - `TCardRegister.cs` `29d5a23e7a3154ed`

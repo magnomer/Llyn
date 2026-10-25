@@ -36,14 +36,15 @@ public sealed class LMentionClerk
             stored.LExampleText.LStateValueShow(), stored.LExampleLanguage, offset, stored.LExampleMention);
     }
 
-    public LMentionResult LMentionClerkFind(LEntryDraft shown, long sentence, int offset)
+    public static long LMentionLineFind(LEntryDraft shown, LSentenceDraft sentence)
     {
-        ArgumentNullException.ThrowIfNull(shown);
+        return LMentionSentenceRead(shown).FindIndex(row => ReferenceEquals(row, sentence)) + 1;
+    }
 
-        LSentenceDraft? row = shown.LEntryDraftMeanings
-            .Concat(shown.LEntryDraftCollocations)
-            .SelectMany(static card => card.LCardDraftSentence)
-            .FirstOrDefault(row => row.LSentenceDraftId == sentence);
+    public LMentionResult LMentionClerkFind(LEntryDraft shown, long line, int offset)
+    {
+        List<LSentenceDraft> sentences = LMentionSentenceRead(shown);
+        LSentenceDraft? row = line > 0 && line <= sentences.Count ? sentences[(int)line - 1] : null;
         if (row?.LSentenceDraftExample is not LExampleDraft example)
         {
             return new LMentionResult(offset, null, []);
@@ -54,6 +55,15 @@ public sealed class LMentionClerk
             row.LSentenceDraftLanguage.Length > 0 ? row.LSentenceDraftLanguage : shown.LEntryDraftLanguage,
             offset,
             LDraftClerkMention.LMentionRead(row.LSentenceDraftMention));
+    }
+
+    private static List<LSentenceDraft> LMentionSentenceRead(LEntryDraft shown)
+    {
+        ArgumentNullException.ThrowIfNull(shown);
+
+        return [.. shown.LEntryDraftMeanings
+            .Concat(shown.LEntryDraftCollocations)
+            .SelectMany(static card => card.LCardDraftSentence)];
     }
 
     public LMentionResult LMentionClerkFind(
@@ -182,8 +192,11 @@ public sealed class LMentionClerk
         Dictionary<long, IReadOnlyList<LMentionLabel>> lines = [];
         if (draft is not null)
         {
-            LMentionClerkResolve(draft.LDraftContent.LEntryDraftMeanings, lines);
-            LMentionClerkResolve(draft.LDraftContent.LEntryDraftCollocations, lines);
+            List<LSentenceDraft> sentences = LMentionSentenceRead(draft.LDraftContent);
+            for (int index = 0; index < sentences.Count; index++)
+            {
+                lines[index + 1] = LMentionClerkResolve(sentences[index].LSentenceDraftExample);
+            }
         }
 
         return lines;
@@ -199,20 +212,6 @@ public sealed class LMentionClerk
         return example is null
             ? []
             : LMentionClerkResolve(example.LExampleDraftText.LStateValueShow(), example.LExampleDraftMention);
-    }
-
-    private void LMentionClerkResolve(
-        IReadOnlyList<LCardDraft> cards, Dictionary<long, IReadOnlyList<LMentionLabel>> lines)
-    {
-        foreach (LCardDraft card in cards)
-        {
-            foreach (LSentenceDraft sentence in card.LCardDraftSentence)
-            {
-                lines[sentence.LSentenceDraftId] = LMentionClerkResolve(sentence.LSentenceDraftExample);
-            }
-
-            LMentionClerkResolve(card.LCardDraftChild, lines);
-        }
     }
 
     private string LMentionSenseRead(long sense)

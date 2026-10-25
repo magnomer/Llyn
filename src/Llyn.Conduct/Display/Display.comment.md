@@ -98,7 +98,8 @@ It is split from the header by concern, since the marks touch no other part of t
 It holds no state, and every member works on the entry the rules say is chosen.
 The grasp rule, the favourite rule and the chosen entry all stay in `CRule`.
 `CDisplayFavoriteChanged` counts only for the chosen entry, and is raised on the engine's thread like the header's events.
-`CDisplayFavoriteToggle` returns a fresh favourite read after asking the rules to store the mark.
+`CDisplayFavoriteToggle` stores the opposite of the chosen entry's current mark, then returns a fresh favourite read.
+It takes no argument, so a key needs no state of its own.
 A refused mark thus answers the old value, and the display reports the failure.
 `CDisplayGraspStep` is never negative, since `CRule` raises a negative engine limit to zero.
 The star control takes it as its limit, so it names no engine constant.
@@ -116,16 +117,20 @@ A press on the standing step comes back cleared, since the display's one rule ow
 
 The route area handles the clicks that open another place.
 A chip, a source link, or a word in a line opens through it.
-It holds no state beyond the atelier's mention area, which stays null until the navigation is attached.
+It holds the atelier's mention area, which stays null until the navigation is attached.
+It also holds the word cursor of the console's reading view, and the card area to find sentences in.
 `CDisplayRowChosen` carries the tab and the record a clicked chip names, and the display hands it to the navigation.
 `CDisplayChipOpen` opens a stored chip's record in the tab its kind picks, chosen by name in `LDisplayTabRead`.
 Any other chip falls to the link, which opens the library tab on its entry.
 The engine says which entry a link names, and an empty id names none, so nothing opens.
+The link alone opens the same library tab, for a translation link that has no chip.
 It answers whether a tab was asked, so the driver marks the click handled.
 `CDisplayMentionFind` takes the whole shown text and the clicked UTF-16 unit.
 The engine reads the row's text, language and Mentions from the shown entry itself.
 So no Mention travels up through the driver and back.
 `LDisplayMentionOpen` answers null when no mention area is held or nothing is shown.
+It also answers null when the shown entry is no longer the draft the line key was minted from.
+That draft is the one the card area last read, so a changed entry finds nothing for an old key.
 `LMentionOffsetRead` turns the click into a code-point offset.
 `LMentionResultOpen` then opens a stored Mention or a sole entry at once.
 The answer is where the menu stands and the entries it offers, empty when one opened.
@@ -133,6 +138,22 @@ The menu is placed on the found word's start, as a UTF-16 unit in the whole show
 The reading view asks no leave question, since the navigation asks it on opening.
 A refused lookup shows `Mention.FindFailed` and answers null, so the click opens nothing.
 The offset read and the open sit inside the same catch.
+
+### Word cursor
+
+`CDisplayWordStart` finds the sentence among the shown meanings, collocations and their rows.
+It puts the cursor on the sentence's first unit.
+It also records the draft the card area last read.
+A later find on that cursor needs the same draft.
+A sentence not found leaves nothing to move, and `CDisplayWordFind` then answers null.
+`CDisplayWordUnit` is the cursor's UTF-16 offset in the sentence text, and `CDisplayWordLength` the text element that starts there.
+`CDisplayWordMove` steps by one text element, so a surrogate pair or combined mark is never split.
+`CDisplayWordSeek` jumps to the next or previous stop, a piece start or a word start.
+It stays put when no stop is left.
+`CDisplayWordLead` is the text from the cursor's word start up to the cursor.
+A driver uses it to place the menu on that word's start.
+`CDisplayWordFind` asks the same lookup as a click and pulls the word start back to the found mention.
+It answers null once another entry is shown, since the recorded draft no longer matches.
 
 ## `CLectern`
 
@@ -211,12 +232,12 @@ Any other name is the unknown tier, so the chip always finds a brush and a name.
 
 ## Stamp
 
-Commit: `fe7e11daae88`
-- `CDisplay.cs` `40fcc488d0d4913c`
+Commit: `44d0e95bcfcc`
+- `CDisplay.cs` `14790bbc535748fe`
 - `CDisplayAccent.cs` `63df02164d2dda07`
-- `CDisplayGrasp.cs` `053ae7529332c02f`
+- `CDisplayGrasp.cs` `1608230d12b1eee3`
 - `CDisplayPlayback.cs` `7fd2ed66c09e90e7`
-- `CDisplayRoute.cs` `2b36821ac6c75d95`
+- `CDisplayRoute.cs` `91f0eefde84189b2`
 - `CGrasp.cs` `726f35d01c119673`
 - `CLectern.cs` `fed67f5c9720b3bf`
 - `CLecternAccent.cs` `92ed38553d3d9914`

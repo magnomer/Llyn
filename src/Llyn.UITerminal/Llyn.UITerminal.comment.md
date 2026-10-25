@@ -28,11 +28,12 @@ It lists the same six blueprints in that order, and a blueprint left out of the 
 Each glyph set holds six frame marks, three rule marks and the marks of the UI's symbols.
 The `double` set draws the window, the `single` set uses thin lines, and the `ascii` set needs no box drawing.
 A mark with several states lists one cell per state, such as `Grasp` with its three star steps.
+`Tree` lists the branch, last-branch and trunk cells that the etymology map draws.
 Every set has a mark for every symbol, so a screen may switch sets without a missing glyph.
 
 ## Stamp
 
-Commit: `fe7e11daae88`
+Commit: `cb8ab7e8feb4`
 - `ABootstrap.cs` `ffad35cfe3757da5`
-- `ABootstrap.xaml` `1453619044f0fff7`
+- `ABootstrap.xaml` `5458370522a30897`
 - `Llyn.UITerminal.csproj` `86e4ea580199520e`

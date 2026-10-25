@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using Llyn.Conduct;
 
 namespace Llyn.UIDeportment;
@@ -50,9 +51,13 @@ public sealed class QLecternCard
             QMention.QMentionClickEvent, new EventHandler<QMentionArgument>(QLecternMentionObserve));
         _qLecternCardCollocation.AddHandler(
             QMention.QMentionClickEvent, new EventHandler<QMentionArgument>(QLecternMentionObserve));
+        _qLecternCardMeaning.AddHandler(
+            QMention.QMentionWordEvent, new EventHandler<QMentionArgument>(QLecternWordStart));
+        _qLecternCardCollocation.AddHandler(
+            QMention.QMentionWordEvent, new EventHandler<QMentionArgument>(QLecternWordStart));
     }
 
-    internal event Action<QMention, CMentionOffer?>? QLecternMentionNotice;
+    internal event Action<QMention, CMentionOffer?, int?>? QLecternMentionNotice;
 
     internal event Action<long>? QLecternSeeNotice;
 
@@ -123,6 +128,73 @@ public sealed class QLecternCard
         QLecternMentionNotice?.Invoke(
             e.QMentionArgumentOrigin,
             _qLecternCardRoute.CDisplayMentionFind(
-                e.QMentionArgumentSentence, e.QMentionArgumentText, e.QMentionArgumentUnit));
+                e.QMentionArgumentSentence, e.QMentionArgumentText, e.QMentionArgumentUnit),
+            null);
+    }
+
+    private void QLecternWordStart(object? sender, QMentionArgument e)
+    {
+        ArgumentNullException.ThrowIfNull(e);
+
+        QMention line = e.QMentionArgumentOrigin;
+        _qLecternCardRoute.CDisplayWordStart(e.QMentionArgumentSentence);
+        line.PreviewKeyDown -= QLecternWordObserve;
+        line.PreviewKeyDown += QLecternWordObserve;
+        line.LostKeyboardFocus -= QLecternWordStop;
+        line.LostKeyboardFocus += QLecternWordStop;
+        QLecternWordShow(line);
+        e.Handled = true;
+    }
+
+    private void QLecternWordObserve(object sender, KeyEventArgs e)
+    {
+        if (sender is not QMention line)
+        {
+            return;
+        }
+
+        int step = e.Key == Key.Left ? -1 : 1;
+        bool jump = Keyboard.Modifiers.HasFlag(ModifierKeys.Control);
+        switch (e.Key)
+        {
+            case Key.Enter:
+                CMentionOffer? offer = _qLecternCardRoute.CDisplayWordFind();
+                QLecternWordShow(line);
+                QLecternMentionNotice?.Invoke(
+                    line, offer, _qLecternCardRoute.CDisplayWordUnit - _qLecternCardRoute.CDisplayWordLead.Length);
+                break;
+            case Key.Left or Key.Right when jump:
+                _qLecternCardRoute.CDisplayWordSeek(step);
+                QLecternWordShow(line);
+                break;
+            case Key.Left or Key.Right:
+                _qLecternCardRoute.CDisplayWordMove(step);
+                QLecternWordShow(line);
+                break;
+            case Key.Escape:
+                QLecternWordStop(line, e);
+                break;
+            default:
+                return;
+        }
+
+        e.Handled = true;
+    }
+
+    private void QLecternWordStop(object sender, RoutedEventArgs e)
+    {
+        if (sender is not QMention line)
+        {
+            return;
+        }
+
+        line.PreviewKeyDown -= QLecternWordObserve;
+        line.LostKeyboardFocus -= QLecternWordStop;
+        line.QMentionWordRefine(null, 0);
+    }
+
+    private void QLecternWordShow(QMention line)
+    {
+        line.QMentionWordRefine(_qLecternCardRoute.CDisplayWordUnit, _qLecternCardRoute.CDisplayWordLength);
     }
 }

@@ -111,6 +111,25 @@ public sealed class TDisplayGrasp
         Assert.Equal(0, engine.TEngineGraspRead(water.LEntryId));
     }
 
+    [Fact]
+    public void DisplayGraspMove_LeftFromStepOne_StoresNotRated()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TDisplayArea.TDisplayAtelierCreate(engine);
+        LEntry water = TDisplayArea.TDisplayEntrySave(engine, "water");
+        CWing wing = TDisplayArea.TDisplayWingPrepare(atelier);
+        CDisplayGrasp area = wing.CWingDisplay.CDisplayGrasp;
+        wing.CWingEntryOpen(water.LEntryId);
+        area.CDisplayGraspSet(1);
+
+        CGrasp cleared = area.CDisplayGraspMove(-1);
+
+        Assert.Equal(new CGrasp(0, area.CDisplayGraspRead(0)), cleared);
+        Assert.Equal(0, engine.TEngineGraspRead(water.LEntryId));
+        Assert.Equal(0, area.CDisplayGraspMove(-1).CGraspStep);
+    }
+
     internal static LGraspPort TGraspPortCreate(int limit, int stored) =>
         TEngineFake.TEngineCreate<LGraspPort>(new Dictionary<string, Func<object?[]?, object?>>
         {

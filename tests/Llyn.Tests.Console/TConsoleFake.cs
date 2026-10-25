@@ -1,13 +1,38 @@
 using System.Collections.Concurrent;
 using System.Globalization;
+using System.Runtime.ExceptionServices;
 using Llyn.UIDemeanor;
+using Xunit;
 
 namespace Llyn.Tests;
 
 internal sealed class TConsoleFake : BConsole
 {
     private readonly ConcurrentQueue<(int BConsoleWidth, int BConsoleHeight)> _tConsoleFakeSizes = new();
+    private readonly Dictionary<string, string> _tConsoleFakePalette = new(StringComparer.Ordinal);
     private string[][]? _tConsoleFakeCells;
+    private string?[][]? _tConsoleFakeTints;
+
+    public TConsoleFake()
+    {
+        List<string> roles = [];
+        TConsoleFakeTheme = new BTheme(role =>
+        {
+            if (!roles.Contains(role))
+            {
+                roles.Add(role);
+            }
+
+            return string.Create(
+                CultureInfo.InvariantCulture, $"white #{roles.IndexOf(role) + 1:X6} on black #000000");
+        });
+        foreach (string role in roles)
+        {
+            _tConsoleFakePalette[TConsoleFakeTheme.BThemeRead(role)] = role;
+        }
+    }
+
+    public BTheme TConsoleFakeTheme { get; }
 
     public List<string> TConsoleFakeOutput { get; } = [];
 
@@ -39,6 +64,32 @@ internal sealed class TConsoleFake : BConsole
 
     public string[] TConsoleFakeGrid =>
         _tConsoleFakeCells?.Select(static row => string.Concat(row)).ToArray() ?? [];
+
+    public string?[][] TConsoleFakeRoles =>
+        _tConsoleFakeTints?.Select(static row => row.ToArray()).ToArray() ?? [];
+
+    public static void TConsoleFakeRun(Action run, int seconds = 60)
+    {
+        ExceptionDispatchInfo? failure = null;
+        Thread runner = new(() =>
+        {
+            try
+            {
+                run();
+            }
+            catch (Exception exception)
+            {
+                failure = ExceptionDispatchInfo.Capture(exception);
+            }
+        })
+        {
+            IsBackground = true,
+        };
+        runner.Start();
+
+        Assert.True(runner.Join(TimeSpan.FromSeconds(seconds)), $"The loop did not end within {seconds} seconds.");
+        failure?.Throw();
+    }
 
     public override void BConsoleNoticePrint(string text)
     {
@@ -82,6 +133,10 @@ internal sealed class TConsoleFake : BConsole
         _tConsoleFakeCells ??= Enumerable.Range(0, TConsoleFakeHeight)
             .Select(_ => Enumerable.Repeat(" ", TConsoleFakeWidth).ToArray())
             .ToArray();
+        _tConsoleFakeTints ??= Enumerable.Range(0, TConsoleFakeHeight)
+            .Select(_ => new string?[TConsoleFakeWidth])
+            .ToArray();
+        string? tint = null;
         BCanvasWidth measure = new(TConsoleFakeAmbiguous);
         (int row, int column) = (0, 0);
         int index = 0;
@@ -101,6 +156,10 @@ internal sealed class TConsoleFake : BConsole
                     (row, column) = (int.Parse(place[0], CultureInfo.InvariantCulture) - 1,
                         int.Parse(place[1], CultureInfo.InvariantCulture) - 1);
                 }
+                else if (frame[end] == 'm')
+                {
+                    tint = _tConsoleFakePalette.GetValueOrDefault(frame[index..(end + 1)]);
+                }
 
                 index = end + 1;
                 continue;
@@ -113,9 +172,11 @@ internal sealed class TConsoleFake : BConsole
             if (row < TConsoleFakeHeight && column + cells <= TConsoleFakeWidth)
             {
                 _tConsoleFakeCells[row][column] = cluster;
+                _tConsoleFakeTints[row][column] = tint;
                 if (cells == 2)
                 {
                     _tConsoleFakeCells[row][column + 1] = string.Empty;
+                    _tConsoleFakeTints[row][column + 1] = tint;
                 }
             }
 
@@ -160,6 +221,7 @@ internal sealed class TConsoleFake : BConsole
                 int frames = TConsoleFakeFrames.Count;
                 (TConsoleFakeWidth, TConsoleFakeHeight) = size;
                 _tConsoleFakeCells = null;
+                _tConsoleFakeTints = null;
                 while (TConsoleFakeFrames.Count == frames && Monitor.Wait(_tConsoleFakeSizes, 5000))
                 {
                 }

@@ -133,35 +133,40 @@ public sealed class TBootstrap
     private static int TBootstrapRescueRun(TConsoleFake console, Func<string, Func<string, string>> theme)
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        SynchronizationContext? context = SynchronizationContext.Current;
-        BBootstrap bootstrap = new(console, new ABootstrap());
-        try
+        int code = 0;
+        TConsoleFake.TConsoleFakeRun(() =>
         {
-            return bootstrap.BBootstrapIntroduce(
-                [],
-                theme,
-                () => TInterface.TLocalizationLoad("en"),
-                () => workspace.TWorkspaceFolder,
-                (_, _) => new LEngine(
-                    workspace.TWorkspaceRigCreate(), _ => workspace.TWorkspaceRigCreate(), static _ => { }, true),
-                static _ => true,
-                engine =>
-                {
-                    using (engine)
+            SynchronizationContext? context = SynchronizationContext.Current;
+            BBootstrap bootstrap = new(console, new ABootstrap());
+            try
+            {
+                code = bootstrap.BBootstrapIntroduce(
+                    [],
+                    theme,
+                    () => TInterface.TLocalizationLoad("en"),
+                    () => workspace.TWorkspaceFolder,
+                    (_, _) => new LEngine(
+                        workspace.TWorkspaceRigCreate(), _ => workspace.TWorkspaceRigCreate(), static _ => { }, true),
+                    static _ => true,
+                    engine =>
                     {
-                        bootstrap.BBootstrapRescueConsult(true, "D:\\Llyn\\llyn.db.bak", "damaged");
-                        return bootstrap.BBootstrapAtelierRun(
-                            detached => TInterfaceConduct.TAtelierCreate(engine, detached),
-                            File.Exists,
-                            Directory.GetDirectories,
-                            Directory.GetFiles,
-                            Directory.GetLogicalDrives);
-                    }
-                });
-        }
-        finally
-        {
-            SynchronizationContext.SetSynchronizationContext(context);
-        }
+                        using (engine)
+                        {
+                            bootstrap.BBootstrapRescueConsult(true, "D:\\Llyn\\llyn.db.bak", "damaged");
+                            return bootstrap.BBootstrapAtelierRun(
+                                detached => TInterfaceConduct.TAtelierCreate(engine, detached),
+                                File.Exists,
+                                Directory.GetDirectories,
+                                Directory.GetFiles,
+                                Directory.GetLogicalDrives);
+                        }
+                    });
+            }
+            finally
+            {
+                SynchronizationContext.SetSynchronizationContext(context);
+            }
+        });
+        return code;
     }
 }

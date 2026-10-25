@@ -11,6 +11,7 @@ public sealed class BLoop : SynchronizationContext
 {
     private readonly BlockingCollection<Action> _bLoopQueue = new();
     private readonly Action<Exception> _bLoopFault;
+    private readonly List<(Task, Action<Exception>)> _bLoopRuns = [];
     private Action _bLoopBatch = static () => { };
 
     public BLoop(Action<Exception> fault)
@@ -25,6 +26,19 @@ public sealed class BLoop : SynchronizationContext
         ArgumentNullException.ThrowIfNull(until);
 
         Action<Exception> observe = fault ?? _bLoopFault;
+        _bLoopRuns.Add((until, observe));
+        try
+        {
+            BLoopRun(until, observe, _bLoopRuns.Count - 1);
+        }
+        finally
+        {
+            _bLoopRuns.RemoveAt(_bLoopRuns.Count - 1);
+        }
+    }
+
+    private void BLoopRun(Task until, Action<Exception> observe, int enclosing)
+    {
         until.ContinueWith(
             static (_, loop) => ((BLoop)loop!).BLoopDefer(static () => { }),
             this,
@@ -37,13 +51,21 @@ public sealed class BLoop : SynchronizationContext
             BLoopWorkRun(_bLoopBatch, observe);
         }
 
-        while (!until.IsCompleted)
+        while (!until.IsCompleted && _bLoopRuns.FindIndex(0, enclosing, static run => run.Item1.IsCompleted) < 0)
         {
             Action work = _bLoopQueue.Take();
             BLoopWorkRun(work, observe);
             if (_bLoopQueue.Count == 0)
             {
                 BLoopWorkRun(_bLoopBatch, observe);
+            }
+        }
+
+        if (until.Exception is AggregateException failures)
+        {
+            foreach (Exception failure in failures.Flatten().InnerExceptions)
+            {
+                observe(failure);
             }
         }
     }
@@ -109,7 +131,13 @@ public sealed class BLoop : SynchronizationContext
                 TaskCompletionSource marker = new();
                 BLoopDefer(marker.SetResult);
                 settling = marker.Task;
-                BLoopRun(marker.Task, exception => BLoopDefer(ExceptionDispatchInfo.Capture(exception).Throw));
+                BLoopRun(marker.Task, _bLoopRuns[^1].Item2, _bLoopRuns.Count);
+                if (!marker.Task.IsCompleted)
+                {
+                    remainder = keys;
+                    BLoopDefer(apply!);
+                    return;
+                }
             }
 
             for (int index = 0; index < keys.Count; index++)

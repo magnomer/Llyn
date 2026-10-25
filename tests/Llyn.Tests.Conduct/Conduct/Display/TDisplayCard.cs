@@ -265,6 +265,36 @@ public sealed class TDisplayCard
         Assert.Null(area.CCompassCardFind(987654));
     }
 
+    [Fact]
+    public void MentionFind_ShownEntryChanged_FindsNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        LSentenceDraft sentence = TInterfaceExample.TSentenceDraftCreate("water") with
+        {
+            LSentenceDraftExample = TInterfaceExample.TExampleDraftCreate("water"),
+        };
+        LEntry run = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "run", "English", string.Empty, string.Empty,
+            [TInterface.TCardCreate("a thing", 1) with { LCardDraftSentence = [sentence] }], []));
+        LEntry walk = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "walk", "English", string.Empty, string.Empty,
+            [TInterface.TCardCreate("a stroll", 1) with { LCardDraftSentence = [sentence] }], []));
+        CWing wing = TDisplayWingPrepare(atelier, []);
+        CDisplayRoute route = wing.CWingDisplay.CDisplayRoute;
+        wing.CWingEntryOpen(run.LEntryId);
+        long line = Assert.Single(Assert.Single(
+            wing.CWingDisplay.CDisplayCard.CDisplayCardRead().CLecternCardMeanings).CLeafSentence).CLeafLineSentence;
+        Assert.NotNull(route.CDisplayMentionFind(line, "water", 1));
+        route.CDisplayWordStart(line);
+
+        wing.CWingEntryOpen(walk.LEntryId);
+
+        Assert.Null(route.CDisplayMentionFind(line, "water", 1));
+        Assert.Null(route.CDisplayWordFind());
+    }
+
     private static CLeafChip TDisplayChipCreate(long id, CSubject subject, bool stored) =>
         new(id, new CStateWording("a chip", null, false, null), subject, stored);
 

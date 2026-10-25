@@ -35,7 +35,7 @@ public sealed partial class TFault
             static stage =>
             {
                 CDisplayGrasp grasp = TFaultWingOpen(stage).CWingDisplay.CDisplayGrasp;
-                return (() => grasp.CDisplayFavoriteToggle(true), () => grasp.CDisplayFavoriteRead());
+                return (() => grasp.CDisplayFavoriteToggle(), () => grasp.CDisplayFavoriteRead());
             }),
         new(
             "CDisplayCard.CDisplayFoldToggle",

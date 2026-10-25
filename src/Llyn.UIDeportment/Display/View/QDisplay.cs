@@ -44,7 +44,6 @@ internal sealed class QDisplay
         QLectern lectern = new(_qDisplaySurface, display, atelier, envoy);
         QDisplayLectern = lectern;
         lectern.QLecternCard.QLecternMentionNotice += mentionMenu.QMentionOfferRefine;
-
         volume.QVolumeSliderAttach(_qDisplaySurface);
     }
 }

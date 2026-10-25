@@ -60,8 +60,7 @@ public sealed class QLecternHeader
 
     private void QLecternFavoriteObserve(object sender, RoutedEventArgs e)
     {
-        QLecternFavoriteRefine(
-            _qLecternHeaderGrasp.CDisplayFavoriteToggle(QLook.QLookCheckedRead(_qLecternFavorite.IsChecked)));
+        QLecternFavoriteRefine(_qLecternHeaderGrasp.CDisplayFavoriteToggle());
     }
 
     private void QLecternHeaderRefine()

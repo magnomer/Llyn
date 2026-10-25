@@ -95,6 +95,8 @@ Runs deferred work until the given task completes.
 A call inside a work item nests, so a sublevel waits for its answer while queued work keeps running.
 The task's completion defers an empty item, so a run blocked on an empty queue wakes up.
 A work item that throws goes to the fault handler, and the loop runs on.
+A nested run also ends when any run enclosing it has completed, so an outer answer is never held back.
+When the run ends, each inner exception of a failed task goes to that run's handler.
 A call may bring its own fault handler, which then replaces the loop's for that run.
 So a box that fails to draw reports to the handler of its own run.
 A run that starts with an empty queue runs the batch first.
@@ -122,7 +124,8 @@ The loop defers a marker and waits for it in a nested `BLoopRun`.
 So the work the typed run deferred runs before the key does.
 The text is then whole when the key reads it.
 A run that arrives while a settle is open waits behind it, so keys never pass each other.
-A work item that throws during the settle is deferred again, so the handler of the enclosing run receives it.
+The settle's run uses the fault handler of the run it nests in.
+If an enclosing run completes first, the settle ends unfinished and the keys are deferred to apply again afterwards.
 A key that throws in the observer ends its run there.
 The rest of that run is applied afterwards, then the fault goes on, so no key is lost.
 A failure of the read is thrown again on the loop, so the fault handler sees it.
@@ -148,7 +151,7 @@ Returns the loop itself, since a copy would break the identity checks of `BObser
 
 ## Stamp
 
-Commit: `0f19a28acf00`
+Commit: `cb8ab7e8feb4`
 - `BConsole.cs` `c21991af932a3e17`
 - `BConsoleStream.cs` `83ee8f2a5448fbb5`
-- `BLoop.cs` `86b0dc5a77481f9f`
+- `BLoop.cs` `f9e58d5d015f650d`

@@ -9,6 +9,10 @@ public interface LExamplePort
 
     bool LEngineTextMatch(string field, string shown);
 
-    (string, IReadOnlyList<LMentionPiece>, string) LEngineLineRead(
-        LSentenceDraft sentence, LSentenceOrder order, string mark, IReadOnlyDictionary<long, string> citations);
+    (string, IReadOnlyList<LMentionPiece>, string, long) LEngineLineRead(
+        LEntryDraft shown,
+        LSentenceDraft sentence,
+        LSentenceOrder order,
+        string mark,
+        IReadOnlyDictionary<long, string> citations);
 }

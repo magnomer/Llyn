@@ -66,9 +66,11 @@ public interface LDraftPort
 
     bool LEngineSpanCheck(string text, int start, int length);
 
-    IReadOnlyDictionary<long, IReadOnlyList<LMentionLabel>> LEngineMentionResolve(LTenure held);
+    IReadOnlyDictionary<long, IReadOnlyList<LMentionLabel>> LEngineMentionResolve(LDraft draft);
 
     IReadOnlyList<LMentionLabel> LEngineMentionResolve(LTenure held, long card, long sentence);
+
+    long LEngineLineFind(LEntryDraft shown, LSentenceDraft sentence);
 
     IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth)>? LEngineSenseRead(
         LTenure held, long card, long sentence, string text, int start, int length, string key);

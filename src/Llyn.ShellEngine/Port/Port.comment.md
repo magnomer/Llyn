@@ -66,7 +66,10 @@ The held draft names the Source the sentence cites, so typing its byline offers 
 `LEngineCitationResolve` gives the id of the Source a typed title names, minting it when none matches.
 The held draft names the Source the sentence cites now, so an unchanged title keeps it.
 
-`LEngineMentionResolve` gives the chip line of every sentence row on every card of the held draft, keyed by the row.
+`LEngineMentionResolve` gives the chip line of every sentence row on every card of one draft, keyed by line key.
+The whole-draft overload takes the draft itself, so its keys and labels come from one read.
+`LEngineLineFind` gives the line key of one sentence of a shown entry, counted from one.
+It answers zero for a sentence the entry does not hold.
 Each chip carries the words it covers, the linked headword and the chosen sense.
 The card and sentence overload addresses one Example, and card 0 with sentence 0 addresses the draft's own Example.
 `LEngineMentionDivide` is static, since Conduct divides a row's text while it maps the row and no port is at hand.
@@ -215,11 +218,11 @@ A blank variety has no flag, so its key is empty and finds nothing.
 
 ## Stamp
 
-Commit: `bd299c638b2c`
+Commit: `44d0e95bcfcc`
 - `LDeckOutlet.cs` `4fcdc01cf7e5aabb`
 - `LDeckPort.cs` `256cbea5290d73a0`
-- `LDraftOutlet.cs` `3c00d5a269978c47`
-- `LDraftPort.cs` `b5d61d945bfd7907`
+- `LDraftOutlet.cs` `ea23c6d68f52ed75`
+- `LDraftPort.cs` `c22a4a4897d84afa`
 - `LMediaOutlet.cs` `601cc15907e2f22d`
 - `LMediaPort.cs` `8d313e317fe4b3e2`
 - `LPortraitOutlet.cs` `4b7d31ff3f0aa3c2`

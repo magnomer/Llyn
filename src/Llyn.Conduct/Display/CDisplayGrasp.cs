@@ -39,9 +39,10 @@ public sealed class CDisplayGrasp
         return _cDisplayGraspRule.CRuleFavoriteRead(_cDisplayGraspRule.CRuleChosen);
     }
 
-    public bool CDisplayFavoriteToggle(bool marked)
+    public bool CDisplayFavoriteToggle()
     {
-        _cDisplayGraspRule.CRuleFavoriteSave(_cDisplayGraspRule.CRuleChosen, marked);
+        long? chosen = _cDisplayGraspRule.CRuleChosen;
+        _cDisplayGraspRule.CRuleFavoriteSave(chosen, !_cDisplayGraspRule.CRuleFavoriteRead(chosen));
         return CDisplayFavoriteRead();
     }
 

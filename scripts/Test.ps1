@@ -22,6 +22,11 @@
     project is named. The script stops after the first failed run and returns
     the exit code of the first failing project in discovery order.
 
+    Each run is timed from its start. At 10 minutes the projects still running
+    are named once; at 15 minutes each is killed with its whole process tree,
+    its output so far is printed, it is named as timed out, and the run fails
+    with exit code 1 unless an earlier project in discovery order failed.
+
     Every project-specific value - project name, tests folder, convention
     project, platform projects - lives in Test.json. This script carries none, so the file is
     identical in every project at the same generation.
@@ -230,6 +235,11 @@ OPTIONS
     -Help, -?
         Display this help and exit without running tests.
 
+TIME LIMIT
+    Each run is timed from its start. At 10 minutes the projects still
+    running are named once; at 15 minutes each is killed with its whole
+    process tree, its output so far is printed, and the run fails.
+
 EXAMPLES
     test
         Run the full Debug test suite once, the convention tests included.
@@ -284,6 +294,11 @@ $ErrorActionPreference = 'Stop'
 # UTF-8. Process-local: the calling console keeps its own code page.
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [Console]::OutputEncoding
+
+# Each run of the selected projects is timed from its own start. A project still running at the warning
+# is named once; one still running at the stop is killed with its whole process tree and fails the run.
+$runWarningMinutes = 10
+$runStopMinutes = 15
 
 function Get-OrdinalKey {
     # Sort-Object compares text by culture, which Windows PowerShell 5.1 and pwsh 7 order differently.
@@ -519,6 +534,111 @@ function Read-TestOutput {
     }
 }
 
+function Get-ProcessParent {
+    # Maps every live process id to its parent id and start time. Windows PowerShell 5.1 has neither
+    # Process.Parent nor Kill($true), so the map comes from Win32_Process on Windows and from ps elsewhere,
+    # alike in both shells. ps names a live parent only, since an orphan is adopted, so it needs no start time.
+    $map = @{}
+    if ([System.Environment]::OSVersion.Platform -eq [System.PlatformID]::Win32NT) {
+        foreach ($item in @(Get-CimInstance -ClassName Win32_Process -Property ProcessId, ParentProcessId, CreationDate)) {
+            $map[[int]$item.ProcessId] = [pscustomobject]@{ Parent = [int]$item.ParentProcessId; Started = $item.CreationDate }
+        }
+    }
+    else {
+        foreach ($line in @(& ps -A -o pid= -o ppid=)) {
+            $fields = @($line.Trim() -split '\s+')
+            if ($fields.Count -eq 2) {
+                $map[[int]$fields[0]] = [pscustomobject]@{ Parent = [int]$fields[1]; Started = $null }
+            }
+        }
+    }
+
+    return $map
+}
+
+function Stop-ProcessTree {
+    # dotnet test starts vstest and testhost as children, and killing dotnet alone leaves them running and
+    # holding files, so every descendant is found first, while the tree is whole, and then each is killed.
+    param([System.Diagnostics.Process]$Process)
+    if ($Process.HasExited) {
+        return $false
+    }
+
+    $parents = $null
+    $tree = [System.Collections.Generic.List[int]]::new()
+    $tree.Add($Process.Id)
+    try {
+        $parents = Get-ProcessParent
+        for ($index = 0; $index -lt $tree.Count; $index++) {
+            $parentId = $tree[$index]
+            foreach ($childId in @($parents.Keys)) {
+                $child = $parents[$childId]
+                if ($child.Parent -ne $parentId -or $tree.Contains($childId)) {
+                    continue
+                }
+
+                # Windows keeps the parent id of a parent that ended, and may give that id to a new process;
+                # a child started before the process now holding the id is not its child.
+                $parent = $parents[$parentId]
+                if ($null -ne $child.Started -and $null -ne $parent -and $null -ne $parent.Started -and $child.Started -lt $parent.Started) {
+                    continue
+                }
+
+                $tree.Add($childId)
+            }
+        }
+    }
+    catch {
+        Write-Host "The child processes of $($Process.Id) could not be listed, so it is killed alone: $($_.Exception.Message)" -ForegroundColor Yellow
+    }
+
+    # The root is killed first, so it starts no new child; each process is then awaited so its files are
+    # released. A process that ends between the listing and its kill throws, and is passed over. An id that
+    # ended after the listing may pass to an unrelated process, so a child is opened only while its start
+    # time equals the listed one; the listing gives whole microseconds, so both are compared at that grain, in whole ticks, since a division would pass through double.
+    $members = @(foreach ($id in $tree) {
+        try {
+            if ($id -eq $Process.Id) {
+                $Process
+                continue
+            }
+
+            $member = [System.Diagnostics.Process]::GetProcessById($id)
+            $listed = if ($null -ne $parents -and $parents.ContainsKey($id)) { $parents[$id].Started } else { $null }
+            if ($null -ne $listed -and ($member.StartTime.Ticks - $member.StartTime.Ticks % 10) -ne ($listed.Ticks - $listed.Ticks % 10)) {
+                continue
+            }
+
+            $member
+        }
+        catch {
+        }
+    })
+    # The caller learns whether this kill ended the root; a root that exited on its own first finished.
+    $killed = $false
+    foreach ($member in $members) {
+        try {
+            if (-not $member.HasExited) {
+                $member.Kill()
+                if ($member.Id -eq $Process.Id) {
+                    $killed = $true
+                }
+            }
+        }
+        catch {
+        }
+    }
+    foreach ($member in $members) {
+        try {
+            $null = $member.WaitForExit(5000)
+        }
+        catch {
+        }
+    }
+
+    return $killed
+}
+
 $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 $exitCode = 0
 $running = @()
@@ -534,6 +654,8 @@ try {
 
         # Every project runs at once in its own process. Its output goes to a file and is printed whole
         # when the process ends, so the lines of two projects never interleave.
+        $runWatch = [System.Diagnostics.Stopwatch]::StartNew()
+        $warned = $false
         $running = @(foreach ($testProject in $projects) {
             $projectFilter = $Filter
             if ($selections.ContainsKey($testProject.BaseName)) {
@@ -554,7 +676,7 @@ try {
                 -WorkingDirectory $root -NoNewWindow -PassThru -RedirectStandardOutput $outputPath -RedirectStandardError $errorPath
             # Windows PowerShell 5.1 reports no exit code for a process whose handle was never read.
             $null = $process.Handle
-            [pscustomobject]@{ Project = $testProject; Process = $process; Output = $outputPath; Error = $errorPath; Shown = $false }
+            [pscustomobject]@{ Project = $testProject; Process = $process; Output = $outputPath; Error = $errorPath; Shown = $false; TimedOut = $false }
         })
 
         while (@($running | Where-Object { -not $_.Shown }).Count -gt 0) {
@@ -567,12 +689,55 @@ try {
                 }
             }
 
+            $unfinished = @($running | Where-Object { -not $_.Shown })
+            if ($unfinished.Count -eq 0) {
+                break
+            }
+
+            if (-not $warned -and $runWatch.Elapsed.TotalMinutes -ge $runWarningMinutes) {
+                $warned = $true
+                Write-Host ("Run $run of $Repeat passed the $runWarningMinutes-minute warning; still running: {0}. Each is stopped at $runStopMinutes minutes." -f (@($unfinished | ForEach-Object { $_.Project.BaseName }) -join ', ')) -ForegroundColor Yellow
+            }
+
+            if ($runWatch.Elapsed.TotalMinutes -ge $runStopMinutes) {
+                # A project that exited after the last poll finished, so it is shown as finished, with its own
+                # exit code; only one this kill ended is named timed out.
+                foreach ($entry in $unfinished) {
+                    $entry.Shown = $true
+                    $killed = Stop-ProcessTree -Process $entry.Process
+                    if (-not $killed -and $entry.Process.HasExited) {
+                        $entry.Process.WaitForExit()
+                        Write-Host ('{0} ({1:N1}s)' -f $entry.Project.BaseName, ($entry.Process.ExitTime - $entry.Process.StartTime).TotalSeconds) -ForegroundColor Cyan
+                        foreach ($path in @($entry.Output, $entry.Error)) {
+                            Read-TestOutput -Path $path
+                        }
+
+                        continue
+                    }
+
+                    $entry.TimedOut = $true
+                    Write-Host ('{0} timed out after {1:N1}s; its output so far follows.' -f $entry.Project.BaseName, $runWatch.Elapsed.TotalSeconds) -ForegroundColor Red
+                    foreach ($path in @($entry.Output, $entry.Error)) {
+                        Read-TestOutput -Path $path
+                    }
+                }
+
+                break
+            }
+
             Start-Sleep -Milliseconds 200
         }
 
-        # Every failing project is named, and the first in discovery order gives the exit code.
+        # Every failing project is named, and the first in discovery order gives the exit code. A project
+        # killed at the stop has no exit code of its own, so it gives 1.
         foreach ($entry in $running) {
-            if ($entry.Process.ExitCode -ne 0) {
+            if ($entry.TimedOut) {
+                Write-Host "Tests timed out in $($entry.Project.BaseName) on run $run of $Repeat (stopped at $runStopMinutes minutes)." -ForegroundColor Red
+                if ($exitCode -eq 0) {
+                    $exitCode = 1
+                }
+            }
+            elseif ($entry.Process.ExitCode -ne 0) {
                 Write-Host "Tests failed in $($entry.Project.BaseName) on run $run of $Repeat (exit code $($entry.Process.ExitCode))." -ForegroundColor Red
                 if ($exitCode -eq 0) {
                     $exitCode = $entry.Process.ExitCode
@@ -586,10 +751,9 @@ try {
     }
 }
 finally {
+    # A run broken off, by an error or by Ctrl+C, leaves its projects running; each is killed with its tree.
     foreach ($entry in $running) {
-        if (-not $entry.Process.HasExited) {
-            $entry.Process.Kill()
-        }
+        Stop-ProcessTree -Process $entry.Process
     }
 
     # A process that outlives its project may still hold an output file for a moment, so the removal is

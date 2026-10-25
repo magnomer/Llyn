@@ -46,6 +46,8 @@ internal sealed class QVideoItem : INotifyPropertyChanged
 
     internal long QVideoItemId => _qVideoItemDraft.CVideoDraftId;
 
+    internal string QVideoItemName => _qVideoItemDraft.CVideoDraftName;
+
     internal void QVideoItemShow(CVideoDraft written)
     {
         ArgumentNullException.ThrowIfNull(written);
@@ -133,6 +135,7 @@ internal sealed class QVideoItem : INotifyPropertyChanged
     private static void QVideoItemAttach(FrameworkElement screen, QVideoItem row)
     {
         QScreen.QScreenIntroduce(screen);
+        System.Windows.Automation.AutomationProperties.SetName(screen, row.QVideoItemName);
         screen.SetValue(QScreen.QScreenFromProperty, row.QVideoItemFrom);
         screen.SetValue(QScreen.QScreenUntilProperty, row.QVideoItemUntil);
         screen.SetValue(QScreen.QScreenFilmProperty, row.QVideoItemPreview?.CScreenFilm);

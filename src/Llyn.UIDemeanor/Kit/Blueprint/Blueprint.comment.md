@@ -33,7 +33,7 @@ A part holds no more parts than it has room for.
   A `Blueprint` has room for one, a `Split` or `Frame` for one per track, and the rest for none.
 Only a `Blueprint` may hold glyph sets or sources.
 A `Glyphs` takes a key and every mark, with six frame marks and three rule marks.
-The other marks include `Grasp`, `Fold` and `Media`, so a glyph set that omits one is refused.
+The other marks include `Grasp`, `Fold`, `Media` and `Tree`, so a glyph set that omits one is refused.
 A margin is one, two or four cell counts, and a part without a theme draws as `text`.
 
 ## `BBlueprintPlace`
@@ -70,7 +70,7 @@ A frame with no width or no height draws nothing.
 
 ## Stamp
 
-Commit: `fe7e11daae88`
-- `BBlueprint.cs` `71fbc056cc815b80`
+Commit: `cb8ab7e8feb4`
+- `BBlueprint.cs` `6a54a4f9170a6c2f`
 - `BBlueprintPart.cs` `b035683bf69306d2`
 - `BBlueprintTrack.cs` `a5d6633e1bd337a1`

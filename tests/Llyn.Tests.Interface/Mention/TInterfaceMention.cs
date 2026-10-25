@@ -15,6 +15,8 @@ internal static class TInterfaceMention
         LDraftPort drafts = TEngineFake.TEngineCreate<LDraftPort>(new Dictionary<string, Func<object?[]?, object?>>
         {
             ["LEngineMentionResolve"] = _ => throw new InvalidOperationException("no headwords"),
+            ["LEngineLineFind"] = static args =>
+                LMentionClerk.LMentionLineFind((LEntryDraft)args![0]!, (LSentenceDraft)args[1]!),
         });
         return new CSentence(
             desk,
@@ -25,12 +27,23 @@ internal static class TInterfaceMention
             new CLedgerNoticed());
     }
 
+    internal static long TMentionLineRead(CDesk desk, long row)
+    {
+        LEntryDraft content = desk.TDeskRead()!.LDraftContent;
+        return LMentionClerk.LMentionLineFind(
+            content,
+            content.LEntryDraftMeanings.SelectMany(static card => card.LCardDraftSentence)
+                .Single(sentence => sentence.LSentenceDraftId == row));
+    }
+
     internal static CSentence TSentenceLineCreate(
         LEngine engine, CDesk desk, CEnvoy envoy, IReadOnlyDictionary<long, IReadOnlyList<LMentionLabel>>? lines)
     {
         LDraftPort drafts = TEngineFake.TEngineCreate<LDraftPort>(new Dictionary<string, Func<object?[]?, object?>>
         {
             ["LEngineMentionResolve"] = _ => lines,
+            ["LEngineLineFind"] = static args =>
+                LMentionClerk.LMentionLineFind((LEntryDraft)args![0]!, (LSentenceDraft)args[1]!),
         });
         return new CSentence(
             desk,
@@ -152,6 +165,7 @@ internal static class TInterfaceMention
             new CLedgerNoticed());
         display.LDisplayNavigationAttach(atelier.CAtelierNavigation, atelier.CAtelierMention);
         display.LDisplayRule.CVoice.CVoiceShow(shown, engine.TEngineEntryLoad(shown)!);
+        display.CDisplayCard.CDisplayCardRead();
         return display;
     }
 

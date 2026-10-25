@@ -167,6 +167,18 @@ internal static class TInterfaceDeportment
     internal static void TLecternSeeAttach(QLecternCard card, Action<long> notice) =>
         card.QLecternSeeNotice += notice;
 
+    internal static void TLecternMentionAttach(
+        QLecternCard card,
+        QMention line,
+        long sentence,
+        IReadOnlyList<string> pieces,
+        Action<CMentionOffer?, int?> notice)
+    {
+        line.QMentionSentence = sentence;
+        line.QMentionPieces = [.. pieces.Select(static text => new QMentionPiece(text, null))];
+        card.QLecternMentionNotice += (_, offer, unit) => notice(offer, unit);
+    }
+
     internal static void TCardRowShow(
         ObservableCollection<QTranscriptionItem> rows, IReadOnlyList<CTranscriptionDraft> drafts) =>
         QLookItem.QLookItemShow(

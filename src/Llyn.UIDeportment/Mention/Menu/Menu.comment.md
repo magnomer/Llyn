@@ -142,6 +142,8 @@ The popup is declared once in the window markup beside the panels.
 Every panel that draws a sentence takes this one path, the reading display and the corpus excerpt alike.
 The word's place is read off the control that drew it, from the offer's unit in the whole text.
 That is a ready surface value, so the menu calls no gate here.
+The keyboard word cursor passes the unit of the word's start, which then replaces the offer's unit.
+Other panels pass none.
 A null offer shows nothing, and an empty one only closes any open menu.
 
 ### `QMentionEntryRefine`
@@ -196,9 +198,9 @@ A popup that stays open over another window would answer keys meant for that win
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `cb8ab7e8feb4`
 - `QMentionAsk.cs` `99ebaa29f9e3be85`
-- `QMentionMenu.cs` `f861653f93f5f1b7`
+- `QMentionMenu.cs` `2a85160d7edf329d`
 - `QSwath.cs` `14d3c994f95140d1`
 - `QSwathSeam.cs` `2df105d4cda9a5d4`
 - `QSwathText.cs` `cb11efaee0d0b0bc`

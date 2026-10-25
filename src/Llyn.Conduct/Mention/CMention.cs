@@ -178,18 +178,33 @@ public sealed class CMention
     }
 
     internal static IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> LMentionLineRead(
-        LEntryDraft content, IReadOnlyDictionary<long, IReadOnlyList<LMentionLabel>> lines)
+        CEntryDraft shown,
+        LEntryDraft content,
+        IReadOnlyDictionary<long, IReadOnlyList<LMentionLabel>> lines,
+        LDraftPort drafts)
     {
+        ArgumentNullException.ThrowIfNull(shown);
         ArgumentNullException.ThrowIfNull(content);
         ArgumentNullException.ThrowIfNull(lines);
+        ArgumentNullException.ThrowIfNull(drafts);
 
-        Dictionary<long, IReadOnlyList<CMentionLabel>> read = [];
+        Dictionary<(long, long), long> held = [];
         foreach (LCardDraft card in content.LEntryDraftMeanings.Concat(content.LEntryDraftCollocations))
         {
             foreach (LSentenceDraft sentence in card.LCardDraftSentence)
             {
-                read[sentence.LSentenceDraftId] =
-                    lines.TryGetValue(sentence.LSentenceDraftId, out IReadOnlyList<LMentionLabel>? labels)
+                held[(card.LCardDraftId, sentence.LSentenceDraftId)] = drafts.LEngineLineFind(content, sentence);
+            }
+        }
+
+        Dictionary<long, IReadOnlyList<CMentionLabel>> read = [];
+        foreach (CCardDraft card in shown.CEntryDraftMeanings.Concat(shown.CEntryDraftCollocations))
+        {
+            foreach (CSentenceDraft sentence in card.CCardDraftSentence)
+            {
+                read[sentence.CSentenceDraftLine] =
+                    held.TryGetValue((card.CCardDraftId, sentence.CSentenceDraftId), out long line)
+                    && lines.TryGetValue(line, out IReadOnlyList<LMentionLabel>? labels)
                         ? LMentionLabelRead(labels)
                         : [];
             }

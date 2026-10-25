@@ -7,4 +7,6 @@ public sealed record CImageDraft(
 {
     public CStateWording CImageDraftWording =>
         CStateWording.LStateWordingRead(CImageDraftLocation, null, "Card.LocationHint");
+
+    public string CImageDraftName => CFolio.CFolioNameRead(CImageDraftAddress, CImageDraftLocation.CStateValueText);
 }

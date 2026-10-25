@@ -53,13 +53,18 @@ public sealed class CDisplayCard
         _cDisplayEnvoy = envoy;
     }
 
+    private LEntryDraft? _cDisplayCardShown;
+
     private LEntryDraft? LDisplayShown => _cDisplayRule.CVoice.CVoiceShown;
+
+    internal LEntryDraft? CDisplayCardShown => _cDisplayCardShown;
 
     private CLedgerNoticed LDisplayNoticed => _cDisplayRule.CRuleNoticed;
 
     public CLecternCard CDisplayCardRead()
     {
-        if (LDisplayShown is not LEntryDraft shown)
+        _cDisplayCardShown = LDisplayShown;
+        if (_cDisplayCardShown is not LEntryDraft shown)
         {
             return new CLecternCard([], [], false, false);
         }
@@ -77,10 +82,12 @@ public sealed class CDisplayCard
         LMediaPort media = _cDisplayRule.CRuleMediaPort;
         LCollocationLayout layout = _cDisplayCardPort.LEngineCollocationRead(shown, targets);
         IReadOnlyList<CLeaf> others = CLeaf.LLeafRead(
+            shown,
             layout.LCollocationLayoutOther, layout, order, mark, stub, example, exampleOne, also, heading, citations,
             targets, folds, media, _cDisplayExamplePort);
         return new CLecternCard(
             CLeaf.LLeafRead(
+                shown,
                 shown.LEntryDraftMeanings, layout, order, mark, stub, example, exampleOne, also, heading, citations,
                 targets, folds, media, _cDisplayExamplePort),
             others,

@@ -34,7 +34,8 @@ The live function is asked at each draw, so a state follows the program without 
 
 ## `BKeymapFocus`
 
-Where the keys go: the window, a box, the small-console notice, the help box or the roof.
+Where the keys go.
+That is the window, a box, the small-console notice, the help box, the roof or the reading view's lectern.
 
 ## `BKeymapLive`
 
@@ -44,8 +45,8 @@ Hidden leaves it out of both, and `BKeymapFind` does not find it.
 
 ## Stamp
 
-Commit: `fe7e11daae88`
+Commit: `cb8ab7e8feb4`
 - `BKeymap.cs` `f4521bf6490e80ae`
-- `BKeymapFocus.cs` `891be976b24c913d`
+- `BKeymapFocus.cs` `77e5600e95171633`
 - `BKeymapLive.cs` `c4bed21c76f50c73`
 - `BKeymapRow.cs` `3a59402801d27b87`

@@ -64,6 +64,12 @@ It is fixed at construction, so showing a draft never rebinds it.
 The first call loads and marks the row seen, and a later changed address reloads at once.
 A second call does nothing.
 
+### `QImageItemName`
+
+The name Conduct shows for the picture, the console's line text.
+The preview carries it as its automation name wherever its source is set.
+It is taken again at each show, so an edited location renames the preview.
+
 ### `QImageItemPreview`
 
 Null before the row is seen and when nothing decodes.
@@ -142,8 +148,8 @@ A row already loaded does nothing on a repeat load.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `cb8ab7e8feb4`
 - `QImage.cs` `55e72165eb5d301b`
-- `QImageItem.cs` `ccbbde9b396cd359`
+- `QImageItem.cs` `fa9abceaf5f13420`
 - `QImageLazy.cs` `1ff9279b6097bd60`
 - `QImagePending.cs` `0cdc26e686b37582`

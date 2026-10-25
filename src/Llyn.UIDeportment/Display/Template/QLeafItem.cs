@@ -90,6 +90,8 @@ internal sealed class QLeafItem
 
     internal string QLeafItemHeading => _qLeafItemCard.CLeafHeading;
 
+    internal bool QLeafItemHomed => _qLeafItemCard.CLeafHomed;
+
     internal IReadOnlyList<QLeafItem> QLeafItemHome { get; }
 
     internal IReadOnlyList<QLeafSee> QLeafItemSee { get; }

@@ -9,4 +9,8 @@ public sealed record CVideoDraft(
     bool CVideoDraftEmpty,
     CScreen? CVideoDraftScreen,
     TimeSpan CVideoDraftFrom,
-    TimeSpan? CVideoDraftUntil);
+    TimeSpan? CVideoDraftUntil)
+{
+    public string CVideoDraftName =>
+        CFolio.CFolioNameRead(CVideoDraftScreen?.CScreenAddress, CVideoDraftLocation.CStateValueText);
+}

@@ -7,6 +7,8 @@ It also holds the relays for the text spans mentions cover.
 
 The relays that run the mention-related reads over failing or scripted ports.
 They build sentence gates whose chip line read fails, or answers any lines a fact hands, and one chip.
+Their draft port finds line keys with the clerk's own rule.
+`TMentionLineRead` turns a stored meaning sentence row id into its line key on a desk's held draft.
 They run the shared sense menu read over a scripted draft port.
 They run the corpus, favorites, quotation and occurrence rows reads over failing ports.
 They run the chip read over a failing draft port.
@@ -51,6 +53,7 @@ Null means the gate never reached the engine.
 ## `TDisplayCreate`
 
 Builds a display over the scripted mentions, a media stub and the engine's other facades, for both display finds.
+It reads the card once after showing the entry, so the display holds the draft its line keys come from.
 The display is attached to the atelier's navigation and mention area, as the composition does.
 It holds a fresh repaint memory, since the lookup is a user act that never goes through it.
 It shows the stored entry, since a display showing nothing answers before it asks the engine.
@@ -71,6 +74,6 @@ Each relay is transparent.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `TInterfaceMention.cs` `671d811149020375`
+Commit: `44d0e95bcfcc`
+- `TInterfaceMention.cs` `41a1c79826f0188b`
 - `TInterfaceMentionSpan.cs` `412ff102b50a4db0`

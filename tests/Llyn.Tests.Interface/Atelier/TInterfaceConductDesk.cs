@@ -42,7 +42,7 @@ internal static class TInterfaceConductDesk
         desk.CDeskDraft.CDeskDraftRead() is LDraft draft
             ? draft.LDraftContent.LEntryDraftMeanings.Concat(draft.LDraftContent.LEntryDraftCollocations)
                 .SelectMany(static card => card.LCardDraftSentence)
-                .Select(static sentence => sentence.LSentenceDraftId)
+                .Select(sentence => LMentionClerk.LMentionLineFind(draft.LDraftContent, sentence))
                 .Order()
                 .ToList()
             : [];

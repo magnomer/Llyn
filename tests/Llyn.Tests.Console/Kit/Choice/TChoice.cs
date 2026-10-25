@@ -100,8 +100,9 @@ public sealed class TChoice
         BSChoiceFilter chooser = new([], new CCatalogFilter([]), hides.Add, new BCanvasWidth(false));
 
         Assert.False(chooser.BSParleyBodyObserve(new ConsoleKeyInfo(' ', ConsoleKey.Spacebar, false, false, false)));
-        Assert.Empty(chooser.BSParleyBodyKeymap.BKeymapRead(BKeymapFocus.BKeymapFocusParley)
-            .Where(static row => row.BKeymapRowLive() != BKeymapLive.BKeymapLiveHidden));
+        Assert.DoesNotContain(
+            chooser.BSParleyBodyKeymap.BKeymapRead(BKeymapFocus.BKeymapFocusParley),
+            static row => row.BKeymapRowLive() != BKeymapLive.BKeymapLiveHidden);
         Assert.Empty(hides);
     }
 

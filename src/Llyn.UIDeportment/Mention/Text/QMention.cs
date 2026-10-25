@@ -34,7 +34,17 @@ public sealed class QMention : TextBlock
         typeof(EventHandler<QMentionArgument>),
         typeof(QMention));
 
+    public static readonly RoutedEvent QMentionWordEvent = EventManager.RegisterRoutedEvent(
+        nameof(QMentionWord),
+        RoutingStrategy.Bubble,
+        typeof(EventHandler<QMentionArgument>),
+        typeof(QMention));
+
     private Point? _qMentionPress;
+
+    private int? _qMentionWordUnit;
+
+    private int _qMentionWordLength;
 
     public QMention()
     {
@@ -49,6 +59,12 @@ public sealed class QMention : TextBlock
         remove => RemoveHandler(QMentionClickEvent, value);
     }
 
+    public event EventHandler<QMentionArgument> QMentionWord
+    {
+        add => AddHandler(QMentionWordEvent, value);
+        remove => RemoveHandler(QMentionWordEvent, value);
+    }
+
     public long QMentionSentence
     {
         get => (long)GetValue(QMentionSentenceProperty);
@@ -59,6 +75,20 @@ public sealed class QMention : TextBlock
     {
         get => (IReadOnlyList<QMentionPiece>?)GetValue(QMentionPiecesProperty);
         set => SetValue(QMentionPiecesProperty, value);
+    }
+
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        base.OnKeyDown(e);
+
+        if (e.Handled || e.Key != Key.Enter)
+        {
+            return;
+        }
+
+        QMentionArgument word = new(QMentionWordEvent, this);
+        RaiseEvent(word);
+        e.Handled = word.Handled;
     }
 
     protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
@@ -115,6 +145,13 @@ public sealed class QMention : TextBlock
         return new Rect(0, ActualHeight, 0, 0);
     }
 
+    internal void QMentionWordRefine(int? unit, int length)
+    {
+        _qMentionWordUnit = unit;
+        _qMentionWordLength = length;
+        QMentionShow();
+    }
+
     private static void QMentionChangeRefine(DependencyObject sender, DependencyPropertyChangedEventArgs e)
     {
         if (sender is QMention mention)
@@ -128,13 +165,34 @@ public sealed class QMention : TextBlock
     private void QMentionShow()
     {
         Inlines.Clear();
+        int lit = _qMentionWordUnit ?? -1;
+        int at = 0;
         foreach (QMentionPiece piece in QMentionPieces ?? [])
         {
-            Run run = new(piece.QMentionPieceText) { Tag = piece };
+            string text = piece.QMentionPieceText;
+            int head = Math.Clamp(lit - at, 0, text.Length);
+            int tail = Math.Clamp(lit + _qMentionWordLength - at, head, text.Length);
+            (int, int, bool)[] spans = text.Length == 0
+                ? [(0, 0, false)]
+                : [(0, head, false), (head, tail, true), (tail, text.Length, false)];
+            foreach ((int from, int to, bool word) in spans)
+            {
+                if (to == from && text.Length > 0)
+                {
+                    continue;
+                }
 
-            QMentionStyleApply(run, piece.QMentionPieceLinked);
+                Run run = new(text[from..to]) { Tag = piece };
+                QMentionStyleApply(run, piece.QMentionPieceLinked);
+                if (word)
+                {
+                    run.SetResourceReference(TextElement.BackgroundProperty, "Theme.AccentSoft");
+                }
 
-            Inlines.Add(run);
+                Inlines.Add(run);
+            }
+
+            at += text.Length;
         }
     }
 

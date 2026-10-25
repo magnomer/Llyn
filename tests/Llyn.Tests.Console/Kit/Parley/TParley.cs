@@ -1,3 +1,4 @@
+using Llyn.Conduct;
 using Llyn.UIDemeanor;
 using Llyn.UITerminal;
 using Xunit;
@@ -123,6 +124,89 @@ public sealed class TParley
         parley.BSParleyKeyObserve(new ConsoleKeyInfo('\r', ConsoleKey.Enter, false, false, false));
 
         Assert.Equal(2, await parley.BSParleyAnswer);
+    }
+
+    [Fact]
+    public void ParleyCreate_NoButtonsNoBody_Throws()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => new BSParley(
+            new ABootstrap().BBlueprintParts["ASParley"], "Llyn", "dialog", [new("Text", false)], [], 0));
+    }
+
+    [Fact]
+    public void ParleyDraw_NoButtonsWithBody_DrawsTheBodyOverTheButtonRow()
+    {
+        ABootstrap bootstrap = new();
+        BSParley parley = new(
+            bootstrap.BBlueprintParts["ASParley"], "Order", "dialog", [], [], 0, TParleyOrderCreate([]))
+        {
+            BSParleyAnchor = (3, 4),
+        };
+
+        IReadOnlyList<BCanvasText> texts =
+            parley.BSParleyDraw(bootstrap.BBlueprintGlyphs, 80, 24, new BCanvasWidth(false));
+
+        Assert.Equal(
+            [(5, "(•) Headword A → Z"), (6, "( ) Headword Z → A")],
+            texts.Where(static text => text.BCanvasTextValue.Contains("Headword", StringComparison.Ordinal))
+                .Select(static text => (text.BCanvasTextRow, text.BCanvasTextValue.TrimEnd())));
+        Assert.Equal(
+            9, texts.Where(static text => text.BCanvasTextRole == "shadow").Max(static text => text.BCanvasTextRow));
+        Assert.DoesNotContain(texts, static text => text.BCanvasTextValue.StartsWith("[ ", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task ParleyKeyObserve_NoButtons_BodyTakesEnterAndEscapeAnswersSafe()
+    {
+        List<CCatalogOrder> chosen = [];
+        BSParley parley = new(
+            new ABootstrap().BBlueprintParts["ASParley"], "Order", "dialog", [], [], 0, TParleyOrderCreate(chosen));
+
+        parley.BSParleyKeyObserve(new ConsoleKeyInfo('\t', ConsoleKey.Tab, false, false, false));
+        parley.BSParleyKeyObserve(new ConsoleKeyInfo('\0', ConsoleKey.RightArrow, false, false, false));
+        parley.BSParleyKeyObserve(new ConsoleKeyInfo('\0', ConsoleKey.DownArrow, false, false, false));
+        parley.BSParleyKeyObserve(new ConsoleKeyInfo('\r', ConsoleKey.Enter, false, false, false));
+        parley.BSParleyKeyObserve(new ConsoleKeyInfo('\e', ConsoleKey.Escape, false, false, false));
+
+        Assert.Equal([CCatalogOrder.CCatalogOrderReverse], chosen);
+        Assert.Equal(0, await parley.BSParleyAnswer);
+        Assert.DoesNotContain(
+            parley.BSParleyKeymapRead(),
+            static row => row.BKeymapRowKey is ConsoleKey.Tab or ConsoleKey.LeftArrow
+                && row.BKeymapRowLive() != BKeymapLive.BKeymapLiveHidden);
+    }
+
+    [Fact]
+    public async Task ParleyKeyObserve_BodyWithButton_TabHandsTheKeysToTheButton()
+    {
+        List<CCatalogOrder> chosen = [];
+        BSParley parley = new(
+            new ABootstrap().BBlueprintParts["ASParley"],
+            "Order",
+            "dialog",
+            [],
+            [new("Close")],
+            0,
+            TParleyOrderCreate(chosen));
+
+        parley.BSParleyKeyObserve(new ConsoleKeyInfo('\t', ConsoleKey.Tab, false, false, false));
+        parley.BSParleyKeyObserve(new ConsoleKeyInfo('\r', ConsoleKey.Enter, false, false, false));
+
+        Assert.Equal(0, await parley.BSParleyAnswer);
+        Assert.Empty(chosen);
+    }
+
+    private static BSChoiceOrder TParleyOrderCreate(List<CCatalogOrder> chosen)
+    {
+        BLocalizationCatalog catalog = new();
+        catalog.BLocalizationCatalogApply(TInterface.TLocalizationLoad("en"));
+        return new BSChoiceOrder(
+            catalog,
+            "Order",
+            [CCatalogOrder.CCatalogOrderHeadword, CCatalogOrder.CCatalogOrderReverse],
+            static () => CCatalog.CCatalogOrderFormat(CCatalogOrder.CCatalogOrderHeadword),
+            chosen.Add,
+            new BCanvasWidth(false));
     }
 
     [Fact]

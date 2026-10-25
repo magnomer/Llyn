@@ -125,7 +125,12 @@ internal sealed class BWindow
                 () => _bWindowChanged = true,
                 () => _bWindowWardrobe.BWardrobeWidth);
             atelier.CAtelierNavigation.CNavigationChanged += BObserver.BObserverCreate<CNavigationState>(state =>
-                _bWindowPanel = state.CNavigationStateTab == "Library" ? _bWindowLibrary : null);
+            {
+                if (state.CNavigationStateTab is string mode)
+                {
+                    _bWindowPanel = mode == "Library" ? _bWindowLibrary : null;
+                }
+            });
             atelier.CAtelierNavigation.CNavigationArrived += () =>
             {
                 _bWindowMirror.BMirrorRoof.BRoofClose();
@@ -178,7 +183,7 @@ internal sealed class BWindow
             ? library.BLibraryDraw(
                 BWindowMarksRead(),
                 _bWindowBlueprint,
-                focus == BKeymapFocus.BKeymapFocusWindow,
+                focus is BKeymapFocus.BKeymapFocusWindow or BKeymapFocus.BKeymapFocusLectern,
                 _bWindowWardrobe.BWardrobeWidth)
             : [];
         canvas.BCanvasFrameDraw([.. _bWindowMural.BMuralDraw(
@@ -200,7 +205,12 @@ internal sealed class BWindow
     internal void BWindowKeyObserve(ConsoleKeyInfo key)
     {
         BKeymapFocus focus = BWindowFocusRead();
-        if ((BWindowKeymap.BKeymapFind(focus, key) ?? _bWindowLibrary?.BLibraryKeymap.BKeymapFind(focus, key))
+        const BKeymapFocus window = BKeymapFocus.BKeymapFocusWindow;
+        BKeymapFocus beneath = focus == BKeymapFocus.BKeymapFocusLectern ? window : focus;
+        if ((BWindowKeymap.BKeymapFind(focus, key)
+                ?? _bWindowLibrary?.BLibraryKeymap.BKeymapFind(focus, key)
+                ?? BWindowKeymap.BKeymapFind(beneath, key)
+                ?? _bWindowLibrary?.BLibraryKeymap.BKeymapFind(beneath, key))
             is BKeymapRow row)
         {
             if (row.BKeymapRowLive() == BKeymapLive.BKeymapLiveShown)
@@ -213,6 +223,7 @@ internal sealed class BWindow
             _bWindowDocket.BDocketKeyObserve(key);
         }
         else if (focus is BKeymapFocus.BKeymapFocusWindow or BKeymapFocus.BKeymapFocusRoof
+                or BKeymapFocus.BKeymapFocusLectern
             && _bWindowMirror.BMirrorRoof.BRoofKeyObserve(key))
         {
             _bWindowChanged = true;
@@ -241,6 +252,8 @@ internal sealed class BWindow
         (int width, int height) = _bWindowSize;
         return width < BWindowWidthMinimum || height < BWindowHeightMinimum ? BKeymapFocus.BKeymapFocusNotice
             : _bWindowDocket.BDocketParleys is [.., BSParley top] ? top.BSParleyKeymapFocus
+            : _bWindowMirror.BMirrorRoof.BRoofKeymapFocus is BKeymapFocus.BKeymapFocusWindow
+                && _bWindowPanel is BLibrary panel ? panel.BLibraryKeymapFocus
             : _bWindowMirror.BMirrorRoof.BRoofKeymapFocus;
     }
 
@@ -257,6 +270,9 @@ internal sealed class BWindow
                 [
                     .. BWindowKeymap.BKeymapRead(kind),
                     .. _bWindowLibrary?.BLibraryKeymap.BKeymapRead(kind) ?? [],
+                    .. kind == BKeymapFocus.BKeymapFocusWindow
+                        ? _bWindowLibrary?.BLibraryKeymap.BKeymapRead(BKeymapFocus.BKeymapFocusLectern) ?? []
+                        : [],
                     .. _bWindowMirror.BMirrorRoof.BRoofKeymap.BKeymapRead(kind),
                     .. box?.BSParleyKeymapRead() ?? [],
                 ];
@@ -302,6 +318,12 @@ internal sealed class BWindow
 
     private BKeymapRow? BWindowKeymapFind(BKeymapFocus focus, ConsoleKeyInfo key)
     {
+        if (focus == BKeymapFocus.BKeymapFocusLectern)
+        {
+            return _bWindowLibrary?.BLibraryKeymap.BKeymapFind(focus, key)
+                ?? BWindowKeymapFind(BKeymapFocus.BKeymapFocusWindow, key);
+        }
+
         return BWindowKeymap.BKeymapFind(focus, key)
             ?? _bWindowLibrary?.BLibraryKeymap.BKeymapFind(focus, key)
             ?? _bWindowMirror.BMirrorRoof.BRoofKeymap.BKeymapFind(focus, key)

@@ -16,6 +16,8 @@ internal sealed class BLibrary
     private readonly Func<BCanvasWidth> _bLibraryMeasure;
     private readonly CLibrary _cLibrary;
     private readonly BIndex<CVistaRow> _bIndex;
+    private readonly BLectern _bLibraryLectern;
+    private bool _bLibrarySide;
     private IReadOnlyList<string> _bLibraryLanguages = [];
 
     internal BLibrary(
@@ -55,8 +57,19 @@ internal sealed class BLibrary
             static row => row.CVistaRowId,
             aperture.CApertureQuerySet,
             BLibraryRowSelect);
+        CDisplay display = _cLibrary.CLibraryEditor.CEditorDisplay;
+        _bLibraryLectern = new BLectern(
+            catalog,
+            display,
+            atelier.CAtelierNavigation,
+            changed,
+            () => shown() && _bLibrarySide && panel.CPanelViewerChecked,
+            docket,
+            parley,
+            measure);
 
         const BKeymapFocus window = BKeymapFocus.BKeymapFocusWindow;
+        const BKeymapFocus lectern = BKeymapFocus.BKeymapFocusLectern;
         Func<BKeymapLive> live = () => shown() ? BKeymapLive.BKeymapLiveShown : BKeymapLive.BKeymapLiveHidden;
         Func<bool, Func<bool>, Func<BKeymapLive>> gated = (visible, enabled) => () =>
             !shown() || !visible ? BKeymapLive.BKeymapLiveHidden
@@ -72,6 +85,9 @@ internal sealed class BLibrary
         Func<BKeymapLive> scribe = () => gated(panel.CPanelViewerChecked, () => panel.CPanelModeEnabled)();
         Func<BKeymapLive> viewer = () => gated(panel.CPanelScribeChecked, static () => true)();
         Func<BKeymapLive> bin = gated(true, () => panel.CPanelBinEnabled);
+        Func<BKeymapLive> favorite = gated(true, () => panel.CPanelViewerChecked && !display.CDisplayBlank);
+        Func<BKeymapLive> reachable = () => gated(panel.CPanelViewerChecked, static () => true)();
+        Func<BKeymapLive> reading = () => gated(_bLibrarySide && panel.CPanelViewerChecked, static () => true)();
         List<BKeymapRow> rows =
         [
             .. CLibrary.CLibraryOrderRead().Select((order, index) => new BKeymapRow(
@@ -88,6 +104,10 @@ internal sealed class BLibrary
             new(ConsoleKey.F4, 0, window, "Scribe.View", pressed(BLibraryViewerObserve), viewer),
             new(ConsoleKey.F7, 0, window, "Scribe.New", pressed(BLibraryFreshObserve), live),
             new(ConsoleKey.F8, 0, window, "Scribe.Delete", pressed(BLibraryBinObserve), bin),
+            new(ConsoleKey.F6, 0, window, "Favorite.Mark", _bLibraryLectern.BLecternFavoriteToggle, favorite),
+            new(ConsoleKey.Tab, 0, window, "Window.Help.Part", pressed(() => _bLibrarySide = true), reachable),
+            new(ConsoleKey.Tab, 0, lectern, "Window.Help.Part", pressed(() => _bLibrarySide = false), reading),
+            .. _bLibraryLectern.BLecternKeymap.BKeymapRead(lectern),
         ];
         BLibraryKeymap = new BKeymap(rows);
 
@@ -98,6 +118,11 @@ internal sealed class BLibrary
     }
 
     internal BKeymap BLibraryKeymap { get; }
+
+    internal BKeymapFocus BLibraryKeymapFocus =>
+        _bLibraryShown() && _bLibrarySide && _cLibrary.CLibraryPanel.CPanelViewerChecked
+            ? BKeymapFocus.BKeymapFocusLectern
+            : BKeymapFocus.BKeymapFocusWindow;
 
     internal void BLibraryObserve(ConsoleKeyInfo key)
     {
@@ -127,29 +152,29 @@ internal sealed class BLibrary
             index.BBlueprintPartColumn,
             index.BBlueprintPartWidth,
             index.BBlueprintPartHeight,
-            focused,
+            focused && !(_bLibrarySide && _cLibrary.CLibraryPanel.CPanelViewerChecked),
             measure))
         {
             yield return text;
         }
 
         BBlueprintPart display = BContract.BContractFind(window, "ADisplay");
-        CPanel panel = _cLibrary.CLibraryPanel;
-        if (!panel.CPanelViewerChecked || !_cLibrary.CLibraryEditor.CEditorDisplay.CDisplayBlank
-            || display.BBlueprintPartWidth <= 0)
+        if (!_cLibrary.CLibraryPanel.CPanelViewerChecked)
         {
             yield break;
         }
 
-        string prompt = measure.BCanvasWidthClamp(
-            _bLibraryCatalog.BLocalizationTextRead("Display.Unselected"), display.BBlueprintPartWidth);
-        int cells = measure.BCanvasWidthResolve(prompt);
-        yield return new BCanvasText(
-            display.BBlueprintPartRow + (display.BBlueprintPartHeight / 2),
-            display.BBlueprintPartColumn + ((display.BBlueprintPartWidth - cells) / 2),
-            cells,
-            prompt,
-            "muted");
+        foreach (BCanvasText text in _bLibraryLectern.BLecternDraw(
+            glyphs,
+            display.BBlueprintPartRow,
+            display.BBlueprintPartColumn,
+            display.BBlueprintPartWidth,
+            display.BBlueprintPartHeight,
+            focused && _bLibrarySide,
+            measure))
+        {
+            yield return text;
+        }
     }
 
     internal IReadOnlyList<BRoofMenu> BLibraryMenuBuild()
@@ -212,9 +237,16 @@ internal sealed class BLibrary
 
     private void BLibraryRowSelect(CVistaRow row)
     {
-        if (_cLibrary.CLibraryPanel.CPanelRowSelect(row.CVistaRowId) == CPanelOutcome.CPanelOutcomeStayed)
+        CPanelOutcome outcome = _cLibrary.CLibraryPanel.CPanelRowSelect(row.CVistaRowId);
+        if (outcome == CPanelOutcome.CPanelOutcomeStayed)
         {
             _bIndex.BIndexLitClear();
+        }
+
+        if (outcome == CPanelOutcome.CPanelOutcomeOpened)
+        {
+            _bLibraryLectern.BLecternReset();
+            _bLibrarySide = true;
         }
 
         _bLibraryChanged();

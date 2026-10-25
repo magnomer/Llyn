@@ -3,142 +3,30 @@ using Xunit;
 
 namespace Llyn.Tests;
 
-public sealed class TLoop
+public sealed class TLoopNested
 {
     [Fact]
-    public void LoopRun_ThreeQueuedItems_ObservesOneBatch()
-    {
-        BLoop loop = new(static _ => { });
-        TaskCompletionSource done = new();
-        int batches = 0;
-        loop.BLoopBatchAttach(() =>
-        {
-            batches++;
-            done.TrySetResult();
-        });
-        loop.BLoopDefer(static () => { });
-        loop.BLoopDefer(static () => { });
-        loop.BLoopDefer(static () => { });
-
-        loop.BLoopRun(done.Task.WaitAsync(TimeSpan.FromSeconds(10)));
-
-        Assert.True(done.Task.IsCompleted);
-        Assert.Equal(1, batches);
-    }
-
-    [Fact]
-    public void LoopRun_RunFault_CallsRunFault()
+    public void LoopRun_OuterEndsInnerHung_EndsInner()
     {
         List<string> faults = [];
-        TaskCompletionSource done = new();
-        BLoop loop = new(exception => faults.Add($"loop {exception.Message}"));
-        loop.BLoopDefer(static () => throw new InvalidOperationException("broken"));
-        loop.BLoopDefer(done.SetResult);
-
-        loop.BLoopRun(
-            done.Task.WaitAsync(TimeSpan.FromSeconds(10)), exception => faults.Add($"run {exception.Message}"));
-
-        Assert.True(done.Task.IsCompleted);
-        Assert.Equal(["run broken"], faults);
-    }
-
-    [Fact]
-    public void LoopKeyAttach_TypedBatch_ReportsOneEdit()
-    {
-        TConsoleFake console = new() { TConsoleFakeBatch = true };
-        foreach (char letter in "ab\rc가😀")
-        {
-            ConsoleKey key = letter == '\r' ? ConsoleKey.Enter : ConsoleKey.NoName;
-            console.TConsoleFakeKeys.Add(new ConsoleKeyInfo(letter, key, false, false, false));
-        }
-
-        console.BConsoleFramePrint(string.Empty);
-        List<string> edits = [];
-        List<string> entered = [];
-        BField field = new(edits.Add);
-        BLoop loop = new(static _ => { });
-        TaskCompletionSource done = new();
-        loop.BLoopBatchAttach(() =>
-        {
-            if (field.BFieldText.Length == 6)
+        TConsoleFake.TConsoleFakeRun(
+            () =>
             {
-                done.TrySetResult();
-            }
-        });
-        loop.BLoopKeyAttach(console, key =>
-        {
-            if (key.Key == ConsoleKey.Enter)
-            {
-                entered.Add(field.BFieldText);
-            }
-            else
-            {
-                field.BSParleyBodyObserve(key);
-            }
-        });
+                BLoop loop = new(static _ => { });
+                TaskCompletionSource never = new();
+                loop.BLoopDefer(() =>
+                {
+                    loop.BLoopRun(never.Task);
+                    faults.Add("inner ended");
+                });
 
-        SynchronizationContext? outer = SynchronizationContext.Current;
-        SynchronizationContext.SetSynchronizationContext(loop);
-        try
-        {
-            loop.BLoopRun(done.Task.WaitAsync(TimeSpan.FromSeconds(10)));
-        }
-        finally
-        {
-            SynchronizationContext.SetSynchronizationContext(outer);
-        }
+                loop.BLoopRun(
+                    never.Task.WaitAsync(TimeSpan.FromMilliseconds(200)),
+                    exception => faults.Add(exception.GetType().Name));
+            },
+            10);
 
-        Assert.Equal(["ab"], entered);
-        Assert.Equal(["ab", "abc가\U0001F600"], edits);
-    }
-
-    [Fact]
-    public void LoopKeyAttach_TypedRunThenKeys_KeepsOrder()
-    {
-        TConsoleFake console = new() { TConsoleFakeBatch = true };
-        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('a', ConsoleKey.A, false, false, false));
-        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('b', ConsoleKey.B, false, false, false));
-        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\r', ConsoleKey.Enter, false, false, false));
-        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\t', ConsoleKey.Tab, false, false, false));
-        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('c', ConsoleKey.C, false, false, false));
-        console.BConsoleFramePrint(string.Empty);
-        List<string> edits = [];
-        List<string> seen = [];
-        BField field = new(edits.Add);
-        BLoop loop = new(static _ => { });
-        TaskCompletionSource done = new();
-        loop.BLoopBatchAttach(() =>
-        {
-            if (field.BFieldText == "abc")
-            {
-                done.TrySetResult();
-            }
-        });
-        loop.BLoopKeyAttach(console, key =>
-        {
-            if (char.IsControl(key.KeyChar))
-            {
-                seen.Add($"{key.Key}:{field.BFieldText}");
-            }
-            else
-            {
-                field.BSParleyBodyObserve(key);
-            }
-        });
-
-        SynchronizationContext? outer = SynchronizationContext.Current;
-        SynchronizationContext.SetSynchronizationContext(loop);
-        try
-        {
-            loop.BLoopRun(done.Task.WaitAsync(TimeSpan.FromSeconds(10)));
-        }
-        finally
-        {
-            SynchronizationContext.SetSynchronizationContext(outer);
-        }
-
-        Assert.Equal(["Enter:ab", "Tab:ab"], seen);
-        Assert.Equal(["ab", "abc"], edits);
+        Assert.Equal(["inner ended", nameof(TimeoutException)], faults);
     }
 
     [Fact]
@@ -178,6 +66,30 @@ public sealed class TLoop
         loop.BLoopRun(done.Task.WaitAsync(TimeSpan.FromSeconds(10)));
 
         Assert.Equal(['a', '\t', 'c', 'd'], seen);
+    }
+
+    [Fact]
+    public void LoopKeyAttach_RunEndsWhileSettling_KeepsKeys()
+    {
+        TConsoleFake console = new() { TConsoleFakeBatch = true };
+        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('a', ConsoleKey.A, false, false, false));
+        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\0', ConsoleKey.F2, false, false, false));
+        console.BConsoleFramePrint(string.Empty);
+        List<string> seen = [];
+        BLoop loop = new(static _ => { });
+        TaskCompletionSource done = new();
+        TaskCompletionSource answered = new();
+        loop.BLoopKeyAttach(console, key =>
+        {
+            seen.Add($"{key.Key}");
+            loop.BLoopDefer(key.Key == ConsoleKey.A ? done.SetResult : answered.SetResult);
+        });
+
+        loop.BLoopRun(done.Task.WaitAsync(TimeSpan.FromSeconds(10)));
+        seen.Add("ended");
+        loop.BLoopRun(answered.Task.WaitAsync(TimeSpan.FromSeconds(10)));
+
+        Assert.Equal(["A", "ended", "F2"], seen);
     }
 
     [Fact]
@@ -282,18 +194,63 @@ public sealed class TLoop
             }
 
             seen.Add($"{key.Key}");
+            if (key.Key == ConsoleKey.F3)
+            {
+                done.TrySetResult();
+            }
         });
 
         loop.BLoopRun(
             done.Task.WaitAsync(TimeSpan.FromSeconds(10)),
-            exception =>
-            {
-                faults.Add(
-                    $"{exception.Message} {exception.StackTrace?.Contains(nameof(TLoop), StringComparison.Ordinal)}");
-                done.TrySetResult();
-            });
+            exception => faults.Add(
+                $"{exception.Message} {exception.StackTrace?.Contains(nameof(TLoop), StringComparison.Ordinal)}"));
 
         Assert.Equal(["broken True"], faults);
         Assert.Equal(["F2", "F3"], seen);
+    }
+
+    [Fact]
+    public void LoopKeyAttach_SettleFaultInDialog_CallsDialogFault()
+    {
+        TConsoleFake console = new() { TConsoleFakeBatch = true };
+        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\0', ConsoleKey.F2, false, false, false));
+        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('a', ConsoleKey.A, false, false, false));
+        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\0', ConsoleKey.F3, false, false, false));
+        console.BConsoleFramePrint(string.Empty);
+        List<string> faults = [];
+        BLoop loop = new(exception => faults.Add($"loop {exception.Message}"));
+        TaskCompletionSource answered = new();
+        TaskCompletionSource done = new();
+        loop.BLoopKeyAttach(console, key =>
+        {
+            if (key.Key == ConsoleKey.F2)
+            {
+                loop.BLoopRun(
+                    answered.Task.WaitAsync(TimeSpan.FromSeconds(10)),
+                    exception => faults.Add($"dialog {exception.Message}"));
+                done.TrySetResult();
+            }
+            else if (key.Key == ConsoleKey.A)
+            {
+                loop.BLoopDefer(static () => throw new InvalidOperationException("broken"));
+                loop.BLoopDefer(() =>
+                {
+                    TaskCompletionSource closed = new();
+                    loop.BLoopDefer(closed.SetResult);
+                    loop.BLoopRun(
+                        closed.Task.WaitAsync(TimeSpan.FromSeconds(10)),
+                        exception => faults.Add($"later {exception.Message}"));
+                });
+            }
+            else
+            {
+                answered.TrySetResult();
+            }
+        });
+
+        loop.BLoopRun(
+            done.Task.WaitAsync(TimeSpan.FromSeconds(20)), exception => faults.Add($"outer {exception.Message}"));
+
+        Assert.Equal(["dialog broken"], faults);
     }
 }

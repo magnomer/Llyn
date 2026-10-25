@@ -26,7 +26,8 @@
         Radio="(•)"
         Grasp="● ◐ ○"
         Fold="▾ ▸"
-        Media="▣ ▶" />
+        Media="▣ ▶"
+        Tree="├─ └─ │" />
     <Glyphs
         x:Key="single"
         Frame="┌ ─ ┐ │ └ ┘"
@@ -45,7 +46,8 @@
         Radio="(•)"
         Grasp="● ◐ ○"
         Fold="▾ ▸"
-        Media="▣ ▶" />
+        Media="▣ ▶"
+        Tree="├─ └─ │" />
     <Glyphs
         x:Key="ascii"
         Frame="+ - + | + +"
@@ -64,5 +66,6 @@
         Radio="(*)"
         Grasp="# + ."
         Fold="v &gt;"
-        Media="P V" />
+        Media="P V"
+        Tree="|- `- |" />
 </Blueprint>

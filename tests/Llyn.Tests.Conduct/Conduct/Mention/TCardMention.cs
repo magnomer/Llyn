@@ -27,7 +27,12 @@ public sealed class TCardMention
         sentence.CSentenceSenseSet(sheet, row, TMentionText, 13, 6, sense);
 
         Assert.Equal(sense, Assert.Single(TMentionRead(desk, sheet)).LMentionDraftSense);
-        Assert.Equal("set alight", Assert.Single(sentence.CSentenceMentionRead()[row]).CMentionLabelSense);
+        Assert.Equal(
+            "set alight",
+            Assert.Single(sentence.CSentenceMentionRead(
+                TInterfaceConductCard.TCardEntryRead(desk.TDeskRead()!.LDraftContent))[
+                    TInterfaceMention.TMentionLineRead(desk, row)])
+                .CMentionLabelSense);
     }
 
     [Fact]
@@ -68,11 +73,13 @@ public sealed class TCardMention
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         (long entry, _) = TMentionEntryCreate(engine);
-        (_, CSentence sentence, long sheet, long row) = TMentionPrepare(engine);
+        (CDesk desk, CSentence sentence, long sheet, long row) = TMentionPrepare(engine);
         sentence.CSentenceMentionAdd(sheet, row, TMentionText, 13, 6, entry);
         sentence.CSentenceMentionAdd(sheet, row, TMentionText, 29, 4, 0);
 
-        IReadOnlyList<CMentionLabel> labels = sentence.CSentenceMentionRead()[row];
+        IReadOnlyList<CMentionLabel> labels =
+            sentence.CSentenceMentionRead(TInterfaceConductCard.TCardEntryRead(desk.TDeskRead()!.LDraftContent))[
+                TInterfaceMention.TMentionLineRead(desk, row)];
 
         Assert.Equal(2, labels.Count);
         Assert.Equal("kindle", labels[0].CMentionLabelWord);
@@ -85,6 +92,71 @@ public sealed class TCardMention
     }
 
     [Fact]
+    public void SentenceMentionRead_CollocationSentenceSharingTheMeaningLinkId_KeepsEachLineItsOwnLabels()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineDelaySet(0);
+        (long entry, _) = TMentionEntryCreate(engine);
+        LSentenceDraft kindled = TInterfaceExample.TSentenceDraftCreate("kindle the logs") with
+        {
+            LSentenceDraftExample = TInterfaceExample.TExampleDraftCreate("kindle the logs") with
+            {
+                LExampleDraftMention = [TInterfaceMentionSpan.TMentionDraftCreate(0, 0, 6, entry)],
+            },
+        };
+        LEntry run = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "run",
+            "English",
+            string.Empty,
+            string.Empty,
+            [
+                TInterface.TCardCreate("a thing", 1) with
+                {
+                    LCardDraftSentence = [TInterfaceExample.TSentenceDraftCreate("the damp logs")],
+                },
+            ],
+            [TInterface.TCardCreate("a turn", 1) with { LCardDraftSentence = [kindled] }]));
+        CDesk desk = TInterfaceConductDesk.TDeskCreate(engine, "Input", TEnvoyFake.TEnvoyCreate(false, []));
+        desk.CDeskVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
+        desk.CDeskStart(run.LEntryId);
+        LEntryDraft content = desk.TDeskRead()!.LDraftContent;
+        Dictionary<long, IReadOnlyList<LTranslationTarget>> targets = [];
+        foreach (LCardDraft card in content.LEntryDraftMeanings.Concat(content.LEntryDraftCollocations))
+        {
+            targets[card.LCardDraftId] = [];
+        }
+
+        CEntryDraft shown = TInterfaceConductCard.TCardEntryRead(content, targets);
+        CSentenceDraft meaning = Assert.Single(Assert.Single(shown.CEntryDraftMeanings).CCardDraftSentence);
+        CSentenceDraft collocation = Assert.Single(Assert.Single(shown.CEntryDraftCollocations).CCardDraftSentence);
+        IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> lines =
+            TInterfaceConductCard.TSentenceCreate(engine, desk).CSentenceMentionRead(shown);
+
+        Assert.Equal(meaning.CSentenceDraftId, collocation.CSentenceDraftId);
+        Assert.Empty(lines[meaning.CSentenceDraftLine]);
+        Assert.Equal("kindle", Assert.Single(lines[collocation.CSentenceDraftLine]).CMentionLabelWord);
+    }
+
+    [Fact]
+    public void SentenceMentionRead_SentenceInsertedBefore_KeepsEachLabelOnItsOwnLine()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        (long entry, _) = TMentionEntryCreate(engine);
+        (CDesk desk, CSentence sentence, long sheet, long row) = TMentionPrepare(engine);
+        sentence.CSentenceMentionAdd(sheet, row, TMentionText, 13, 6, entry);
+        CEntryDraft shown = TInterfaceConductCard.TCardEntryRead(desk.TDeskRead()!.LDraftContent);
+        long line = Assert.Single(shown.CEntryDraftMeanings[^1].CCardDraftSentence).CSentenceDraftLine;
+
+        desk.TDeskDefer(TInterface.TSentenceAdditionCreate(desk.CDeskId, sheet, 0));
+        IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> lines = sentence.CSentenceMentionRead(shown);
+
+        Assert.NotEqual(line, TInterfaceMention.TMentionLineRead(desk, row));
+        Assert.Equal("kindle", Assert.Single(lines[line]).CMentionLabelWord);
+    }
+
+    [Fact]
     public void MentionRead_EngineFails_ShowsTheFindFailureAndKeysEverySentenceEmpty()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -93,17 +165,13 @@ public sealed class TCardMention
         (CDesk desk, _, _, long row) = TMentionPrepare(engine);
         CSentence failing = TInterfaceMention.TSentenceFailCreate(
             engine, desk, TEnvoyFake.TEnvoyCreate(false, asked));
-        LEntryDraft content = desk.TDeskRead()!.LDraftContent;
-        long[] sentences = content.LEntryDraftMeanings.Concat(content.LEntryDraftCollocations)
-            .SelectMany(static card => card.LCardDraftSentence)
-            .Select(static sentence => sentence.LSentenceDraftId)
-            .Order()
-            .ToArray();
+        IReadOnlyList<long> sentences = desk.TDeskSentenceRead();
 
-        IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> lines = failing.CSentenceMentionRead();
+        IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> lines =
+            failing.CSentenceMentionRead(TInterfaceConductCard.TCardEntryRead(desk.TDeskRead()!.LDraftContent));
 
         Assert.Equal(["Mention.FindFailed"], asked);
-        Assert.Contains(row, sentences);
+        Assert.Contains(TInterfaceMention.TMentionLineRead(desk, row), sentences);
         Assert.Equal(sentences, lines.Keys.Order());
         Assert.All(lines.Values, static labels => Assert.Empty(labels));
     }
@@ -114,7 +182,8 @@ public sealed class TCardMention
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         List<string> asked = [];
-        (CDesk desk, _, _, long row) = TMentionPrepare(engine);
+        (CDesk desk, _, _, long held) = TMentionPrepare(engine);
+        long row = TInterfaceMention.TMentionLineRead(desk, held);
         IReadOnlyList<long> sentences = desk.TDeskSentenceRead();
         LMentionLabel kindle = TInterfaceMention.TMentionLabelCreate(7, "kindle", 3);
         Dictionary<long, IReadOnlyList<LMentionLabel>> lines = new() { [row] = [kindle, kindle] };
@@ -124,7 +193,8 @@ public sealed class TCardMention
         }
 
         IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> read = TInterfaceMention.TSentenceLineCreate(
-            engine, desk, TEnvoyFake.TEnvoyCreate(false, asked), lines).CSentenceMentionRead();
+            engine, desk, TEnvoyFake.TEnvoyCreate(false, asked), lines).CSentenceMentionRead(
+                TInterfaceConductCard.TCardEntryRead(desk.TDeskRead()!.LDraftContent));
 
         Assert.Empty(asked);
         Assert.Contains(row, sentences);
@@ -143,7 +213,8 @@ public sealed class TCardMention
         IReadOnlyList<long> sentences = desk.TDeskSentenceRead();
 
         IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> read = TInterfaceMention.TSentenceLineCreate(
-            engine, desk, TEnvoyFake.TEnvoyCreate(false, asked), null).CSentenceMentionRead();
+            engine, desk, TEnvoyFake.TEnvoyCreate(false, asked), null).CSentenceMentionRead(
+                TInterfaceConductCard.TCardEntryRead(desk.TDeskRead()!.LDraftContent));
 
         Assert.Equal(["Mention.FindFailed"], asked);
         Assert.NotEmpty(sentences);
@@ -165,7 +236,8 @@ public sealed class TCardMention
         };
 
         IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> read = TInterfaceMention.TSentenceLineCreate(
-            engine, desk, TEnvoyFake.TEnvoyCreate(false, asked), lines).CSentenceMentionRead();
+            engine, desk, TEnvoyFake.TEnvoyCreate(false, asked), lines).CSentenceMentionRead(
+                new CEntryDraft(string.Empty, string.Empty, [], []));
 
         Assert.Empty(read);
         Assert.Empty(asked);

@@ -227,8 +227,8 @@ public sealed class TDisplayFailure
         CWing wing = TDisplayWingOpen(engine, atelier, asked);
         asked.Clear();
 
-        wing.CWingDisplay.CDisplayGrasp.CDisplayFavoriteToggle(true);
-        wing.CWingDisplay.CDisplayGrasp.CDisplayFavoriteToggle(true);
+        wing.CWingDisplay.CDisplayGrasp.CDisplayFavoriteToggle();
+        wing.CWingDisplay.CDisplayGrasp.CDisplayFavoriteToggle();
 
         Assert.Equal(2, asked.FindAll(key => key == "Favorite.MarkFailed").Count);
     }

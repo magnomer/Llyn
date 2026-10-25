@@ -76,8 +76,8 @@ A path line may break after a separator.
 
 ## Stamp
 
-Commit: `fe7e11daae88`
-- `BSParley.cs` `d63ba89fd06ca55e`
+Commit: `cb8ab7e8feb4`
+- `BSParley.cs` `f3ff3b2f505f7065`
 - `BSParleyBody.cs` `c73380869b4abf3e`
 - `BSParleyButton.cs` `5228b2831c1f9269`
 - `BSParleyLine.cs` `34f3fd75cc4134ab`

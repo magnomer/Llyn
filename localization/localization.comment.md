@@ -29,6 +29,7 @@ The close term labels the legend's Close key and the help box's Close button.
 The deck, flashcard, study and statistics terms name the flashcard feature.
 The decks and flashcards terms are the plurals, since each language words its plural its own way.
 Korean repeats the singular in both.
+The open and save terms label the console's path box admit buttons.
 The deck-sync term names the export to the phone app, apart from the sync term that names the Joplin push.
 It labels the deck export button and the Depot setting.
 
@@ -138,6 +139,18 @@ Slot `{1}` takes its value, the second verb, or the option that `Invocation.Qual
 The other `Invocation.Help*` keys give the help text of one option, printed after the literal option name.
 `Invocation.HelpFind` names the four columns the option lists.
 `Invocation.HelpAs` lists the five file formats of `-export`, and `Invocation.HelpFormat` the three output formats.
+`Pathfinder.*` words the console path box, its path label, its key meanings and its replace question.
+`Pathfinder.Open`, `Pathfinder.Save` and `Pathfinder.Choose` label the admit button by what the box does.
+`Pathfinder.Missing` and `Pathfinder.Unreadable` are its alerts for a file that is not found and a folder that cannot be read.
+`Drive.Title` titles the drive choice, and `Markup.Title` titles the box that picks a markup file to import.
+`List.Unmatched` is the index line when a filter matches no entry.
+`Index.Position` takes the lit row and the row count in slots `{0}` and `{1}`.
+`Index.Position` and `Index.Filtered` word the index border, where the second marks a filtered list.
+`Order.Close` and `Sieve.Close` label the Close button of the sort and language filter boxes.
+`Display.Missing` marks a picture or video line whose file is gone, and `Display.EtymologyBorrowed` marks a borrowed ancestor.
+`Display.Word*` words the reading view's word cursor.
+`Display.WordCursor` takes the left and right arrow glyphs in slots `{0}` and `{1}`.
+`Mention.Open` labels the Enter key of the Mention menu, and `Window.Help.Tick` the Space key that ticks a choice.
 `Window.*` words the console window's notices and its help.
 `Window.Opening` is the line the window shows while it opens.
 `Establishment.Courier` begins the console status line, and its slot `{0}` is `Courier.Attach` or `Courier.Connected`.
@@ -180,6 +193,6 @@ The person headers spell out person and number instead of the English abbreviati
 
 ## Stamp
 
-Commit: `c1396871c007`
-- `en.json` `32009d01a3b4b822`
-- `ko.json` `5cdea5be12db89b3`
+Commit: `cb8ab7e8feb4`
+- `en.json` `f2b36172879bb57c`
+- `ko.json` `42d788a1205c656b`

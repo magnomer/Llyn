@@ -33,9 +33,25 @@ internal static class TInterfaceConductCard
     internal static IReadOnlyList<CVideoDraft> TCardVideoRead(IReadOnlyList<LVideoDraft> videos, LMediaPort media) =>
         CFolio.CFolioVideoRead(videos, media);
 
+    internal static CEntryDraft TCardEntryRead(LEntryDraft draft) =>
+        TCardEntryRead(
+            draft,
+            draft.LEntryDraftMeanings.Concat(draft.LEntryDraftCollocations).ToDictionary(
+                static card => card.LCardDraftId, static IReadOnlyList<LTranslationTarget> (_) => []));
+
     internal static CEntryDraft TCardEntryRead(
         LEntryDraft draft, IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets) =>
-        CFolio.CFolioEntryRead(draft, targets, new HashSet<long>(), TInterfaceConduct.TMediaCreate(), []);
+        CFolio.CFolioEntryRead(
+            draft,
+            targets,
+            new HashSet<long>(),
+            TInterfaceConduct.TMediaCreate(),
+            [],
+            TEngineFake.TEngineCreate<LDraftPort>(new Dictionary<string, System.Func<object?[]?, object?>>
+            {
+                ["LEngineLineFind"] = static args =>
+                    LMentionClerk.LMentionLineFind((LEntryDraft)args![0]!, (LSentenceDraft)args[1]!),
+            }));
 
     internal static IReadOnlyList<CMeaning> TCardSenseRead(this CCardField field) => field.CCardSenseRead();
 }

@@ -9,6 +9,8 @@ This is one Example row, carrying the id of the row itself.
 So a sentence the user rewrites stays the same row.
 The id is the engine's, and the row never mints one.
 It is fixed at construction, so a later redraw cannot rebind the row.
+The row also holds `QPassageLine`, the line key Conduct handed with the draft, and a redraw refreshes it.
+The line key matches the row to its chips, because an inserted or dropped row moves later positions.
 An empty row may never have been written, or may have been written and be unknown now.
 The second is marked rather than shown, and the converter reads the mark off the engine's value.
 The row holds that value and nothing typed.
@@ -29,12 +31,14 @@ Later drafts reach it through `QPassageShow`, so it is never replaced.
 ### `QPassageChip`
 
 The editor paints the chips from the sentence area's ready read after each redraw.
+That read is keyed by line key, and the row looks its chips up by `QPassageLine`.
 The row never resolves a Mention itself.
 Every change goes out through a gate and comes back through the redraw.
 
 ### `QPassageShow`
 
 The row id is not taken, since it was fixed at construction.
+The line key is taken, since it follows the row's current position.
 A field already reading what the engine holds is left alone, so the caret survives its own echo.
 
 ### `QPassageCitation`
@@ -149,6 +153,7 @@ The gate owns the language and the empty lists a failed read leaves.
 ### `QSentenceMentionRefine`
 
 It answers the draft change after the cards, so a new row already stands.
+It passes the shown entry on to the sentence area, which mints the keys it looks up.
 
 ### `QSentenceTextObserve`
 
@@ -177,9 +182,9 @@ The silence gate is its own, so no magic id is sent for a mention with no target
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `44d0e95bcfcc`
 - `QCitation.cs` `e6b98c5149776382`
 - `QExample.cs` `bf40c0f67bf2e9b8`
-- `QPassage.cs` `7cf8c797dde53c41`
-- `QSentence.cs` `0dd40a6d937addc6`
+- `QPassage.cs` `57505d44cd07c7c6`
+- `QSentence.cs` `c63c186076724d3d`
 - `QSentenceFrame.cs` `9af5d661b1716af6`

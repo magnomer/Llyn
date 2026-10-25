@@ -68,10 +68,16 @@ public sealed class LExampleFacade : LExamplePort
         return LExampleClerk.LExampleTextMatch(field, shown);
     }
 
-    public (string, IReadOnlyList<LMentionPiece>, string) LEngineLineRead(
-        LSentenceDraft sentence, LSentenceOrder order, string mark, IReadOnlyDictionary<long, string> citations)
+    public (string, IReadOnlyList<LMentionPiece>, string, long) LEngineLineRead(
+        LEntryDraft shown,
+        LSentenceDraft sentence,
+        LSentenceOrder order,
+        string mark,
+        IReadOnlyDictionary<long, string> citations)
     {
-        return LExampleClerk.LExampleLineRead(sentence, order, mark, citations);
+        (string head, IReadOnlyList<LMentionPiece> pieces, string citation) =
+            LExampleClerk.LExampleLineRead(sentence, order, mark, citations);
+        return (head, pieces, citation, LMentionClerk.LMentionLineFind(shown, sentence));
     }
 
     internal void LEngineExampleDelete(long id, bool detach)

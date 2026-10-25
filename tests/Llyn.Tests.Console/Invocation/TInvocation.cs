@@ -360,34 +360,39 @@ public sealed class TInvocation
         Func<LEngine, bool, CAtelier> create,
         params string[] args)
     {
-        SynchronizationContext? context = SynchronizationContext.Current;
-        BBootstrap bootstrap = new(console, new ABootstrap());
-        try
+        int code = 0;
+        TConsoleFake.TConsoleFakeRun(() =>
         {
-            return bootstrap.BBootstrapIntroduce(
-                args,
-                theme,
-                () => TInterface.TLocalizationLoad(language),
-                () => folder,
-                build,
-                static _ => true,
-                engine =>
-                {
-                    using (engine)
+            SynchronizationContext? context = SynchronizationContext.Current;
+            BBootstrap bootstrap = new(console, new ABootstrap());
+            try
+            {
+                code = bootstrap.BBootstrapIntroduce(
+                    args,
+                    theme,
+                    () => TInterface.TLocalizationLoad(language),
+                    () => folder,
+                    build,
+                    static _ => true,
+                    engine =>
                     {
-                        engine.TEngineLocalizationSave(language);
-                        return bootstrap.BBootstrapAtelierRun(
-                            detached => create(engine, detached),
-                            File.Exists,
-                            Directory.GetDirectories,
-                            Directory.GetFiles,
-                            Directory.GetLogicalDrives);
-                    }
-                });
-        }
-        finally
-        {
-            SynchronizationContext.SetSynchronizationContext(context);
-        }
+                        using (engine)
+                        {
+                            engine.TEngineLocalizationSave(language);
+                            return bootstrap.BBootstrapAtelierRun(
+                                detached => create(engine, detached),
+                                File.Exists,
+                                Directory.GetDirectories,
+                                Directory.GetFiles,
+                                Directory.GetLogicalDrives);
+                        }
+                    });
+            }
+            finally
+            {
+                SynchronizationContext.SetSynchronizationContext(context);
+            }
+        });
+        return code;
     }
 }

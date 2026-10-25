@@ -92,6 +92,7 @@ The driver audit's ceilings, by kind and then by repo-relative file.
 Each ceiling is the count of that kind in that file, and every kind may only fall.
 A kind with no rows stands at zero in every file.
 A file missing from a kind has a ceiling of zero.
+A file whose ceiling falls to zero may stay listed with a zero row.
 A kind that only informs holds no rows.
 Once the driver ring it waits on holds a source, every hit of it fails.
 `TAuditRatchet` holds every ceiling against the committed copy, and a new generation baselines it afresh.
@@ -186,7 +187,7 @@ The configuration is the build whose output and generated files the binder reads
 The reference root is the project whose build output carries every package any source references.
 The Conduct root holds the types of the gate layer.
 A driver may hold, implement and reshape them, since the gate layer's types stop at the driver.
-The Capsule include patterns name sources that count as shell.
+The Capsule include patterns name the Capsule sources of the Deportment and Demeanor rings, which count as shell.
 A call into one answers a shell value, so Contesting does not search its arguments.
 Every reader of the shell include joins this list to it, so each path is written once.
 A type declared under the shell or Capsule patterns is shell.
@@ -331,13 +332,13 @@ A hit through a ref parameter names that parameter, as a hit through a local nam
 
 ## Stamp
 
-Commit: `90a13c9590ba`
-- `TAuditTruth.cs` `0158f5aa35dfba0a`
+Commit: `44d0e95bcfcc`
+- `TAuditTruth.cs` `5eb81da6ff1c1d96`
 - `TAuditTruthField.cs` `bda475280d6b7bcb`
-- `TAuditTruthLedger.json` `c50bb25b609b47e9`
+- `TAuditTruthLedger.json` `472c24dd41f36468`
 - `TAuditTruthLocal.cs` `4baaaa83b0678024`
 - `TAuditTruthReference.cs` `3c96dcfa5aa99002`
 - `TAuditTruthSequence.cs` `a5a77f14c0b84d98`
-- `TAuditTruthSetting.cs` `650669334584d064`
+- `TAuditTruthSetting.cs` `805abe1917866ae4`
 - `TAuditTruthTampering.cs` `78e63b421c0ee57e`
 - `TAuditTruthWalker.cs` `6f9d273d1926e234`

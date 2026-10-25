@@ -25,22 +25,6 @@ A printed frame hides the cursor first and shows it again at the caret.
 A frame without a caret hides the cursor once, and a caret off the grid counts as none.
 `BCanvasWidthDivide` breaks wide clusters between clusters, and a combining mark stays with its base.
 
-## `TLoop`
-
-Three queued items run before the batch, so the batch runs once.
-The batch completes the task the run waits for, so the test ends without a timeout.
-A fault in a queued item goes to the handler the run was given, and not to the loop's own.
-The key tests use a fake port that hands its keys over as one burst.
-A burst of typed characters, an Enter and more characters reports two edits.
-Enter is seen once, with the text typed before it.
-A typed run followed by Enter and Tab keeps the order.
-Each of those keys sees the text of the run.
-Keys that arrive while a settle is open still reach the observer in reader order.
-A nested run opened by a key receives the keys queued behind it.
-A settle that opens a nested run for a modal box does the same.
-The key after the box sees it closed.
-A fault during a settle goes to the handler of the run, and the keys after it still arrive.
-
 ## `TBlueprint`
 
 Loads the real `ABootstrap` and expects its six blueprints in order.
@@ -87,7 +71,7 @@ Two halves of a surrogate pair typed apart insert one character and report once.
 
 ## Stamp
 
-Commit: `0f19a28acf00`
+Commit: `cb8ab7e8feb4`
 - `TBlueprint.cs` `f2b549e3849f2d5d`
 - `TBlueprintFake.cs` `000e50a0d9cf0b07`
 - `TBlueprintFake.xaml` `0d000834862bab6c`
@@ -96,5 +80,4 @@ Commit: `0f19a28acf00`
 - `TCanvas.cs` `a1a559a9fb2846eb`
 - `TCanvasWidth.cs` `70f3ebae89174d36`
 - `TField.cs` `fb6494e05476d8cb`
-- `TLoop.cs` `54bdb0596b1478e0`
 - `TTheme.cs` `a65066d14995ec46`

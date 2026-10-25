@@ -45,9 +45,22 @@ A drag is the reader selecting text to copy, and it opens nothing.
 In the reading view the band captures the mouse on a drag, so no release reaches here at all.
 The event bubbles, so a host holding many sentences listens once above them all.
 
+### `QMentionWord`
+
+Enter on a focused block raises this event, and its owner decides whether to start a word cursor.
+If a handler marks it handled, the key is handled too.
+Its argument names only the origin and holds no text.
+
+### `QMentionWordRefine`
+
+Sets the span of the lit word, as a unit and a length, or none.
+The block then redraws, and the lit span wears the soft accent background.
+
 ### `QMentionShow`
 
 There is one run per piece, so the whole text is present and no gap is split into words.
+A piece the lit word crosses is cut into runs at the word's edges.
+Only the word's run is lit.
 The pieces cover the text from code point zero with no gap, so the runs in order are that text.
 The span of an unlinked word is the engine's to decide at click time, from the offset.
 A linked run wears the linked style.
@@ -168,9 +181,9 @@ The corpus placeholder word comes through there, so the mention text takes only 
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `QMention.cs` `35e41d7e866e2d69`
-- `QMentionArgument.cs` `a74d8a7567047ca8`
+Commit: `cb8ab7e8feb4`
+- `QMention.cs` `29dfc15207da150d`
+- `QMentionArgument.cs` `9ce0696255995ea8`
 - `QMentionChip.cs` `aede12944c42533f`
 - `QMentionCommand.cs` `f2076eda6b6e4b2c`
 - `QMentionItem.cs` `5c0213ee77d0d487`

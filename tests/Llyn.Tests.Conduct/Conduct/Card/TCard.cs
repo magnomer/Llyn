@@ -126,6 +126,30 @@ public sealed class TCard
     }
 
     [Fact]
+    public void DraftName_ImageAndVideo_NamesTheFileElseTheAddress()
+    {
+        Uri web = new("https://example.com/");
+
+        Assert.Equal("cat.png", new CImageDraft(2, new("C:/gone/cat.png", false), false, null).CImageDraftName);
+        Assert.Equal(
+            "dog.png",
+            new CImageDraft(2, new("dog", false), false, new Uri("https://example.com/a/dog.png")).CImageDraftName);
+        Assert.Equal("https://example.com/", new CImageDraft(2, new("site", false), false, web).CImageDraftName);
+        Assert.Equal(
+            "clip.mp4",
+            new CVideoDraft(3, new("D:/films/clip.mp4", false), CStateValue.CStateValueEmpty, false, null,
+                TimeSpan.Zero, null).CVideoDraftName);
+        foreach (string written in new[]
+            { "C:\\gone\\cat.png", "C:cat.png", "a/b\\c.png", "plain.png", "dir/", "C:", "\\\\host\\share\\d.png" })
+        {
+            Assert.Equal(
+                System.IO.Path.GetFileName(written) is { Length: > 0 } named ? named : written,
+                CFolio.CFolioNameRead(null, written));
+        }
+        Assert.Equal("e f.png", CFolio.CFolioNameRead(new Uri("file:///C:/films/e%20f.png"), "x"));
+    }
+
+    [Fact]
     public void PanelRowRead_EngineRow_CopiesEveryFieldAndTheMark()
     {
         CVistaRow row = TInterfaceConductPanel.TPanelRowRead(TInterfaceConductPanel.TVistaRowCreate(4, "gloss", true));

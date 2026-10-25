@@ -191,7 +191,7 @@ public sealed class TDisplayArea
         area.CDisplayGrasp.CDisplayFavoriteChanged += favorites.Add;
         area.CDisplayGrasp.CDisplayGraspChanged += _ => grasps++;
 
-        area.CDisplayGrasp.CDisplayFavoriteToggle(true);
+        area.CDisplayGrasp.CDisplayFavoriteToggle();
 
         Assert.Equal(water.LEntryId, Assert.Single(favorites).CBulletinId);
         Assert.Equal(0, grasps);
@@ -208,9 +208,10 @@ public sealed class TDisplayArea
         CDisplay area = wing.CWingDisplay;
         wing.CWingEntryOpen(water.LEntryId);
 
-        Assert.True(area.CDisplayGrasp.CDisplayFavoriteToggle(true));
+        Assert.True(area.CDisplayGrasp.CDisplayFavoriteToggle());
         Assert.True(area.CDisplayGrasp.CDisplayFavoriteRead());
-        Assert.False(area.CDisplayGrasp.CDisplayFavoriteToggle(false));
+        Assert.False(area.CDisplayGrasp.CDisplayFavoriteToggle());
+        Assert.False(area.CDisplayGrasp.CDisplayFavoriteRead());
     }
 
     [Fact]
@@ -221,7 +222,7 @@ public sealed class TDisplayArea
         using CAtelier atelier = TDisplayAtelierCreate(engine);
         CWing wing = TDisplayWingPrepare(atelier);
 
-        Assert.False(wing.CWingDisplay.CDisplayGrasp.CDisplayFavoriteToggle(true));
+        Assert.False(wing.CWingDisplay.CDisplayGrasp.CDisplayFavoriteToggle());
     }
 
     [Fact]

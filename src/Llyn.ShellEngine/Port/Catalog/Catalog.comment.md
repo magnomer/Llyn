@@ -23,6 +23,7 @@ The slice a deportment sees when it lists Examples or shows a sentence line.
 `LEngineExampleFind` lists the Examples the vista shows, named distinctly, with wording for blank fields.
 `LEngineTextMatch` says whether a field already shows the text, a blank field reading as nothing recorded.
 `LEngineLineRead` gives the frame, the sentence divided around its Mentions and the Source line of one sentence row.
+It also answers the row's line key against the shown entry, which the caller passes in.
 The clerk composes them, so the display and the portrait share one rule.
 
 ## `LFavoritePort`
@@ -88,9 +89,9 @@ A vista with no choice, or a subject it cannot delete, deletes nothing.
 
 ## Stamp
 
-Commit: `52c21d68b4c4`
+Commit: `44d0e95bcfcc`
 - `LAuthorPort.cs` `6f38609535b6a579`
-- `LExamplePort.cs` `c02a2d7c260aee03`
+- `LExamplePort.cs` `b6c72ca28cde3957`
 - `LFavoritePort.cs` `3c243051779a80d9`
 - `LReferencePort.cs` `516f5f4bb2486985`
 - `LRegisterPort.cs` `9935bb59c37ef592`

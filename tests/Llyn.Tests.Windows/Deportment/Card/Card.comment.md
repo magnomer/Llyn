@@ -1,7 +1,7 @@
 # Card
 
 This folder holds the tests of the card editor driver parts.
-They cover chip caret keys, chip seat, card fold hinges, ordinal badge and row matcher.
+They cover chip caret keys, chip seat, card fold hinges, ordinal badge, row matcher and the reading view's word cursor.
 
 ## `TBerthSeat`
 
@@ -90,12 +90,27 @@ An open row unchecks its hinge and wraps its meaning.
 Its flags and markers give way, since the body shows the fields they summarise.
 A meaning card with one homed collocation shows Conduct's ready caption and the homed list.
 
+## `TLecternWord`
+
+The word cursor of the reading card is driven by key presses on a Mention line in a bare surface.
+Each case seeds two entries headed water and one sentence reading the water, then opens it in a real display.
+The line is raised through preview and key events, so the cursor sees what a user would press.
+The returned text is what the line paints with a background, which is the cursor character.
+Right does nothing until Enter has started the cursor, and Enter then draws it on the first character.
+The line text stays the sentence, and no lookup notice is raised by starting.
+Enter after moving looks up the word under the cursor.
+It raises one notice with the offer and the word start.
+Both water entries are offered, and the route's lead is the text from the word's start to the cursor.
+Escape clears the cursor, and a Right after it paints nothing.
+The route keeps the unit it had, and Enter starts again from the first character.
+
 ## Stamp
 
-Commit: `aae5349dbb94`
+Commit: `cb8ab7e8feb4`
 - `TBerthSeat.cs` `75eb74163de8d120`
 - `TCardHinge.cs` `d2e41474db5dfd42`
 - `TCardOrdinal.cs` `788665234082c696`
 - `TCardRow.cs` `618531bdc90512ef`
 - `TCaretKey.cs` `6eaf4b7930a95206`
 - `TLecternHinge.cs` `84da2bf5782fe891`
+- `TLecternWord.cs` `8607f59a4fdb2afa`

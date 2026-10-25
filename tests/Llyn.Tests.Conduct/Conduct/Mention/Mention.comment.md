@@ -25,6 +25,9 @@ A linked Mention offers its Entry's Meanings, and the sense gate narrows it to o
 A silent Mention may be unlinked but offers no sense.
 A Mention drops by the selection over it and by its chip's id.
 The chip line names a linked headword, and keys a silent chip with no name or sense.
+The chip lines are keyed by line key, which the test reads from the held draft.
+A collocation sentence sharing the meaning sentence's row id keeps its own labels under its own line key.
+A sentence inserted before a labelled one leaves that label on its own line key, read from the shown entry.
 A failed chip line read reports `Mention.FindFailed` once.
 It still keys every sentence of the held draft, each with an empty chip line.
 Lines for rows the draft lacks drop, and a held row the engine skips reads an empty line.
@@ -62,8 +65,8 @@ A link over an Entry keeps the selection's span and carries no sense.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `44d0e95bcfcc`
 - `TAtelierMention.cs` `3af14e590ada7db8`
-- `TCardMention.cs` `4c866c61f81c700a`
+- `TCardMention.cs` `36fd51f386eb3377`
 - `TCorpusMention.cs` `8de0ba8b6aaf7922`
 - `TTranscriptMention.cs` `2fef1d74f0e5c94c`

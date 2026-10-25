@@ -93,10 +93,12 @@ The corpus excerpt and the lectern both hand the window this shape.
 
 ## `LMentionLineRead`
 
-The chip lines of the draft's sentence rows, keyed by the row, as the sentence area answers them.
+The chip lines of the draft's sentence rows, keyed by line key, as the sentence area answers them.
+The engine mints each key through the draft port, as the position among the entry's sentences.
+The shown entry gives the keys, and the draft's content gives the labels, matched by card and sentence row.
 It keys one entry for every sentence of the meaning and collocation cards.
 A sentence the engine sent no line for gets an empty list, so a missing key never means stale.
-A line for a sentence outside the draft is dropped, since no row shows it.
+A line for a key matching no sentence is dropped, since no row shows it.
 
 ## `LMentionLabelRead`
 
@@ -148,8 +150,8 @@ The Meanings follow in reading order.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `CMention.cs` `969c0bb4c1446e6f`
+Commit: `44d0e95bcfcc`
+- `CMention.cs` `3978a6853539422a`
 - `CMentionLabel.cs` `f76e9d4f43ab824e`
 - `CMentionMark.cs` `e508634d8bf3ccb9`
 - `CMentionOffer.cs` `1cc7318417f1a177`

@@ -177,6 +177,7 @@ public sealed class TCardSense
         Assert.Empty(home.CLeafFlag);
         Assert.Equal((false, true), (home.CLeafQuoted, home.CLeafShared));
         Assert.Empty(card.CLecternCardMeanings[0].CLeafAlso);
+        Assert.Equal((true, false), (card.CLecternCardMeanings[0].CLeafHomed, home.CLeafHomed));
     }
 
     [Fact]

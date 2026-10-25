@@ -39,7 +39,10 @@ internal sealed class BSParley
         ArgumentNullException.ThrowIfNull(lines);
         ArgumentNullException.ThrowIfNull(buttons);
         ArgumentOutOfRangeException.ThrowIfNegative(safe);
-        ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(safe, buttons.Count);
+        if (buttons.Count > 0 || body is null)
+        {
+            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(safe, buttons.Count);
+        }
 
         _bsParleyBlueprint = blueprint;
         _bsParleyText = BContract.BContractFind(blueprint, "ASParleyText");
@@ -90,16 +93,18 @@ internal sealed class BSParley
             }
         }
 
+        Func<BKeymapLive> pressable = () =>
+            _bsParleyButtons.Count > 0 ? BKeymapLive.BKeymapLiveShown : BKeymapLive.BKeymapLiveHidden;
         BSParleyKeymap = new BKeymap(
         [
             .. rows,
             new(ConsoleKey.F10, 0, focus, "Legend.Close", close, shown),
             new(ConsoleKey.Escape, 0, focus, "Legend.Close", close, shown),
-            new(ConsoleKey.Enter, 0, focus, "Window.Help.Press", _ => press(_bsParleyLit), shown),
-            new(ConsoleKey.Tab, 0, focus, "Window.Help.Part", part, shown),
-            new(ConsoleKey.Tab, ConsoleModifiers.Shift, focus, "Window.Help.Part", part, shown),
-            new(ConsoleKey.LeftArrow, 0, focus, "Window.Help.Button", _ => BSParleyLitMove(-1), shown),
-            new(ConsoleKey.RightArrow, 0, focus, "Window.Help.Button", _ => BSParleyLitMove(1), shown),
+            new(ConsoleKey.Enter, 0, focus, "Window.Help.Press", _ => press(_bsParleyLit), pressable),
+            new(ConsoleKey.Tab, 0, focus, "Window.Help.Part", part, pressable),
+            new(ConsoleKey.Tab, ConsoleModifiers.Shift, focus, "Window.Help.Part", part, pressable),
+            new(ConsoleKey.LeftArrow, 0, focus, "Window.Help.Button", _ => BSParleyLitMove(-1), pressable),
+            new(ConsoleKey.RightArrow, 0, focus, "Window.Help.Button", _ => BSParleyLitMove(1), pressable),
         ]);
     }
 
@@ -152,8 +157,12 @@ internal sealed class BSParley
 
         int gap = rows.Count > 0 ? 1 : 0;
         int body = _bsParleyBody is BSParleyBody part ? part.BSParleyBodyHeight + gap : 0;
+        int spare = _bsParleyButtons.Count == 0
+            ? _bsParleyButton.BBlueprintPartRow + _bsParleyButton.BBlueprintPartHeight
+                - _bsParleyText.BBlueprintPartRow - _bsParleyText.BBlueprintPartHeight
+            : 0;
         int down = Math.Clamp(
-            rows.Count + body + height - _bsParleyText.BBlueprintPartHeight, 0, Math.Max(height - 2, 0));
+            rows.Count + body + height - _bsParleyText.BBlueprintPartHeight - spare, 0, Math.Max(height - 2, 0));
         int lowest = Math.Max(height - down - 1, 0);
         int rightmost = Math.Max(width - across - 1, 0);
         (int top, int left) = BSParleyAnchor is (int row, int column)
@@ -222,7 +231,8 @@ internal sealed class BSParley
                     : new Dictionary<string, IReadOnlyList<string>>();
             texts.AddRange(drawn.BSParleyBodyDraw(
                 set, text.BBlueprintPartRow + rows.Count + gap, text.BBlueprintPartColumn, span,
-                Math.Max(text.BBlueprintPartHeight - rows.Count - gap, 0), _bsParleyFocus is not null, _bsParleyRole,
+                Math.Max(text.BBlueprintPartHeight - rows.Count - gap + spare, 0), _bsParleyFocus is not null,
+                _bsParleyRole,
                 measure));
             string position = $" {drawn.BSParleyBodyPosition} ";
             int length = measure.BCanvasWidthResolve(position);

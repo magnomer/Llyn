@@ -27,6 +27,7 @@ internal sealed class QPassage : INotifyPropertyChanged
         QPassageDependenceCatalog = dependences;
         QPassageLanguageCatalog = languages;
         QPassageRow = draft.CSentenceDraftId;
+        QPassageLine = draft.CSentenceDraftLine;
         _qPassageText = draft.CSentenceDraftText;
         QPassageCitation = example?.CExampleDraftReference;
         QPassageCited = draft.CSentenceDraftCited;
@@ -52,6 +53,8 @@ internal sealed class QPassage : INotifyPropertyChanged
     internal event Action<QRendition, string>? QPassageGlossNotice;
 
     internal long QPassageRow { get; }
+
+    internal long QPassageLine { get; private set; }
 
     internal bool QPassageCited { get; private set; }
 
@@ -92,6 +95,7 @@ internal sealed class QPassage : INotifyPropertyChanged
         CExampleDraft? example = draft.CSentenceDraftExample;
 
         QPassageGlossShow(example?.CExampleDraftGloss ?? []);
+        QPassageLine = draft.CSentenceDraftLine;
         QPassageText = draft.CSentenceDraftText;
         QPassageCitation = example?.CExampleDraftReference;
         QPassageCited = draft.CSentenceDraftCited;

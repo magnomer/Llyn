@@ -28,13 +28,18 @@ public sealed class LMentionFacade : LMentionPort
         }
     }
 
-    public LMentionResult LEngineMentionFind(LEntryDraft shown, long sentence, int offset)
+    public LMentionResult LEngineMentionFind(LEntryDraft shown, long line, int offset)
     {
         lock (_lMentionFacadeGate)
         {
             return LMentionFacadeStaff.LEngineStaffCatalog.LCatalogStaffMention
-                .LMentionClerkFind(shown, sentence, offset);
+                .LMentionClerkFind(shown, line, offset);
         }
+    }
+
+    public long LEngineLineFind(LEntryDraft shown, LSentenceDraft sentence)
+    {
+        return LMentionClerk.LMentionLineFind(shown, sentence);
     }
 
     public long? LEngineLinkRead(long? link)
@@ -74,11 +79,10 @@ public sealed class LMentionFacade : LMentionPort
         }
     }
 
-    public IReadOnlyDictionary<long, IReadOnlyList<LMentionLabel>> LEngineMentionResolve(LTenure held)
+    public IReadOnlyDictionary<long, IReadOnlyList<LMentionLabel>> LEngineMentionResolve(LDraft draft)
     {
-        ArgumentNullException.ThrowIfNull(held);
+        ArgumentNullException.ThrowIfNull(draft);
 
-        LDraft? draft = held.LTenureRead();
         lock (_lMentionFacadeGate)
         {
             return LMentionFacadeStaff.LEngineStaffCatalog.LCatalogStaffMention.LMentionClerkResolve(draft);

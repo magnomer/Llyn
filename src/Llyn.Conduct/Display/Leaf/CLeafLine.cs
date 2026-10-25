@@ -13,6 +13,7 @@ public sealed record CLeafLine(
     IReadOnlyList<CGlossDraft> CLeafLineGloss)
 {
     internal static CLeafLine LLeafLineRead(
+        LEntryDraft shown,
         LSentenceDraft sentence,
         LSentenceOrder order,
         string mark,
@@ -21,11 +22,11 @@ public sealed record CLeafLine(
     {
         ArgumentNullException.ThrowIfNull(examples);
 
-        (string head, IReadOnlyList<LMentionPiece> pieces, string citation) =
-            examples.LEngineLineRead(sentence, order, mark, citations);
+        (string head, IReadOnlyList<LMentionPiece> pieces, string citation, long line) =
+            examples.LEngineLineRead(shown, sentence, order, mark, citations);
         return new CLeafLine(
             head,
-            sentence.LSentenceDraftId,
+            line,
             CMention.LMentionPieceRead(pieces),
             citation,
             CFolio.CFolioGlossRead(sentence.LSentenceDraftGloss));

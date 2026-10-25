@@ -93,7 +93,8 @@ public sealed class CDisplay
             entries.CEntryBundleAncestor,
             settings,
             envoy);
-        CDisplayRoute = new CDisplayRoute(LDisplayRule, entries.CEntryBundleMention, settings, envoy);
+        CDisplayRoute = new CDisplayRoute(
+            LDisplayRule, CDisplayCard, entries.CEntryBundleMention, settings, envoy);
         CDisplayCompass = new CCompass(
             LDisplayRule,
             entries.CEntryBundleEntry,

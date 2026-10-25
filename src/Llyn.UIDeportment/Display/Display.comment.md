@@ -57,6 +57,22 @@ The supplied hit table chooses the step for each half.
 The card driver consumes only the card, route and sound areas, keeping engine records outside presentation.
 Word offers and "see" clicks leave through notices, so the driver needs no window or contents reference.
 Bubbling click and mention handlers cover cards generated inside templates.
+The word event of a sentence starts the keyboard word cursor, and the lectern needs no window for it.
+
+### `QLecternWordStart`
+
+The event starts the route's word cursor on the sentence and listens for keys on that line.
+The cursor ends when the line loses keyboard focus or Escape is pressed.
+The event is marked handled, so no outer element starts a second cursor.
+
+### `QLecternWordObserve`
+
+Enter asks the route for the mention at the cursor and raises the mention notice.
+The notice carries the unit of the word's start, so the menu stands at that word.
+Left and Right move by word, and with Control they jump to the next stop.
+After each move the line redraws its lit word from the route, which holds the cursor.
+Any other key is left alone.
+A click raises the same notice with no unit, so the menu stands at the click.
 
 ### `QLecternSeeNotice`
 
@@ -100,6 +116,7 @@ A hover with no step reads the standing grasp label, so the label returns when t
 
 Text, font, flag and favorite state have separate redraw callbacks, keeping their updates independent.
 A favorite click redraws from the gate's returned state rather than trusting the toggle.
+The gate flips the stored mark itself, so the click sends no checked state.
 The header takes the favourite gate and its change event from the display's grasp area, not from the display.
 
 ### `QLecternFlagRefine`
@@ -142,14 +159,14 @@ The label column joins the shared `PReadingLabel` width only while its section s
 
 ## Stamp
 
-Commit: `fe7e11daae88`
+Commit: `cb8ab7e8feb4`
 - `QGraspStar.cs` `b96249bbb783b9db`
 - `QLectern.cs` `bd10cde4904921d7`
-- `QLecternCard.cs` `9286e5946ef4540e`
+- `QLecternCard.cs` `ad85713f9bc3d89e`
 - `QLecternEntry.cs` `f13d612b00f01fd0`
-- `QLecternEtymology.cs` `db6f54cdb8b0c4f2`
+- `QLecternEtymology.cs` `4eac208cc78d309e`
 - `QLecternFrequency.cs` `557735b484228775`
 - `QLecternGrasp.cs` `b3a3e33c2b56fe4c`
-- `QLecternHeader.cs` `b52feac09f86897b`
+- `QLecternHeader.cs` `099a9cf062743bd5`
 - `QLecternIncoming.cs` `2013dfbcd1cfc565`
 - `QLecternLead.cs` `f744babc1ea40def`

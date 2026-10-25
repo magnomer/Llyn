@@ -12,6 +12,7 @@ internal sealed class QImageItem : INotifyPropertyChanged, QImagePending
 {
     private CStateWording _qImageItemLocation;
     private Uri? _qImageItemAddress;
+    private string _qImageItemName;
     private bool _qImageItemSeen;
     private ImageSource? _qImageItemPreview;
     private readonly long _qImageItemRow;
@@ -23,6 +24,7 @@ internal sealed class QImageItem : INotifyPropertyChanged, QImagePending
         _qImageItemRow = written.CImageDraftId;
         _qImageItemLocation = written.CImageDraftWording;
         _qImageItemAddress = written.CImageDraftAddress;
+        _qImageItemName = written.CImageDraftName;
     }
 
     public CStateWording QImageItemLocation
@@ -57,6 +59,8 @@ internal sealed class QImageItem : INotifyPropertyChanged, QImagePending
 
     internal long QImageItemId => _qImageItemRow;
 
+    internal string QImageItemName => _qImageItemName;
+
     public void QImagePendingLoad()
     {
         if (_qImageItemSeen)
@@ -72,6 +76,7 @@ internal sealed class QImageItem : INotifyPropertyChanged, QImagePending
     {
         ArgumentNullException.ThrowIfNull(written);
 
+        _qImageItemName = written.CImageDraftName;
         QImageItemLocation = written.CImageDraftWording;
         if (Equals(_qImageItemAddress, written.CImageDraftAddress))
         {
@@ -114,6 +119,7 @@ internal sealed class QImageItem : INotifyPropertyChanged, QImagePending
         if (QLook.QLookPartFind<Image>(container, "PImagePreview") is Image preview)
         {
             preview.Source = row.QImageItemPreview;
+            System.Windows.Automation.AutomationProperties.SetName(preview, row.QImageItemName);
         }
 
         if (QLook.QLookPartFind<TextBox>(container, "PImageLocation") is TextBox location)
@@ -144,7 +150,12 @@ internal sealed class QImageItem : INotifyPropertyChanged, QImagePending
 
         hold.QImageLazyRow = row;
         preview.Source = row.QImageItemPreview;
-        row.PropertyChanged += (_, _) => preview.Source = row.QImageItemPreview;
+        System.Windows.Automation.AutomationProperties.SetName(preview, row.QImageItemName);
+        row.PropertyChanged += (_, _) =>
+        {
+            preview.Source = row.QImageItemPreview;
+            System.Windows.Automation.AutomationProperties.SetName(preview, row.QImageItemName);
+        };
     }
 
     private void QImageItemBuild()

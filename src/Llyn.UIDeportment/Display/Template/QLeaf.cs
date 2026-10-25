@@ -50,7 +50,7 @@ internal static class QLeaf
         if (QLook.QLookPartFind<TextBlock>(container, "PCardHeading") is TextBlock homes)
         {
             homes.Text = card.QLeafItemHeading;
-            homes.Visibility = QLook.QLookVisibleRead(card.QLeafItemHome.Count > 0);
+            homes.Visibility = QLook.QLookVisibleRead(card.QLeafItemHomed);
         }
 
         QLeafListRefine(container, "PCardHome", card.QLeafItemHome, QLeafRowRefine);

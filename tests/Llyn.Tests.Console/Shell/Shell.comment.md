@@ -11,6 +11,7 @@ A start with a terminal and no arguments is the window, and an F10 key ends it.
 
 Each test queues any keys and sizes first, then runs the whole bootstrap.
 The loop's own threads read the keys and sizes, so the tests assert the grid the fake rebuilt.
+`TInvocationRun` runs the bootstrap through `TConsoleFake.TConsoleFakeRun`, so a hung window fails the test on a time limit.
 
 ## `WindowOpen_EightyByTwentyFour_DrawsEmptyFrame`
 
@@ -225,8 +226,8 @@ Its Enter, Escape and F10 keys are shared with `TCapsulePathfinder`.
 
 ## Stamp
 
-Commit: `0f19a28acf00`
-- `TBootstrap.cs` `0bee69d6fe62b88c`
+Commit: `cb8ab7e8feb4`
+- `TBootstrap.cs` `c4356b19e67b4c41`
 - `TCabinet.cs` `ce20853cde2f2f7e`
 - `TCapsule.cs` `334a49f71ae77378`
 - `TEnvoy.cs` `ad12f1bf4da06bd6`

@@ -33,7 +33,10 @@ public sealed record CLeaf(
 
     public bool CLeafShared => CLeafAlso.Length > 0;
 
+    public bool CLeafHomed => CLeafCollocation.Count > 0;
+
     internal static IReadOnlyList<CLeaf> LLeafRead(
+        LEntryDraft shown,
         IReadOnlyList<LCardDraft> cards,
         LCollocationLayout? layout,
         LSentenceOrder order,
@@ -64,13 +67,14 @@ public sealed record CLeaf(
                 card.LCardDraftTag.Select(CLeafChip.LLeafChipRead).ToList(),
                 CFolio.CFolioTargetRead(targets.GetValueOrDefault(card.LCardDraftId, [])),
                 card.LCardDraftSentence
-                    .Select(sentence => CLeafLine.LLeafLineRead(sentence, order, mark, citations, examples))
+                    .Select(sentence => CLeafLine.LLeafLineRead(shown, sentence, order, mark, citations, examples))
                     .ToList(),
                 CFolio.CFolioImageRead(card.LCardDraftImage, media),
                 CFolio.CFolioVideoRead(card.LCardDraftVideo, media),
                 folds.Contains(card.LCardDraftId),
                 card.LCardDraftStored,
                 LLeafRead(
+                    shown,
                     layout?.LCollocationLayoutHome.GetValueOrDefault(card.LCardDraftId, []) ?? [],
                     layout, order, mark, stub, example, exampleOne, also, heading, citations, targets, folds, media,
                     examples),

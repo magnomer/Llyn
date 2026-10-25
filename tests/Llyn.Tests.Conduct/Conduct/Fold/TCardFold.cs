@@ -200,6 +200,26 @@ public sealed class TCardFold
     }
 
     [Fact]
+    public void DisplayFoldToggle_SaveRefused_RaisesNoDisplayFold()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        LEntry water = TCardFoldPrepare(engine, "water");
+        LEntryDraft held = engine.TEngineEntryLoad(water.LEntryId)!;
+        CWing wing = CWing.CWingCreate(atelier, TEnvoyFake.TEnvoyCreate(false, []), true);
+        wing.CWingEntryOpen(water.LEntryId);
+        List<long> heard = [];
+        wing.CWingDisplay.CDisplayFoldChanged += bulletin => heard.Add(bulletin.CBulletinId);
+        workspace.TWorkspaceScriptRun("ALTER TABLE sense_fold RENAME TO sense_fold_gone;");
+
+        bool taken = wing.CWingDisplay.CDisplayCard.CDisplayFoldToggle(held.LEntryDraftMeanings[0].LCardDraftId, true);
+
+        Assert.Empty(heard);
+        Assert.False(taken);
+    }
+
+    [Fact]
     public void DisplayFoldToggle_NoEntryChosen_AnswersFalseAndStoresNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

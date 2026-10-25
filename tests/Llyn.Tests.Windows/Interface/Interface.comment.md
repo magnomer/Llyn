@@ -44,6 +44,12 @@ The reading reflex section subscribes the hinge itself, so the test wires no obs
 It builds `QCadence` over a surface carrying the rime-book and script boxes under their markup names.
 So a switch click reaches the real fold gate through the real driver.
 
+### `TLecternMentionAttach`
+
+It gives a bare Mention line its sentence id and its pieces, each piece with no entry link.
+It forwards the reading card's Mention notice to the test, as the offer and the word start it carries.
+So a word cursor case runs the real card driver without a window of its own.
+
 ### `TLecternSoundCreate`
 
 It builds the reading view's sound section over the display's sound and fold areas.
@@ -90,8 +96,8 @@ The wait is bounded, so a step that hangs fails the test rather than the whole r
 
 ## Stamp
 
-Commit: `ed7d18d90760`
+Commit: `cb8ab7e8feb4`
 - `TInterfaceCapsule.cs` `062207ed6f90f438`
-- `TInterfaceDeportment.cs` `98defaca17184e1a`
+- `TInterfaceDeportment.cs` `1b4c910293f5b5b2`
 - `TInterfacePhonograph.cs` `888cd40c37da96bb`
 - `TWindow.cs` `20d60e5a8413b7cf`

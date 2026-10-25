@@ -26,19 +26,23 @@ internal static class CFolio
         IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets,
         IReadOnlySet<long> folds,
         LMediaPort media,
-        IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth, string LMeaningPath)> senses)
+        IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth, string LMeaningPath)> senses,
+        LDraftPort drafts)
     {
         ArgumentNullException.ThrowIfNull(draft);
         ArgumentNullException.ThrowIfNull(targets);
         ArgumentNullException.ThrowIfNull(folds);
         ArgumentNullException.ThrowIfNull(media);
         ArgumentNullException.ThrowIfNull(senses);
+        ArgumentNullException.ThrowIfNull(drafts);
 
         return new CEntryDraft(
             draft.LEntryDraftHeadword,
             draft.LEntryDraftNote,
-            CFolioSheetRead(draft.LEntryDraftMeanings, targets, folds, media, "Card.DefinitionHint", false, senses),
-            CFolioSheetRead(draft.LEntryDraftCollocations, targets, folds, media, "Card.MeaningHint", true, senses));
+            CFolioSheetRead(
+                draft, draft.LEntryDraftMeanings, targets, folds, media, "Card.DefinitionHint", false, senses, drafts),
+            CFolioSheetRead(
+                draft, draft.LEntryDraftCollocations, targets, folds, media, "Card.MeaningHint", true, senses, drafts));
     }
 
     internal static CStateValue CFolioStateRead(LStateValue value)
@@ -47,13 +51,15 @@ internal static class CFolio
     }
 
     private static IReadOnlyList<CCardDraft> CFolioSheetRead(
+        LEntryDraft draft,
         IReadOnlyList<LCardDraft> cards,
         IReadOnlyDictionary<long, IReadOnlyList<LTranslationTarget>> targets,
         IReadOnlySet<long> folds,
         LMediaPort media,
         string meaning,
         bool expressed,
-        IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth, string LMeaningPath)> senses)
+        IReadOnlyList<(long LMeaningId, string LMeaningName, int LMeaningDepth, string LMeaningPath)> senses,
+        LDraftPort drafts)
     {
         return CFolioOrderRead(cards)
             .Select(card => new CCardDraft(
@@ -65,7 +71,7 @@ internal static class CFolio
                     null,
                     "Card.ExpressionHint"),
                 CStateWording.LStateWordingRead(CFolioStateRead(card.LCardDraftMeaning), null, meaning),
-                card.LCardDraftSentence.Select(CFolioSentenceRead).ToList(),
+                card.LCardDraftSentence.Select(sentence => CFolioSentenceRead(draft, sentence, drafts)).ToList(),
                 card.LCardDraftSituation
                     .Select(static row => new CSituationDraft(
                         row.LSituationDraftId,
@@ -154,11 +160,12 @@ internal static class CFolio
             : content.LEntryDraftCollocations;
     }
 
-    private static CSentenceDraft CFolioSentenceRead(LSentenceDraft sentence)
+    private static CSentenceDraft CFolioSentenceRead(LEntryDraft draft, LSentenceDraft sentence, LDraftPort drafts)
     {
         CExampleDraft? example = CFolioExampleRead(sentence.LSentenceDraftExample);
         return new CSentenceDraft(
             sentence.LSentenceDraftId,
+            drafts.LEngineLineFind(draft, sentence),
             example,
             sentence.LSentenceDraftCited,
             CStateWording.LStateWordingRead(
@@ -201,6 +208,21 @@ internal static class CFolio
                 image.LImageDraftEmpty,
                 media.LEngineLocationRead(image.LImageDraftLocation.LStateValuePlain)))
             .ToList();
+    }
+
+    internal static string CFolioNameRead(Uri? address, string written)
+    {
+        ArgumentNullException.ThrowIfNull(written);
+
+        string path = address is null ? written : address.IsFile ? address.LocalPath : address.AbsolutePath;
+        int start = path.LastIndexOfAny(['/', '\\']) + 1;
+        if (start == 0 && path.Length >= 2 && path[1] == ':' && char.IsAsciiLetter(path[0]))
+        {
+            start = 2;
+        }
+
+        string named = path[start..];
+        return named.Length > 0 ? named : address?.ToString() ?? written;
     }
 
     internal static IReadOnlyList<CVideoDraft> CFolioVideoRead(IReadOnlyList<LVideoDraft> videos, LMediaPort media)

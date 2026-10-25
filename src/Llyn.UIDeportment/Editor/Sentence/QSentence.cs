@@ -84,10 +84,10 @@ internal sealed class QSentence
         }
     }
 
-    internal void QSentenceMentionRefine(CEntryDraft _)
+    internal void QSentenceMentionRefine(CEntryDraft shown)
     {
         IReadOnlyDictionary<long, IReadOnlyList<CMentionLabel>> lines =
-            _cSentence.CSentenceMentionRead();
+            _cSentence.CSentenceMentionRead(shown);
         QSentenceChipRefine(_qSentenceMeaning, lines);
         QSentenceChipRefine(_qSentenceCollocation, lines);
     }
@@ -146,7 +146,7 @@ internal sealed class QSentence
             foreach (QPassage row in card.QCardSentence.QCardSentenceRow)
             {
                 row.QPassageChip.QMentionLineRefine(QMentionChip.QMentionChipCreate(
-                    lines.TryGetValue(row.QPassageRow, out IReadOnlyList<CMentionLabel>? labels) ? labels : []));
+                    lines.TryGetValue(row.QPassageLine, out IReadOnlyList<CMentionLabel>? labels) ? labels : []));
             }
         }
     }

@@ -197,7 +197,8 @@ public sealed class TLibrary
         Action<BLibrary, CAtelier, List<Task?>> check,
         List<string>? asked = null,
         string? script = null,
-        CEnvoy? envoy = null)
+        CEnvoy? envoy = null,
+        Action<LEngine>? seed = null)
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -206,6 +207,8 @@ public sealed class TLibrary
             engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
                 headword, "English", string.Empty, string.Empty, [TInterface.TCardCreate("a meaning", 1)], []));
         }
+
+        seed?.Invoke(engine);
 
         SynchronizationContext? context = SynchronizationContext.Current;
         BLoop loop = new(static _ => { });

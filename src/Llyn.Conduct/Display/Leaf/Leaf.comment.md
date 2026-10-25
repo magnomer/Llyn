@@ -13,6 +13,8 @@ Every read here runs on a repaint and shows its failure through repaint memory, 
 ### `CDisplayCardRead`
 
 No shown draft answers no cards, with no section shown.
+Each read records the draft it minted its line keys from.
+The route compares that draft with the shown draft on a click.
 Each linked collocation is a row in the leaf of the top-level meaning that holds its home.
 The collocations with no live link fill the Other list.
 Where each collocation sits, and each row's phrase and markers, come from one engine read.
@@ -91,6 +93,7 @@ It reads blank and muted on a meaning leaf.
 `CLeafFlag` lists the translation languages a closed collocation row shows one flag for.
 `CLeafExample` and `CLeafAlso` are a closed row's ready markers, empty when there is nothing to count.
 The phrase and the three markers are empty on a meaning leaf, since only collocations have them.
+`CLeafHomed` is true when the card has collocations homed under it, so the heading and rows show.
 `CLeafHeading` is the ready "Collocations" caption over a meaning's rows, empty when nothing homes there.
 `CLeafQuoted` and `CLeafShared` are the verdicts a closed row shows its markers on, so the view never measures the text.
 
@@ -111,7 +114,7 @@ The order, the unknown mark, the Source lines and the link targets are read once
 Each card's links are its own entry of the target map, which the engine keys by every card.
 A card missing from the map has no links, since a refused target read answers an empty map.
 Each picture row carries the address `media` resolves, so the page loads it without asking.
-Each sentence line is composed through `examples`.
+Each sentence line is composed through `examples`, which also answers its line key against the shown entry.
 The folded ids come from one entry read, independent of the lexical card draft.
 
 ## `CLeafChip`
@@ -127,7 +130,8 @@ A tag is worded from its text, which has no unknown state.
 
 One example line of a reading card, ready to paint.
 The head is the frame in brackets before the sentence, empty when the row states none.
-`CLeafLineSentence` is the handle a click hands back to the find gate.
+`CLeafLineSentence` is the line key the engine mints, the handle a click hands back to the find gate.
+The line key is the sentence's position among the shown entry's sentences, so it is no stored row id.
 The gate reads the text, language and Mentions itself, so none of them rides on the line.
 The pieces are the sentence divided at its Mentions, with the unknown mark for an unknown one.
 The driver draws them run by run.
@@ -139,9 +143,9 @@ A row quoting no Example has no text to divide and no Source line.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `CDisplayCard.cs` `842395c868a88dde`
-- `CLeaf.cs` `19d7e62dbe91e5d6`
+Commit: `44d0e95bcfcc`
+- `CDisplayCard.cs` `abe8c60ddf8df8a9`
+- `CLeaf.cs` `e748f3a16fe4e1c2`
 - `CLeafChip.cs` `d604e4f1c5b56d4f`
-- `CLeafLine.cs` `6e7cb04876fe7741`
+- `CLeafLine.cs` `247bfa9b404d5d91`
 - `CLecternCard.cs` `4f3140b154d29b23`

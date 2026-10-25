@@ -228,11 +228,11 @@ This arrange step answers the gate call and an optional read-back of the state t
 
 ## Stamp
 
-Commit: `52c21d68b4c4`
-- `TDisplayFailure.cs` `5e70984c18d89cbc`
+Commit: `cb8ab7e8feb4`
+- `TDisplayFailure.cs` `493a1638fda5b76e`
 - `TFault.cs` `fa397c15b685eb43`
 - `TFaultList.cs` `e993e6b5885af5a2`
-- `TFaultMark.cs` `0f1918ca0cc50610`
+- `TFaultMark.cs` `23a787d14def8d87`
 - `TFaultPortrait.cs` `548737d4700eceaf`
 - `TFaultRow.cs` `94662f8cc5a1e773`
 - `TFaultStage.cs` `2894647223e0a2fc`

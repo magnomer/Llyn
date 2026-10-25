@@ -49,7 +49,7 @@
             <TextBlock x:Name="PExampleFrame" Grid.Column="1" Style="{StaticResource Display.Card.ExampleFrame}" />
 
             <StackPanel Grid.Column="2">
-                <local:QMention x:Name="PExampleText" />
+                <local:QMention x:Name="PExampleText" Focusable="True" />
                 <ItemsControl x:Name="PExampleGloss" Margin="0,8,0,12" ItemTemplate="{StaticResource Display.Card.ExampleGloss}" Style="{DynamicResource Theme.Gloss.Line}" />
             </StackPanel>
 

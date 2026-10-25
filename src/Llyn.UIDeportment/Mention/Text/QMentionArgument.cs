@@ -11,6 +11,12 @@ public sealed class QMentionArgument : RoutedEventArgs
         QMentionArgumentUnit = unit;
     }
 
+    internal QMentionArgument(RoutedEvent routed, QMention origin)
+        : base(routed, origin)
+    {
+        QMentionArgumentText = string.Empty;
+    }
+
     public string QMentionArgumentText { get; }
 
     public int QMentionArgumentUnit { get; }

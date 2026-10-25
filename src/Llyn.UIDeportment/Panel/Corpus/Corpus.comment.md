@@ -33,7 +33,7 @@ Only the medium knows its dispatcher, so the marshal the area runs its notices t
 It keeps only the atelier, which a dropped inquest reads the languages from.
 The desk and the transcript show their own failures through the envoy.
 The speaker chip takes the atelier and the envoy, never the window, for its workspace reload.
-The reading page's word offers go to the window's mention menu.
+The reading page's word offers go to the window's mention menu, with no unit of their own.
 The linking gesture takes the menu itself and hears each sense pick on the ask it opened.
 So neither this driver nor any sub-driver holds the window.
 `QTranscriptMention` takes the editor's picker after the editor is introduced.
@@ -259,10 +259,10 @@ It runs on every transcript and draft notice, since painting the same language c
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `cb8ab7e8feb4`
 - `QAnthology.cs` `a770dbcc55e7ffd8`
 - `QAnthologyItem.cs` `b1316675b6391a64`
-- `QCorpus.cs` `627d781c19c24a28`
+- `QCorpus.cs` `b478d30964aabaed`
 - `QCorpusPortrait.cs` `cfe29836ed70f4cf`
 - `QExcerpt.cs` `7f4c70cd37f6e033`
 - `QTranscript.cs` `045f9f0e592d2d31`

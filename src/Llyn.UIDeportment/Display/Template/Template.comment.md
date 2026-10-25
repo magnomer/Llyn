@@ -97,6 +97,10 @@ They do not measure the text.
 
 These are the collocations homed on this meaning or one below it, shown as folding rows beneath it.
 
+### `QLeafItemHomed`
+
+The heading over the home rows shows by this verdict, which Conduct computes, so the template never counts the rows.
+
 ### `QLeafItemSee`
 
 These are "see" lines for collocations that also link here but live under another meaning.
@@ -133,11 +137,11 @@ Each film row is built as the vignette builds its own.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `QLeaf.cs` `28197bbac0cf4167`
+Commit: `cb8ab7e8feb4`
+- `QLeaf.cs` `4cff50c96c75b087`
 - `QLeafChip.cs` `afe238a03dea2f47`
 - `QLeafImage.cs` `ebc626cc614700b7`
-- `QLeafItem.cs` `4a9ff3986e30777d`
+- `QLeafItem.cs` `98ed6ae004b9331a`
 - `QLeafLine.cs` `40a0d4aad94c015f`
 - `QLeafSee.cs` `19c10c485fdc4d46`
 - `QLeafVideo.cs` `84c2368cbae3d081`

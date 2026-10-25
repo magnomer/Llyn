@@ -39,6 +39,7 @@ One image of a card or a scenario, as its image row shows it.
 `CImageDraftEmpty` is true when no location was ever recorded, so a reading card folds the image away.
 The address is where the preview is read from, or null when the location reaches nothing.
 A local file counts only while it exists, which the engine checks.
+`CImageDraftName` is the shown name of the picture, the console's line text, from `CFolio.CFolioNameRead`.
 `CImageDraftWording` words the location for its field with the location hint.
 
 ## `CRegisterDraft`
@@ -50,6 +51,8 @@ The name is worded for its chip.
 
 One sentence of a card, as the sentence row shows it.
 The example is null when the sentence holds none yet.
+`CSentenceDraftLine` is the line key, the sentence's position among the shown entry's sentences, counted from one.
+The line key is what the UI hands back for mention reads, while the row id names the stored row.
 `CSentenceDraftCited` is true when the example cites a reference, so the idle list keeps the citation shown.
 The text is worded with the example hint, and empty while no example is held.
 The particle and the dependence frame the example, and each is worded with its own hint.
@@ -70,18 +73,19 @@ One video of a card or a scenario, as its video row shows it.
 `CVideoDraftEmpty` is true when no location was ever recorded, so a reading card folds the video away.
 The screen is what the screen plays, or null when the location reaches nothing.
 A local file counts only while it exists, which the engine checks.
+`CVideoDraftName` is the shown name of the video, the console's line text, from the screen's address else the location.
 `CVideoDraftFrom` is the moment the screen plays from, the film's start when the span names none.
 `CVideoDraftUntil` is the moment the screen stops, or null to play to the end.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `44d0e95bcfcc`
 - `CCardDraft.cs` `cbaadd8168067db2`
 - `CExampleDraft.cs` `7ea7fee42a2f919c`
 - `CGlossDraft.cs` `8fd636e4e09d6989`
-- `CImageDraft.cs` `0b5d2be277f0c915`
+- `CImageDraft.cs` `ea2395fe6d3c85c9`
 - `CRegisterDraft.cs` `cc78c6b5ae887a4e`
-- `CSentenceDraft.cs` `705f990e2d9ef2f8`
+- `CSentenceDraft.cs` `6cfdb00095d044f5`
 - `CSituationDraft.cs` `5fa9d073279c56a7`
 - `CTagDraft.cs` `9566cd97f2f83c1f`
-- `CVideoDraft.cs` `c294d414325388ac`
+- `CVideoDraft.cs` `d91dc3773257ff7a`

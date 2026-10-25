@@ -206,7 +206,9 @@ public sealed class TIndex
         Assert.Equal("-> <-", string.Join(' ', sets["ascii"]["Arrow"]));
         Assert.Equal("o", string.Join(' ', sets["ascii"]["Pending"]));
         Assert.Equal("● ◐ ○", string.Join(' ', sets["double"]["Grasp"]));
-        foreach (string mark in new[] { "Favorite", "Grasp", "Fold", "Media", "Clip", "Arrow", "Pending" })
+        Assert.Equal("|- `- |", string.Join(' ', sets["ascii"]["Tree"]));
+        Assert.Equal("├─ └─ │", string.Join(' ', sets["single"]["Tree"]));
+        foreach (string mark in new[] { "Favorite", "Grasp", "Fold", "Media", "Clip", "Arrow", "Pending", "Tree" })
         {
             Assert.Equal(sets["ascii"][mark].Count, sets["double"][mark].Count);
             Assert.Equal(sets["ascii"][mark].Count, sets["single"][mark].Count);

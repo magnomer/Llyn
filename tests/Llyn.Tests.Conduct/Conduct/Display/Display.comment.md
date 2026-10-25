@@ -19,6 +19,7 @@ Children sit at depth one under their parent.
 
 A first link to a child homes the collocation under that child's top-level parent in the read view.
 The homed row reads its phrase, and the second top-level meaning, though linked too, holds no collocation.
+The first meaning's collocation block reads ready to show, and the second meaning's does not.
 
 ## `DisplayCardRead_FurtherLink_AddsSeeLine`
 
@@ -129,8 +130,8 @@ With nothing chosen the notice changes nothing.
 A workspace swap closes the view.
 A favourite bulletin about the chosen entry raises the favourite change and no grasp change.
 Both the favourite change and the heart's gate live on the display's grasp area.
-The heart's gate stores the mark and answers what the store now holds.
-With no entry chosen the heart stays unmarked.
+The heart's gate flips the stored mark and answers what the store now holds.
+With no entry chosen the heart stays unmarked, reads unmarked and does not flip.
 Conduct chooses the one-off key for the driver's frequency lookup, and an unranked entry shows no chip.
 The wing, entry and atelier builders here are shared with `TDisplayGrasp`.
 The atelier's media port only answers a stop, since closing the view stops its play.
@@ -144,7 +145,7 @@ A Meaning card arrives ready, and the Meaning section shows.
 No other collocation is listed, so the Other collocations section stays hidden.
 An unknown title carries the unknown mark's key, and the phrase a Meaning has none of arrives blank and muted.
 Its link arrives named, and its stored tag arrives worded and ready to open.
-A sentence row arrives with its frame and divided sentence ready, and names its stored row.
+A sentence row arrives with its frame and divided sentence ready, and names its line key.
 An unknown role reads the unknown mark inside the head's brackets.
 A sentence with no citation or gloss answers an empty citation and no gloss.
 With nothing open, no meaning or other collocation is answered, and neither section shows.
@@ -162,6 +163,8 @@ A stored situation, register or tag raises its own tab.
 A link chip raises its entry in the library tab.
 A record never saved, a link to no entry and an empty click open nothing.
 Each card answers its list and place, and an unknown card or an empty view answers nothing.
+A line key read from one entry finds nothing once another entry is shown.
+That holds for a click and for the word cursor.
 
 ## `TDisplayGrasp`
 
@@ -174,6 +177,8 @@ A move past either end stops at the end, and the engine keeps the stepped value.
 A negative limit counts as zero, so every step then reads zero.
 The label is the engine's wording of the clamped step, not of the stored one.
 A new step is stored and answered with its wording, and the standing step pressed again clears it.
+A move left from step one stores step zero, so it also clears the grasp.
+A move left at step zero keeps step zero.
 With no entry chosen the gate stores nothing and words nothing.
 
 ## `TGraspPortCreate`
@@ -185,7 +190,7 @@ The wording is the step itself, so a fact sees which step was worded.
 ## `TDisplayMention`
 
 Covers the reading view's word click gates over a shown entry on a real workspace.
-A line names only its sentence row, read from the card gate as the driver reads it.
+A line names only its line key, read from the card gate as the driver reads it.
 A sentence naming no language is read in the shown entry's language, and French finds nothing there.
 A sole entry opens at once through the Library's leave question and leaves an empty menu.
 A declined leave opens nothing.
@@ -195,7 +200,17 @@ That holds when the word starts in a Mention piece before the clicked piece.
 A word nobody holds offers an empty menu.
 A stored Mention opens its entry and raises its sense.
 A row the shown entry does not hold offers an empty menu.
+Meaning and collocation sentences may share a stored row id, yet their line keys differ.
+A cursor started on the collocation sentence's line key finds that sentence.
+Its first step then leads with that sentence's first letter.
+Redrawing an unchanged card, or reopening its entry, keeps every line key.
 A failed find reports `Mention.FindFailed` and offers nothing.
+The word cursor starts at the first character of a line's sentence.
+Its steps stop on one text element, so an astral character is one stop.
+Its seeks stop on each Mention piece and on each word that follows a space.
+The lead is the text from the word's head up to the cursor.
+A find with no cursor started, or on a sentence the card does not show, answers nothing.
+With several entries the find offers them all, opens none, and leaves the lead at the found word.
 
 ## `TDisplayPlayback`
 
@@ -257,14 +272,14 @@ Saves an English noun whose paradigm asks for a plural nothing stores.
 
 ## Stamp
 
-Commit: `fe7e11daae88`
-- `TCardSense.cs` `1c55637cd01fb929`
+Commit: `44d0e95bcfcc`
+- `TCardSense.cs` `bc31f6cddd2ca6ae`
 - `TDisplay.cs` `c18d439ee37ac348`
 - `TDisplayAccent.cs` `bc384431fa7b13d5`
-- `TDisplayArea.cs` `02789b2b8f45b3bd`
-- `TDisplayCard.cs` `75e0cbecc4651cb9`
-- `TDisplayGrasp.cs` `02d2dd52a323976b`
-- `TDisplayMention.cs` `718d56e9487cb408`
+- `TDisplayArea.cs` `660956a4da7b515e`
+- `TDisplayCard.cs` `078d33f702ae6442`
+- `TDisplayGrasp.cs` `7f3390215a60e0ff`
+- `TDisplayMention.cs` `fe2130ecf737059c`
 - `TDisplayPlayback.cs` `4841acad0b56316f`
 - `TDisplaySound.cs` `3d21b438c154a999`
 - `TDisplaySoundBlock.cs` `a7326a7b4d646a9f`

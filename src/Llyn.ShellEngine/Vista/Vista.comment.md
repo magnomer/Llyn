@@ -350,8 +350,9 @@ Each row's text is worded by the same rule, so the list shows it ready.
 The example clerk owns the rule.
 
 `LEngineLineRead` gives what a reading card shows for one sentence row.
-That is the frame, the sentence divided around its Mentions and the Source line.
-The example clerk composes them, so the display holds no composing rule.
+That is the frame, the sentence divided around its Mentions, the Source line and the row's line key.
+The example clerk composes the first three, so the display holds no composing rule.
+The mention clerk mints the line key against the shown entry the caller passes.
 
 ## `LSituationFacade`
 
@@ -378,10 +379,12 @@ The facade for mention operations.
 Every find and resolve takes the gate and hands the work to `LMentionClerk`, which holds the rules.
 The span and offset reads are pure and take no gate.
 It calls no sibling facade, so `LEngine` builds it among the first.
-Resolves over a held draft read the draft before the gate is taken, as the other held reads do.
+The resolve over one Example reads the held draft before the gate is taken, as the other held reads do.
+The whole-draft resolve takes the draft itself, so it reads nothing from a tenure.
 
 `LEngineMentionFind` runs the clerk's find over a stored Example.
-It can also run over one sentence row of the entry the reading view shows.
+It can also run over one sentence row of the entry the reading view shows, named by its line key.
+`LEngineLineFind` gives that line key for a sentence of the shown entry, through the clerk's static find.
 
 `LEngineSpanRead` gives a field's selection as the span a Mention request carries.
 The engine measures it so the shell never counts.
@@ -392,20 +395,20 @@ The engine measures it so the shell never counts.
 
 `LEngineMentionResolve` gives the clerk's mention line for one Example of the held draft.
 Card 0 and sentence 0 address the draft's own Example.
-Without a card it gives the lines for every sentence row of the held draft.
+Without a card it gives the lines for every sentence row of the held draft, keyed by line key.
 
 `LEngineLinkRead` gives the entry a clicked link names, or null when it names none.
 A link names its entry only through a stored id, so an empty id names nothing.
 
 ## Stamp
 
-Commit: `bd299c638b2c`
+Commit: `44d0e95bcfcc`
 - `LAuthorFacade.cs` `a7c57e4576ed1f96`
 - `LCardFacade.cs` `fd835262e150b403`
 - `LCatalogFacade.cs` `8545ab05f0c69039`
 - `LEntryFacade.cs` `c0d6c5fdd16cd585`
-- `LExampleFacade.cs` `f20eb09a45abf04e`
-- `LMentionFacade.cs` `2cfb6578c504b8a7`
+- `LExampleFacade.cs` `88a7cb35bf7ce026`
+- `LMentionFacade.cs` `51e1319dcfcc42a4`
 - `LReferenceFacade.cs` `b73762c75a1cefad`
 - `LSituationFacade.cs` `534a19d43f1ba0ba`
 - `LVistaFacade.cs` `aba8d22b409fa49e`

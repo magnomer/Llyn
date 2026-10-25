@@ -59,10 +59,22 @@ The menu hotkey is the one-letter catalog word if it is an ASCII letter, and non
 The order chooser closes itself on a choice, by completing the task it hands to the docket.
 The language chooser has no such task, so it stays until the user closes it.
 The language list is whatever the last load on workspace open returned.
-The select prompt is drawn only while the viewer shows and the display holds no entry.
+The tab owns a `BLectern`, the reading view, in the display part while the viewer shows.
+With no entry open the reading view draws the select prompt.
+The tab holds which side has the keys, the index or the reading side.
+The reading side holds the keys only while the tab is shown, the viewer shows and that side is chosen.
+`BLibraryKeymapFocus` tells the window this, so a key the reading side does not bind never falls through to the index.
+Tab hands the keys to the reading side while the viewer shows, and Tab there hands them back.
+The index draws as focused only while it has the keys.
+F6 toggles the favourite mark, live only while the viewer shows and an entry is open.
+As in the GUI, only an opened entry moves anything.
+Opening a row resets the reading view and gives it the keys.
+Enter on the index thus hands the focus to the reading side.
+The focus stays on the index while the scribe shows.
+A row that only stayed gives the reading side nothing.
 
 ## Stamp
 
-Commit: `fe7e11daae88`
+Commit: `cb8ab7e8feb4`
 - `BIndex.cs` `7c395af6d6242090`
-- `BLibrary.cs` `ac934afd1a921661`
+- `BLibrary.cs` `72d32a63c719bc4c`
