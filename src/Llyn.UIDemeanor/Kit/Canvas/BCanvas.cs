@@ -176,7 +176,7 @@ internal sealed class BCanvas
         }
         else if (_bCanvasCaretShown is not null || !_bCanvasCaretSynced)
         {
-            frame.Append("\e[?25l");
+            frame.Insert(0, "\e[?25l");
         }
 
         _bCanvasCaretShown = _bCanvasCaret;

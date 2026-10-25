@@ -59,6 +59,13 @@ The radio mark in the menu then takes the cells it needs, and the labels beside 
 It runs on a fake port that also counts the characters as wide.
 So the canvas and the menu are checked against one measure.
 
+## `MuralDraw_LowerParleyField_ShowsNoCaret`
+
+Only the top box shows a caret.
+Two boxes with a field each give one `caret` text, and it is the top field's.
+A box with no field above a field box leaves no caret at all.
+So the terminal cursor never lands in a box that another box covers.
+
 ## `WindowKeyObserve_ControlC_ExitsZero`
 
 Ctrl+C arrives as a key, since the window makes it one, and ends the run with 0.
@@ -104,6 +111,8 @@ Each test runs the envoy inside a window with the fake port, and queues the keys
 The helper `TEnvoyRun` also serves the other window tests.
 It can prime the window, replace the theme loader and read the engine once the run settles.
 It stores the language first, so a language choice can be seen in the stored value.
+It waits for the window's exit for at most 30 seconds and asserts the exit happened.
+So a lost key fails the test and does not hang it.
 Enter answers Yes, Right then Enter answers No, and Escape and F10 answer No.
 Shift with F10 leaves the box open, since a key matches its modifiers exactly.
 A plain confirm draws an alert box, and a tally draws its count line.
@@ -216,14 +225,14 @@ Its Enter, Escape and F10 keys are shared with `TCapsulePathfinder`.
 
 ## Stamp
 
-Commit: `5813c19fd19c`
+Commit: `0f19a28acf00`
 - `TBootstrap.cs` `0bee69d6fe62b88c`
 - `TCabinet.cs` `ce20853cde2f2f7e`
-- `TCapsule.cs` `0ebaefa2b338fa0a`
-- `TEnvoy.cs` `1f73df710e3dd92c`
+- `TCapsule.cs` `334a49f71ae77378`
+- `TEnvoy.cs` `ad12f1bf4da06bd6`
 - `TEstablishment.cs` `13a9c3ba60eb79bc`
-- `TEstablishmentFixture.cs` `b1f9d86adea3fca8`
-- `THelp.cs` `ad48e495cfa363ea`
+- `TEstablishmentFixture.cs` `d9e7172b48d235ca`
+- `THelp.cs` `67309dcfe0c0bf71`
 - `TRoof.cs` `d4ebea47cc21cee3`
-- `TWindow.cs` `43c3ae1cafdd3224`
-- `TWindowLayer.cs` `ec6f209928683637`
+- `TWindow.cs` `d4ffb7f0ecaf06b2`
+- `TWindowLayer.cs` `5a7fe8f88f8468df`

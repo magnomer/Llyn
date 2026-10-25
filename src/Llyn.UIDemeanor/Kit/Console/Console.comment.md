@@ -40,6 +40,11 @@ Answers the console's width and height in cells.
 Waits for one key and returns it unechoed.
 It blocks, so only the loop's key reader thread calls it.
 
+## `BConsoleKeyCheck`
+
+Whether a key is waiting, and it never blocks.
+The key reader asks it after each key to learn whether more of a burst follows.
+
 ## `BConsoleWindowApply`
 
 Enters the alternate screen, hides the cursor and makes Ctrl+C a key.
@@ -103,7 +108,23 @@ A batch that throws goes to the fault handler like any work item.
 
 ## `BLoopKeyAttach`
 
-Starts a background thread that reads keys from the port and defers each to the observer.
+Starts a background thread that reads keys from the port and defers them to the observer.
+The thread reads a burst, every key that was already waiting, before it hands anything to the loop.
+Within a burst, plain keys that follow each other join one run.
+Any other key is a run of its own.
+A plain key has a printable character and no Control or Alt.
+The observer gets the keys of a run one after another.
+Runs are applied in the order the reader found them.
+So a typed run reaches a field as one edit and one report.
+
+A key that is not plain, after a typed run, settles first.
+The loop defers a marker and waits for it in a nested `BLoopRun`.
+So the work the typed run deferred runs before the key does.
+The text is then whole when the key reads it.
+A run that arrives while a settle is open waits behind it, so keys never pass each other.
+A work item that throws during the settle is deferred again, so the handler of the enclosing run receives it.
+A key that throws in the observer ends its run there.
+The rest of that run is applied afterwards, then the fault goes on, so no key is lost.
 A failure of the read is thrown again on the loop, so the fault handler sees it.
 
 ## `BLoopSizeAttach`
@@ -127,7 +148,7 @@ Returns the loop itself, since a copy would break the identity checks of `BObser
 
 ## Stamp
 
-Commit: `9a85a3ab82db`
-- `BConsole.cs` `b4a6d1d52d852278`
-- `BConsoleStream.cs` `0bc001d457003413`
-- `BLoop.cs` `8eca3f514cac409a`
+Commit: `0f19a28acf00`
+- `BConsole.cs` `c21991af932a3e17`
+- `BConsoleStream.cs` `83ee8f2a5448fbb5`
+- `BLoop.cs` `86b0dc5a77481f9f`

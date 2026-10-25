@@ -75,17 +75,30 @@ A text is clipped to its span and the row, and a row or column off the grid is s
 A cluster of zero cells is skipped.
 A wide cluster that does not fit takes a blank cell and ends its text.
 Writing over half of a wide cluster blanks the other half, so no half character stays.
+A text of the `caret` role is not drawn.
+Its row and column become the caret, which the sync shows as the terminal cursor.
+The last one wins, and a position off the grid means no caret.
+Each frame forgets the caret first, so a caret lasts only while the frame keeps naming it.
 
 ## `BCanvasSync`
 
 Prints only the runs that differ from the shown grid, each after a cursor move to its row and column.
 A run grows to cover a wide tail and any changed cell after it.
 A change in a tail starts the run at its head.
-A sync with nothing changed prints nothing.
+A sync with nothing changed prints no run, and nothing at all when the cursor needs no change either.
 The drawn grid becomes the shown one afterwards.
 Each cell's colour comes from the theme by its role, and an escape is written only when it changes.
 A wide tail writes nothing, since its head already covers it.
 A frame that printed anything ends with a reset, so the terminal keeps no colour after it.
+
+The cursor follows after the runs.
+With a caret, the cursor moves to it and is shown.
+Nothing is written when nothing printed and the terminal already has the cursor there.
+Printing moves the cursor, so a printed frame always puts it back.
+If the cursor was shown, it is hidden before the frame, so it does not flicker across the runs.
+Without a caret, the cursor is hidden once.
+That holds when it was shown, and at the first sync, which has not yet said.
+So the position is read from the drawn caret, and the canvas never works it out from the text.
 
 ## `BCanvasRange`
 
@@ -99,8 +112,8 @@ Reserved code points in the wide blocks take 2, as the Unicode data lists them.
 
 ## Stamp
 
-Commit: `78fc0ebfff7c`
-- `BCanvas.cs` `0f0b8d99716ec206`
+Commit: `0f19a28acf00`
+- `BCanvas.cs` `88b29e673422d374`
 - `BCanvasCell.cs` `cb0d077c14c60990`
 - `BCanvasRange.cs` `07ec2bb6aa90b979`
 - `BCanvasText.cs` `025bd90e380a2df3`

@@ -42,7 +42,7 @@ public sealed class TCanvas
         canvas.BCanvasSync();
 
         Assert.Equal(
-            ["\e[1;1H\e[96;44mabcd\e[2;1H    \e[0m\e[?25l", "\e[2;3H\e[96;44mx\e[0m"], console.TConsoleFakeFrames);
+            ["\e[?25l\e[1;1H\e[96;44mabcd\e[2;1H    \e[0m","\e[2;3H\e[96;44mx\e[0m"], console.TConsoleFakeFrames);
         Assert.Equal(["abcd", "  x "], console.TConsoleFakeGrid);
     }
 
@@ -84,9 +84,15 @@ public sealed class TCanvas
         canvas.BCanvasFrameDraw([new(0, 0, 4, "ab", "text")]);
         canvas.BCanvasSync();
         canvas.BCanvasSync();
+        canvas.BCanvasFrameDraw([new(0, 0, 4, "ab", "text"), new(0, 2, 0, string.Empty, "caret")]);
+        canvas.BCanvasSync();
+        canvas.BCanvasFrameDraw([new(0, 0, 4, "abc", "text")]);
+        canvas.BCanvasSync();
 
-        Assert.EndsWith("\e[0m\e[?25l", console.TConsoleFakeFrames[0], StringComparison.Ordinal);
-        Assert.Equal(["\e[1;3H\e[?25h", "\e[?25l"], console.TConsoleFakeFrames[1..]);
+        Assert.StartsWith("\e[?25l\e[1;1H", console.TConsoleFakeFrames[0], StringComparison.Ordinal);
+        Assert.Equal(
+            ["\e[1;3H\e[?25h", "\e[?25l", "\e[1;3H\e[?25h", "\e[?25l\e[1;3H\e[96;44mc\e[0m"],
+            console.TConsoleFakeFrames[1..]);
     }
 
     [Fact]

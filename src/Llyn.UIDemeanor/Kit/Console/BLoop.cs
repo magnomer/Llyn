@@ -79,29 +79,37 @@ public sealed class BLoop : SynchronizationContext
         ArgumentNullException.ThrowIfNull(console);
         ArgumentNullException.ThrowIfNull(observe);
 
-        bool settling = false;
-        Action<List<ConsoleKeyInfo>, bool>? apply = null;
-        apply = (keys, settle) =>
+        Task settling = Task.CompletedTask;
+        ConcurrentQueue<(List<ConsoleKeyInfo>, bool)> waiting = new();
+        List<ConsoleKeyInfo>? remainder = null;
+        Action? apply = null;
+        apply = () =>
         {
-            if (settling)
+            if (!settling.IsCompleted)
             {
-                BLoopDefer(() => apply!(keys, settle));
+                BLoopDefer(apply!);
                 return;
+            }
+
+            List<ConsoleKeyInfo>? keys = remainder;
+            bool settle = false;
+            remainder = null;
+            if (keys is null)
+            {
+                if (!waiting.TryDequeue(out (List<ConsoleKeyInfo>, bool) next))
+                {
+                    return;
+                }
+
+                (keys, settle) = next;
             }
 
             if (settle)
             {
                 TaskCompletionSource marker = new();
                 BLoopDefer(marker.SetResult);
-                settling = true;
-                try
-                {
-                    BLoopRun(marker.Task);
-                }
-                finally
-                {
-                    settling = false;
-                }
+                settling = marker.Task;
+                BLoopRun(marker.Task, exception => BLoopDefer(ExceptionDispatchInfo.Capture(exception).Throw));
             }
 
             for (int index = 0; index < keys.Count; index++)
@@ -115,7 +123,8 @@ public sealed class BLoop : SynchronizationContext
                     List<ConsoleKeyInfo> rest = keys[(index + 1)..];
                     if (rest.Count > 0)
                     {
-                        BLoopDefer(() => apply!(rest, false));
+                        remainder = rest;
+                        BLoopDefer(apply!);
                     }
 
                     throw;
@@ -154,8 +163,8 @@ public sealed class BLoop : SynchronizationContext
 
                     for (int run = 0; run < runs.Count; run++)
                     {
-                        (List<ConsoleKeyInfo> keys, bool settle) = (runs[run], settles[run]);
-                        BLoopDefer(() => apply(keys, settle));
+                        waiting.Enqueue((runs[run], settles[run]));
+                        BLoopDefer(apply);
                     }
                 }
             }

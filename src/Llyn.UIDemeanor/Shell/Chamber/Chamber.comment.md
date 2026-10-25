@@ -262,6 +262,8 @@ Places the `AWindow` blueprint for the current size and draws its frames with th
 The panel's texts follow the frames.
 The status line, the legend, the roof and the tab drawing come next.
 The open boxes draw last, in stack order, so the top box covers the rest.
+Only the top box passes its `caret` text on.
+So the terminal cursor never lands in a box that another box covers.
 The legend is built for the current focus.
 The left half is half the width, and the right half takes the rest.
 Each half has a rule above its last inner row.
@@ -283,12 +285,12 @@ The legend sits on the last row at column 0.
 
 ## Stamp
 
-Commit: `fe7e11daae88`
+Commit: `0f19a28acf00`
 - `BDocket.cs` `2f1ab27227907c41`
 - `BEstablishment.cs` `f0b09dc75cb89774`
 - `BKeymapWindow.cs` `ac57c5af4fc27418`
 - `BMirror.cs` `2d5cfafbf7bb9ee3`
-- `BMural.cs` `ad365a42d80ac8d4`
+- `BMural.cs` `43b0d0ff915befd5`
 - `BNavigation.cs` `c45d372cb6483331`
 - `BNotice.cs` `7a5f8cc1b48d424d`
 - `BWardrobe.cs` `3aa4f791074e68eb`

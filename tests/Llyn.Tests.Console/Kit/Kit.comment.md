@@ -18,6 +18,11 @@ A wide character that does not fit at the edge leaves one blank cell.
 Writing over half of a wide character blanks its other half.
 A second sync after one changed cell writes that run only, and a third writes nothing.
 Each run is coloured by its role under the spare theme, and the frame ends with a reset.
+The first frame also hides the cursor, since no caret was named.
+A `caret` text shows the cursor after the frame at its cell.
+A caret that does not move prints nothing, and a moved one prints only the cursor move.
+A printed frame hides the cursor first and shows it again at the caret.
+A frame without a caret hides the cursor once, and a caret off the grid counts as none.
 `BCanvasWidthDivide` breaks wide clusters between clusters, and a combining mark stays with its base.
 
 ## `TLoop`
@@ -25,6 +30,16 @@ Each run is coloured by its role under the spare theme, and the frame ends with 
 Three queued items run before the batch, so the batch runs once.
 The batch completes the task the run waits for, so the test ends without a timeout.
 A fault in a queued item goes to the handler the run was given, and not to the loop's own.
+The key tests use a fake port that hands its keys over as one burst.
+A burst of typed characters, an Enter and more characters reports two edits.
+Enter is seen once, with the text typed before it.
+A typed run followed by Enter and Tab keeps the order.
+Each of those keys sees the text of the run.
+Keys that arrive while a settle is open still reach the observer in reader order.
+A nested run opened by a key receives the keys queued behind it.
+A settle that opens a nested run for a modal box does the same.
+The key after the box sees it closed.
+A fault during a settle goes to the handler of the run, and the keys after it still arrive.
 
 ## `TBlueprint`
 
@@ -59,17 +74,27 @@ Typing three Hangul syllables into a field of 6 cells shows the tail `나다` pa
 The field keeps the whole text and reports it to the callback.
 The field draws with a width measure the test passes in.
 Clearing a field given a starting text empties the text and calls no edit callback.
+Arrows, Home, End and Delete edit at the caret, and Control steps by word.
+Shift grows a selection that a typed character or Delete replaces, and the selection draws in the `chosen` role.
+A text longer than the width scrolls with `<` and `>` marks.
+A wide character cut by an edge shows as a blank.
+An empty field with a hint draws the hint in the `muted` role.
+Delete at the end, Backspace at the start and the arrows of an empty field reach the owner's callbacks.
+Enter and Escape are not taken.
+A focused field draws a zero-width `caret` text at the cell the caret is on.
+An unfocused one draws none.
+Two halves of a surrogate pair typed apart insert one character and report once.
 
 ## Stamp
 
-Commit: `78fc0ebfff7c`
+Commit: `0f19a28acf00`
 - `TBlueprint.cs` `f2b549e3849f2d5d`
 - `TBlueprintFake.cs` `000e50a0d9cf0b07`
 - `TBlueprintFake.xaml` `0d000834862bab6c`
 - `TBlueprintListed.xaml` `5b0e022ddbcd8a05`
 - `TBlueprintUnlisted.xaml` `c90b948e5b5fd904`
-- `TCanvas.cs` `f15ccf3edfc35e06`
+- `TCanvas.cs` `a1a559a9fb2846eb`
 - `TCanvasWidth.cs` `70f3ebae89174d36`
-- `TField.cs` `02f41e9ead0a89b2`
-- `TLoop.cs` `d33aa16620dbc226`
+- `TField.cs` `fb6494e05476d8cb`
+- `TLoop.cs` `54bdb0596b1478e0`
 - `TTheme.cs` `a65066d14995ec46`

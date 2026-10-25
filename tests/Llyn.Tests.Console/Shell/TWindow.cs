@@ -1,5 +1,6 @@
 using Llyn.ShellEngine;
 using Llyn.UIDemeanor;
+using Llyn.UITerminal;
 using Xunit;
 
 namespace Llyn.Tests;
@@ -339,5 +340,42 @@ public sealed class TWindow
         Assert.Equal(
             measure.BCanvasWidthResolve(wide.AsSpan(0, wide.IndexOf("(•) Wide", StringComparison.Ordinal) + 4)),
             measure.BCanvasWidthResolve(narrow.AsSpan(0, narrow.IndexOf("Narrow", StringComparison.Ordinal))));
+    }
+
+    [Fact]
+    public void MuralDraw_LowerParleyField_ShowsNoCaret()
+    {
+        ABootstrap bootstrap = new();
+        BBlueprintPart window = BContract.BContractBlueprintFind(bootstrap, "AWindow");
+        BBlueprintPart box = BContract.BContractBlueprintFind(bootstrap, "ASParley");
+        BBlueprint.BBlueprintPlace(window, 0, 0, 80, 24);
+        BLocalizationCatalog catalog = new();
+        catalog.BLocalizationCatalogApply(TInterface.TLocalizationLoad("en"));
+        BMural mural = new(
+            bootstrap, window, catalog, new BNavigation(bootstrap, null), new BEstablishment(window, catalog));
+        BRoof roof = new(window, []);
+        Func<BSParleyBody?, BSParley> open = body => new(box, "Box", "dialog", [], [new BSParleyButton("OK")], 0, body);
+        Func<BSParley[], BCanvasText[]> marks = parleys => [.. mural.BMuralDraw(
+                80,
+                24,
+                BKeymapFocus.BKeymapFocusParley,
+                roof,
+                null,
+                null,
+                parleys,
+                [],
+                bootstrap.BBlueprintGlyphs,
+                new Dictionary<string, IReadOnlyList<string>>(),
+                static (_, _) => null,
+                new BCanvasWidth(false))
+            .Where(static text => text.BCanvasTextRole == "caret")];
+        BSParley lower = open(new BField(_ => { }, "abcdef"));
+        BSParley top = open(new BField(_ => { }, "ab"));
+        BCanvasText lowerAlone = Assert.Single(marks([lower]));
+        BCanvasText topAlone = Assert.Single(marks([top]));
+
+        Assert.Empty(marks([lower, open(null)]));
+        Assert.Equal([topAlone], marks([lower, top]));
+        Assert.NotEqual(lowerAlone, topAlone);
     }
 }

@@ -292,7 +292,8 @@ public sealed class TCapsule
             });
             loop.BLoopBatchAttach(window.BWindowBatchObserve);
             loop.BLoopKeyAttach(console, window.BWindowKeyObserve);
-            loop.BLoopRun(window.BWindowExit);
+            loop.BLoopRun(window.BWindowExit.WaitAsync(TimeSpan.FromSeconds(30)));
+            Assert.True(window.BWindowExit.IsCompleted);
         }
         finally
         {
