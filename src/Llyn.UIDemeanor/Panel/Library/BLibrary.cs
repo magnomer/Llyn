@@ -33,13 +33,13 @@ internal sealed class BLibrary
             atelier ?? throw new ArgumentNullException(nameof(atelier)),
             shown,
             envoy ?? throw new ArgumentNullException(nameof(envoy)),
-            BObserver.BObserverCreate<Action>(static run => run())))
+            BObserver.BObserverCreate<Action>(static run => run())), envoy)
     {
     }
 
     private BLibrary(
         BLocalizationCatalog catalog, CAtelier atelier, BBlueprintPart parley, Func<BSParley, Task?, int?> docket,
-        Func<bool> shown, Action changed, Func<BCanvasWidth> measure, CLibrary library)
+        Func<bool> shown, Action changed, Func<BCanvasWidth> measure, CLibrary library, CEnvoy envoy)
         : this(
             catalog, atelier, parley, docket, shown, changed, measure,
             CLibrary.CLibraryTitleKey, library.CLibrarySearchKey, library.CLibrarySeriesKey,
@@ -47,7 +47,8 @@ internal sealed class BLibrary
             (focused, reading, visible, settle) => new BEditor(
                 catalog, library.CLibraryEditor, "Editor.Title", shown, focused, changed,
                 display => new BLectern(catalog, display, atelier, changed, visible, docket, parley, measure),
-                reading, settle),
+                reading, settle,
+                () => atelier.CAtelierCatalog.CCatalogEnsignLoad(envoy, static (_, _) => static () => { })),
             CLibrary.CLibraryOrderRead(),
             library.CLibraryRowsRead,
             library.CLibraryRowsLoad,
@@ -179,14 +180,14 @@ internal sealed class BLibrary
             atelier ?? throw new ArgumentNullException(nameof(atelier)),
             shown,
             envoy ?? throw new ArgumentNullException(nameof(envoy)),
-            BObserver.BObserverCreate<Action>(static run => run())))
+            BObserver.BObserverCreate<Action>(static run => run())), envoy)
     {
         atelier.CAtelierWorkspace.CWorkspaceOpened += _bIndex.BIndexLitClear;
     }
 
     private BLibrary(
         BLocalizationCatalog catalog, CAtelier atelier, BBlueprintPart parley, Func<BSParley, Task?, int?> docket,
-        Func<bool> shown, Action changed, Func<BCanvasWidth> measure, CFavorite favorite)
+        Func<bool> shown, Action changed, Func<BCanvasWidth> measure, CFavorite favorite, CEnvoy envoy)
         : this(
             catalog, atelier, parley, docket, shown, changed, measure,
             CFavorite.CFavoriteTitleKey, favorite.CFavoriteSearchKey, favorite.CFavoriteSeriesKey,
@@ -194,7 +195,8 @@ internal sealed class BLibrary
             (focused, reading, visible, settle) => new BEditor(
                 catalog, favorite.CFavoriteEditor, "Editor.Title", shown, focused, changed,
                 display => new BLectern(catalog, display, atelier, changed, visible, docket, parley, measure),
-                reading, settle),
+                reading, settle,
+                () => atelier.CAtelierCatalog.CCatalogEnsignLoad(envoy, static (_, _) => static () => { })),
             CFavorite.CFavoriteOrderRead(),
             favorite.CFavoriteRowsRead,
             favorite.CFavoriteRowsLoad,

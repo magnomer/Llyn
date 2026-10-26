@@ -86,6 +86,7 @@ This is the citation field of an Example row.
 A citation is either a stored Source or nothing, so the field never keeps a line that matches no Source.
 One list of Sources serves every row on the form.
 The lookup and the commit name the row's card by the placard's collocation flag and id.
+The lookup goes through the caret, so its dropdown lights rows through the caret's lantern.
 The list is refilled when the sentence facet's Sources change and when a workspace opens.
 Each event is hooked once, so a refill leaves one handler.
 
@@ -185,8 +186,8 @@ The silence gate is its own, so no magic id is sent for a mention with no target
 
 ## Stamp
 
-Commit: `8c403d1df768`
-- `QCitation.cs` `a6f4014c0b0806dc`
+Commit: `f3a687d70b47`
+- `QCitation.cs` `849914fc30472851`
 - `QExample.cs` `bf40c0f67bf2e9b8`
 - `QPassage.cs` `57505d44cd07c7c6`
 - `QSentence.cs` `389de76f9480178d`

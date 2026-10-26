@@ -137,6 +137,7 @@ internal sealed class QContext
     private void QContextTextObserve(object sender, TextChangedEventArgs e)
     {
         if (e.OriginalSource is TextBox { DataContext: QInlet<QContextChip> caret } box
+            && ReferenceEquals(Keyboard.FocusedElement, box)
             && QContextCardFind(caret) is QPlacard card)
         {
             _qContextProffer.QProfferSituationRefine(
@@ -161,10 +162,9 @@ internal sealed class QContext
             return;
         }
 
-        _cCaret.CCaretSituationSettle(card.QPlacardCollocated, card.QPlacardId, box.Text);
         e.Handled = true;
-        _qContextProffer.QProfferShutRefine();
-        card.QPlacardContext.QInletClear();
+        _qContextProffer.QProfferSituationRefine(
+            card, _cCaret.CCaretSituationSettle(card.QPlacardCollocated, card.QPlacardId, box.Text));
     }
 
     internal void QContextEraseObserve(object sender, KeyEventArgs e)
@@ -215,8 +215,8 @@ internal sealed class QContext
         if (sender is TextBox { DataContext: QInlet<QContextChip> row } box
             && QContextCardFind(row) is QPlacard card)
         {
-            _cCaret.CCaretSituationSettle(card.QPlacardCollocated, card.QPlacardId, box.Text);
-            card.QPlacardContext.QInletClear();
+            card.QPlacardContext.QInletRefine(
+                _cCaret.CCaretSituationSettle(card.QPlacardCollocated, card.QPlacardId, box.Text).CProfferText);
         }
     }
 

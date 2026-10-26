@@ -38,9 +38,33 @@ Every other key returns true and does nothing, so a drop holds the keyboard whil
 Moves the lit label by a step, clamped, and keeps it inside the page.
 Up and Down call it with one step.
 An owner that picks the next label itself calls it with the gap.
+A move clears the letters typed so far, so a seek never continues across a move.
+
+## `BDropSeek`
+
+The editor's lists let the user type a letter to reach a label, which `BDropObserve` does not do.
+So the owner hands a printable character to `BDropSeek`, and it returns true only when a label matched.
+Letters typed in a row extend one prefix, and the search starts at the lit label itself.
+A single letter starts after the lit label, so repeating it walks through the labels with that initial.
+When the longer prefix matches nothing, the letter alone is tried before the typed text is dropped.
+The match ignores case under the current culture, since the labels are in the interface language.
+A control character or an empty list is not taken, so the key stays with its other binding.
+
+## `BDropDraw`
+
+The editor draws a drop as a box under its field, where `BTable` draws its own drops elsewhere.
+The box sits under the anchor row.
+It flips above only when it would run past the bounds and the room above fits it.
+It is then clamped into the bounds, so it never leaves the part that hosts it.
+A label is cut to leave room for its edge mark, such as a check.
+The owner supplies the mark per row.
+The frame glyphs come from the glyph set, with ASCII ones when the set lacks the six marks.
+A one-cell shadow runs down the right side and under the bottom, so the box reads as raised.
+The caller passes no focus to draw the box with no lit row.
+So a list that opens before the user has chosen lights nothing, and a disabled one draws muted.
 
 ## Stamp
 
-Commit: `8c403d1df768`
-- `BDrop.cs` `660432d5fbd242da`
+Commit: `f3a687d70b47`
+- `BDrop.cs` `f8922ce6a8c78481`
 - `BTable.cs` `8fdf9d20e2ea8f4c`

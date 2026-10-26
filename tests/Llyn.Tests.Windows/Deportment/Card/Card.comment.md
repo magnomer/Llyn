@@ -91,6 +91,9 @@ A caret trail move with no draft change still writes the new anchor into the ste
 So the walk holds the caret the user left, with no draft change to carry it.
 An opened entry's steps light the Undo button.
 A walk change repaints the card lists on the GUI, with or without a draft change.
+A settle the engine refuses on a Situation or Tag entry leaves the text typed.
+The console does the same.
+A text set on an entry without the keyboard asks nothing, so the dropdown stays shut.
 
 ## `TLecternHinge`
 
@@ -131,12 +134,12 @@ A chip of a record never saved is disabled, and a stored chip stays enabled.
 
 ## Stamp
 
-Commit: `c05429890cec`
+Commit: `f3a687d70b47`
 - `TBerthSeat.cs` `75eb74163de8d120`
 - `TCardHinge.cs` `4420819c204c0089`
 - `TCardOrdinal.cs` `788665234082c696`
 - `TCardRow.cs` `618531bdc90512ef`
 - `TCaretKey.cs` `6eaf4b7930a95206`
-- `TEditorCardWalk.cs` `94875fe5f274deb9`
+- `TEditorCardWalk.cs` `0ba89189aff09b43`
 - `TLecternHinge.cs` `392d89024afd2878`
 - `TLecternWord.cs` `a37e00dff71608c1`

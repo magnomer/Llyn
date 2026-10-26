@@ -16,6 +16,8 @@ public sealed class CCaret
 
     private readonly IReadOnlyList<CCaretTrail> _cCaretTrails;
 
+    private readonly CProfferLantern _cCaretLantern = new();
+
     internal CCaret(CDesk desk, CCard card, CLedgerNoticed noticed)
     {
         ArgumentNullException.ThrowIfNull(desk);
@@ -61,14 +63,28 @@ public sealed class CCaret
         return _cCaretTrails.ToDictionary(static trail => trail, trail => trail.CCaretTrailRead(collocated, cardId));
     }
 
+    public int CCaretLanternIndex => _cCaretLantern.CProfferLanternIndex;
+
+    public bool CCaretLanternLit => _cCaretLantern.CProfferLanternLit;
+
+    public int? CCaretLanternMove(int step)
+    {
+        return _cCaretLantern.CProfferLanternMove(step);
+    }
+
+    public CProffer CCaretReferenceFind(bool collocated, long cardId, long sentenceId, string text)
+    {
+        return LCaretLanternShow(_cCaretCard.CCardReferenceFind(collocated, cardId, sentenceId, text));
+    }
+
     public CProffer CCaretSituationAdd(bool collocated, long cardId, string text)
     {
-        return LCaretSituationAdd(collocated, cardId, text, false);
+        return LCaretLanternShow(LCaretSituationAdd(collocated, cardId, text, false));
     }
 
     public CProffer CCaretSituationSettle(bool collocated, long cardId, string text)
     {
-        return LCaretSituationAdd(collocated, cardId, text, true);
+        return LCaretLanternShow(LCaretSituationAdd(collocated, cardId, text, true));
     }
 
     public void CCaretSituationInsert(bool collocated, long cardId, long pickId)
@@ -78,14 +94,14 @@ public sealed class CCaret
             collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning, cardId, pickId, position);
     }
 
-    public CSlate CCaretTagAdd(bool collocated, long cardId, string text)
+    public CProffer CCaretTagAdd(bool collocated, long cardId, string text)
     {
-        return LCaretTagAdd(collocated, cardId, text, false);
+        return LCaretLanternShow(LCaretTagAdd(collocated, cardId, text, false));
     }
 
-    public CSlate CCaretTagSettle(bool collocated, long cardId, string text)
+    public CProffer CCaretTagSettle(bool collocated, long cardId, string text)
     {
-        return LCaretTagAdd(collocated, cardId, text, true);
+        return LCaretLanternShow(LCaretTagAdd(collocated, cardId, text, true));
     }
 
     public void CCaretTagInsert(bool collocated, long cardId, long pickId)
@@ -97,12 +113,12 @@ public sealed class CCaret
 
     public CProffer CCaretRegisterAdd(bool collocated, long cardId, string text)
     {
-        return LCaretRegisterAdd(collocated, cardId, text, false);
+        return LCaretLanternShow(LCaretRegisterAdd(collocated, cardId, text, false));
     }
 
     public CProffer CCaretRegisterSettle(bool collocated, long cardId, string text)
     {
-        return LCaretRegisterAdd(collocated, cardId, text, true);
+        return LCaretLanternShow(LCaretRegisterAdd(collocated, cardId, text, true));
     }
 
     public void CCaretRegisterInsert(bool collocated, long cardId, long pickId)
@@ -114,14 +130,14 @@ public sealed class CCaret
 
     public CProspect CCaretTranslationAdd(bool collocated, long cardId, string text)
     {
-        return _cCaretCard.CCardTranslationAdd(
-            collocated, cardId, text, CCaretTranslation.CCaretTrailResolve(collocated, cardId));
+        return LCaretLanternShow(_cCaretCard.CCardTranslationAdd(
+            collocated, cardId, text, CCaretTranslation.CCaretTrailResolve(collocated, cardId)));
     }
 
     public CProspect CCaretTranslationResolve(bool collocated, long cardId, string text, bool offered)
     {
-        return _cCaretCard.CCardTranslationResolve(
-            collocated, cardId, text, CCaretTranslation.CCaretTrailResolve(collocated, cardId), offered);
+        return LCaretLanternShow(_cCaretCard.CCardTranslationResolve(
+            collocated, cardId, text, CCaretTranslation.CCaretTrailResolve(collocated, cardId), offered));
     }
 
     public void CCaretTranslationInsert(
@@ -129,6 +145,24 @@ public sealed class CCaret
     {
         _cCaretCard.CCardTranslationInsert(
             collocated, cardId, entryId, headword, language, CCaretTranslation.CCaretTrailResolve(collocated, cardId));
+    }
+
+    private CProffer LCaretLanternShow(CProffer offer)
+    {
+        _cCaretLantern.CProfferLanternShow(offer.CProfferShown ? offer.CProfferRows.Count : 0);
+        return offer;
+    }
+
+    private CProspect LCaretLanternShow(CProspect prospect)
+    {
+        _cCaretLantern.CProfferLanternShow(
+            prospect.CProspectShown ? prospect.CProspectRows.Count + prospect.CProspectLanguages.Count : 0);
+        if (prospect.CProspectChosen)
+        {
+            _ = _cCaretLantern.CProfferLanternSet(0);
+        }
+
+        return prospect;
     }
 
     private CProffer LCaretRegisterAdd(bool collocated, long cardId, string text, bool settled)
@@ -140,6 +174,7 @@ public sealed class CCaret
             return new CProffer(text, [], false);
         }
 
+        IReadOnlyList<long> before = CCaretRegister.CCaretTrailCopy(collocated, cardId);
         string kept;
         try
         {
@@ -148,7 +183,8 @@ public sealed class CCaret
         catch (Exception exception)
         {
             _cCaretDesk.LDeskFailureShow(".UpdateFailed", exception);
-            return new CProffer(text, [], false);
+            return new CProffer(
+                LCaretKeptRead(CCaretRegister, before, (collocated, cardId), (text, settled)), [], false);
         }
 
         return _cCaretDesk.LDeskRepaintRead(
@@ -169,15 +205,16 @@ public sealed class CCaret
             offer.LRegisterOfferShown);
     }
 
-    private CSlate LCaretTagAdd(bool collocated, long cardId, string text, bool settled)
+    private CProffer LCaretTagAdd(bool collocated, long cardId, string text, bool settled)
     {
         LCardKind kind = collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning;
         int position = CCaretTag.CCaretTrailResolve(collocated, cardId);
         if (_cCaretDesk.CDeskDraft.CDeskDraftChip is not LQuillChip chip)
         {
-            return new CSlate(text, [], false);
+            return new CProffer(text, [], false);
         }
 
+        IReadOnlyList<long> before = CCaretTag.CCaretTrailCopy(collocated, cardId);
         string kept;
         try
         {
@@ -186,22 +223,23 @@ public sealed class CCaret
         catch (Exception exception)
         {
             _cCaretDesk.LDeskFailureShow(".UpdateFailed", exception);
-            return new CSlate(text, [], false);
+            return new CProffer(LCaretKeptRead(CCaretTag, before, (collocated, cardId), (text, settled)), [], false);
         }
 
         return _cCaretDesk.LDeskRepaintRead(
             _cCaretNoticed,
-            () => LCaretSlateRead(chip.LQuillTagFind(kind, cardId, kept)),
-            new CSlate(kept, [], false),
+            () => LCaretProfferRead(chip.LQuillTagFind(kind, cardId, kept)),
+            new CProffer(kept, [], false),
             ".FindFailed");
     }
 
-    private static CSlate LCaretSlateRead(LTagOffer offer)
+    private static CProffer LCaretProfferRead(LTagOffer offer)
     {
-        return new CSlate(
+        return new CProffer(
             offer.LTagOfferText,
             offer.LTagOfferRows
-                .Select(static row => new CSlateRow(row.LTagRowId, row.LTagRowLead, row.LTagRowMark, row.LTagRowTail))
+                .Select(static row => new CProfferRow(
+                    row.LTagRowId, row.LTagRowLead, row.LTagRowMark, row.LTagRowTail))
                 .ToList(),
             offer.LTagOfferShown);
     }
@@ -215,6 +253,7 @@ public sealed class CCaret
             return new CProffer(text, [], false);
         }
 
+        IReadOnlyList<long> before = CCaretSituation.CCaretTrailCopy(collocated, cardId);
         string kept;
         try
         {
@@ -223,7 +262,8 @@ public sealed class CCaret
         catch (Exception exception)
         {
             _cCaretDesk.LDeskFailureShow(".UpdateFailed", exception);
-            return new CProffer(text, [], false);
+            return new CProffer(
+                LCaretKeptRead(CCaretSituation, before, (collocated, cardId), (text, settled)), [], false);
         }
 
         return _cCaretDesk.LDeskRepaintRead(
@@ -231,6 +271,16 @@ public sealed class CCaret
             () => LCaretProfferRead(chip.LQuillSituationFind(kind, cardId, kept)),
             new CProffer(kept, [], false),
             ".FindFailed");
+    }
+
+    private static string LCaretKeptRead(
+        CCaretTrail trail, IReadOnlyList<long> before, (bool, long) card, (string, bool) typed)
+    {
+        (bool collocated, long cardId) = card;
+        (string text, bool settled) = typed;
+        return before.SequenceEqual(trail.CCaretTrailCopy(collocated, cardId))
+            ? text
+            : LQuillChip.LQuillKeptRead(text, settled);
     }
 
     private static CProffer LCaretProfferRead(LSituationOffer offer)

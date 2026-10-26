@@ -136,6 +136,7 @@ internal sealed class QLabel
     private void QLabelTextObserve(object sender, TextChangedEventArgs e)
     {
         if (e.OriginalSource is TextBox { DataContext: QInlet<QLabelChip> caret } box
+            && ReferenceEquals(Keyboard.FocusedElement, box)
             && QLabelCardFind(caret) is QPlacard card)
         {
             _qLabelSlate.QSlateRefine(
@@ -160,10 +161,9 @@ internal sealed class QLabel
             return;
         }
 
-        _cCaret.CCaretTagSettle(card.QPlacardCollocated, card.QPlacardId, box.Text);
         e.Handled = true;
-        _qLabelSlate.QSlateShutRefine();
-        row.QInletClear();
+        _qLabelSlate.QSlateRefine(
+            card, _cCaret.CCaretTagSettle(card.QPlacardCollocated, card.QPlacardId, box.Text));
     }
 
     internal void QLabelEraseObserve(object sender, KeyEventArgs e)
@@ -214,8 +214,8 @@ internal sealed class QLabel
         if (sender is TextBox { DataContext: QInlet<QLabelChip> row } box
             && QLabelCardFind(row) is QPlacard card)
         {
-            _cCaret.CCaretTagSettle(card.QPlacardCollocated, card.QPlacardId, box.Text);
-            row.QInletClear();
+            card.QPlacardLabel.QInletRefine(
+                _cCaret.CCaretTagSettle(card.QPlacardCollocated, card.QPlacardId, box.Text).CProfferText);
         }
     }
 

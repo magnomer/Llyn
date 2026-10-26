@@ -16,6 +16,7 @@ When neither holds a file name, the address or the written location itself is th
 The written location is split at either slash or the drive colon, so Windows and Unix paths name alike.
 A store value that could not be read shows as uncertain and keeps its own text.
 Normalizing that value clears the uncertainty.
+The test normalizes through the Interface relay, since a Conduct test never calls a Core record itself.
 
 ## `TCardPrepare`
 
@@ -67,6 +68,7 @@ Reopening and undoing the draft check that pending text cannot preserve a stale 
 ## `TCardTag`
 
 Completed tags, pending text and stored picks are tested separately.
+The tag offer is read as a `CProffer`, the shape every chip field's dropdown has.
 A tag add whose tenure observer throws shows `Input.UpdateFailed`.
 Two cards check that suggestion exclusion belongs to the card holding the tag.
 
@@ -87,14 +89,14 @@ A caret moved back inserts a picked row before its anchor and leaves the anchor 
 
 ## Stamp
 
-Commit: `c05429890cec`
-- `TCard.cs` `0eea505cacdfc4fb`
+Commit: `f3a687d70b47`
+- `TCard.cs` `5d913b60171a6f8b`
 - `TCardList.cs` `9d1b8dcf0fd446e1`
 - `TCardReference.cs` `f8c14a236c5f5248`
 - `TCardRegister.cs` `7b6c2f10bb0fb535`
 - `TCardSentence.cs` `d1a5ad65440da628`
 - `TCardSituation.cs` `a3a2cb6b7d517506`
 - `TCardSpeech.cs` `8c3b0ecae8677f2f`
-- `TCardTag.cs` `3c980561f910678d`
+- `TCardTag.cs` `19b0a5c9b40b25dd`
 - `TCardTranslation.cs` `4b84fdd8de1d9064`
 - `TCaretTrail.cs` `4c9e1085cbdf6aa5`

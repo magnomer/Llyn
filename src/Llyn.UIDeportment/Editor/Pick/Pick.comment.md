@@ -81,7 +81,8 @@ The shadow already says where it ends, and a line made it a second card.
 ### QProffer.cs: `internal void QProfferKeyRefine(object sender, KeyEventArgs e)`
 
 The dropdown never takes focus, so the field's keys drive it.
-A shut dropdown holds no rows, so the gate answers null and the arrow stays unhandled.
+The arrows step the caret's lantern, which both faces share.
+A shut dropdown holds no rows, so no step is made and the arrow stays unhandled.
 Each field subscribes it before its own key handlers, so a key it takes ends there.
 
 ### QProffer.cs: `private void QProfferCloseRefine(object? sender, EventArgs e)`
@@ -148,6 +149,8 @@ The field's text and selection are read at the pick, raw, since the dropdown nev
 ### `QProspectKeyRefine`
 
 Escape and the arrows only change the open dropdown and ask no gate.
+On a translation caret the arrows step the caret's lantern, so both faces light the same row.
+Other fields keep the lit row in the list alone, since no console field shares it.
 A key it does not use falls through to the entry's later handlers.
 
 ### `QProspectCloseRefine`
@@ -175,8 +178,8 @@ A data trigger and a string format stood there before.
 
 ## Stamp
 
-Commit: `8c403d1df768`
-- `QProffer.cs` `f72afd0afca95d56`
+Commit: `f3a687d70b47`
+- `QProffer.cs` `6bb2f39cf608526a`
 - `QProfferItem.cs` `6f1e3475b8b807f2`
-- `QProspect.cs` `c287a482572994a8`
+- `QProspect.cs` `5c98c398f440398f`
 - `QProspectItem.cs` `b3438f13d3fd6256`

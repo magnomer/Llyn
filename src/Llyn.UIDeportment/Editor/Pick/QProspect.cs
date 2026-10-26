@@ -142,12 +142,16 @@ internal sealed class QProspect
 
     internal void QProspectKeyRefine(object sender, KeyEventArgs e)
     {
-        int? lit = e.Key switch
+        int way = e.Key switch
         {
-            Key.Down => CLantern.CLanternMove(QProspectList.SelectedIndex, QProspectList.Items.Count, 1),
-            Key.Up => CLantern.CLanternMove(QProspectList.SelectedIndex, QProspectList.Items.Count, -1),
-            _ => null,
+            Key.Down => 1,
+            Key.Up => -1,
+            _ => 0,
         };
+        bool translation = QProspectTranslationCheck();
+        int? lit = way == 0 || _qProspectItem.Count == 0 ? null
+            : translation ? _cCaret.CCaretLanternMove(way)
+            : CLantern.CLanternMove(QProspectList.SelectedIndex, QProspectList.Items.Count, way);
         if (lit is int chosen)
         {
             QProspectList.SelectedIndex = chosen;
@@ -161,6 +165,11 @@ internal sealed class QProspect
             QProspectShutRefine();
             e.Handled = true;
         }
+    }
+
+    private bool QProspectTranslationCheck()
+    {
+        return QProspectPopup.PlacementTarget is TextBox { DataContext: QInlet<QLinkChip> };
     }
 
     private void QProspectCloseRefine(object? sender, EventArgs e)

@@ -71,6 +71,8 @@ The language chooser has no such task, so it stays until the user closes it.
 The language list is whatever the last load on workspace open returned.
 The tab owns a `BEditor` and builds it through a callback its owner supplies.
 So the Library and Favorite tabs each get an editor over their own `CEditor`.
+The callback also hands the editor a loader for the language list, which the language pill's menu opens on demand.
+The loader reads the catalog afresh, so the pill never shows a list older than the open workspace.
 The editor makes the `BLectern`, the reading view, and hands it the whole atelier, not only its navigation.
 So the lectern can open a note from the page.
 The display part shows the lectern while the viewer shows, and the editor frame while the scribe shows.
@@ -99,6 +101,6 @@ The whole view counts only while the tab is shown.
 
 ## Stamp
 
-Commit: `c05429890cec`
+Commit: `f3a687d70b47`
 - `BIndex.cs` `9f0dd2c4a8edf784`
-- `BLibrary.cs` `cbf70905486c25bf`
+- `BLibrary.cs` `73512c5b3fed8a6f`

@@ -19,6 +19,8 @@ internal sealed class QCitation
 
     private CCard _cCard = null!;
 
+    private CCaret _cCaret = null!;
+
     internal QCitation(
         ObservableCollection<QPlacard> meaning,
         ObservableCollection<QPlacard> collocation,
@@ -33,9 +35,10 @@ internal sealed class QCitation
 
     internal ObservableCollection<QCitationItem> QCitationCatalog { get; } = [];
 
-    internal void QCitationIntroduce(CCard card, CSentence sentence, CAtelier atelier)
+    internal void QCitationIntroduce(CCard card, CCaret caret, CSentence sentence, CAtelier atelier)
     {
         _cCard = card;
+        _cCaret = caret;
         sentence.CSentenceReferenceChanged += QCitationCatalogRefine;
         atelier.CAtelierWorkspace.CWorkspaceOpened += QCitationCatalogRefine;
     }
@@ -66,7 +69,7 @@ internal sealed class QCitation
         {
             _qCitationProffer.QProfferCitationRefine(
                 box,
-                _cCard.CCardReferenceFind(card.QPlacardCollocated, card.QPlacardId, row.QPassageRow, box.Text));
+                _cCaret.CCaretReferenceFind(card.QPlacardCollocated, card.QPlacardId, row.QPassageRow, box.Text));
         }
     }
 

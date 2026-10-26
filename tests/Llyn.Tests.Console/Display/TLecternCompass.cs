@@ -256,17 +256,25 @@ public sealed class TLecternCompass
                     return false;
                 }
             };
-            Assert.True(SpinWait.SpinUntil(open, TimeSpan.FromSeconds(30)));
-            box.AddRange(grid);
-            int title = Array.FindIndex(grid, static row => row.Contains(" Contents ", StringComparison.Ordinal));
-            int left = grid[title].IndexOf('╔', StringComparison.Ordinal);
-            for (int row = title + 1; row < grid.Length && shown is null; row++)
+            Func<string?> light = () =>
             {
-                int right = Math.Min(grid[row].Length, roles[row].Length);
-                int[] cells = [.. Enumerable.Range(left, Math.Max(right - left, 0))
-                    .Where(column => roles[row][column] == "lit")];
-                shown = cells.Length == 0 ? null : grid[row][cells[0]..(cells[^1] + 1)].Trim();
-            }
+                int title = Array.FindIndex(grid, static row => row.Contains(" Contents ", StringComparison.Ordinal));
+                int left = title < 0 ? -1 : grid[title].IndexOf('╔', StringComparison.Ordinal);
+                for (int row = title + 1; left >= 0 && row < Math.Min(grid.Length, roles.Length); row++)
+                {
+                    int right = Math.Min(grid[row].Length, roles[row].Length);
+                    int[] cells = [.. Enumerable.Range(left, Math.Max(right - left, 0))
+                        .Where(column => roles[row][column] == "lit")];
+                    if (cells.Length > 0)
+                    {
+                        return grid[row][cells[0]..(cells[^1] + 1)].Trim();
+                    }
+                }
+
+                return null;
+            };
+            Assert.True(SpinWait.SpinUntil(() => open() && (shown = light()) is not null, TimeSpan.FromSeconds(30)));
+            box.AddRange(grid);
 
             foreach (ConsoleKey key in keys)
             {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Llyn.Conduct;
 
 namespace Llyn.UIDemeanor;
@@ -9,9 +10,25 @@ internal sealed class BEditor
 {
     internal const int BEditorHeadwordRow = 0;
 
-    private const int BEditorStackRow = 1;
+    internal const int BEditorLanguageRow = 1;
+
+    internal const int BEditorEsteemRow = 2;
+
+    internal const int BEditorMarkerRow = 3;
+
+    internal const int BEditorHeadSpan = 3;
+
+    private const int BEditorStackRow = 4;
 
     private readonly BLocalizationCatalog _bEditorCatalog;
+
+    private readonly BSpeaker _bEditorSpeaker;
+
+    private readonly BRegard _bEditorRegard;
+
+    private readonly BMarker _bEditorMarker;
+
+    private readonly BCard _bEditorCard;
 
     private readonly CEditor _bEditorGate;
 
@@ -36,7 +53,8 @@ internal sealed class BEditor
         Action changed,
         Func<CDisplay, BLectern>? lectern = null,
         Func<bool>? reading = null,
-        Action<Action>? settle = null)
+        Action<Action>? settle = null,
+        Func<Task<IReadOnlyList<string>>>? languages = null)
     {
         ArgumentNullException.ThrowIfNull(catalog);
         ArgumentNullException.ThrowIfNull(editor);
@@ -47,7 +65,9 @@ internal sealed class BEditor
 
         _bEditorCatalog = catalog;
         _bEditorGate = editor;
-        _bEditorSight = new BEditorSight(catalog, editor.CEditorDesk, title);
+        _bEditorSpeaker = new BSpeaker(
+            editor.CEditorEntry, languages ?? (static () => Task.FromResult<IReadOnlyList<string>>([])), changed);
+        _bEditorRegard = new BRegard(catalog, editor.CEditorDesk, editor.CEditorEsteem, changed);
         _bEditorChanged = changed;
         CDisplay display = editor.CEditorDisplay;
         BEditorLectern = lectern?.Invoke(display);
@@ -61,11 +81,6 @@ internal sealed class BEditor
         CDeskChronicle steps = editor.CEditorDesk.CDeskChronicle;
         editor.CEditorWalkChanged += changed;
         editor.CEditorDesk.CDeskStarted += BEditorReset;
-        editor.CEditorDesk.CDeskStateChanged += () =>
-        {
-            _bEditorField = steps.CDeskChronicleRunning ? _bEditorField : null;
-            changed();
-        };
 
         const BKeymapFocus side = BKeymapFocus.BKeymapFocusEditor;
         Func<Func<bool>, Func<BKeymapLive>> when = check => () =>
@@ -81,14 +96,60 @@ internal sealed class BEditor
             : BKeymapLive.BKeymapLiveShown;
         Func<BKeymapLive> lit = when(() => _bEditorField is null);
         Func<BKeymapLive> opened = when(() => _bEditorField is not null);
-        Func<CStep?> here = () => editor.CEditorWalk[_bEditorStack].ElementAtOrDefault(_bEditorLit);
+        Func<CStep?> here = () => editor.CEditorWalk[_bEditorStack].ElementAtOrDefault(BEditorWalkAt);
         Func<BKeymapLive> head = when(() => _bEditorField is null && _bEditorLit == BEditorHeadwordRow);
         Func<BKeymapLive> tabs = when(() => _bEditorField is null && _bEditorLit == BEditorStackRow);
-        Func<BKeymapLive> fold = when(() => _bEditorField is null
+        Func<BKeymapLive> dropped = when(() => _bEditorSpeaker.BSpeakerDrop is not null);
+        Func<BKeymapLive> chosen = when(() => _bEditorSpeaker.BSpeakerDrop is { BDropLabel.Count: > 0 });
+        Func<BKeymapLive> speaker = when(() => _bEditorField is null && _bEditorSpeaker.BSpeakerDrop is null
+            && _bEditorLit == BEditorLanguageRow);
+        Func<BKeymapLive> rated = when(() => _bEditorField is null && _bEditorLit == BEditorEsteemRow);
+        Func<BKeymapLive> esteem = () =>
+        {
+            BKeymapLive live = rated();
+            return live is BKeymapLive.BKeymapLiveShown && !editor.CEditorDesk.CDeskStored
+                ? BKeymapLive.BKeymapLiveDim
+                : live;
+        };
+        _bEditorMarker = new BMarker(
+            catalog,
+            (editor.CEditorSpeech, editor.CEditorEntry, editor.CEditorDesk),
+            check => when(() => _bEditorField is null && _bEditorLit == BEditorMarkerRow && check()),
+            changed);
+        _bEditorCard = new BCard(
+            catalog,
+            (editor.CEditorCaret, editor.CEditorDesk.CDeskDraft.CDeskDraftPersist),
+            () => _bEditorField is null && _bEditorLit > BEditorHeadSpan && here() is CStep step
+                ? (_bEditorStack == 1, step)
+                : null,
+            when,
+            changed);
+        editor.CEditorDesk.CDeskStateChanged += () =>
+        {
+            if (!steps.CDeskChronicleRunning)
+            {
+                _bEditorField = null;
+                foreach (BInlet inlet in _bEditorCard.BCardInlet)
+                {
+                    inlet.BInletReset();
+                }
+            }
+
+            changed();
+        };
+        Func<BKeymapLive> fold = when(() => _bEditorField is null && _bEditorCard.BCardPart == 0
             && here() is { CStepFold: not null });
+        _bEditorSight = new BEditorSight(
+            catalog, editor.CEditorDesk, title, (_bEditorSpeaker, _bEditorRegard, _bEditorMarker),
+            _bEditorCard.BCardInlet);
+        Func<ConsoleKey, BKeymapRow> digit = key => new(key, 0, side, "Grasp.Mark", BEditorEsteemObserve, () =>
+            key - ConsoleKey.D0 <= editor.CEditorEsteem.CEsteemGraspHit.Count
+                ? esteem()
+                : BKeymapLive.BKeymapLiveHidden);
         Func<int, int?> find = way =>
         {
-            IEnumerable<int?> cards = editor.CEditorWalkCard[_bEditorStack].Select(static at => (int?)at);
+            IEnumerable<int?> cards = editor.CEditorWalkCard[_bEditorStack]
+                .Select(static at => (int?)(at + BEditorHeadSpan));
             return way > 0
                 ? cards.FirstOrDefault(at => at > _bEditorLit)
                 : cards.LastOrDefault(at => at < _bEditorLit);
@@ -98,9 +159,29 @@ internal sealed class BEditor
             action();
             changed();
         };
-        Func<Func<int>, Action<ConsoleKeyInfo>> move = step => pressed(() => BEditorLitMove(step()));
-        Func<int, Action<ConsoleKeyInfo>> seek = way => pressed(() =>
-            BEditorLitMove((find(way) ?? _bEditorLit) - _bEditorLit));
+        Func<Func<int>, Action<ConsoleKeyInfo>> move = step => pressed(() =>
+        {
+            _bEditorMarker.BMarkerClose();
+            _bEditorCard.BCardClose();
+            _bEditorCard.BCardPartSet(false);
+            BEditorLitMove(step());
+        });
+        Func<int, Action<ConsoleKeyInfo>> row = way => pressed(() =>
+        {
+            _bEditorMarker.BMarkerClose();
+            _bEditorCard.BCardClose();
+            BEditorRowMove(way);
+        });
+        Func<int, Action<ConsoleKeyInfo>> part = way => pressed(() =>
+        {
+            _bEditorMarker.BMarkerClose();
+            _bEditorCard.BCardClose();
+            _bEditorCard.BCardPartMove(way);
+            BEditorLitMove(0);
+        });
+        Func<int, Func<BKeymapLive>> inner = way => when(() => _bEditorField is null
+            && _bEditorCard.BCardPartCheck(way));
+        Func<int, Action<ConsoleKeyInfo>> seek = way => move(() => (find(way) ?? _bEditorLit) - _bEditorLit);
         Func<int, Action<ConsoleKeyInfo>> choose = way => pressed(() => BEditorStackSelect(_bEditorStack + way));
         Action<ConsoleKeyInfo> pick = key =>
         {
@@ -114,12 +195,17 @@ internal sealed class BEditor
             : BKeymapLive.BKeymapLiveDim;
         CDeskDraft draft = editor.CEditorDesk.CDeskDraft;
         const BKeymapFocus window = BKeymapFocus.BKeymapFocusWindow;
+        Func<BKeymapLive> favored = () =>
+            !shown() || (reading?.Invoke() ?? false) || _bEditorDraft is null ? BKeymapLive.BKeymapLiveHidden
+            : !editor.CEditorDesk.CDeskStored || !steps.CDeskChronicleRunning ? BKeymapLive.BKeymapLiveDim
+            : BKeymapLive.BKeymapLiveShown;
         BEditorKeymap = new BKeymap(
         [
             new(ConsoleKey.F2, 0, window, "Scribe.Save", pressed(BEditorEntrySave),
                 gated(true)(() => draft.CDeskDraftStorable)),
             new(ConsoleKey.F7, 0, window, "Scribe.New", pressed(editor.CEditorEntryUndo),
                 () => gated(editor.CEditorOwned)(() => draft.CDeskDraftAltered)()),
+            new(ConsoleKey.F6, 0, window, "Favorite.Mark", BEditorEsteemObserve, favored),
             .. (BKeymapRow[])(BEditorLectern is BLectern face && reading is not null && settle is not null
                 ? [new(ConsoleKey.F6, 0, window, "Favorite.Mark", key => settle(() => face.BLecternFavoriteToggle(key)),
                     gated(true)(() => reading() && !display.CDisplayBlank))]
@@ -130,15 +216,38 @@ internal sealed class BEditor
                 pressed(BEditorChronicle.BEditorChronicleRedo), chronicle(true)),
             new(ConsoleKey.Z, ConsoleModifiers.Control | ConsoleModifiers.Shift, side, "Chronicle.Redo",
                 pressed(BEditorChronicle.BEditorChronicleRedo), chronicle(true)),
-            new(ConsoleKey.UpArrow, 0, side, "Window.Help.Item", move(static () => -1), lit),
-            new(ConsoleKey.DownArrow, 0, side, "Window.Help.Item", move(static () => 1), lit),
+            .. _bEditorMarker.BMarkerKeymap,
+            .. _bEditorCard.BCardKeymap,
+            new(ConsoleKey.UpArrow, 0, side, "Window.Help.Item",
+                pressed(() => _bEditorSpeaker.BSpeakerDrop?.BDropLitMove(-1)), dropped),
+            new(ConsoleKey.DownArrow, 0, side, "Window.Help.Item",
+                pressed(() => _bEditorSpeaker.BSpeakerDrop?.BDropLitMove(1)), dropped),
+            new(ConsoleKey.Enter, 0, side, "Editor.Pick", pressed(BEditorLanguageSelect), chosen),
+            new(ConsoleKey.Escape, 0, side, "Editor.Shut", pressed(_bEditorSpeaker.BSpeakerClose), dropped),
+            new(ConsoleKey.Enter, 0, side, "Editor.Language",
+                pressed(() => _ = _bEditorSpeaker.BSpeakerOpen()), speaker),
+            new(ConsoleKey.LeftArrow, 0, side, "Grasp.Mark", BEditorEsteemObserve, esteem),
+            new(ConsoleKey.RightArrow, 0, side, "Grasp.Mark", BEditorEsteemObserve, esteem),
+            digit(ConsoleKey.D1),
+            digit(ConsoleKey.D2),
+            digit(ConsoleKey.D3),
+            digit(ConsoleKey.D4),
+            digit(ConsoleKey.D5),
+            digit(ConsoleKey.D6),
+            digit(ConsoleKey.D7),
+            digit(ConsoleKey.D8),
+            digit(ConsoleKey.D9),
+            new(ConsoleKey.UpArrow, 0, side, "Window.Help.Item", part(-1), inner(-1)),
+            new(ConsoleKey.DownArrow, 0, side, "Window.Help.Item", part(1), inner(1)),
+            new(ConsoleKey.UpArrow, 0, side, "Window.Help.Item", row(-1), lit),
+            new(ConsoleKey.DownArrow, 0, side, "Window.Help.Item", row(1), lit),
             new(ConsoleKey.UpArrow, 0, side, "Editor.Close", BEditorFieldClose, opened),
             new(ConsoleKey.DownArrow, 0, side, "Editor.Close", BEditorFieldClose, opened),
             new(ConsoleKey.PageUp, 0, side, "Window.Help.Scroll", move(() => -_bEditorSight.BEditorSightPage), lit),
             new(ConsoleKey.PageDown, 0, side, "Window.Help.Scroll", move(() => _bEditorSight.BEditorSightPage), lit),
             new(ConsoleKey.Home, ConsoleModifiers.Control, side, "Window.Help.Scroll", move(() => -_bEditorLit), lit),
             new(ConsoleKey.End, ConsoleModifiers.Control, side, "Window.Help.Scroll",
-                move(() => editor.CEditorWalk[_bEditorStack].Count), lit),
+                move(() => editor.CEditorWalk[_bEditorStack].Count + BEditorHeadSpan), lit),
             new(ConsoleKey.PageUp, ConsoleModifiers.Control, side, "Editor.Card", seek(-1), card(-1)),
             new(ConsoleKey.PageDown, ConsoleModifiers.Control, side, "Editor.Card", seek(1), card(1)),
             new(ConsoleKey.Enter, 0, side, "Editor.Open", pressed(BEditorFieldOpen), head),
@@ -160,16 +269,21 @@ internal sealed class BEditor
 
     internal BEditorChronicle BEditorChronicle { get; }
 
+    private int BEditorWalkAt => Math.Max(_bEditorLit - BEditorHeadSpan, 0);
+
     internal bool BEditorObserve(ConsoleKeyInfo key)
     {
-        bool typed = !char.IsControl(key.KeyChar);
-        if (_bEditorField is null && _bEditorLit == BEditorHeadwordRow && _bEditorDraft is not null && typed
-            && _bEditorGate.CEditorDesk.CDeskChronicle.CDeskChronicleRunning)
+        bool typed = !char.IsControl(key.KeyChar) && _bEditorField is null && _bEditorDraft is not null
+            && _bEditorGate.CEditorDesk.CDeskChronicle.CDeskChronicleRunning;
+        if (typed && _bEditorLit == BEditorHeadwordRow)
         {
             BEditorFieldOpen();
         }
 
-        bool taken = _bEditorField?.BSParleyBodyObserve(key) ?? false;
+        bool taken = _bEditorField?.BSParleyBodyObserve(key)
+            ?? (_bEditorMarker.BMarkerObserve(key)
+                || _bEditorCard.BCardObserve(key)
+                || _bEditorSpeaker.BSpeakerObserve(key));
         _bEditorChanged();
         return taken;
     }
@@ -185,19 +299,38 @@ internal sealed class BEditor
             display,
             focused,
             measure,
-            (_bEditorDraft, _bEditorField, _bEditorLit, _bEditorStack),
+            (_bEditorDraft, _bEditorField, _bEditorLit, _bEditorStack, _bEditorCard.BCardPart),
             (_bEditorGate.CEditorWalk, _bEditorGate.CEditorWalkCard, _bEditorGate.CEditorOwned));
     }
 
     private void BEditorLitMove(int step)
     {
         int count = _bEditorGate.CEditorWalk.ElementAtOrDefault(_bEditorStack)?.Count ?? 0;
-        _bEditorLit = Math.Clamp(_bEditorLit + step, 0, Math.Max(count - 1, 0));
+        _bEditorLit = Math.Clamp(_bEditorLit + step, 0, Math.Max(count + BEditorHeadSpan - 1, 0));
+        if (_bEditorLit != BEditorLanguageRow)
+        {
+            _bEditorSpeaker.BSpeakerClose();
+        }
+
+        _bEditorCard.BCardRefine();
+    }
+
+    private void BEditorRowMove(int way)
+    {
+        int lit = _bEditorLit;
+        BEditorLitMove(way);
+        if (_bEditorLit != lit)
+        {
+            _bEditorCard.BCardPartSet(way < 0);
+        }
     }
 
     private void BEditorStackSelect(int stack)
     {
+        _bEditorMarker.BMarkerClose();
+        _bEditorCard.BCardClose();
         _bEditorStack = Math.Clamp(stack, 0, 3);
+        _bEditorCard.BCardPartSet(false);
         BEditorLitMove(0);
     }
 
@@ -228,18 +361,38 @@ internal sealed class BEditor
     {
         _ = _bEditorField?.BFieldPendingApply(null);
         _bEditorField = null;
+        _bEditorCard.BCardClose();
+        foreach (BInlet inlet in _bEditorCard.BCardInlet)
+        {
+            inlet.BInletReset();
+        }
+
         _ = _bEditorGate.CEditorEntrySave();
     }
 
     private void BEditorFoldToggle()
     {
-        CStep step = _bEditorGate.CEditorWalk[_bEditorStack][_bEditorLit];
+        CStep step = _bEditorGate.CEditorWalk[_bEditorStack][BEditorWalkAt];
         _ = step.CStepFold!(!step.CStepCard!.CCardDraftFolded);
+    }
+
+    private void BEditorEsteemObserve(ConsoleKeyInfo key)
+    {
+        _bEditorRegard.BRegardObserve(key);
+        _bEditorChanged();
+    }
+
+    private void BEditorLanguageSelect()
+    {
+        _bEditorSpeaker.BSpeakerSelect(_bEditorGate.CEditorEntry.CEntryLanguageSet);
     }
 
     private void BEditorReset()
     {
         _bEditorField = null;
+        _bEditorSpeaker.BSpeakerClose();
+        _bEditorMarker.BMarkerClose();
+        _bEditorCard.BCardReset();
         BEditorLitMove(-_bEditorLit);
     }
 }

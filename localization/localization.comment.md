@@ -45,6 +45,8 @@ Most are generic, so other packs can reuse them, and the inflection table shows 
 `Card.Fold` and `Card.Unfold` are the hinge tooltips that fold or unfold one card.
 `Card.SenseCaption` captions the row of link chips on a collocation card.
 `Card.SenseAdd` labels the chip that adds one more Meaning link.
+`Card.ChipAdd` labels the Enter key of a chip field with typed text and no lit row.
+That key turns the text into a chip.
 `Display.CollocationOther` heads the collocations with no home Meaning, in the read view and the exports.
 `Display.CollocationStub` words the "see N" line under a further link.
 Its slot `{0}` is the collocation and `{1}` its home Meaning's number.
@@ -157,6 +159,13 @@ The other `Invocation.Help*` keys give the help text of one option, printed afte
 `Editor.Open` and `Editor.Close` label the Enter and Escape keys of the headword field.
 `Editor.Stack` labels the keys that pick a section of the form, and `Editor.Card` the keys that light another card.
 `Editor.More` takes the count of rows below the page in slot `{0}`, for the editor frame's foot.
+`Editor.Language`, `Editor.Unit` and `Editor.Freedom` label the Enter key that opens the language, unit or freedom list.
+`Editor.Pick` and `Editor.Shut` label the Enter and Escape keys of an open list, and of the part-of-speech menu.
+`Editor.Part` labels the arrow keys that move the light among the unit, the freedom and the parts of speech.
+`Editor.Favorite` is the word beside the heart on the esteem strip.
+`Speech.Offer` labels the arrow keys that open the part-of-speech menu.
+`Speech.Add` labels the Enter key that turns the typed text into a part of speech.
+`Speech.Remove` labels the Backspace key that drops the last one.
 `Mention.Open` labels the Enter key of the Mention menu, and `Window.Help.Tick` the Space key that ticks a choice.
 `Window.*` words the console window's notices and its help.
 `Window.Opening` is the line the window shows while it opens.
@@ -200,6 +209,6 @@ The person headers spell out person and number instead of the English abbreviati
 
 ## Stamp
 
-Commit: `c05429890cec`
-- `en.json` `b002fe8b14b16db7`
-- `ko.json` `c28945e94ff3f038`
+Commit: `f3a687d70b47`
+- `en.json` `d9f3b0ce4db67081`
+- `ko.json` `0f6ffab6cfe114f1`

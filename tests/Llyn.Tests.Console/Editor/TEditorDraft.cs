@@ -73,6 +73,9 @@ public sealed class TEditorDraft
                 }
 
                 TEditorFrameSend(library, TLibrary.TLibraryDown);
+                TEditorFrameSend(library, TLibrary.TLibraryDown);
+                TEditorFrameSend(library, TLibrary.TLibraryDown);
+                TEditorFrameSend(library, TLibrary.TLibraryDown);
                 Func<ConsoleKey, BKeymapRow?> find = key => library.BLibraryKeymap.BKeymapFind(
                     library.BLibraryKeymapFocus, new ConsoleKeyInfo('\0', key, false, false, false));
                 Assert.Equal("Editor.Stack", find(ConsoleKey.RightArrow)?.BKeymapRowLabel);

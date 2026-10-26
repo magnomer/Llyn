@@ -50,6 +50,8 @@ Each step runs work on the loop, lets the loop drain what the work posted, then 
 Covers the contents dialog and the full view of the reading side.
 Alt and F3 opens the dialog over the page, listing the shown sections with each card under its number.
 The row lit on opening is the one for the page top, so scrolling to a Meaning lights that Meaning.
+The dialog opens on the draw after the key.
+So the test waits until a row is lit before it presses on.
 Down moves the lit row and Enter closes the dialog, scrolls to the row and lights the card's header.
 Escape closes the dialog and moves nothing.
 A part the entry does not hold, such as a note or Other collocations, has no row.
@@ -139,10 +141,10 @@ Showing an absent offer or an offer with no entries opens no box at all.
 
 ## Stamp
 
-Commit: `c05429890cec`
+Commit: `f3a687d70b47`
 - `TLectern.cs` `d4aae2072b528891`
 - `TLecternCard.cs` `3b2d6ba56615809a`
-- `TLecternCompass.cs` `87a0faa08413743a`
+- `TLecternCompass.cs` `f72cea894bf88429`
 - `TLecternEtymology.cs` `b501ad96e7386141`
 - `TLecternHeader.cs` `72979c885d47b86f`
 - `TLecternIncoming.cs` `bbbeec854e35affb`

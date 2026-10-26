@@ -12,7 +12,7 @@ The mark is empty in that case.
 ## `CProffer`
 
 What a card field keeps after a gate, and the dropdown of stored rows it offers.
-One shape serves every field the shared dropdown opens for.
+One shape serves every field the shared dropdown opens for, the Tag field among them.
 The corpus transcript's citation drawer shows the same shape, since it offers the same citation find.
 The driver paints it as it comes and decides nothing about the rows.
 The text is what the entry keeps once the completed parts went onto the card.
@@ -38,21 +38,9 @@ The languages are the ones a fresh Entry is offered in, one create row each, the
 
 One register a search found, as the Proffer dropdown lists it.
 
-## `CSlate`
-
-What a tag field keeps after a gate, and the dropdown of stored Tags it offers.
-The driver paints it as it comes and decides nothing about the rows.
-The text is what the entry keeps once the completed tags went onto the card.
-The rows come in the order the engine offers them.
-
-## `CSlateRow`
-
-One stored Tag the tag dropdown offers, already split around the typed word.
-The lead is the whole text when the word is not found in it.
-
 ## `CTag`
 
-One tag a search found, as the slate popup lists it.
+One tag a search found, as the Tag dropdown lists it.
 
 ## `CLantern`
 
@@ -62,15 +50,22 @@ Down or Up lights the next or former row, wrapping at either end.
 Down from no lit row lights the first row, and Up from no lit row lights the last.
 An empty offer lights nothing and answers null, so the key stays unhandled.
 
+## `CProfferLantern`
+
+The lit row of one card's open dropdown, kept in Conduct so both faces step the same row.
+A new offer shows no lit row, so the dropdown opens unlit and an arrow key lights the first.
+The steps go through `CLantern`, and a refused step keeps the lit row.
+A set lights a row only inside the offered count, which lets a chosen offer light its first row.
+The lit state tells Enter whether to pick the row or to add the typed text.
+
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `f3a687d70b47`
 - `CAuthor.cs` `5f9d35007ec20787`
 - `CLantern.cs` `571f5e22e9961578`
 - `CProffer.cs` `8b6860f7cafb1ed0`
+- `CProfferLantern.cs` `df40ba9a6571f4ae`
 - `CProfferRow.cs` `87a509fbfbd29b73`
 - `CProspect.cs` `ff7d458631523cb8`
 - `CRegister.cs` `6046704730b3906a`
-- `CSlate.cs` `6af89931ecb0fa35`
-- `CSlateRow.cs` `0dcf8ab6e637b755`
 - `CTag.cs` `2f2ddfeffcfb75c8`

@@ -105,8 +105,8 @@ internal sealed class QSlate
     {
         int? lit = e.Key switch
         {
-            Key.Down => CLantern.CLanternMove(QSlateList.SelectedIndex, QSlateList.Items.Count, 1),
-            Key.Up => CLantern.CLanternMove(QSlateList.SelectedIndex, QSlateList.Items.Count, -1),
+            Key.Down when _qSlateItem.Count > 0 => _cCaret.CCaretLanternMove(1),
+            Key.Up when _qSlateItem.Count > 0 => _cCaret.CCaretLanternMove(-1),
             _ => null,
         };
         if (lit is int chosen)
@@ -150,24 +150,25 @@ internal sealed class QSlate
         row.QInletClear();
     }
 
-    internal void QSlateRefine(QPlacard card, CSlate slate)
+    internal void QSlateRefine(QPlacard card, CProffer offer)
     {
-        card.QPlacardLabel.QInletRefine(slate.CSlateText);
-        if (slate.CSlateShown)
+        card.QPlacardLabel.QInletRefine(offer.CProfferText);
+        if (offer.CProfferShown)
         {
-            QSlateOpenRefine(card, slate.CSlateRows);
+            QSlateOpenRefine(card, offer.CProfferRows);
             return;
         }
 
         QSlateShutRefine();
     }
 
-    private void QSlateOpenRefine(QPlacard card, IReadOnlyList<CSlateRow> rows)
+    private void QSlateOpenRefine(QPlacard card, IReadOnlyList<CProfferRow> rows)
     {
         _qSlateItem.Clear();
-        foreach (CSlateRow row in rows)
+        foreach (CProfferRow row in rows)
         {
-            _qSlateItem.Add(new QSlateItem(row.CSlateRowId, row.CSlateRowLead, row.CSlateRowMark, row.CSlateRowTail));
+            _qSlateItem.Add(new QSlateItem(
+                row.CProfferRowId, row.CProfferRowLead, row.CProfferRowMark, row.CProfferRowTail));
         }
 
         TextBox? box = QSlateBoxFind(card);
@@ -177,7 +178,7 @@ internal sealed class QSlate
             FrameworkElement.MinWidthProperty,
             new Binding(nameof(FrameworkElement.ActualWidth)) { Source = QSlatePopup.PlacementTarget });
         QSlatePopup.IsOpen = true;
-        QSlateList.SelectedIndex = -1;
+        QSlateList.SelectedIndex = _cCaret.CCaretLanternLit ? _cCaret.CCaretLanternIndex : -1;
     }
 
     internal void QSlateShutRefine()

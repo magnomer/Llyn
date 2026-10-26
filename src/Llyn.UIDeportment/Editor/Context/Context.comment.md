@@ -38,12 +38,14 @@ The anchor comes from Conduct's caret trail, so the entry stands where the trail
 ### `QContextTextObserve`
 
 Any other box's edit is ignored, since its data context is no Situation caret.
+A box without the keyboard is ignored too, so a text the engine wrote back asks nothing.
 The gate adds every Situation a comma completed and answers what the entry keeps.
 
 ### `QContextCommitObserve`
 
 Enter runs after the dropdown's handlers, so Enter on a chosen stored Situation never reaches it.
 The wording goes to the engine as written, and the engine decides which Situation it names.
+The answer is painted as an edit's is, so a refused settle leaves its text in the entry.
 A wording already stored is attached under its own id, so the workspace does not fill with twins.
 
 ### `QContextEraseObserve`
@@ -63,6 +65,7 @@ It is subscribed before the close observer, so the dropdown shuts first.
 ### `QContextCloseObserve`
 
 Leaving the field commits what stands in the entry, so a Situation typed and abandoned is kept.
+The entry then shows only what the engine answers as kept.
 Choosing a row empties the entry first, so the click that chose it commits nothing twice.
 
 ### `QContextFieldApply`
@@ -81,7 +84,7 @@ The dropdown asks it too, since a pick on a Situation caret lands on that card.
 
 ## Stamp
 
-Commit: `8c403d1df768`
-- `QContext.cs` `dfac3c28b43ce68c`
+Commit: `f3a687d70b47`
+- `QContext.cs` `6851b77ec744e0ff`
 - `QContextChip.cs` `b695c0bf977b4a31`
 - `QContextSelector.cs` `6ed10ad72c8e19f4`

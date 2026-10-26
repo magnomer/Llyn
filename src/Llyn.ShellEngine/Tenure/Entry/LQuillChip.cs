@@ -37,6 +37,11 @@ public sealed class LQuillChip
         });
     }
 
+    public static string LQuillKeptRead(string text, bool settled)
+    {
+        return LDraftClerkList.LDraftListParse(text, settled, static _ => true);
+    }
+
     public LTagOffer LQuillTagFind(LCardKind kind, long card, string kept)
     {
         return _lQuillChipDrafts.LEngineTagFind(_lQuillChipTenure, kind, card, kept);

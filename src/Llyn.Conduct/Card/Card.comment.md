@@ -83,7 +83,11 @@ The add, settle and insert gates read the insert position from the row's trail, 
 A settle differs from an add only in handing the text as settled.
 With no chip quill the gates answer the text and an empty, closed dropdown.
 The situation, tag and register gates are shaped alike and hold no rule of their own.
-They answer the kept text and the dropdown of stored rows that text matches.
+They answer the kept text and the dropdown of stored rows that text matches, all as one `CProffer`.
+The caret owns one `CProfferLantern`, the lit row of whichever dropdown is open.
+Every gate that answers a dropdown shows it to the lantern first, so a new offer starts unlit.
+A translation answer that already chose its first row lights that row.
+Both faces step the lantern through the caret, so the window and the console light the same row.
 The field hands every change unsettled, and Enter or leaving hands the text settled.
 A failed add shows `Input.UpdateFailed` every time and answers the typed text with an empty, closed dropdown.
 A failed search after the add shows `Input.FindFailed` once until the user acts.
@@ -260,12 +264,12 @@ Its lists are empty when none are known.
 
 ## Stamp
 
-Commit: `c05429890cec`
+Commit: `f3a687d70b47`
 - `CCard.cs` `e82fc6e3d26800a4`
 - `CCardField.cs` `802f5433f0bc0fd7`
 - `CCardList.cs` `0b09d5d23ac7ddac`
 - `CCardSpeech.cs` `c33bd983a66825f2`
-- `CCaret.cs` `ead8c521643985f9`
+- `CCaret.cs` `c1df8b6ba8b28c42`
 - `CCaretTrail.cs` `8403fd0d0269cfa5`
 - `CFolio.cs` `368c0c291c8fd839`
 - `CSentence.cs` `2d4729454df2f4db`

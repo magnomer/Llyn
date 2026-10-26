@@ -163,7 +163,10 @@ public sealed class TEditorKey
                 TEditorFrame.TEditorFrameSend(library, TLibrary.TLibraryDown);
 
                 Assert.Equal("Window.Help.Item", find(ConsoleKey.DownArrow, 0)?.BKeymapRowLabel);
-                Assert.Equal("Editor.Stack", find(ConsoleKey.RightArrow, 0)?.BKeymapRowLabel);
+                Assert.Equal("Editor.Language", find(ConsoleKey.Enter, 0)?.BKeymapRowLabel);
+                IReadOnlyList<BCanvasText> texts = TEditorFrame.TEditorFrameDraw(library);
+                BCanvasText pill = Assert.Single(texts, static text => text.BCanvasTextValue.StartsWith("English v"));
+                Assert.Equal("lit", pill.BCanvasTextRole);
             });
     }
 

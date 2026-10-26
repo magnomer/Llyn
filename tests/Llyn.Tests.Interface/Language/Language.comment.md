@@ -15,6 +15,8 @@ Most relays hand one production operation through unchanged.
 The theme read, the flag path adds and the epoch table read do a little work of their own.
 The static constructor lists the embedded catalog languages once, as the bootstrap does.
 So the localization relays normalise against the real list.
+The state value relay normalizes a store value.
+So a Conduct test can read the cleared uncertainty without a Core call.
 The paradigm slot relay lets a test pin each status without the wording.
 The fanqie sort relay lets a test pin the order the fanqie clerk reads and groups rows in.
 The script image builder with an epoch makes a stored image with no gloss and no data.
@@ -53,9 +55,9 @@ The draft builder makes a draft with one bare card, enough for the entry to be s
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `f3a687d70b47`
 - `TInterfaceEnsign.cs` `9cba746c999a7ec7`
-- `TInterfaceFact.cs` `e81f3ff63107b914`
+- `TInterfaceFact.cs` `fc800f4e92340903`
 - `TInterfaceFont.cs` `d97fc8eec98e7420`
 - `TLanguageFixture.cs` `2eae066608973693`
 - `TReflexFixture.cs` `3f1ba34dce04007a`

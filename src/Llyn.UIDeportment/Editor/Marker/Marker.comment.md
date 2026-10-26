@@ -95,13 +95,15 @@ The clerk skips a Tag the card already carries, by id or by text.
 ### `QSlateRefine`
 
 The gate already trimmed, filtered, limited and split the rows, so the list shows them as they come.
+The answer is the shared `CProffer`, so a Tag offer is shaped like every other dropdown.
+The lit row is the caret's lantern, so a row lit before the list was painted stays lit.
 
 ### Inline notes
 
 ### QSlate.cs: `internal void QSlateKeyRefine(object sender, KeyEventArgs e)`
 
 The dropdown never takes focus, so the Tag entry's keys drive it.
-The arrows ask `CLanternMove` which row to light.
+The arrows step the caret's lantern, which lives in Conduct, so both faces light the same row.
 A shut dropdown holds no rows, so the gate answers null and the arrow stays unhandled.
 Escape shuts the dropdown only while it stands open.
 
@@ -140,12 +142,12 @@ It follows `QFreedomItem` in everything.
 
 ## Stamp
 
-Commit: `8c403d1df768`
+Commit: `f3a687d70b47`
 - `QFreedom.cs` `5a8c8788e06e7771`
 - `QFreedomItem.cs` `27469f2726afbac9`
 - `QMarker.cs` `bc66173895303014`
 - `QMarkerChip.cs` `a6a4933f59feee16`
-- `QSlate.cs` `69c7afc18bb1c890`
+- `QSlate.cs` `5aab24f00303d18e`
 - `QSlateItem.cs` `c878e65582837e82`
 - `QUnit.cs` `65408138208702ba`
 - `QUnitItem.cs` `47f0e19bc6379784`

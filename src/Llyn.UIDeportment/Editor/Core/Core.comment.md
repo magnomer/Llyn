@@ -72,7 +72,8 @@ The sentence driver is exposed so the editor can order frame and mention redraws
 The prospect driver is exposed for translation and mention offers beyond the card fields.
 The etymology driver takes the etymology gate when introduced and shares that prospect driver for its box words.
 The list driver holds no card collections, since order and position are Conduct's.
-Every chip field, the proffer, the prospect, the slate and the card driver take the caret gate when introduced.
+Every chip field, the proffer, the prospect and the slate take the caret gate when introduced.
+The citation and the card driver take it too.
 
 ### `QEditorStartRefine`
 
@@ -242,10 +243,10 @@ A click glides, and a layout change places the pill outright.
 
 ## Stamp
 
-Commit: `c05429890cec`
+Commit: `f3a687d70b47`
 - `QCadence.cs` `c49dba67646f341c`
 - `QEditor.cs` `10fb7989f576c790`
-- `QEditorCard.cs` `53ba2c7460e0405c`
+- `QEditorCard.cs` `f34dc4d23c86308f`
 - `QEditorFont.cs` `4da791778932c52b`
 - `QEditorSound.cs` `37d1a4f52e9d1a42`
 - `QInput.cs` `3268e212c7a17a65`

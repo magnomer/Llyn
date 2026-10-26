@@ -78,6 +78,9 @@ public sealed class TEditorFrame
                 Assert.Null(find(ConsoleKey.RightArrow, 0));
 
                 TEditorFrameSend(library, TLibrary.TLibraryDown);
+                TEditorFrameSend(library, TLibrary.TLibraryDown);
+                TEditorFrameSend(library, TLibrary.TLibraryDown);
+                TEditorFrameSend(library, TLibrary.TLibraryDown);
                 TEditorFrameSend(library, new ConsoleKeyInfo('\0', ConsoleKey.RightArrow, false, false, false));
 
                 string drawn = string.Join(
@@ -346,16 +349,15 @@ public sealed class TEditorFrame
             ABootstrap bootstrap = new();
             using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, false);
             BTheme spare = new(BTheme.BThemeSpareRead);
+            BEnvoy envoy = new(console, catalog, bootstrap);
+            LCapsuleConsole capsule = new();
             BWindow window = new(
-                console,
-                loop,
-                catalog,
-                atelier,
-                new BEnvoy(console, catalog, bootstrap),
-                bootstrap,
-                (BTheme.BThemeDefault, spare),
-                _ => spare,
-                new LCapsuleConsole());
+                console, loop, catalog, atelier, envoy, bootstrap, (BTheme.BThemeDefault, spare), _ => spare, capsule);
+            envoy.BEnvoyWindowAttach(
+                window, atelier, File.Exists, static path => (Directory.GetDirectories(path), Directory.GetFiles(path)),
+                Directory.GetLogicalDrives, capsule);
+            loop.BLoopBatchAttach(window.BWindowBatchObserve);
+            loop.BLoopKeyAttach(console, window.BWindowKeyObserve);
             window.BWindowOpen();
             window.BWindowAtelierOpen();
             check(window, atelier, console);

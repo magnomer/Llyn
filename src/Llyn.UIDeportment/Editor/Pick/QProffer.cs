@@ -137,8 +137,8 @@ internal sealed class QProffer
     {
         int? lit = e.Key switch
         {
-            Key.Down => CLantern.CLanternMove(QProfferList.SelectedIndex, QProfferList.Items.Count, 1),
-            Key.Up => CLantern.CLanternMove(QProfferList.SelectedIndex, QProfferList.Items.Count, -1),
+            Key.Down when _qProfferItem.Count > 0 => _cCaret.CCaretLanternMove(1),
+            Key.Up when _qProfferItem.Count > 0 => _cCaret.CCaretLanternMove(-1),
             _ => null,
         };
         if (lit is int chosen)
@@ -230,7 +230,7 @@ internal sealed class QProffer
             FrameworkElement.MinWidthProperty,
             new Binding(nameof(FrameworkElement.ActualWidth)) { Source = QProfferPopup.PlacementTarget });
         QProfferPopup.IsOpen = true;
-        QProfferList.SelectedIndex = -1;
+        QProfferList.SelectedIndex = _cCaret.CCaretLanternLit ? _cCaret.CCaretLanternIndex : -1;
     }
 
     internal void QProfferSituationRefine(QPlacard card, CProffer offer)

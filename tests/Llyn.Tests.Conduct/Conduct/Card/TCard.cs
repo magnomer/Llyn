@@ -153,7 +153,7 @@ public sealed class TCard
 
         Assert.True(shown.CStateValueUncertain);
         Assert.Equal("w0lf", shown.CStateValueText);
-        Assert.False(CFolio.CFolioStateRead(TInterface.TStateUnreadableCreate("w0lf").LStateValueNormalize())
+        Assert.False(CFolio.CFolioStateRead(TInterface.TStateValueNormalize(TInterface.TStateUnreadableCreate("w0lf")))
             .CStateValueUncertain);
     }
 

@@ -19,11 +19,11 @@ public sealed class TCardTag
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
         CCaret caret = new(desk, card, new CLedgerNoticed());
 
-        CSlate slate = caret.CCaretTagAdd(false, 0, " ani");
+        CProffer slate = caret.CCaretTagAdd(false, 0, " ani");
 
-        Assert.Equal(" ani", slate.CSlateText);
-        Assert.True(slate.CSlateShown);
-        Assert.Contains(new CSlateRow(tag.LTagId, string.Empty, "ani", "mal"), slate.CSlateRows);
+        Assert.Equal(" ani", slate.CProfferText);
+        Assert.True(slate.CProfferShown);
+        Assert.Contains(new CProfferRow(tag.LTagId, string.Empty, "ani", "mal"), slate.CProfferRows);
     }
 
     [Fact]
@@ -64,14 +64,14 @@ public sealed class TCardTag
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
         CCaret caret = new(desk, card, new CLedgerNoticed());
 
-        CSlate blank = caret.CCaretTagAdd(false, 0, "   ");
-        CSlate unmatched = caret.CCaretTagAdd(false, 0, "zz");
+        CProffer blank = caret.CCaretTagAdd(false, 0, "   ");
+        CProffer unmatched = caret.CCaretTagAdd(false, 0, "zz");
 
-        Assert.Equal("   ", blank.CSlateText);
-        Assert.False(blank.CSlateShown);
-        Assert.Empty(blank.CSlateRows);
-        Assert.False(unmatched.CSlateShown);
-        Assert.Empty(unmatched.CSlateRows);
+        Assert.Equal("   ", blank.CProfferText);
+        Assert.False(blank.CProfferShown);
+        Assert.Empty(blank.CProfferRows);
+        Assert.False(unmatched.CProfferShown);
+        Assert.Empty(unmatched.CProfferRows);
     }
 
     [Fact]
@@ -87,10 +87,10 @@ public sealed class TCardTag
         (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
         CCaret caret = new(desk, card, new CLedgerNoticed());
 
-        CSlate slate = caret.CCaretTagAdd(false, 0, "tag");
+        CProffer slate = caret.CCaretTagAdd(false, 0, "tag");
 
-        Assert.Equal(8, slate.CSlateRows.Count);
-        Assert.Equal("tag 1", slate.CSlateRows[0].CSlateRowMark + slate.CSlateRows[0].CSlateRowTail);
+        Assert.Equal(8, slate.CProfferRows.Count);
+        Assert.Equal("tag 1", slate.CProfferRows[0].CProfferRowMark + slate.CProfferRows[0].CProfferRowTail);
     }
 
     [Fact]
@@ -151,8 +151,8 @@ public sealed class TCardTag
         CCaret caret = new(desk, card, new CLedgerNoticed());
         long sheet = TCard.TCardSheetAdd(desk);
 
-        string kept = caret.CCaretTagAdd(false, sheet, " ani").CSlateText;
-        string rest = caret.CCaretTagAdd(false, sheet, "animal, , plant,  wi").CSlateText;
+        string kept = caret.CCaretTagAdd(false, sheet, " ani").CProfferText;
+        string rest = caret.CCaretTagAdd(false, sheet, "animal, , plant,  wi").CProfferText;
 
         Assert.Equal(" ani", kept);
         Assert.Equal("wi", rest);
@@ -171,9 +171,9 @@ public sealed class TCardTag
         long other = TCard.TCardSheetAdd(desk);
         caret.CCaretTagInsert(false, sheet, tag.LTagId);
 
-        CSlateRow row = new(tag.LTagId, string.Empty, "ani", "mal");
-        Assert.DoesNotContain(row, caret.CCaretTagAdd(false, sheet, "ani").CSlateRows);
-        Assert.Contains(row, caret.CCaretTagAdd(false, other, "ani").CSlateRows);
+        CProfferRow row = new(tag.LTagId, string.Empty, "ani", "mal");
+        Assert.DoesNotContain(row, caret.CCaretTagAdd(false, sheet, "ani").CProfferRows);
+        Assert.Contains(row, caret.CCaretTagAdd(false, other, "ani").CProfferRows);
     }
 
     [Fact]
@@ -193,7 +193,7 @@ public sealed class TCardTag
 
         Assert.Equal(["plant", "animal", "wild"], TCardTagRead(desk, sheet).Select(static tag => tag.LTagDraftText));
         Assert.DoesNotContain(
-            caret.CCaretTagAdd(false, sheet, "ani").CSlateRows, row => row.CSlateRowId == stored.LTagId);
+            caret.CCaretTagAdd(false, sheet, "ani").CProfferRows, row => row.CProfferRowId == stored.LTagId);
     }
 
     [Fact]

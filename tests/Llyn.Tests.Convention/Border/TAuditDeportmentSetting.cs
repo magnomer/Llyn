@@ -192,8 +192,6 @@ internal static class TAuditDeportmentSetting
                 "CCategory",
                 "CCategoryRow",
                 "CProspect",
-                "CSlate",
-                "CSlateRow",
                 "CProffer",
                 "CProfferRow",
                 "CDesk",

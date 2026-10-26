@@ -46,7 +46,8 @@ public sealed class TEditorSight
                 BCanvasText shining = texts.Where(static text => text.BCanvasTextRole == "lit")
                     .MaxBy(static text => text.BCanvasTextColumn)!;
                 int border = shining.BCanvasTextColumn + shining.BCanvasTextSpan;
-                BCanvasText mark = Assert.Single(texts, text => text.BCanvasTextColumn == border);
+                BCanvasText mark = Assert.Single(
+                    texts, text => text.BCanvasTextColumn == border && text.BCanvasTextValue == "#");
                 BCanvasText more = Assert.Single(texts, static text => text.BCanvasTextValue.EndsWith(" more"));
 
                 Assert.Equal("#", mark.BCanvasTextValue);
@@ -56,7 +57,8 @@ public sealed class TEditorSight
                 TEditorFrame.TEditorFrameSend(
                     library, new ConsoleKeyInfo('\0', ConsoleKey.End, false, false, true));
                 texts = TEditorFrame.TEditorFrameDraw(library);
-                BCanvasText moved = Assert.Single(texts, text => text.BCanvasTextColumn == border);
+                BCanvasText moved = Assert.Single(
+                    texts, text => text.BCanvasTextColumn == border && text.BCanvasTextValue == "#");
 
                 Assert.True(moved.BCanvasTextRow > mark.BCanvasTextRow);
                 Assert.DoesNotContain(texts, static text => text.BCanvasTextValue.EndsWith(" more"));
@@ -67,6 +69,49 @@ public sealed class TEditorSight
                 string.Empty,
                 string.Empty,
                 [.. Enumerable.Range(1, 40).Select(static rank => TInterface.TCardCreate("a meaning", rank))],
+                [])));
+    }
+
+    [Theory]
+    [InlineData("x", 200)]
+    [InlineData("火", 100)]
+    public void EditorDraw_LitHeadwordClosedLongerThanTheSide_ParksTheCursorInsideTheSide(string glyph, int repeats)
+    {
+        string headword = string.Concat(Enumerable.Repeat(glyph, repeats));
+        TEditorFrame.TEditorFrameRun(
+            [headword],
+            (library, _) =>
+            {
+                IReadOnlyList<BCanvasText> texts = TEditorFrame.TEditorFrameDraw(library);
+                BCanvasText shining = Assert.Single(
+                    texts, static text => text.BCanvasTextRole == "lit" && text.BCanvasTextRow > 1);
+                BCanvasText caret = Assert.Single(texts, static text => text.BCanvasTextRole == "caret");
+
+                Assert.Equal(shining.BCanvasTextRow, caret.BCanvasTextRow);
+                Assert.Equal(shining.BCanvasTextColumn + shining.BCanvasTextSpan - 1, caret.BCanvasTextColumn);
+            });
+    }
+
+    [Theory]
+    [InlineData(2, false)]
+    [InlineData(3, true)]
+    public void EditorDraw_RowsAgainstTheSide_ShowThumbAndHiddenCountOnlyPastTheFit(int cards, bool overflows)
+    {
+        TEditorFrame.TEditorFrameRun(
+            [],
+            (library, _) =>
+            {
+                IReadOnlyList<BCanvasText> texts = TEditorFrame.TEditorFrameDraw(library);
+
+                Assert.Equal(overflows, texts.Any(static text => text.BCanvasTextValue == "#"));
+                Assert.Equal(overflows, texts.Any(static text => text.BCanvasTextValue.EndsWith(" more")));
+            },
+            seed: engine => engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+                "fire",
+                "English",
+                string.Empty,
+                string.Empty,
+                [.. Enumerable.Range(1, cards).Select(static rank => TInterface.TCardCreate("a meaning", rank))],
                 [])));
     }
 
@@ -86,6 +131,7 @@ public sealed class TEditorSight
 
                 Assert.Contains("-- 1 - Unknown ", drawn);
                 Assert.DoesNotContain("broken", drawn);
+                Assert.DoesNotContain("Display.Unknown", drawn);
             },
             script: "UPDATE sense SET title_state = 'broken', title = NULL;");
     }

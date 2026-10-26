@@ -117,7 +117,7 @@ internal sealed class QEditorCard
         _qGloss.QGlossIntroduce(sentence);
         QEditorCardSentence.QSentenceIntroduce(
             card, sentence, atelier.CAtelierMention, mentionMenu, QEditorCardProspect);
-        _qCitation.QCitationIntroduce(card, sentence, atelier);
+        _qCitation.QCitationIntroduce(card, caret, sentence, atelier);
         _qLabel.QLabelIntroduce(card, caret, _qSlate);
         _qSlate.QSlateIntroduce(caret);
         _qEtymology.QEtymologyIntroduce(etymology, entry);

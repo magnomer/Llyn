@@ -187,6 +187,9 @@ internal static partial class TInterface
     internal static LStateValue TStateUnreadableCreate(string text) =>
         new(LState.LStateSpecified, text, true);
 
+    internal static LStateValue TStateValueNormalize(LStateValue value) =>
+        value.LStateValueNormalize();
+
     internal static IReadOnlyList<LParadigmRow> TParadigmRowScan(IReadOnlyList<LParadigmSlot> slots) =>
         LParadigmRow.LParadigmRowScan(slots);
 

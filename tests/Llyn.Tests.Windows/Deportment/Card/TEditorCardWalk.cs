@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -179,6 +180,104 @@ public sealed class TEditorCardWalk
 
         Assert.NotNull(anchor);
         Assert.Equal(anchor, shown);
+    }
+
+    [Fact]
+    public void ContextCloseObserve_SettleStandingPastAFailedObserver_LeavesNoKeptText()
+    {
+        string? kept = TCardWalkSettle((card, placard, box, _) =>
+        {
+            box.DataContext = placard.QPlacardContext;
+            TCardWalkFind<QContext>(card, "_qContext").QContextCloseObserve(box, new RoutedEventArgs());
+            return placard.QPlacardContext.QInletText;
+        });
+
+        Assert.Equal(string.Empty, kept);
+    }
+
+    [Fact]
+    public void LabelCloseObserve_SettleStandingPastAFailedObserver_LeavesNoKeptText()
+    {
+        string? kept = TCardWalkSettle((card, placard, box, _) =>
+        {
+            box.DataContext = placard.QPlacardLabel;
+            TCardWalkFind<QLabel>(card, "_qLabel").QLabelCloseObserve(box, new RoutedEventArgs());
+            return placard.QPlacardLabel.QInletText;
+        });
+
+        Assert.Equal(string.Empty, kept);
+    }
+
+    [Theory]
+    [InlineData("PProffer")]
+    [InlineData("PSlate")]
+    public void ChipTextObserve_TextSetOnAnUnfocusedEntry_LeavesTheListShut(string list)
+    {
+        Assert.Equal(bool.FalseString, TCardWalkSettle((_, placard, box, surface) =>
+        {
+            box.DataContext = list == "PSlate" ? placard.QPlacardLabel : placard.QPlacardContext;
+            surface.Children.Add(box);
+            box.Text = "sum";
+            return surface.Children.OfType<Popup>().Single(child => child.Name == list).IsOpen.ToString();
+        }));
+    }
+
+    private static string? TCardWalkSettle(Func<QEditorCard, QPlacard, TextBox, StackPanel, string> settle)
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LEntry water = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "water", "English", string.Empty, string.Empty, [TInterface.TCardCreate("a liquid", 1)], []));
+        using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine);
+        TEditorFixture editor = new(TInterfaceEditor.TEditorCreate(engine));
+        editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
+        _ = engine.TEngineSituationCreate(TInterface.TSituationCreate(0, "summer", null, null));
+        _ = engine.TEngineTagCreate("summer");
+        editor.TEditorFixtureOpen(water.LEntryId);
+        bool failing = false;
+        engine.TEngineObserverAttach(bulletin =>
+        {
+            if (failing && bulletin.LBulletinSubject == LSubject.LSubjectTenure)
+            {
+                throw new InvalidOperationException("The tenure observer failed.");
+            }
+        });
+        string? kept = null;
+
+        TCardHinge.TCardHingeRun(() =>
+        {
+            StackPanel surface = TCardWalkCreate();
+            QEditorCard card = new(surface);
+            CEditor gate = editor.TEditorFixtureEditor;
+            card.QEditorCardIntroduce(
+                atelier,
+                TEnvoyFake.TEnvoyCreate(false, []),
+                null!,
+                gate.CEditorEntry,
+                gate.CEditorCard,
+                gate.CEditorCaret,
+                gate.CEditorSentence,
+                gate.CEditorList,
+                gate.CEditorField,
+                gate.CEditorImage,
+                gate.CEditorVideo,
+                gate.CEditorEtymology);
+            card.QEditorMeaningRefine(gate.CEditorWalk[0], gate.CEditorWalkCard[0]);
+            ItemsControl list = surface.Children.OfType<ItemsControl>().Single(child => child.Name == "PMeaningList");
+            QPlacard placard = ((IEnumerable)list.ItemsSource).Cast<QPlacard>().First();
+            failing = true;
+            kept = settle(card, placard, new TextBox { Text = "rain" }, surface);
+            failing = false;
+        });
+
+        return kept;
+    }
+
+    private static TCardWalkPart TCardWalkFind<TCardWalkPart>(QEditorCard card, string name)
+    {
+        return (TCardWalkPart)typeof(QEditorCard)
+            .GetField(name, BindingFlags.NonPublic | BindingFlags.Instance)!
+            .GetValue(card)!;
     }
 
     private static StackPanel TCardWalkCreate()

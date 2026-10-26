@@ -192,8 +192,6 @@ internal static class TAuditDemeanorSetting
                 "CCategory",
                 "CCategoryRow",
                 "CProspect",
-                "CSlate",
-                "CSlateRow",
                 "CProffer",
                 "CProfferRow",
                 "CDesk",

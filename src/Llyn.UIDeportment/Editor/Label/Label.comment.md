@@ -72,12 +72,14 @@ The anchor comes from Conduct's caret trail, so the entry stands where the trail
 ### `QLabelTextObserve`
 
 Any other box's edit is ignored, since its data context is no Tag caret.
-`QSlateRefine` paints the answer: the text the entry keeps and the dropdown of stored Tags.
+A box without the keyboard is ignored too, so a text the engine wrote back asks nothing.
+`QSlateRefine` paints the answer, which is the text the entry keeps and the dropdown of stored Tags.
 
 ### `QLabelCommitObserve`
 
 Enter runs after the dropdown's handlers, so Enter on a chosen stored tag never reaches it.
 It never trims or checks the text, since the clerk owns that rule.
+The answer is painted as an edit's is, so a refused settle leaves its text in the entry.
 
 ### `QLabelEraseObserve`
 
@@ -96,6 +98,7 @@ It is subscribed before the close observer, so the dropdown shuts first.
 ### `QLabelCloseObserve`
 
 Leaving the field commits what stands in the entry, so a Tag typed and abandoned is kept.
+The entry then shows only what the engine answers as kept.
 
 ### `QLabelFocusRefine`
 
@@ -113,9 +116,9 @@ It answers null when no shown card holds the chip or caret.
 
 ## Stamp
 
-Commit: `8c403d1df768`
+Commit: `f3a687d70b47`
 - `QCategory.cs` `960340e0bfc6cf17`
 - `QCategoryItem.cs` `97487f23cb2cc503`
-- `QLabel.cs` `86ad4f2cda00be3b`
+- `QLabel.cs` `ebb5379dac5c778f`
 - `QLabelChip.cs` `2d54f1d4412aa557`
 - `QLabelSelector.cs` `a5c4bf2fefa4493a`
