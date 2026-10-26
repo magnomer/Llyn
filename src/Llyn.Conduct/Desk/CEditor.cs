@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Llyn.ShellEngine;
 
 namespace Llyn.Conduct;
@@ -61,6 +63,34 @@ public sealed class CEditor
         CEditorEntry = new CEntry(
             CEditorDesk, drafts, entries.CEntryBundleCard, media, settings, envoy, noticed);
         CEditorList = new CCardList(CEditorDesk, entries.CEntryBundleCard, settings, envoy);
+        IReadOnlyList<CCardDraft>[] stacks = [[], [], [], []];
+        Action walk = () =>
+        {
+            CEditorWalk = stacks.Select((cards, stack) => (IReadOnlyList<CStep>)
+                [
+                    new CStep(null, null, null),
+                    new CStep(null, null, null),
+                    .. cards.Select(card => new CStep(
+                        card,
+                        card.CCardDraftStored
+                            ? folded => CEditorList.CCardFoldToggle(stack == 1, card.CCardDraftId, folded)
+                            : null,
+                        CEditorCaret.CCaretRead(stack == 1, card.CCardDraftId))),
+                ])
+                .ToList();
+            CEditorWalkCard = CEditorWalk.Select(steps => (IReadOnlyList<int>)
+                [.. Enumerable.Range(0, steps.Count).Where(at => steps[at].CStepCard is not null)])
+                .ToList();
+            CEditorWalkChanged?.Invoke();
+        };
+        CEditorEntry.CEntryDraftChanged += draft =>
+        {
+            stacks = draft is null
+                ? [[], [], [], []]
+                : [draft.CEntryDraftMeanings, draft.CEntryDraftCollocations, [], []];
+            walk();
+        };
+        CEditorCaret.CCaretMoved += walk;
         CEditorField = new CCardField(CEditorDesk, drafts, settings, envoy);
         CEditorDesk.CDeskObserverAttach(marshal);
         CEditorEsteem.LEsteemObserverAttach(marshal);
@@ -92,6 +122,8 @@ public sealed class CEditor
         atelier.CAtelierWorkspace.CWorkspaceOpened += () => editor.CEditorEntryOpen(null);
         return editor;
     }
+
+    public event Action? CEditorWalkChanged;
 
     public CDesk CEditorDesk { get; }
 
@@ -130,6 +162,10 @@ public sealed class CEditor
     public CImage CEditorImage => new(CEditorDesk);
 
     public CVideo CEditorVideo => new(CEditorDesk);
+
+    public IReadOnlyList<IReadOnlyList<CStep>> CEditorWalk { get; private set; } = [];
+
+    public IReadOnlyList<IReadOnlyList<int>> CEditorWalkCard { get; private set; } = [];
 
     public bool CEditorOwned => _cEditorVista?.LVistaInput ?? false;
 

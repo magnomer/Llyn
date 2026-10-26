@@ -135,7 +135,7 @@ internal sealed class QTenor
 
     private void QTenorChronicleRefine()
     {
-        (bool undo, bool redo) = _cTenor.CTenorEditor.CEditorDesk.CDeskChronicle.CDeskChronicleRead();
+        (bool undo, bool redo) = _cTenor.CTenorEditor.CEditorDesk.CDeskChronicle.CDeskChronicleState;
         _qTenorRail.QChronicleRefine(undo, redo);
     }
 

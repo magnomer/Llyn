@@ -21,6 +21,8 @@ public sealed class BLoop : SynchronizationContext
         _bLoopFault = fault;
     }
 
+    internal List<BField> BLoopDeferred { get; } = [];
+
     public void BLoopRun(Task until, Action<Exception>? fault = null)
     {
         ArgumentNullException.ThrowIfNull(until);

@@ -40,7 +40,13 @@ public sealed class CCaret
         CCaretTranslation = new CCaretTrail(
             desk, static draft => draft.LCardDraftTranslation, card.CCardTranslationRemove);
         _cCaretTrails = [CCaretSituation, CCaretTag, CCaretRegister, CCaretTranslation];
+        foreach (CCaretTrail trail in _cCaretTrails)
+        {
+            trail.CCaretTrailMoved += () => CCaretMoved?.Invoke();
+        }
     }
+
+    public event Action? CCaretMoved;
 
     public CCaretTrail CCaretSituation { get; }
 

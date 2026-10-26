@@ -180,7 +180,7 @@ internal sealed class QYunjing
     private void QYunjingChronicleRefine()
     {
         (bool undo, bool redo) =
-            _cYunjing.CYunjingXiaoyun.CEntryListEditor.CEditorDesk.CDeskChronicle.CDeskChronicleRead();
+            _cYunjing.CYunjingXiaoyun.CEntryListEditor.CEditorDesk.CDeskChronicle.CDeskChronicleState;
         _qYunjingRail.QChronicleRefine(undo, redo);
     }
 }

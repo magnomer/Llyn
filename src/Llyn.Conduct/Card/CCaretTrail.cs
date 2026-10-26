@@ -30,6 +30,8 @@ public sealed class CCaretTrail
         _cCaretTrailRemoval = removal;
     }
 
+    public event Action? CCaretTrailMoved;
+
     public (bool CCaretMoved, long? CCaretAnchor) CCaretTrailMove(bool collocated, long cardId, int step)
     {
         (IReadOnlyList<long> row, int place) = LCaretTrailResolve(collocated, cardId);
@@ -40,6 +42,7 @@ public sealed class CCaretTrail
         }
 
         _cCaretTrailKept[(collocated, cardId)] = row.Skip(target).ToList();
+        CCaretTrailMoved?.Invoke();
         return (true, target < row.Count ? row[target] : null);
     }
 

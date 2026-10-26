@@ -77,11 +77,11 @@ The hinge shows the opened state and appears only on a foldable member, as Condu
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `c05429890cec`
 - `QGroveItem.cs` `823d0ceea72ab80c`
 - `QKindred.cs` `d2cc76085ab94811`
 - `QKindredItem.cs` `88afc38dc2aabcda`
 - `QStem.cs` `0a674cdf075c504c`
 - `QStemCommand.cs` `d6be3a8a0a6c3372`
 - `QStemItem.cs` `6bddfb5ad0f18164`
-- `QXiesheng.cs` `a38c095a37866ba8`
+- `QXiesheng.cs` `b4fefffbd0f25493`

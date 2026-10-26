@@ -141,8 +141,8 @@ The icon key arrives chosen by Core, so the item only resolves it into an image.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `c05429890cec`
 - `QCohort.cs` `65abdd94a738e6b8`
 - `QCohortItem.cs` `f9097ed5bf415e27`
 - `QGamutItem.cs` `1bc14a0eef461532`
-- `QTenor.cs` `1991ba8dfe796d94`
+- `QTenor.cs` `04047280260bb76a`

@@ -74,6 +74,8 @@ A failure shows the create failure and leaves the citation as it was.
 
 The caret of the chip rows of a card, kept in Conduct so no view holds it.
 It owns one `CCaretTrail` each for situation, tag, register and translation, and `CCaretRead` answers all four.
+`CCaretMoved` is raised when any of the four trails moves its caret.
+So the editor's walk reads the carets again without a view polling them.
 The editor builds it over its desk and its `CCard`.
 Every gate takes the `collocated` flag with the card id.
 It passes the kind on to the quill and to the trail.
@@ -104,6 +106,7 @@ A trail holds ids, not an index.
 So a chip added or removed elsewhere leaves the caret before the same chip.
 When every kept id has gone, the caret falls to the row's end.
 `CCaretTrailMove` answers false when the step would leave the row, and keeps the caret.
+`CCaretTrailMoved` is raised only after a move that kept a new caret, never for the refused one.
 Its anchor is the chip right of the caret, or null at the end.
 `CCaretTrailDelete` removes the chip left of the caret for a negative step and right of it for a positive one.
 It sends nothing outside the row.
@@ -179,6 +182,7 @@ It also receives picture and video addresses through `media`, and the meaning sc
 So each card carries its links, fold and media ready.
 
 `CFolioStateRead` carries the engine's text and verdicts, so no driver judges a state.
+A value the engine could not read is shown as uncertain, since a driver has no separate mark for it.
 The empty text for a value with nothing legible is the engine's own, so the map keeps no fallback.
 
 `CFolioSheetRead` shapes the meaning or collocation cards.
@@ -256,13 +260,13 @@ Its lists are empty when none are known.
 
 ## Stamp
 
-Commit: `36e31eb71c98`
+Commit: `c05429890cec`
 - `CCard.cs` `e82fc6e3d26800a4`
 - `CCardField.cs` `802f5433f0bc0fd7`
 - `CCardList.cs` `0b09d5d23ac7ddac`
 - `CCardSpeech.cs` `c33bd983a66825f2`
-- `CCaret.cs` `125ebb0d5877da7c`
-- `CCaretTrail.cs` `a5bbdb676340e773`
-- `CFolio.cs` `39455a7f4bbd2236`
+- `CCaret.cs` `ead8c521643985f9`
+- `CCaretTrail.cs` `8403fd0d0269cfa5`
+- `CFolio.cs` `368c0c291c8fd839`
 - `CSentence.cs` `2d4729454df2f4db`
 - `CSentenceFrame.cs` `dcb9e108a9b63eb9`

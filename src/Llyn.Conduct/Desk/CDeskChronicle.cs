@@ -14,8 +14,6 @@ public sealed class CDeskChronicle
 
     private readonly CEnvoy _cDeskChronicleEnvoy;
 
-    private bool _cDeskChronicleHalted;
-
     internal CDeskChronicle(CDeskDraft draft, LSettingsPort settings, string scope, CEnvoy envoy)
     {
         ArgumentNullException.ThrowIfNull(draft);
@@ -31,28 +29,29 @@ public sealed class CDeskChronicle
 
     internal event Action? CDeskChronicleChanged;
 
-    public bool CDeskChronicleHalted =>
-        _cDeskChronicleDraft.CDeskDraftTenure?.LTenureGauge.LTenureGaugeRead() is { LTenureStateHalted: true };
+    public bool CDeskChronicleHalted { get; private set; }
 
     public bool CDeskChronicleRunning => _cDeskChronicleDraft.CDeskDraftTenure is not null && !CDeskChronicleHalted;
 
-    private bool CDeskChronicleStalling => CDeskChronicleHalted && !_cDeskChronicleHalted;
-
     internal void LDeskChronicleClear()
     {
-        _cDeskChronicleHalted = false;
+        CDeskChronicleHalted = false;
     }
 
     public void CDeskChronicleResonate()
     {
-        if (CDeskChronicleStalling)
+        bool halted =
+            _cDeskChronicleDraft.CDeskDraftTenure?.LTenureGauge.LTenureGaugeRead() is { LTenureStateHalted: true };
+        if (halted && !CDeskChronicleHalted)
         {
             _cDeskChronicleEnvoy.CEnvoyFailureShow(_cDeskChronicleScope + ".HoldFailed");
         }
 
-        _cDeskChronicleHalted = CDeskChronicleHalted;
+        CDeskChronicleHalted = halted;
         CDeskChronicleChanged?.Invoke();
     }
+
+    public (bool CDeskBackward, bool CDeskForward) CDeskChronicleState { get; internal set; }
 
     public (bool CDeskBackward, bool CDeskForward) CDeskChronicleRead()
     {

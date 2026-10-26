@@ -22,12 +22,12 @@ public sealed class TLibrary
                 List<CNavigationState> states = [];
                 atelier.CAtelierNavigation.CNavigationChanged += states.Add;
 
-                library.BLibraryObserve(TLibraryDown);
-                library.BLibraryObserve(TLibraryDown);
+                library.BLibraryObserve(library.BLibraryKeymapFocus, TLibraryDown);
+                library.BLibraryObserve(library.BLibraryKeymapFocus, TLibraryDown);
                 Assert.Empty(states);
                 Assert.Contains("Select an entry to read it", TLibraryDraw(library));
 
-                library.BLibraryObserve(TLibraryEnter);
+                library.BLibraryObserve(library.BLibraryKeymapFocus, TLibraryEnter);
 
                 Assert.Single(states);
                 Assert.DoesNotContain("Select an entry to read it", TLibraryDraw(library));
@@ -45,8 +45,8 @@ public sealed class TLibrary
                 List<CNavigationState> states = [];
                 atelier.CAtelierNavigation.CNavigationChanged += states.Add;
 
-                library.BLibraryObserve(TLibraryDown);
-                library.BLibraryObserve(TLibraryEnter);
+                library.BLibraryObserve(library.BLibraryKeymapFocus, TLibraryDown);
+                library.BLibraryObserve(library.BLibraryKeymapFocus, TLibraryEnter);
 
                 Assert.Single(states);
             });
@@ -117,7 +117,7 @@ public sealed class TLibrary
                 List<CNavigationState> states = [];
                 atelier.CAtelierNavigation.CNavigationChanged += states.Add;
 
-                library.BLibraryObserve(TLibraryDown);
+                library.BLibraryObserve(library.BLibraryKeymapFocus, TLibraryDown);
 
                 Assert.Empty(states);
                 Assert.Empty(TLibraryDraw(library));
@@ -136,14 +136,15 @@ public sealed class TLibrary
                 List<CNavigationState> states = [];
                 atelier.CAtelierNavigation.CNavigationChanged += states.Add;
 
-                library.BLibraryObserve(TLibraryEnter);
-                library.BLibraryObserve(TLibraryDown);
-                library.BLibraryObserve(TLibraryDown);
-                library.BLibraryObserve(TLibraryEnter);
-                library.BLibraryObserve(TLibraryEnter);
+                library.BLibraryObserve(library.BLibraryKeymapFocus, TLibraryEnter);
+                library.BLibraryObserve(library.BLibraryKeymapFocus, TLibraryDown);
+                library.BLibraryObserve(library.BLibraryKeymapFocus, TLibraryDown);
+                library.BLibraryObserve(library.BLibraryKeymapFocus, TLibraryEnter);
+                library.BLibraryObserve(library.BLibraryKeymapFocus, TLibraryEnter);
                 int entered = states.Count;
-                library.BLibraryObserve(TLibraryDown);
-                library.BLibraryObserve(new ConsoleKeyInfo('\0', ConsoleKey.UpArrow, false, false, false));
+                library.BLibraryObserve(library.BLibraryKeymapFocus, TLibraryDown);
+                library.BLibraryObserve(
+                    library.BLibraryKeymapFocus, new ConsoleKeyInfo('\0', ConsoleKey.UpArrow, false, false, false));
 
                 Assert.Equal(3, entered);
                 Assert.Equal(3, states.Count);
@@ -159,10 +160,10 @@ public sealed class TLibrary
             true,
             (library, _, _) =>
             {
-                library.BLibraryObserve(TLibraryDown);
-                library.BLibraryObserve(TLibraryDown);
+                library.BLibraryObserve(library.BLibraryKeymapFocus, TLibraryDown);
+                library.BLibraryObserve(library.BLibraryKeymapFocus, TLibraryDown);
 
-                library.BLibraryObserve(TLibraryEnter);
+                library.BLibraryObserve(library.BLibraryKeymapFocus, TLibraryEnter);
 
                 Assert.Equal(["List.LoadFailed"], asked);
                 Assert.Contains("3 of 3", TLibraryDraw(library));

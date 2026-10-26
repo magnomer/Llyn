@@ -89,7 +89,8 @@ A frequency chip shows its rung in its own role.
 The source name shows only while the chip is lit.
 Created and Updated stamps sit below the header in the muted role.
 A Korean entry with a Hanja row draws one chip per character, and Enter on one opens its glyph entry.
-With a new draft open or closed meanwhile, Tab still leaves the focus on the index.
+While a new draft shows, Tab moves the focus to the editor.
+After the draft closes, Down still lights a row.
 Line division wraps long text at a word with an indent and keeps an item whole.
 Each row of an item drops its trailing space.
 A word longer than the width is cut into pieces, and a width of zero draws nothing.
@@ -138,12 +139,12 @@ Showing an absent offer or an offer with no entries opens no box at all.
 
 ## Stamp
 
-Commit: `36e31eb71c98`
+Commit: `c05429890cec`
 - `TLectern.cs` `d4aae2072b528891`
 - `TLecternCard.cs` `3b2d6ba56615809a`
 - `TLecternCompass.cs` `87a0faa08413743a`
 - `TLecternEtymology.cs` `b501ad96e7386141`
-- `TLecternHeader.cs` `fe35c98740c71504`
+- `TLecternHeader.cs` `72979c885d47b86f`
 - `TLecternIncoming.cs` `bbbeec854e35affb`
 - `TLecternMention.cs` `c7b1cf0a550975dd`
 - `TLecternMentionMenu.cs` `49dfccbd5a869061`

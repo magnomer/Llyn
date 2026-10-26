@@ -219,7 +219,7 @@ internal sealed class QPhonology
 
     private void QPhonologyChronicleRefine()
     {
-        (bool undo, bool redo) = _cPhonology.CPhonologyEditor.CEditorDesk.CDeskChronicle.CDeskChronicleRead();
+        (bool undo, bool redo) = _cPhonology.CPhonologyEditor.CEditorDesk.CDeskChronicle.CDeskChronicleState;
         _qPhonologyRail.QChronicleRefine(undo, redo);
     }
 }

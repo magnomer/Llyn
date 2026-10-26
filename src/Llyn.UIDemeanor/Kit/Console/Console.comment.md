@@ -88,6 +88,8 @@ The exchange keeps the Ctrl+C thread and the main thread from restoring twice.
 The console's one UI thread, and its `SynchronizationContext`.
 Conduct's awaits resume on it, as they resume on the WPF dispatcher.
 Work runs one item at a time, in the order it was deferred.
+A field that defers its apply is also listed on the loop until the apply runs.
+So the window can apply every such field at once before it runs a key row.
 
 ## `BLoopRun`
 
@@ -151,7 +153,7 @@ Returns the loop itself, since a copy would break the identity checks of `BObser
 
 ## Stamp
 
-Commit: `cb8ab7e8feb4`
+Commit: `c05429890cec`
 - `BConsole.cs` `c21991af932a3e17`
 - `BConsoleStream.cs` `83ee8f2a5448fbb5`
-- `BLoop.cs` `f9e58d5d015f650d`
+- `BLoop.cs` `9867b707b5c34d9e`

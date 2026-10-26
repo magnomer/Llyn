@@ -8,4 +8,13 @@ internal sealed record BKeymapRow(
     BKeymapFocus BKeymapRowFocus,
     string BKeymapRowLabel,
     Action<ConsoleKeyInfo> BKeymapRowAction,
-    Func<BKeymapLive> BKeymapRowLive);
+    Func<BKeymapLive> BKeymapRowLive)
+{
+    public Action<ConsoleKeyInfo> BKeymapRowAction { get; init; } = key =>
+    {
+        if (BKeymapRowLive() == BKeymapLive.BKeymapLiveShown)
+        {
+            BKeymapRowAction(key);
+        }
+    };
+}

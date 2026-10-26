@@ -107,21 +107,54 @@ public sealed class TCardHinge
 
         TCardHingeRun(() =>
         {
+            Func<object> placard = () => TInterfaceDeportment.TCardFoldCreate(
+                editor.TEditorFixtureEditor.CEditorWalk[0][2]);
             ItemsControl list = TCardHingeLoad(TCardHingeCreate());
-            list.ItemsSource = new[] { TInterfaceDeportment.TCardFoldCreate(draft) };
+            list.ItemsSource = new[] { placard() };
             TCardHingeSettle(list);
             TInterfaceDeportment.TCardHingeAttach(list, editor.TEditorFixtureEditor);
-            ToggleButton hinge = TCardHingeFind(list);
 
-            TCardHingeToggle(hinge, true);
+            TCardHingeToggle(TCardHingeFind(list), true);
             folded = engine.TEngineFoldRead(water.LEntryId);
-            TCardHingeToggle(hinge, false);
+            list.ItemsSource = new[] { placard() };
+            TCardHingeSettle(list);
+            TCardHingeToggle(TCardHingeFind(list), false);
             unfolded = engine.TEngineFoldRead(water.LEntryId);
         });
 
         Assert.Equal(
             new HashSet<(LCardKind, long)> { (LCardKind.LCardKindMeaning, draft.CCardDraftId) }, folded);
         Assert.Empty(unfolded!);
+    }
+
+    [Fact]
+    public void CardHingeClick_TwoTogglesBeforeTheRebuild_LeavesTheCardUnfolded()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LEntry water = TCardHingePrepare(engine);
+        TEditorFixture editor = new(TInterfaceEditor.TEditorCreate(engine));
+        editor.TEditorVistaRestore(engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword));
+        editor.TEditorFixtureOpen(water.LEntryId);
+        IReadOnlySet<(LCardKind, long)>? folded = null;
+
+        TCardHingeRun(() =>
+        {
+            ItemsControl list = TCardHingeLoad(TCardHingeCreate());
+            list.ItemsSource = new[]
+            {
+                TInterfaceDeportment.TCardFoldCreate(editor.TEditorFixtureEditor.CEditorWalk[0][2]),
+            };
+            TCardHingeSettle(list);
+            TInterfaceDeportment.TCardHingeAttach(list, editor.TEditorFixtureEditor);
+            ToggleButton hinge = TCardHingeFind(list);
+
+            TCardHingeToggle(hinge, true);
+            TCardHingeToggle(hinge, false);
+            folded = engine.TEngineFoldRead(water.LEntryId);
+        });
+
+        Assert.Empty(folded!);
     }
 
     [Fact]
@@ -137,7 +170,14 @@ public sealed class TCardHinge
         TCardHingeRun(() =>
         {
             ItemsControl list = TCardHingeLoad(TCardHingeCreate());
-            list.ItemsSource = new[] { TInterfaceDeportment.TCardFoldCreate(draft) };
+            list.ItemsSource = new[]
+            {
+                TInterfaceDeportment.TCardFoldCreate(new CStep(
+                    draft,
+                    folded => editor.TEditorFixtureEditor.CEditorList.CCardFoldToggle(
+                        false, draft.CCardDraftId, folded),
+                    null)),
+            };
             TCardHingeSettle(list);
             TInterfaceDeportment.TCardHingeAttach(list, editor.TEditorFixtureEditor);
             ToggleButton hinge = TCardHingeFind(list);
@@ -147,6 +187,35 @@ public sealed class TCardHinge
         });
 
         Assert.False(shown);
+    }
+
+    [Fact]
+    public void CardHingeClick_RefusedUnfold_PutsTheHingeBack()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        TEditorFixture editor = new(TInterfaceEditor.TEditorCreate(engine));
+        CCardDraft draft = new(
+            7, 1, TCardHingeTitle, TCardHingeBlank, TCardHingeMeaning, [], [], [], [], [], [], [], true, true, []);
+        bool? shown = null;
+
+        TCardHingeRun(() =>
+        {
+            ItemsControl list = TCardHingeLoad(TCardHingeCreate());
+            list.ItemsSource = new[]
+            {
+                TInterfaceDeportment.TCardFoldCreate(new CStep(draft, _ => false, null)),
+            };
+            TCardHingeSettle(list);
+            TInterfaceDeportment.TCardHingeAttach(list, editor.TEditorFixtureEditor);
+            ToggleButton hinge = TCardHingeFind(list);
+            hinge.IsChecked = true;
+
+            TCardHingeToggle(hinge, false);
+            shown = hinge.IsChecked;
+        });
+
+        Assert.True(shown);
     }
 
     [Fact]
@@ -192,7 +261,11 @@ public sealed class TCardHinge
         FrameworkElementFactory crown = new(typeof(StackPanel));
         crown.AppendChild(new FrameworkElementFactory(typeof(TextBox)) { Name = "PTitle" });
         ItemsControl list = TCardHingeLoad(TCardHingeBuild(crown));
-        list.ItemsSource = new[] { TInterfaceDeportment.TCardFoldCreate(draft) };
+        list.ItemsSource = new[]
+        {
+            TInterfaceDeportment.TCardFoldCreate(
+                new CStep(draft, stored ? _ => folded : null, null)),
+        };
         TCardHingeSettle(list);
         ContentPresenter container = (ContentPresenter)list.ItemContainerGenerator.ContainerFromIndex(0);
         TInterfaceDeportment.TCardRowRefine(container, list.Items[0]);

@@ -16,7 +16,7 @@ internal sealed class QPlacard : INotifyPropertyChanged
     private CStateWording _qPlacardTitle;
     private CStateWording _qPlacardDefinition;
     private CStateWording _qPlacardExpression;
-    private bool _qPlacardFolded;
+    private CStep? _qPlacardStep;
 
     internal QPlacard(
         string prefix,
@@ -37,7 +37,6 @@ internal sealed class QPlacard : INotifyPropertyChanged
         _qPlacardTitle = draft.CCardDraftTitle;
         _qPlacardDefinition = draft.CCardDraftMeaning;
         _qPlacardExpression = draft.CCardDraftExpression;
-        QPlacardStored = draft.CCardDraftStored;
         QCardSentence = new QCardSentence(catalog, particles, dependences, languages);
     }
 
@@ -124,9 +123,19 @@ internal sealed class QPlacard : INotifyPropertyChanged
 
     public CStateWording QPlacardExpression => _qPlacardExpression;
 
-    public bool QPlacardFolded => _qPlacardFolded;
+    public bool QPlacardFolded => _qPlacardStep?.CStepCard?.CCardDraftFolded ?? false;
 
-    public bool QPlacardStored { get; }
+    public bool QPlacardStored => _qPlacardStep?.CStepFold is not null;
+
+    internal CStep? QPlacardStep
+    {
+        get => _qPlacardStep;
+        set
+        {
+            _qPlacardStep = value;
+            QPlacardRaise(nameof(QPlacardFolded));
+        }
+    }
 
     public string QPlacardPeek => _qPlacardPeek(this).CStateWordingText;
 
@@ -167,17 +176,6 @@ internal sealed class QPlacard : INotifyPropertyChanged
 
         _qPlacardExpression = value;
         QPlacardRaise(nameof(QPlacardExpression));
-    }
-
-    internal void QPlacardFoldShow(bool folded)
-    {
-        if (_qPlacardFolded == folded)
-        {
-            return;
-        }
-
-        _qPlacardFolded = folded;
-        QPlacardRaise(nameof(QPlacardFolded));
     }
 
     internal void QPlacardImageShow(IReadOnlyList<CImageDraft> rows)

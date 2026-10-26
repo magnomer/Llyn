@@ -124,11 +124,13 @@ internal static class TInterfaceDeportment
 
     internal static void TCardPositionSet(object card, int position) => ((QPlacard)card).QPlacardPosition = position;
 
-    internal static object TCardFoldCreate(CCardDraft draft)
+    internal static object TCardFoldCreate(CStep step)
     {
-        QPlacard card = new(string.Empty, false, [], [], [], [], static row => row.QPlacardDefinition, draft);
-        card.QPlacardFoldShow(draft.CCardDraftFolded);
-        return card;
+        return new QPlacard(
+            string.Empty, false, [], [], [], [], static row => row.QPlacardDefinition, step.CStepCard!)
+        {
+            QPlacardStep = step,
+        };
     }
 
     internal static void TCardRowRefine(FrameworkElement container, object card) =>

@@ -31,7 +31,7 @@ public sealed class TLibraryRail
                     BKeymapLive shown = visible ? BKeymapLive.BKeymapLiveShown : BKeymapLive.BKeymapLiveHidden;
                     Assert.Equal([shown, dim, dim, dim], live());
 
-                    library.BLibraryObserve(TLibrary.TLibraryEnter);
+                    library.BLibraryObserve(library.BLibraryKeymapFocus, TLibrary.TLibraryEnter);
 
                     Assert.Equal(visible ? [shown, dim, shown, shown] : [shown, dim, dim, dim], live());
                 });
@@ -51,7 +51,7 @@ public sealed class TLibraryRail
                 BKeymapRow row = library.BLibraryKeymap.BKeymapFind(BKeymapFocus.BKeymapFocusWindow, key)!;
                 Assert.Equal(BKeymapLive.BKeymapLiveDim, row.BKeymapRowLive());
 
-                library.BLibraryObserve(TLibrary.TLibraryEnter);
+                library.BLibraryObserve(library.BLibraryKeymapFocus, TLibrary.TLibraryEnter);
                 Assert.Equal(BKeymapLive.BKeymapLiveShown, row.BKeymapRowLive());
                 row.BKeymapRowAction(key);
 
@@ -94,9 +94,10 @@ public sealed class TLibraryRail
             true,
             (library, _, _) =>
             {
-                library.BLibraryObserve(TLibrary.TLibraryEnter);
+                library.BLibraryObserve(library.BLibraryKeymapFocus, TLibrary.TLibraryEnter);
 
-                library.BLibraryObserve(new ConsoleKeyInfo('q', ConsoleKey.Q, false, false, false));
+                library.BLibraryObserve(
+                    library.BLibraryKeymapFocus, new ConsoleKeyInfo('q', ConsoleKey.Q, false, false, false));
                 BLoop loop = Assert.IsType<BLoop>(SynchronizationContext.Current);
                 TaskCompletionSource settled = new();
                 loop.BLoopDefer(settled.SetResult);

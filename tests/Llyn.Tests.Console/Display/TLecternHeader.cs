@@ -143,7 +143,7 @@ public sealed class TLecternHeader
     }
 
     [Fact]
-    public void LibraryKeymap_TabWhileTheScribeShows_LeavesTheFocusOnTheIndex()
+    public void LibraryKeymap_TabWhileTheScribeShows_MovesTheFocusToTheEditor()
     {
         TLecternCard.TLecternCardRun(
             static (_, save) => save("fire", [TInterface.TCardCreate("a meaning", 1)]),
@@ -156,7 +156,7 @@ public sealed class TLecternHeader
                 send(ConsoleKey.DownArrow);
 
                 Assert.StartsWith("fire", rows()[0], StringComparison.Ordinal);
-                Assert.Null(lit());
+                Assert.NotNull(lit());
             },
             height: 24);
     }

@@ -22,6 +22,8 @@ The markup's dictionaries are scanned for look rows, so the popup rows light wit
 
 An embedded editor hides its own rail, and the panel around it carries undo and redo.
 This notice lets that host panel light its own buttons.
+The rail reads the chronicle's kept state, not a fresh read of the tenure.
+So a notice costs no Conduct query.
 
 ### `QEditorIntroduce`
 
@@ -78,6 +80,10 @@ A new tenure clears both card lists, so no presentation item from the former dra
 
 ### `QEditorMeaningRefine`
 
+The card lists are drawn from the card rows of Conduct's walk, the same rows the console frame steps through.
+The editor refines on Conduct's walk change, so a caret move redraws the cards too.
+A draft announce alone no longer drives the card lists, since the walk is rebuilt from it.
+So both faces show one order and one set of fold verdicts and carets.
 Ready meaning cards need no per-card link lookup.
 The meaning list is refined with the meaning flag.
 The collocation list is refined with the collocation flag.
@@ -236,10 +242,10 @@ A click glides, and a layout change places the pill outright.
 
 ## Stamp
 
-Commit: `8c403d1df768`
+Commit: `c05429890cec`
 - `QCadence.cs` `c49dba67646f341c`
-- `QEditor.cs` `5c3d48d48e2189bd`
-- `QEditorCard.cs` `a1ad14443bac626b`
+- `QEditor.cs` `10fb7989f576c790`
+- `QEditorCard.cs` `53ba2c7460e0405c`
 - `QEditorFont.cs` `4da791778932c52b`
 - `QEditorSound.cs` `37d1a4f52e9d1a42`
 - `QInput.cs` `3268e212c7a17a65`

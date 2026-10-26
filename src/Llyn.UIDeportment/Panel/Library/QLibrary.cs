@@ -227,7 +227,7 @@ internal sealed class QLibrary
 
     private void QLibraryChronicleRefine()
     {
-        (bool undo, bool redo) = _cLibrary.CLibraryEditor.CEditorDesk.CDeskChronicle.CDeskChronicleRead();
+        (bool undo, bool redo) = _cLibrary.CLibraryEditor.CEditorDesk.CDeskChronicle.CDeskChronicleState;
         _qLibraryRail.QChronicleRefine(undo, redo);
     }
 }

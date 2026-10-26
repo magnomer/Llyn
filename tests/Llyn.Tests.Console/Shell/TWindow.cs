@@ -149,9 +149,9 @@ public sealed class TWindow
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         TConsoleFake console = new() { TConsoleFakeTerminal = true };
-        foreach (char letter in "abc")
+        foreach (ConsoleKey key in (ConsoleKey[])[ConsoleKey.F8, ConsoleKey.F5, ConsoleKey.F8])
         {
-            console.TConsoleFakeKeys.Add(new ConsoleKeyInfo(letter, ConsoleKey.A, false, false, false));
+            console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\0', key, false, false, false));
         }
 
         console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\0', ConsoleKey.F10, false, false, false));
@@ -166,7 +166,7 @@ public sealed class TWindow
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         TConsoleFake console = new() { TConsoleFakeTerminal = true };
-        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('a', ConsoleKey.A, false, false, false));
+        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\0', ConsoleKey.F8, false, false, false));
         console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\0', ConsoleKey.F10, false, false, false));
 
         int code = TInvocation.TInvocationRun(console, workspace);

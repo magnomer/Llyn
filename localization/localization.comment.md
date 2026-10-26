@@ -152,6 +152,11 @@ The other `Invocation.Help*` keys give the help text of one option, printed afte
 `Display.Word*` words the reading view's word cursor.
 `Display.WordCursor` takes the left and right arrow glyphs in slots `{0}` and `{1}`.
 `Display.Retreat` labels the F3 and Escape keys that leave the full view.
+`Editor.Title` is the editor frame's title, and its slot `{0}` takes the headword.
+`Editor.Unsaved` marks a draft that differs from the stored entry.
+`Editor.Open` and `Editor.Close` label the Enter and Escape keys of the headword field.
+`Editor.Stack` labels the keys that pick a section of the form, and `Editor.Card` the keys that light another card.
+`Editor.More` takes the count of rows below the page in slot `{0}`, for the editor frame's foot.
 `Mention.Open` labels the Enter key of the Mention menu, and `Window.Help.Tick` the Space key that ticks a choice.
 `Window.*` words the console window's notices and its help.
 `Window.Opening` is the line the window shows while it opens.
@@ -195,6 +200,6 @@ The person headers spell out person and number instead of the English abbreviati
 
 ## Stamp
 
-Commit: `36e31eb71c98`
-- `en.json` `a6e596aaf73aa561`
-- `ko.json` `33632403f4104018`
+Commit: `c05429890cec`
+- `en.json` `b002fe8b14b16db7`
+- `ko.json` `c28945e94ff3f038`

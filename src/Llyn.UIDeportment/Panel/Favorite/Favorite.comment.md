@@ -121,6 +121,6 @@ The chosen mark is left aside.
 
 ## Stamp
 
-Commit: `36e31eb71c98`
-- `QFavorite.cs` `d7392332771f20f1`
+Commit: `c05429890cec`
+- `QFavorite.cs` `a7b3552ce429e8ec`
 - `QRosterItem.cs` `ccf3353eb6ac254d`

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -291,12 +292,13 @@ internal sealed class QCard
 
     internal void QCardRefine(
         ObservableCollection<QPlacard> cards, string prefix, bool collocated,
-        IReadOnlyList<CCardDraft> drafts, Func<QPlacard, CStateWording> peek)
+        IReadOnlyList<CStep> steps, Func<QPlacard, CStateWording> peek)
     {
         List<QPlacard> free = [.. cards];
-        List<QPlacard> shown = new(drafts.Count);
-        foreach (CCardDraft draft in drafts)
+        List<QPlacard> shown = new(steps.Count);
+        foreach (CStep step in steps)
         {
+            (CCardDraft draft, IReadOnlyDictionary<CCaretTrail, long?> anchor) = (step.CStepCard!, step.CStepCaret!);
             QPlacard? card = free.Find(row => row.QPlacardId == draft.CCardDraftId);
             if (card is not null)
             {
@@ -316,7 +318,8 @@ internal sealed class QCard
                 card.QCardSentence.QCardSentenceNotice += _qCardSentence.QSentenceGlossObserve;
             }
 
-            QCardDraftRefine(card, collocated, draft);
+            QCardDraftRefine(card, draft, anchor);
+            card.QPlacardStep = step;
             shown.Add(card);
         }
 
@@ -345,13 +348,13 @@ internal sealed class QCard
         }
     }
 
-    private void QCardDraftRefine(QPlacard card, bool collocated, CCardDraft draft)
+    private void QCardDraftRefine(
+        QPlacard card, CCardDraft draft, IReadOnlyDictionary<CCaretTrail, long?> anchor)
     {
         card.QPlacardTitleShow(draft.CCardDraftTitle);
         card.QPlacardExpressionShow(draft.CCardDraftExpression);
         card.QPlacardDefinitionShow(draft.CCardDraftMeaning);
         card.QCardSentence.QCardSentenceShow(draft.CCardDraftSentence, _qCardSentence.QSentenceOrder);
-        IReadOnlyDictionary<CCaretTrail, long?> anchor = _cCaret.CCaretRead(collocated, draft.CCardDraftId);
         _qCardContext.QContextShow(card, draft, anchor[_cCaret.CCaretSituation]);
         QRegister.QRegisterShow(card, draft.CCardDraftRegister, anchor[_cCaret.CCaretRegister]);
         QLink.QLinkShow(card, draft.CCardDraftTranslation, anchor[_cCaret.CCaretTranslation]);
@@ -360,17 +363,13 @@ internal sealed class QCard
         card.QPlacardImageShow(draft.CCardDraftImage);
         card.QPlacardVideoShow(draft.CCardDraftVideo);
         card.QPlacardPosition = draft.CCardDraftPosition;
-        card.QPlacardFoldShow(draft.CCardDraftFolded);
     }
 
     private void QCardHingeObserve(object sender, RoutedEventArgs e)
     {
-        if (sender is ToggleButton { DataContext: QPlacard card } hinge)
+        if (sender is ToggleButton { DataContext: QPlacard { QPlacardStep.CStepFold: Func<bool, bool> fold } } hinge)
         {
-            QLook.QLookCheckedRefine(
-                hinge,
-                _cCardList.CCardFoldToggle(
-                    card.QPlacardCollocated, card.QPlacardId, QLook.QLookCheckedRead(hinge.IsChecked)));
+            QLook.QLookCheckedRefine(hinge, fold(QLook.QLookCheckedRead(hinge.IsChecked)));
         }
     }
 

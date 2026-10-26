@@ -139,7 +139,7 @@ internal sealed class QTaxonomy
 
     private void QTaxonomyChronicleRefine()
     {
-        (bool undo, bool redo) = _cTaxonomy.CTaxonomyEditor.CEditorDesk.CDeskChronicle.CDeskChronicleRead();
+        (bool undo, bool redo) = _cTaxonomy.CTaxonomyEditor.CEditorDesk.CDeskChronicle.CDeskChronicleState;
         _qTaxonomyRail.QChronicleRefine(undo, redo);
     }
 

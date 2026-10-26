@@ -147,6 +147,17 @@ public sealed class TCard
     }
 
     [Fact]
+    public void FolioStateRead_UnreadableStoreValue_ArrivesUncertainWithItsText()
+    {
+        CStateValue shown = CFolio.CFolioStateRead(TInterface.TStateUnreadableCreate("w0lf"));
+
+        Assert.True(shown.CStateValueUncertain);
+        Assert.Equal("w0lf", shown.CStateValueText);
+        Assert.False(CFolio.CFolioStateRead(TInterface.TStateUnreadableCreate("w0lf").LStateValueNormalize())
+            .CStateValueUncertain);
+    }
+
+    [Fact]
     public void PanelRowRead_EngineRow_CopiesEveryFieldAndTheMark()
     {
         CVistaRow row = TInterfaceConductPanel.TPanelRowRead(TInterfaceConductPanel.TVistaRowCreate(4, "gloss", true));

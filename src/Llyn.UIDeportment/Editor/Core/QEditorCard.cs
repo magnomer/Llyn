@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -131,23 +133,23 @@ internal sealed class QEditorCard
         _qEditorCardCollocation.Clear();
     }
 
-    internal void QEditorMeaningRefine(CEntryDraft draft)
+    internal void QEditorMeaningRefine(IReadOnlyList<CStep> walk, IReadOnlyList<int> cards)
     {
         _qCard.QCardRefine(
             _qEditorCardMeaning,
             "Meaning",
             false,
-            draft.CEntryDraftMeanings,
+            [.. cards.Select(at => walk[at])],
             static card => card.QPlacardDefinition);
     }
 
-    internal void QEditorCollocationRefine(CEntryDraft draft)
+    internal void QEditorCollocationRefine(IReadOnlyList<CStep> walk, IReadOnlyList<int> cards)
     {
         _qCard.QCardRefine(
             _qEditorCardCollocation,
             "Collocation",
             true,
-            draft.CEntryDraftCollocations,
+            [.. cards.Select(at => walk[at])],
             static card => card.QPlacardExpression);
     }
 

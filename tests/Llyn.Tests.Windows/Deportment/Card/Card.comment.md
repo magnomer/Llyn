@@ -1,7 +1,8 @@
 # Card
 
 This folder holds the tests of the card editor driver parts.
-They cover chip caret keys, chip seat, card fold hinges, ordinal badge, row matcher and the reading view's word cursor.
+They cover chip caret keys, chip seat, card fold hinges, ordinal badge and row matcher.
+They also cover the editor walk's card lists and the reading view's word cursor.
 
 ## `TBerthSeat`
 
@@ -16,6 +17,9 @@ The writing card's fold hinge is covered as the row painter and the click handle
 `TLecternHinge` borrows the row builders here for the reading card.
 The rows are bare templates that carry only the parts the painters touch, under their real names.
 The card drafts carry no meaning links.
+A row takes its fold from the editor walk's step.
+The step has no fold function when the card is not stored.
+So the hinge cases build steps or take them from a real walk.
 Each list holds the two fold keys the theme defines, so a folded header resolves them.
 The click cases reach the real fold gates over a real workspace.
 So the store is read back rather than a double asked.
@@ -28,6 +32,8 @@ They go to the editor's list gate.
 The stored folds are read back as kind and id pairs, and the writing card folds as a meaning.
 When no stored entry is held the gate refuses the write, and the hinge returns to unchecked.
 No refresh would repaint it, so the hinge must put itself back.
+A refused unfold puts the hinge back to checked the same way.
+Two clicks before the list rebuilds leave the card unfolded, so a click never reads a stale fold.
 An unfolded hinge draws the expand icon turned half a turn, which the app reads as open.
 A folded hinge leaves the same icon unturned, so it reads as closed and able to open.
 
@@ -75,6 +81,17 @@ A match that ignored rows already taken handed every draft to the first row and 
 The chip caret keys are driven by name with no window or text box.
 Each case proves one branch of `QCaret.QCaretEdgeApply` or `QCaret.QCaretStepApply` and the callbacks it reaches.
 
+## `TEditorCardWalk`
+
+The writing card lists are covered as Conduct's walk feeds them.
+The walk is the editor's ordered steps, and a step carries its card, its fold and its caret facets.
+The driver lists exactly the card steps of the walk, one row per card and in the walk's order.
+So the driver decides no order or membership of its own.
+A caret trail move with no draft change still writes the new anchor into the step's caret entry.
+So the walk holds the caret the user left, with no draft change to carry it.
+An opened entry's steps light the Undo button.
+A walk change repaints the card lists on the GUI, with or without a draft change.
+
 ## `TLecternHinge`
 
 The reading card's fold hinge is covered as the reading painter and the reading driver see it.
@@ -114,11 +131,12 @@ A chip of a record never saved is disabled, and a stored chip stays enabled.
 
 ## Stamp
 
-Commit: `36e31eb71c98`
+Commit: `c05429890cec`
 - `TBerthSeat.cs` `75eb74163de8d120`
-- `TCardHinge.cs` `2430c80151e0f823`
+- `TCardHinge.cs` `4420819c204c0089`
 - `TCardOrdinal.cs` `788665234082c696`
 - `TCardRow.cs` `618531bdc90512ef`
 - `TCaretKey.cs` `6eaf4b7930a95206`
+- `TEditorCardWalk.cs` `94875fe5f274deb9`
 - `TLecternHinge.cs` `392d89024afd2878`
 - `TLecternWord.cs` `a37e00dff71608c1`

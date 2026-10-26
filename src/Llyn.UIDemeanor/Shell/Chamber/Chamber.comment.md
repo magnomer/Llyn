@@ -15,18 +15,20 @@ It holds the window's state and routes each key, and `BMural` turns that state i
 It delegates the rest, so each piece has one reason to change.
 `BWardrobe` holds the look choices, `BDocket` the open boxes, `BKeymapWindow` the key table and `BEstablishment` the status line.
 `BMirror` holds the Conduct state the roof shows and the roof built from it.
-Two `BLibrary` panels are built when the window opens with an atelier.
-One serves the Library tab and one the Favorite tab.
+Two `BLibrary` panels and one `BInput` are built when the window opens with an atelier.
+One panel serves the Library tab and one the Favorite tab.
 The Favorite panel is the same panel made over the favorite listing.
-The panel is the one named by the tab in front.
-Each panel asks whether it is the shown one.
+`BInput` serves the Input tab with a bare editor frame and no list.
+The panel is the one named by the tab in front, and the Input tab names none.
+Each panel asks whether it is the shown one, and the input asks whether the Input tab is in front.
 So the roof's library menus and every key lookup follow the shown panel, never a panel that is hidden.
 The layout comes from the `AWindow` blueprint, and the window only fills the parts it names.
 The constructor finds `AWindow`, then `ASParley`, which help and the other boxes use.
 The mural it builds then finds the parts it draws.
 A missing blueprint or part throws at construction, not while drawing.
 Below 80 by 24 cells the focus is the notice, which wins over any open box.
-With no box open and the roof at the window focus, the library panel may name the lectern focus instead.
+With no box open and the roof at the window focus, the focus may change.
+The shown panel or the input may name the lectern or editor focus instead.
 The window ends the run through `BWindowExit` and holds the atelier and the envoy it was given.
 The atelier may be null, when the start was refused and only a box is shown.
 The courier exists only with an atelier, so a refused start has no Joplin items.
@@ -62,21 +64,27 @@ The canvas takes the wardrobe's ambiguous-width setting, so a wide choice change
 Draws and syncs the frame once when anything marked it changed since the last batch.
 A size, a key and an arrival each mark it.
 So do an establishment and a mirrored state change.
-It first folds the `AIndex` part when the shown panel reads the whole entry, so the lectern takes the room.
+It first folds the `AIndex` part when the shown panel or the input holds the whole tab.
+So the display side takes the room.
 It hands `BMuralDraw` the size, the focus, the roof, the navigation and the courier state.
-It adds the boxes, the panel's texts from `BLibrary`, the glyphs, the marks, its key lookup and the width measure.
+It also hands the shown panel's undo and redo flags, which exist only while a scribe shows.
+It adds the boxes, the panel's texts from `BLibrary` or `BInput`, the glyphs, the marks and its key lookup.
+The width measure comes with them.
 Without a mark no frame is built, so a burst of keys costs one frame.
 
 ## `BWindowKeyObserve`
 
-The key is looked up in the window's table, then the shown panel's, at the current focus.
-At the lectern focus a key neither binds falls back to the same two lookups at the window focus.
-A found row runs its action only while its live state is shown, so a dim row does nothing.
+The key is looked up in the window's table, then the shown panel's, then the input's, at the current focus.
+At the lectern or editor focus a key none binds falls back to the same lookups at the window focus.
+Before a found row runs, the typed text still pending in a field is applied.
+So a key such as save sees the whole text, not one that lags.
+The row itself does nothing unless its live state is shown, so a dim row is safe wherever it runs.
 At a box or help focus, a key the table lacks goes to the top box.
-At the window, roof and lectern focus, such a key goes to the roof.
+At the window, roof, lectern and editor focus, such a key goes to the roof.
 The frame is marked changed when the roof used the key.
-At the window focus, a key neither table nor roof took goes to the library panel.
-That holds only while a panel is shown.
+At the window and editor focus, a key no table took and the roof refused goes on.
+It goes to the shown panel, else to the input.
+The panel sends it to the index or to its editor by the focus.
 At the notice focus, every key without a row does nothing.
 The frame is marked changed after a key that reaches a box.
 Quit goes through the atelier's quit confirmation, and only a yes completes the exit task.
@@ -104,8 +112,9 @@ Without an atelier or a navigation state it does nothing.
 
 ## `BWindowKeymapFind`
 
-The legend looks in the window's table first, then in the shown panel's.
-At the lectern focus it looks in the panel's table first, then repeats the search at the window focus.
+The legend looks in the window's table first, then in the shown panel's and the input's.
+At the lectern or editor focus it looks in the panel's and the input's table first.
+Then it repeats the search at the window focus.
 Then it looks in the roof's, then in the top box's table.
 
 ## `BMirror`
@@ -242,7 +251,8 @@ It adds Back and Forward, enabled by the voyage, and a Choose entry that opens t
 Without an atelier or state the menu is empty.
 Drawing puts the current tab name at the right end of the roof row.
 Back and Forward sit at the foot of the right frame.
-A history move that is not possible draws in the `disabled` role.
+While a scribe shows, the same two places hold Undo and Redo, from the flags the window hands in.
+A move or step that is not possible draws in the `disabled` role.
 
 ## `BNotice`
 
@@ -264,6 +274,7 @@ It keeps the tab navigation and the status line, which never change after constr
 
 Draws the small-console notice at the notice focus, and otherwise the whole frame.
 The roof, the navigation and the courier state come in at each draw.
+So do the undo and redo flags, which reach only the navigation drawing.
 So do the panel's texts, which draw after the scaffold and before the status line.
 The boxes, the glyphs, the marks, the key lookup and the measure come in too.
 
@@ -296,13 +307,13 @@ The legend sits on the last row at column 0.
 
 ## Stamp
 
-Commit: `36e31eb71c98`
+Commit: `c05429890cec`
 - `BDocket.cs` `2f1ab27227907c41`
 - `BEstablishment.cs` `f0b09dc75cb89774`
 - `BKeymapWindow.cs` `ac57c5af4fc27418`
 - `BMirror.cs` `2d5cfafbf7bb9ee3`
-- `BMural.cs` `43b0d0ff915befd5`
-- `BNavigation.cs` `c45d372cb6483331`
+- `BMural.cs` `4d0cdafd28a38552`
+- `BNavigation.cs` `8d7a242f082a5e6e`
 - `BNotice.cs` `7a5f8cc1b48d424d`
 - `BWardrobe.cs` `3aa4f791074e68eb`
-- `BWindow.cs` `e9268338577006f7`
+- `BWindow.cs` `0378c8b4fe45d105`

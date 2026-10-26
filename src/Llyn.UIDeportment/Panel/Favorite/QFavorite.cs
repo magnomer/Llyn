@@ -129,7 +129,7 @@ internal sealed class QFavorite
 
     private void QFavoriteChronicleUpdate()
     {
-        (bool undo, bool redo) = _cFavorite.CFavoriteEditor.CEditorDesk.CDeskChronicle.CDeskChronicleRead();
+        (bool undo, bool redo) = _cFavorite.CFavoriteEditor.CEditorDesk.CDeskChronicle.CDeskChronicleState;
         _qFavoriteRail.QChronicleRefine(undo, redo);
     }
 

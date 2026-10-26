@@ -13,4 +13,6 @@ internal enum BKeymapFocus
     BKeymapFocusRoof,
 
     BKeymapFocusLectern,
+
+    BKeymapFocusEditor,
 }

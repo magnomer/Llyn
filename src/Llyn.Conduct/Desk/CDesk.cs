@@ -34,6 +34,7 @@ public sealed class CDesk
         CDeskDraft = new CDeskDraft(drafts, settings, scope, envoy);
         CDeskChronicle = new CDeskChronicle(CDeskDraft, settings, scope, envoy);
         CDeskChronicle.CDeskChronicleChanged += () => CDeskStateChanged?.Invoke();
+        CDeskStateChanged += () => CDeskChronicle.CDeskChronicleState = CDeskChronicle.CDeskChronicleRead();
         CDeskErrand = new CErrand(this);
         CDeskVigil = new CVigil(this);
     }
@@ -143,6 +144,7 @@ public sealed class CDesk
             LTenure started = start();
             CDeskDraft.LDeskDraftSet(started);
             CDeskChronicle.LDeskChronicleClear();
+            CDeskChronicle.CDeskChronicleState = CDeskChronicle.CDeskChronicleRead();
             CDeskVigil.CVigilApply(started);
             CDeskStarted?.Invoke();
         }
@@ -255,6 +257,7 @@ public sealed class CDesk
         }
 
         CDeskDraft.LDeskDraftClear();
+        CDeskChronicle.LDeskChronicleClear();
         held.LTenureCancel();
         return true;
     }

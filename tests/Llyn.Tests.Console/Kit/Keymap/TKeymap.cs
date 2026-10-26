@@ -183,6 +183,24 @@ public sealed class TKeymap
             BKeymapFocus.BKeymapFocusWindow, new ConsoleKeyInfo('\0', ConsoleKey.F2, false, false, false)));
     }
 
+    [Fact]
+    public void Keymap_DimRow_TakesItsKeyAndRunsNothing()
+    {
+        int ran = 0;
+        BKeymap keymap = new(
+        [
+            new(ConsoleKey.F2, 0, BKeymapFocus.BKeymapFocusWindow, "Scribe.Save", _ => ran++,
+                static () => BKeymapLive.BKeymapLiveDim),
+        ]);
+        ConsoleKeyInfo key = new('\0', ConsoleKey.F2, false, false, false);
+
+        BKeymapRow? row = keymap.BKeymapFind(BKeymapFocus.BKeymapFocusWindow, key);
+        row?.BKeymapRowAction(key);
+
+        Assert.NotNull(row);
+        Assert.Equal(0, ran);
+    }
+
     private static BKeymap TKeymapWindowCreate()
     {
         TConsoleFake console = new();

@@ -14,8 +14,9 @@ The table comes from a window built with no atelier, and `BKeymapWindow` builds 
 Two rows on one key are told apart by live state.
 The key finds the row that is not hidden.
 A hidden row passes its key on, and the table finds no row for it.
+A dim row still takes its key, but running its action does nothing.
 
 ## Stamp
 
-Commit: `fe7e11daae88`
-- `TKeymap.cs` `38679cbdcc46f433`
+Commit: `c05429890cec`
+- `TKeymap.cs` `2a2d8d45a6dbe8af`

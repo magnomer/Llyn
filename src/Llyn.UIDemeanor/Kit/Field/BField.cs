@@ -60,7 +60,12 @@ internal sealed class BField : BSParleyBody
             _bFieldPending.Append(key.KeyChar);
             if (SynchronizationContext.Current is BLoop loop)
             {
-                loop.BLoopDefer(() => BFieldPendingApply(null));
+                loop.BLoopDeferred.Add(this);
+                loop.BLoopDefer(() =>
+                {
+                    _ = loop.BLoopDeferred.Remove(this);
+                    BFieldPendingApply(null);
+                });
             }
             else
             {
@@ -71,6 +76,15 @@ internal sealed class BField : BSParleyBody
         }
 
         return BFieldPendingApply(key);
+    }
+
+    internal static void BFieldDeferredApply()
+    {
+        BField[] deferred = SynchronizationContext.Current is BLoop loop ? [.. loop.BLoopDeferred] : [];
+        foreach (BField field in deferred)
+        {
+            _ = field.BFieldPendingApply(null);
+        }
     }
 
     internal void BFieldClear()
@@ -138,7 +152,7 @@ internal sealed class BField : BSParleyBody
         }
     }
 
-    private bool BFieldPendingApply(ConsoleKeyInfo? key)
+    internal bool BFieldPendingApply(ConsoleKeyInfo? key)
     {
         string typed = _bFieldPending.ToString();
         int ready = typed.Length > 0 && char.IsHighSurrogate(typed[^1]) ? typed.Length - 1 : typed.Length;

@@ -58,6 +58,8 @@ internal sealed class QImprint : QChronicleHost
         QChoice.QChoiceMenuRefine(QImprintKindList, QImprintKindObserve, _cImprint.CImprintKindRead());
         _qImprintAuthor.QAuthorIntroduce(_cImprint);
         _cImprint.CImprintReferenceChanged += QImprintDraftRefine;
+        CDesk desk = imprint.CImprintDesk;
+        desk.CDeskStateChanged += () => _qImprintSurface.IsEnabled = !desk.CDeskChronicle.CDeskChronicleHalted;
     }
 
     internal void QImprintClearRefine()

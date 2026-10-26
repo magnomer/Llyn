@@ -81,7 +81,7 @@ public sealed class TLibraryRoof
                 Func<bool> live = TLibraryRoofFind(library, "Export…").BRoofItemLive;
                 Assert.False(live());
 
-                library.BLibraryObserve(TLibrary.TLibraryEnter);
+                library.BLibraryObserve(library.BLibraryKeymapFocus, TLibrary.TLibraryEnter);
                 Assert.True(live());
 
                 ConsoleKeyInfo f4 = new('\0', ConsoleKey.F4, false, false, false);
@@ -106,7 +106,7 @@ public sealed class TLibraryRoof
             (library, atelier, _) =>
             {
                 file = Path.Combine(atelier.CAtelierPathRead(), "fire.md");
-                library.BLibraryObserve(TLibrary.TLibraryEnter);
+                library.BLibraryObserve(library.BLibraryKeymapFocus, TLibrary.TLibraryEnter);
 
                 TLibraryRoofFind(library, "Export…").BRoofItemAction();
                 TLibraryRoofRun(() => TLibraryFileCheck(file));
@@ -126,7 +126,7 @@ public sealed class TLibraryRoof
             true,
             (library, _, _) =>
             {
-                library.BLibraryObserve(TLibrary.TLibraryEnter);
+                library.BLibraryObserve(library.BLibraryKeymapFocus, TLibrary.TLibraryEnter);
 
                 TLibraryRoofFind(library, "Export…").BRoofItemAction();
                 TLibraryRoofRun(() => asked.Count >= 1);
@@ -147,7 +147,7 @@ public sealed class TLibraryRoof
             (library, atelier, _) =>
             {
                 folder = atelier.CAtelierPathRead();
-                library.BLibraryObserve(TLibrary.TLibraryEnter);
+                library.BLibraryObserve(library.BLibraryKeymapFocus, TLibrary.TLibraryEnter);
 
                 TLibraryRoofFind(library, "Export…").BRoofItemAction();
                 TLibraryRoofRun(() => asked.Count >= 2);

@@ -35,6 +35,15 @@ The anchors are the fanqie readings the reflex anchors to.
 `CReflexDraftRead` shapes the reflexes of a draft for the reflex rows and the lectern.
 The private overload copies the fields the rows read from one engine reflex draft.
 
+## `CStep`
+
+One row of the editor's walk, which both faces step through in the same order.
+A row with no card is the headword or the section tabs.
+Those are the first two rows of every section.
+Only a card row holds a card, and only a stored card holds a fold gate.
+The gate answers whether the fold went through, and a card that cannot fold carries none.
+A card row also carries its carets, so a face draws them without asking Conduct again.
+
 ## `CTranscriptionDraft`
 
 One transcription of an entry, as the transcription and glyph rows show it.
@@ -43,9 +52,10 @@ One transcription of an entry, as the transcription and glyph rows show it.
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `c05429890cec`
 - `CDraft.cs` `b3bb4baa7849e72b`
 - `CEntryDraft.cs` `4dcad69c4d192ac1`
 - `CMarker.cs` `5593c710aee3c7f3`
 - `CReflexDraft.cs` `6d3c5be31f5d104d`
+- `CStep.cs` `cb5a353cd1c59d99`
 - `CTranscriptionDraft.cs` `b28f91481756e9ef`

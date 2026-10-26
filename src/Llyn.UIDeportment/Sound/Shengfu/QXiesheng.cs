@@ -215,7 +215,7 @@ internal sealed class QXiesheng
     private void QXieshengChronicleRefine()
     {
         (bool undo, bool redo) =
-            _cXiesheng.CXieshengKindred.CEntryListEditor.CEditorDesk.CDeskChronicle.CDeskChronicleRead();
+            _cXiesheng.CXieshengKindred.CEntryListEditor.CEditorDesk.CDeskChronicle.CDeskChronicleState;
         _qXieshengRail.QChronicleRefine(undo, redo);
     }
 }

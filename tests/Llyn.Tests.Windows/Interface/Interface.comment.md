@@ -58,7 +58,8 @@ So a reading-view box switch click reaches the display's real fold gate through 
 ### `TCardFoldCreate`
 
 The card's peek is the definition, as a meaning list picks it.
-The draft also names the card's id.
+The step carries the draft, whose id names the card, and the fold function a stored card has.
+The placard reads its folded state from the step.
 The placard is built as a meaning card, so its fold is kept under the meaning kind.
 
 ### `TCardHingeAttach`
@@ -98,8 +99,8 @@ The wait is bounded, so a step that hangs fails the test rather than the whole r
 
 ## Stamp
 
-Commit: `36e31eb71c98`
+Commit: `c05429890cec`
 - `TInterfaceCapsule.cs` `062207ed6f90f438`
-- `TInterfaceDeportment.cs` `1c36b6a53db2a27f`
+- `TInterfaceDeportment.cs` `d3af19b3776dd23f`
 - `TInterfacePhonograph.cs` `888cd40c37da96bb`
 - `TWindow.cs` `20d60e5a8413b7cf`

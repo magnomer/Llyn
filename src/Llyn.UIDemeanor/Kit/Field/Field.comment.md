@@ -32,6 +32,8 @@ A plain character is not applied at once.
 It joins the pending buffer and defers an apply onto the loop.
 The first apply takes the whole buffer, so the apply deferred by each later character finds nothing to do.
 So a run of typed characters makes one edit and one report to the callback.
+While the apply waits, the field is listed on the loop, and it leaves the list when the apply runs.
+`BFieldDeferredApply` applies every listed field at once, so a key row that reads the text first finds it whole.
 Without the loop as the context, the character is applied at once.
 Any other key applies the pending characters first and then itself, so keys keep the order they were pressed in.
 Only a key that changes the text or the caret, and an edge key, is taken.
@@ -73,6 +75,6 @@ So an empty field lets the arrows reach the owner, which can move a list or a ch
 
 ## Stamp
 
-Commit: `0f19a28acf00`
+Commit: `c05429890cec`
 - `BCaret.cs` `81459c2623ba4389`
-- `BField.cs` `de9b7a35d18fe7b6`
+- `BField.cs` `b3763d102be4ae00`

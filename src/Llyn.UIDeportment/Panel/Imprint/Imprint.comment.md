@@ -16,6 +16,7 @@ It subscribes the four fields and ties the kind chip to its menu.
 `QImprintIntroduce` takes the source editor the shelf composed and listens to its Source notice.
 It builds the kind menu once from `CImprintKindRead`, since the menu is read through the editor's port.
 It hands the editor on to `QAuthorIntroduce`.
+It also disables the surface while the desk reports a halt, so a dead edit area takes no input.
 It calls no gate, so the panel's introduce hands the engine one request only.
 `QImprintCloseRefine` shuts the kind menu when the window closes.
 The byline's close is the shelf's, run with the atelier's closures.
@@ -139,10 +140,10 @@ The desk's own state notice settles the undo and redo buttons after every step.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c05429890cec`
 - `QAuthor.cs` `b182e1ab73d67219`
 - `QAuthorItem.cs` `44206716aeb026c4`
 - `QBylineItem.cs` `306f99953f0cd7a3`
 - `QChronicle.cs` `66432adee340042e`
 - `QChronicleHost.cs` `d93626efbc3308d1`
-- `QImprint.cs` `6fcb0592b6d47f30`
+- `QImprint.cs` `2383a7e52aa6d521`

@@ -52,13 +52,21 @@ Equal values are left alone, which avoids redundant redraws that could disturb t
 
 ### `QPlacardFolded`
 
-The last supplied fold verdict drives presentation, not a locally chosen fold policy.
-Only a changed verdict notifies, and the row driver repaints the fold and the stored verdict together.
+The fold verdict is read from the card of the placard's walk step, not kept here.
+So the placard holds no fold policy of its own and the face cannot drift from Conduct.
+A new step notifies the fold, and the row driver repaints the fold and the stored verdict together.
+
+### `QPlacardStep`
+
+The row of Conduct's walk that this placard shows, set at each refill.
+It is the one source of the fold verdict, the stored verdict and the fold gate.
+A placard not yet given a step reads as unfolded and not stored.
 
 ### `QPlacardStored`
 
-The stored verdict comes from the initial draft and lets the row driver decide hinge visibility.
-It is fixed for the card's lifetime, since rows are reconciled by the immutable id.
+The stored verdict is true while the step carries a fold gate, which Conduct gives only a stored card.
+It lets the row driver decide hinge visibility.
+It follows the step, so a card stored by a save gains its hinge at the next refill.
 
 ### `QPlacardPeek`
 
@@ -134,7 +142,7 @@ So a pasted comma ends a chip as a typed one does.
 
 ## Stamp
 
-Commit: `8c403d1df768`
+Commit: `c05429890cec`
 - `QCardSentence.cs` `751b9ed5cf54ff46`
 - `QInlet.cs` `d28fd837c72eaa8f`
-- `QPlacard.cs` `ae7ab8431b4db012`
+- `QPlacard.cs` `0b1973bfca094eda`

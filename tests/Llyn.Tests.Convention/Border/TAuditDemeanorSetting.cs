@@ -82,6 +82,7 @@ internal static class TAuditDemeanorSetting
                 "CTranscriptionDraft",
                 "CReflexDraft",
                 "CCardDraft",
+                "CStep",
                 "CSentenceDraft",
                 "CExampleDraft",
                 "CGlossDraft",

@@ -3,6 +3,7 @@
 Tests of the Library tab's list, keys, menus and window routing.
 `TLibrary` holds the shared set-up, which starts a real engine, an atelier and a fake envoy.
 A test may pass a seed that fills the engine before the tab opens.
+Keys reach the list through the focus the library names, the way the window routes them.
 
 ## `TIndex`
 
@@ -50,6 +51,7 @@ Its search hint and empty notice are its own wording.
 F6 on the chosen row unmarks it, so the row leaves the list.
 The lit row then stays at that place, or falls to the row above when the last row left.
 A grasp raised under the grasp ordering resorts the list, and the lit row follows its entry.
+Its run helper is internal, so other test folders can drive a Favorite tab the same way.
 
 ## `TLibraryRail`
 
@@ -74,9 +76,9 @@ These tests wait on the loop for the async work, up to 10 seconds.
 
 ## Stamp
 
-Commit: `36e31eb71c98`
-- `TFavoriteTab.cs` `26ec9f13f2410be0`
+Commit: `c05429890cec`
+- `TFavoriteTab.cs` `ea91f02fcee83d91`
 - `TIndex.cs` `05d891386c816434`
-- `TLibrary.cs` `6535a9c30cf4468d`
-- `TLibraryRail.cs` `1b299a9ddc78a139`
-- `TLibraryRoof.cs` `d91256827a5a974b`
+- `TLibrary.cs` `6874fad9ea9bdb6e`
+- `TLibraryRail.cs` `6da1a473b08326eb`
+- `TLibraryRoof.cs` `097d9e8db492e027`

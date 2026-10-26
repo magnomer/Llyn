@@ -29,13 +29,18 @@ The window and help read them to collect the keys of a page.
 
 One binding: key, modifiers, focus, label key, action and live function.
 The label is a catalog key, resolved when the legend or help draws.
-The action is never null, and it runs when the key is found.
+The action is never null.
+It is wrapped to run only while the live state is shown.
+So every caller that runs a found row is safe against a dim one.
 The live function is asked at each draw, so a state follows the program without a rebuild.
 
 ## `BKeymapFocus`
 
 Where the keys go.
-That is the window, a box, the small-console notice, the help box, the roof or the reading view's lectern.
+That is the window, a box, the small-console notice, the help box or the roof.
+It also names the reading view's lectern and the editor frame.
+Those two name the side of a tab that has the keys.
+A key they leave unbound falls back to the window.
 
 ## `BKeymapLive`
 
@@ -45,8 +50,8 @@ Hidden leaves it out of both, and `BKeymapFind` does not find it.
 
 ## Stamp
 
-Commit: `cb8ab7e8feb4`
+Commit: `c05429890cec`
 - `BKeymap.cs` `f4521bf6490e80ae`
-- `BKeymapFocus.cs` `77e5600e95171633`
+- `BKeymapFocus.cs` `5cfb507dc1088e41`
 - `BKeymapLive.cs` `c4bed21c76f50c73`
-- `BKeymapRow.cs` `3a59402801d27b87`
+- `BKeymapRow.cs` `d84bb3555e61a85f`

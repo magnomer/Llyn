@@ -51,7 +51,8 @@ internal sealed class BMural
         IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<string>>> glyphs,
         IReadOnlyDictionary<string, IReadOnlyList<string>> marks,
         Func<BKeymapFocus, ConsoleKeyInfo, BKeymapRow?> find,
-        BCanvasWidth measure)
+        BCanvasWidth measure,
+        (bool CDeskBackward, bool CDeskForward)? chronicle = null)
     {
         ArgumentNullException.ThrowIfNull(roof);
         ArgumentNullException.ThrowIfNull(parleys);
@@ -64,7 +65,8 @@ internal sealed class BMural
         return focus == BKeymapFocus.BKeymapFocusNotice
             ? BMuralNoticeBuild(width, height, glyphs, find, measure)
             : BMuralFrameBuild(
-                width, height, focus, roof, navigation, courier, parleys, panel, glyphs, marks, find, measure);
+                width, height, focus, roof, navigation, courier, parleys, panel, glyphs, marks, find, measure,
+                chronicle);
     }
 
     private IEnumerable<BCanvasText> BMuralFrameBuild(
@@ -79,7 +81,8 @@ internal sealed class BMural
         IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<string>>> glyphs,
         IReadOnlyDictionary<string, IReadOnlyList<string>> marks,
         Func<BKeymapFocus, ConsoleKeyInfo, BKeymapRow?> find,
-        BCanvasWidth measure)
+        BCanvasWidth measure,
+        (bool CDeskBackward, bool CDeskForward)? chronicle)
     {
         BBlueprint.BBlueprintPlace(_bMuralBlueprint, 0, 0, width, height);
         foreach (BCanvasText scaffold in BBlueprint.BBlueprintDraw(_bMuralBlueprint, glyphs))
@@ -113,7 +116,7 @@ internal sealed class BMural
         {
             BBlueprintPart top = BContract.BContractFind(_bMuralBlueprint, "ARoof");
             foreach (BCanvasText text in _bMuralTabs.BNavigationDraw(
-                _bMuralCatalog, state, marks, top, _bMuralVoyage, measure))
+                _bMuralCatalog, state, marks, top, _bMuralVoyage, measure, chronicle))
             {
                 yield return text;
             }

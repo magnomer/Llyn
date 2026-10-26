@@ -80,11 +80,15 @@ The errand takes the same marshal for the steps of its recording search.
 The undo and redo steps of one desk's held draft, and the halt the tenure reports.
 It reads the tenure through the desk's `CDeskDraft`, so the draft keeps the only hold.
 It shows its hold failures through `CEnvoy`, so no driver can lose one.
-`_cDeskChronicleHalted` records the halt at the last bulletin, and a start clears it.
-`CDeskChronicleHalted` tells the edit area to go dead, and `CDeskChronicleRunning` keeps it live.
+`CDeskChronicleHalted` is the halt verdict stored at the last bulletin, so it stays steady between bulletins.
+A start and a cancel clear it.
+The verdict tells the edit area to go dead, and `CDeskChronicleRunning` keeps it live.
 `CDeskChronicleResonate` shows the scope's `HoldFailed` notice once per halt, then announces.
 A failed undo or redo step is shown under `HoldFailed` and still announces.
 The desk raises its `CDeskStateChanged` on the chronicle's change, so drivers hear one event.
+`CDeskChronicleState` keeps the last answer of `CDeskChronicleRead`, as backward and forward flags.
+The desk refreshes it on its own `CDeskStateChanged`, and again when a start clears the chronicle.
+So a face drawing every frame reads two flags and never asks the tenure.
 
 ## `CDeskDraft`
 
@@ -143,6 +147,19 @@ It answers whether the store ended the tenure, so an unchanged draft and a faile
 `LEditorFinish` captures the fresh-entry verdict before finishing.
 So post-store reopening uses the draft's former identity.
 `CEditorStoredShow` reopens a freshly stored input draft blank and every other stored entry as itself.
+
+`CEditorWalk` is the list of rows both faces step through.
+It holds one list for each of the four sections of the form.
+Each list opens with a headword step and a section-tab step.
+Then it holds one step for each card of that section.
+Only the meaning and collocation sections hold cards, and the other two stay empty.
+So the faces share one order and none counts rows itself.
+A card step carries its fold gate only for a stored card, since a fresh card has nothing to fold.
+It also carries the card's carets, read when the walk was built.
+`CEditorWalkCard` lists, for each section, the positions of the card steps.
+So a face jumps between cards without testing each step.
+The walk is rebuilt when the entry announces a draft and when any caret moves, and then `CEditorWalkChanged` is raised.
+A draft that is null empties every list.
 
 ## `CEntry`
 
@@ -292,11 +309,11 @@ The subject maps through `CCatalog.LCatalogSubjectRead`, so a subject it does no
 
 ## Stamp
 
-Commit: `36e31eb71c98`
-- `CDesk.cs` `9f036c7e380e9b97`
-- `CDeskChronicle.cs` `fc6b9a85af7d4b71`
+Commit: `c05429890cec`
+- `CDesk.cs` `3a9269fbfc672dda`
+- `CDeskChronicle.cs` `c454bfb840618d9b`
 - `CDeskDraft.cs` `a573193758b55776`
-- `CEditor.cs` `efc620f117523040`
+- `CEditor.cs` `443b08b53ed18df8`
 - `CEntry.cs` `b002c6eb80602df8`
 - `CErrand.cs` `8f73391eb2be162b`
 - `CEsteem.cs` `b08f4e56adee1280`

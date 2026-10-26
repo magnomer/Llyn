@@ -180,6 +180,27 @@ public sealed class TEditor
         Assert.Equal(string.Empty, editor.TEditorDraftRead()?.CEntryDraftHeadword);
     }
 
+    [Fact]
+    public void EditorWalk_OpenedEntry_OpensWithTheHeadwordAndStackRowsThenTheCards()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LEntry entry = TEditorEntryPrepare(engine);
+        TEditorFixture editor = TEditorPrepare(engine, "library");
+
+        editor.TEditorFixtureOpen(entry.LEntryId);
+
+        CEditor gate = editor.TEditorFixtureEditor;
+        Assert.Equal(4, gate.CEditorWalk.Count);
+        Assert.All(gate.CEditorWalk, static steps => Assert.All(
+            steps.Take(2), static step => Assert.Equal(new CStep(null, null, null), step)));
+        Assert.Equal(
+            editor.TEditorDraftRead()!.CEntryDraftMeanings.Select(static card => card.CCardDraftId),
+            gate.CEditorWalk[0].Skip(2).Select(static step => step.CStepCard!.CCardDraftId));
+        Assert.All(Enumerable.Range(0, 4), stack => Assert.Equal(
+            Enumerable.Range(2, gate.CEditorWalk[stack].Count - 2), gate.CEditorWalkCard[stack]));
+    }
+
     internal static LEntry TEditorEntryPrepare(LEngine engine)
     {
         return engine.TEngineEntrySave(TInterface.TEntryDraftCreate(

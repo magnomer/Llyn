@@ -82,6 +82,7 @@ internal static class TAuditDeportmentSetting
                 "CTranscriptionDraft",
                 "CReflexDraft",
                 "CCardDraft",
+                "CStep",
                 "CSentenceDraft",
                 "CExampleDraft",
                 "CGlossDraft",

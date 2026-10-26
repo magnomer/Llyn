@@ -130,7 +130,8 @@ internal sealed class BNavigation
         IReadOnlyDictionary<string, IReadOnlyList<string>> marks,
         BBlueprintPart roof,
         BBlueprintPart foot,
-        BCanvasWidth measure)
+        BCanvasWidth measure,
+        (bool CDeskBackward, bool CDeskForward)? chronicle = null)
     {
         ArgumentNullException.ThrowIfNull(catalog);
         ArgumentNullException.ThrowIfNull(state);
@@ -149,8 +150,12 @@ internal sealed class BNavigation
             ? (earlier, later)
             : ("<", ">");
         CVoyageState voyage = state.CNavigationStateVoyage;
-        string back = $"{retreat}{catalog.BLocalizationTextRead("Voyage.Retreat")}";
-        string forward = $"{catalog.BLocalizationTextRead("Voyage.Advance")}{advance}";
+        (string back, string forward, bool past, bool future) = chronicle is (bool undo, bool redo)
+            ? (catalog.BLocalizationTextRead("Chronicle.Undo"), catalog.BLocalizationTextRead("Chronicle.Redo"),
+                undo, redo)
+            : ($"{retreat}{catalog.BLocalizationTextRead("Voyage.Retreat")}",
+                $"{catalog.BLocalizationTextRead("Voyage.Advance")}{advance}",
+                voyage.CVoyageStatePast, voyage.CVoyageStateFuture);
         int span = Math.Min(measure.BCanvasWidthResolve(forward), foot.BBlueprintPartWidth);
         string theme = foot.BBlueprintPartTheme;
         texts.Add(new(
@@ -158,13 +163,13 @@ internal sealed class BNavigation
             foot.BBlueprintPartColumn,
             foot.BBlueprintPartWidth - span,
             back,
-            voyage.CVoyageStatePast ? theme : "disabled"));
+            past ? theme : "disabled"));
         texts.Add(new(
             foot.BBlueprintPartRow,
             foot.BBlueprintPartColumn + foot.BBlueprintPartWidth - span,
             span,
             forward,
-            voyage.CVoyageStateFuture ? theme : "disabled"));
+            future ? theme : "disabled"));
         return texts;
     }
 }

@@ -133,7 +133,7 @@ public sealed class TFavoriteTab
             });
     }
 
-    private static void TFavoriteTabRun(
+    internal static void TFavoriteTabRun(
         IReadOnlyList<(string, string, int)> favorites,
         Action<BLibrary, Action<ConsoleKeyInfo>, List<BSParley>> check)
     {
@@ -177,7 +177,7 @@ public sealed class TFavoriteTab
                 BKeymapRow? row = library.BLibraryKeymap.BKeymapFind(library.BLibraryKeymapFocus, key);
                 if (row is null)
                 {
-                    library.BLibraryObserve(key);
+                    library.BLibraryObserve(library.BLibraryKeymapFocus, key);
                 }
                 else
                 {

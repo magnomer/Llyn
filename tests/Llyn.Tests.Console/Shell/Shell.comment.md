@@ -226,7 +226,7 @@ Its Enter, Escape and F10 keys are shared with `TCapsulePathfinder`.
 
 ## Stamp
 
-Commit: `cb8ab7e8feb4`
+Commit: `c05429890cec`
 - `TBootstrap.cs` `c4356b19e67b4c41`
 - `TCabinet.cs` `ce20853cde2f2f7e`
 - `TCapsule.cs` `334a49f71ae77378`
@@ -235,5 +235,5 @@ Commit: `cb8ab7e8feb4`
 - `TEstablishmentFixture.cs` `d9e7172b48d235ca`
 - `THelp.cs` `67309dcfe0c0bf71`
 - `TRoof.cs` `d4ebea47cc21cee3`
-- `TWindow.cs` `d4ffb7f0ecaf06b2`
+- `TWindow.cs` `b561257947b5df5a`
 - `TWindowLayer.cs` `5a7fe8f88f8468df`

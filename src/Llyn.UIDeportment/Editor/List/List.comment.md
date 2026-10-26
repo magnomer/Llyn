@@ -92,7 +92,8 @@ Hints, folded peeks and fold shape follow every refill.
 
 ### `QCardHingeObserve`
 
-The verdict reaches `QLook.QLookCheckedRefine`, which restores refused clicks.
+The click runs the fold gate of the placard's walk step, and the verdict reaches `QLook.QLookCheckedRefine`, which restores refused clicks.
+A placard with no gate does nothing, since only a stored card has one.
 Accepted folds repaint through ready draft notifications.
 
 ### `QCardTitleObserve`
@@ -109,9 +110,10 @@ Conduct decides whether removal is allowed.
 
 ### `QCardRefine`
 
-Each draft claims one existing card by id or receives a new presentation item.
+Each walk step claims one existing card by id or receives a new presentation item.
+The step also carries the card's caret anchors, so no caret read happens per card here.
+Each claimed card is given its step last, which updates its fold and hinge.
 The caller says whether the list is the collocation list, and a new card is built with that flag.
-The same flag reads the card's caret anchors.
 The supplied draft order is authoritative.
 Reconciliation keeps its longest leading sequence found in the existing order, removing others and appending the remainder.
 Only that kept sequence retains controls and caret.
@@ -121,8 +123,8 @@ The caller chooses each new card's peek wording, which remains derived rather th
 ### `QCardDraftRefine`
 
 The supplied position is independent of loop position.
-The four chip fields take their anchors from one caret gate read, so every refill reseats each entry.
-Fold verdicts arrive last, allowing an in-place fold repaint after other fields are current.
+The four chip fields take their anchors from the step, so every refill reseats each entry.
+The step arrives last, allowing an in-place fold repaint after other fields are current.
 
 ## `QCardDrag`
 
@@ -280,10 +282,10 @@ The card arrives through the bulletin, already named and placed, so the form nev
 
 ## Stamp
 
-Commit: `8c403d1df768`
+Commit: `c05429890cec`
 - `QBond.cs` `884c7c93369269b3`
 - `QBondItem.cs` `91b81f9342fbd78b`
-- `QCard.cs` `87fdd0e31ff54533`
+- `QCard.cs` `80488a065104a067`
 - `QCardDrag.cs` `ea423f6c8d2c949f`
 - `QCardFold.cs` `e15e8aeeda7c7de4`
 - `QCardGesture.cs` `aadadf014410a661`

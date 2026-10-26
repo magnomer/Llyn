@@ -14,6 +14,8 @@ The shown name of a picture or video is the file name of its resolved address.
 Else it is the file name of its written location.
 When neither holds a file name, the address or the written location itself is the name.
 The written location is split at either slash or the drive colon, so Windows and Unix paths name alike.
+A store value that could not be read shows as uncertain and keeps its own text.
+Normalizing that value clears the uncertainty.
 
 ## `TCardPrepare`
 
@@ -85,8 +87,8 @@ A caret moved back inserts a picked row before its anchor and leaves the anchor 
 
 ## Stamp
 
-Commit: `36e31eb71c98`
-- `TCard.cs` `f0f31fd8f14ccd7f`
+Commit: `c05429890cec`
+- `TCard.cs` `0eea505cacdfc4fb`
 - `TCardList.cs` `9d1b8dcf0fd446e1`
 - `TCardReference.cs` `f8c14a236c5f5248`
 - `TCardRegister.cs` `7b6c2f10bb0fb535`

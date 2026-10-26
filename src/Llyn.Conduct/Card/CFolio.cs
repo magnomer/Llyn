@@ -47,7 +47,7 @@ internal static class CFolio
 
     internal static CStateValue CFolioStateRead(LStateValue value)
     {
-        return new CStateValue(value.LStateValuePlain, value.LStateValueUncertain);
+        return new CStateValue(value.LStateValuePlain, value.LStateValueUncertain || value.LStateValueUnreadable);
     }
 
     private static IReadOnlyList<CCardDraft> CFolioSheetRead(

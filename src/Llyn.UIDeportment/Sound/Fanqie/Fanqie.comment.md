@@ -136,7 +136,7 @@ The placement text as fetched shows alone when the row carries no parts.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `c05429890cec`
 - `QDiweiIndex.cs` `c713d0b1678d32c7`
 - `QFanqie.cs` `afbea8e8cc33b7bf`
 - `QFanqieCommand.cs` `998f6295db3e54af`
@@ -144,5 +144,5 @@ Commit: `2f9a06b8eb95`
 - `QFanqieLine.cs` `24b335be02441cde`
 - `QXiaoyun.cs` `765c81821544a46a`
 - `QXiaoyunItem.cs` `d353867b6c0b46be`
-- `QYunjing.cs` `50a3b5e93a271c14`
+- `QYunjing.cs` `7a1f03bdc17694a3`
 - `QYunjingItem.cs` `e4ac5133a1fbc7f7`

@@ -67,7 +67,10 @@ internal sealed class BIndex<BIndexRow>
         ArgumentNullException.ThrowIfNull(order);
         ArgumentNullException.ThrowIfNull(notice);
 
-        if (_bIndexLit is long lit && !rows.Any(entry => _bIndexKey(entry) == lit))
+        Func<IReadOnlyList<BIndexRow>, long?> chosen = listed => listed.Where(entry => _bIndexCells(entry).Item4)
+            .Select(entry => (long?)_bIndexKey(entry)).FirstOrDefault();
+        if ((_bIndexLit is long lit && !rows.Any(entry => _bIndexKey(entry) == lit))
+            || (chosen(rows) is long now && now != chosen(_bIndexRows)))
         {
             _bIndexLit = null;
         }

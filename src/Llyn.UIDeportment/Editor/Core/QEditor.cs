@@ -117,9 +117,9 @@ internal sealed class QEditor : QChronicleHost
         editor.CEditorEntry.CEntryDraftChanged += _qEditorSound.QEditorTimbreRefine;
         _qEditorFont.QEditorFontIntroduce(editor.CEditorEntry, editor.CEditorTimbre);
         editor.CEditorEntry.CEntryDraftChanged += _qEditorCard.QEditorCardSentence.QSentenceFrameRefine;
-        editor.CEditorEntry.CEntryDraftChanged += _qEditorCard.QEditorMeaningRefine;
-        editor.CEditorEntry.CEntryDraftChanged += _qEditorCard.QEditorCollocationRefine;
+        editor.CEditorWalkChanged += QEditorWalkRefine;
         editor.CEditorEntry.CEntryDraftChanged += _qEditorCard.QEditorCardSentence.QSentenceMentionRefine;
+        QEditorStateRefine();
     }
 
     internal void QEditorVisibleRefine(Visibility visible)
@@ -160,6 +160,12 @@ internal sealed class QEditor : QChronicleHost
         _qEditorSound.QEditorReadingRefine();
     }
 
+    private void QEditorWalkRefine()
+    {
+        _qEditorCard.QEditorMeaningRefine(_cEditor.CEditorWalk[0], _cEditor.CEditorWalkCard[0]);
+        _qEditorCard.QEditorCollocationRefine(_cEditor.CEditorWalk[1], _cEditor.CEditorWalkCard[1]);
+    }
+
     private void QEditorHeadwordObserve(object sender, TextChangedEventArgs e)
     {
         _cEditor.CEditorEntry.CEntryHeadwordSet(QEditorHeadword.Text);
@@ -181,7 +187,7 @@ internal sealed class QEditor : QChronicleHost
         _qEditorSurface.IsEnabled = desk.CDeskChronicle.CDeskChronicleRunning;
         QEditorDiscard.IsEnabled = desk.CDeskDraft.CDeskDraftAltered;
         QEditorStore.IsEnabled = desk.CDeskDraft.CDeskDraftStorable;
-        (bool undo, bool redo) = desk.CDeskChronicle.CDeskChronicleRead();
+        (bool undo, bool redo) = desk.CDeskChronicle.CDeskChronicleState;
         QEditorBackward.IsEnabled = undo;
         QEditorForward.IsEnabled = redo;
         QEditorChronicleChanged?.Invoke();
