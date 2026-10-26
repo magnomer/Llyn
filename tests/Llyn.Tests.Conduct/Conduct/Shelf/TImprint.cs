@@ -61,7 +61,7 @@ public sealed class TImprint
     }
 
     [Fact]
-    public void ImprintSave_UnchangedStoredSource_KeepsDraftHeld()
+    public void SessionSave_UnchangedStoredSource_KeepsDraftHeld()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

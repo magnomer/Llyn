@@ -12,6 +12,7 @@ internal sealed class TConsoleFake : BConsole
     private readonly Dictionary<string, string> _tConsoleFakePalette = new(StringComparer.Ordinal);
     private string[][]? _tConsoleFakeCells;
     private string?[][]? _tConsoleFakeTints;
+    private int _tConsoleFakeReads;
 
     public TConsoleFake()
     {
@@ -67,6 +68,8 @@ internal sealed class TConsoleFake : BConsole
 
     public string?[][] TConsoleFakeRoles =>
         _tConsoleFakeTints?.Select(static row => row.ToArray()).ToArray() ?? [];
+
+    public int TConsoleFakeReads => Volatile.Read(ref _tConsoleFakeReads);
 
     public static void TConsoleFakeRun(Action run, int seconds = 60)
     {
@@ -125,6 +128,25 @@ internal sealed class TConsoleFake : BConsole
     {
         _tConsoleFakeSizes.Enqueue((width, height));
         TConsoleFakeKeys.Add(default);
+    }
+
+    public void TConsoleFakeSettle(ConsoleKeyInfo key, BLoop loop, Action batch, CancellationToken stop)
+    {
+        int reads = TConsoleFakeReads;
+        TConsoleFakeKeys.Add(key);
+        if (!SpinWait.SpinUntil(() => TConsoleFakeReads > reads || stop.IsCancellationRequested, 5000)
+            || stop.IsCancellationRequested)
+        {
+            return;
+        }
+
+        TaskCompletionSource handled = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        loop.BLoopDefer(() => loop.BLoopDefer(() =>
+        {
+            batch();
+            handled.SetResult();
+        }));
+        _ = SpinWait.SpinUntil(() => handled.Task.IsCompleted || stop.IsCancellationRequested, 5000);
     }
 
     public override void BConsoleFramePrint(string frame)
@@ -206,6 +228,7 @@ internal sealed class TConsoleFake : BConsole
 
     public override ConsoleKeyInfo BConsoleKeyRead()
     {
+        Interlocked.Increment(ref _tConsoleFakeReads);
         lock (_tConsoleFakeSizes)
         {
             while (TConsoleFakeFrames.Count == 0 && Monitor.Wait(_tConsoleFakeSizes, 5000))

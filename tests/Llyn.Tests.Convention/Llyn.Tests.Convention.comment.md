@@ -138,12 +138,12 @@ Prefixes compare exactly.
 
 ## Stamp
 
-Commit: `8c403d1df768`
+Commit: `c37ca1837ded`
 - `Llyn.Tests.Convention.csproj` `ce887e848efbe5d9`
 - `TAuditConvention.cs` `0c3cf82c9fed7e99`
 - `TAuditHit.cs` `695336cb3b584873`
 - `TAuditLedger.cs` `3bf02bd2a94ba410`
-- `TAuditRatchet.cs` `5c3a1d13f6f273e7`
+- `TAuditRatchet.cs` `44c2e33eb2deca58`
 - `TAuditRatchetFile.cs` `37e313884cb78a2c`
 - `TAuditRatchetValue.cs` `ea836dbf301a0a7c`
 - `TAuditScope.cs` `142bda2f4e38438a`

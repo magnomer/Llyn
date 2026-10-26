@@ -68,6 +68,45 @@ public sealed class TCardReference
     }
 
     [Fact]
+    public void CitationRead_CitedAndUncitedSentence_HandsTheStoredTitle()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LReference notes = engine.TEngineCitationCreate("Field notes");
+        (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
+        (long sheet, long sentence) = TCard.TCardSentenceAdd(desk);
+        (long other, long uncited) = TCard.TCardSentenceAdd(desk);
+        card.CCardCitationSet(false, sheet, sentence, "Field notes");
+        string byline = card.CCardReferenceRead()
+            .Single(row => row.CCatalogReferenceId == notes.LReferenceId).CCatalogReferenceByline;
+
+        Assert.Equal(byline, card.CCardCitationRead(false, sheet, sentence));
+        Assert.Equal(string.Empty, card.CCardCitationRead(false, other, uncited));
+    }
+
+    [Fact]
+    public void CaretReferenceFind_StoredTitle_OffersNothingAndKeepsTheLantern()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineCitationCreate("Field notes");
+        LTag tag = engine.TEngineTagCreate("animal");
+        (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
+        (long sheet, long sentence) = TCard.TCardSentenceAdd(desk);
+        card.CCardCitationSet(false, sheet, sentence, "Field notes");
+        string title = card.CCardCitationRead(false, sheet, sentence);
+        CProffer offer = caret.CCaretTagAdd(false, sheet, "ani");
+        caret.CCaretLanternMove(1);
+
+        CProffer? echo = caret.CCaretReferenceFind(false, sheet, sentence, title);
+
+        Assert.Null(echo);
+        Assert.True(caret.CCaretLanternLit);
+        Assert.Equal(tag.LTagId, offer.CProfferRows[caret.CCaretLanternIndex].CProfferRowId);
+    }
+
+    [Fact]
     public void ReferenceFind_NineMatchingSources_OffersEight()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

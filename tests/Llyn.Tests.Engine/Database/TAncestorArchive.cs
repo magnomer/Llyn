@@ -98,7 +98,7 @@ public sealed class TAncestorArchive
     }
 
     [Fact]
-    public void BoxDelete_Child_TakesItsSourcesAway()
+    public void AncestorRead_BoxDeleted_TakesItsSourcesAway()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

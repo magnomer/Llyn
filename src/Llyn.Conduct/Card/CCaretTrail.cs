@@ -68,11 +68,6 @@ public sealed class CCaretTrail
         return LCaretTrailResolve(collocated, cardId).CCaretPosition;
     }
 
-    internal IReadOnlyList<long> CCaretTrailCopy(bool collocated, long cardId)
-    {
-        return LCaretTrailResolve(collocated, cardId).CCaretRow;
-    }
-
     private (IReadOnlyList<long> CCaretRow, int CCaretPosition) LCaretTrailResolve(bool collocated, long cardId)
     {
         LTenure? tenure = _cCaretTrailDesk.CDeskDraft.CDeskDraftTenure;

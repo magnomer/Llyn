@@ -17,4 +17,6 @@ internal sealed record BKeymapRow(
             BKeymapRowAction(key);
         }
     };
+
+    public char? BKeymapRowSign { get; init; }
 }

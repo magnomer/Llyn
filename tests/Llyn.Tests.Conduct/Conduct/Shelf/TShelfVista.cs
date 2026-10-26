@@ -203,7 +203,7 @@ public sealed class TShelfVista
     }
 
     [Fact]
-    public void ShelfEntryNotice_EntrySideClosed_ReshowsTheChosenSource()
+    public void ShelfEntryResonate_EntrySideClosed_ReshowsTheChosenSource()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -221,7 +221,7 @@ public sealed class TShelfVista
     }
 
     [Fact]
-    public void ShelfWorkspaceNotice_SourceShown_ClosesBothSides()
+    public void DiptychEntryClose_SourceShown_ClosesBothSides()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

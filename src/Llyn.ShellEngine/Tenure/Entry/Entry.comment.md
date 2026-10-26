@@ -36,10 +36,16 @@ Structural edits apply immediately, while typed title, expression and meaning va
 
 Chip edits and searches share the draft port used to resolve stored records and selected spans.
 List parsing can build several requests from one typed value, rather than one request per edit.
-Completed parts advance the requested insertion position before the remaining text is searched.
-The tag, situation and register adds answer the kept text, and each find is a separate call.
+A part advances the insertion position only once its request has landed, and the next part is then tried.
+The first part that fails to land stops the rest.
+The kept text keeps that part and what follows it.
+So a half-landed field shows exactly what is still to be typed or fixed.
+The tag, situation, register and translation adds answer the kept text.
+They hand the first fault out instead of throwing it.
+The caller shows that fault beside what did land, since the parts before it are already in the draft.
+Each find is a separate call.
 
-Tag, situation, register, reference, translation and mention searches catch nothing here.
+Tag, situation, register, reference and mention searches catch nothing here.
 A stale draft refuses the search, and the refusal reaches the Conduct caller that shows it.
 
 Citation resolution precedes its request in one method, so callers cannot reverse those operations.
@@ -49,6 +55,7 @@ The same edits take an example site internally, so a card sentence and the held 
 
 Translation resolution passes the draft's stored identity to the draft port.
 An unresolved translation keeps its typed text instead of clearing the field.
+A fault in the add answers the kept text with no dropdown and no search.
 A new translation court inherits the owner draft's origin before its target is linked.
 Removal unlinks first, then deletes any matching court and its target draft.
 
@@ -118,11 +125,11 @@ Typed text defers, while scheme picks apply immediately.
 
 ## Stamp
 
-Commit: `36e31eb71c98`
+Commit: `c37ca1837ded`
 - `LEasel.cs` `5262f25cced57f5a`
 - `LQuillAncestor.cs` `9a383e8186246a3b`
 - `LQuillCard.cs` `01ba2db86c718ee7`
-- `LQuillChip.cs` `304eddb966bcceff`
+- `LQuillChip.cs` `03b6c91d9667346b`
 - `LQuillEntry.cs` `923cb6b552ca3f64`
 - `LQuillPronunciation.cs` `705a829d2b1a3d36`
 - `LQuillReflex.cs` `0f96dbb24c7d79be`

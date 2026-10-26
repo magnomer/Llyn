@@ -95,9 +95,9 @@ The root sits under the temp folder and never has to exist, since no call here r
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `c37ca1837ded`
 - `TLocalization.cs` `1407ac74b05cbe5c`
-- `TLocalizationLoader.cs` `aef25aefe3308c74`
+- `TLocalizationLoader.cs` `5295711ef6b6255e`
 - `TPressClerk.cs` `bacfa606e4abd25e`
 - `TPressFile.cs` `82f2578d9e5e9c1d`
 - `TSettings.cs` `34444d3b99812ac2`

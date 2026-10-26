@@ -31,7 +31,7 @@ A name whose meaning must change is renamed everywhere in the same change.
 |---|---|---|
 | `-Help`, `-?` | Print the help and exit without doing anything else. | all |
 | `-Root` | Project root to work on, defaulting to the parent of `scripts/`. | AuditEncoding, AuditFake, AuditNames, AuditNamesNew, AuditObject, AuditPlatform, AuditStructure, SyncNames |
-| `-ConfigPath` | JSON configuration file, defaulting to the script's own file beside it. | Audit, AuditComments, AuditEncoding, AuditLines, AuditUI |
+| `-ConfigPath` | JSON configuration file, defaulting to the script's own file beside it. | Audit, AuditComments, AuditEncoding, AuditLines, AuditUI, ScanTest |
 | `-Configuration` | Build configuration, `Debug` or `Release`. | AuditUI, Test |
 | `-SourceRoots` | Source roots to scan, overriding `sources.roots`. | AuditComments, AuditLines |
 | `-Extensions` | File extensions to scan, overriding `sources.extensions`. | AuditLines |
@@ -41,14 +41,17 @@ A name whose meaning must change is renamed everywhere in the same change.
 | `-LimitThreshold` | Last line count that passes, overriding `thresholds.limit`. | AuditLines |
 | `-WarningThreshold` | Last line count below the warning band, overriding `thresholds.warning`. | AuditLines |
 | `-Commits` | How many recent commits feed the statistics. | AuditLines, VEstimate |
-| `-Top` | How many rows a console table shows. | AuditFake, AuditObject, AuditStructure, StatsSyntax, StatsWords, VEstimate |
+| `-Top` | How many rows a console table shows. | AuditFake, AuditObject, AuditStructure, ScanTest, StatsSyntax, StatsWords, VEstimate |
 | `-OutputPath` | File the Markdown output is written to. | AuditComments, AuditLines, AuditUI, TraceValue |
-| `-ReportDirectory` | Folder the Markdown report is written to under its versioned name. | AuditFake, AuditObject, AuditPlatform, AuditStructure |
-| `-Keep` | Keep the existing output instead of clearing it first. | Audit |
-| `-Open` | Open the report once the run finishes. | AuditComments, AuditEncoding, AuditFake, AuditLines, AuditNames, AuditObject, AuditPlatform, AuditStructure, AuditUI, Check |
-| `-NoOpen` | Write the page without opening it. | Audit, AuditComments, AuditEncoding, AuditFake, AuditLines, AuditLinesHistory, AuditNames, AuditObject, AuditObjectHistory, AuditPlatform, AuditStructure, AuditUI, StatsSyntax, StatsWords |
-| `-NoPause` | Never stop at a console page. | AuditComments, AuditFake, AuditLines, AuditNames, AuditObject, AuditPlatform, AuditStructure, StatsSyntax, StatsWords, VEstimate |
+| `-ReportDirectory` | Folder the Markdown report is written to under its versioned name. | AuditFake, AuditObject, AuditPlatform, AuditStructure, ScanTest |
+| `-Keep` | Keep the existing output instead of clearing it first. | Audit, Report |
+| `-Open` | Open the report once the run finishes. | AuditComments, AuditEncoding, AuditFake, AuditLines, AuditNames, AuditObject, AuditPlatform, AuditStructure, AuditUI, Check, ScanTest |
+| `-NoOpen` | Write the page without opening it. | Audit, AuditComments, AuditEncoding, AuditFake, AuditLines, AuditLinesHistory, AuditNames, AuditObject, AuditObjectHistory, AuditPlatform, AuditStructure, AuditUI, Report, ScanTest, StatsSyntax, StatsWords |
+| `-NoPause` | Never stop at a console page. | AuditComments, AuditFake, AuditLines, AuditNames, AuditObject, AuditPlatform, AuditStructure, ScanTest, StatsSyntax, StatsWords, VEstimate |
 | `-Name` | Symbol names the walk starts from. | Test, TraceSymbol |
+| `-Changed` | Narrow the run to the symbols holding the lines changed since `-Since`, staged or not. | Test, TraceSymbol |
+| `-Since` | Revision or tree that `-Changed` compares the working tree with, HEAD by default. | Test, TraceSymbol |
+| `-Platform` | Run only the test projects that `Test.json` maps to the platform, `All` by default. | Test |
 | `-Depth` | Maximum hops a walk takes, where 0 walks until nothing new turns up. | TraceSymbol, TraceValue |
 | `-Entry` | Method that takes the injected value. | TraceValue |
 | `-Value` | Value injected into the entry. | TraceValue |
@@ -75,6 +78,9 @@ A name whose meaning must change is renamed everywhere in the same change.
 | `-Repeat` | Number of runs, stopping at the first failure. | Test |
 | `-Verbosity` | Logging level passed to `dotnet test`. | Test |
 | `-AdditionalArguments` | Arguments passed unchanged to `dotnet test`. | Test |
+| `-Trx` | Test result files, or folders of them, that an earlier test run left. | ScanTest |
+| `-NoHistory` | Skip the git history read. | ScanTest |
+| `-KeepTrx` | Keep a test result file per project and run for later scans. | Test |
 | `-Runtime` | Runtime identifier for the .NET publish. | Debug |
 | `-TempOnly` | Remove only stray WPF temporary-project files. | Clean |
 | `-IdeCache` | Also reset the VS Code C# Dev Kit workspace cache. | Clean |

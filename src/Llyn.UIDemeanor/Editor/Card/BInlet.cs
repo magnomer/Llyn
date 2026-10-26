@@ -9,7 +9,7 @@ internal sealed class BInlet
 {
     private const int BInletPage = 6;
 
-    private const int BInletIndent = 4;
+    private const int BInletIndent = 3;
 
     private const string BInletGap = "  ";
 
@@ -223,24 +223,12 @@ internal sealed class BInlet
             tokens.Add((hint, "muted", false));
         }
 
-        int gap = measure.BCanvasWidthResolve(BInletGap);
-        List<List<(int, int, string, string, bool)>> lines = [[]];
-        int edge = 0;
-        foreach ((string text, string role, bool entry) in tokens)
-        {
-            int cells = !entry ? measure.BCanvasWidthResolve(text)
-                : Math.Min(Math.Max(measure.BCanvasWidthResolve(text) + 1,
-                    bare && text.Length == 0 ?measure.BCanvasWidthResolve(hint) : 1), room);
-            if (edge > 0 && edge + cells > room)
-            {
-                lines.Add([]);
-                edge = 0;
-            }
-
-            lines[^1].Add((edge, cells, text, role, entry));
-            edge += cells + gap;
-        }
-
+        List<List<(int, int, string, string, bool)>> lines = BEditorSight.BEditorSightDivide(
+            [.. tokens.Select(token => (!token.Item3 ? measure.BCanvasWidthResolve(token.Item1)
+                : Math.Min(Math.Max(measure.BCanvasWidthResolve(token.Item1) + 1,
+                    bare && token.Item1.Length == 0 ? measure.BCanvasWidthResolve(hint) : 1), room), token))],
+            room,
+            measure.BCanvasWidthResolve(BInletGap));
         int start = column + BInletIndent;
         return [.. lines.Select(pieces => ((Func<int, IEnumerable<BCanvasText>>)(line =>
         {

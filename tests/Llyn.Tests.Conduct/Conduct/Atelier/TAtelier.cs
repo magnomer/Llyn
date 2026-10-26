@@ -36,7 +36,7 @@ public sealed class TAtelier
     }
 
     [Fact]
-    public void AtelierRead_FreshEngine_ReadsDefaultVolumeAndSplit()
+    public void AtelierVolumeRead_FreshEngine_ReadsDefaultVolumeAndSplit()
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());

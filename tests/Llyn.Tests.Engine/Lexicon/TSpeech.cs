@@ -74,7 +74,7 @@ public sealed class TSpeech
     }
 
     [Fact]
-    public void InflectionUpdate_AppendedMovedDeleted_ReadsBackEachStep()
+    public void EntryInflectionSave_AppendedMovedDeleted_ReadsBackEachStep()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -13,6 +13,10 @@ The queue observer tolerates construction before the gauge is assigned.
 
 The turn serializes application, restoration, preparation and commit.
 The gate protects lifetime checks and queue state within those turns.
+A caller that must keep going after a failure uses the overload that hands the fault out.
+It also answers whether the request landed.
+A refused request does not land, though the draft is reread through its bulletin.
+The other overload rethrows that fault with its stack.
 Immediate edits flush pending typing first, so an earlier typed change is not applied after a deliberate pick.
 Readiness and change checks also persist pending typing before reading the gauge.
 
@@ -43,6 +47,8 @@ Its live state requires both an unended lifetime and no retained fault.
 Deferred dispatch takes requests and checks live state in one gate hold.
 Application happens after releasing that gate, while the caller holds the turn.
 Refused requests do not stop later requests in the batch.
+Application answers whether every request landed, and null when the queue ended or halted part-way.
+The gauge observer is raised once afterwards, and only on a non-null answer, so a halted queue stays quiet.
 Each refused request raises a draft bulletin carrying its refusal, so observers reread the draft.
 Other failures retain the first fault and stop application.
 Suspension also drops pending requests at the chronicle clerk.
@@ -174,13 +180,13 @@ Session clearing removes every transcription scheme along with candidate and rec
 
 ## Stamp
 
-Commit: `52c21d68b4c4`
+Commit: `c37ca1837ded`
 - `LErrand.cs` `c61ceb9f8ddc5692`
 - `LForay.cs` `eb0b0946abaaf6ee`
 - `LPosture.cs` `1c14bb4b431dac60`
-- `LTenure.cs` `e482dc12cd6bda4f`
+- `LTenure.cs` `9771e085177e8560`
 - `LTenureGauge.cs` `05df6162da764173`
 - `LTenureHerald.cs` `f36aae6150e1b18d`
-- `LTenureQueue.cs` `31568e59a98da620`
+- `LTenureQueue.cs` `f2133dba1e7d86b6`
 - `LTrove.cs` `3ee760245e6b7943`
 - `LVista.cs` `6e86b081ea0753e2`

@@ -197,8 +197,8 @@ public sealed class TEngineFanqie
 
         Assert.Empty(engine.TEngineFanqieRead(entry.LEntryId));
         engine.TEngineFanqieStart(entry.LEntryId);
-        await Task.Delay(200);
 
+        Assert.False(engine.TEngineFanqieCheck(entry.LEntryId));
         Assert.Equal(2, handler.TSourceHandlerCount);
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM fanqie;"));
     }

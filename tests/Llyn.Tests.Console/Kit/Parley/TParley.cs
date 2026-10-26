@@ -127,7 +127,7 @@ public sealed class TParley
     }
 
     [Fact]
-    public void ParleyCreate_NoButtonsNoBody_Throws()
+    public void Parley_NoButtonsNoBody_Throws()
     {
         Assert.Throws<ArgumentOutOfRangeException>(() => new BSParley(
             new ABootstrap().BBlueprintParts["ASParley"], "Llyn", "dialog", [new("Text", false)], [], 0));

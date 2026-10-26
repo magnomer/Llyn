@@ -282,10 +282,10 @@ The card arrives through the bulletin, already named and placed, so the form nev
 
 ## Stamp
 
-Commit: `c05429890cec`
+Commit: `c37ca1837ded`
 - `QBond.cs` `884c7c93369269b3`
 - `QBondItem.cs` `91b81f9342fbd78b`
-- `QCard.cs` `80488a065104a067`
+- `QCard.cs` `dfc5f0a259021213`
 - `QCardDrag.cs` `ea423f6c8d2c949f`
 - `QCardFold.cs` `e15e8aeeda7c7de4`
 - `QCardGesture.cs` `aadadf014410a661`

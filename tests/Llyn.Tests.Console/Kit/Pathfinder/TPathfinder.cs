@@ -22,7 +22,7 @@ public sealed class TPathfinder
     }
 
     [Fact]
-    public void PathfinderWorkspace_Escape_AnswersNull()
+    public void EnvoyWorkspaceRead_Escape_AnswersNull()
     {
         string? answer = TPathfinderRun(
             [], _ => [TPathfinderEscape], static (envoy, root) => envoy.CEnvoyWorkspaceRead(root), out var shots);
@@ -328,6 +328,7 @@ public sealed class TPathfinder
 
             TConsoleFake console = new() { TConsoleFakeTerminal = true };
             using CancellationTokenSource finished = new();
+            (BLoop? loop, BWindow? window) = (null, null);
             Task feeder = Task.Run(() =>
             {
                 SpinWait.SpinUntil(
@@ -337,9 +338,7 @@ public sealed class TPathfinder
                     5000);
                 foreach (ConsoleKeyInfo key in keys(root))
                 {
-                    int count = console.TConsoleFakeFrames.Count;
-                    console.TConsoleFakeKeys.Add(key);
-                    SpinWait.SpinUntil(() => console.TConsoleFakeFrames.Count > count, 5000);
+                    console.TConsoleFakeSettle(key, loop!, window!.BWindowBatchObserve, finished.Token);
                 }
 
                 for (int exit = 0; exit < 4 && !finished.IsCancellationRequested; exit++)
@@ -352,7 +351,11 @@ public sealed class TPathfinder
             });
 
             object? answer = TEnvoy.TEnvoyRun(
-                console, envoy => ask(envoy, root), prime: prime, folder: folder, drives: drives);
+                console, envoy => ask(envoy, root), folder: folder, drives: drives, prime: shown =>
+                {
+                    (loop, window) = ((BLoop)SynchronizationContext.Current!, shown);
+                    prime?.Invoke(shown);
+                });
             finished.Cancel();
             feeder.Wait();
             shots = [.. console.TConsoleFakeShots.Select(static shot => string.Join('\n', shot))

@@ -93,8 +93,8 @@ public sealed class TEditorSight
     }
 
     [Theory]
-    [InlineData(2, false)]
-    [InlineData(3, true)]
+    [InlineData(1, false)]
+    [InlineData(2, true)]
     public void EditorDraw_RowsAgainstTheSide_ShowThumbAndHiddenCountOnlyPastTheFit(int cards, bool overflows)
     {
         TEditorFrame.TEditorFrameRun(
@@ -215,5 +215,58 @@ public sealed class TEditorSight
                 Assert.StartsWith("fire", field.BCanvasTextValue);
             },
             seed: static engine => engine.TEngineDelaySet(0));
+    }
+
+    [Fact]
+    public void EditorDraw_PasteFailingAfterTheFirstPart_KeepsTheUntriedPart()
+    {
+        bool failing = false;
+        List<string> asked = [];
+        TEditorInlet.TEditorInletRun(
+            1,
+            (library, _) =>
+            {
+                TEditorInlet.TEditorInletSend(library, "d");
+                failing = true;
+
+                TEditorSightSend(library, "ry,rain,");
+                failing = false;
+
+                IReadOnlyList<BCanvasText> texts = TEditorFrame.TEditorFrameDraw(library);
+                Assert.Contains("Input.UpdateFailed", asked);
+                Assert.Contains(texts, static text => text.BCanvasTextValue == "[dry]");
+                Assert.DoesNotContain(texts, static text => text.BCanvasTextValue == "[rain]");
+                Assert.Contains(texts, static text => TEditorInlet.TEditorInletMatch(text)
+                    && text.BCanvasTextValue.Contains("rain", StringComparison.Ordinal));
+            },
+            engine => engine.TEngineObserverAttach(bulletin =>
+            {
+                if (failing && bulletin.LBulletinSubject == LSubject.LSubjectTenure)
+                {
+                    throw new InvalidOperationException("The tenure observer failed.");
+                }
+            }),
+            asked);
+    }
+
+    private static void TEditorSightSend(BLibrary library, string pasted)
+    {
+        foreach (char letter in pasted)
+        {
+            ConsoleKeyInfo key = new(letter, letter == ',' ? ConsoleKey.OemComma : ConsoleKey.A, false, false, false);
+            if (library.BLibraryKeymap.BKeymapFind(library.BLibraryKeymapFocus, key) is BKeymapRow row)
+            {
+                row.BKeymapRowAction(key);
+            }
+            else
+            {
+                library.BLibraryObserve(library.BLibraryKeymapFocus, key);
+            }
+        }
+
+        BLoop loop = Assert.IsType<BLoop>(SynchronizationContext.Current);
+        TaskCompletionSource settled = new();
+        loop.BLoopDefer(settled.SetResult);
+        loop.BLoopRun(settled.Task.WaitAsync(TimeSpan.FromSeconds(10)));
     }
 }

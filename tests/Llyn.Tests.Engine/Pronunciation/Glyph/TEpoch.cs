@@ -33,22 +33,19 @@ public sealed class TEpoch
         }
     }
 
-    [Fact]
-    public void EpochResolve_ClericalCaption_ReadsAnAgeAfterTheBronzes()
+    [Theory]
+    [InlineData("老子乙227上 西漢", "HanWestern", "老子乙227上")]
+    [InlineData("西周早期 大盂鼎", "ZhouWesternEarly", "大盂鼎")]
+    [InlineData("天尹鐘 西周晚期 集成5", "ZhouWesternLate", "天尹鐘 集成5")]
+    [InlineData("王作女乙瓦弄卣 商代晚期 集成5102", "ShangLate", "王作女乙瓦弄卣 集成5102")]
+    [InlineData("君子之弄鼎 春秋晚期或戰國早期 集成2086", "SpringAutumnLate", "君子之弄鼎 集成2086")]
+    public void EpochResolve_ChronologyInCaption_CutsChronologyOut(
+        string text, string expectedCode, string expectedCaption)
     {
-        (string code, string caption) = TInterface.TEpochResolve(TEpochTableRead(), "老子乙227上 西漢");
+        (string code, string caption) = TInterface.TEpochResolve(TEpochTableRead(), text);
 
-        Assert.Equal("HanWestern", code);
-        Assert.Equal("老子乙227上", caption);
-    }
-
-    [Fact]
-    public void EpochResolve_DatedCaption_CutsChronologyAndKeepsName()
-    {
-        (string code, string caption) = TInterface.TEpochResolve(TEpochTableRead(), "西周早期 大盂鼎");
-
-        Assert.Equal("ZhouWesternEarly", code);
-        Assert.Equal("大盂鼎", caption);
+        Assert.Equal(expectedCode, code);
+        Assert.Equal(expectedCaption, caption);
     }
 
     [Fact]
@@ -67,50 +64,15 @@ public sealed class TEpoch
         Assert.Equal(string.Empty, caption);
     }
 
-    [Fact]
-    public void EpochResolve_ChronologyInsideCaption_CutsItAndJoinsWhatRemains()
+    [Theory]
+    [InlineData("商鞅方升")]
+    [InlineData("新石器時代 陶文")]
+    public void EpochResolve_UnlistedWording_KeepsCaptionWhole(string text)
     {
-        (string code, string caption) = TInterface.TEpochResolve(TEpochTableRead(), "天尹鐘 西周晚期 集成5");
-
-        Assert.Equal("ZhouWesternLate", code);
-        Assert.Equal("天尹鐘 集成5", caption);
-    }
-
-    [Fact]
-    public void EpochResolve_DynastyWrittenWithItsAge_ReadsTheDynastyForm()
-    {
-        (string code, string caption) = TInterface.TEpochResolve(TEpochTableRead(), "王作女乙瓦弄卣 商代晚期 集成5102");
-
-        Assert.Equal("ShangLate", code);
-        Assert.Equal("王作女乙瓦弄卣 集成5102", caption);
-    }
-
-    [Fact]
-    public void EpochResolve_ChronologyBetweenTwoAges_TakesTheEarlierOne()
-    {
-        (string code, string caption) = TInterface.TEpochResolve(
-            TEpochTableRead(), "君子之弄鼎 春秋晚期或戰國早期 集成2086");
-
-        Assert.Equal("SpringAutumnLate", code);
-        Assert.Equal("君子之弄鼎 集成2086", caption);
-    }
-
-    [Fact]
-    public void EpochResolve_LabelStartingAName_LeavesTheCaptionWhole()
-    {
-        (string code, string caption) = TInterface.TEpochResolve(TEpochTableRead(), "商鞅方升");
+        (string code, string caption) = TInterface.TEpochResolve(TEpochTableRead(), text);
 
         Assert.Equal(string.Empty, code);
-        Assert.Equal("商鞅方升", caption);
-    }
-
-    [Fact]
-    public void EpochResolve_UnlistedChronology_LeavesTheCaptionWhole()
-    {
-        (string code, string caption) = TInterface.TEpochResolve(TEpochTableRead(), "新石器時代 陶文");
-
-        Assert.Equal(string.Empty, code);
-        Assert.Equal("新石器時代 陶文", caption);
+        Assert.Equal(text, caption);
     }
 
     [Fact]
@@ -129,7 +91,10 @@ public sealed class TEpoch
     {
         IReadOnlyDictionary<string, string> texts = TInterface.TLocalizationLoaderRead(language);
 
-        foreach (LEpoch epoch in TEpochTableRead())
+        LEpoch[] epochs = [.. TEpochTableRead()];
+        Assert.NotEmpty(epochs);
+
+        foreach (LEpoch epoch in epochs)
         {
             Assert.True(texts.ContainsKey("Epoch." + epoch.LEpochCode), epoch.LEpochCode);
         }

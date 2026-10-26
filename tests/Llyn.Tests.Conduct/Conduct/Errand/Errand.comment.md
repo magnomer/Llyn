@@ -103,9 +103,9 @@ It is addressed only while it carries a non-empty address.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c37ca1837ded`
 - `TCandidate.cs` `ea5097af3de7a77c`
-- `TErrand.cs` `b09faf6aa61a038d`
+- `TErrand.cs` `531f5cecd763e2c8`
 - `TErrandClip.cs` `8f7981aa9bfcfdf1`
 - `TErrandFault.cs` `fc7504c00cfc67f5`
 - `TErrandNotation.cs` `2cf220a9fd7b420f`

@@ -28,7 +28,7 @@ public sealed class TTenor
     }
 
     [Fact]
-    public void TenorEmptyKey_BlankOrWrittenSearch_PicksVacantOrUnmatched()
+    public void ApertureKey_BlankOrWrittenSearch_PicksVacantOrUnmatched()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -46,7 +46,7 @@ public sealed class TTenor
     }
 
     [Fact]
-    public void TenorOrderSet_ReverseThenNull_KeepsTheChosenOrderAndRaisesTheRows()
+    public void ApertureOrderSet_ReverseThenNull_KeepsTheChosenOrderAndRaisesTheRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -72,7 +72,7 @@ public sealed class TTenor
     }
 
     [Fact]
-    public void TenorQuerySet_UnmatchedText_ListsNoRegister()
+    public void ApertureQuerySet_UnmatchedText_ListsNoRegister()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -86,7 +86,7 @@ public sealed class TTenor
     }
 
     [Fact]
-    public void TenorFilterSet_HiddenLanguage_MarksTheTenorFiltered()
+    public void ApertureFilterSet_HiddenLanguage_MarksTheTenorFiltered()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -104,7 +104,7 @@ public sealed class TTenor
     }
 
     [Fact]
-    public async Task TenorPortraitExport_EntryShown_WritesItAndNothingBefore()
+    public async Task CohortPortraitExport_EntryShown_WritesItAndNothingBefore()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

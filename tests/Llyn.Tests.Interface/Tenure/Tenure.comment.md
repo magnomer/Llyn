@@ -136,12 +136,12 @@ The trove is internal to the engine assembly, which opens its internals to this 
 
 ## Stamp
 
-Commit: `8c403d1df768`
+Commit: `c37ca1837ded`
 - `TInterfaceEasel.cs` `85794cef9fa8c59f`
 - `TInterfaceForay.cs` `c27bc21fc41ef185`
 - `TInterfaceQuill.cs` `cf4b85fcb5a0e059`
-- `TInterfaceRequest.cs` `d73be8223e74af37`
+- `TInterfaceRequest.cs` `3376be3bd1620197`
 - `TInterfaceRequestApply.cs` `19486760529f7682`
-- `TInterfaceTenure.cs` `5da235aa228ec8bc`
+- `TInterfaceTenure.cs` `19c4a4cc8df63cdb`
 - `TInterfaceTenureObserver.cs` `67d3fb0c717acc3b`
 - `TInterfaceTrove.cs` `235f0018d4f4689c`

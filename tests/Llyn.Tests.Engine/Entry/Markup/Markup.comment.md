@@ -149,11 +149,11 @@ The counts are what a replacement would drop, nested cards included.
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `c37ca1837ded`
 - `TMarkupAncestor.cs` `64b1d4fafbcd9164`
 - `TMarkupCargo.cs` `4d32e994f2b00697`
 - `TMarkupClerkImporting.cs` `9bb3ac18987a3b9b`
-- `TMarkupExporting.cs` `21b4ed675ba53237`
+- `TMarkupExporting.cs` `238c32377f67ef8b`
 - `TMarkupImporting.cs` `8d86de7909f3b53d`
 - `TMarkupLink.cs` `3c865b1d6a8a9897`
 - `TMarkupMerge.cs` `1334450da1c9ffff`

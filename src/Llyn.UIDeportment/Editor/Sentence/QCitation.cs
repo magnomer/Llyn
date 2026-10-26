@@ -33,8 +33,6 @@ internal sealed class QCitation
         _qCitationProffer = proffer;
     }
 
-    internal ObservableCollection<QCitationItem> QCitationCatalog { get; } = [];
-
     internal void QCitationIntroduce(CCard card, CCaret caret, CSentence sentence, CAtelier atelier)
     {
         _cCard = card;
@@ -64,7 +62,7 @@ internal sealed class QCitation
 
     private void QCitationFieldRefine(object sender, TextChangedEventArgs e)
     {
-        if (sender is TextBox { IsKeyboardFocusWithin: true, DataContext: QPassage row } box
+        if (sender is TextBox { DataContext: QPassage row } box
             && _qCitationSentence.QSentenceCardFind(row) is QPlacard card)
         {
             _qCitationProffer.QProfferCitationRefine(
@@ -75,12 +73,6 @@ internal sealed class QCitation
 
     private void QCitationCatalogRefine()
     {
-        QCitationCatalog.Clear();
-        foreach (CCatalogReference row in _cCard.CCardReferenceRead())
-        {
-            QCitationCatalog.Add(QCitationItem.QCitationItemCreate(row));
-        }
-
         foreach (QPlacard card in _qCitationMeaning.Concat(_qCitationCollocation))
         {
             foreach (QPassage row in card.QCardSentence.QCardSentenceRow)
@@ -100,9 +92,9 @@ internal sealed class QCitation
         }
 
         e.Handled = true;
-        _cCard.CCardCitationSet(card.QPlacardCollocated, card.QPlacardId, row.QPassageRow, box.Text);
+        string title = _cCard.CCardCitationSet(card.QPlacardCollocated, card.QPlacardId, row.QPassageRow, box.Text);
         _qCitationProffer.QProfferShutRefine();
-        QCitationTextRefine(box);
+        box.Text = title;
     }
 
     private void QCitationEscapeRefine(object sender, KeyEventArgs e)
@@ -127,11 +119,13 @@ internal sealed class QCitation
         QCitationTextRefine(box);
     }
 
-    private static void QCitationTextRefine(TextBox box)
+    internal void QCitationTextRefine(TextBox box)
     {
         if (box.DataContext is QPassage row)
         {
-            box.Text = QPassage.QPassageCitationFind(row.QPassageCitationCatalog, row.QPassageCitation);
+            box.Text = _qCitationSentence.QSentenceCardFind(row) is QPlacard card
+                ? _cCard.CCardCitationRead(card.QPlacardCollocated, card.QPlacardId, row.QPassageRow)
+                : string.Empty;
         }
     }
 }

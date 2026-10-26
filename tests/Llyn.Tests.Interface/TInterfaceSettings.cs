@@ -132,14 +132,4 @@ internal static partial class TInterface
     {
         posture.LPostureLayoutSave(layout);
     }
-
-    internal static void TEngineLeftSave(this LEngine engine, long? id)
-    {
-        engine.LEngineWorkspace.LEngineLeftSave(id);
-    }
-
-    internal static void TEngineRightSave(this LEngine engine, long? id)
-    {
-        engine.LEngineWorkspace.LEngineRightSave(id);
-    }
 }

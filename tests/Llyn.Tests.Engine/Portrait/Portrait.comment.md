@@ -153,13 +153,13 @@ A selected Example in the corpus view opens the press over the Example text.
 
 ## Stamp
 
-Commit: `8c403d1df768`
+Commit: `c37ca1837ded`
 - `TCitationPage.cs` `bbba4a3d7bb84873`
-- `TPortraitClerk.cs` `c69cf83f9713e596`
+- `TPortraitClerk.cs` `dd01a3038430b87f`
 - `TPortraitEntry.cs` `0ba74d6b0bd111a9`
 - `TPortraitExporting.cs` `bc7bcef2e8061fb9`
 - `TPortraitFolio.cs` `e9389e56a2c4ecb1`
 - `TPortraitOutline.cs` `3312559e8e1f3164`
-- `TPortraitPage.cs` `6bb628aabbfd96d7`
+- `TPortraitPage.cs` `a0b6668611cdb270`
 - `TPortraitSample.cs` `741c3d7a438cdc57`
 - `TPortraitVista.cs` `22284381645c0ddc`

@@ -21,9 +21,6 @@ internal static class TInterfaceDeportment
     internal static QLecternReflex TLecternCreate(CDisplay display, FrameworkElement surface) =>
         new(surface, display.CDisplaySound);
 
-    internal static (bool CDeskBackward, bool CDeskForward) TDeskChronicleRead(this CDesk desk) =>
-        desk.CDeskChronicle.CDeskChronicleRead();
-
     internal static QPosture TPostureCreate(string root)
     {
         QPosture posture = new();
@@ -92,7 +89,6 @@ internal static class TInterfaceDeportment
             [],
             [],
             [],
-            [],
             static card => card.QPlacardDefinition,
             new CCardDraft(0, 0, blank, blank, blank, [], [], [], [], [], [], [], false, false, []));
     }
@@ -127,7 +123,7 @@ internal static class TInterfaceDeportment
     internal static object TCardFoldCreate(CStep step)
     {
         return new QPlacard(
-            string.Empty, false, [], [], [], [], static row => row.QPlacardDefinition, step.CStepCard!)
+            string.Empty, false, [], [], [], static row => row.QPlacardDefinition, step.CStepCard!)
         {
             QPlacardStep = step,
         };
@@ -138,7 +134,7 @@ internal static class TInterfaceDeportment
 
     internal static void TCardHingeAttach(ItemsControl list, CEditor editor)
     {
-        QCard card = new(null!, null!, null!, null!, null!, null!, null!, null!, null!, null!, []);
+        QCard card = new(null!, null!, null!, null!, null!, null!, null!, null!, null!, []);
         card.QCardIntroduce(editor.CEditorField, editor.CEditorList, editor.CEditorCaret);
         QLookItem.QLookItemAttach(list, card.QCardApply);
     }

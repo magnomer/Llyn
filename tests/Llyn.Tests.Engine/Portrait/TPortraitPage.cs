@@ -107,7 +107,7 @@ public sealed class TPortraitPage
     }
 
     [Fact]
-    public void SheetPageFormat_FullPage_CarriesTitleChipsAndSections()
+    public void SheetFormat_FullPage_CarriesTitleChipsAndSections()
     {
         LPortraitPage page = TInterface.TPortraitPageCreate(
             "The fire <kindled>.",

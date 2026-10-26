@@ -7,18 +7,15 @@ namespace Llyn.UIDeportment;
 
 internal sealed class QCardSentence
 {
-    private readonly ObservableCollection<QCitationItem> _qCardSentenceCitation;
     private readonly ObservableCollection<string> _qCardSentenceParticle;
     private readonly ObservableCollection<string> _qCardSentenceDependence;
     private readonly ObservableCollection<QLanguageItem> _qCardSentenceLanguage;
 
     internal QCardSentence(
-        ObservableCollection<QCitationItem> catalog,
         ObservableCollection<string> particles,
         ObservableCollection<string> dependences,
         ObservableCollection<QLanguageItem> languages)
     {
-        _qCardSentenceCitation = catalog;
         _qCardSentenceParticle = particles;
         _qCardSentenceDependence = dependences;
         _qCardSentenceLanguage = languages;
@@ -58,8 +55,7 @@ internal sealed class QCardSentence
 
     private QPassage QCardSentenceCreate(CSentenceDraft draft, CSentenceOrder? order)
     {
-        QPassage row = new(
-            _qCardSentenceCitation, _qCardSentenceParticle, _qCardSentenceDependence, _qCardSentenceLanguage, draft);
+        QPassage row = new(_qCardSentenceParticle, _qCardSentenceDependence, _qCardSentenceLanguage, draft);
         if (order is not null)
         {
             row.QSentenceFrame.QSentenceFrameApply(order);

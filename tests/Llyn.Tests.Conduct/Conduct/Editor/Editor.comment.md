@@ -94,9 +94,9 @@ These two hostile cases build the marks on a stored entry over `TDisplayGrasp.TG
 
 ## Stamp
 
-Commit: `c05429890cec`
-- `TEditor.cs` `062471cb7cfa4bb1`
-- `TEditorField.cs` `846031195c853678`
+Commit: `c37ca1837ded`
+- `TEditor.cs` `6f65f7ca97ec5d82`
+- `TEditorField.cs` `e28e179f46437064`
 - `TEditorFresh.cs` `0f095b23c43c4cd3`
-- `TEditorUnit.cs` `38c4aeb9ce8622e6`
+- `TEditorUnit.cs` `3eb1243ef8f136af`
 - `TEsteem.cs` `5ddb21513d0a534a`

@@ -88,18 +88,22 @@ internal sealed class LTenureQueue
             }
         }
 
-        LTenureQueueApply(taken);
+        if (LTenureQueueApply(taken) is not null)
+        {
+            LTenureQueueRaise();
+        }
     }
 
-    internal void LTenureQueueApply(IReadOnlyList<LRequest> requests)
+    internal bool? LTenureQueueApply(IReadOnlyList<LRequest> requests)
     {
+        bool landed = true;
         foreach (LRequest request in requests)
         {
             lock (_lTenureQueueGate)
             {
                 if (!LTenureQueueLive)
                 {
-                    return;
+                    return null;
                 }
             }
 
@@ -109,16 +113,22 @@ internal sealed class LTenureQueue
             }
             catch (Exception exception) when (LWorkspaceClerk.LWorkspaceRefusedCheck(exception))
             {
+                landed = false;
                 _lTenureQueueEngine.LEngineHearth.LEngineBulletinRaise(
                     LSubject.LSubjectDraft, _lTenureQueueId, exception);
             }
             catch (Exception exception)
             {
                 LTenureQueueSuspend(exception);
-                return;
+                return null;
             }
         }
 
+        return landed;
+    }
+
+    internal void LTenureQueueRaise()
+    {
         _lTenureQueueObserver();
     }
 

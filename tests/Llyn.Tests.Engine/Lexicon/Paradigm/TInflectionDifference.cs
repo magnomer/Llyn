@@ -5,14 +5,18 @@ namespace Llyn.Tests;
 
 public sealed class TInflectionDifference
 {
-    [Fact]
-    public void InflectionDifferenceScan_FoldedDigraph_MarksBothLetters()
+    [Theory]
+    [InlineData("bose", "bosque", 3, 2)]
+    [InlineData("cantamos", "cantábamos", 5, 2)]
+    public void InflectionDifferenceScan_FoldedOrInserted_MarksRange(
+        string predicted, string actual, int start, int length)
     {
         IReadOnlyList<LInflectionRule> folds = TInflectionBook.TInflectionBookCreate().LInflectionBookFolds;
 
-        IReadOnlyList<LInflectionMark> marks = TInterfaceInflection.TInflectionDifferenceScan(folds, "bose", "bosque");
+        IReadOnlyList<LInflectionMark> marks = TInterfaceInflection.TInflectionDifferenceScan(
+            folds, predicted, actual);
 
-        Assert.Equal([TInterfaceInflection.TInflectionMarkCreate(3, 2)], marks);
+        Assert.Equal([TInterfaceInflection.TInflectionMarkCreate(start, length)], marks);
     }
 
     [Fact]
@@ -22,17 +26,6 @@ public sealed class TInflectionDifference
 
         Assert.Empty(TInterfaceInflection.TInflectionDifferenceScan(folds, "hablo", "Habló"));
         Assert.Empty(TInterfaceInflection.TInflectionDifferenceScan(folds, "averigue", "averigüé"));
-    }
-
-    [Fact]
-    public void InflectionDifferenceScan_Inserted_MarksOneRange()
-    {
-        IReadOnlyList<LInflectionRule> folds = TInflectionBook.TInflectionBookCreate().LInflectionBookFolds;
-
-        IReadOnlyList<LInflectionMark> marks = TInterfaceInflection.TInflectionDifferenceScan(
-            folds, "cantamos", "cantábamos");
-
-        Assert.Equal([TInterfaceInflection.TInflectionMarkCreate(5, 2)], marks);
     }
 
     [Theory]

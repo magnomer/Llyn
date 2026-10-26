@@ -1,6 +1,7 @@
 using Llyn.Core;
 using Llyn.Infrastructure;
 using Llyn.ShellEngine;
+using Microsoft.Data.Sqlite;
 using Xunit;
 
 namespace Llyn.Tests;
@@ -219,7 +220,7 @@ public sealed class TEntrySaving
 
         workspace.TWorkspaceScriptRun("DROP TABLE revision_change; DROP TABLE revision;");
 
-        Assert.ThrowsAny<Exception>(() => engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+        Assert.Throws<SqliteException>(() => engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
             "word",
             "English",
             string.Empty,

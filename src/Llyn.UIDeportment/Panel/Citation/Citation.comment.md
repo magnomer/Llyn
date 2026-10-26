@@ -4,17 +4,6 @@ The drivers of the Corpus panel's quotation column and its edit area's citation,
 It stands apart from Corpus because these are the sub-drivers `QCorpus` builds and introduces.
 Each sub-driver subscribes what it paints itself, so the owner only builds and introduces it.
 
-## `QCitationItem`
-
-One Source offered in a row's Source list, with the id the row cites and the `Author (Year)` line.
-The list is the workspace's whole shelf of Sources.
-So the same row object is offered to every Example and Situation row on the form.
-
-### `QCitationItemCreate`
-
-The line is the byline the catalog row derived, which the record answers rather than this row.
-So the shelf, the example line and the citation dropdown never write one Source two ways.
-
 ## `QDrawer`
 
 The citation drawer under the transcript's citation field.
@@ -283,8 +272,7 @@ The notice's Example is not read, since the transcript answers the draft's Menti
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `QCitationItem.cs` `b0bb21eefb49ff43`
+Commit: `c37ca1837ded`
 - `QDrawer.cs` `f37ab7da12554317`
 - `QDrawerItem.cs` `3faf6e5db0d974be`
 - `QOccurrenceItem.cs` `08fe00f01d95dc44`

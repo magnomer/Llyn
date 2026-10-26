@@ -43,15 +43,25 @@ public sealed class CCard
     {
         ArgumentNullException.ThrowIfNull(text);
 
+        if (_cCardDesk.CDeskDraft.CDeskDraftChip is not LQuillChip chip)
+        {
+            return new CProspect(text, string.Empty, [], false, false, []);
+        }
+
         try
         {
-            return _cCardDesk.CDeskDraft.CDeskDraftChip?.LQuillTranslationAdd(
-                    collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning,
-                    cardId,
-                    text,
-                    position) is LTranslationOffer offer
-                ? LCardProspectRead(offer)
-                : new CProspect(text, string.Empty, [], false, false, []);
+            LTranslationOffer offer = chip.LQuillTranslationAdd(
+                collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning,
+                cardId,
+                text,
+                position,
+                out Exception? fault);
+            if (fault is not null)
+            {
+                CLedger.LLedgerFailureShow(_cCardEnvoy, _cCardSettingsPort, "Input.TranslationFailed", fault);
+            }
+
+            return LCardProspectRead(offer);
         }
         catch (Exception exception)
         {
@@ -188,6 +198,21 @@ public sealed class CCard
         }
     }
 
+    public string CCardCitationRead(bool collocated, long cardId, long sentenceId)
+    {
+        if (_cCardDesk.CDeskDraft.CDeskDraftTenure?.LTenureRead() is not LDraft held
+            || (collocated ? held.LDraftContent.LEntryDraftCollocations : held.LDraftContent.LEntryDraftMeanings)
+                .FirstOrDefault(card => card.LCardDraftId == cardId)?.LCardDraftSentence
+                .FirstOrDefault(row => row.LSentenceDraftId == sentenceId)?.LSentenceDraftExample
+                ?.LExampleDraftReference.LStateAnchorShown is not long anchor)
+        {
+            return string.Empty;
+        }
+
+        return CCardReferenceRead()
+            .FirstOrDefault(row => row.CCatalogReferenceId == anchor)?.CCatalogReferenceByline ?? string.Empty;
+    }
+
     internal static CTag LCardTagRead(LTag tag)
     {
         ArgumentNullException.ThrowIfNull(tag);
@@ -213,7 +238,7 @@ public sealed class CCard
             collocated ? LCardKind.LCardKindCollocation : LCardKind.LCardKindMeaning, cardId, registerId);
     }
 
-    public void CCardCitationSet(bool collocated, long cardId, long sentenceId, string title)
+    public string CCardCitationSet(bool collocated, long cardId, long sentenceId, string title)
     {
         try
         {
@@ -224,5 +249,7 @@ public sealed class CCard
         {
             CLedger.LLedgerFailureShow(_cCardEnvoy, _cCardSettingsPort, "Reference.CreateFailed", exception);
         }
+
+        return CCardCitationRead(collocated, cardId, sentenceId);
     }
 }

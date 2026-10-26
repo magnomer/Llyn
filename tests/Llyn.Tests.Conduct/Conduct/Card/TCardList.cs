@@ -67,56 +67,20 @@ public sealed class TCardList
         Assert.Equal([lone], TCardMeaningRead(desk));
     }
 
-    [Fact]
-    public void CardMove_TypedOrdinal_PlacesTheCardThere()
+    [Theory]
+    [InlineData(2, " 1 ", new[] { 2, 0, 1 })]
+    [InlineData(0, "9", new[] { 1, 2, 0 })]
+    [InlineData(2, "-4", new[] { 2, 0, 1 })]
+    public void CardMove_TypedOrdinal_PlacesCardAtClampedSlot(int moved, string ordinal, int[] expected)
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         (CDesk desk, CCardList card) = TCardListPrepare(engine, 3);
         IReadOnlyList<long> held = TCardMeaningRead(desk);
 
-        card.CCardMove(false, held[2], " 1 ");
+        card.CCardMove(false, held[moved], ordinal);
 
-        Assert.Equal([held[2], held[0], held[1]], TCardMeaningRead(desk));
-    }
-
-    [Fact]
-    public void CardMove_OrdinalPastTheEnd_PlacesTheCardLast()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        (CDesk desk, CCardList card) = TCardListPrepare(engine, 3);
-        IReadOnlyList<long> held = TCardMeaningRead(desk);
-
-        card.CCardMove(false, held[0], "9");
-
-        Assert.Equal([held[1], held[2], held[0]], TCardMeaningRead(desk));
-    }
-
-    [Fact]
-    public void CardMove_OrdinalBeforeTheStart_PlacesTheCardFirst()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        (CDesk desk, CCardList card) = TCardListPrepare(engine, 3);
-        IReadOnlyList<long> held = TCardMeaningRead(desk);
-
-        card.CCardMove(false, held[2], "-4");
-
-        Assert.Equal([held[2], held[0], held[1]], TCardMeaningRead(desk));
-    }
-
-    [Fact]
-    public void CardMove_OwnOrdinal_KeepsTheOrder()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        (CDesk desk, CCardList card) = TCardListPrepare(engine, 3);
-        IReadOnlyList<long> held = TCardMeaningRead(desk);
-
-        card.CCardMove(false, held[1], "2");
-
-        Assert.Equal(held, TCardMeaningRead(desk));
+        Assert.Equal(expected.Select(index => held[index]), TCardMeaningRead(desk));
     }
 
     [Fact]
@@ -145,28 +109,18 @@ public sealed class TCardList
         Assert.Equal(held, TCardMeaningRead(desk));
     }
 
-    [Fact]
-    public void CardMove_UnreadableOrdinal_KeepsTheOrder()
+    [Theory]
+    [InlineData(3, 1, "2")]
+    [InlineData(2, 0, "second")]
+    [InlineData(3, 0, "2nd")]
+    public void CardMove_OrdinalMovingNothing_KeepsOrder(int count, int moved, string ordinal)
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        (CDesk desk, CCardList card) = TCardListPrepare(engine, 2);
+        (CDesk desk, CCardList card) = TCardListPrepare(engine, count);
         IReadOnlyList<long> held = TCardMeaningRead(desk);
 
-        card.CCardMove(false, held[0], "second");
-
-        Assert.Equal(held, TCardMeaningRead(desk));
-    }
-
-    [Fact]
-    public void CardMove_OrdinalWithASuffix_KeepsTheOrder()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        (CDesk desk, CCardList card) = TCardListPrepare(engine, 3);
-        IReadOnlyList<long> held = TCardMeaningRead(desk);
-
-        card.CCardMove(false, held[0], "2nd");
+        card.CCardMove(false, held[moved], ordinal);
 
         Assert.Equal(held, TCardMeaningRead(desk));
     }

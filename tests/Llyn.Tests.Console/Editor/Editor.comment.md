@@ -81,6 +81,8 @@ An uncertain card title shows the unknown mark.
 A save over an unreadable value is refused, naming the unreadable drop and then the save failure.
 The draft stays Unsaved.
 A refused card add after a typed headword shows the update failure each time and keeps the text.
+A pasted run of chips whose observer fails after the first keeps that chip.
+The rest stays typed in the field.
 Three cards overflow the side and two do not.
 So the thumb and the count show only past the fit.
 
@@ -152,14 +154,14 @@ So no cell of the box or its shadow leaves the part.
 
 ## Stamp
 
-Commit: `f3a687d70b47`
+Commit: `c37ca1837ded`
 - `TEditorChronicle.cs` `ed8d5edbb5c92302`
 - `TEditorDraft.cs` `c85e82a5c120686d`
 - `TEditorDrop.cs` `ba90316114a19401`
-- `TEditorFrame.cs` `6b45be9c10b22e68`
+- `TEditorFrame.cs` `f35fd996d88e72f6`
 - `TEditorHead.cs` `3115a20cd327ac3e`
-- `TEditorInlet.cs` `15b3182018ef265b`
-- `TEditorKey.cs` `a467932b90258d3e`
-- `TEditorLink.cs` `c50b0e48d2673bea`
+- `TEditorInlet.cs` `1429cb65fb1685dd`
+- `TEditorKey.cs` `c5b384923a4ebe0f`
+- `TEditorLink.cs` `93d3462c24b89438`
 - `TEditorMarker.cs` `942a2bd8a8747e92`
-- `TEditorSight.cs` `e24e48cce5d13ef6`
+- `TEditorSight.cs` `060f3bceccb72cd7`

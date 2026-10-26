@@ -1,7 +1,8 @@
 {
-  "generation": 6,
+  "generation": 7,
   "tests": "tests",
   "convention": "Llyn.Tests.Convention",
+  "trx": "docs-temp",
   "platforms": {
     "Internal": ["Llyn.Tests.Interface", "Llyn.Tests.Engine", "Llyn.Tests.Conduct", "Llyn.Tests.Console"],
     "Windows": "Llyn.Tests.Windows"

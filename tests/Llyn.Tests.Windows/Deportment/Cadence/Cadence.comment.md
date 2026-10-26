@@ -76,9 +76,9 @@ So a bound combo box keeps its items when nothing but the flags changed.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `TFoldSwitch.cs` `c18e0b18d51088ee`
+Commit: `c37ca1837ded`
+- `TFoldSwitch.cs` `05733c8407d4e612`
 - `TParadigmGrid.cs` `2bf441a588307d49`
-- `TReflexHinge.cs` `13ca0cdecbc6066c`
+- `TReflexHinge.cs` `797457982531987d`
 - `TReflexLabel.cs` `16ad740fe5d5075f`
 - `TTranscriptionScheme.cs` `b3977faf30f7a61f`

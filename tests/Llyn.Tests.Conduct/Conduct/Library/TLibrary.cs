@@ -28,7 +28,7 @@ public sealed class TLibrary
     }
 
     [Fact]
-    public void LibraryQuerySet_MatchingHeadword_NarrowsTheRows()
+    public void ApertureQuerySet_MatchingHeadword_NarrowsTheRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -45,7 +45,7 @@ public sealed class TLibrary
     }
 
     [Fact]
-    public void LibraryEmpty_QueryMatchingNothing_AnswersEmpty()
+    public void ApertureEmpty_QueryMatchingNothing_AnswersEmpty()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -63,7 +63,7 @@ public sealed class TLibrary
     }
 
     [Fact]
-    public void LibraryOrderSet_NoOrderRow_KeepsTheOrder()
+    public void ApertureOrderSet_NoOrderRow_KeepsTheOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -77,7 +77,7 @@ public sealed class TLibrary
     }
 
     [Fact]
-    public void LibraryFilterSet_HiddenLanguage_MarksTheListFiltered()
+    public void ApertureFilterSet_HiddenLanguage_MarksTheListFiltered()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -263,7 +263,7 @@ public sealed class TLibrary
     }
 
     [Fact]
-    public void LibraryNavigation_EntryJump_OpensTheEntryInTheArea()
+    public void NavigationEntryOpen_EntryJump_OpensTheEntryInTheArea()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

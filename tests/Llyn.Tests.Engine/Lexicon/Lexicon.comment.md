@@ -150,13 +150,13 @@ The print sheet writes them in the same chip row as the speeches, with no separa
 
 ## Stamp
 
-Commit: `aae5349dbb94`
+Commit: `c37ca1837ded`
 - `TAuthorAbsorbing.cs` `2d18dd4c46364a19`
 - `TFavorite.cs` `00998332c4948308`
 - `TGrasp.cs` `fc971b3834a60e34`
 - `TMarkdownNote.cs` `14407d8ac4c9c600`
-- `TReference.cs` `85d60ac9bbe0787e`
-- `TSpeech.cs` `cd1f43db2e32dd9c`
+- `TReference.cs` `9aff50e3983b04ef`
+- `TSpeech.cs` `6f08a573cb6494d2`
 - `TSpeechRetirement.cs` `9c83a1639d8c4839`
 - `TState.cs` `40a7ada7b5110e57`
 - `TUnit.cs` `276a7c295c73568e`

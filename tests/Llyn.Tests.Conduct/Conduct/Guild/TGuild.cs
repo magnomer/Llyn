@@ -32,7 +32,7 @@ public sealed class TGuild
     }
 
     [Fact]
-    public void GuildQuerySet_Muster_NarrowsAndDropsOrphanRow()
+    public void ApertureQuerySet_Muster_NarrowsAndDropsOrphanRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -48,7 +48,7 @@ public sealed class TGuild
     }
 
     [Fact]
-    public void GuildOrderSet_NoOrderRow_KeepsTheOrder()
+    public void ApertureOrderSet_NoOrderRow_KeepsTheOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -62,7 +62,7 @@ public sealed class TGuild
     }
 
     [Fact]
-    public void GuildFilterSet_HiddenKind_MarksTheRollFiltered()
+    public void ApertureFilterSet_HiddenKind_MarksTheRollFiltered()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -196,7 +196,7 @@ public sealed class TGuild
     }
 
     [Fact]
-    public void GuildAuthorDelete_Confirmed_RemovesTheAuthor()
+    public void DiptychEntryDelete_Confirmed_RemovesTheAuthor()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -214,7 +214,7 @@ public sealed class TGuild
     }
 
     [Fact]
-    public void GuildWorkspaceNotice_ChosenAuthor_EmptiesThePanel()
+    public void EngineBulletinRaise_ChosenAuthor_EmptiesThePanel()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -230,7 +230,7 @@ public sealed class TGuild
     }
 
     [Fact]
-    public void GuildAuthorNotice_Catalog_RefreshesTheRollAndTheVerdicts()
+    public void EngineBulletinRaise_Catalog_RefreshesTheRollAndTheVerdicts()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

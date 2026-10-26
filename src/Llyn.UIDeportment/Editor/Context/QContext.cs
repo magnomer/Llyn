@@ -137,7 +137,6 @@ internal sealed class QContext
     private void QContextTextObserve(object sender, TextChangedEventArgs e)
     {
         if (e.OriginalSource is TextBox { DataContext: QInlet<QContextChip> caret } box
-            && ReferenceEquals(Keyboard.FocusedElement, box)
             && QContextCardFind(caret) is QPlacard card)
         {
             _qContextProffer.QProfferSituationRefine(

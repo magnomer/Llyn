@@ -44,7 +44,7 @@ public sealed class TErrand
     }
 
     [Fact]
-    public async Task ErrandStart_NoTenureHeld_StartsNothing()
+    public async Task ErrandRecordingStart_NoTenureHeld_StartsNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -172,7 +172,7 @@ public sealed class TErrand
     }
 
     [Fact]
-    public void ErrandStart_WorkspaceChanged_ShowsNothingAndFinishes()
+    public void ErrandRecordingStart_WorkspaceChanged_ShowsNothingAndFinishes()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

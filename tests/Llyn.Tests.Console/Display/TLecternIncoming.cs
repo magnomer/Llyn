@@ -195,7 +195,7 @@ public sealed class TLecternIncoming
     }
 
     [Fact]
-    public void LecternFollowObserve_TranslationThenAltLeft_ComesBackToTheEntry()
+    public void LecternChipOpen_TranslationThenAltLeft_ComesBackToTheEntry()
     {
         TLecternCard.TLecternCardRun(
             static (engine, save) =>
@@ -218,7 +218,7 @@ public sealed class TLecternIncoming
     }
 
     [Fact]
-    public void LecternChipDraw_UnstoredSituation_IsNoItem()
+    public void LecternCardDraw_UnstoredSituation_IsNoItem()
     {
         TLecternCard.TLecternCardRun(
             static (_, save) => save(

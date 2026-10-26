@@ -38,7 +38,7 @@ public sealed class TAnchor
     }
 
     [Fact]
-    public void ReflexSync_Anchors_RoundTripSortedAndDropUnknownRows()
+    public void EntryAnchorApply_Anchors_RoundTripSortedAndDropUnknownRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

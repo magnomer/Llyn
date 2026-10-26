@@ -165,8 +165,8 @@ The exempt check fails when an exempt row matches no hit, so a fixed break delet
 
 ## Stamp
 
-Commit: `f3a687d70b47`
-- `TAssayBorder.cs` `7a21fc1ac676ed8f`
+Commit: `c37ca1837ded`
+- `TAssayBorder.cs` `c72583308cc8eb4b`
 - `TAuditBorder.cs` `a0dea0a0e6243026`
 - `TAuditBorderDrift.cs` `80233353cf79d45a`
 - `TAuditBorderLinger.cs` `e55f695a547e6456`

@@ -72,7 +72,8 @@ The anchor comes from Conduct's caret trail, so the entry stands where the trail
 ### `QLabelTextObserve`
 
 Any other box's edit is ignored, since its data context is no Tag caret.
-A box without the keyboard is ignored too, so a text the engine wrote back asks nothing.
+The driver holds no focus guard, so a text the engine wrote back asks again.
+The caret answers that echo from its kept answer, so the repeat costs no search and changes nothing.
 `QSlateRefine` paints the answer, which is the text the entry keeps and the dropdown of stored Tags.
 
 ### `QLabelCommitObserve`
@@ -116,9 +117,9 @@ It answers null when no shown card holds the chip or caret.
 
 ## Stamp
 
-Commit: `f3a687d70b47`
+Commit: `c37ca1837ded`
 - `QCategory.cs` `960340e0bfc6cf17`
 - `QCategoryItem.cs` `97487f23cb2cc503`
-- `QLabel.cs` `ebb5379dac5c778f`
+- `QLabel.cs` `4f52064cdc062c47`
 - `QLabelChip.cs` `2d54f1d4412aa557`
 - `QLabelSelector.cs` `a5c4bf2fefa4493a`

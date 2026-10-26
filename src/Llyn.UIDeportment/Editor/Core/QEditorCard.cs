@@ -78,7 +78,6 @@ internal sealed class QEditorCard
             _qLink,
             _qLabel,
             QEditorCardSentence,
-            _qCitation,
             new QExample(QEditorCardSentence, _qGloss, _qCitation),
             _qImage,
             _qVideo,

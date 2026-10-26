@@ -1,10 +1,11 @@
 {
-  "generation": 1,
+  "generation": 2,
   "report": { "directory": "docs-analysis" },
   "open": "Audit",
   "steps": [
     { "script": "Audit", "clear": ["Audit"] },
     { "script": "MapMethod" },
-    { "family": "STATS" }
+    { "family": "STATS" },
+    { "family": "SCAN" }
   ]
 }

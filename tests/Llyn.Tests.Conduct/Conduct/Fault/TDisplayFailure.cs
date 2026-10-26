@@ -9,8 +9,10 @@ namespace Llyn.Tests;
 
 public sealed class TDisplayFailure
 {
-    [Fact]
-    public void DisplayEntryOpen_StampPortFails_ShowsTheStampFailure()
+    [Theory]
+    [InlineData("Display.StampFailed")]
+    [InlineData("Sound.StartFailed")]
+    public void DisplayEntryOpen_PortFailure_ShowsFailureNotice(string notice)
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -18,11 +20,13 @@ public sealed class TDisplayFailure
         List<string> asked = [];
         TDisplayWingOpen(engine, atelier, asked);
 
-        Assert.Contains("Display.StampFailed", asked);
+        Assert.Contains(notice, asked);
     }
 
-    [Fact]
-    public void DisplayCardRead_OrderPortFails_ShowsTheOrderFailure()
+    [Theory]
+    [InlineData("Display.OrderFailed")]
+    [InlineData("Display.CitationFailed")]
+    public void DisplayCardRead_PortFailure_ShowsFailureNotice(string notice)
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -33,22 +37,7 @@ public sealed class TDisplayFailure
 
         wing.CWingDisplay.CDisplayCard.CDisplayCardRead();
 
-        Assert.Contains("Display.OrderFailed", asked);
-    }
-
-    [Fact]
-    public void DisplayCardRead_CitationPortFails_ShowsTheCitationFailure()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TDisplayAtelierCreate(engine);
-        List<string> asked = [];
-        CWing wing = TDisplayWingOpen(engine, atelier, asked);
-        asked.Clear();
-
-        wing.CWingDisplay.CDisplayCard.CDisplayCardRead();
-
-        Assert.Contains("Display.CitationFailed", asked);
+        Assert.Contains(notice, asked);
     }
 
     [Fact]
@@ -82,8 +71,10 @@ public sealed class TDisplayFailure
         Assert.Contains("Display.ReadingFailed", asked);
     }
 
-    [Fact]
-    public void DisplayParadigmRead_LanguagePortFails_ShowsTheLanguageFailure()
+    [Theory]
+    [InlineData("Display.LanguageFailed")]
+    [InlineData("Sound.PendingFailed")]
+    public void DisplayParadigmRead_PortFailure_ShowsFailureNotice(string notice)
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -94,19 +85,7 @@ public sealed class TDisplayFailure
 
         wing.CWingDisplay.CDisplaySound.CDisplayParadigmRead();
 
-        Assert.Contains("Display.LanguageFailed", asked);
-    }
-
-    [Fact]
-    public void DisplayEntryOpen_SoundStartFails_ShowsTheStartFailure()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TDisplayAtelierCreate(engine);
-        List<string> asked = [];
-        TDisplayWingOpen(engine, atelier, asked);
-
-        Assert.Contains("Sound.StartFailed", asked);
+        Assert.Contains(notice, asked);
     }
 
     [Fact]
@@ -123,21 +102,6 @@ public sealed class TDisplayFailure
 
         Assert.Empty(paradigm.CLecternParadigmSlots);
         Assert.Contains("Display.ParadigmReadFailed", asked);
-    }
-
-    [Fact]
-    public void DisplayParadigmRead_CheckPortFails_ShowsThePendingFailure()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TDisplayAtelierCreate(engine);
-        List<string> asked = [];
-        CWing wing = TDisplayWingOpen(engine, atelier, asked);
-        asked.Clear();
-
-        wing.CWingDisplay.CDisplaySound.CDisplayParadigmRead();
-
-        Assert.Contains("Sound.PendingFailed", asked);
     }
 
     [Fact]
@@ -185,8 +149,10 @@ public sealed class TDisplayFailure
         Assert.Equal(["Favorite.ReadFailed"], asked);
     }
 
-    [Fact]
-    public void DisplayCardRead_OrderPortFailsTwice_ShowsOneNotice()
+    [Theory]
+    [InlineData("Display.OrderFailed")]
+    [InlineData("Fold.ReadFailed")]
+    public void DisplayCardRead_RepeatedPortFailure_ShowsOneNotice(string notice)
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -198,23 +164,7 @@ public sealed class TDisplayFailure
         wing.CWingDisplay.CDisplayCard.CDisplayCardRead();
         wing.CWingDisplay.CDisplayCard.CDisplayCardRead();
 
-        Assert.Single(asked, key => key == "Display.OrderFailed");
-    }
-
-    [Fact]
-    public void DisplayCardRead_FoldPortFails_ShowsTheFoldReadFailureOnce()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        using CAtelier atelier = TDisplayAtelierCreate(engine);
-        List<string> asked = [];
-        CWing wing = TDisplayWingOpen(engine, atelier, asked);
-        asked.Clear();
-
-        wing.CWingDisplay.CDisplayCard.CDisplayCardRead();
-        wing.CWingDisplay.CDisplayCard.CDisplayCardRead();
-
-        Assert.Single(asked, key => key == "Fold.ReadFailed");
+        Assert.Single(asked, key => key == notice);
     }
 
     [Fact]

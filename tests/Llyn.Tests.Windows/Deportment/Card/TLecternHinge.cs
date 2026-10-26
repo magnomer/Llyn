@@ -82,7 +82,7 @@ public sealed class TLecternHinge
     }
 
     [Fact]
-    public void LecternHingeClick_StoredCard_FoldsTheCardByIdThroughTheReadingView()
+    public void LecternCardCreate_StoredCard_FoldsTheCardByIdThroughTheReadingView()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -115,7 +115,7 @@ public sealed class TLecternHinge
     }
 
     [Fact]
-    public void LecternHingeClick_RefusedWrite_PutsTheHingeBack()
+    public void LecternCardCreate_RefusedWrite_PutsTheHingeBack()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -172,7 +172,7 @@ public sealed class TLecternHinge
     }
 
     [Fact]
-    public void LecternSeeClick_FoldedRow_OpensRowAndRaisesItsPlace()
+    public void LecternCardCreate_FoldedRow_OpensRowAndRaisesItsPlace()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -86,7 +86,7 @@ public sealed class TAnthology
     }
 
     [Fact]
-    public void AnthologyQuerySet_MatchingText_NarrowsTheRows()
+    public void ApertureQuerySet_MatchingText_NarrowsTheRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -102,7 +102,7 @@ public sealed class TAnthology
     }
 
     [Fact]
-    public void AnthologyOrderSet_NoOrderRow_KeepsTheOrder()
+    public void ApertureOrderSet_NoOrderRow_KeepsTheOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -117,7 +117,7 @@ public sealed class TAnthology
     }
 
     [Fact]
-    public void AnthologyFilterSet_HiddenLanguage_MarksTheListFiltered()
+    public void ApertureFilterSet_HiddenLanguage_MarksTheListFiltered()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

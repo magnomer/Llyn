@@ -64,11 +64,14 @@ public sealed class TBlueprint
         Assert.Equal(["+-+", "| |", "+-+"], drawn);
     }
 
-    [Fact]
-    public void BlueprintRead_GlyphsMissingMark_Throws()
+    [Theory]
+    [InlineData("<Glyphs x:Key=\"short\" Frame=\"+ - + | + +\" Rule=\"+ - +\" />")]
+    [InlineData("<Reel />")]
+    [InlineData("<Text Key=\"Window.Opening\" />")]
+    public void BlueprintRead_MalformedMarkup_Throws(string body)
     {
-        const string xml = "<Blueprint x:Name=\"AWindow\" xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\">"
-            + "<Glyphs x:Key=\"short\" Frame=\"+ - + | + +\" Rule=\"+ - +\" /></Blueprint>";
+        string xml = "<Blueprint x:Name=\"AWindow\" xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\">"
+            + body + "</Blueprint>";
         using MemoryStream markup = new(Encoding.UTF8.GetBytes(xml));
 
         Assert.Throws<InvalidDataException>(() => BBlueprint.BBlueprintRead(markup));
@@ -84,25 +87,5 @@ public sealed class TBlueprint
         InvalidDataException fault = Assert.Throws<InvalidDataException>(() => BBlueprint.BBlueprintRead(markup));
 
         Assert.Contains("a Frame takes Glyphs", fault.Message);
-    }
-
-    [Fact]
-    public void BlueprintRead_UnknownElement_Throws()
-    {
-        const string xml = "<Blueprint x:Name=\"AWindow\" xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\">"
-            + "<Reel /></Blueprint>";
-        using MemoryStream markup = new(Encoding.UTF8.GetBytes(xml));
-
-        Assert.Throws<InvalidDataException>(() => BBlueprint.BBlueprintRead(markup));
-    }
-
-    [Fact]
-    public void BlueprintRead_UnknownAttribute_Throws()
-    {
-        const string xml = "<Blueprint x:Name=\"AWindow\" xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\">"
-            + "<Text Key=\"Window.Opening\" /></Blueprint>";
-        using MemoryStream markup = new(Encoding.UTF8.GetBytes(xml));
-
-        Assert.Throws<InvalidDataException>(() => BBlueprint.BBlueprintRead(markup));
     }
 }

@@ -144,7 +144,7 @@ internal sealed class BSHelp : BSParleyBody
         [
             .. own.Concat(_bsHelpKeys(focus))
                 .Where(row => filter?.Invoke(row) ?? true)
-                .DistinctBy(static row => (row.BKeymapRowKey, row.BKeymapRowModifiers)),
+                .DistinctBy(static row => (row.BKeymapRowKey, row.BKeymapRowModifiers, row.BKeymapRowSign)),
         ];
         (string, int)[] links =
         [
@@ -221,6 +221,11 @@ internal sealed class BSHelp : BSParleyBody
 
     private string BSHelpKeyFormat(BKeymapRow row)
     {
+        if (row.BKeymapRowSign is char sign)
+        {
+            return sign.ToString();
+        }
+
         List<string> parts = [];
         ConsoleModifiers modifiers = row.BKeymapRowModifiers;
         if (modifiers.HasFlag(ConsoleModifiers.Control))

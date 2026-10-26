@@ -196,6 +196,10 @@ $RECYCLE.BIN/
 !/scripts/report.md
 !/scripts/Report.ps1
 !/scripts/Run.ps1
+!/scripts/ScanTest.comment.md
+!/scripts/ScanTest.html
+!/scripts/ScanTest.json
+!/scripts/ScanTest.ps1
 !/scripts/snapshot.json
 !/scripts/StatsSyntax.html
 !/scripts/StatsSyntax.json

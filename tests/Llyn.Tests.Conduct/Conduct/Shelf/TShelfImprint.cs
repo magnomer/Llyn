@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TShelfImprint
 {
     [Fact]
-    public void ShelfClose_BylineOffered_ClosesTheBylineWhenTheAtelierCloses()
+    public void AtelierClose_BylineOffered_ClosesTheBylineWhenTheAtelierCloses()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

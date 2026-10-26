@@ -11,5 +11,5 @@ A null or blank root reads the default state and saves nothing, since it names n
 
 ## Stamp
 
-Commit: `5813c19fd19c`
-- `TCapsule.cs` `47f4eab2d35c43ef`
+Commit: `c37ca1837ded`
+- `TCapsule.cs` `5f98db852d791877`

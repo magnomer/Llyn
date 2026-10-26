@@ -41,7 +41,7 @@ public sealed class TShelf
     }
 
     [Fact]
-    public void ShelfReferenceCreate_SourceChosen_OpensAnEntryCitingIt()
+    public void DiptychEntryCreate_SourceChosen_OpensAnEntryCitingIt()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -63,7 +63,7 @@ public sealed class TShelf
     }
 
     [Fact]
-    public void ShelfReferenceCreate_NothingChosen_OpensASourceDraft()
+    public void DiptychEntryCreate_NothingChosen_OpensASourceDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -110,7 +110,7 @@ public sealed class TShelf
     }
 
     [Fact]
-    public void ShelfReferenceDelete_EntrySide_LeavesTheSource()
+    public void DiptychEntryDelete_EntrySide_LeavesTheSource()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -134,7 +134,7 @@ public sealed class TShelf
     }
 
     [Fact]
-    public void ShelfOrderSet_EachOfferedOrder_KeepsEverySource()
+    public void ApertureOrderSet_EachOfferedOrder_KeepsEverySource()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -172,7 +172,7 @@ public sealed class TShelf
     }
 
     [Fact]
-    public void ShelfQuerySet_UnmatchedText_EmptiesTheShelfAndClosesTheSource()
+    public void ApertureQuerySet_UnmatchedText_EmptiesTheShelfAndClosesTheSource()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -189,7 +189,7 @@ public sealed class TShelf
     }
 
     [Fact]
-    public void ShelfFilterSet_HiddenLanguage_MarksTheShelfFiltered()
+    public void ApertureFilterSet_HiddenLanguage_MarksTheShelfFiltered()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

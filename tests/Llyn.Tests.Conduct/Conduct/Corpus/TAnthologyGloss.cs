@@ -78,7 +78,7 @@ public sealed class TAnthologyGloss
     }
 
     [Fact]
-    public void AnthologyGlossSetAndLanguageSetAndRemove_PickedRows_WriteTheTextRetagAndDropTheGloss()
+    public void AnthologyGlossSet_PickedRows_WriteTheTextRetagAndDropTheGloss()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

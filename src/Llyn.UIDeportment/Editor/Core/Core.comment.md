@@ -243,10 +243,10 @@ A click glides, and a layout change places the pill outright.
 
 ## Stamp
 
-Commit: `f3a687d70b47`
+Commit: `c37ca1837ded`
 - `QCadence.cs` `c49dba67646f341c`
 - `QEditor.cs` `10fb7989f576c790`
-- `QEditorCard.cs` `f34dc4d23c86308f`
+- `QEditorCard.cs` `ddbf0508f57f5110`
 - `QEditorFont.cs` `4da791778932c52b`
 - `QEditorSound.cs` `37d1a4f52e9d1a42`
 - `QInput.cs` `3268e212c7a17a65`

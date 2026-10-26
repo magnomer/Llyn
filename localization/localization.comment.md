@@ -45,6 +45,10 @@ Most are generic, so other packs can reuse them, and the inflection table shows 
 `Card.Fold` and `Card.Unfold` are the hinge tooltips that fold or unfold one card.
 `Card.SenseCaption` captions the row of link chips on a collocation card.
 `Card.SenseAdd` labels the chip that adds one more Meaning link.
+`Card.SenseLink`, `Card.SenseLight` and `Card.SenseDetach` label the keys of the linked meanings row.
+`Card.Remove`, `Card.Move`, `Card.Position`, `Card.PositionSettle` and `Card.PositionClose` label the card header keys and the number badge.
+`Scheme.Hanja`, `Scheme.Romanization` and `Scheme.Phonetic` name the reading schemes of an entry.
+English repeats the scheme name, and Korean writes 한자, 로마자 표기 and 발음 표기.
 `Card.ChipAdd` labels the Enter key of a chip field with typed text and no lit row.
 That key turns the text into a chip.
 `Display.CollocationOther` heads the collocations with no home Meaning, in the read view and the exports.
@@ -209,6 +213,6 @@ The person headers spell out person and number instead of the English abbreviati
 
 ## Stamp
 
-Commit: `f3a687d70b47`
-- `en.json` `d9f3b0ce4db67081`
-- `ko.json` `0f6ffab6cfe114f1`
+Commit: `c37ca1837ded`
+- `en.json` `411eb8e53aa24339`
+- `ko.json` `9d1933d304168bb0`

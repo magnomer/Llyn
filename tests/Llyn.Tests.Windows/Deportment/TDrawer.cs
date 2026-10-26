@@ -240,15 +240,7 @@ public sealed class TDrawer
 
     private static void TDrawerSettle()
     {
-        DispatcherFrame frame = new();
-        DispatcherTimer timer = new(DispatcherPriority.ContextIdle) { Interval = TimeSpan.FromMilliseconds(300) };
-        timer.Tick += (_, _) =>
-        {
-            timer.Stop();
-            frame.Continue = false;
-        };
-        timer.Start();
-        Dispatcher.PushFrame(frame);
+        Dispatcher.CurrentDispatcher.Invoke(static () => { }, DispatcherPriority.ContextIdle);
     }
 
     private static void TDrawerPrepare()

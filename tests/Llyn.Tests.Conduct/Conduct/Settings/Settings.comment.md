@@ -91,7 +91,7 @@ A wrapped refusal answers its reason alone, and a bare fault answers the unexpec
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `c37ca1837ded`
 - `TCourier.cs` `c99609864ae5e284`
 - `TLedger.cs` `9e2ac1556d76b3bc`
-- `TLedgerNotice.cs` `6d08ced59d0d1d23`
+- `TLedgerNotice.cs` `7af8d33a85b78805`

@@ -7,20 +7,14 @@ namespace Llyn.Tests;
 
 public sealed class TRegister
 {
-    [Fact]
-    public void CatalogRegisterIcon_SpacedName_ReturnsItsOwnIcon()
+    [Theory]
+    [InlineData(" formal ", "register/formal")]
+    [InlineData("EPIC", "register/epic")]
+    public void CatalogRegisterIcon_SpacedOrUpperName_ReturnsOwnIcon(string name, string icon)
     {
-        LCatalogRegister row = TInterface.TCatalogRegisterCreate(TInterface.TRegisterCreate(1, " formal "), 0);
+        LCatalogRegister row = TInterface.TCatalogRegisterCreate(TInterface.TRegisterCreate(1, name), 0);
 
-        Assert.Equal("register/formal", row.LCatalogRegisterIcon);
-    }
-
-    [Fact]
-    public void CatalogRegisterIcon_UpperCaseName_ReturnsItsOwnIcon()
-    {
-        LCatalogRegister row = TInterface.TCatalogRegisterCreate(TInterface.TRegisterCreate(1, "EPIC"), 0);
-
-        Assert.Equal("register/epic", row.LCatalogRegisterIcon);
+        Assert.Equal(icon, row.LCatalogRegisterIcon);
     }
 
     [Fact]
@@ -53,7 +47,7 @@ public sealed class TRegister
     }
 
     [Fact]
-    public void RegisterSave_CardCarryingPresetNames_StoresBuiltinRows()
+    public void EntrySave_CardCarryingPresetNames_StoresBuiltinRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -70,7 +64,7 @@ public sealed class TRegister
     }
 
     [Fact]
-    public void RegisterSave_TwoPacksNamingOneName_ShareOneRow()
+    public void EntrySave_TwoPacksNamingOneName_ShareOneRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -88,7 +82,7 @@ public sealed class TRegister
     }
 
     [Fact]
-    public void RegisterSeed_NameTheUserWroteFirst_BecomesBuiltin()
+    public void EntrySave_NameTheUserWroteFirst_BecomesBuiltin()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -106,7 +100,7 @@ public sealed class TRegister
     }
 
     [Fact]
-    public void RegisterSave_CardCarryingWrittenName_StoresWrittenRow()
+    public void EntrySave_CardCarryingWrittenName_StoresWrittenRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -124,7 +118,7 @@ public sealed class TRegister
     }
 
     [Fact]
-    public void RegisterSave_TwoEntriesSharingName_ReferenceOneRow()
+    public void EntrySave_TwoEntriesSharingName_ReferenceOneRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -137,7 +131,7 @@ public sealed class TRegister
     }
 
     [Fact]
-    public void RegisterSave_TwoEntriesWritingOneName_ReferenceOneRow()
+    public void EntrySave_TwoEntriesWritingOneName_ReferenceOneRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

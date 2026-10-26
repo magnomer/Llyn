@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 public sealed class TLecternCompass
 {
     [Fact]
-    public void LecternCompassShow_AltF3_ListsTheRowsAndLightsTheFirstAtTheTop()
+    public void CompassShow_AltF3_ListsTheRowsAndLightsTheFirstAtTheTop()
     {
         TLecternCard.TLecternCardRun(
             static (_, save) => TLecternCompassSave(save, 2),
@@ -26,7 +26,7 @@ public sealed class TLecternCompass
     }
 
     [Fact]
-    public void LecternCompassShow_ScrolledToMeaningFive_LightsItsRow()
+    public void CompassShow_ScrolledToMeaningFive_LightsItsRow()
     {
         TLecternCard.TLecternCardRun(
             static (_, save) => TLecternCompassSave(save, 12),
@@ -43,7 +43,7 @@ public sealed class TLecternCompass
     }
 
     [Fact]
-    public void LecternCompassObserve_DownThenEnter_ScrollsAndLightsTheCard()
+    public void ParleyBodyObserve_DownThenEnter_ScrollsAndLightsTheCard()
     {
         TLecternCard.TLecternCardRun(
             static (_, save) => TLecternCompassSave(save, 12),
@@ -61,7 +61,7 @@ public sealed class TLecternCompass
     }
 
     [Fact]
-    public void LecternCompassObserve_Escape_ClosesAndScrollsNothing()
+    public void ParleyKeyObserve_Escape_ClosesAndScrollsNothing()
     {
         TLecternCard.TLecternCardRun(
             static (_, save) => TLecternCompassSave(save, 8),
@@ -83,7 +83,7 @@ public sealed class TLecternCompass
     }
 
     [Fact]
-    public void LecternCompassShow_HiddenParts_ListsOnlyTheShownParts()
+    public void CompassShow_HiddenParts_ListsOnlyTheShownParts()
     {
         TLecternCard.TLecternCardRun(
             static (_, save) => TLecternCompassSave(save, 1),
@@ -99,7 +99,7 @@ public sealed class TLecternCompass
     }
 
     [Fact]
-    public void LecternCompassShow_OtherCollocation_ListsItsRow()
+    public void CompassShow_OtherCollocation_ListsItsRow()
     {
         TLecternCard.TLecternCardRun(
             static (engine, _) => engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
@@ -125,7 +125,7 @@ public sealed class TLecternCompass
     }
 
     [Fact]
-    public void LecternWholeObserve_F3ThenF3_GivesTheWindowAndTheListBack()
+    public void LibraryWhole_F3ThenF3_GivesTheWindowAndTheListBack()
     {
         TLecternCard.TLecternCardRun(
             static (_, save) => TLecternCompassSave(save, 2),
@@ -147,7 +147,7 @@ public sealed class TLecternCompass
     }
 
     [Fact]
-    public void LecternWholeObserve_Escape_GivesTheListBack()
+    public void LibraryWhole_Escape_GivesTheListBack()
     {
         TLecternCard.TLecternCardRun(
             static (_, save) => TLecternCompassSave(save, 2),

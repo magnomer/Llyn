@@ -308,14 +308,14 @@ Saves an English noun whose paradigm asks for a plural nothing stores.
 
 ## Stamp
 
-Commit: `36e31eb71c98`
+Commit: `c37ca1837ded`
 - `TCardSense.cs` `807f30e127fe9c46`
 - `TDisplay.cs` `b5edef95cb9836d8`
 - `TDisplayAccent.cs` `bc384431fa7b13d5`
-- `TDisplayArea.cs` `b90e80d2cf004ae9`
-- `TDisplayCard.cs` `13469895b5876496`
+- `TDisplayArea.cs` `223ba1aa3bbd7df5`
+- `TDisplayCard.cs` `b64f9accedb0df5a`
 - `TDisplayGrasp.cs` `7f3390215a60e0ff`
 - `TDisplayMention.cs` `fe2130ecf737059c`
 - `TDisplayPlayback.cs` `4841acad0b56316f`
 - `TDisplaySound.cs` `3d21b438c154a999`
-- `TDisplaySoundBlock.cs` `a7326a7b4d646a9f`
+- `TDisplaySoundBlock.cs` `968cd78df93869a1`

@@ -147,7 +147,7 @@ public sealed class TGuildMode
     }
 
     [Fact]
-    public void GuildAuthorDelete_SourceSide_DeletesNothing()
+    public void DiptychEntryDelete_SourceSide_DeletesNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

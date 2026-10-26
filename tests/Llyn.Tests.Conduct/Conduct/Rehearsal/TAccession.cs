@@ -99,7 +99,7 @@ public sealed class TAccession
     }
 
     [Fact]
-    public void AccessionQuerySet_Headword_RaisesRowsChanged()
+    public void ApertureQuerySet_Headword_RaisesRowsChanged()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         List<long> entries = TAccessionEntrySave(workspace, "bank", "river");

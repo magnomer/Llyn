@@ -245,8 +245,13 @@ internal sealed class QProffer
         QProfferOpenRefine(QProfferBoxFind(card), offer.CProfferRows);
     }
 
-    internal void QProfferCitationRefine(TextBox box, CProffer offer)
+    internal void QProfferCitationRefine(TextBox box, CProffer? offer)
     {
+        if (offer is null)
+        {
+            return;
+        }
+
         if (!offer.CProfferShown)
         {
             QProfferShutRefine();

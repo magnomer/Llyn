@@ -15,6 +15,9 @@
     selects them. A project with no affected test is skipped. The convention
     project, when -All or -Convention selects it, runs whole, since its audits
     read every source file.
+    With -Changed the symbols come from git: TraceSymbol.ps1 seeds its walk with
+    the symbols holding every line changed since -Since, HEAD by default, and the
+    run is narrowed the same way. Names given beside -Changed are seeds too.
     Every folder under the tests folder that holds a test project gives a switch,
     named by the last dot-separated part of the folder name: a folder Infrastructure
     gives -Infrastructure, a folder Llyn.Tests.Console gives -Console. Given one or
@@ -33,11 +36,15 @@
     its output so far is printed, it is named as timed out, and the run fails
     with exit code 1 unless an earlier project in discovery order failed.
 
-    Every project-specific value - project name, tests folder, convention
-    project, platform projects - lives in Test.json. This script carries none, so the file is
+    Every project-specific value - tests folder, convention project, trx
+    folder, platform projects - lives in Test.json. This script carries none, so the file is
     identical in every project at the same generation.
 .PARAMETER Name
     One or more symbol names. Runs only the tests a change inside them can affect. Positional.
+.PARAMETER Changed
+    Runs only the tests the lines changed since -Since can affect, staged or not.
+.PARAMETER Since
+    The revision or tree -Changed compares the working tree with. Defaults to HEAD.
 .PARAMETER Configuration
     Build configuration used by dotnet test: Debug (default) or Release.
 .PARAMETER Filter
@@ -59,6 +66,9 @@
     Pass --no-restore while still allowing the test project to build.
 .PARAMETER List
     Discover and list matching tests without running them. Cannot be combined with Repeat.
+.PARAMETER KeepTrx
+    Keep a .trx result file per project and run in the trx folder Test.json names, named <Project>.<tree>.<yyyyMMdd-HHmmss>.trx,
+    where <tree> is the first 12 hex digits of the working tree's git tree. Cannot be combined with List.
 .PARAMETER Repeat
     Number of test runs. A failing run still finishes every project, and no later run starts. Defaults to 1.
 .PARAMETER Verbosity
@@ -76,6 +86,12 @@
 .EXAMPLE
     test LTwin -a
     Run the tests a change inside LTwin can affect, and the convention tests.
+.EXAMPLE
+    test -Changed
+    Run the tests the uncommitted edits can affect, without the convention tests.
+.EXAMPLE
+    test -Changed -Since 4b825dc
+    Run the tests the edits since that tree can affect.
 .EXAMPLE
     test -a
     Run the full Debug test suite once, the convention tests included.
@@ -111,7 +127,7 @@
     Forward logger and results-directory options to dotnet test.
 #>
 #requires -Version 5.1
-# TEST - TEST GENERATION 6.
+# TEST - TEST GENERATION 7.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the executed outcome changes.
 # A generation names how the family finds and runs the tests. Two projects on the same generation
@@ -135,12 +151,20 @@
 # and -Main names that default. Every folder under the tests folder that holds a test project gives a
 # switch named by the last dot-separated part of its name, and one or more such switches run only the
 # test projects inside those folders.
+# Generation 7: everything in generation 6; -Changed narrows the run to the tests the lines changed since
+# -Since can affect, found by TraceSymbol.ps1 at generation 2, as symbol names narrow it. -KeepTrx keeps
+# one <Project>.<tree>.<yyyyMMdd-HHmmss>.trx per project and run in the trx folder Test.json names, for
+# ScanTest to read.
 # Every project-specific value lives in Test.json, so this file is identical in every project at
 # this generation.
 [CmdletBinding()]
 param(
     [Parameter(Position = 0)]
     [string[]]$Name,
+
+    [switch]$Changed,
+
+    [string]$Since,
 
     [ValidateSet('Debug', 'Release')]
     [string]$Configuration = 'Debug',
@@ -166,6 +190,8 @@ param(
     [switch]$NoRestore,
 
     [switch]$List,
+
+    [switch]$KeepTrx,
 
     [ValidateRange(1, [int]::MaxValue)]
     [int]$Repeat = 1,
@@ -258,10 +284,11 @@ SYNOPSIS
     Run the project test suite.
 
 SYNTAX
-    test [<name> ...] [-Configuration <Debug|Release>] [-Filter <expression>]
+    test [<name> ...] [-Changed [-Since <revision>]]
+        [-Configuration <Debug|Release>] [-Filter <expression>]
         [-Project <name>] [-Platform <All|Internal|Windows>]
         [-All | -Convention | -Main]
-        [-NoBuild] [-NoRestore] [-List]
+        [-NoBuild] [-NoRestore] [-List] [-KeepTrx]
         [-Repeat <count>] [-Verbosity <level>]
         [-AdditionalArguments <arguments[]>] [-<folder> ...] [-Help]
 
@@ -270,6 +297,15 @@ OPTIONS
         Symbol to start from: a type, method, property or field. Several are
         allowed. Runs only the tests a change inside them can affect, found by
         TraceSymbol.ps1, and with -All the convention project whole.
+
+    -Changed
+        Run only the tests the lines changed since -Since can affect, staged
+        or not, found by TraceSymbol.ps1 as for <name>. Names given beside it
+        add their tests.
+
+    -Since <revision>
+        The revision or tree -Changed compares the working tree with.
+        Defaults to HEAD.
 
     -Configuration <Debug|Release>
         Build configuration. Defaults to Debug.
@@ -305,6 +341,12 @@ OPTIONS
     -List
         List matching tests without running them. Cannot be used with -Repeat.
 
+    -KeepTrx
+        Keep a .trx result file per project and run in the trx folder
+        Test.json names, named <Project>.<tree>.<yyyyMMdd-HHmmss>.trx. <tree> is the first 12 hex
+        digits of the git tree of the whole working tree, staged or not.
+        ScanTest reads these files. Cannot be used with -List.
+
     -Repeat <count>
         Number of runs. A failing run still finishes every project, and no
         later run starts. Defaults to 1.
@@ -337,6 +379,12 @@ EXAMPLES
 
     test LTwin -a
         Run the tests a change inside LTwin can affect, and the convention tests.
+
+    test -Changed
+        Run the tests the uncommitted edits can affect.
+
+    test -Changed -Since 4b825dc
+        Run the tests the edits since that tree can affect.
 
     test -a
         Run the full Debug test suite once, the convention tests included.
@@ -400,7 +448,7 @@ EXAMPLES
     exit 0
 }
 
-Write-Host 'TEST - TEST GENERATION 6' -ForegroundColor Blue
+Write-Host 'TEST - TEST GENERATION 7' -ForegroundColor Blue
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
@@ -452,8 +500,8 @@ function Read-TestConfig {
         }
     }
 
-    if ([int]$config.generation -ne 6) {
-        throw "The test configuration is generation $($config.generation); this script is generation 6."
+    if ([int]$config.generation -ne 7) {
+        throw "The test configuration is generation $($config.generation); this script is generation 7."
     }
 
     return $config
@@ -471,6 +519,10 @@ if ($folderSwitches.Count -gt 0 -and ($All -or $Convention -or $Main -or $Platfo
 
 if ($Convention -and $Platform -ne 'All') {
     throw '-Convention and -Platform cannot be combined.'
+}
+
+if (-not [string]::IsNullOrWhiteSpace($Since) -and -not $Changed) {
+    throw '-Since needs -Changed.'
 }
 
 $root = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
@@ -551,15 +603,27 @@ if ($projects.Count -eq 0) {
 $selectionLimit = 20000
 $selections = @{}
 
-if ($null -ne $Name -and $Name.Count -gt 0) {
+if (($null -ne $Name -and $Name.Count -gt 0) -or $Changed) {
     $detector = Join-Path $PSScriptRoot 'TraceSymbol.ps1'
     if (-not (Test-Path -LiteralPath $detector -PathType Leaf)) {
         throw "TraceSymbol.ps1 was not found: $detector"
     }
 
-    $detection = & $detector -Name $Name -Json | Out-String | ConvertFrom-Json
+    $detectorArguments = @{ Json = $true }
+    if ($null -ne $Name -and $Name.Count -gt 0) {
+        $detectorArguments['Name'] = $Name
+    }
+    if ($Changed) {
+        $detectorArguments['Changed'] = $true
+        if (-not [string]::IsNullOrWhiteSpace($Since)) {
+            $detectorArguments['Since'] = $Since
+        }
+    }
+
+    $detection = & $detector @detectorArguments | Out-String | ConvertFrom-Json
     $detected = @($detection.tests)
-    Write-Host ("{0}: {1} affected symbol(s), {2} affected test(s)." -f ($Name -join ', '), @($detection.symbols).Count, $detected.Count) -ForegroundColor Cyan
+    $seedLabel = if (@($detection.seeds).Count -gt 0) { @($detection.seeds) -join ', ' } else { 'no changed symbol' }
+    Write-Host ("{0}: {1} affected symbol(s), {2} affected test(s)." -f $seedLabel, @($detection.symbols).Count, $detected.Count) -ForegroundColor Cyan
 
     $projects = @(
         foreach ($testProject in $projects) {
@@ -604,6 +668,10 @@ if ($List -and $Repeat -ne 1) {
     throw '-List cannot be combined with -Repeat.'
 }
 
+if ($List -and $KeepTrx) {
+    throw '-List cannot be combined with -KeepTrx.'
+}
+
 $commonArguments = @(
     '--configuration'
     $Configuration
@@ -637,6 +705,47 @@ if ($List) {
 
 if ($null -ne $AdditionalArguments -and $AdditionalArguments.Count -gt 0) {
     $commonArguments += $AdditionalArguments
+}
+
+function Get-TreeHash {
+    # The tree of the whole working tree, staged or not, written through a temporary index so the real
+    # index stays untouched.
+    param([Parameter(Mandatory = $true)][string]$Root)
+
+    $indexPath = Join-Path ([System.IO.Path]::GetTempPath()) ('Test-index-' + [guid]::NewGuid().ToString('N'))
+    $previousIndex = $env:GIT_INDEX_FILE
+    $nativePreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    try {
+        $realIndex = [string](& git -C $Root rev-parse --path-format=absolute --git-path index 2>$null)
+        if ($LASTEXITCODE -eq 0 -and [System.IO.File]::Exists($realIndex.Trim())) {
+            [System.IO.File]::Copy($realIndex.Trim(), $indexPath)
+        }
+        $env:GIT_INDEX_FILE = $indexPath
+        $null = & git -C $Root add --all -- . 2>&1
+        if ($LASTEXITCODE -ne 0) { throw 'git add failed while the working tree was hashed for -KeepTrx.' }
+        $tree = [string](& git -C $Root write-tree 2>$null)
+        if ($LASTEXITCODE -ne 0 -or $tree.Trim() -notmatch '^[0-9a-f]{12,}$') { throw 'git write-tree failed while the working tree was hashed for -KeepTrx.' }
+        return $tree.Trim().Substring(0, 12)
+    }
+    finally {
+        $env:GIT_INDEX_FILE = $previousIndex
+        $ErrorActionPreference = $nativePreference
+        Remove-Item -LiteralPath $indexPath -Force -ErrorAction SilentlyContinue
+    }
+}
+
+$trxFolder = ''
+$treeHash = ''
+if ($KeepTrx) {
+    $trxSetting = $config.PSObject.Properties['trx']
+    if ($null -eq $trxSetting -or [string]::IsNullOrWhiteSpace([string]$trxSetting.Value)) {
+        throw 'The test configuration must contain a trx property naming the folder -KeepTrx writes to: ' + (Join-Path $PSScriptRoot 'Test.json')
+    }
+    $trxFolder = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($root, [string]$trxSetting.Value))
+    $treeHash = Get-TreeHash -Root $root
+    $null = [System.IO.Directory]::CreateDirectory($trxFolder)
+    Write-Host "Keeping trx files in $trxFolder for tree $treeHash" -ForegroundColor DarkGray
 }
 
 function ConvertTo-Argument {
@@ -786,6 +895,7 @@ try {
         # Every project runs at once in its own process. Its output goes to a file and is printed whole
         # when the process ends, so the lines of two projects never interleave.
         $runWatch = [System.Diagnostics.Stopwatch]::StartNew()
+        $runStamp = [DateTime]::Now.ToString('yyyyMMdd-HHmmss', [System.Globalization.CultureInfo]::InvariantCulture)
         $warned = $false
         $running = @(foreach ($testProject in $projects) {
             $projectFilter = $Filter
@@ -799,7 +909,13 @@ try {
                 $filterArguments = @('--filter', $projectFilter)
             }
 
-            $arguments = @('test', $testProject.FullName) + $filterArguments + $commonArguments
+            $trxArguments = @()
+            if ($KeepTrx) {
+                $trxPath = Join-Path $trxFolder ('{0}.{1}.{2}.trx' -f $testProject.BaseName, $treeHash, $runStamp)
+                $trxArguments = @('--logger', "trx;LogFileName=$trxPath")
+            }
+
+            $arguments = @('test', $testProject.FullName) + $filterArguments + $commonArguments + $trxArguments
             # Each run writes its own files, so no run reopens a file a leftover process of an earlier run still holds.
             $outputPath = Join-Path $outputRoot "$($testProject.BaseName).$run.out"
             $errorPath = Join-Path $outputRoot "$($testProject.BaseName).$run.err"

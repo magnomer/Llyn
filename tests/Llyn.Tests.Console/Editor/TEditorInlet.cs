@@ -26,7 +26,7 @@ public sealed class TEditorInlet
 
             BCanvasText lit = Assert.Single(texts, static text => text.BCanvasTextRole == "lit"
                 && text.BCanvasTextValue.Contains("Where or when is it used?"));
-            Assert.StartsWith("    ", lit.BCanvasTextValue);
+            Assert.StartsWith("   Where", lit.BCanvasTextValue);
             Assert.Contains(texts, static text => text.BCanvasTextRole == "muted"
                 && text.BCanvasTextValue == "What register does it carry?");
             Assert.Contains(texts, static text => text.BCanvasTextRole == "muted"
@@ -314,7 +314,7 @@ public sealed class TEditorInlet
             asked);
     }
 
-    private static void TEditorInletRun(
+    internal static void TEditorInletRun(
         int part,
         Action<BLibrary, Func<ConsoleKey, BKeymapRow?>> check,
         Action<LEngine>? hold = null,
@@ -324,7 +324,7 @@ public sealed class TEditorInlet
             [],
             (library, find) =>
             {
-                for (int step = 0; step < 5 + part; step++)
+                for (int step = 0; step < 6 + part; step++)
                 {
                     TEditorFrameSend(library, TLibrary.TLibraryDown);
                 }
@@ -369,12 +369,12 @@ public sealed class TEditorInlet
         return text.BCanvasTextRole != "situation" && text.BCanvasTextValue.Contains("rain");
     }
 
-    private static bool TEditorInletMatch(BCanvasText text)
+    internal static bool TEditorInletMatch(BCanvasText text)
     {
         return text.BCanvasTextRole == "field" && text.BCanvasTextColumn >= TEditorInletSide;
     }
 
-    private static void TEditorInletSend(BLibrary library, string typed)
+    internal static void TEditorInletSend(BLibrary library, string typed)
     {
         foreach (char letter in typed)
         {

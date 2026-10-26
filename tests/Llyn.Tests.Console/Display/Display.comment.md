@@ -43,6 +43,7 @@ The seed saves through a callback that stores an English entry and answers its i
 With `open`, Enter on the first index row opens the entry before the check runs.
 A script may run on the workspace after the tab opens, to break a table for a failure test.
 A notice text makes a helper close any dialog that shows it, as a user would.
+The helper sends Escape through `TConsoleFakeSettle` with the loop and the batch, and waits on no frame.
 Each step runs work on the loop, lets the loop drain what the work posted, then draws the frame.
 
 ## `TLecternCompass`
@@ -141,13 +142,13 @@ Showing an absent offer or an offer with no entries opens no box at all.
 
 ## Stamp
 
-Commit: `f3a687d70b47`
-- `TLectern.cs` `d4aae2072b528891`
-- `TLecternCard.cs` `3b2d6ba56615809a`
-- `TLecternCompass.cs` `f72cea894bf88429`
+Commit: `c37ca1837ded`
+- `TLectern.cs` `0a75c9c38ba24032`
+- `TLecternCard.cs` `b5836de2554ec6d9`
+- `TLecternCompass.cs` `4edd87c5fa96991b`
 - `TLecternEtymology.cs` `b501ad96e7386141`
 - `TLecternHeader.cs` `72979c885d47b86f`
-- `TLecternIncoming.cs` `bbbeec854e35affb`
-- `TLecternMention.cs` `c7b1cf0a550975dd`
+- `TLecternIncoming.cs` `850b464e038a7166`
+- `TLecternMention.cs` `d95658f4d13e4db7`
 - `TLecternMentionMenu.cs` `49dfccbd5a869061`
 - `TLecternNote.cs` `7b4b709f751b5368`

@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 public sealed class TChoice
 {
     [Fact]
-    public void OrderDraw_AppliedOrder_MarksAndLightsIt()
+    public void ParleyBodyDraw_AppliedOrder_MarksAndLightsIt()
     {
         BLocalizationCatalog catalog = new();
         catalog.BLocalizationCatalogApply(TInterface.TLocalizationLoad("en"));
@@ -151,7 +151,7 @@ public sealed class TChoice
     [Theory]
     [InlineData(ConsoleKey.Enter, '\r')]
     [InlineData(ConsoleKey.Escape, '\e')]
-    public async Task FilterParley_EnterOrEscape_Closes(ConsoleKey key, char letter)
+    public async Task ParleyKeyObserve_EnterOrEscape_Closes(ConsoleKey key, char letter)
     {
         List<IReadOnlyList<string>> hides = [];
         BSChoiceFilter chooser = new(["English"], new CCatalogFilter([]), hides.Add, new BCanvasWidth(false));
@@ -165,7 +165,7 @@ public sealed class TChoice
     }
 
     [Fact]
-    public void FilterParleyDraw_SmallConsole_KeepsLitRowInsideFrame()
+    public void ParleyDraw_SmallConsole_KeepsLitRowInsideFrame()
     {
         ABootstrap bootstrap = new();
         string[] languages = [.. Enumerable.Range(1, 28).Select(static at => $"Language {at:D2}")];

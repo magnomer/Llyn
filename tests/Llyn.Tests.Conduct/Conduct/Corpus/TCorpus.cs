@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TCorpus
 {
     [Fact]
-    public void CorpusExampleCreate_ExampleChosen_OpensAQuotingEntryInTheEditor()
+    public void DiptychEntryCreate_ExampleChosen_OpensAQuotingEntryInTheEditor()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -75,7 +75,7 @@ public sealed class TCorpus
     }
 
     [Fact]
-    public void CorpusExampleSelect_NothingUnsaved_RecordsAndShowsTheExample()
+    public void DiptychParentSelect_NothingUnsaved_RecordsAndShowsTheExample()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -95,7 +95,7 @@ public sealed class TCorpus
     }
 
     [Fact]
-    public void CorpusQuotationSelect_QuotingEntry_ShowsItOnTheDisplay()
+    public void DiptychChildSelect_QuotingEntry_ShowsItOnTheDisplay()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -176,7 +176,7 @@ public sealed class TCorpus
     }
 
     [Fact]
-    public void CorpusExampleDelete_ChosenExampleConfirmed_DeletesItAndClearsTheExcerpt()
+    public void DiptychEntryDelete_ChosenExampleConfirmed_DeletesItAndClearsTheExcerpt()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -194,7 +194,7 @@ public sealed class TCorpus
     }
 
     [Fact]
-    public void CorpusExampleDelete_QuotationOnDisplay_DeletesNothing()
+    public void DiptychEntryDelete_QuotationOnDisplay_DeletesNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

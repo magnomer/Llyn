@@ -27,7 +27,7 @@ public sealed class TWindowLayer
     }
 
     [Fact]
-    public void WindowFrameBuild_ParleyOpen_ShowsCloseLegend()
+    public void EnvoyConfirm_ParleyOpen_ShowsCloseLegend()
     {
         TConsoleFake console = new() { TConsoleFakeTerminal = true };
         console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\r', ConsoleKey.Enter, false, false, false));
@@ -332,13 +332,25 @@ public sealed class TWindowLayer
     public void WindowKeyObserve_EmptyTrail_DimsBackAndForward()
     {
         TConsoleFake console = new() { TConsoleFakeTerminal = true };
-        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\0', ConsoleKey.LeftArrow, false, true, false));
-        console.TConsoleFakeAdjust(80, 24);
-        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\0', ConsoleKey.RightArrow, false, true, false));
-        console.TConsoleFakeAdjust(80, 24);
-        console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\0', ConsoleKey.F10, false, false, false));
+        (BLoop? loop, BWindow? window) = (null, null);
+        Task feeder = Task.Run(() =>
+        {
+            SpinWait.SpinUntil(
+                () => Volatile.Read(ref window) is not null && console.TConsoleFakeFrames.Count > 0, 5000);
+            console.TConsoleFakeSettle(
+                new ConsoleKeyInfo('\0', ConsoleKey.LeftArrow, false, true, false), loop!, window!.BWindowBatchObserve,
+                CancellationToken.None);
+            console.TConsoleFakeSettle(
+                new ConsoleKeyInfo('\0', ConsoleKey.RightArrow, false, true, false), loop!, window.BWindowBatchObserve,
+                CancellationToken.None);
+            console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\0', ConsoleKey.F10, false, false, false));
+        });
 
-        TEnvoy.TEnvoyRun(console, static _ => null);
+        TEnvoy.TEnvoyRun(
+            console,
+            static _ => null,
+            prime: shown => (loop, window) = ((BLoop)SynchronizationContext.Current!, shown));
+        feeder.Wait();
 
         string dim = new BTheme(BTheme.BThemeSpareRead).BThemeRead("disabled");
         string frames = string.Concat(console.TConsoleFakeFrames);

@@ -32,7 +32,7 @@ public sealed class TLecternWord
     }
 
     [Fact]
-    public void LecternWordFind_EnterAfterMoving_LooksUpTheWordUnderTheCursor()
+    public void LecternWordObserve_EnterAfterMoving_LooksUpTheWordUnderTheCursor()
     {
         TLecternWordRun((line, route, noticed) =>
         {

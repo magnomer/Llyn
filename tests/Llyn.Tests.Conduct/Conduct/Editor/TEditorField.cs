@@ -12,7 +12,7 @@ namespace Llyn.Tests;
 public sealed class TEditorField
 {
     [Fact]
-    public void CardFieldSet_TypedTexts_WritesTitleExpressionAndDefinition()
+    public void CardTitleSet_TypedTexts_WritesTitleExpressionAndDefinition()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -175,7 +175,7 @@ public sealed class TEditorField
     }
 
     [Fact]
-    public void GlossRemoveAndLanguageSet_PickedGloss_DropsOneAndRetagsTheOther()
+    public void SentenceGlossRemove_PickedGloss_DropsOneAndRetagsTheOther()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -235,7 +235,7 @@ public sealed class TEditorField
     }
 
     [Fact]
-    public void EditorLanguage_HeldDraft_ReadsTheDraftsLanguage()
+    public void EntryLanguage_HeldDraft_ReadsTheDraftsLanguage()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

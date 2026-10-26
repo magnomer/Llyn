@@ -32,6 +32,11 @@ internal sealed class QExample
         }
 
         QExampleRowRefine(container, row);
+        if (QLook.QLookPartFind<TextBox>(container, "PSentenceCitation") is TextBox citation)
+        {
+            _qExampleCitation.QCitationTextRefine(citation);
+        }
+
         if (ItemsControl.ItemsControlFromItemContainer(container) is ItemsControl list)
         {
             QExampleRevealRefine(list);
@@ -238,11 +243,6 @@ internal sealed class QExample
             text.Text = row.QPassageText.CStateWordingText;
             QStateConverter.QStateHintRefine(text, QField.QFieldHintProperty, row.QPassageText);
             QExampleLayoutRefine(container, text);
-        }
-
-        if (QLook.QLookPartFind<TextBox>(container, "PSentenceCitation") is TextBox citation)
-        {
-            citation.Text = QPassage.QPassageCitationFind(row.QPassageCitationCatalog, row.QPassageCitation);
         }
 
         if (QLook.QLookPartFind<QIconImage>(container, "PSentenceGlossIcon") is QIconImage gloss)

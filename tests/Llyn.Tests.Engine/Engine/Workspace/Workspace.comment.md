@@ -67,8 +67,8 @@ It is a doctor that refuses to open, standing in for a database folder that is a
 
 ## Stamp
 
-Commit: `52c21d68b4c4`
+Commit: `c37ca1837ded`
 - `TEngineLocation.cs` `f57d570023e2fd7c`
 - `TEngineRecordingSweeping.cs` `8bd58ff6afe6f6b4`
-- `TEngineWorkspace.cs` `84ce02214926be15`
+- `TEngineWorkspace.cs` `5d499e967d789cc5`
 - `TWorkspaceClerk.cs` `9d6b834836dfbfc5`

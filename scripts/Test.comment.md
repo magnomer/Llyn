@@ -1,4 +1,5 @@
 # Test.ps1
+Hash: `4dd4d6dac089918d`
 
 ## Why this copy differs
 
@@ -79,3 +80,40 @@ The generation stays 6: these switches are part of it.
 `TestAudit.ps1` runs `Test.ps1 -Convention`, the convention project, which holds the audits, only.
 Each passes every other argument on unchanged and returns the exit code of `Test.ps1`.
 They hold no test logic of their own, so `Test.ps1` stays the one test script.
+
+## Changed
+
+Workers ran whole test projects while they worked, since naming the symbols they had touched took a guess.
+`-Changed` takes the symbols from git, so no guess is needed.
+`TraceSymbol.ps1 -Changed` compares the working tree with `-Since`, `HEAD` by default, staged and unstaged edits alike.
+Each changed line seeds the innermost symbol that holds it.
+A line no symbol holds, such as a `using` directive, seeds nothing.
+A change that only removes lines seeds the holders of the line before the gap and of the next line.
+A deleted source seeds nothing, since the code that used it fails to build instead.
+A source git does not track yet seeds every top-level type it declares.
+A new test file therefore runs its own tests.
+A graft query writes no card for a new file, so `-Changed` rebuilds the index with `graft build` first.
+The run is then narrowed as symbol names narrow it, and names given beside `-Changed` add their own seeds.
+When no test is affected, the script says so and exits 0 without a build.
+The convention project still runs whole when `-All` or `-Convention` selects it.
+`-Since` takes a commit or a tree, so a supervisor's saved tree marks where a worker's part began.
+`-Since` without `-Changed` is refused, and so is a revision git cannot find.
+The walk is the one symbol names take, unbounded, since `Test.ps1` passes no depth.
+A Conduct change that the console window builds therefore reaches the tests that boot the window.
+`Test.json` is raised to generation 7 and `TraceSymbol.json` to generation 2 to match.
+
+## KeepTrx
+
+`ScanTest.ps1` needs trx files, and a plain run leaves none.
+`-KeepTrx` adds a trx logger to every project of every run and keeps each file.
+The folder is the `trx` property of `Test.json`, which is required with this switch and created when missing.
+Each file is named `<Project>.<tree>.<yyyyMMdd-HHmmss>.trx`.
+The stamp is the start of that run, so each run of `-Repeat` writes its own files.
+`<tree>` is the first 12 hex digits of the git tree of the whole working tree, staged or not.
+The tree is written through a copy of the index, so the real index stays untouched.
+That copy takes every file git does not ignore, new files included.
+The tree in the name lets ScanTest compare only runs of one unchanged tree.
+A fix is then not mistaken for a flaky test.
+`-KeepTrx` cannot be combined with `-List`, since a listing runs no test.
+A failure of `git add` or `git write-tree` stops the script before any test runs.
+`Test.json` is raised to generation 7 for this switch too.

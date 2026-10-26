@@ -20,6 +20,9 @@ A wide file name is clipped by cells.
 The help lists the path keys, among them the parent folder.
 With no folder given, the prompt starts in the workspace, for the markup file and the folder question both.
 
+`TPathfinderRun` sends each key through `TConsoleFakeSettle`, so a key that draws no frame does not wait.
+It takes the loop and the window from the prime callback.
+
 `TPathfinderRun` ends every key script with up to four F10 presses, each sent only while the run is still going.
 A key left over after the answer may open a box in the window.
 One F10 would then close that box, and the run would wait for a key forever.
@@ -79,9 +82,9 @@ An accepted file stores its parent folder, and the next prompt starts there.
 
 ## Stamp
 
-Commit: `8c403d1df768`
+Commit: `c37ca1837ded`
 - `TCapsulePathfinder.cs` `3dea711812f94ba1`
-- `TDrive.cs` `24a2ced50fe8bc01`
-- `TPathfinder.cs` `e0b8cab11201e2ed`
+- `TDrive.cs` `e779c2a630a70602`
+- `TPathfinder.cs` `9ca54c28e8a5109e`
 - `TPathfinderMedium.cs` `7c4bccc9a851f992`
 - `TPathfinderPath.cs` `5d29d55b63342f9c`

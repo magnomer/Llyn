@@ -71,14 +71,14 @@ Query tests distinguish unmatched wording from vacant wording.
 
 ## Stamp
 
-Commit: `bd299c638b2c`
-- `TAnthology.cs` `cb28be04a5ee682f`
+Commit: `c37ca1837ded`
+- `TAnthology.cs` `5014c28cc25e7045`
 - `TAnthologyCitation.cs` `bb28477146e55d7a`
-- `TAnthologyExample.cs` `7b627fdeb76ed1de`
-- `TAnthologyGloss.cs` `9359d7893d79d281`
-- `TCorpus.cs` `0d88f7649ee45fc0`
+- `TAnthologyExample.cs` `b729a44339439e52`
+- `TAnthologyGloss.cs` `5cc274a2adad2bd3`
+- `TCorpus.cs` `70602f6083ecd43a`
 - `TCorpusHold.cs` `d5ed98be21918e0f`
 - `TCorpusPortrait.cs` `e4f3a91ae8cfb9bb`
-- `TCorpusScribe.cs` `8ecc1fd49b2fdcb7`
+- `TCorpusScribe.cs` `e074f98962abc675`
 - `TCorpusVista.cs` `d5f543a6b5a2bddf`
-- `TQuotation.cs` `4ea73c19f863dfd9`
+- `TQuotation.cs` `9ba8c8a2ada38bb0`

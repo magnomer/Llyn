@@ -89,10 +89,6 @@ internal static partial class TInterface
     internal static LListener TListenerRelayCreate(Action<LHarvestStep> sink) =>
         new LListenerRelay(sink);
 
-    internal static LHarvestStep THarvestStepCreate(
-        LHarvestKind kind, string source, int order, LRecording? recording) =>
-        new(kind, source, order, recording);
-
     internal static void TReceiverSourceStart(this LReceiver receiver, string source, int order)
     {
         receiver.LReceiverSourceStart(source, order);
@@ -202,9 +198,6 @@ internal static partial class TInterface
         CancellationToken cancellation) =>
         engine.LEnginePronunciation.LEngineTranscriptionFind(
             session, word, language, scheme, new LReceiverRelay(sink), cancellation);
-
-    internal static IReadOnlyList<LVariety> TEngineVarietyRead(this LEngine engine, string language) =>
-        engine.LEngineLanguage.LEngineVarietyRead(language);
 
     internal static bool TEngineFlaggedCheck(this LEngine engine, string language) =>
         engine.LEngineLanguage.LEngineFlaggedCheck(language);

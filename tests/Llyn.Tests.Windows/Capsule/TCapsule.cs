@@ -35,8 +35,10 @@ public sealed class TCapsule
         File.SetAttributes(path, FileAttributes.ReadOnly);
         try
         {
-            _ = Assert.ThrowsAny<System.Exception>(() => TInterfaceCapsule.TCapsuleSave(
+            System.Exception? raised = Record.Exception(() => TInterfaceCapsule.TCapsuleSave(
                 workspace.TWorkspaceFolder, TInterfaceCapsule.TCapsuleContentCreate(null, true)));
+            Assert.True(
+                raised is System.UnauthorizedAccessException or System.IO.IOException, raised?.ToString());
 
             Assert.False(TInterfaceCapsule.TCapsuleRead(workspace.TWorkspaceFolder).LCapsuleContentLinked);
             Assert.False(File.Exists(path + ".tmp"));

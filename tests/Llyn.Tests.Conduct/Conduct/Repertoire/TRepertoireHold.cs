@@ -38,7 +38,7 @@ public sealed class TRepertoireHold
     }
 
     [Fact]
-    public void RepertoireTitleSet_TitleTyped_WritesItAndAnswersTheTypedLine()
+    public void PlaywrightTitleSet_TitleTyped_WritesItAndAnswersTheTypedLine()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -59,7 +59,7 @@ public sealed class TRepertoireHold
     }
 
     [Fact]
-    public void RepertoireKindSet_KindTypedThenCleared_WordsTheMeasureOnlyWhileEmpty()
+    public void PlaywrightKindSet_KindTypedThenCleared_WordsTheMeasureOnlyWhileEmpty()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -78,7 +78,7 @@ public sealed class TRepertoireHold
     }
 
     [Fact]
-    public void RepertoireScenarioChanged_UnknownKindThenCancel_RaisesTheUnknownHintThenABlankScenario()
+    public void PlaywrightScenarioChanged_UnknownKindThenCancel_RaisesTheUnknownHintThenABlankScenario()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

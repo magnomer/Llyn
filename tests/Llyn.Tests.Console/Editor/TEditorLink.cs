@@ -194,7 +194,7 @@ public sealed class TEditorLink
             [],
             (library, find) =>
             {
-                for (int step = 0; step < 5 + TEditorLinkPart; step++)
+                for (int step = 0; step < 6 + TEditorLinkPart; step++)
                 {
                     TEditorFrameSend(library, TLibrary.TLibraryDown);
                 }

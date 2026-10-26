@@ -65,11 +65,6 @@ internal static partial class TInterface
     internal static LDraft? TTenureRedo(this LTenure tenure) =>
         tenure.LTenureRedo();
 
-    internal static void TTenureSweep(this LTenure tenure)
-    {
-        tenure.LTenureSweep();
-    }
-
     internal static void TTenureCancel(this LTenure tenure)
     {
         tenure.LTenureCancel();

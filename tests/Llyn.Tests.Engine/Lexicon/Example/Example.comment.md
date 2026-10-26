@@ -156,11 +156,11 @@ It falls back to the marker first rather than refusing to lay the row out.
 
 ## Stamp
 
-Commit: `36e31eb71c98`
+Commit: `c37ca1837ded`
 - `TExample.cs` `a9f3021b68f07b9d`
 - `TExampleLine.cs` `12fd9a19c0177a20`
 - `TMention.cs` `cb740644a69ee697`
 - `TMentionFinding.cs` `e28b0098936f7c5c`
-- `TMentionSpan.cs` `032d03cfc0dd7363`
+- `TMentionSpan.cs` `55868db07bf0f089`
 - `TSentence.cs` `6b1a3fcdaa01b3d5`
-- `TSentenceOrder.cs` `8167c86b34858bbf`
+- `TSentenceOrder.cs` `eb9259c9c7b7a03a`

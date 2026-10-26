@@ -216,8 +216,8 @@ public sealed class TEngineScript
         Assert.Equal(entry.LEntryId, raised.LBulletinId);
         Assert.Empty(engine.TEngineScriptRead(entry.LEntryId));
         engine.TEngineScriptStart(entry.LEntryId);
-        await Task.Delay(200);
 
+        Assert.False(engine.TEngineScriptCheck(entry.LEntryId));
         Assert.Equal(2, handler.TSourceHandlerCount);
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM script;"));
     }

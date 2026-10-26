@@ -25,8 +25,9 @@ public sealed class TAuditRatchet
         Assert.True(committed is not null, TAuditConvention.TAuditReportFormat(
             TAuditRatchetAudit, $"{TAuditConventionPath} cannot be read at HEAD, so no setting can be held."));
         Match generation = TAuditGenerationPattern.Match(committed);
-        if (!generation.Success
-            || int.Parse(generation.Groups[1].Value, CultureInfo.InvariantCulture) != TAuditConvention.TAuditGeneration)
+        Assert.True(generation.Success, TAuditConvention.TAuditReportFormat(
+            TAuditRatchetAudit, $"{TAuditConventionPath} carries no TAuditGeneration at HEAD."));
+        if (int.Parse(generation.Groups[1].Value, CultureInfo.InvariantCulture) != TAuditConvention.TAuditGeneration)
         {
             return;
         }

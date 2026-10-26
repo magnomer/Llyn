@@ -163,7 +163,7 @@ public sealed class TLecternMention
     }
 
     [Fact]
-    public void LecternMentionUpDown_LeavingTheSentenceAndComingBack_DoesNotReturnTheCursor()
+    public void LecternObserve_LeavingTheSentenceAndComingBack_DoesNotReturnTheCursor()
     {
         const string other = "The sky is blue.";
         TLecternCard.TLecternCardRun(
@@ -185,7 +185,7 @@ public sealed class TLecternMention
     }
 
     [Fact]
-    public void LecternMentionRefresh_OtherEntryWithTheSameItemName_DropsTheCursor()
+    public void LecternMentionReset_OtherEntryWithTheSameItemName_DropsTheCursor()
     {
         long other = 0;
         TLecternCard.TLecternCardRun(

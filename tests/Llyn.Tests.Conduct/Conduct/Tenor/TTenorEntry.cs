@@ -188,7 +188,7 @@ public sealed class TTenorEntry
     }
 
     [Fact]
-    public void CohortRowSelect_EntryRow_OpensItWithoutAStation()
+    public void PanelRowSelect_EntryRow_OpensItWithoutAStation()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -214,7 +214,7 @@ public sealed class TTenorEntry
     }
 
     [Fact]
-    public void CohortRowSelect_ChangedFreshEntryStayed_OpensNothing()
+    public void PanelRowSelect_ChangedFreshEntryStayed_OpensNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

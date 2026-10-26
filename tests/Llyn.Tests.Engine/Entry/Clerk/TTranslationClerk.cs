@@ -6,28 +6,17 @@ namespace Llyn.Tests;
 
 public sealed class TTranslationClerk
 {
-    [Fact]
-    public void TranslationClerkFind_ExactHeadword_ListsItBeforePartialMatches()
+    [Theory]
+    [InlineData("break")]
+    [InlineData("  break ")]
+    public void TranslationClerkFind_ExactOrPaddedQuery_ListsExactFirst(string query)
     {
         TVaultFake entries = new();
         entries.TVaultFakeAdd(TInterface.TEntryCreate(0, "breakfast", "English", 0, null, null));
         entries.TVaultFakeAdd(TInterface.TEntryCreate(0, "break", "English", 0, null, null));
         LTranslationClerk clerk = TInterface.TTranslationClerkCreate(TInterface.TRigClerkCreate(entries));
 
-        IReadOnlyList<LEntry> found = clerk.TTranslationClerkFind("break", null);
-
-        Assert.Equal(["break", "breakfast"], found.Select(entry => entry.LEntryHeadword));
-    }
-
-    [Fact]
-    public void TranslationClerkFind_PaddedQuery_RanksAsTheTrimmedQuery()
-    {
-        TVaultFake entries = new();
-        entries.TVaultFakeAdd(TInterface.TEntryCreate(0, "breakfast", "English", 0, null, null));
-        entries.TVaultFakeAdd(TInterface.TEntryCreate(0, "break", "English", 0, null, null));
-        LTranslationClerk clerk = TInterface.TTranslationClerkCreate(TInterface.TRigClerkCreate(entries));
-
-        IReadOnlyList<LEntry> found = clerk.TTranslationClerkFind("  break ", null);
+        IReadOnlyList<LEntry> found = clerk.TTranslationClerkFind(query, null);
 
         Assert.Equal(["break", "breakfast"], found.Select(entry => entry.LEntryHeadword));
     }

@@ -22,7 +22,9 @@ public sealed class TEditorKey
                 Func<string, string> role = rank => Assert.Single(
                     TEditorFrame.TEditorFrameDraw(library), text => text.BCanvasTextValue.StartsWith(rank))
                     .BCanvasTextRole;
-                TEditorFrame.TEditorFrameSend(library, new ConsoleKeyInfo('\0', ConsoleKey.End, false, false, true));
+                ConsoleKeyInfo next = new('\0', ConsoleKey.PageDown, false, false, true);
+                TEditorFrame.TEditorFrameSend(library, next);
+                TEditorFrame.TEditorFrameSend(library, next);
                 Assert.Equal("lit", role("-- 2"));
                 Assert.NotNull(find(ConsoleKey.PageUp, ConsoleModifiers.Control));
 
@@ -61,7 +63,7 @@ public sealed class TEditorKey
     }
 
     [Fact]
-    public void FavoriteKeymap_F8WhileEditing_IsLiveAndKeepsTheEntryWhenDeclined()
+    public void LibraryKeymap_F8WhileEditing_IsLiveAndKeepsTheEntryWhenDeclined()
     {
         TFavoriteTab.TFavoriteTabRun(
             [("apple", "English", 0)],

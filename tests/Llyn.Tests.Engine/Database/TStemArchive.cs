@@ -88,7 +88,7 @@ public sealed class TStemArchive
     }
 
     [Fact]
-    public void ShengfuRow_Deleted_DropsLinksByCascade()
+    public void StemApply_ShengfuRowDeleted_DropsLinksByCascade()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TStemArchivePack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

@@ -190,17 +190,6 @@ public sealed class TReference
             engine.TEngineAuthorFind("Lee").Select(row => row.LAuthorId));
     }
 
-    private static LEntry TReferenceEntryCreate(LEngine engine)
-    {
-        return engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
-            "word",
-            "English",
-            string.Empty,
-            string.Empty,
-            [TInterface.TCardDraftCreate(string.Empty, string.Empty, "a meaning", [], [], [], [], [], 1)],
-            [TInterface.TCardDraftCreate(string.Empty, "in a word", "briefly", [], [], [], [], [], 1)]));
-    }
-
     [Fact]
     public void AuthorUsageRead_CreditedSources_NamesEveryEntry()
     {

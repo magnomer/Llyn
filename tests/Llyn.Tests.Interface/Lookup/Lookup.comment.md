@@ -135,8 +135,8 @@ It lets the lookup fan-out be tested without a client or a language pack.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
-- `TInterfacePronunciation.cs` `aa7b1576f0713edb`
+Commit: `c37ca1837ded`
+- `TInterfacePronunciation.cs` `b4361dea0e1318c0`
 - `TInterfaceSource.cs` `cdac272edbe526b4`
 - `TListenerStub.cs` `cd67f626a506e3b1`
 - `TPronunciationHelper.cs` `5e32f29b42e25acc`

@@ -28,7 +28,7 @@ public sealed class TTaxonomy
     }
 
     [Fact]
-    public void TaxonomyEmptyKey_BlankOrWrittenSearch_PicksVacantOrUnmatched()
+    public void ApertureKey_BlankOrWrittenSearch_PicksVacantOrUnmatched()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -46,7 +46,7 @@ public sealed class TTaxonomy
     }
 
     [Fact]
-    public void TaxonomyOrderSet_ReverseThenNull_KeepsTheChosenOrderAndRaisesTheRows()
+    public void ApertureOrderSet_ReverseThenNull_KeepsTheChosenOrderAndRaisesTheRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -72,7 +72,7 @@ public sealed class TTaxonomy
     }
 
     [Fact]
-    public void TaxonomyQuerySet_UnmatchedText_ListsNoTag()
+    public void ApertureQuerySet_UnmatchedText_ListsNoTag()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -86,7 +86,7 @@ public sealed class TTaxonomy
     }
 
     [Fact]
-    public void TaxonomyFilterSet_HiddenLanguage_MarksTheTaxonomyFiltered()
+    public void ApertureFilterSet_HiddenLanguage_MarksTheTaxonomyFiltered()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -104,7 +104,7 @@ public sealed class TTaxonomy
     }
 
     [Fact]
-    public async Task TaxonomyPortraitExport_EntryShown_WritesItAndNothingBefore()
+    public async Task MembershipPortraitExport_EntryShown_WritesItAndNothingBefore()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -127,7 +127,7 @@ public sealed class TTaxonomy
     }
 
     [Fact]
-    public void MembershipRowSelect_EntryRow_OpensItWithoutAStation()
+    public void PanelRowSelect_EntryRow_OpensItWithoutAStation()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -153,7 +153,7 @@ public sealed class TTaxonomy
     }
 
     [Fact]
-    public void MembershipRowSelect_ChangedFreshEntryStayed_OpensNothing()
+    public void PanelRowSelect_ChangedFreshEntryStayed_OpensNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -132,7 +132,7 @@ public sealed class TEditor
     }
 
     [Fact]
-    public void TenureVarietySet_PrimaryReading_TagsWhateverPrimaryTheDraftHolds()
+    public void DeskVarietySet_PrimaryReading_TagsWhateverPrimaryTheDraftHolds()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -146,7 +146,7 @@ public sealed class TEditor
     }
 
     [Fact]
-    public void TenureVarietySet_BlankVarietyOrMissingRow_ChangesNothing()
+    public void DeskVarietySet_BlankVarietyOrMissingRow_ChangesNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

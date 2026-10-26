@@ -93,7 +93,6 @@ An opened entry's steps light the Undo button.
 A walk change repaints the card lists on the GUI, with or without a draft change.
 A settle the engine refuses on a Situation or Tag entry leaves the text typed.
 The console does the same.
-A text set on an entry without the keyboard asks nothing, so the dropdown stays shut.
 
 ## `TLecternHinge`
 
@@ -134,12 +133,12 @@ A chip of a record never saved is disabled, and a stored chip stays enabled.
 
 ## Stamp
 
-Commit: `f3a687d70b47`
+Commit: `c37ca1837ded`
 - `TBerthSeat.cs` `75eb74163de8d120`
-- `TCardHinge.cs` `4420819c204c0089`
-- `TCardOrdinal.cs` `788665234082c696`
+- `TCardHinge.cs` `b1f2ffb9898ed7cc`
+- `TCardOrdinal.cs` `ecf2476428289e78`
 - `TCardRow.cs` `618531bdc90512ef`
 - `TCaretKey.cs` `6eaf4b7930a95206`
-- `TEditorCardWalk.cs` `0ba89189aff09b43`
-- `TLecternHinge.cs` `392d89024afd2878`
-- `TLecternWord.cs` `a37e00dff71608c1`
+- `TEditorCardWalk.cs` `561f7a9ade36a86f`
+- `TLecternHinge.cs` `aa4e3734e262bd24`
+- `TLecternWord.cs` `1499663521c44396`

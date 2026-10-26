@@ -131,9 +131,6 @@ internal static partial class TInterface
         long draftId, long cardId, long situationId, LCardKind kind = LCardKind.LCardKindMeaning) =>
         new LRequestSituationRemoval(draftId, kind, cardId, situationId);
 
-    internal static LRequest TSituationShiftCreate(long draftId, long cardId, long situationId, int position) =>
-        new LRequestSituationShift(draftId, LCardKind.LCardKindMeaning, cardId, situationId, position);
-
     internal static LRequest TSituationTitleCreate(long draftId, long situationId, LStateValue value) =>
         new LRequestSituationTitle(draftId, situationId, value.TStateWrittenRead());
 
@@ -141,9 +138,6 @@ internal static partial class TInterface
         long draftId, long cardId, string name, int position, LCardKind kind = LCardKind.LCardKindMeaning) =>
         new LRequestRegisterAddition(
             draftId, kind, cardId, TInterfaceState.TStateValueCreate(name).TStateWrittenRead(), position);
-
-    internal static LRequest TRegisterPickCreate(long draftId, long cardId, long registerId, int position) =>
-        new LRequestRegisterPick(draftId, LCardKind.LCardKindMeaning, cardId, registerId, position);
 
     internal static LRequest TRegisterRemovalCreate(
         long draftId, long cardId, long registerId, LCardKind kind = LCardKind.LCardKindMeaning) =>
@@ -255,9 +249,6 @@ internal static partial class TInterface
 
     internal static LRequest TTranscriptionShiftCreate(long draftId, long transcriptionId, int position) =>
         new LRequestTranscriptionShift(draftId, transcriptionId, position);
-
-    internal static LRequest TTranscriptionSchemeCreate(long draftId, long transcriptionId, string text) =>
-        new LRequestTranscriptionScheme(draftId, transcriptionId, text);
 
     internal static LRequest TTranscriptionTextCreate(long draftId, long transcriptionId, string text) =>
         new LRequestTranscriptionText(draftId, transcriptionId, text);

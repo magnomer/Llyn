@@ -16,6 +16,8 @@ Ctrl+Shift with a letter also belongs to the terminal, except Ctrl+Shift+Z.
 ## `BKeymapFind`
 
 Returns the first row of the focus whose key and modifiers both match exactly, or null.
+A row with a sign matches the typed character instead and ignores key and modifiers.
+So `#` works on any layout.
 A row whose live state is hidden is skipped, so a hidden key finds nothing and falls through.
 So Shift+F10 does not find the F10 row.
 The character U+0003 counts as Ctrl+C, since a terminal may send the interrupt as a character.
@@ -28,6 +30,7 @@ The window and help read them to collect the keys of a page.
 ## `BKeymapRow`
 
 One binding: key, modifiers, focus, label key, action and live function.
+A row may also carry a sign, a typed character.
 The label is a catalog key, resolved when the legend or help draws.
 The action is never null.
 It is wrapped to run only while the live state is shown.
@@ -50,8 +53,8 @@ Hidden leaves it out of both, and `BKeymapFind` does not find it.
 
 ## Stamp
 
-Commit: `c05429890cec`
-- `BKeymap.cs` `f4521bf6490e80ae`
+Commit: `c37ca1837ded`
+- `BKeymap.cs` `87775aee675e05e9`
 - `BKeymapFocus.cs` `5cfb507dc1088e41`
 - `BKeymapLive.cs` `c4bed21c76f50c73`
-- `BKeymapRow.cs` `d84bb3555e61a85f`
+- `BKeymapRow.cs` `890656626bd823ae`

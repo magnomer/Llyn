@@ -85,8 +85,10 @@ public sealed class TStencilClerk
             Assert.Single(clerk.TStencilClerkRead(deck.LDeckId).LStencilSlots));
     }
 
-    [Fact]
-    public void StencilClerkResolve_AllDefinitions_JoinsWithBar()
+    [Theory]
+    [InlineData("{definition:all}", "edge of a river|place for money")]
+    [InlineData("Sense: {definition:2}", "Sense: place for money")]
+    public void StencilClerkResolve_DefinitionToken_FillsCell(string body, string expected)
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LRig rig = workspace.TWorkspaceRigCreate();
@@ -104,35 +106,10 @@ public sealed class TStencilClerk
 
         LCueFace face = TInterface.TStencilClerkCreate(rig).TStencilClerkResolve(
             cue,
-            TInterface.TStencilSlotCreate(LCueColumn.LCueColumnText, "{definition:all}"),
+            TInterface.TStencilSlotCreate(LCueColumn.LCueColumnText, body),
             TInterface.TPortraitLabelRead());
 
-        Assert.Equal("edge of a river|place for money", Assert.Single(face.LCueFaceCells).LCueCellValue);
-    }
-
-    [Fact]
-    public void StencilClerkResolve_SecondDefinition_PicksSecond()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        LRig rig = workspace.TWorkspaceRigCreate();
-        LEntry bank = TInterface.TEntryClerkCreate(rig).TEntryClerkSave(TInterface.TEntryDraftCreate(
-            "bank",
-            "English",
-            string.Empty,
-            string.Empty,
-            [
-                TInterface.TCardDraftCreate(string.Empty, string.Empty, "edge of a river", [], [], [], [], [], 1),
-                TInterface.TCardDraftCreate(string.Empty, string.Empty, "place for money", [], [], [], [], [], 2),
-            ],
-            []));
-        LCue cue = TInterface.TCueCreate(LGrain.LGrainEntry, bank.LEntryId, null, null, null, null);
-
-        LCueFace face = TInterface.TStencilClerkCreate(rig).TStencilClerkResolve(
-            cue,
-            TInterface.TStencilSlotCreate(LCueColumn.LCueColumnText, "Sense: {definition:2}"),
-            TInterface.TPortraitLabelRead());
-
-        Assert.Equal("Sense: place for money", Assert.Single(face.LCueFaceCells).LCueCellValue);
+        Assert.Equal(expected, Assert.Single(face.LCueFaceCells).LCueCellValue);
     }
 
     [Fact]

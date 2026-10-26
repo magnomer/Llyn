@@ -41,11 +41,6 @@ internal static partial class TInterface
     internal static LRegisterArchive TRegisterArchiveCreate(LDatabase database) =>
         new(database);
 
-    internal static IReadOnlyList<LRegister> TRegisterCollocationRead(
-        this LRegisterArchive registerArchive,
-        long collocationId) =>
-        registerArchive.LRegisterCollocationRead(collocationId);
-
     internal static IReadOnlyList<LRegister> TRegisterMeaningRead(
         this LRegisterArchive registerArchive,
         long meaningId) =>

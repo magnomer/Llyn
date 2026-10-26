@@ -28,6 +28,12 @@
     belongs to its x:Class type, and its references to that type's own members are
     wiring, not use. Test methods are recorded and never followed further.
 
+    With -Changed the seeds come from git instead of names: the working tree is
+    compared with -Since, staged and unstaged edits alike, and each changed line
+    seeds the innermost symbol holding it. A line no symbol holds, such as a using
+    directive, seeds nothing. A source git does not track yet seeds every type it
+    declares. Names given beside -Changed are seeds too.
+
     Every project-specific value - graft folder, test markers, name prefix,
     markup extensions - lives in TraceSymbol.json. This script carries none, so the
     file is identical in every project at the same generation.
@@ -37,11 +43,21 @@
     Maximum number of hops to walk. Defaults to 0, which walks until nothing new turns up.
 .PARAMETER Json
     Write the result as JSON instead of the report. Test.ps1 reads this form.
+.PARAMETER Changed
+    Seed the walk with the symbols holding every line changed since -Since.
+.PARAMETER Since
+    The revision or tree -Changed compares the working tree with. Defaults to HEAD.
 .PARAMETER Help
     Display this help and exit. The alias -? is supported.
 .EXAMPLE
     tracesymbol LTwin
     Report every symbol and test a change inside LTwin can affect.
+.EXAMPLE
+    tracesymbol -Changed
+    Report every symbol and test the uncommitted edits can affect.
+.EXAMPLE
+    tracesymbol -Changed -Since 4b825dc
+    Report every symbol and test the edits since that tree can affect.
 .EXAMPLE
     tracesymbol LTwin LTrail -Depth 2
     Report what lies within two hops of either symbol.
@@ -50,7 +66,7 @@
     Write the same result as JSON.
 #>
 #requires -Version 5.1
-# TRACESYMBOL - TRACE GENERATION 1.
+# TRACESYMBOL - TRACE GENERATION 2.
 # ALIAS detector
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the executed outcome changes.
@@ -60,6 +76,8 @@
 # past the seeds members are followed by name, private names inside their type only, and
 # constructors and types through their creators; markup belongs to its x:Class type and skips its
 # own wiring; test methods, found by their marker attribute, are leaves.
+# Generation 2: everything in generation 1; -Changed seeds the walk from git, with the innermost symbol
+# holding each line changed since -Since, and every type of a source git does not track yet.
 # Every project-specific value lives in TraceSymbol.json, so this file is identical in every project at
 # this generation.
 [CmdletBinding()]
@@ -71,6 +89,10 @@ param(
     [int]$Depth = 0,
 
     [switch]$Json,
+
+    [switch]$Changed,
+
+    [string]$Since = 'HEAD',
 
     [Alias('?')]
     [switch]$Help
@@ -85,11 +107,21 @@ SYNOPSIS
     Find everything a change inside a symbol can affect.
 
 SYNTAX
-    tracesymbol <name> [<name> ...] [-Depth <hops>] [-Json] [-Help]
+    tracesymbol [<name> ...] [-Changed [-Since <revision>]] [-Depth <hops>] [-Json] [-Help]
 
 OPTIONS
     <name>
         Symbol to start from: a type, method, property or field. Several are allowed.
+        Required unless -Changed is given.
+
+    -Changed
+        Start from the symbols holding every line changed since -Since, staged
+        or not. A line no symbol holds, such as a using directive, starts
+        nothing; a source git does not track yet starts from every type in it.
+
+    -Since <revision>
+        The revision or tree -Changed compares the working tree with.
+        Defaults to HEAD.
 
     -Depth <hops>
         Maximum number of hops to walk. Defaults to 0, no limit.
@@ -109,11 +141,17 @@ EXAMPLES
 
     tracesymbol LTwin -Json
         Write the same result as JSON.
+
+    tracesymbol -Changed
+        Report every symbol and test the uncommitted edits can affect.
+
+    tracesymbol -Changed -Since 4b825dc
+        Report every symbol and test the edits since that tree can affect.
 '@ | Write-Host
     exit 0
 }
 
-Write-Host 'TRACESYMBOL - TRACE GENERATION 1' -ForegroundColor Blue
+Write-Host 'TRACESYMBOL - TRACE GENERATION 2' -ForegroundColor Blue
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
@@ -198,8 +236,8 @@ function Read-DetectorConfig {
         }
     }
 
-    if ([int]$config.generation -ne 1) {
-        throw "The TraceSymbol configuration is generation $($config.generation); this script is generation 1."
+    if ([int]$config.generation -ne 2) {
+        throw "The TraceSymbol configuration is generation $($config.generation); this script is generation 2."
     }
 
     return $config
@@ -529,6 +567,100 @@ function Add-DetectorSymbol($symbol, [int]$hop, [string]$via) {
     }
 }
 
+function Read-DetectorChanges {
+    # The working tree is compared with $Since, staged and unstaged edits alike, and each changed line
+    # seeds the innermost symbol holding it. A line no symbol holds, such as a using directive, seeds
+    # nothing. A hunk that only removes lines names the line before the gap, so the holders of that line
+    # and the next one are seeded. A source git does not track yet seeds every type it declares.
+    $git = Get-Command git -ErrorAction SilentlyContinue
+    if ($null -eq $git) {
+        throw 'git is required for -Changed, but git was not found on PATH.'
+    }
+
+    $byPath = [System.Collections.Generic.Dictionary[string, object]]::new([System.StringComparer]::OrdinalIgnoreCase)
+    foreach ($source in $sources) {
+        if ($null -ne $source.Symbols) {
+            $byPath[$source.Path] = $source
+        }
+    }
+
+    $nativePreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    try {
+        $null = & $git.Source -C $root rev-parse --verify --quiet "$Since^{tree}" 2> $null
+        $revisionExit = $LASTEXITCODE
+        if ($revisionExit -eq 0) {
+            $diff = @(& $git.Source -C $root -c core.quotePath=false diff --no-color --no-ext-diff --unified=0 $Since -- '*.cs')
+            $diffExit = $LASTEXITCODE
+            $untracked = @(& $git.Source -C $root -c core.quotePath=false ls-files --others --exclude-standard -- '*.cs')
+            $untrackedExit = $LASTEXITCODE
+        }
+    }
+    finally {
+        $ErrorActionPreference = $nativePreference
+    }
+
+    if ($revisionExit -ne 0) {
+        throw "The revision for -Since was not found: $Since"
+    }
+    if ($diffExit -ne 0) {
+        throw "git diff failed (exit code $diffExit)."
+    }
+    if ($untrackedExit -ne 0) {
+        throw "git ls-files failed (exit code $untrackedExit)."
+    }
+
+    $seeds = [System.Collections.Generic.List[object]]::new()
+    $seeded = [System.Collections.Generic.HashSet[int]]::new()
+    $hunkPattern = [regex]'^@@ -\d+(?:,\d+)? \+(?<start>\d+)(?:,(?<count>\d+))? @@'
+    $source = $null
+    foreach ($line in $diff) {
+        if ($line.StartsWith('+++ ')) {
+            # A deleted source names /dev/null and seeds nothing; its users fail to build instead.
+            $source = $null
+            $path = $line.Substring(4)
+            if ($path.StartsWith('b/')) {
+                $null = $byPath.TryGetValue($path.Substring(2), [ref]$source)
+            }
+            continue
+        }
+
+        if ($null -eq $source) {
+            continue
+        }
+
+        $match = $hunkPattern.Match($line)
+        if (-not $match.Success) {
+            continue
+        }
+
+        $start = [int]$match.Groups['start'].Value
+        $count = if ($match.Groups['count'].Success) { [int]$match.Groups['count'].Value } else { 1 }
+        $numbers = if ($count -eq 0) { @([Math]::Max($start, 1), ($start + 1)) } else { $start..($start + $count - 1) }
+        foreach ($number in $numbers) {
+            $holder = Find-DetectorHolder $source $number
+            if ($null -ne $holder -and $seeded.Add($holder.Id)) {
+                $seeds.Add($holder)
+            }
+        }
+    }
+
+    foreach ($path in $untracked) {
+        $source = $null
+        if (-not $byPath.TryGetValue($path, [ref]$source)) {
+            continue
+        }
+
+        foreach ($symbol in $source.Symbols) {
+            if ($symbol.Type -and $null -eq $symbol.Owner -and $seeded.Add($symbol.Id)) {
+                $seeds.Add($symbol)
+            }
+        }
+    }
+
+    return , $seeds
+}
+
 function Find-DetectorProject([string]$path) {
     $folder = Split-Path -Parent (Join-Path $root $path)
     while ($folder.Length -ge $root.Length) {
@@ -548,8 +680,12 @@ function Find-DetectorProject([string]$path) {
     return ''
 }
 
-if ($null -eq $Name -or $Name.Count -eq 0) {
-    throw 'At least one symbol name is required. Run tracesymbol -Help for usage.'
+if ($PSBoundParameters.ContainsKey('Since') -and -not $Changed) {
+    throw '-Since needs -Changed.'
+}
+
+if (($null -eq $Name -or $Name.Count -eq 0) -and -not $Changed) {
+    throw 'At least one symbol name or -Changed is required. Run tracesymbol -Help for usage.'
 }
 
 $root = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..')).TrimEnd('\', '/')
@@ -569,7 +705,14 @@ Push-Location $root
 try {
     $nativePreference = $ErrorActionPreference
     $ErrorActionPreference = 'Continue'
-    & $graft.Source grep --fixed $Name[0] --json *> $null
+    # A query refreshes the graph and the cards of known files, but writes no card for a new file, so
+    # -Changed, which must see new sources and their tests, rebuilds the index instead.
+    if ($Changed) {
+        & $graft.Source build $root *> $null
+    }
+    else {
+        & $graft.Source grep --fixed $Name[0] --json *> $null
+    }
     $graftExit = $LASTEXITCODE
     $ErrorActionPreference = $nativePreference
 }
@@ -599,7 +742,8 @@ Read-DetectorFields
 Read-DetectorMarkup
 Read-DetectorReferences
 
-foreach ($seed in $Name) {
+$seedNames = [System.Collections.Generic.List[string]]::new()
+foreach ($seed in @($Name | Where-Object { $_ })) {
     if (-not $byName.ContainsKey($seed)) {
         throw "The symbol was not found in the graft index: $seed"
     }
@@ -608,7 +752,19 @@ foreach ($seed in $Name) {
         Add-DetectorSymbol $symbol 0 ''
     }
     Push-DetectorName $seed ''
+    $seedNames.Add($seed)
 }
+
+if ($Changed) {
+    foreach ($symbol in (Read-DetectorChanges)) {
+        Add-DetectorSymbol $symbol 0 ''
+        if (-not $seedNames.Contains($symbol.Name)) {
+            $seedNames.Add($symbol.Name)
+        }
+    }
+}
+
+$seedLabel = if ($seedNames.Count -gt 0) { $seedNames -join ', ' } else { "no change since $Since" }
 
 $hop = 0
 while ($frontier.Count -gt 0 -and ($Depth -eq 0 -or $hop -lt $Depth)) {
@@ -672,7 +828,7 @@ $hops = if ($affected.Count -gt 0) { [int]($affected | Measure-Object -Property 
 
 if ($Json) {
     ConvertTo-DetectorJson -Value ([ordered]@{
-        seeds   = @($Name)
+        seeds   = @($seedNames)
         hops    = $hops
         symbols = $affected
         tests   = $tests
@@ -682,7 +838,7 @@ if ($Json) {
 
 $fileCount = @($affected | Select-Object -ExpandProperty path -Unique).Count
 $projectCount = @($tests | Select-Object -ExpandProperty project -Unique).Count
-Write-Host ("{0}: {1} symbol(s) in {2} file(s), {3} test(s) in {4} project(s), {5} hop(s)." -f ($Name -join ', '), $affected.Count, $fileCount, $tests.Count, $projectCount, $hops) -ForegroundColor Cyan
+Write-Host ("{0}: {1} symbol(s) in {2} file(s), {3} test(s) in {4} project(s), {5} hop(s)." -f $seedLabel, $affected.Count, $fileCount, $tests.Count, $projectCount, $hops) -ForegroundColor Cyan
 
 foreach ($group in $affected | Group-Object -Property path) {
     Write-Host ''

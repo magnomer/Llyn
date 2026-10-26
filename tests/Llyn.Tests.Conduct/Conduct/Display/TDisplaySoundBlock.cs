@@ -13,7 +13,7 @@ namespace Llyn.Tests;
 public sealed class TDisplaySoundBlock
 {
     [Fact]
-    public void DisplayBlocksRead_NothingShown_AnswersEmptyBlocks()
+    public void DisplayFanqieRead_NothingShown_AnswersEmptyBlocks()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -36,7 +36,7 @@ public sealed class TDisplaySoundBlock
     }
 
     [Fact]
-    public void DisplayBlocksRead_EnglishEntry_AnswersNoRimeScriptOrParadigmRows()
+    public void DisplayFanqieRead_EnglishEntry_AnswersNoRimeScriptOrParadigmRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -112,7 +112,7 @@ public sealed class TDisplaySoundBlock
     }
 
     [Fact]
-    public void DisplayDiweiAndStemOpen_ShownEntry_RaiseTheShownLanguage()
+    public void DisplayDiweiOpen_ShownEntry_RaiseTheShownLanguage()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

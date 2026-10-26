@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TAnthologyExample
 {
     [Fact]
-    public void AnthologyTextSetAndSpeakerSet_TypedTextAndPickedLanguage_WriteTheTranscriptAndAnswerTheTextHint()
+    public void AnthologyTextSet_TypedTextAndPickedLanguage_WriteTheTranscriptAndAnswerTheTextHint()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

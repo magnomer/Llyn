@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TRepertoireScribe
 {
     [Fact]
-    public void RepertoireSituationCreate_NoRowChosen_StartsABlankScenario()
+    public void DiptychEntryCreate_NoRowChosen_StartsABlankScenario()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -28,7 +28,7 @@ public sealed class TRepertoireScribe
     }
 
     [Fact]
-    public void RepertoireSituationSelect_UnsavedScenarioStored_StoresItAndShowsTheChosenSituation()
+    public void DiptychParentSelect_UnsavedScenarioStored_StoresItAndShowsTheChosenSituation()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -50,7 +50,7 @@ public sealed class TRepertoireScribe
     }
 
     [Fact]
-    public void RepertoireSituationSelect_UnsavedScenarioKept_RecordsNothing()
+    public void DiptychParentSelect_UnsavedScenarioKept_RecordsNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -72,7 +72,7 @@ public sealed class TRepertoireScribe
     }
 
     [Fact]
-    public void RepertoireOccurrenceSelect_UnsavedScenarioKept_StaysOnTheScenario()
+    public void DiptychChildSelect_UnsavedScenarioKept_StaysOnTheScenario()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -146,7 +146,7 @@ public sealed class TRepertoireScribe
     }
 
     [Fact]
-    public void RepertoireScribeToggle_ClosingTheScenario_CancelsTheDesk()
+    public void DiptychScribeToggle_ClosingTheScenario_CancelsTheDesk()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -168,7 +168,7 @@ public sealed class TRepertoireScribe
     }
 
     [Fact]
-    public void RepertoireScribeToggle_ClosingTheOccurrenceEditor_FallsBackToTheChosenSituation()
+    public void DiptychScribeToggle_ClosingTheOccurrenceEditor_FallsBackToTheChosenSituation()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -186,7 +186,7 @@ public sealed class TRepertoireScribe
     }
 
     [Fact]
-    public void RepertoireEntryResonate_NoChosenOccurrence_KeepsTheScenario()
+    public void DiptychChildResonate_NoChosenOccurrence_KeepsTheScenario()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

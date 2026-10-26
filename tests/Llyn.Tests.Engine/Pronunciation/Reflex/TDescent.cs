@@ -25,10 +25,12 @@ public sealed class TDescent
         Assert.Empty(TInterface.TLanguageLoad("Korean").LLanguageDescents);
     }
 
-    [Fact]
-    public void DescentScan_MandarinLevelTone_NamesPlainAndChecked()
+    [Theory]
+    [InlineData("55", "1,7")]
+    [InlineData("214-21", "3,4S")]
+    public void DescentScan_MandarinLevelOrSandhi_ReturnsClasses(string contour, string expected)
     {
-        Assert.Equal(["1", "7"], TInterface.TDescentScan(TDescentRead(), "Mandarin", "55"));
+        Assert.Equal(expected.Split(','), TInterface.TDescentScan(TDescentRead(), "Mandarin", contour));
     }
 
     [Fact]
@@ -71,12 +73,6 @@ public sealed class TDescent
         Assert.Equal(
             expected.Split(','),
             TInterface.TDescentScan(TDescentRead(), language, contour));
-    }
-
-    [Fact]
-    public void DescentScan_SandhiForm_ReadsCitationTone()
-    {
-        Assert.Equal(["3", "4S"], TInterface.TDescentScan(TDescentRead(), "Mandarin", "214-21"));
     }
 
     [Fact]

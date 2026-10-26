@@ -42,8 +42,8 @@ An unknown key, a zero index, two suffixes or a stray brace stay literal.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `c37ca1837ded`
 - `TStencilBody.cs` `9acb56c274b8e0e9`
-- `TStencilClerk.cs` `d8dcc175eeda4041`
+- `TStencilClerk.cs` `5be2930a4634094d`
 - `TStencilDefault.cs` `fad4ab50915daad1`
 - `TStencilToken.cs` `b8ac3e335ed8a6b0`

@@ -117,13 +117,13 @@ The Engine rime table tests and the Conduct yunjing panel tests place their cell
 
 ## Stamp
 
-Commit: `c6e60141a172`
+Commit: `c37ca1837ded`
 - `TInterfaceAncestor.cs` `0ba588ff693a76f4`
 - `TInterfaceExample.cs` `f2df04344ad12a53`
 - `TInterfaceFanqie.cs` `9835e3d194d52aa7`
 - `TInterfaceInflection.cs` `c64a5c850d40f157`
-- `TInterfaceLexicon.cs` `6bf8c76bb901db9d`
-- `TInterfaceMeaning.cs` `fa7d0c0de042a497`
+- `TInterfaceLexicon.cs` `9fcd86b544bf0aaa`
+- `TInterfaceMeaning.cs` `56542ada5f043db9`
 - `TInterfaceSentence.cs` `f85ee90b93b5c834`
 - `TInterfaceState.cs` `23703b8485b4e3c9`
 - `TXiaoyunFixture.cs` `e87fb087f6871a3e`

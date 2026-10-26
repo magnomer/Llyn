@@ -62,9 +62,15 @@ public sealed class TEngineFrequencySession
         LEntryDraft draft = TEngineFrequency.TFrequencyDraftCreate("tomato", pack.TLanguageFixtureName);
         LEntry entry = engine.TEngineEntrySave(draft);
         await TFrequencyCountCheck(handler, 3);
-        await Task.Delay(200);
-
         Assert.Empty(engine.TEngineFrequencyRead(entry.LEntryId));
+        DateTime deadline = DateTime.UtcNow + TEngineFrequency.TEngineFrequencyPatience;
+        while (handler.TSourceHandlerCount == 3)
+        {
+            Assert.True(DateTime.UtcNow < deadline, "Waited for a read to ask again.");
+            _ = engine.TEngineFrequencyRead(entry.LEntryId);
+            await Task.Delay(20);
+        }
+
         await TFrequencyCountCheck(handler, 6);
     }
 

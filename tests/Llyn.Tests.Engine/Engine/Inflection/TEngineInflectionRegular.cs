@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TEngineInflectionRegular
 {
     [Fact]
-    public void ParadigmUpdate_SpanishRegularForm_SetsRegular()
+    public void EntryInflectionSave_SpanishRegularForm_SetsRegular()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -25,7 +25,7 @@ public sealed class TEngineInflectionRegular
     }
 
     [Fact]
-    public void ParadigmUpdate_TenerPreterite_ClearsRegular()
+    public void EntryInflectionSave_TenerPreterite_ClearsRegular()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -40,7 +40,7 @@ public sealed class TEngineInflectionRegular
     }
 
     [Fact]
-    public void ParadigmUpdate_FrenchPlural_UsesParadigmRule()
+    public void EntryInflectionSave_FrenchPlural_UsesParadigmRule()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

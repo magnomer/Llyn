@@ -20,5 +20,5 @@ In a small console with 28 languages, the lit row stays inside the frame above t
 
 ## Stamp
 
-Commit: `cb8ab7e8feb4`
-- `TChoice.cs` `c3a82737ca584845`
+Commit: `c37ca1837ded`
+- `TChoice.cs` `230afa79ede55af7`

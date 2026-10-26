@@ -39,7 +39,7 @@ public sealed class TVaultSettings
             Assert.Equal("en", settings.TSettingsRead().LSettingsLocalization);
         }
 
-        Assert.ThrowsAny<Exception>(() => settings.TSettingsSave(TInterface.TSettingsCreate("fr")));
+        Assert.Throws<LVaultFault>(() => settings.TSettingsSave(TInterface.TSettingsCreate("fr")));
         Assert.Equal(before, File.ReadAllText(path));
     }
 

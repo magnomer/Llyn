@@ -8,11 +8,6 @@ internal static partial class TInterface
     internal static bool TClaimArchiveCheck(string root, long draftId) =>
         new LClaimArchive(root).LClaimCheck(draftId);
 
-    internal static void TClaimArchiveDelete(string root, long draftId)
-    {
-        new LClaimArchive(root).LClaimDelete(draftId);
-    }
-
     internal static LClaim? TClaimArchiveRead(string root, long draftId) =>
         new LClaimArchive(root).LClaimRead(draftId);
 
@@ -41,11 +36,6 @@ internal static partial class TInterface
     internal static IReadOnlyList<LCourt> TCourtArchiveSettle(string root, long draftId) =>
         new LCourtArchive(root).LCourtSettle(draftId);
 
-    internal static void TCourtArchiveSweep(string root)
-    {
-        new LCourtArchive(root).LCourtSweep();
-    }
-
     internal static LCourt TCourtCreate(long id, long ownerId, long targetId, string headword, string language) =>
         new(id, ownerId, targetId, headword, language);
 
@@ -64,9 +54,4 @@ internal static partial class TInterface
 
     internal static IReadOnlyList<LDraft> TDraftArchiveScan(string root) =>
         new LDraftArchive(root).LDraftScan();
-
-    internal static void TDraftArchiveSweep(string root)
-    {
-        new LDraftArchive(root).LDraftSweep();
-    }
 }

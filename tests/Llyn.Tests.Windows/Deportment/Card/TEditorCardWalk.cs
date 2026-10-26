@@ -18,7 +18,7 @@ namespace Llyn.Tests;
 public sealed class TEditorCardWalk
 {
     [Fact]
-    public void EditorCardRefine_OpenedEntry_ListsTheCardStepsOfTheEditorWalk()
+    public void EditorMeaningRefine_OpenedEntry_ListsTheCardStepsOfTheEditorWalk()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -43,18 +43,9 @@ public sealed class TEditorCardWalk
             QEditorCard card = new(surface);
             CEditor gate = editor.TEditorFixtureEditor;
             card.QEditorCardIntroduce(
-                atelier,
-                TEnvoyFake.TEnvoyCreate(false, []),
-                null!,
-                gate.CEditorEntry,
-                gate.CEditorCard,
-                gate.CEditorCaret,
-                gate.CEditorSentence,
-                gate.CEditorList,
-                gate.CEditorField,
-                gate.CEditorImage,
-                gate.CEditorVideo,
-                gate.CEditorEtymology);
+                atelier, TEnvoyFake.TEnvoyCreate(false, []), null!, gate.CEditorEntry, gate.CEditorCard,
+                gate.CEditorCaret, gate.CEditorSentence, gate.CEditorList, gate.CEditorField, gate.CEditorImage,
+                gate.CEditorVideo, gate.CEditorEtymology);
 
             card.QEditorMeaningRefine(walk[0], gate.CEditorWalkCard[0]);
             card.QEditorCollocationRefine(walk[1], gate.CEditorWalkCard[1]);
@@ -185,7 +176,7 @@ public sealed class TEditorCardWalk
     [Fact]
     public void ContextCloseObserve_SettleStandingPastAFailedObserver_LeavesNoKeptText()
     {
-        string? kept = TCardWalkSettle((card, placard, box, _) =>
+        string? kept = TCardWalkSettle((card, placard, box, _, _, _) =>
         {
             box.DataContext = placard.QPlacardContext;
             TCardWalkFind<QContext>(card, "_qContext").QContextCloseObserve(box, new RoutedEventArgs());
@@ -198,7 +189,7 @@ public sealed class TEditorCardWalk
     [Fact]
     public void LabelCloseObserve_SettleStandingPastAFailedObserver_LeavesNoKeptText()
     {
-        string? kept = TCardWalkSettle((card, placard, box, _) =>
+        string? kept = TCardWalkSettle((card, placard, box, _, _, _) =>
         {
             box.DataContext = placard.QPlacardLabel;
             TCardWalkFind<QLabel>(card, "_qLabel").QLabelCloseObserve(box, new RoutedEventArgs());
@@ -209,20 +200,35 @@ public sealed class TEditorCardWalk
     }
 
     [Theory]
-    [InlineData("PProffer")]
-    [InlineData("PSlate")]
-    public void ChipTextObserve_TextSetOnAnUnfocusedEntry_LeavesTheListShut(string list)
+    [InlineData("PProffer", false)]
+    [InlineData("PProffer", true)]
+    [InlineData("PSlate", false)]
+    [InlineData("PSlate", true)]
+    public void EditorCardIntroduce_ChipTextSet_ReachesTheGateUnlessItIsTheLastAnswer(string list, bool echo)
     {
-        Assert.Equal(bool.FalseString, TCardWalkSettle((_, placard, box, surface) =>
+        Assert.Equal("1", TCardWalkSettle((card, placard, box, surface, caret, engine) =>
         {
-            box.DataContext = list == "PSlate" ? placard.QPlacardLabel : placard.QPlacardContext;
+            bool tag = list == "PSlate";
+            box.DataContext = tag ? placard.QPlacardLabel : placard.QPlacardContext;
+            if (echo)
+            {
+                _ = tag
+                    ? caret.CCaretTagAdd(placard.QPlacardCollocated, placard.QPlacardId, "sum")
+                    : caret.CCaretSituationAdd(placard.QPlacardCollocated, placard.QPlacardId, "sum");
+                _ = tag
+                    ? (object)engine.TEngineTagCreate("summit")
+                    : engine.TEngineSituationCreate(TInterface.TSituationCreate(0, "summit", null, null));
+            }
+
             surface.Children.Add(box);
             box.Text = "sum";
-            return surface.Children.OfType<Popup>().Single(child => child.Name == list).IsOpen.ToString();
-        }));
+            return surface.Children.OfType<ListBox>().Single(child => child.Name == list + "List")
+                .Items.Count.ToString();
+        }, false));
     }
 
-    private static string? TCardWalkSettle(Func<QEditorCard, QPlacard, TextBox, StackPanel, string> settle)
+    private static string? TCardWalkSettle(
+        Func<QEditorCard, QPlacard, TextBox, StackPanel, CCaret, LEngine, string> settle, bool observed = true)
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -250,23 +256,14 @@ public sealed class TEditorCardWalk
             QEditorCard card = new(surface);
             CEditor gate = editor.TEditorFixtureEditor;
             card.QEditorCardIntroduce(
-                atelier,
-                TEnvoyFake.TEnvoyCreate(false, []),
-                null!,
-                gate.CEditorEntry,
-                gate.CEditorCard,
-                gate.CEditorCaret,
-                gate.CEditorSentence,
-                gate.CEditorList,
-                gate.CEditorField,
-                gate.CEditorImage,
-                gate.CEditorVideo,
-                gate.CEditorEtymology);
+                atelier, TEnvoyFake.TEnvoyCreate(false, []), null!, gate.CEditorEntry, gate.CEditorCard,
+                gate.CEditorCaret, gate.CEditorSentence, gate.CEditorList, gate.CEditorField, gate.CEditorImage,
+                gate.CEditorVideo, gate.CEditorEtymology);
             card.QEditorMeaningRefine(gate.CEditorWalk[0], gate.CEditorWalkCard[0]);
             ItemsControl list = surface.Children.OfType<ItemsControl>().Single(child => child.Name == "PMeaningList");
             QPlacard placard = ((IEnumerable)list.ItemsSource).Cast<QPlacard>().First();
-            failing = true;
-            kept = settle(card, placard, new TextBox { Text = "rain" }, surface);
+            failing = observed;
+            kept = settle(card, placard, new TextBox { Text = "rain" }, surface, gate.CEditorCaret, engine);
             failing = false;
         });
 

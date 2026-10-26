@@ -47,7 +47,7 @@ public sealed class TEditorUnit
     }
 
     [Fact]
-    public void EditorUnitSet_OfferedKey_MarksTheRowAndStoresTheUnit()
+    public void EntryUnitSet_OfferedKey_MarksTheRowAndStoresTheUnit()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -62,7 +62,7 @@ public sealed class TEditorUnit
     }
 
     [Fact]
-    public void EditorUnitSet_TakenKey_ClearsTheUnit()
+    public void EntryUnitSet_TakenKey_ClearsTheUnit()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -75,7 +75,7 @@ public sealed class TEditorUnit
     }
 
     [Fact]
-    public void EditorFreedomSet_OfferedKey_MarksTheRowAndStoresTheFreedom()
+    public void EntryFreedomSet_OfferedKey_MarksTheRowAndStoresTheFreedom()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -92,7 +92,7 @@ public sealed class TEditorUnit
     }
 
     [Fact]
-    public void EditorFreedomSet_TakenKey_ClearsTheFreedom()
+    public void EntryFreedomSet_TakenKey_ClearsTheFreedom()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

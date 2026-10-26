@@ -224,7 +224,7 @@ public sealed class TIndex
     }
 
     [Fact]
-    public void BootstrapGlyphs_EverySet_CarriesTheListMarks()
+    public void BlueprintGlyphs_EverySet_CarriesTheListMarks()
     {
         IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<string>>> sets =
             new ABootstrap().BBlueprintGlyphs.ToDictionary(static set => set.Key, static set => set.Value);

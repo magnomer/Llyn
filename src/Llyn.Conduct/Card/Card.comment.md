@@ -28,7 +28,8 @@ So no driver holds or sends a place in the translation row.
 The quill links each completed word that resolves to one entry and answers what the field keeps.
 The same answer carries the dropdown, so the field paints both at once.
 The dropdown leaves out the edited Entry and lists the fresh Entry languages.
-A failed resolve shows `Input.TranslationFailed`, keeps the text as typed and offers nothing.
+The quill lands the words one by one and reports the first that did not land.
+That failure shows `Input.TranslationFailed` and the field keeps what landed, with no dropdown.
 
 `CCardTranslationResolve` is the gate for enter or for focus leaving the field.
 Enter answers the dropdown, with one whole-headword match already chosen, so one keystroke confirms it.
@@ -69,6 +70,8 @@ The typed gates of those rows live in `CCaret`, which places each chip at the ca
 `CCardCitationSet` points the sentence's citation at the Reference the engine resolves the typed title to.
 One chip quill call resolves and cites, since the order of those steps is a data rule.
 A failure shows the create failure and leaves the citation as it was.
+`CCardCitationRead` answers the title the sentence's stored Reference shows, or empty.
+`CCardCitationSet` answers the same title after the call, so the field shows what the draft holds.
 
 ## `CCaret`
 
@@ -89,11 +92,18 @@ Every gate that answers a dropdown shows it to the lantern first, so a new offer
 A translation answer that already chose its first row lights that row.
 Both faces step the lantern through the caret, so the window and the console light the same row.
 The field hands every change unsettled, and Enter or leaving hands the text settled.
-A failed add shows `Input.UpdateFailed` every time and answers the typed text with an empty, closed dropdown.
+A failed add shows `Input.UpdateFailed` every time.
+It answers the text the quill kept, with an empty, closed dropdown, so a half-landed field keeps its landed parts.
 A failed search after the add shows `Input.FindFailed` once until the user acts.
 It answers the kept text with an empty, closed dropdown.
 `CCaret` takes the atelier's repaint memory at build and reads through the desk's `LDeskRepaintRead`.
 The held draft's language seeds the register search, so the driver passes none.
+The caret drops an echo of its last answer.
+Each field keeps its last answer with the tenure and the text it wrote.
+A repeat of that text in the same tenure gets the kept answer without a new search.
+Only the unsettled gates take the echo, since Enter or leaving must always act, and they record their answer.
+An insert forgets it, and a new tenure voids it.
+The citation find answers null for the sentence's own stored title, which means no change, and forgets it too.
 The translation gates forward to `CCard` with the trail's position, and keep that gate's failure notices.
 
 ## `CCaretTrail`
@@ -264,12 +274,12 @@ Its lists are empty when none are known.
 
 ## Stamp
 
-Commit: `f3a687d70b47`
-- `CCard.cs` `e82fc6e3d26800a4`
+Commit: `c37ca1837ded`
+- `CCard.cs` `917b3a1741a416cf`
 - `CCardField.cs` `802f5433f0bc0fd7`
 - `CCardList.cs` `0b09d5d23ac7ddac`
 - `CCardSpeech.cs` `c33bd983a66825f2`
-- `CCaret.cs` `c1df8b6ba8b28c42`
+- `CCaret.cs` `17a171d062a3ca21`
 - `CCaretTrail.cs` `8403fd0d0269cfa5`
 - `CFolio.cs` `368c0c291c8fd839`
 - `CSentence.cs` `2d4729454df2f4db`

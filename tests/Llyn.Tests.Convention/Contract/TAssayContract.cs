@@ -5,7 +5,7 @@ namespace Convention.Tests;
 public sealed class TAssayContract
 {
     [Fact]
-    public void AuditContract_ForwardInside_AllowsDangling()
+    public void AuditContractWalker_ForwardInside_AllowsDangling()
     {
         TAssayContractCheck("""
             namespace Llyn.UIDeportment.Assay;
@@ -26,7 +26,7 @@ public sealed class TAssayContract
     }
 
     [Fact]
-    public void AuditContract_ForwardOutside_ReportsDangling()
+    public void AuditContractWalker_ForwardOutside_ReportsDangling()
     {
         TAssayContractCheck("""
             namespace Llyn.UIDeportment.Assay;
@@ -56,7 +56,7 @@ public sealed class TAssayContract
     }
 
     [Fact]
-    public void AuditContract_NestedForward_ReportsDangling()
+    public void AuditContractWalker_NestedForward_ReportsDangling()
     {
         TAssayContractCheck("""
             namespace Llyn.UIDeportment.Assay;
@@ -81,7 +81,7 @@ public sealed class TAssayContract
     }
 
     [Fact]
-    public void AuditContract_ConstantInside_AllowsDangling()
+    public void AuditContractWalker_ConstantInside_AllowsDangling()
     {
         TAssayContractCheck("""
             namespace Llyn.UIDeportment.Assay;
@@ -102,7 +102,7 @@ public sealed class TAssayContract
     }
 
     [Fact]
-    public void AuditContract_ConstantOutside_ReportsDangling()
+    public void AuditContractWalker_ConstantOutside_ReportsDangling()
     {
         TAssayContractCheck("""
             namespace Llyn.UIDeportment.Assay;
@@ -133,7 +133,7 @@ public sealed class TAssayContract
     }
 
     [Fact]
-    public void AuditContract_UndeclaredId_ReportsDangling()
+    public void AuditContractWalker_UndeclaredId_ReportsDangling()
     {
         TAssayContractCheck("""
             namespace Llyn.UIDeportment.Assay;
@@ -169,7 +169,7 @@ public sealed class TAssayContract
     }
 
     [Fact]
-    public void AuditContract_DeclaredId_AllowsDangling()
+    public void AuditContractWalker_DeclaredId_AllowsDangling()
     {
         TAssayContractCheck("""
             namespace Llyn.UIDeportment.Assay;
@@ -203,7 +203,7 @@ public sealed class TAssayContract
     }
 
     [Fact]
-    public void AuditContract_PackLine_ReportsHardwiring()
+    public void AuditContractWalker_PackLine_ReportsHardwiring()
     {
         TAssayContractCheck("""
             namespace Llyn.UIDeportment.Assay;
@@ -220,7 +220,7 @@ public sealed class TAssayContract
     }
 
     [Fact]
-    public void AuditContract_PlainLine_AllowsHardwiring()
+    public void AuditContractWalker_PlainLine_AllowsHardwiring()
     {
         TAssayContractCheck("""
             namespace Llyn.UIDeportment.Assay;
@@ -236,7 +236,7 @@ public sealed class TAssayContract
     }
 
     [Fact]
-    public void AuditContract_BuiltUri_ReportsHardwiring()
+    public void AuditContractWalker_BuiltUri_ReportsHardwiring()
     {
         TAssayContractCheck("""
             using System;
@@ -257,7 +257,7 @@ public sealed class TAssayContract
     }
 
     [Fact]
-    public void AuditContract_LiteralUri_AllowsHardwiring()
+    public void AuditContractWalker_LiteralUri_AllowsHardwiring()
     {
         TAssayContractCheck("""
             using System;

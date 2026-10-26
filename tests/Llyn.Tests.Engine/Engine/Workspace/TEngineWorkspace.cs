@@ -4,6 +4,7 @@ using System.IO;
 using Llyn.Core;
 using Llyn.Infrastructure;
 using Llyn.ShellEngine;
+using Microsoft.Data.Sqlite;
 using Xunit;
 
 namespace Llyn.Tests;
@@ -87,7 +88,11 @@ public sealed class TEngineWorkspace
         engine.TEngineRespellingSave(true);
         LDraft started = engine.TEngineDraftStart("editor", null);
 
-        Assert.ThrowsAny<Exception>(() => engine.TEngineWorkspaceOpen(second.TWorkspaceFolder));
+        Exception? raised = Record.Exception(() => engine.TEngineWorkspaceOpen(second.TWorkspaceFolder));
+
+        Assert.True(
+            raised is SqliteException or IOException or UnauthorizedAccessException or LVaultFault,
+            raised?.ToString());
 
         Assert.Equal(first.TWorkspaceFolder, engine.TEngineWorkspaceRead());
         Assert.True(engine.TEngineSettingsRead().LSettingsRespelled);

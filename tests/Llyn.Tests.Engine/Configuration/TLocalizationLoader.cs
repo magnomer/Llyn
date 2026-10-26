@@ -18,7 +18,10 @@ public sealed class TLocalizationLoader
     {
         IReadOnlyDictionary<string, string> standard = TInterface.TLocalizationLoaderRead("en");
 
-        foreach (string language in TInterface.TLocalizationScan())
+        string[] languages = [.. TInterface.TLocalizationScan()];
+        Assert.NotEmpty(languages);
+
+        foreach (string language in languages)
         {
             IReadOnlyDictionary<string, string> pairs = TInterface.TLocalizationLoaderRead(language);
             string[] missing = [.. standard.Keys.Where(key => !pairs.ContainsKey(key))];

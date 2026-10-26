@@ -177,7 +177,7 @@ public sealed class TDisplayArea
     }
 
     [Fact]
-    public void DisplayVistaAttach_ChosenEntryMarked_RaisesOnlyTheFavoriteChange()
+    public void DisplayFavoriteToggle_ChosenEntryMarked_RaisesOnlyTheFavoriteChange()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

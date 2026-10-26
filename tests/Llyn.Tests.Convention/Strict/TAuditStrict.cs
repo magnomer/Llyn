@@ -145,20 +145,12 @@ public sealed class TAuditStrict
         Assert.IsType<PrefixUnaryExpressionSyntax>(core);
     }
 
-    [Fact]
-    public void AuditStrict_BreachRead_ExpressionIndexerBranchFlags()
+    [Theory]
+    [InlineData("class Host { int this[int slot] => slot > 0 ? slot : 0; }")]
+    [InlineData("class Host { void Wire() { int Pick(int slot) => slot > 0 ? slot : 0; } }")]
+    public void AuditStrict_ExpressionBodiedBranch_FlagsBreach(string source)
     {
-        SyntaxNode root = CSharpSyntaxTree.ParseText(
-            "class Host { int this[int slot] => slot > 0 ? slot : 0; }").GetRoot();
-
-        Assert.NotEmpty(TAuditHostWalker.TAuditBreachRead(root));
-    }
-
-    [Fact]
-    public void AuditStrict_BreachRead_ExpressionLocalFunctionBranchFlags()
-    {
-        SyntaxNode root = CSharpSyntaxTree.ParseText(
-            "class Host { void Wire() { int Pick(int slot) => slot > 0 ? slot : 0; } }").GetRoot();
+        SyntaxNode root = CSharpSyntaxTree.ParseText(source).GetRoot();
 
         Assert.NotEmpty(TAuditHostWalker.TAuditBreachRead(root));
     }

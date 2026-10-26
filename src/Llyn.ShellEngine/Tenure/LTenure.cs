@@ -94,13 +94,37 @@ public sealed class LTenure
 
     public void LTenureRequestApply(LRequest request)
     {
+        _ = LTenureRequestApply(request, out Exception? fault);
+        if (fault is not null)
+        {
+            ExceptionDispatchInfo.Throw(fault);
+        }
+    }
+
+    public bool LTenureRequestApply(LRequest request, out Exception? fault)
+    {
         ArgumentNullException.ThrowIfNull(request);
 
-        lock (_lTenureTurn)
+        bool? landed = null;
+        fault = null;
+        try
         {
-            _lTenureQueue.LTenureQueueDispatch(null);
-            _lTenureQueue.LTenureQueueApply([request]);
+            lock (_lTenureTurn)
+            {
+                _lTenureQueue.LTenureQueueDispatch(null);
+                landed = _lTenureQueue.LTenureQueueApply([request]);
+                if (landed is not null)
+                {
+                    _lTenureQueue.LTenureQueueRaise();
+                }
+            }
         }
+        catch (Exception exception)
+        {
+            fault = exception;
+        }
+
+        return landed == true;
     }
 
     public void LTenurePersist()

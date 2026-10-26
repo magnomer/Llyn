@@ -155,7 +155,7 @@ public sealed class TEditorFrame
             (library, find) =>
             {
                 TEditorFrameSend(library, new ConsoleKeyInfo('\0', ConsoleKey.End, false, false, true));
-                Assert.Equal("Card.Fold", find(ConsoleKey.Enter, 0)?.BKeymapRowLabel);
+                Assert.Equal("Input.MeaningAdd", find(ConsoleKey.Enter, 0)?.BKeymapRowLabel);
 
                 TEditorFrameSend(library, new ConsoleKeyInfo('\0', ConsoleKey.Home, false, false, true));
                 Assert.Equal("Editor.Open", find(ConsoleKey.Enter, 0)?.BKeymapRowLabel);

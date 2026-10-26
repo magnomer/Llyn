@@ -22,6 +22,8 @@ internal sealed class BEditorSight
 
     private readonly IReadOnlyList<BInlet> _bEditorSightInlet;
 
+    private readonly BCard _bEditorSightCard;
+
     private int _bEditorSightTop;
 
     internal BEditorSight(
@@ -29,7 +31,7 @@ internal sealed class BEditorSight
         CDesk desk,
         string title,
         (BSpeaker, BRegard, BMarker) head,
-        IReadOnlyList<BInlet> body)
+        (IReadOnlyList<BInlet>, BCard) body)
     {
         ArgumentNullException.ThrowIfNull(catalog);
         ArgumentNullException.ThrowIfNull(desk);
@@ -37,14 +39,17 @@ internal sealed class BEditorSight
         ArgumentNullException.ThrowIfNull(head.Item1);
         ArgumentNullException.ThrowIfNull(head.Item2);
         ArgumentNullException.ThrowIfNull(head.Item3);
-        ArgumentNullException.ThrowIfNull(body);
+        ArgumentNullException.ThrowIfNull(body.Item1);
+        ArgumentNullException.ThrowIfNull(body.Item2);
 
         _bEditorSightCatalog = catalog;
         _bEditorSightGate = desk;
         _bEditorSightTitle = title;
         (_bEditorSightSpeaker, _bEditorSightRegard, _bEditorSightMarker) = head;
-        _bEditorSightInlet = body;
+        (_bEditorSightInlet, _bEditorSightCard) = body;
     }
+
+    internal static IReadOnlyList<string> BEditorSightAdder { get; } = ["Input.MeaningAdd", "Input.CollocationAdd"];
 
     internal int BEditorSightPage { get; private set; } = 1;
 
@@ -91,10 +96,10 @@ internal sealed class BEditorSight
         int page = BEditorSightPage;
         CDeskChronicle chronicle = _bEditorSightGate.CDeskChronicle;
         string rule = BLecternHeader.BLecternGlyphRead(glyphs, "Rule", 1, "-");
-        string ellipsis = BLecternHeader.BLecternGlyphRead(glyphs, "Ellipsis", 0, "~");
         string[] keys = ["Display.Meaning", "Display.CollocationSingle", "Display.Etymology", "Display.Note"];
         int?[] counts = [.. chosen.Take(2).Select(static listed => (int?)listed.Count), null, null];
         IReadOnlyList<CStep> walk = steps[stack];
+        int lead = BCard.BCardLeadRead(stack == 1);
         List<(string, string, int?, int, Func<int, IEnumerable<BCanvasText>>?, int?)> lines = [];
         for (int index = 0; index < walk.Count; index++)
         {
@@ -112,35 +117,34 @@ internal sealed class BEditorSight
             else if (walk[index] is { CStepCard: CCardDraft card })
             {
                 bool folded = card.CCardDraftFolded;
-                CStateWording wording = card.CCardDraftTitle;
-                string caption = wording.CStateWordingMuted ? catalog.BLocalizationTextRead(keys[stack])
-                    : wording.CStateWordingKey is string key ? catalog.BLocalizationTextRead(key)
-                    : wording.CStateWordingText;
-                string hinge = walk[index].CStepFold is not null
-                    ? " " + BLecternHeader.BLecternGlyphRead(
-                        glyphs, "Fold", folded ? 1 : 0, folded ? ">" : "v")
-                    : string.Empty;
-                string rank = card.CCardDraftPosition.ToString(CultureInfo.CurrentCulture);
-                string opening = measure.BCanvasWidthShorten(
-                    $"{rule}{rule} {rank} {rule} {caption} ",
-                    Math.Max(width - measure.BCanvasWidthResolve(hinge) - 1, 0),
-                    ellipsis);
-                int fill = Math.Max(
-                    width - measure.BCanvasWidthResolve(opening) - measure.BCanvasWidthResolve(hinge), 0);
-                lines.Add((
-                    opening + string.Concat(Enumerable.Repeat(rule, fill)) + hinge,
-                    wording.CStateWordingMuted ? "muted" : "heading",
-                    item,
-                    0,
-                    null,
-                    null));
-                for (int part = 1; part <= _bEditorSightInlet.Count && !folded; part++)
+                CStep step = walk[index];
+                Func<int, string?> tone = slot => !chronicle.CDeskChronicleRunning ? "muted"
+                    : item == lit && slot == spot ? focused ? "lit" : "lit-other"
+                    : null;
+                lines.Add((string.Empty, "text", item, 0, line => _bEditorSightCard.BCardDraw(
+                    glyphs, measure, (line, column, width), (stack == 1, step), (tone(0), focused)), null));
+                CStateWording wording = stack == 1 ? card.CCardDraftExpression : card.CCardDraftMeaning;
+                if (!folded)
                 {
-                    string? tone = !chronicle.CDeskChronicleRunning ? "muted"
-                        : item == lit && part == spot ? focused ? "lit" : "lit-other"
-                        : null;
-                    foreach ((Func<int, IEnumerable<BCanvasText>> paint, int? entry) in _bEditorSightInlet[part - 1]
-                        .BInletDraw(glyphs, measure, (column, width), (stack == 1, walk[index]), (tone, focused)))
+                    lines.Add((string.Empty, "text", item, 1, line => _bEditorSightCard.BCardWording.BCardFieldDraw(
+                        glyphs, measure, (line, column, width), ((stack == 1, card.CCardDraftId), wording),
+                        (tone(1), focused)), null));
+                }
+
+                if (!folded && stack == 1)
+                {
+                    foreach ((Func<int, IEnumerable<BCanvasText>> paint, int? entry) in
+                        _bEditorSightCard.BCardBond.BBondDraw(measure, (column, width), card, tone(2)))
+                    {
+                        lines.Add((string.Empty, "text", item, 2, paint, entry));
+                    }
+                }
+
+                for (int part = lead + 1; part <= lead + _bEditorSightInlet.Count && !folded; part++)
+                {
+                    BInlet chips = _bEditorSightInlet[part - lead - 1];
+                    foreach ((Func<int, IEnumerable<BCanvasText>> paint, int? entry) in chips.BInletDraw(
+                        glyphs, measure, (column, width), (stack == 1, step), (tone(part), focused)))
                     {
                         lines.Add((string.Empty, "text", item, part, paint, entry));
                     }
@@ -163,6 +167,12 @@ internal sealed class BEditorSight
 
                 lines.Add((string.Concat(tabs[first..]), "text", item, 0, null, null));
             }
+        }
+
+        if (BEditorSightAdder.ElementAtOrDefault(stack) is string adder)
+        {
+            lines.Add(($"+ {catalog.BLocalizationTextRead(adder)}", "text", walk.Count + BEditor.BEditorHeadSpan, 0,
+                null, null));
         }
 
         int shone = Math.Max(lines.FindIndex(line => line.Item3 == lit && line.Item4 == spot), 0);
@@ -242,6 +252,8 @@ internal sealed class BEditorSight
             {
                 dropped.AddRange(lane.BInletDropDraw(glyphs, measure, display, (anchored, focused)));
             }
+
+            dropped.AddRange(_bEditorSightCard.BCardBond.BBondDropDraw(glyphs, measure, display, (anchored, focused)));
         }
 
         int below = lines.Count - top - page;
@@ -294,7 +306,7 @@ internal sealed class BEditorSight
         string hint = measure.BCanvasWidthClamp(
             chronicle.CDeskChronicleHalted ? catalog.BLocalizationTextRead("Input.HoldFailed")
             : prompted ? catalog.BLocalizationTextRead("Input.Headword")
-            : _bEditorSightInlet.ElementAtOrDefault(spot - 1) is BInlet inlet && spot > 0
+            : _bEditorSightInlet.ElementAtOrDefault(spot - lead - 1) is BInlet inlet && spot > lead
                 && walk.ElementAtOrDefault(lit - BEditor.BEditorHeadSpan) is { CStepCard: CCardDraft held }
                 && inlet.BInletBareRead(held)
                 ? catalog.BLocalizationTextRead(inlet.BInletHint)
@@ -311,6 +323,28 @@ internal sealed class BEditorSight
 
         texts.AddRange(dropped);
         return texts;
+    }
+
+    internal static List<List<(int, int, string, string, bool)>> BEditorSightDivide(
+        IReadOnlyList<(int, (string, string, bool))> tokens, int room, int gap)
+    {
+        ArgumentNullException.ThrowIfNull(tokens);
+
+        List<List<(int, int, string, string, bool)>> lines = [[]];
+        int edge = 0;
+        foreach ((int cells, (string text, string role, bool entry)) in tokens)
+        {
+            if (edge > 0 && edge + cells > room)
+            {
+                lines.Add([]);
+                edge = 0;
+            }
+
+            lines[^1].Add((edge, cells, text, role, entry));
+            edge += cells + gap;
+        }
+
+        return lines;
     }
 
     internal static IEnumerable<BCanvasText> BEditorSightDraw(

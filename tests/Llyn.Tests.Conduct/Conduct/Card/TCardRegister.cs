@@ -178,7 +178,7 @@ public sealed class TCardRegister
     }
 
     [Fact]
-    public void RegisterDelete_StepEitherSide_RemovesTheRegisterBesideTheCaret()
+    public void CaretTrailDelete_StepEitherSide_RemovesTheRegisterBesideTheCaret()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

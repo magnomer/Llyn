@@ -27,8 +27,6 @@ internal sealed class QCard
 
     private readonly QSentence _qCardSentence;
 
-    private readonly QCitation _qCardCitation;
-
     private readonly QExample _qCardExample;
 
     private readonly QImage _qCardImage;
@@ -50,7 +48,6 @@ internal sealed class QCard
         QLink link,
         QLabel label,
         QSentence sentence,
-        QCitation citation,
         QExample example,
         QImage image,
         QVideo video,
@@ -63,7 +60,6 @@ internal sealed class QCard
         _qCardLink = link;
         _qCardLabel = label;
         _qCardSentence = sentence;
-        _qCardCitation = citation;
         _qCardExample = example;
         _qCardImage = image;
         _qCardVideo = video;
@@ -309,7 +305,6 @@ internal sealed class QCard
                 card = new QPlacard(
                     prefix,
                     collocated,
-                    _qCardCitation.QCitationCatalog,
                     _qCardSentence.QSentenceParticle,
                     _qCardSentence.QSentenceDependence,
                     _qCardLanguage,

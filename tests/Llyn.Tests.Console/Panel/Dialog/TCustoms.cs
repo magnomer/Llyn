@@ -59,7 +59,7 @@ public sealed class TCustoms
     }
 
     [Fact]
-    public void WindowFrameBuild_CustomsOpen_ShowsImportLegend()
+    public void EnvoyCustomsRead_CustomsOpen_ShowsImportLegend()
     {
         TConsoleFake console = TCustomsRun(ConsoleKey.Escape, ConsoleKey.F10);
 
@@ -70,7 +70,7 @@ public sealed class TCustoms
     }
 
     [Fact]
-    public void WindowFrameBuild_KoreanImport_CutsByCells()
+    public void EnvoyCustomsRead_KoreanImport_CutsByCells()
     {
         TConsoleFake console = TCustomsRun(ConsoleKey.Escape, ConsoleKey.F10);
 
@@ -80,7 +80,7 @@ public sealed class TCustoms
     }
 
     [Fact]
-    public void WindowFrameBuild_CustomsNotReady_DimsImport()
+    public void EnvoyCustomsRead_CustomsNotReady_DimsImport()
     {
         TConsoleFake console = TCustomsRun(ConsoleKey.Escape, ConsoleKey.F10);
         CSCustoms customs = TCustomsPrepare([7, 8]);
@@ -94,7 +94,7 @@ public sealed class TCustoms
     }
 
     [Fact]
-    public void CustomsDraw_Replace_DrawsLoss()
+    public void ParleyBodyDraw_Replace_DrawsLoss()
     {
         BLocalizationCatalog catalog = new();
         catalog.BLocalizationCatalogApply(TInterface.TLocalizationLoad("en"));
@@ -115,7 +115,7 @@ public sealed class TCustoms
     }
 
     [Fact]
-    public void CustomsDraw_DropOnLastRow_StaysInBody()
+    public void ParleyBodyDraw_DropOnLastRow_StaysInBody()
     {
         List<BCanvasText> texts = TCustomsDropDraw(0);
 
@@ -126,7 +126,7 @@ public sealed class TCustoms
     }
 
     [Fact]
-    public void CustomsDraw_LitPastPage_ScrollsDrop()
+    public void ParleyBodyDraw_LitPastPage_ScrollsDrop()
     {
         List<BCanvasText> texts = TCustomsDropDraw(7);
 

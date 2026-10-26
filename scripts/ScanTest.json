@@ -1,0 +1,59 @@
+{
+  "generation": 1,
+  "project": "Llyn",
+  "tests": "tests",
+  "source": "src",
+  "pool": ["src", "localization", "languages", "themes", "assets"],
+  "markers": ["Fact", "Theory"],
+  "trx": "docs-temp",
+  "top": 20,
+  "report": {
+    "directory": "docs-analysis",
+    "versionFile": "version.json",
+    "versionKey": "current-version",
+    "prefix": "ScanTest-"
+  },
+  "helper": { "framework": "net10.0" },
+  "kinds": {
+    "DeadTarget": {
+      "prefixPattern": "^[A-Z](?=[A-Z])",
+      "dottedPattern": "^[A-Za-z]+(\\.[A-Za-z]+)+$",
+      "fileEndingPattern": "\\.[a-z]{1,4}$",
+      "poolExtensions": [".cs", ".xaml", ".json", ".md", ".txt", ".xml", ".axaml", ".toml", ".yaml", ".csv"],
+      "looseCapitals": 2
+    },
+    "SkippedTest": { "commentedPattern": "^\\s*//\\s*\\[(Fact|Theory)\\b" },
+    "SlowTest": { "testSeconds": 1, "classSeconds": 10 },
+    "FlakyResult": {},
+    "BlindTest": {
+      "broadThrows": ["Throws", "ThrowsAny", "ThrowsAsync", "ThrowsAnyAsync"],
+      "theoryMarker": "Theory",
+      "dataSuffix": "Data",
+      "countPins": ["Single", "NotEmpty", "Equal", "Collection", "Contains"]
+    },
+    "NoAssert": {},
+    "SelfEcho": {},
+    "WrongLayer": {
+      "bootTypes": ["BWindow", "BLibrary", "BEditor", "BEstablishment"],
+      "projects": ["Llyn.Tests.Console"],
+      "uiPrefixes": "^[BQPA][A-Z][a-z]",
+      "logicPrefix": "^C",
+      "assertedPattern": "^[A-Z][A-Z][a-z]",
+      "drawPattern": "^TConsoleFake|(Draw|Grid|Canvas)(?=[A-Z_]|$)"
+    },
+    "FixedSleep": {
+      "sleepPattern": "\\bThread\\.Sleep\\s*\\(",
+      "delayPattern": "\\bTask\\.Delay\\s*\\("
+    },
+    "LongWait": {
+      "timeoutPattern": "\\b(WaitAsync|CancelAfter)\\s*\\(|new\\s+CancellationTokenSource\\s*\\(\\s*(\\d|TimeSpan)|\\bTimeout\\s*=",
+      "spinPattern": "\\bSpinWait\\b",
+      "blockingPattern": "\\.(Wait|WaitOne|Join)\\s*\\(\\s*(\\d|TimeSpan)",
+      "pollingPattern": "Thread\\.Sleep|Task\\.Delay|Task\\.Yield|SpinWait|\\.Wait\\(|DoEvents|Dispatcher|Pump",
+      "clockPattern": "\\bDateTime\\.(Now|UtcNow)\\b",
+      "guardPattern": "From(?<unit>Milliseconds|Seconds|Minutes)\\(\\s*(?<value>\\d+(\\.\\d+)?)|(CancellationTokenSource|CancelAfter|Wait|WaitOne|Join)\\(\\s*(?<ms>\\d+)\\s*[,)]"
+    },
+    "CopiedBody": { "minTokens": 25 },
+    "UnusedHelper": { "lifetimeNames": ["Dispose", "DisposeAsync", "InitializeAsync", "Main"] }
+  }
+}

@@ -80,10 +80,10 @@ It judges an input or output failure a lock.
 
 ## Stamp
 
-Commit: `bd299c638b2c`
+Commit: `c37ca1837ded`
 - `TEngineClock.cs` `8989e402d29be091`
 - `TEngineObserver.cs` `612db4ae2c0a859f`
 - `TEngineRig.cs` `3fd868a63b28c5a2`
 - `TEngineStamp.cs` `17909bda313a9240`
 - `TEngineVault.cs` `d9d6fd5e5587e548`
-- `TEnsign.cs` `c9df5c20e784a3b1`
+- `TEnsign.cs` `b7fd033280035d01`

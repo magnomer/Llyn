@@ -12,7 +12,7 @@ namespace Llyn.Tests;
 public sealed class TFoldSwitch
 {
     [Fact]
-    public void FoldSwitchClick_NoStoredEntryHeld_PutsBothSwitchesBackAndStoresNothing()
+    public void CadenceCreate_NoStoredEntryHeld_PutsBothSwitchesBackAndStoresNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -42,7 +42,7 @@ public sealed class TFoldSwitch
     }
 
     [Fact]
-    public void FoldSwitchClick_OpenSwitchNoStoredEntryHeld_PutsBothSwitchesBackOpen()
+    public void CadenceCreate_OpenSwitchNoStoredEntryHeld_PutsBothSwitchesBackOpen()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -74,7 +74,7 @@ public sealed class TFoldSwitch
     }
 
     [Fact]
-    public void FoldSwitchClick_HeldEntry_KeepsTheSwitchAndStoresTheBox()
+    public void CadenceCreate_HeldEntry_KeepsTheSwitchAndStoresTheBox()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -127,7 +127,7 @@ public sealed class TFoldSwitch
     }
 
     [Fact]
-    public void LecternSwitchClick_NoEntryShown_PutsBothSwitchesBackAndStoresNothing()
+    public void LecternSoundCreate_NoEntryShown_PutsBothSwitchesBackAndStoresNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -157,7 +157,7 @@ public sealed class TFoldSwitch
     }
 
     [Fact]
-    public void LecternSwitchClick_ShownEntry_KeepsTheSwitchAndStoresTheBox()
+    public void LecternSoundCreate_ShownEntry_KeepsTheSwitchAndStoresTheBox()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

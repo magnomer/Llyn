@@ -255,7 +255,7 @@ public sealed class TLectern
         return shown.Where((up, index) => up && (index == 0 || !shown[index - 1])).Count();
     }
 
-    internal static void TLecternNoticeClose(TConsoleFake console, string notice)
+    internal static void TLecternNoticeClose(TConsoleFake console, string notice, BLoop loop, Action batch)
     {
         Func<bool> shown = () =>
         {
@@ -275,8 +275,8 @@ public sealed class TLectern
             {
                 if (SpinWait.SpinUntil(shown, TimeSpan.FromSeconds(1)))
                 {
-                    console.TConsoleFakeKeys.Add(TLecternKeyCreate(ConsoleKey.Escape));
-                    _ = SpinWait.SpinUntil(() => !shown(), TimeSpan.FromSeconds(5));
+                    console.TConsoleFakeSettle(
+                        TLecternKeyCreate(ConsoleKey.Escape), loop, batch, CancellationToken.None);
                 }
             }
         });

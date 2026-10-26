@@ -16,7 +16,7 @@ The second is marked rather than shown, and the converter reads the mark off the
 The row holds that value and nothing typed.
 So the row never resolves a state and never holds a second copy of one.
 It re-raises every change its frame announces, so a list watching the row repaints it.
-The catalogs of Sources, languages, particles and dependences are shared by every row.
+The languages, particles and dependences are shared by every row.
 Nothing ships a particle or a dependence, so those lists stay empty until a user writes one.
 
 ### `QPassageCited`
@@ -43,7 +43,8 @@ A field already reading what the engine holds is left alone, so the caret surviv
 
 ### `QPassageCitation`
 
-The field shows its byline through a lookup made when it is drawn, so the row keeps no name.
+The field shows the title Conduct reads for the row's stored Source when it is drawn.
+So neither the row nor the editor keeps a list of Sources.
 
 ### `QPassageCitationShow`
 
@@ -84,19 +85,22 @@ A change also announces visibility, the written verdict and the gap, since all t
 
 This is the citation field of an Example row.
 A citation is either a stored Source or nothing, so the field never keeps a line that matches no Source.
-One list of Sources serves every row on the form.
+The Sources are Conduct's, and the field holds no list of them.
 The lookup and the commit name the row's card by the placard's collocation flag and id.
 The lookup goes through the caret, so its dropdown lights rows through the caret's lantern.
-The list is refilled when the sentence facet's Sources change and when a workspace opens.
+A change of the sentence facet's Sources or a workspace opening only tells each row to repaint its citation.
 Each event is hooked once, so a refill leaves one handler.
 
 ### `QCitationFieldRefine`
 
-Only a field with the keyboard in it reports, since a write from the draft echoes through the same event.
+The field holds no focus guard, so an echoed write reports too.
+The caret answers an echo or the cited title with null, which changes nothing.
 
 ### `QCitationCommitObserve`
 
 The card gate shows its own failure.
+It answers the title the draft holds, and the field takes that title.
+So a text no Source matches does not stay.
 The dropdown's key handlers hear each key first, so a key the open dropdown takes never reaches here.
 
 ### `QCitationLeaveRefine`
@@ -186,9 +190,9 @@ The silence gate is its own, so no magic id is sent for a mention with no target
 
 ## Stamp
 
-Commit: `f3a687d70b47`
-- `QCitation.cs` `849914fc30472851`
-- `QExample.cs` `bf40c0f67bf2e9b8`
-- `QPassage.cs` `57505d44cd07c7c6`
+Commit: `c37ca1837ded`
+- `QCitation.cs` `60d0c6d9479a22fe`
+- `QExample.cs` `5a503648da92ed1b`
+- `QPassage.cs` `5dcc8623a608fb25`
 - `QSentence.cs` `389de76f9480178d`
 - `QSentenceFrame.cs` `9af5d661b1716af6`

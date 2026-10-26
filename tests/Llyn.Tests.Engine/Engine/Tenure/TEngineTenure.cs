@@ -11,7 +11,7 @@ public sealed class TEngineTenure
     internal const int TTenureHold = 600000;
 
     [Fact]
-    public void TenureDefer_SameKey_AppliesLast()
+    public void TenureRequestDefer_SameKey_AppliesLast()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -49,7 +49,7 @@ public sealed class TEngineTenure
     }
 
     [Fact]
-    public void TenureDefer_ApplyThrows_MarksHalted()
+    public void TenureRequestDefer_ApplyThrows_MarksHalted()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -67,7 +67,7 @@ public sealed class TEngineTenure
     }
 
     [Fact]
-    public void TenureDefer_Refused_KeepsRunning()
+    public void TenureRequestDefer_Refused_KeepsRunning()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -153,7 +153,7 @@ public sealed class TEngineTenure
     }
 
     [Fact]
-    public void TenureDefer_GlossTwice_OneChronicleStep()
+    public void TenureRequestDefer_GlossTwice_OneChronicleStep()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

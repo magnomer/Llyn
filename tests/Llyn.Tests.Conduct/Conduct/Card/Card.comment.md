@@ -44,6 +44,8 @@ Removal checks protect the lone meaning while allowing one of two meanings to le
 Citation failures are isolated from suggestion matching.
 A failing source find shows `Input.FindFailed` once for two finds and offers no rows.
 Two sentences distinguish suppressing an already cited byline from excluding that Source globally.
+The stored title is read back for a cited sentence and is empty for an uncited one.
+Finding the stored title answers null and leaves a lit row of another dropdown lit.
 
 ## `TCardRegister`
 
@@ -70,6 +72,9 @@ Reopening and undoing the draft check that pending text cannot preserve a stale 
 Completed tags, pending text and stored picks are tested separately.
 The tag offer is read as a `CProffer`, the shape every chip field's dropdown has.
 A tag add whose tenure observer throws shows `Input.UpdateFailed`.
+A part that lands before the failure stays in the draft, and the untried part stays in the kept text.
+A refused part stays in the kept text as typed.
+Repeating the last answer's text hands that answer again and keeps its lit row.
 Two cards check that suggestion exclusion belongs to the card holding the tag.
 
 ## `TCaretTrail`
@@ -89,14 +94,14 @@ A caret moved back inserts a picked row before its anchor and leaves the anchor 
 
 ## Stamp
 
-Commit: `f3a687d70b47`
+Commit: `c37ca1837ded`
 - `TCard.cs` `5d913b60171a6f8b`
-- `TCardList.cs` `9d1b8dcf0fd446e1`
-- `TCardReference.cs` `f8c14a236c5f5248`
-- `TCardRegister.cs` `7b6c2f10bb0fb535`
+- `TCardList.cs` `47ce99f474a2c752`
+- `TCardReference.cs` `5ae0de3298070eaa`
+- `TCardRegister.cs` `ed26ea1928bbe26e`
 - `TCardSentence.cs` `d1a5ad65440da628`
 - `TCardSituation.cs` `a3a2cb6b7d517506`
 - `TCardSpeech.cs` `8c3b0ecae8677f2f`
-- `TCardTag.cs` `19b0a5c9b40b25dd`
+- `TCardTag.cs` `f40aae7ac671c5b5`
 - `TCardTranslation.cs` `4b84fdd8de1d9064`
 - `TCaretTrail.cs` `4c9e1085cbdf6aa5`

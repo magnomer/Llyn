@@ -230,8 +230,8 @@ This arrange step answers the gate call and an optional read-back of the state t
 
 ## Stamp
 
-Commit: `36e31eb71c98`
-- `TDisplayFailure.cs` `f0c7be12f4b663f4`
+Commit: `c37ca1837ded`
+- `TDisplayFailure.cs` `0d68c5876d9cc12a`
 - `TFault.cs` `fa397c15b685eb43`
 - `TFaultList.cs` `e993e6b5885af5a2`
 - `TFaultMark.cs` `49690789b8e6973c`

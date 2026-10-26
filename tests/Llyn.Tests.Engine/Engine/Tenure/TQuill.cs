@@ -118,7 +118,7 @@ public sealed class TQuill
     }
 
     [Fact]
-    public void SituationSet_UnknownKindLeftEmpty_KeepsKindUnknown()
+    public void QuillKindSet_UnknownKindLeftEmpty_KeepsKindUnknown()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -218,16 +218,5 @@ public sealed class TQuill
         LExample stored = engine.TEngineExampleCreate(
             TInterfaceExample.TExampleCreate(0, "English", text, null, LStateAnchor.LStateAnchorUnspecified));
         return engine.TEngineTenureStart("test", LSubject.LSubjectExample, stored.LExampleId);
-    }
-
-    private static LEntry TQuillEntrySave(LEngine engine)
-    {
-        return engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
-            "cat",
-            "English",
-            string.Empty,
-            string.Empty,
-            [TInterface.TCardDraftCreate(string.Empty, string.Empty, "a small feline", [], [], [], [], [], 1)],
-            []));
     }
 }

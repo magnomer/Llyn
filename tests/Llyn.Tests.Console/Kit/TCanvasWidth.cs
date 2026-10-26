@@ -47,16 +47,12 @@ public sealed class TCanvasWidth
         Assert.Equal(["이", "콘솔은", "가로"], new BCanvasWidth(false).BCanvasWidthDivide("이 콘솔은 가로", 6));
     }
 
-    [Fact]
-    public void CanvasWidthDivide_HanKana_BreaksBetweenCharacters()
+    [Theory]
+    [InlineData("漢字かな", 6, new[] { "漢字か", "な" })]
+    [InlineData("콘솔콘솔", 5, new[] { "콘솔", "콘솔" })]
+    public void CanvasWidthDivide_UnspacedText_BreaksBetweenClusters(string text, int span, string[] expected)
     {
-        Assert.Equal(["漢字か", "な"], new BCanvasWidth(false).BCanvasWidthDivide("漢字かな", 6));
-    }
-
-    [Fact]
-    public void CanvasWidthDivide_LongHangul_BreaksBetweenClusters()
-    {
-        Assert.Equal(["콘솔", "콘솔"], new BCanvasWidth(false).BCanvasWidthDivide("콘솔콘솔", 5));
+        Assert.Equal(expected, new BCanvasWidth(false).BCanvasWidthDivide(text, span));
     }
 
     [Fact]

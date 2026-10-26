@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 public sealed class TCardOrdinal
 {
     [Fact]
-    public void CardRowApply_BadgeOpened_ShowsStoredNumber()
+    public void CardPositionShow_BadgeOpened_ShowsStoredNumber()
     {
         string? shown = null;
         TCardOrdinalRun((card, box) =>
@@ -79,7 +79,7 @@ public sealed class TCardOrdinal
     }
 
     [Fact]
-    public void CardRowApply_MoveWhileOpen_RepaintsNewNumber()
+    public void CardPositionSet_MoveWhileOpen_RepaintsNewNumber()
     {
         string? shown = null;
         TCardOrdinalRun((card, box) =>

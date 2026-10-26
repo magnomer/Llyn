@@ -38,7 +38,8 @@ The anchor comes from Conduct's caret trail, so the entry stands where the trail
 ### `QContextTextObserve`
 
 Any other box's edit is ignored, since its data context is no Situation caret.
-A box without the keyboard is ignored too, so a text the engine wrote back asks nothing.
+The driver holds no focus guard, so a text the engine wrote back asks again.
+The caret answers that echo from its kept answer, so the repeat costs no search and changes nothing.
 The gate adds every Situation a comma completed and answers what the entry keeps.
 
 ### `QContextCommitObserve`
@@ -84,7 +85,7 @@ The dropdown asks it too, since a pick on a Situation caret lands on that card.
 
 ## Stamp
 
-Commit: `f3a687d70b47`
-- `QContext.cs` `6851b77ec744e0ff`
+Commit: `c37ca1837ded`
+- `QContext.cs` `2447cd658f155d48`
 - `QContextChip.cs` `b695c0bf977b4a31`
 - `QContextSelector.cs` `6ed10ad72c8e19f4`

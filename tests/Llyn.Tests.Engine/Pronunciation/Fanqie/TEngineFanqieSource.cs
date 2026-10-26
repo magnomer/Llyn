@@ -85,7 +85,7 @@ public sealed class TEngineFanqieSource
     }
 
     [Fact]
-    public async Task FanqieFind_LineBookNotFound_ReadsReachedAndEmpty()
+    public async Task FanqieStart_LineBookNotFound_AsksNoSourceAgain()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineWikiPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -97,8 +97,8 @@ public sealed class TEngineFanqieSource
         await TEngineFanqie.TFanqieCountCheck(handler, 2);
         await TEngineFanqie.TFanqieSettle(engine, entry.LEntryId);
         engine.TEngineFanqieStart(entry.LEntryId);
-        await Task.Delay(200);
 
+        Assert.False(engine.TEngineFanqieCheck(entry.LEntryId));
         Assert.Equal(2, handler.TSourceHandlerCount);
     }
 }

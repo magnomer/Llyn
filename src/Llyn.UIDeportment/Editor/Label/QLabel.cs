@@ -136,7 +136,6 @@ internal sealed class QLabel
     private void QLabelTextObserve(object sender, TextChangedEventArgs e)
     {
         if (e.OriginalSource is TextBox { DataContext: QInlet<QLabelChip> caret } box
-            && ReferenceEquals(Keyboard.FocusedElement, box)
             && QLabelCardFind(caret) is QPlacard card)
         {
             _qLabelSlate.QSlateRefine(

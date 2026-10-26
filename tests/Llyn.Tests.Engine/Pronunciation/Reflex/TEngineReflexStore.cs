@@ -53,8 +53,8 @@ public sealed class TEngineReflexStore
             });
 
         engine.TEngineReflexStart(entry.LEntryId);
-        await Task.Delay(200);
 
+        Assert.False(engine.TEngineReflexCheck(entry.LEntryId));
         Assert.Equal(0, handler.TSourceHandlerCount);
         Assert.Equal("롱", Assert.Single(engine.TEntryReflexRead(entry.LEntryId)).LReflexDraftText);
     }
@@ -192,8 +192,8 @@ public sealed class TEngineReflexStore
         engine.TEngineReflexStart(entry.LEntryId);
         await TReflexFixture.TReflexSettle(engine, entry.LEntryId);
         engine.TEngineReflexStart(entry.LEntryId);
-        await Task.Delay(200);
 
+        Assert.False(engine.TEngineReflexCheck(entry.LEntryId));
         Assert.Equal(3, handler.TSourceHandlerCount);
         Assert.Empty(engine.TEntryReflexRead(entry.LEntryId));
     }

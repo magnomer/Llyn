@@ -100,8 +100,8 @@ The archive shelves every surviving row first, so both ids survive and only the 
 
 ## Stamp
 
-Commit: `aae5349dbb94`
-- `TPronunciation.cs` `dd68d3d094c39615`
+Commit: `c37ca1837ded`
+- `TPronunciation.cs` `9b426873c075fcd4`
 - `TReflex.cs` `7c6ce6a407088f9a`
 - `TReflexOrder.cs` `8c81c82e194f8fb1`
 - `TRespellingDraft.cs` `37a8ceeeb6b10da2`

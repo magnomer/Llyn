@@ -41,7 +41,7 @@ public sealed class TEngineInflectionFetch
             slots,
             slot => Assert.Equal(
                 slot.LParadigmSlotSpeech.LSpeechValueId, slot.LParadigmSlotInflection?.LInflectionSpeechId));
-        await Task.Delay(200);
+        Assert.False(engine.TEngineInflectionCheck(entry.LEntryId));
         Assert.Equal(1, observer.TInflectionObserverCount);
     }
 
@@ -102,7 +102,6 @@ public sealed class TEngineInflectionFetch
         await observer.TInflectionObserverRaised.WaitAsync(TInflectionFetchPatience);
         int asked = handler.TSourceHandlerCount;
         engine.TEngineInflectionStart(entry.LEntryId);
-        await Task.Delay(200);
 
         Assert.Equal(asked, handler.TSourceHandlerCount);
         Assert.False(engine.TEngineInflectionCheck(entry.LEntryId));
@@ -154,8 +153,8 @@ public sealed class TEngineInflectionFetch
             draft with { LDraftContent = draft.LDraftContent with { LEntryDraftHeadword = "went" } });
 
         engine.TEngineInflectionStart(entry.LEntryId);
-        await Task.Delay(200);
 
+        Assert.False(engine.TEngineInflectionCheck(entry.LEntryId));
         Assert.Equal(0, handler.TSourceHandlerCount);
         engine.TEngineDraftDelete(draft.LDraftId);
         engine.TEngineInflectionStart(entry.LEntryId);
@@ -175,8 +174,8 @@ public sealed class TEngineInflectionFetch
         LEntry entry = engine.TEngineEntrySave(TInflectionDraftCreate("go"));
 
         engine.TEngineInflectionStart(entry.LEntryId);
-        await Task.Delay(200);
 
+        Assert.False(engine.TEngineInflectionCheck(entry.LEntryId));
         Assert.Equal(0, handler.TSourceHandlerCount);
         Assert.Empty(engine.TEntryInflectionRead(entry.LEntryId));
         Assert.False(observer.TInflectionObserverRaised.IsCompleted);
@@ -240,7 +239,6 @@ public sealed class TEngineInflectionFetch
         using LEngine reopened = workspace.TWorkspaceEngineStart(new HttpClient(handler));
         int asked = handler.TSourceHandlerCount;
         reopened.TEngineInflectionStart(entry.LEntryId);
-        await Task.Delay(200);
 
         Assert.Equal(asked, handler.TSourceHandlerCount);
         Assert.False(reopened.TEngineInflectionCheck(entry.LEntryId));
@@ -258,9 +256,11 @@ public sealed class TEngineInflectionFetch
         LEntry entry = await TInflectionMissRun(workspace, handler);
 
         using LEngine reopened = workspace.TWorkspaceEngineStart(new HttpClient(handler));
+        TInflectionObserver observer = new();
+        reopened.TEngineObserverAttach(observer.TInflectionObserverHandle);
         int asked = handler.TSourceHandlerCount;
         reopened.TEngineInflectionStart(entry.LEntryId);
-        await Task.Delay(200);
+        await observer.TInflectionObserverRaised.WaitAsync(TInflectionFetchPatience);
 
         Assert.True(handler.TSourceHandlerCount > asked);
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM lacuna;"));
@@ -281,8 +281,8 @@ public sealed class TEngineInflectionFetch
         await observer.TInflectionObserverRaised.WaitAsync(TInflectionFetchPatience);
         int asked = handler.TSourceHandlerCount;
         engine.TEngineInflectionStart(entry.LEntryId);
-        await Task.Delay(200);
 
+        Assert.False(engine.TEngineInflectionCheck(entry.LEntryId));
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM lacuna;"));
         Assert.Equal(asked, handler.TSourceHandlerCount);
     }

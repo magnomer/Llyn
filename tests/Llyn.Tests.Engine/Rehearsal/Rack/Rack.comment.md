@@ -33,8 +33,8 @@ An update that keeps the deck's own code saves.
 
 ## Stamp
 
-Commit: `121691f60459`
+Commit: `c37ca1837ded`
 - `TDeckCensus.cs` `2338a466b0c97370`
 - `TDeckClerk.cs` `11940141f47aaa8e`
 - `TDeckCode.cs` `97c6a001d711f683`
-- `TDeckWeek.cs` `40e0ba2c67b6a867`
+- `TDeckWeek.cs` `d8fa43ef09eaaaf7`

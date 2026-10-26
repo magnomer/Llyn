@@ -16,18 +16,14 @@ public sealed class TMentionSpan
         Assert.Equal((3, 6), TInterfaceMentionSpan.TMentionSpanResolve("he didn't go", 5, true));
     }
 
-    [Fact]
-    public void MentionSpanResolve_OnSpace_ReturnsEmptySpan()
+    [Theory]
+    [InlineData("he said the word", 7, 7)]
+    [InlineData("he said the word.", 16, 16)]
+    [InlineData("he said the word", 16, 16)]
+    [InlineData("he said the word", 20, 20)]
+    public void MentionSpanResolve_SpaceOrTextEnd_ReturnsEmptySpan(string text, int caret, int offset)
     {
-        Assert.Equal((7, 0), TInterfaceMentionSpan.TMentionSpanResolve("he said the word", 7, true));
-        Assert.Equal((16, 0), TInterfaceMentionSpan.TMentionSpanResolve("he said the word.", 16, true));
-    }
-
-    [Fact]
-    public void MentionSpanResolve_AtEndOfText_ReturnsEmptySpan()
-    {
-        Assert.Equal((16, 0), TInterfaceMentionSpan.TMentionSpanResolve("he said the word", 16, true));
-        Assert.Equal((20, 0), TInterfaceMentionSpan.TMentionSpanResolve("he said the word", 20, true));
+        Assert.Equal((offset, 0), TInterfaceMentionSpan.TMentionSpanResolve(text, caret, true));
     }
 
     [Fact]

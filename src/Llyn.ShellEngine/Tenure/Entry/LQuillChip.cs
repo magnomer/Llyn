@@ -24,22 +24,16 @@ public sealed class LQuillChip
         _lQuillChipMention = new LQuillMention(tenure);
     }
 
-    public string LQuillTagAdd(LCardKind kind, long card, string text, int position, bool settled)
+    public string LQuillTagAdd(
+        LCardKind kind, long card, string text, int position, bool settled, out Exception? fault)
     {
         ArgumentNullException.ThrowIfNull(text);
 
-        int placed = position;
-        return LDraftClerkList.LDraftListParse(text, settled, part =>
-        {
-            _lQuillChipTenure.LTenureRequestApply(
-                new LRequestTagAddition(_lQuillChipTenure.LTenureId, kind, card, part, placed++));
-            return true;
-        });
-    }
-
-    public static string LQuillKeptRead(string text, bool settled)
-    {
-        return LDraftClerkList.LDraftListParse(text, settled, static _ => true);
+        return LQuillListAdd(
+            text,
+            (position, settled),
+            (part, placed) => new LRequestTagAddition(_lQuillChipTenure.LTenureId, kind, card, part, placed),
+            out fault);
     }
 
     public LTagOffer LQuillTagFind(LCardKind kind, long card, string kept)
@@ -58,17 +52,17 @@ public sealed class LQuillChip
         _lQuillChipTenure.LTenureRequestApply(new LRequestTagRemoval(_lQuillChipTenure.LTenureId, kind, card, tag));
     }
 
-    public string LQuillSituationAdd(LCardKind kind, long card, string text, int position, bool settled)
+    public string LQuillSituationAdd(
+        LCardKind kind, long card, string text, int position, bool settled, out Exception? fault)
     {
         ArgumentNullException.ThrowIfNull(text);
 
-        int placed = position;
-        return LDraftClerkList.LDraftListParse(text, settled, part =>
-        {
-            _lQuillChipTenure.LTenureRequestApply(new LRequestSituationAddition(
-                _lQuillChipTenure.LTenureId, kind, card, new LStateWritten(part), placed++));
-            return true;
-        });
+        return LQuillListAdd(
+            text,
+            (position, settled),
+            (part, placed) => new LRequestSituationAddition(
+                _lQuillChipTenure.LTenureId, kind, card, new LStateWritten(part), placed),
+            out fault);
     }
 
     public LSituationOffer LQuillSituationFind(LCardKind kind, long card, string kept)
@@ -88,17 +82,17 @@ public sealed class LQuillChip
             new LRequestSituationRemoval(_lQuillChipTenure.LTenureId, kind, card, situation));
     }
 
-    public string LQuillRegisterAdd(LCardKind kind, long card, string text, int position, bool settled)
+    public string LQuillRegisterAdd(
+        LCardKind kind, long card, string text, int position, bool settled, out Exception? fault)
     {
         ArgumentNullException.ThrowIfNull(text);
 
-        int placed = position;
-        return LDraftClerkList.LDraftListParse(text, settled, part =>
-        {
-            _lQuillChipTenure.LTenureRequestApply(new LRequestRegisterAddition(
-                _lQuillChipTenure.LTenureId, kind, card, new LStateWritten(part), placed++));
-            return true;
-        });
+        return LQuillListAdd(
+            text,
+            (position, settled),
+            (part, placed) => new LRequestRegisterAddition(
+                _lQuillChipTenure.LTenureId, kind, card, new LStateWritten(part), placed),
+            out fault);
     }
 
     public LRegisterOffer LQuillRegisterFind(LCardKind kind, long card, string kept)
@@ -136,23 +130,22 @@ public sealed class LQuillChip
             new LRequestSentenceReference(_lQuillChipTenure.LTenureId, kind, card, sentence, reference));
     }
 
-    public LTranslationOffer LQuillTranslationAdd(LCardKind kind, long card, string text, int position)
+    public LTranslationOffer LQuillTranslationAdd(
+        LCardKind kind, long card, string text, int position, out Exception? fault)
     {
         ArgumentNullException.ThrowIfNull(text);
 
-        int placed = position;
-        string kept = LDraftClerkList.LDraftListParse(text, false, part =>
-        {
-            long? stored = _lQuillChipTenure.LTenureRead()?.LDraftStored;
-            if (_lQuillChipDrafts.LEngineTranslationResolve(part, stored) is not LEntry entry)
-            {
-                return false;
-            }
-
-            LQuillTranslationInsert(kind, card, entry.LEntryId, placed++);
-            return true;
-        });
-        return LQuillProspectFind(kept);
+        string kept = LQuillListAdd(
+            text,
+            (position, false),
+            (part, placed) => _lQuillChipDrafts.LEngineTranslationResolve(
+                part, _lQuillChipTenure.LTenureRead()?.LDraftStored) is LEntry entry
+                ? new LRequestTranslationPick(_lQuillChipTenure.LTenureId, kind, card, entry.LEntryId, placed)
+                : null,
+            out fault);
+        return fault is null
+            ? LQuillProspectFind(kept)
+            : new LTranslationOffer(kept, string.Empty, [], false, false, []);
     }
 
     public LTranslationOffer LQuillTranslationFind(string text)
@@ -290,6 +283,46 @@ public sealed class LQuillChip
 
         _lQuillChipTenure.LTenureRequestApply(
             new LRequestMentionRemoval(_lQuillChipTenure.LTenureId, site, found.LMentionDraftId));
+    }
+
+    private string LQuillListAdd(
+        string text, (int, bool) place, Func<string, int, LRequest?> request, out Exception? fault)
+    {
+        (int placed, bool settled) = place;
+        Exception? failed = null;
+        string kept = LDraftClerkList.LDraftListParse(text, settled, part =>
+        {
+            if (failed is not null)
+            {
+                return false;
+            }
+
+            failed = LQuillRequestRead(() => request(part, placed), out LRequest? next);
+            if (failed is not null || next is null)
+            {
+                return false;
+            }
+
+            placed++;
+            return _lQuillChipTenure.LTenureRequestApply(next, out failed);
+        });
+
+        fault = failed;
+        return kept;
+    }
+
+    private static Exception? LQuillRequestRead(Func<LRequest?> request, out LRequest? next)
+    {
+        try
+        {
+            next = request();
+            return null;
+        }
+        catch (Exception exception)
+        {
+            next = null;
+            return exception;
+        }
     }
 
     private LTranslationOffer LQuillProspectFind(string kept)

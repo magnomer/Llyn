@@ -11,7 +11,7 @@ public sealed class TDrive
     private static readonly ConsoleKeyInfo TDriveHotkey = new('\0', ConsoleKey.F1, false, true, false);
 
     [Fact]
-    public void DriveList_Enter_OpensChosenDrive()
+    public void Drive_Enter_OpensChosenDrive()
     {
         List<string> asked = [];
 
@@ -35,7 +35,7 @@ public sealed class TDrive
     }
 
     [Fact]
-    public void DriveList_Escape_KeepsFolder()
+    public void Drive_Escape_KeepsFolder()
     {
         string? answer = TPathfinder.TPathfinderRun(
             [],
@@ -48,7 +48,7 @@ public sealed class TDrive
     }
 
     [Fact]
-    public void DriveList_SeamFails_ShowsNothing()
+    public void Drive_SeamFails_ShowsNothing()
     {
         string? answer = TPathfinder.TPathfinderRun(
             [],
@@ -63,7 +63,7 @@ public sealed class TDrive
     }
 
     [Fact]
-    public void DriveList_Help_ShowsDriveLegend()
+    public void Drive_Help_ShowsDriveLegend()
     {
         TPathfinder.TPathfinderRun(
             [],

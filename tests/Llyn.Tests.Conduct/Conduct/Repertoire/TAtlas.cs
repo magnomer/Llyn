@@ -44,7 +44,7 @@ public sealed class TAtlas
     }
 
     [Fact]
-    public void AtlasQuerySet_MatchingTitle_NarrowsTheRows()
+    public void ApertureQuerySet_MatchingTitle_NarrowsTheRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -60,7 +60,7 @@ public sealed class TAtlas
     }
 
     [Fact]
-    public void AtlasOrderSet_NoOrderRow_KeepsTheOrder()
+    public void ApertureOrderSet_NoOrderRow_KeepsTheOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -75,7 +75,7 @@ public sealed class TAtlas
     }
 
     [Fact]
-    public void AtlasFilterSet_HiddenLanguage_MarksTheListFiltered()
+    public void ApertureFilterSet_HiddenLanguage_MarksTheListFiltered()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

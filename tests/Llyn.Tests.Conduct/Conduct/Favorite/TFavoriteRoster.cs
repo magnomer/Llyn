@@ -38,7 +38,7 @@ public sealed class TFavoriteRoster
     }
 
     [Fact]
-    public void FavoriteQuerySet_MatchingHeadword_NarrowsTheRows()
+    public void ApertureQuerySet_MatchingHeadword_NarrowsTheRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -53,7 +53,7 @@ public sealed class TFavoriteRoster
     }
 
     [Fact]
-    public void FavoriteOrderSet_NoOrderRow_KeepsTheOrder()
+    public void ApertureOrderSet_NoOrderRow_KeepsTheOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -67,7 +67,7 @@ public sealed class TFavoriteRoster
     }
 
     [Fact]
-    public void FavoriteFilterSet_HiddenLanguage_MarksTheListFiltered()
+    public void ApertureFilterSet_HiddenLanguage_MarksTheListFiltered()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

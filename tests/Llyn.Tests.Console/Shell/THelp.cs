@@ -128,7 +128,7 @@ public sealed class THelp
     }
 
     [Fact]
-    public void WindowFrameBuild_HelpOpen_ShowsCloseLegend()
+    public void WindowKeyObserve_HelpOpen_ShowsCloseLegend()
     {
         TConsoleFake console = THelpRun(ConsoleKey.F1, ConsoleKey.Escape, ConsoleKey.F10);
 
@@ -139,7 +139,7 @@ public sealed class THelp
     }
 
     [Fact]
-    public void HelpDraw_EveryPage_NamesOnlyBoundKeys()
+    public void ParleyBodyDraw_EveryPage_NamesOnlyBoundKeys()
     {
         BLocalizationCatalog catalog = new();
         catalog.BLocalizationCatalogApply(TInterface.TLocalizationLoad("en"));

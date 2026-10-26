@@ -5,22 +5,15 @@ namespace Llyn.Tests;
 
 public sealed class TSentenceOrder
 {
-    [Fact]
-    public void SentenceOrderLoad_English_WritesTheMarkerFirst()
+    [Theory]
+    [InlineData("English", 0, 1)]
+    [InlineData("Japanese", 1, 0)]
+    public void SentenceOrderLoad_PackLanguage_WritesPackOrder(string language, int particle, int dependence)
     {
-        LSentenceOrder order = TInterface.TSentenceOrderLoad("English");
+        LSentenceOrder order = TInterface.TSentenceOrderLoad(language);
 
-        Assert.Equal(0, order.LSentenceOrderParticle);
-        Assert.Equal(1, order.LSentenceOrderDependence);
-    }
-
-    [Fact]
-    public void SentenceOrderLoad_Japanese_WritesTheRoleFirst()
-    {
-        LSentenceOrder order = TInterface.TSentenceOrderLoad("Japanese");
-
-        Assert.Equal(1, order.LSentenceOrderParticle);
-        Assert.Equal(0, order.LSentenceOrderDependence);
+        Assert.Equal(particle, order.LSentenceOrderParticle);
+        Assert.Equal(dependence, order.LSentenceOrderDependence);
     }
 
     [Fact]

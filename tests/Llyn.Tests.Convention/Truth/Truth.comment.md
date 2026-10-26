@@ -332,10 +332,10 @@ A hit through a ref parameter names that parameter, as a hit through a local nam
 
 ## Stamp
 
-Commit: `f3a687d70b47`
+Commit: `c37ca1837ded`
 - `TAuditTruth.cs` `5eb81da6ff1c1d96`
 - `TAuditTruthField.cs` `bda475280d6b7bcb`
-- `TAuditTruthLedger.json` `ba09def95a911d24`
+- `TAuditTruthLedger.json` `9692510eacedf714`
 - `TAuditTruthLocal.cs` `4baaaa83b0678024`
 - `TAuditTruthReference.cs` `3c96dcfa5aa99002`
 - `TAuditTruthSequence.cs` `a5a77f14c0b84d98`

@@ -19,15 +19,18 @@ public sealed class TAssayBorder
         }
         """;
 
-    [Fact]
-    public void AuditBorder_UnremovedHandler_ReportsLingering()
+    [Theory]
+    [InlineData("CAssayHandle", "", "CAssayHandle")]
+    [InlineData("CAssayHandle", "_port.LAssayChanged -= CAssayOther;", "CAssayHandle")]
+    [InlineData("() => CAssayHandle()", "_port.LAssayChanged -= CAssayHandle;", "(lambda)")]
+    public void AuditBorder_UndetachedHandler_ReportsLingering(string handler, string detach, string reported)
     {
-        IReadOnlyList<TAuditHit> hits = TAssayBorderRun(TAssayHolderFormat("CAssayHandle", ""));
+        IReadOnlyList<TAuditHit> hits = TAssayBorderRun(TAssayHolderFormat(handler, detach));
 
         TAuditHit[] expected =
         [
             new(TAssayHolderPath, 17, "Llyn.Conduct", "Lingering", "Llyn.ShellEngine",
-                "CAssayHolder LAssayPort.LAssayChanged CAssayHandle"),
+                "CAssayHolder LAssayPort.LAssayChanged " + reported),
         ];
 
         Assert.Equal(expected, hits);
@@ -40,36 +43,6 @@ public sealed class TAssayBorder
             TAssayHolderFormat("CAssayHandle", "_port.LAssayChanged -= CAssayHandle;"));
 
         Assert.Empty(hits);
-    }
-
-    [Fact]
-    public void AuditBorder_OtherHandlerRemoval_ReportsLingering()
-    {
-        IReadOnlyList<TAuditHit> hits = TAssayBorderRun(
-            TAssayHolderFormat("CAssayHandle", "_port.LAssayChanged -= CAssayOther;"));
-
-        TAuditHit[] expected =
-        [
-            new(TAssayHolderPath, 17, "Llyn.Conduct", "Lingering", "Llyn.ShellEngine",
-                "CAssayHolder LAssayPort.LAssayChanged CAssayHandle"),
-        ];
-
-        Assert.Equal(expected, hits);
-    }
-
-    [Fact]
-    public void AuditBorder_LambdaHandler_ReportsLingering()
-    {
-        IReadOnlyList<TAuditHit> hits = TAssayBorderRun(
-            TAssayHolderFormat("() => CAssayHandle()", "_port.LAssayChanged -= CAssayHandle;"));
-
-        TAuditHit[] expected =
-        [
-            new(TAssayHolderPath, 17, "Llyn.Conduct", "Lingering", "Llyn.ShellEngine",
-                "CAssayHolder LAssayPort.LAssayChanged (lambda)"),
-        ];
-
-        Assert.Equal(expected, hits);
     }
 
     [Fact]

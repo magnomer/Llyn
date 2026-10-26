@@ -111,8 +111,8 @@ The realm is always the empty `Guid`, since no schema ever wrote one here.
 
 ## Stamp
 
-Commit: `121691f60459`
-- `TInterfaceDatabase.cs` `da6742d17a5b907e`
+Commit: `c37ca1837ded`
+- `TInterfaceDatabase.cs` `371337238cdda9b9`
 - `TInterfaceVault.cs` `77bad45b5f2ce34c`
 - `TVaultFake.cs` `7d9c55a8e3e857fb`
 - `TVaultFakeCue.cs` `f7557ad5edf8898a`

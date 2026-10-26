@@ -115,7 +115,6 @@ public sealed class TEngineInflectionCell
         using LEngine reopened = workspace.TWorkspaceEngineStart(new HttpClient(handler, false));
         int asked = handler.TSourceHandlerCount;
         reopened.TEngineInflectionStart(entry.LEntryId);
-        await Task.Delay(200);
 
         Assert.Equal(asked, handler.TSourceHandlerCount);
         Assert.False(reopened.TEngineInflectionCheck(entry.LEntryId));

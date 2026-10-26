@@ -160,7 +160,7 @@ public sealed class TEnsign
     }
 
     [Fact]
-    public async Task SettingsEnsignLoad_FlagFileFails_AnswersTheLanguages()
+    public async Task EnsignLoad_FlagFileFails_AnswersTheLanguages()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("{ \"flag\": \"gb\" }");
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();

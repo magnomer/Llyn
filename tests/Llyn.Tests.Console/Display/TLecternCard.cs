@@ -54,7 +54,7 @@ public sealed class TLecternCard
     }
 
     [Fact]
-    public void LecternFoldObserve_SpaceThenEnterOnHeader_FoldsToThePeekAndOpens()
+    public void LecternFoldToggle_SpaceThenEnterOnHeader_FoldsToThePeekAndOpens()
     {
         TLecternCardRun(
             (engine, save) => save("apple", [TInterface.TCardCreate("a round fruit", 1)]),
@@ -79,7 +79,7 @@ public sealed class TLecternCard
     }
 
     [Fact]
-    public void LecternFoldObserve_FoldRefused_KeepsTheMarkAndNotices()
+    public void LecternFoldToggle_FoldRefused_KeepsTheMarkAndNotices()
     {
         TLecternCardRun(
             (engine, save) => save("apple", [TInterface.TCardCreate("a round fruit", 1)]),
@@ -210,7 +210,7 @@ public sealed class TLecternCard
     }
 
     [Fact]
-    public void LecternFollowObserve_EnterOnTranslation_OpensTheTarget()
+    public void LecternChipOpen_EnterOnTranslation_OpensTheTarget()
     {
         TLecternCardRun(
             (engine, save) =>
@@ -333,7 +333,7 @@ public sealed class TLecternCard
             loop.BLoopKeyAttach(console, window.BWindowKeyObserve);
             if (notice is not null)
             {
-                TLectern.TLecternNoticeClose(console, notice);
+                TLectern.TLecternNoticeClose(console, notice, loop, window.BWindowBatchObserve);
             }
 
             Action<Action> settle = work =>

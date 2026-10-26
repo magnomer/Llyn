@@ -12,7 +12,6 @@ internal sealed class QPassage : INotifyPropertyChanged
     private long? _qPassageCitation;
 
     internal QPassage(
-        ObservableCollection<QCitationItem> catalog,
         ObservableCollection<string> particles,
         ObservableCollection<string> dependences,
         ObservableCollection<QLanguageItem> languages,
@@ -22,7 +21,6 @@ internal sealed class QPassage : INotifyPropertyChanged
 
         CExampleDraft? example = draft.CSentenceDraftExample;
 
-        QPassageCitationCatalog = catalog;
         QPassageParticleCatalog = particles;
         QPassageDependenceCatalog = dependences;
         QPassageLanguageCatalog = languages;
@@ -35,8 +33,6 @@ internal sealed class QPassage : INotifyPropertyChanged
         QSentenceFrame.PropertyChanged += (_, e) => QPassageRaise(e.PropertyName);
         QPassageGlossShow(example?.CExampleDraftGloss ?? []);
     }
-
-    public ObservableCollection<QCitationItem> QPassageCitationCatalog { get; }
 
     public ObservableCollection<QLanguageItem> QPassageLanguageCatalog { get; }
 
@@ -105,26 +101,6 @@ internal sealed class QPassage : INotifyPropertyChanged
     internal void QPassageCitationShow()
     {
         QPassageRaise(nameof(QPassageCitation));
-    }
-
-    internal static string QPassageCitationFind(ObservableCollection<QCitationItem> catalog, long? anchor)
-    {
-        ArgumentNullException.ThrowIfNull(catalog);
-
-        if (anchor is not long id)
-        {
-            return string.Empty;
-        }
-
-        foreach (QCitationItem row in catalog)
-        {
-            if (row.QCitationItemId == id)
-            {
-                return row.QCitationItemName;
-            }
-        }
-
-        return string.Empty;
     }
 
     private void QPassageGlossShow(IReadOnlyList<CGlossDraft> drafts)

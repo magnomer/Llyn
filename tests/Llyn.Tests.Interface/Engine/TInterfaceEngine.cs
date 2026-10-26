@@ -11,14 +11,6 @@ internal static partial class TInterface
     internal static LCourt? TEngineCourtFind(this LEngine engine, long ownerId, long targetId) =>
         engine.LEngineRequest.LEngineCourtFind(ownerId, targetId);
 
-    internal static LCourt TEngineCourtStart(
-        this LEngine engine,
-        long ownerId,
-        string origin,
-        string headword,
-        string language) =>
-        engine.LEngineRequest.LEngineCourtStart(ownerId, origin, headword, language);
-
     internal static LDraft? TEngineChronicleUndo(this LEngine engine, long id) =>
         engine.LEngineRequest.LEngineChronicleUndo(id);
 

@@ -64,7 +64,7 @@ public sealed class TCapsule
     }
 
     [Fact]
-    public void CapsuleWardrobe_UnknownNames_FallBack()
+    public void Wardrobe_UnknownNames_FallBack()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -84,7 +84,7 @@ public sealed class TCapsule
     }
 
     [Fact]
-    public void CapsuleWardrobe_ChosenThemeFails_Reports()
+    public void WardrobeThemeSelect_ChosenThemeFails_Reports()
     {
         List<string> reported = [];
         BTheme spare = new(BTheme.BThemeSpareRead);
@@ -98,7 +98,7 @@ public sealed class TCapsule
     }
 
     [Fact]
-    public void CapsuleWardrobe_Restart_KeepsChoices()
+    public void Wardrobe_Restart_KeepsChoices()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -209,7 +209,7 @@ public sealed class TCapsule
     }
 
     [Fact]
-    public void CapsuleBootstrap_StaleTheme_FallsBackQuietly()
+    public void InvocationRun_StaleTheme_FallsBackQuietly()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         new LCapsuleConsole().LCapsuleConsoleSave(workspace.TWorkspaceFolder, new LCapsuleSetting("console-gone"));
@@ -237,7 +237,9 @@ public sealed class TCapsule
             capsule.LCapsuleConsoleSave(root, new LCapsuleSetting("dusk"));
             File.SetAttributes(path, FileAttributes.ReadOnly);
 
-            _ = Assert.ThrowsAny<Exception>(() => capsule.LCapsuleConsoleSave(root, new LCapsuleSetting("dark")));
+            Exception? raised = Record.Exception(
+                () => capsule.LCapsuleConsoleSave(root, new LCapsuleSetting("dark")));
+            Assert.True(raised is UnauthorizedAccessException or IOException, raised?.ToString());
 
             Assert.Equal("dusk", capsule.LCapsuleConsoleRead(root).LCapsuleSettingTheme);
             Assert.False(File.Exists(path + ".tmp"));

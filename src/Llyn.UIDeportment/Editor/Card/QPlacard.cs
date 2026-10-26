@@ -21,7 +21,6 @@ internal sealed class QPlacard : INotifyPropertyChanged
     internal QPlacard(
         string prefix,
         bool collocated,
-        ObservableCollection<QCitationItem> catalog,
         ObservableCollection<string> particles,
         ObservableCollection<string> dependences,
         ObservableCollection<QLanguageItem> languages,
@@ -37,7 +36,7 @@ internal sealed class QPlacard : INotifyPropertyChanged
         _qPlacardTitle = draft.CCardDraftTitle;
         _qPlacardDefinition = draft.CCardDraftMeaning;
         _qPlacardExpression = draft.CCardDraftExpression;
-        QCardSentence = new QCardSentence(catalog, particles, dependences, languages);
+        QCardSentence = new QCardSentence(particles, dependences, languages);
     }
 
     public QCardSentence QCardSentence { get; }

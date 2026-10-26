@@ -122,12 +122,12 @@ The outermost one never does.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
-- `TAncestorArchive.cs` `b0f2c0f0c1f050fa`
-- `TDatabaseSession.cs` `1fa6062d74eacb4d`
+Commit: `c37ca1837ded`
+- `TAncestorArchive.cs` `cb3985c419fdf28a`
+- `TDatabaseSession.cs` `18793b90d2e3c2ab`
 - `TDeckArchive.cs` `0890bf4a844ed16a`
 - `TDiweiArchive.cs` `7ff34907ce49c7c7`
 - `TDoctor.cs` `24949bade3a5f5ab`
 - `TLacunaCell.cs` `7987b0edee4d5f16`
-- `TStemArchive.cs` `90ac6e65c0a258ff`
+- `TStemArchive.cs` `aeacf280775d01c1`
 - `TVocabulary.cs` `ec13137bc408eab1`

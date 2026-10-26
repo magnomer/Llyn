@@ -106,7 +106,8 @@ The tabs page reads the roof focus and keeps only the Alt rows.
 The other roof rows are not about tabs.
 The keys of a page come from a function, so help lists only what is bound.
 The window page also lists the pager's own rows.
-Rows with the same key and modifiers are listed once.
+Rows with the same key, modifiers and sign are listed once.
+A row with a sign is listed as that sign.
 A digit key is listed as its digit.
 Space is listed by its catalog word, as the other named keys are.
 Pages are built on every read, so a key's live state shows at once.
@@ -123,11 +124,11 @@ The console minimum fills the small-console sentence.
 
 ## Stamp
 
-Commit: `8c403d1df768`
+Commit: `c37ca1837ded`
 - `BCabinet.cs` `9c7873781402935c`
 - `BHeadquarter.cs` `34abc335bfdcbfb1`
 - `BRoof.cs` `0315392a65140e16`
 - `BRoofItem.cs` `e2a42521c4ed1f78`
 - `BRoofMenu.cs` `7ab739815c3a5874`
-- `BSHelp.cs` `506503bd57c683c5`
+- `BSHelp.cs` `24625b8edef70853`
 - `BSNavigation.cs` `5446b242c408f4ac`

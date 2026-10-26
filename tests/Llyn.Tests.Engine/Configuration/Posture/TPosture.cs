@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TPosture
 {
     [Fact]
-    public void OrderSave_EveryBrowsePanel_KeepsEachOrderingApart()
+    public void VistaOrderSet_EveryBrowsePanel_KeepsEachOrderingApart()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -36,7 +36,7 @@ public sealed class TPosture
     }
 
     [Fact]
-    public void FilterSave_TwoPanels_KeepsEachFilterApart()
+    public void VistaFilterSet_TwoPanels_KeepsEachFilterApart()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -54,7 +54,7 @@ public sealed class TPosture
     }
 
     [Fact]
-    public void OrderSave_WorkspaceReopened_RestartsVistaOnChosenOrdering()
+    public void PostureVistaStart_WorkspaceReopened_RestartsVistaOnChosenOrdering()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
 
@@ -80,7 +80,7 @@ public sealed class TPosture
     }
 
     [Fact]
-    public void FilterSave_AfterOrderSave_KeepsOrdering()
+    public void LayoutSave_FilterAfterOrder_KeepsOrdering()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

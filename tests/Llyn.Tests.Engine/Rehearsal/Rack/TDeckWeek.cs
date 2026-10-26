@@ -22,24 +22,15 @@ public sealed class TDeckWeek
         Assert.All(weeks, static week => Assert.Equal(0, week.LDeckWeekAdded));
     }
 
-    [Fact]
-    public void DeckWeekDivide_MondayMidnight_CountsNewWeek()
+    [Theory]
+    [InlineData("2026-10-12T00:00:00.0000000Z", 1, 0)]
+    [InlineData("2026-10-11 23:59:59", 0, 1)]
+    public void DeckWeekDivide_StampOnWeekEdge_CountsInOwnWeek(string stamp, int lastWeek, int priorWeek)
     {
-        IReadOnlyList<LDeckWeek> weeks = TInterface.TDeckWeekDivide(
-            ["2026-10-12T00:00:00.0000000Z"], TDeckWeekNow, TimeZoneInfo.Utc, 12);
+        IReadOnlyList<LDeckWeek> weeks = TInterface.TDeckWeekDivide([stamp], TDeckWeekNow, TimeZoneInfo.Utc, 12);
 
-        Assert.Equal(1, weeks[^1].LDeckWeekAdded);
-        Assert.Equal(0, weeks[^2].LDeckWeekAdded);
-    }
-
-    [Fact]
-    public void DeckWeekDivide_SundayLastSecond_CountsPriorWeek()
-    {
-        IReadOnlyList<LDeckWeek> weeks = TInterface.TDeckWeekDivide(
-            ["2026-10-11 23:59:59"], TDeckWeekNow, TimeZoneInfo.Utc, 12);
-
-        Assert.Equal(0, weeks[^1].LDeckWeekAdded);
-        Assert.Equal(1, weeks[^2].LDeckWeekAdded);
+        Assert.Equal(lastWeek, weeks[^1].LDeckWeekAdded);
+        Assert.Equal(priorWeek, weeks[^2].LDeckWeekAdded);
     }
 
     [Fact]

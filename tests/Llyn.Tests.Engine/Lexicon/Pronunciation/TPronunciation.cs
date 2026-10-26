@@ -256,7 +256,7 @@ public sealed class TPronunciation
     }
 
     [Fact]
-    public void PronunciationSync_VarietyRequest_StoresVariety()
+    public void RequestApply_VarietyRequest_StoresVariety()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -276,7 +276,7 @@ public sealed class TPronunciation
     }
 
     [Fact]
-    public void SoundMatch_VarietyOnlyChange_ReportsUpdate()
+    public void EntryUpdate_VarietyOnlyChange_ReportsUpdate()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

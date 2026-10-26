@@ -78,7 +78,7 @@ So field updates cannot leave a separate peek copy stale.
 This is the list of Example rows one card shows.
 A row belongs to the card it was written under and moves with it.
 The list knows no card, so its owner is named by whoever subscribes to its notice.
-The catalog, particle, dependence and language lists are the editor's own, shared by every card.
+The particle, dependence and language lists are the editor's own, shared by every card.
 One write reaches every card at once.
 
 ### `QCardSentenceNotice`
@@ -142,7 +142,7 @@ So a pasted comma ends a chip as a typed one does.
 
 ## Stamp
 
-Commit: `c05429890cec`
-- `QCardSentence.cs` `751b9ed5cf54ff46`
+Commit: `c37ca1837ded`
+- `QCardSentence.cs` `63b9a54f2bcd8e74`
 - `QInlet.cs` `d28fd837c72eaa8f`
-- `QPlacard.cs` `0b1973bfca094eda`
+- `QPlacard.cs` `df764f58a38b96b2`

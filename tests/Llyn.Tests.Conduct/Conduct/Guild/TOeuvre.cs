@@ -79,7 +79,7 @@ public sealed class TOeuvre
     }
 
     [Fact]
-    public void OeuvreQuerySet_Comb_NarrowsTheSources()
+    public void ApertureQuerySet_Comb_NarrowsTheSources()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

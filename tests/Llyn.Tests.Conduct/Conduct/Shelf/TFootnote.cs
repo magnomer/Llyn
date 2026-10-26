@@ -52,7 +52,7 @@ public sealed class TFootnote
     }
 
     [Fact]
-    public void FootnoteQuerySet_UnmatchedText_EmptiesTheRowsAndWordsTheEmptyList()
+    public void ApertureQuerySet_UnmatchedText_EmptiesTheRowsAndWordsTheEmptyList()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

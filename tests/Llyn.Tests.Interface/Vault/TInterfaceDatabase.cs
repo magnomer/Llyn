@@ -156,11 +156,6 @@ internal static partial class TInterface
     internal static LExample? TExampleRead(this LExampleArchive exampleArchive, long id) =>
         exampleArchive.LExampleRead(id);
 
-    internal static void TExampleDelete(this LExampleArchive exampleArchive, long id, bool detach)
-    {
-        exampleArchive.LExampleDelete(id, detach);
-    }
-
     internal static void TExampleUpdate(this LExampleArchive exampleArchive, LExample example)
     {
         exampleArchive.LExampleUpdate(example);
@@ -176,14 +171,6 @@ internal static partial class TInterface
 
     internal static LImage? TImageRead(this LImageArchive imageArchive, long id) =>
         imageArchive.LImageRead(id);
-
-    internal static void TInflectionAppend(
-        this LInflectionArchive inflectionArchive,
-        long entryId,
-        IReadOnlyList<LInflection> inflections)
-    {
-        inflectionArchive.LInflectionAppend(entryId, inflections);
-    }
 
     internal static LInflectionArchive TInflectionArchiveCreate(LDatabase database) =>
         new(database);
@@ -264,17 +251,6 @@ internal static partial class TInterface
         this LPronunciationArchive pronunciationArchive,
         long entryId) =>
         pronunciationArchive.LPronunciationRead(entryId);
-
-    internal static LTranscriptionArchive TTranscriptionArchiveCreate(LDatabase database) =>
-        new(database);
-
-    internal static IReadOnlyList<LTranscription> TTranscriptionRead(
-        this LTranscriptionArchive transcriptionArchive,
-        long entryId) =>
-        transcriptionArchive.LTranscriptionRead(entryId);
-
-    internal static LRevisionArchive TRevisionArchiveCreate(LDatabase database) =>
-        new(database);
 
     internal static IReadOnlyList<LRevisionDelta> TRevisionChangeRead(this TWorkspace workspace, long revisionId)
     {

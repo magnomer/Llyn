@@ -107,12 +107,12 @@ The flag-fill load answers the roll and its languages once the fill has run.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `TFootnote.cs` `ab8f0e092db8fcaa`
-- `TImprint.cs` `ccaa649781c90db8`
+Commit: `c37ca1837ded`
+- `TFootnote.cs` `e98e848b9d546ef6`
+- `TImprint.cs` `6507033c5dd938cf`
 - `TImprintCredit.cs` `891538d46c0dfe30`
-- `TShelf.cs` `fa452ff3c4f6ef9b`
-- `TShelfDraft.cs` `85afc10466e4018a`
-- `TShelfImprint.cs` `35bdb3a43e8334c3`
+- `TShelf.cs` `1ca36ffe2f172323`
+- `TShelfDraft.cs` `b97408e4ef8ee57c`
+- `TShelfImprint.cs` `b978a765d9e80a18`
 - `TShelfRoll.cs` `9cbd88b27104960e`
-- `TShelfVista.cs` `0a87912c5b3211cd`
+- `TShelfVista.cs` `8e6e4d0873877b3a`

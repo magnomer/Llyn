@@ -55,7 +55,7 @@ public sealed class TOccurrence
     }
 
     [Fact]
-    public void OccurrenceQuerySet_UnmatchedText_EmptiesTheRowsAndWordsTheEmptyList()
+    public void ApertureQuerySet_UnmatchedText_EmptiesTheRowsAndWordsTheEmptyList()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -75,7 +75,7 @@ public sealed class TOccurrence
     }
 
     [Fact]
-    public void OccurrenceEmptyKey_NoVista_ReadsVacant()
+    public void ApertureKey_NoVista_ReadsVacant()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

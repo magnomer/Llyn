@@ -59,7 +59,8 @@ Rows come most used first, and the list stays shut when nothing matches.
 ### `QProfferCitationRefine`
 
 The field keeps its own text, since typing a citation writes nothing.
-The gate offers nothing for the byline the row already cites.
+The gate answers null for the byline the row already cites, and a null answer changes nothing.
+So the open dropdown stays as it was and the cited title raises no menu.
 
 ### `QProfferOpenRefine`
 
@@ -178,8 +179,8 @@ A data trigger and a string format stood there before.
 
 ## Stamp
 
-Commit: `f3a687d70b47`
-- `QProffer.cs` `6bb2f39cf608526a`
+Commit: `c37ca1837ded`
+- `QProffer.cs` `0bc103d4c321970f`
 - `QProfferItem.cs` `6f1e3475b8b807f2`
 - `QProspect.cs` `5c98c398f440398f`
 - `QProspectItem.cs` `b3438f13d3fd6256`

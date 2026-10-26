@@ -239,7 +239,7 @@ public sealed class TDisplayCard
     }
 
     [Fact]
-    public void DisplayCardFind_ShownCards_AnswersTheListAndThePlace()
+    public void CompassCardFind_ShownCards_AnswersTheListAndThePlace()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

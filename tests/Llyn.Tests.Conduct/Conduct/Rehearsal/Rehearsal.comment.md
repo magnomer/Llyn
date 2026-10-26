@@ -120,8 +120,8 @@ The media facts use the atelier over `LMediaOutlet` and files written under the 
 
 ## Stamp
 
-Commit: `bd299c638b2c`
-- `TAccession.cs` `5133e9f5a11f0677`
+Commit: `c37ca1837ded`
+- `TAccession.cs` `d40ee8c17003c6d5`
 - `TCharter.cs` `2adc5e66a188e32a`
 - `TCue.cs` `91b47b58da593b72`
 - `TDeck.cs` `b02b31d063a669ba`

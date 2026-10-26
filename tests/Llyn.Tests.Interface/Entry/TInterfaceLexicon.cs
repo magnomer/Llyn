@@ -189,9 +189,6 @@ internal static partial class TInterface
         int position = 0) =>
         new(id, entryId, position, variety, ipa, syllables);
 
-    internal static LTranscription TTranscriptionCreate(long id, long entryId, string scheme, string text) =>
-        new(id, entryId, 0, scheme, text);
-
     internal static LReference TReferenceCreate(
         long id,
         LStateValue? title,

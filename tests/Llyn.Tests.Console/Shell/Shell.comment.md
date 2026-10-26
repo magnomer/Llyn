@@ -157,6 +157,7 @@ Alt+P opens the tab menu with rules between its groups.
 Alt+F1 opens the chooser, and a digit picks a tab and closes it.
 A hidden tab is left out of both the tab menu and the chooser.
 With no history, Back and Forward draw dim, and stay dim in every frame.
+The two Alt arrows go through `TConsoleFakeSettle`, since they change nothing and draw no frame.
 A chosen tab shows its name at the end of the roof row.
 Ctrl+C under a box answers the box's safe index.
 
@@ -226,14 +227,14 @@ Its Enter, Escape and F10 keys are shared with `TCapsulePathfinder`.
 
 ## Stamp
 
-Commit: `c05429890cec`
+Commit: `c37ca1837ded`
 - `TBootstrap.cs` `c4356b19e67b4c41`
 - `TCabinet.cs` `ce20853cde2f2f7e`
-- `TCapsule.cs` `334a49f71ae77378`
+- `TCapsule.cs` `656e8a7db7825d0d`
 - `TEnvoy.cs` `ad12f1bf4da06bd6`
 - `TEstablishment.cs` `13a9c3ba60eb79bc`
 - `TEstablishmentFixture.cs` `d9e7172b48d235ca`
-- `THelp.cs` `67309dcfe0c0bf71`
+- `THelp.cs` `4bda3615b5d519f4`
 - `TRoof.cs` `d4ebea47cc21cee3`
 - `TWindow.cs` `b561257947b5df5a`
-- `TWindowLayer.cs` `5a7fe8f88f8468df`
+- `TWindowLayer.cs` `9404b09c62f2e292`

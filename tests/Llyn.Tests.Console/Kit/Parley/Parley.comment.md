@@ -22,5 +22,5 @@ The box is drawn with a width measure the test passes in, as the window does.
 
 ## Stamp
 
-Commit: `cb8ab7e8feb4`
-- `TParley.cs` `08ace59a6b6aacff`
+Commit: `c37ca1837ded`
+- `TParley.cs` `175f40653c84cccd`

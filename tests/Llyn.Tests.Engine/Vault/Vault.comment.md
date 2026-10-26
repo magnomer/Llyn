@@ -44,9 +44,9 @@ A workspace holding nothing answers the defaults and reports no settings of its 
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `c37ca1837ded`
 - `TVaultDraft.cs` `5188669d10075914`
 - `TVaultEntry.cs` `7274dce5508be06f`
 - `TVaultIdentity.cs` `b1c9da224009716a`
 - `TVaultLanguage.cs` `268d6ea7d313337f`
-- `TVaultSettings.cs` `488cc52e9d5f3888`
+- `TVaultSettings.cs` `425d17d396ce2fe9`

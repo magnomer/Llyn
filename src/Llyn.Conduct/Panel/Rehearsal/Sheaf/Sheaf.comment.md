@@ -64,7 +64,7 @@ The adder of the chosen deck, built by `CDeck` and read through `CDeckAccession`
 Its aperture holds the `accession` vista over the library entries, in headword order.
 Each vista restore attaches a vista observer that raises `CApertureRowsChanged`.
   So a query set repaints the adder without the driver deciding when.
-  `AccessionQuerySet_Headword_RaisesRowsChanged` pins it.
+  `ApertureQuerySet_Headword_RaisesRowsChanged` pins it.
 The vista bulletin runs on the thread that set the query, so the observer takes no marshal.
 `CAccessionRead` lists the vista's entries as `CAccessionRow`, each with the engine's bound mark for the chosen deck.
   It is empty while no deck is chosen, and a failure shows `Accession.LoadFailed`.
@@ -80,7 +80,7 @@ It carries the entry id, the headword, the epithet and whether the chosen deck a
 
 ## Stamp
 
-Commit: `bd299c638b2c`
+Commit: `c37ca1837ded`
 - `CAccession.cs` `7b0a66755b8cb22a`
 - `CAccessionRow.cs` `f608fa4fbe79fcbc`
 - `CCue.cs` `080f47c84633d5ea`

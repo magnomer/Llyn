@@ -99,8 +99,8 @@ The wait is bounded, so a step that hangs fails the test rather than the whole r
 
 ## Stamp
 
-Commit: `c05429890cec`
+Commit: `c37ca1837ded`
 - `TInterfaceCapsule.cs` `062207ed6f90f438`
-- `TInterfaceDeportment.cs` `d3af19b3776dd23f`
+- `TInterfaceDeportment.cs` `5a900eb9d221b303`
 - `TInterfacePhonograph.cs` `888cd40c37da96bb`
 - `TWindow.cs` `20d60e5a8413b7cf`

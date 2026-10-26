@@ -157,10 +157,10 @@ With every cell as predicted no display slot remains, yet the font language stil
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `TEngineInflectionCell.cs` `e93f8ca290ed0cd5`
-- `TEngineInflectionFetch.cs` `ee80a22179af7b7e`
+Commit: `c37ca1837ded`
+- `TEngineInflectionCell.cs` `b84f4974489b1e07`
+- `TEngineInflectionFetch.cs` `005f94240360259f`
 - `TEngineInflectionHeld.cs` `30cac3cd224a8078`
-- `TEngineInflectionRegular.cs` `ef0b72f9970db67a`
+- `TEngineInflectionRegular.cs` `30dfcb246d3dbb7a`
 - `TEngineParadigm.cs` `16fddf3b493beeab`
 - `TEngineParadigmView.cs` `b0d30c06175ac036`

@@ -76,9 +76,9 @@ These tests wait on the loop for the async work, up to 10 seconds.
 
 ## Stamp
 
-Commit: `c05429890cec`
-- `TFavoriteTab.cs` `ea91f02fcee83d91`
-- `TIndex.cs` `05d891386c816434`
+Commit: `c37ca1837ded`
+- `TFavoriteTab.cs` `f81b8f5525d04231`
+- `TIndex.cs` `862328dc6aba1d03`
 - `TLibrary.cs` `6874fad9ea9bdb6e`
 - `TLibraryRail.cs` `6da1a473b08326eb`
 - `TLibraryRoof.cs` `097d9e8db492e027`

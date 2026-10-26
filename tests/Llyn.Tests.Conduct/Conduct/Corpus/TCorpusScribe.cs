@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TCorpusScribe
 {
     [Fact]
-    public void CorpusExampleCreate_NoRowChosen_StartsABlankTranscript()
+    public void DiptychEntryCreate_NoRowChosen_StartsABlankTranscript()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -28,7 +28,7 @@ public sealed class TCorpusScribe
     }
 
     [Fact]
-    public void CorpusExampleSelect_UnsavedTranscriptKept_RecordsNothing()
+    public void DiptychParentSelect_UnsavedTranscriptKept_RecordsNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -123,7 +123,7 @@ public sealed class TCorpusScribe
     }
 
     [Fact]
-    public void CorpusScribeToggle_ClosingTheTranscript_CancelsTheDesk()
+    public void DiptychScribeToggle_ClosingTheTranscript_CancelsTheDesk()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -145,7 +145,7 @@ public sealed class TCorpusScribe
     }
 
     [Fact]
-    public void CorpusScribeToggle_ClosingTheQuotationEditor_FallsBackToTheChosenExample()
+    public void DiptychScribeToggle_ClosingTheQuotationEditor_FallsBackToTheChosenExample()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

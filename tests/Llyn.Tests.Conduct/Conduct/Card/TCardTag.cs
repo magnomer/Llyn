@@ -56,6 +56,72 @@ public sealed class TCardTag
     }
 
     [Fact]
+    public void TagSettle_ObserverFailsAfterTheFirstPart_KeepsTheUntriedPart()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineDelaySet(0);
+        List<string> asked = [];
+        CEnvoy envoy = TEnvoyFake.TEnvoyCreate(false, asked);
+        CDesk desk = TInterfaceConductDesk.TDeskCreate(engine, "Input", envoy, "Input", CSubject.CSubjectEntry);
+        desk.CDeskStart(null);
+        CCaret caret = new(desk, TInterfaceConductCard.TCardCreate(engine, desk, envoy), new CLedgerNoticed());
+        long sheet = TCard.TCardSheetAdd(desk);
+        TCard.TCardSheetAdd(desk);
+        desk.CDeskChronicle.CDeskChronicleUndo();
+        bool failing = true;
+        engine.TEngineObserverAttach(bulletin =>
+        {
+            if (failing && bulletin.LBulletinSubject == LSubject.LSubjectTenure)
+            {
+                throw new InvalidOperationException("The tenure observer failed.");
+            }
+        });
+
+        string kept = caret.CCaretTagSettle(false, sheet, "dry,rain").CProfferText;
+        failing = false;
+
+        Assert.Equal("rain", kept);
+        Assert.Equal(["Input.UpdateFailed"], asked);
+        Assert.Equal(["dry"], TCardTagRead(desk, sheet).Select(static tag => tag.LTagDraftText));
+    }
+
+    [Fact]
+    public void TagSettle_RefusedPart_KeepsItAsTyped()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
+        long sheet = TCard.TCardSheetAdd(desk);
+
+        string kept = caret.CCaretTagSettle(false, sheet + 100, " dry ").CProfferText;
+
+        Assert.Equal("dry", kept);
+        Assert.Empty(TCardTagRead(desk, sheet));
+    }
+
+    [Fact]
+    public void TagAdd_EchoOfTheLastAnswer_KeepsTheLantern()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LTag tag = engine.TEngineTagCreate("animal");
+        (CDesk desk, CCard card) = TCard.TCardPrepare(engine);
+        CCaret caret = new(desk, card, new CLedgerNoticed());
+        long sheet = TCard.TCardSheetAdd(desk);
+        CProffer offer = caret.CCaretTagAdd(false, sheet, "ani");
+        caret.CCaretLanternMove(1);
+
+        CProffer echo = caret.CCaretTagAdd(false, sheet, offer.CProfferText);
+
+        Assert.Same(offer, echo);
+        Assert.True(caret.CCaretLanternLit);
+        Assert.Equal(tag.LTagId, echo.CProfferRows[caret.CCaretLanternIndex].CProfferRowId);
+        Assert.Empty(TCardTagRead(desk, sheet));
+    }
+
+    [Fact]
     public void TagAdd_BlankOrUnmatchedText_OffersNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -215,7 +281,7 @@ public sealed class TCardTag
     }
 
     [Fact]
-    public void TagDelete_StepEitherSide_RemovesTheTagBesideTheCaret()
+    public void CaretTrailDelete_StepEitherSide_RemovesTheTagBesideTheCaret()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

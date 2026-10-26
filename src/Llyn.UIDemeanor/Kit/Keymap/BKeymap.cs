@@ -42,8 +42,10 @@ internal sealed class BKeymap
             : (key.Key, key.Modifiers);
         foreach (BKeymapRow row in _bKeymapRows)
         {
-            if (row.BKeymapRowFocus == focus && row.BKeymapRowKey == pressed && row.BKeymapRowModifiers == modifiers
-                && row.BKeymapRowLive() != BKeymapLive.BKeymapLiveHidden)
+            bool matched = row.BKeymapRowSign is char sign
+                ? key.KeyChar == sign
+                : row.BKeymapRowKey == pressed && row.BKeymapRowModifiers == modifiers;
+            if (row.BKeymapRowFocus == focus && matched && row.BKeymapRowLive() != BKeymapLive.BKeymapLiveHidden)
             {
                 return row;
             }

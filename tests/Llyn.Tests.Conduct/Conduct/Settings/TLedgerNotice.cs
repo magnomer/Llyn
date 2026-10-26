@@ -149,7 +149,7 @@ public sealed class TLedgerNotice
     }
 
     [Fact]
-    public void LedgerSave_RefusedSaves_ShowsEachSaveFailureAndRepaints()
+    public void LedgerFailureShow_RefusedSaves_ShowsEachSaveFailureAndRepaints()
     {
         List<string> asked = [];
         Func<object?[]?, object?> refuse = _ => throw new IOException("The disk is full.");
@@ -182,7 +182,7 @@ public sealed class TLedgerNotice
     }
 
     [Fact]
-    public void LedgerSave_FaultingStore_ShowsTheSaveFailureAndRecordsTheFaultOnce()
+    public void LedgerEpithetSave_FaultingStore_ShowsTheSaveFailureAndRecordsTheFaultOnce()
     {
         List<string> asked = [];
         List<Exception> recorded = [];

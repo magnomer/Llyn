@@ -66,7 +66,7 @@ public sealed class TShelfDraft
     }
 
     [Fact]
-    public void ShelfDraftSave_ChangedSourceDraft_StoresAndShowsIt()
+    public void SessionSave_ChangedSourceDraft_StoresAndShowsIt()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

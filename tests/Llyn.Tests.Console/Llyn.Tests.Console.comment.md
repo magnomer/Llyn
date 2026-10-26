@@ -74,8 +74,23 @@ Queues a console size together with a placeholder key.
 The key reader applies the size after the first frame, then waits for the frame that size causes.
 So the test sees every size drawn.
 
+## `TConsoleFakeReads`
+
+The count of key reads the key reader has begun.
+A new read means the loop took the last key and now asks for the next.
+
+## `TConsoleFakeSettle`
+
+Sends one key, then waits until the loop has handled it.
+A frame count cannot do this, since a key that changes nothing draws no frame.
+Such a wait ran to its 5 second guard.
+The method waits for the next key read, which shows the loop took the key.
+It then defers two hops on the loop and runs the window's batch on the second.
+The second hop lets work the key posted run first, and the batch paints and signals.
+A stop token or the 5 second guard ends either wait early.
+
 ## Stamp
 
-Commit: `cb8ab7e8feb4`
+Commit: `c37ca1837ded`
 - `Llyn.Tests.Console.csproj` `bceadb309d05ccaa`
-- `TConsoleFake.cs` `8b974c979cd93182`
+- `TConsoleFake.cs` `09ac3e609fe8878c`

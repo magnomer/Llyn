@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-Writes every analysis document for the repository afresh: the audits, the method map and the statistics.
+Writes every analysis document for the repository afresh: the audits, the method map, the statistics and the scans.
 
 .DESCRIPTION
 Reads the configuration from Report.json next to this script, then performs these actions:
@@ -35,18 +35,19 @@ Display this help and exit. The alias -? is supported.
 
 .EXAMPLE
 report
-Delete the older pages, then write every audit, the method map and the statistics afresh.
+Delete the older pages, then write every audit, the method map, the statistics and the scans afresh.
 
 .EXAMPLE
 report -Keep
 Write every page afresh and keep the older ones.
 #>
 #requires -Version 5.1
-# REPORT - REPORT GENERATION 1.
+# REPORT - REPORT GENERATION 2.
 # A generation is not a revision count. It names functionality, not edits, so editing this file is
 # never on its own a reason to raise it. Raise it only when the written documents change.
 # Generation 1: the steps are the audit run, the method map and the statistics family; each step's
 # older pages are deleted first, and each script writes its own pages into the shared report folder.
+# Generation 2: the scan family joins the steps, so its pages join the written documents.
 [CmdletBinding()]
 param(
     [string]$ConfigPath = '',
@@ -62,7 +63,8 @@ NAME
     Report.ps1
 
 SYNOPSIS
-    Write every analysis document afresh: the audits, the method map and the statistics.
+    Write every analysis document afresh: the audits, the method map, the statistics
+    and the scans.
 
 SYNTAX
     report [-ConfigPath <path>] [-Keep] [-NoOpen] [-Help]
@@ -116,14 +118,14 @@ EXAMPLES
     exit 0
 }
 
-Write-Host 'REPORT - REPORT GENERATION 1' -ForegroundColor Blue
+Write-Host 'REPORT - REPORT GENERATION 2' -ForegroundColor Blue
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [Console]::OutputEncoding
 
-$script:ReportGeneration = 1
+$script:ReportGeneration = 2
 
 function Get-ConfigNode {
     param(

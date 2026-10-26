@@ -23,17 +23,21 @@ So a hidden frame binds nothing and its keys fall through to the window.
 The owner passes the shown and focused tests, and the frame never decides them.
 
 Up and Down, the page keys and Control with Home or End move the lit row.
-Control with the page keys jump to the previous or next card header.
+Control with the page keys jump to the previous or next card header, through `BCard`.
 They skip the head rows and the tabs.
 A key with no card to reach is hidden, so the legend only offers a move that works.
 Left and Right pick the section only while the tab line is lit.
 Alt with a digit picks the section from anywhere.
-Enter folds the lit card header through the walk's own fold gate.
+Enter on a card header folds it through the walk's own fold gate, a row of `BCard`.
 A fresh card has nothing to fold and carries no gate, so Enter is not offered there.
+The `+` row after the last card of a section adds a card.
+The light may rest on that row, so the last lit place is one row further on those two sections.
 
-An unfolded card has four chip fields under its header, which are Situation, Register, Tag and Translation.
-`BCard` holds them, and the frame passes it the lit step and says whether a field may open.
+An unfolded card has its definition row, and on a collocation its linked meanings, under its header.
+Then come four chip fields, which are Situation, Register, Tag and Translation.
+`BPlacard` holds the chip fields, and the frame passes it the lit step and says whether a field may open.
 The lit place is then a row and a part of that row, with part 0 the header.
+`BCard` draws the header and owns the rows before the chip fields.
 Up and Down walk the parts of the lit card first.
 They cross to the next row only past the last part.
 Crossing upward lands on the last part of the card above, so the light retraces its steps.
@@ -85,7 +89,7 @@ The frame also redraws on the walk's change, since a caret move rebuilds the wal
 
 The draw is `BEditorSight`'s.
 The frame hands it the lit row and part, the open field and the walk.
-It also hands it the three head parts and the card's chip fields.
+It also hands it the three head parts, the card's rows and the card's chip fields.
 Typing on the headword row opens the field only while the tenure runs.
 
 A new tenure resets the frame to the first row and closes any field.
@@ -116,16 +120,15 @@ That drawing is `BEditorSightDraw`, which the head parts share.
 A list a head part opens is drawn last, below its anchor line.
 So it lies over the rows under it.
 A language list hangs from the pill, and the marker's lists hang from the marker row.
-A card header is a rule, its position, its caption and a fold glyph.
-The chip fields of an unfolded card are drawn under it, one `BInlet` after another.
+The header and the definition row are drawn by `BCard`, and a collocation adds its linked meanings row.
+The chip fields of an unfolded card follow, one `BInlet` after another.
+A section that adds cards ends with a `+` row that names the add key.
+The chip fields and the linked meanings wrap their pieces through `BEditorSightDivide`, which cuts a run of cells into lines.
 The field of the lit part takes the lit tone as one bar, and a halted tenure mutes them.
 A field's list is drawn last, as the head parts' lists are, below the line that holds its entry.
 The scroll top keeps the lit part on screen.
 It keeps the rest of its card too, as far as a page allows.
 The hint line shows the lit field's hint while that field is bare.
-The glyph is drawn only for a card that carries a fold gate.
-It is cut by cells to fit the width.
-A muted caption means the card has no title yet, so the section's word stands in.
 The lit row is padded to the full width, so the highlight is a bar.
 It wears the other-focus role when the frame lacks the focus.
 The caret is a zero-width cell at the end of the headword.
@@ -167,9 +170,9 @@ Drawing returns nothing when the tab is not shown.
 
 ## Stamp
 
-Commit: `f3a687d70b47`
-- `BEditor.cs` `329eb9208769c6d5`
+Commit: `c37ca1837ded`
+- `BEditor.cs` `01b4aa913597157d`
 - `BEditorChronicle.cs` `9419b865bc578853`
-- `BEditorSight.cs` `2af2f75320c44ca6`
+- `BEditorSight.cs` `dfb79aa8c53e6ef5`
 - `BInput.cs` `21f0003272ef471e`
 - `BRegard.cs` `749e910e9229c0b4`
