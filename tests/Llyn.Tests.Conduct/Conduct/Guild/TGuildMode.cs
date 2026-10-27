@@ -28,7 +28,7 @@ public sealed class TGuildMode
     }
 
     [Fact]
-    public void GuildAuthorSelect_WritingThenAuthor_KeepsTheAutograph()
+    public void GuildAuthorSelect_WritingThenAuthor_KeepsAutograph()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -49,7 +49,7 @@ public sealed class TGuildMode
     }
 
     [Fact]
-    public void GuildAuthorSelect_WritingThenOrphanRow_DropsTheAutograph()
+    public void GuildAuthorSelect_WritingThenOrphanRow_DropsAutograph()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -68,7 +68,7 @@ public sealed class TGuildMode
     }
 
     [Fact]
-    public void GuildAuthorSelect_UnsavedDraftStored_StoresItBeforeOpening()
+    public void GuildAuthorSelect_UnsavedDraftStored_StoresBeforeOpen()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -89,7 +89,7 @@ public sealed class TGuildMode
     }
 
     [Fact]
-    public void GuildSourceSelect_NoRow_KeepsTheAuthorSide()
+    public void GuildSourceSelect_NoRow_KeepsAuthorSide()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -107,7 +107,7 @@ public sealed class TGuildMode
     }
 
     [Fact]
-    public void GuildScribeToggle_SourceSide_KeepsTheColophon()
+    public void GuildScribeToggle_SourceSide_KeepsColophon()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -127,7 +127,7 @@ public sealed class TGuildMode
     }
 
     [Fact]
-    public void GuildScribeToggle_BackToReading_DropsTheHeldDraft()
+    public void GuildScribeToggle_BackToReading_DropsHeldDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -40,8 +40,27 @@ A card seek away and back lights the link mark again.
 Typing on the expression row opens its field and keeps the text.
 A meaning card edits its definition and shows no linked meanings row.
 
+## `TEditorMedia`
+
+These cases pin the image and video rows of a card.
+Each case adds one meaning card holding an image and a video, then presses keys through the window.
+The envoy fake answers a browse with a chosen path, or with none when the case sets none.
+A location that cannot be reached draws muted and ends with the missing mark.
+A wide unreached video location keeps its file name and the missing mark, muted.
+A reachable one keeps the plain text role.
+An unfolded card shows both adders on one row, the video adder to the right.
+Typing on an image row opens its field, and Enter or Page Down stores the text.
+Insert on an image row adds an image, and Delete removes it.
+Delete on a video row removes the video.
+The browse key asks the envoy for an image or a video file by the lit row.
+A cancelled browse keeps the old location.
+The menu offers Browse and Remove, and Escape shuts it.
+Typing on the video span slot stores the span.
+Right on the lit image adder moves to the video adder, and Enter adds a video.
+
 ## Stamp
 
-Commit: `c37ca1837ded`
-- `TEditorBond.cs` `413f09531b2c05a4`
-- `TEditorCard.cs` `36706205dcfff8c6`
+Commit: `9377e657b395`
+- `TEditorBond.cs` `4a27e085281ad8c1`
+- `TEditorCard.cs` `fa1293d9c7a8828d`
+- `TEditorMedia.cs` `0968fa8f37b890f5`

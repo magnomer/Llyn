@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TMarkdownNote
 {
     [Fact]
-    public void MarkdownNormalize_WindowsLineEndsAndEdgeBlanks_YieldsCanonical()
+    public void MarkdownNormalize_WindowsLineEnds_YieldsCanonical()
     {
         Assert.Equal("one\n\ntwo", TInterface.TMarkdownNormalize("\r\none  \r\n\r\ntwo \n\n"));
         Assert.Equal(string.Empty, TInterface.TMarkdownNormalize("   \r\n \n"));
@@ -55,7 +55,7 @@ public sealed class TMarkdownNote
     }
 
     [Fact]
-    public void MarkdownParse_StrayMarkerAndSnakeCase_KeepsThemLiteral()
+    public void MarkdownParse_StrayMarkerAndSnakeCase_KeepsLiteral()
     {
         IReadOnlyList<LMarkdownSpan> spans =
             TInterface.TMarkdownParse("2 * 3 in snake_case_name")[0].LMarkdownBlockSpan;
@@ -66,7 +66,7 @@ public sealed class TMarkdownNote
     }
 
     [Fact]
-    public void EntrySave_NoteWithWindowsLineEnds_StoresNormalizedMarkdown()
+    public void EntrySave_WindowsLineEndsNote_StoresNormalized()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -110,7 +110,7 @@ public sealed class TMarkdownNote
     }
 
     [Fact]
-    public void MarkdownSpanAddress_WebAndLocalLinks_KeepsOnlyWebAddresses()
+    public void MarkdownSpanAddress_WebAndLocalLinks_KeepsWebOnly()
     {
         IReadOnlyList<LMarkdownSpan> spans = TInterface.TMarkdownParse(
             "[web](https://example.org/a) and [file](file:///tmp/a) and plain")[0].LMarkdownBlockSpan;

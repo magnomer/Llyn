@@ -10,7 +10,7 @@ public sealed class THarvestStep
     private const string THarvestStepAmerican = "https://example.test/tomato-us.mp3";
 
     [Fact]
-    public async Task ListenerRelay_TwoRecordingSource_EmitsStartRecordingsFinish()
+    public async Task ListenerRelay_TwoRecordings_EmitsStartRecordingsFinish()
     {
         List<LHarvestStep> steps = [];
         LHarvest harvest = TInterface.THarvestCreate(
@@ -42,7 +42,7 @@ public sealed class THarvestStep
     }
 
     [Fact]
-    public async Task ReceiverRelay_TwoReadingSource_EmitsStartCandidatesFinish()
+    public async Task ReceiverRelay_TwoReadings_EmitsStartCandidatesFinish()
     {
         List<LLookupStep> steps = [];
         LSeeker lookup = TInterface.TLookupCreate(

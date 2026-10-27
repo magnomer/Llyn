@@ -25,7 +25,7 @@ public sealed class TEsteem
     }
 
     [Fact]
-    public void EsteemGraspSet_StandingStepPressedAgain_ClearsTheGrasp()
+    public void EsteemGraspSet_StandingStepPressedAgain_ClearsGrasp()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -43,7 +43,7 @@ public sealed class TEsteem
     }
 
     [Fact]
-    public void EsteemGraspMove_PastEitherEnd_StopsAtTheEnd()
+    public void EsteemGraspMove_PastEitherEnd_StopsAtEnd()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -101,7 +101,7 @@ public sealed class TEsteem
     }
 
     [Fact]
-    public void EsteemGraspStep_AnyEditor_ReadsTheEngineLimit()
+    public void EsteemGraspStep_AnyEditor_ReadsEngineLimit()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

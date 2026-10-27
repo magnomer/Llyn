@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TDraftLeftover
 {
     [Fact]
-    public void LeftoverRead_DraftStillHeldOpen_PassesOverIt()
+    public void LeftoverRead_DraftStillHeldOpen_SkipsDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
 
@@ -52,7 +52,7 @@ public sealed class TDraftLeftover
     }
 
     [Fact]
-    public void LeftoverSweep_DraftMatchingStoredEntry_SweepsIt()
+    public void LeftoverSweep_DraftMatchingStoredEntry_SweepsDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
 
@@ -107,7 +107,7 @@ public sealed class TDraftLeftover
     }
 
     [Fact]
-    public void LeftoverSweep_BlankDraftNamingNoEntry_SweepsIt()
+    public void LeftoverSweep_BlankDraftNamingNoEntry_SweepsDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
 
@@ -143,7 +143,7 @@ public sealed class TDraftLeftover
     }
 
     [Fact]
-    public void WorkspaceStart_BlankDraftNamingNoEntry_SweepsItAndAnswersTheState()
+    public void WorkspaceStart_BlankDraftNamingNoEntry_AnswersState()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
 
@@ -164,7 +164,7 @@ public sealed class TDraftLeftover
     }
 
     [Fact]
-    public void LeftoverSweep_ClaimWithoutDraftFile_DropsIt()
+    public void LeftoverSweep_ClaimWithoutDraftFile_DropsClaim()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         TInterface.TClaimArchiveSave(
@@ -179,7 +179,7 @@ public sealed class TDraftLeftover
     }
 
     [Fact]
-    public void LeftoverSweep_DraftFileOfAnotherVersion_DropsItWithClaimAndLinks()
+    public void LeftoverSweep_OtherVersionDraftFile_DropsClaimAndLinks()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         LDraft draft = TInterface.TDraftNestedCreate("Input", "kindle");
@@ -210,7 +210,7 @@ public sealed class TDraftLeftover
     }
 
     [Fact]
-    public void LeftoverSweep_UnreadableDraftFile_SetsItAsideUnchanged()
+    public void LeftoverSweep_UnreadableDraftFile_SetsAsideUnchanged()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         string folder = TInterface.TWorkspaceDraftRead(workspace.TWorkspaceFolder);
@@ -227,7 +227,7 @@ public sealed class TDraftLeftover
     }
 
     [Fact]
-    public void LeftoverSweep_StalePendingFile_RemovesIt()
+    public void LeftoverSweep_StalePendingFile_RemovesFile()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
 

@@ -6,7 +6,7 @@ namespace Llyn.Tests;
 public sealed class TInvocationWrite
 {
     [Fact]
-    public void InvocationRun_NewEntry_PrintsTheSavedId()
+    public void InvocationRun_NewEntry_PrintsSavedId()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         TConsoleFake console = new();
@@ -23,7 +23,7 @@ public sealed class TInvocationWrite
     }
 
     [Fact]
-    public void InvocationRun_NewWithoutHeadword_RefusesTheSave()
+    public void InvocationRun_NewWithoutHeadword_RefusesSave()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         TConsoleFake console = new();
@@ -76,7 +76,7 @@ public sealed class TInvocationWrite
     }
 
     [Fact]
-    public void InvocationRun_DeleteYes_DeletesTheEntry()
+    public void InvocationRun_DeleteYes_DeletesEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         long id;
@@ -121,7 +121,7 @@ public sealed class TInvocationWrite
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    public void InvocationRun_DeleteDeclined_KeepsTheEntry(bool answered)
+    public void InvocationRun_DeleteDeclined_KeepsEntry(bool answered)
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         long id;
@@ -145,7 +145,7 @@ public sealed class TInvocationWrite
     }
 
     [Fact]
-    public void InvocationRun_DeleteMissingId_RefusesTheId()
+    public void InvocationRun_DeleteMissingId_RefusesId()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         long id;

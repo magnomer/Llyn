@@ -15,7 +15,7 @@ public sealed class TEditorHead
     private static readonly ConsoleKeyInfo TEditorHeadSix = new('\0', ConsoleKey.F6, false, false, false);
 
     [Fact]
-    public void EditorKeymap_EnterOnTheLanguagePill_OpensTheListAndALetterLightsTheNextMatch()
+    public void EditorKeymap_LanguagePillEnter_OpensList()
     {
         TEditorHeadRun((library, atelier, find) =>
         {
@@ -45,7 +45,7 @@ public sealed class TEditorHead
     }
 
     [Fact]
-    public void EditorKeymap_LightLeavingTheLanguageRow_ClosesItsOpenList()
+    public void EditorKeymap_LightLeavingLanguageRow_ClosesOpenList()
     {
         TEditorHeadRun((library, _, find) =>
         {
@@ -62,7 +62,7 @@ public sealed class TEditorHead
     }
 
     [Fact]
-    public void SpeakerOpen_SecondOpenDuringTheLoad_LoadsOnce()
+    public void SpeakerOpen_SecondOpenDuringLoad_LoadsOnce()
     {
         TEditorWindowRun((_, atelier, _) =>
         {
@@ -88,7 +88,7 @@ public sealed class TEditorHead
     }
 
     [Fact]
-    public void SpeakerOpen_CloseDuringTheLoad_LeavesTheListShut()
+    public void SpeakerOpen_CloseDuringLoad_LeavesListShut()
     {
         TEditorWindowRun((_, atelier, _) =>
         {
@@ -108,7 +108,7 @@ public sealed class TEditorHead
     }
 
     [Fact]
-    public void EditorKeymap_EnterOnALitLanguage_SetsTheDraftLanguageAndClosesTheList()
+    public void EditorKeymap_EnterOnLitLanguage_SetsDraftLanguage()
     {
         TEditorHeadRun((library, atelier, find) =>
         {
@@ -132,7 +132,7 @@ public sealed class TEditorHead
     }
 
     [Fact]
-    public void EditorKeymap_EscapeOnAnOpenList_ShutsOnlyTheList()
+    public void EditorKeymap_EscapeOnOpenList_ShutsOnlyList()
     {
         TEditorHeadRun((library, _, find) =>
         {
@@ -148,7 +148,7 @@ public sealed class TEditorHead
     }
 
     [Fact]
-    public void EditorKeymap_KeysOnTheEsteemRow_MoveSetAndClearTheGraspThroughConduct()
+    public void EditorKeymap_EsteemRowKeys_MoveSetAndClearGrasp()
     {
         TEditorHeadRun((library, _, find) =>
         {
@@ -169,7 +169,7 @@ public sealed class TEditorHead
     }
 
     [Fact]
-    public void EditorKeymap_F6WhileEditingAStoredEntry_FlipsTheFavoriteMark()
+    public void EditorKeymap_F6OnStoredEntry_FlipsFavoriteMark()
     {
         TEditorHeadRun((library, _, _) =>
         {

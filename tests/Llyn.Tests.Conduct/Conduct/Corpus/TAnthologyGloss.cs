@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TAnthologyGloss
 {
     [Fact]
-    public void AnthologyGlossAdd_RowBelow_PlacesTheGlossInTheGlossLanguageAfterIt()
+    public void AnthologyGlossAdd_RowBelow_PlacesGlossLanguageAfterRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -30,7 +30,7 @@ public sealed class TAnthologyGloss
     }
 
     [Fact]
-    public void AnthologyGlossAdd_BelowTheLastRowAndBeforeTheFirst_PlacesEachAtItsPlace()
+    public void AnthologyGlossAdd_PastLastAndBeforeFirst_PlacesAtEnds()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -49,7 +49,7 @@ public sealed class TAnthologyGloss
     }
 
     [Fact]
-    public void AnthologyGlossPrepare_EmptyThenHeld_AddsOnlyTheFirstGloss()
+    public void AnthologyGlossPrepare_EmptyThenHeld_AddsOnlyFirstGloss()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -78,7 +78,7 @@ public sealed class TAnthologyGloss
     }
 
     [Fact]
-    public void AnthologyGlossSet_PickedRows_WriteTheTextRetagAndDropTheGloss()
+    public void AnthologyGlossSet_PickedRows_WritesTextRetagsDrops()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

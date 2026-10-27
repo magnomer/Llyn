@@ -7,7 +7,7 @@ namespace Llyn.Tests;
 public sealed class TMentionFinding
 {
     [Fact]
-    public void MentionFind_StoredMentionCoversOffset_WinsOverCandidates()
+    public void MentionFind_StoredMentionAtOffset_WinsOverCandidates()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -27,7 +27,7 @@ public sealed class TMentionFinding
     }
 
     [Fact]
-    public void MentionLineFind_ChildCardSentence_AnswersItsLine()
+    public void MentionLineFind_ChildCardSentence_AnswersLine()
     {
         LDraft held = TInterface.TDraftNestedCreate("Input", "kindle");
         LCardDraft meaning = held.LDraftContent.LEntryDraftMeanings[0];
@@ -49,7 +49,7 @@ public sealed class TMentionFinding
     }
 
     [Fact]
-    public void MentionFind_TwoHomographEntries_ReturnsBothInHeadwordOrder()
+    public void MentionFind_TwoHomographs_ReturnsHeadwordOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -65,7 +65,7 @@ public sealed class TMentionFinding
     }
 
     [Fact]
-    public void MentionFind_ThreeHomographEntries_ListsAllInHeadwordOrderWithoutForeignOnes()
+    public void MentionFind_ThreeHomographs_ListsEnglishInHeadwordOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -82,7 +82,7 @@ public sealed class TMentionFinding
     }
 
     [Fact]
-    public void MentionFind_InflectedFormWithoutHeadword_ReturnsSpanAndNoCandidates()
+    public void MentionFind_InflectedNoHeadword_ReturnsSpanOnly()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -97,7 +97,7 @@ public sealed class TMentionFinding
     }
 
     [Fact]
-    public void MentionFind_JapaneseText_PicksTheLongestHeadwordOverTheLetterRun()
+    public void MentionFind_JapaneseText_PicksLongestHeadword()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();

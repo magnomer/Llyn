@@ -7,7 +7,7 @@ namespace Llyn.Tests;
 public sealed class TAuthorAbsorbing
 {
     [Fact]
-    public void AuthorAbsorb_CreditedElsewhere_MovesCreditsAndDeletesDropped()
+    public void AuthorAbsorb_CreditedElsewhere_MovesCredits()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -37,7 +37,7 @@ public sealed class TAuthorAbsorbing
     }
 
     [Fact]
-    public void AuthorAbsorb_BothCreditedOnOneSource_KeepsOneCreditInPlace()
+    public void AuthorAbsorb_BothOnOneSource_KeepsOneCredit()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

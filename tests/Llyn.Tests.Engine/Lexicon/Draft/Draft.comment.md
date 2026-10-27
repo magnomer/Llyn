@@ -117,7 +117,7 @@ So the shell copies a verdict instead of counting.
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `TDraftCoverage.cs` `9dba35a561f37211`
+Commit: `9377e657b395`
+- `TDraftCoverage.cs` `a8a4216061fcc8cf`
 - `TDraftCoverageSetting.cs` `1d6eff7d69841857`
-- `TDraftFact.cs` `faf0693926ac304b`
+- `TDraftFact.cs` `618cbd0bf446cbc4`

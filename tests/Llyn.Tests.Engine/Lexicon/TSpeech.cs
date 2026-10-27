@@ -74,7 +74,7 @@ public sealed class TSpeech
     }
 
     [Fact]
-    public void EntryInflectionSave_AppendedMovedDeleted_ReadsBackEachStep()
+    public void EntryInflectionSave_AppendMoveDelete_ReadsBackEachStep()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -224,7 +224,7 @@ public sealed class TSpeech
     }
 
     [Fact]
-    public void SpeechRead_ValuesTypedOutOfOrder_ListsPackFirstThenAlphabetical()
+    public void SpeechRead_UnorderedValues_ListsPackThenAlphabetical()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -243,7 +243,7 @@ public sealed class TSpeech
     }
 
     [Fact]
-    public void SpeechRead_PackRowStoredOutOfPackOrder_ListsInDeclaredOrder()
+    public void SpeechRead_PackRowOutOfOrder_ListsDeclaredOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -259,7 +259,7 @@ public sealed class TSpeech
     }
 
     [Fact]
-    public void EntryDraftNames_UnnamedSpeech_LeavesItOut()
+    public void EntryDraftNames_UnnamedSpeech_OmitsBlankName()
     {
         LEntryDraft draft = TSpeechDraftCreate() with
         {

@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TShelfDraft
 {
     [Fact]
-    public void ShelfReferenceSelect_KeptLeave_StaysOnTheHeldDraft()
+    public void ShelfReferenceSelect_KeptLeave_StaysOnHeldDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -33,7 +33,7 @@ public sealed class TShelfDraft
     }
 
     [Fact]
-    public void ShelfLeaveConfirm_StoredLeave_SavesTheSourceDraft()
+    public void ShelfLeaveConfirm_StoredLeave_SavesSourceDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -66,7 +66,7 @@ public sealed class TShelfDraft
     }
 
     [Fact]
-    public void SessionSave_ChangedSourceDraft_StoresAndShowsIt()
+    public void SessionSave_ChangedSourceDraft_StoresAndShowsDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -95,7 +95,7 @@ public sealed class TShelfDraft
     }
 
     [Fact]
-    public void ShelfDraftFinish_UnstoredSourceDraft_DropsIt()
+    public void ShelfDraftFinish_UnstoredSourceDraft_DropsDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -112,7 +112,7 @@ public sealed class TShelfDraft
     }
 
     [Fact]
-    public void ShelfDraftFinish_EntrySide_DropsTheEntryDraft()
+    public void ShelfDraftFinish_EntrySide_DropsEntryDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -131,7 +131,7 @@ public sealed class TShelfDraft
     }
 
     [Fact]
-    public void ShelfEntrySelect_KeptLeave_StaysOnTheHeldDraft()
+    public void ShelfEntrySelect_KeptLeave_StaysOnHeldDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -11,7 +11,7 @@ namespace Llyn.Tests;
 public sealed class TDisplayArea
 {
     [Fact]
-    public void DisplayEntryOpen_WingLoadsAnEntry_OpensItsHeader()
+    public void DisplayEntryOpen_WingLoadsEntry_OpensHeader()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -51,7 +51,7 @@ public sealed class TDisplayArea
     }
 
     [Fact]
-    public void DisplayEntryOpen_GoneEntry_ClosesTheView()
+    public void DisplayEntryOpen_GoneEntry_ClosesView()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -72,7 +72,7 @@ public sealed class TDisplayArea
     }
 
     [Fact]
-    public void DisplayEntryClose_ShownEntry_DropsTheDraftAndRaisesClosed()
+    public void DisplayEntryClose_ShownEntry_DropsDraftAndRaisesClosed()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -95,7 +95,7 @@ public sealed class TDisplayArea
     }
 
     [Fact]
-    public void DisplayPanelAttach_PanelLoadsAndCloses_OpensAndClosesTheView()
+    public void DisplayPanelAttach_PanelOpenAndClose_OpensAndClosesView()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -122,7 +122,7 @@ public sealed class TDisplayArea
     }
 
     [Fact]
-    public void DisplayEntryResonate_ChosenEntry_ReopensItsDraft()
+    public void DisplayEntryResonate_ChosenEntry_ReopensDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -141,7 +141,7 @@ public sealed class TDisplayArea
     }
 
     [Fact]
-    public void DisplayEntryResonate_NothingChosen_OpensAndClosesNothing()
+    public void DisplayEntryResonate_NothingChosen_RaisesNoEvents()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -158,7 +158,7 @@ public sealed class TDisplayArea
     }
 
     [Fact]
-    public void DisplayWorkspaceResonate_ShownEntry_ClosesTheView()
+    public void DisplayWorkspaceResonate_ShownEntry_ClosesView()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -177,7 +177,7 @@ public sealed class TDisplayArea
     }
 
     [Fact]
-    public void DisplayFavoriteToggle_ChosenEntryMarked_RaisesOnlyTheFavoriteChange()
+    public void DisplayFavoriteToggle_MarkedEntry_RaisesFavoriteOnly()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -198,7 +198,7 @@ public sealed class TDisplayArea
     }
 
     [Fact]
-    public void DisplayFavoriteToggle_ChosenEntry_AnswersTheStoredMark()
+    public void DisplayFavoriteToggle_ChosenEntry_AnswersStoredMark()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -226,7 +226,7 @@ public sealed class TDisplayArea
     }
 
     [Fact]
-    public void DisplayFrequencyRead_EntryWithoutFrequency_LooksUpTheOnceKeyAndAnswersNone()
+    public void DisplayFrequencyRead_NoFrequency_LooksUpOnceKey()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -247,7 +247,7 @@ public sealed class TDisplayArea
     }
 
     [Fact]
-    public void CompassRead_HiddenPartSharesACardLabel_NamesOnlyTheShownRows()
+    public void CompassRead_HiddenPartSharesCardLabel_NamesShownRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -272,7 +272,7 @@ public sealed class TDisplayArea
     }
 
     [Fact]
-    public void CompassShown_EntryWithSomeParts_KeepsOnlyThoseInPageOrder()
+    public void CompassShown_EntryWithSomeParts_KeepsPartsInPageOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -307,7 +307,7 @@ public sealed class TDisplayArea
     }
 
     [Fact]
-    public void CompassShown_OpenOtherEntryBeforeReads_DropsPreviousEntryParts()
+    public void CompassShown_OtherEntryOpened_DropsPreviousParts()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -13,7 +13,7 @@ namespace Llyn.Tests;
 public sealed class TYunjingDiwei
 {
     [Fact]
-    public void YunjingDiweiRead_InitialCell_SectionsByDivisionWithSortedLines()
+    public void YunjingDiweiRead_InitialCell_SectionsByDivision()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TYunjing.TYunjingPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -38,7 +38,7 @@ public sealed class TYunjingDiwei
     }
 
     [Fact]
-    public void YunjingDiweiRead_BookCell_CarriesTheFontsOfTheCellLanguage()
+    public void YunjingDiweiRead_BookCell_CarriesCellLanguageFonts()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -60,7 +60,7 @@ public sealed class TYunjingDiwei
     }
 
     [Fact]
-    public void YunjingDiweiRead_ReflexUnderTheCell_CopiesTheTallyOfTheShownSet()
+    public void YunjingDiweiRead_ReflexUnderCell_CopiesShownSetTally()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -80,7 +80,7 @@ public sealed class TYunjingDiwei
     }
 
     [Fact]
-    public void YunjingTallyToggle_SwitchThenNull_SavesOnceAndRaisesOnce()
+    public void YunjingTallyToggle_SwitchThenNull_SavesOnceRaisesOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -100,7 +100,7 @@ public sealed class TYunjingDiwei
     }
 
     [Fact]
-    public void YunjingTallyToggle_RefusedSave_ShowsTheSaveFailureAndKeepsTheState()
+    public void YunjingTallyToggle_RefusedSave_ShowsFailureKeepsState()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -118,7 +118,7 @@ public sealed class TYunjingDiwei
     }
 
     [Fact]
-    public void YunjingGlyphSelect_PageShown_OpensTheGlyphEntryInThePageLanguage()
+    public void YunjingGlyphSelect_PageShown_OpensEntryInPageLanguage()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TYunjing.TYunjingPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TLibraryRail
 {
     [Fact]
-    public void LibraryKeymap_RailKeys_LiveAsTheGuiRail()
+    public void LibraryKeymap_RailKeys_DimUntilEntryRead()
     {
         foreach (bool visible in (bool[])[true, false])
         {
@@ -62,7 +62,7 @@ public sealed class TLibraryRail
     }
 
     [Fact]
-    public void LibraryKeymap_F7ThenF4_OpensAndClosesTheFreshDraft()
+    public void LibraryKeymap_F7ThenF4_OpensAndClosesFreshDraft()
     {
         TLibrary.TLibraryRun(
             ["fire"],
@@ -111,7 +111,7 @@ public sealed class TLibraryRail
     }
 
     [Fact]
-    public void LibraryDraw_WorkspaceEmpty_CentresTheNotice()
+    public void LibraryDraw_WorkspaceEmpty_CentresNotice()
     {
         TLibrary.TLibraryRun(
             [],
@@ -161,7 +161,7 @@ public sealed class TLibraryRail
     }
 
     [Fact]
-    public void WindowKeyObserve_DimRow_SwallowsTheKey()
+    public void WindowKeyObserve_DimRow_DrawsNoFrame()
     {
         TLibraryWindowRun(
             ["fire"],

@@ -59,7 +59,7 @@ public sealed class TDatabaseSession
     }
 
     [Fact]
-    public void DatabaseSessionStart_ConnectionAlreadyClosed_ReleasesTheSlot()
+    public void DatabaseSessionStart_ClosedConnection_ReleasesSlot()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
 

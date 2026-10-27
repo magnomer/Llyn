@@ -41,7 +41,7 @@ public sealed class TDisplayFailure
     }
 
     [Fact]
-    public void DisplayReflexRead_ReflexPortFails_ShowsTheReflexFailure()
+    public void DisplayReflexRead_ReflexPortFails_ShowsReflexFailure()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -57,7 +57,7 @@ public sealed class TDisplayFailure
     }
 
     [Fact]
-    public void DisplayFanqieRead_ReadingPortFails_ShowsTheReadingFailure()
+    public void DisplayFanqieRead_ReadingPortFails_ShowsReadingFailure()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -89,7 +89,7 @@ public sealed class TDisplayFailure
     }
 
     [Fact]
-    public void DisplayParadigmRead_ScanPortFails_ShowsTheParadigmFailure()
+    public void DisplayParadigmRead_ScanPortFails_ShowsParadigmFailure()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -105,7 +105,7 @@ public sealed class TDisplayFailure
     }
 
     [Fact]
-    public void DisplayFanqieRead_AnchorPortFails_ShowsTheAnchorFailure()
+    public void DisplayFanqieRead_AnchorPortFails_ShowsAnchorFailure()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -122,7 +122,7 @@ public sealed class TDisplayFailure
     }
 
     [Fact]
-    public void DisplayFavoriteRead_PortFails_ShowsTheReadFailure()
+    public void DisplayFavoriteRead_PortFails_ShowsReadFailure()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -184,7 +184,7 @@ public sealed class TDisplayFailure
     }
 
     [Fact]
-    public void DisplayGraspRead_PortFails_ShowsTheReadFailure()
+    public void DisplayGraspRead_PortFails_ShowsReadFailure()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -197,7 +197,7 @@ public sealed class TDisplayFailure
     }
 
     [Fact]
-    public void DisplayFrequencyRead_PortFails_ShowsTheReadFailure()
+    public void DisplayFrequencyRead_PortFails_ShowsReadFailure()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

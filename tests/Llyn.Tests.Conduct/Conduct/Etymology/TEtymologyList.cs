@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TEtymologyList
 {
     [Fact]
-    public void EtymologyRelationRead_Workspace_AnswersBuiltinsThenCustomThenAddition()
+    public void EtymologyRelationRead_Workspace_AnswersOrderedGroups()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -29,7 +29,7 @@ public sealed class TEtymologyList
     }
 
     [Fact]
-    public void EtymologyLanguageRead_Tongue_AnswersLanguagesThenTonguesThenAddition()
+    public void EtymologyLanguageRead_Tongue_AnswersOrderedGroups()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -47,7 +47,7 @@ public sealed class TEtymologyList
     }
 
     [Fact]
-    public void EtymologyRelationSet_Addition_CreatesTheRelationAndSetsItOnTheBox()
+    public void EtymologyRelationSet_Addition_CreatesAndSetsRelation()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -83,7 +83,7 @@ public sealed class TEtymologyList
     }
 
     [Fact]
-    public void EtymologyLanguageSet_Addition_CreatesTheTongueAndSetsItOnTheBox()
+    public void EtymologyLanguageSet_Addition_CreatesAndSetsTongue()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -103,7 +103,7 @@ public sealed class TEtymologyList
     }
 
     [Fact]
-    public void EtymologyRelationDelete_UsedCustom_ConfirmsWithTheCountAndClearsEveryBox()
+    public void EtymologyRelationDelete_UsedCustom_ClearsBoxes()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -132,7 +132,7 @@ public sealed class TEtymologyList
     }
 
     [Fact]
-    public void EtymologyRelationDelete_Declined_KeepsTheRelation()
+    public void EtymologyRelationDelete_Declined_KeepsRelation()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -164,7 +164,7 @@ public sealed class TEtymologyList
     }
 
     [Fact]
-    public void EtymologyLanguageDelete_UsedTongue_ConfirmsWithTheCountAndClearsEveryBox()
+    public void EtymologyLanguageDelete_UsedTongue_ClearsBoxes()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

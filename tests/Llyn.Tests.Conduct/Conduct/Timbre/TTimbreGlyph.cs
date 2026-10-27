@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TTimbreGlyph
 {
     [Fact]
-    public void TimbreGlyphRead_KoreanDraft_SplitsTheRowsByTheGlyphScheme()
+    public void TimbreGlyphRead_KoreanDraft_SplitsRowsByGlyphScheme()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -30,7 +30,7 @@ public sealed class TTimbreGlyph
     }
 
     [Fact]
-    public void TimbreGlyphRead_LanguageWithoutGlyphOrEmptyDesk_AnswersTheHiddenBlock()
+    public void TimbreGlyphRead_NoGlyphOrEmptyDesk_AnswersHiddenBlock()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -51,7 +51,7 @@ public sealed class TTimbreGlyph
     }
 
     [Fact]
-    public void TranscriptionSet_GlyphRow_WritesTheTypedText()
+    public void TranscriptionSet_GlyphRow_WritesTypedText()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TYunjingVista
 {
     [Fact]
-    public void YunjingVistaRestore_WorkspaceNotice_UnchoosesBothColumnsAndTellsTheDriver()
+    public void YunjingVistaRestore_WorkspaceNotice_UnchoosesColumns()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TYunjing.TYunjingPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -37,7 +37,7 @@ public sealed class TYunjingVista
     }
 
     [Fact]
-    public void YunjingVistaRestore_EachColumnChanged_RaisesOnceAndChangesOnlyThatColumn()
+    public void YunjingVistaRestore_EachColumnChanged_RaisesOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -65,7 +65,7 @@ public sealed class TYunjingVista
     }
 
     [Fact]
-    public void YunjingVistaRestore_FanqieNotice_RaisesTheColumnsAndTheEntryList()
+    public void YunjingVistaRestore_FanqieNotice_RaisesColumnsAndList()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -82,7 +82,7 @@ public sealed class TYunjingVista
     }
 
     [Fact]
-    public void YunjingVistaRestore_SettingsAndReflexNotices_RaiseTheColumnsAndTheEntryListEach()
+    public void YunjingVistaRestore_SettingsAndReflex_RaisesEach()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -100,7 +100,7 @@ public sealed class TYunjingVista
     }
 
     [Fact]
-    public void YunjingVistaRestore_EntryNotice_RaisesTheColumnsAndRelistsTheEntries()
+    public void YunjingVistaRestore_EntryNotice_RaisesAndRelists()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -119,7 +119,7 @@ public sealed class TYunjingVista
     }
 
     [Fact]
-    public void YunjingVistaRestore_QueriesHeld_CarriesEachIntoItsFreshVista()
+    public void YunjingVistaRestore_QueriesHeld_CarriesAllQueries()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -141,7 +141,7 @@ public sealed class TYunjingVista
     }
 
     [Fact]
-    public void YunjingVistaRestore_FanqieNoticeAfterASecondRestore_RaisesTheColumnsOnceThroughTheMarshal()
+    public void YunjingVistaRestore_FanqieAfterRestore_RaisesOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -167,7 +167,7 @@ public sealed class TYunjingVista
     }
 
     [Fact]
-    public void YunjingCreate_FanqieNoticeWithoutARestore_RaisesTheColumnsOnceThroughTheMarshal()
+    public void YunjingCreate_FanqieNoRestore_RaisesOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

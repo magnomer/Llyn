@@ -8,7 +8,7 @@ public sealed class TEditorDrop
     private static readonly string[] TEditorDropLanguage = ["English", "French", "Finnish", "German"];
 
     [Fact]
-    public void DropSeek_LettersInAnOpenList_LightTheNextRowStartingWithThem()
+    public void DropSeek_LettersInOpenList_LightsNextMatchingRow()
     {
         BDrop drop = new(TEditorDropLanguage, 0, true, 8);
 
@@ -23,7 +23,7 @@ public sealed class TEditorDrop
     }
 
     [Fact]
-    public void DropSeek_TheSameLetterAgain_StepsToTheNextMatchAndWraps()
+    public void DropSeek_SameLetterAgain_StepsToNextMatchAndWraps()
     {
         BDrop drop = new(TEditorDropLanguage, 0, true, 8);
 
@@ -36,7 +36,7 @@ public sealed class TEditorDrop
     }
 
     [Fact]
-    public void DropSeek_FirstLetterOfTheLitRow_LightsTheNextMatchAfterIt()
+    public void DropSeek_FirstLetterOfLitRow_LightsNextMatch()
     {
         BDrop drop = new(TEditorDropLanguage, 1, true, 8);
 
@@ -46,7 +46,7 @@ public sealed class TEditorDrop
     }
 
     [Fact]
-    public void DropDraw_NeitherSideFits_ClampsTheBoxAndItsShadowToTheBounds()
+    public void DropDraw_NeitherSideFits_ClampsBoxAndShadowToBounds()
     {
         BDrop drop = new(["a", "b", "c", "d", "e", "f", "g", "h"], 0, true, 8);
         BBlueprintPart bounds = TEditorDropCreate();
@@ -74,7 +74,7 @@ public sealed class TEditorDrop
     }
 
     [Fact]
-    public void DropDraw_RoomBelowTheField_HangsAFramedBoxUnderItWithAShadow()
+    public void DropDraw_RoomBelowField_HangsFramedBoxWithShadow()
     {
         BDrop drop = new(TEditorDropLanguage, 1, true, 8);
 
@@ -101,7 +101,7 @@ public sealed class TEditorDrop
     }
 
     [Fact]
-    public void DropDraw_WindowEndsBeforeTheBox_FlipsItAboveTheField()
+    public void DropDraw_WindowEndsBeforeBox_FlipsBoxAboveField()
     {
         BDrop drop = new(TEditorDropLanguage, 0, true, 8);
 

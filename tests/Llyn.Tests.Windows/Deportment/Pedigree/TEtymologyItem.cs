@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TEtymologyItem
 {
     [Fact]
-    public void EtymologyItemShow_CoSources_NestsUnderTheirChild()
+    public void EtymologyItemShow_CoSources_NestsUnderChild()
     {
         ObservableCollection<QEtymologyItem> items = [];
 
@@ -39,7 +39,7 @@ public sealed class TEtymologyItem
     }
 
     [Fact]
-    public void EtymologyItemShow_RemovedBox_DropsItsItem()
+    public void EtymologyItemShow_RemovedBox_DropsItem()
     {
         ObservableCollection<QEtymologyItem> items = [];
         TInterfaceDeportment.TEtymologyItemShow(

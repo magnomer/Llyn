@@ -26,7 +26,7 @@ public sealed class TEntryQueryArchive
     }
 
     [Fact]
-    public void EntryHeadwordFind_LanguagesStoredOutOfOrder_ListsByLanguageThenId()
+    public void EntryHeadwordFind_MixedCaseLanguage_ListsExactCaseFirst()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);

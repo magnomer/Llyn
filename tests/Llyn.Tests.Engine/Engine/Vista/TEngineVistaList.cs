@@ -44,7 +44,7 @@ public sealed class TEngineVistaList
     }
 
     [Fact]
-    public void PronunciationFind_NoEpithet_CarriesAnEmptyOne()
+    public void PronunciationFind_NoEpithet_CarriesEmptyEpithet()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

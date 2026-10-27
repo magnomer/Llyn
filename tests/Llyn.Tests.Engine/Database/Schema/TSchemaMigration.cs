@@ -54,7 +54,7 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
-    public void DatabaseCreate_OlderBuild_KeepsTheFileAndLeavesNoResidue()
+    public void DatabaseCreate_OlderBuild_KeepsFileAndLeavesNoResidue()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         string file = Path.Combine(workspace.TWorkspaceFolder, "llyn.db");
@@ -71,7 +71,7 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
-    public void DatabaseCreate_RebuildFails_LeavesTheOldFileUntouched()
+    public void DatabaseCreate_RebuildFails_LeavesOldFileUntouched()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         workspace.TWorkspaceScriptRun(
@@ -90,7 +90,7 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
-    public void DatabaseCreate_OlderBuild_DropsRowsTheSchemaRefuses()
+    public void DatabaseCreate_OlderBuild_DropsOrphanRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
 
@@ -110,7 +110,7 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
-    public void DatabaseCreate_OlderBuild_KeepsTheIdCounter()
+    public void DatabaseCreate_OlderBuild_KeepsIdCounter()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
 
@@ -150,7 +150,7 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
-    public void DatabaseCreate_ChildForeignKeys_CarryAnIndex()
+    public void DatabaseCreate_ChildForeignKeys_CarryIndex()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
 

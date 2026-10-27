@@ -61,10 +61,10 @@ The quit decision asks only over unsaved work, and every editor hears the one an
 
 ## Stamp
 
-Commit: `8c403d1df768`
-- `TDesk.cs` `76919744adc4f5dc`
-- `TDeskChronicle.cs` `78a5a7c1f4c0db7e`
-- `TDeskDraft.cs` `10fa2f8f82605c92`
-- `TEaselDesk.cs` `ff56c313e73f77f3`
-- `TEntry.cs` `c7407ea7a0b1c9d5`
-- `TSession.cs` `b4e7142879e4bb5a`
+Commit: `9377e657b395`
+- `TDesk.cs` `5ec2473c63c86169`
+- `TDeskChronicle.cs` `3ba6382528e5a0e1`
+- `TDeskDraft.cs` `28d59a52b7e8a37c`
+- `TEaselDesk.cs` `de13dfe21b417c89`
+- `TEntry.cs` `a281fde5a5d54923`
+- `TSession.cs` `4b9de66ad0161048`

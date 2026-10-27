@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TAnthologyCitation
 {
     [Fact]
-    public void AnthologyDraftRead_TranscriptCitingASource_CarriesItsLine()
+    public void AnthologyDraftRead_TranscriptCitingSource_CarriesLine()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -27,7 +27,7 @@ public sealed class TAnthologyCitation
     }
 
     [Fact]
-    public void AnthologyCitationSet_TypedTitle_CitesTheResolvedSource()
+    public void AnthologyCitationSet_TypedTitle_CitesResolvedSource()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -42,7 +42,7 @@ public sealed class TAnthologyCitation
     }
 
     [Fact]
-    public void AnthologyCitationSet_EngineFails_ShowsTheCreateFailureAndKeepsTheCitation()
+    public void AnthologyCitationSet_EngineFails_ShowsCreateFailure()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -61,7 +61,7 @@ public sealed class TAnthologyCitation
     }
 
     [Fact]
-    public void AnthologyCitationRead_EngineFails_ShowsTheFindFailureAndOffersNone()
+    public void AnthologyCitationRead_EngineFails_ShowsFindFailure()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -100,7 +100,7 @@ public sealed class TAnthologyCitation
     }
 
     [Fact]
-    public void AnthologyCitationRead_PartOfTitle_OffersTheSourceSplit()
+    public void AnthologyCitationRead_PartOfTitle_OffersSourceSplit()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -121,7 +121,7 @@ public sealed class TAnthologyCitation
     }
 
     [Fact]
-    public void AnthologyCitationRead_BlankWordOrNoTranscript_OffersNothing()
+    public void AnthologyCitationRead_BlankOrUnheld_OffersNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

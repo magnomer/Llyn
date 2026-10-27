@@ -97,7 +97,7 @@ public sealed class TEngineTenureSubject
     }
 
     [Fact]
-    public void TenureReadyCheck_AuthorNamedLater_ReadyOnceTheNameIsWritten()
+    public void TenureReadyCheck_AuthorNamedLater_ReturnsTrueOnceNamed()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

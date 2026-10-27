@@ -28,7 +28,7 @@ public sealed class TLibraryMarkup
     }
 
     [Fact]
-    public async Task LibraryMarkupImport_FreshRows_StoresTheEntriesAndReportsTheOmission()
+    public async Task LibraryMarkupImport_FreshRows_ReportsOmission()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -58,7 +58,7 @@ public sealed class TLibraryMarkup
     }
 
     [Fact]
-    public async Task LibraryMarkupImport_MergeRow_AppendsToTheTargetEntry()
+    public async Task LibraryMarkupImport_MergeRow_AppendsToTargetEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -127,7 +127,7 @@ public sealed class TLibraryMarkup
     }
 
     [Fact]
-    public async Task LibraryMarkupImport_MalformedFile_ShowsTheImportFailure()
+    public async Task LibraryMarkupImport_MalformedFile_ShowsImportFailure()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

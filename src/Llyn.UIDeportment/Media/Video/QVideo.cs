@@ -62,22 +62,10 @@ internal sealed class QVideo
 
     private void QVideoOpenObserve(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: QVideoItem row } source)
+        if (sender is FrameworkElement { DataContext: QVideoItem row })
         {
-            _cVideo.CVideoFileSet(row.QVideoItemId, QVideoFileConsult(Window.GetWindow(source)));
+            _cVideo.CVideoFileOpen(row.QVideoItemId);
         }
-    }
-
-    private static string? QVideoFileConsult(Window owner)
-    {
-        Microsoft.Win32.OpenFileDialog dialog = new()
-        {
-            Title = "Choose a video",
-            Filter = "Video files|*.mp4;*.m4v;*.mov;*.avi;*.wmv;*.mkv;*.webm|All files|*.*",
-            CheckFileExists = true,
-        };
-
-        return dialog.ShowDialog(owner) == true ? dialog.FileName : null;
     }
 
     internal void QVideoApply(FrameworkElement container, object item, string? name)

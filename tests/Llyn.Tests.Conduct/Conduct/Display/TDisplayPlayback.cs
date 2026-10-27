@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TDisplayPlayback
 {
     [Fact]
-    public void DisplayPlaybackRead_AccentWithAudioOnly_ShowsTheTrayButNotTheButton()
+    public void DisplayPlaybackRead_AudioOnlyAccent_ShowsTrayNotButton()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -34,7 +34,7 @@ public sealed class TDisplayPlayback
     }
 
     [Fact]
-    public void DisplayPlaybackStart_AccentRow_PlaysAtTheLevelAndTheCancelStopsThatPlay()
+    public void DisplayPlaybackStart_AccentRow_PlaysAtLevel()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -80,7 +80,7 @@ public sealed class TDisplayPlayback
     }
 
     [Fact]
-    public void DisplayPlaybackCancel_NothingPlaying_KeepsTheShownEntry()
+    public void DisplayPlaybackCancel_NothingPlaying_KeepsShownEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

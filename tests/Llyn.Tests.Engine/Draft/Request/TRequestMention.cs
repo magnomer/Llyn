@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TRequestMention
 {
     [Fact]
-    public void RequestApply_MentionAddition_MintsNegativeIdAndSortsByOffset()
+    public void RequestApply_MentionAddition_MintsIdAndSortsByOffset()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -29,7 +29,7 @@ public sealed class TRequestMention
     }
 
     [Fact]
-    public void RequestApply_MentionAdditionOverExistingSpan_ReplacesIt()
+    public void RequestApply_MentionAdditionOverSpan_ReplacesExisting()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -48,7 +48,7 @@ public sealed class TRequestMention
     }
 
     [Fact]
-    public void RequestApply_MentionAdditionSenseOfAnotherEntry_RefusesLink()
+    public void RequestApply_MentionForeignSense_RefusesLink()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -68,7 +68,7 @@ public sealed class TRequestMention
     }
 
     [Fact]
-    public void RequestApply_MentionAdditionWithZeroCard_LandsOnTheDraftExample()
+    public void RequestApply_MentionZeroCard_LandsOnDraftExample()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -92,7 +92,7 @@ public sealed class TRequestMention
     }
 
     [Fact]
-    public void RequestApply_MentionSense_ClearsWithZeroAndRefusesOnNothing()
+    public void RequestApply_MentionSense_ClearsOnZero()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -120,7 +120,7 @@ public sealed class TRequestMention
     }
 
     [Fact]
-    public void RequestApply_SentenceTextEdited_ShiftsKeepsOrDropsMentions()
+    public void RequestApply_SentenceTextEdit_ReanchorsMentions()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -190,7 +190,7 @@ public sealed class TRequestMention
     }
 
     [Fact]
-    public void DraftCommit_SharedExampleTextChanged_ForksWithTheDraftMentions()
+    public void DraftCommit_SharedExampleEdited_ForksWithDraftMentions()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -220,7 +220,7 @@ public sealed class TRequestMention
     }
 
     [Fact]
-    public void DraftArchiveSave_MentionWithNegativeIdAndNoEntry_RoundTrips()
+    public void DraftArchiveSave_NegativeIdNoEntryMention_RoundTrips()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -238,7 +238,7 @@ public sealed class TRequestMention
     }
 
     [Fact]
-    public void RequestApply_SelectionSpanningSurrogatePair_CarriesCodePointOffsets()
+    public void RequestApply_SurrogatePairSelection_CountsCodePoints()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -260,7 +260,7 @@ public sealed class TRequestMention
     }
 
     [Fact]
-    public void RequestApply_LinkChooseUnlinkSequence_LeavesNoMentionAndSilenceRefusesSense()
+    public void RequestApply_LinkChooseUnlink_LeavesNoMention()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -287,7 +287,7 @@ public sealed class TRequestMention
     }
 
     [Fact]
-    public void ExampleCommit_MentionLinkedInTheScribe_IsFoundAtItsOffset()
+    public void ExampleCommit_ScribeLinkedMention_FindsAtOffset()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();

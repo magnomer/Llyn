@@ -13,7 +13,7 @@ namespace Llyn.Tests;
 public sealed class TLibrary
 {
     [Fact]
-    public void LibraryRowsRead_FreshArea_ListsTheStoredEntries()
+    public void LibraryRowsRead_FreshArea_ListsStoredEntries()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -28,7 +28,7 @@ public sealed class TLibrary
     }
 
     [Fact]
-    public void ApertureQuerySet_MatchingHeadword_NarrowsTheRows()
+    public void ApertureQuerySet_MatchingHeadword_NarrowsRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -63,7 +63,7 @@ public sealed class TLibrary
     }
 
     [Fact]
-    public void ApertureOrderSet_NoOrderRow_KeepsTheOrder()
+    public void ApertureOrderSet_NoOrderRow_KeepsOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -77,7 +77,7 @@ public sealed class TLibrary
     }
 
     [Fact]
-    public void ApertureFilterSet_HiddenLanguage_MarksTheListFiltered()
+    public void ApertureFilterSet_HiddenLanguage_MarksListFiltered()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -94,7 +94,7 @@ public sealed class TLibrary
     }
 
     [Fact]
-    public void LibraryPanelRowSelect_RowChosen_MarksItAndReportsItsId()
+    public void LibraryPanelRowSelect_RowChosen_MarksRowReportsId()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -121,7 +121,7 @@ public sealed class TLibrary
     [Theory]
     [InlineData("stone", true)]
     [InlineData(null, false)]
-    public void LibraryEntryCreate_HeadwordGivenOrNot_ReportsTheSave(string? headword, bool saved)
+    public void LibraryEntryCreate_HeadwordGivenOrNot_ReportsSave(string? headword, bool saved)
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -137,7 +137,7 @@ public sealed class TLibrary
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    public void PanelBinDelete_StoredOrMissingId_ReportsTheDeletion(bool stored)
+    public void PanelBinDelete_StoredOrMissingId_ReportsDeletion(bool stored)
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -153,7 +153,7 @@ public sealed class TLibrary
     }
 
     [Fact]
-    public void LibraryPanelRowOpen_ScribeOn_OpensTheEntryInTheEditor()
+    public void LibraryPanelRowOpen_ScribeOn_OpensEntryInEditor()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -172,7 +172,7 @@ public sealed class TLibrary
     }
 
     [Fact]
-    public void AtelierQuitConfirm_LibraryEditing_AsksOnceAndStoresTheEntry()
+    public void AtelierQuitConfirm_LibraryEditing_AsksOnceStoresEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -194,7 +194,7 @@ public sealed class TLibrary
     }
 
     [Fact]
-    public async Task LibraryPortraitExport_ChosenEntry_WritesIt()
+    public async Task LibraryPortraitExport_ChosenEntry_WritesFile()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -237,7 +237,7 @@ public sealed class TLibrary
     }
 
     [Fact]
-    public async Task LibraryPortraitExport_CancelledOrUnwritable_ExportsNothingOrShowsTheFailure()
+    public async Task LibraryPortraitExport_NoPathOrUnwritable_WritesNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -263,7 +263,7 @@ public sealed class TLibrary
     }
 
     [Fact]
-    public void NavigationEntryOpen_EntryJump_OpensTheEntryInTheArea()
+    public void NavigationEntryOpen_EntryJump_OpensEntryInArea()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -283,7 +283,7 @@ public sealed class TLibrary
     }
 
     [Fact]
-    public void LibraryPanelRowSelect_TabPanel_RecordsTheStationItLeaves()
+    public void LibraryPanelRowSelect_TabPanel_RecordsLeftStation()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -44,7 +44,7 @@ public sealed class TGrasp
     }
 
     [Fact]
-    public void GraspSave_Zero_ClearsTheRating()
+    public void GraspSave_Zero_ClearsRating()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -57,7 +57,7 @@ public sealed class TGrasp
     }
 
     [Fact]
-    public void EntryUpdate_RatedEntry_KeepsTheRating()
+    public void EntryUpdate_RatedEntry_KeepsRating()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -101,7 +101,7 @@ public sealed class TGrasp
     }
 
     [Fact]
-    public void FavoriteFind_RatedEntry_CarriesTheRating()
+    public void FavoriteFind_RatedEntry_CarriesRating()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

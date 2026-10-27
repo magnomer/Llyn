@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TEngineReflexClip
 {
     [Fact]
-    public async Task ReflexRead_InvalidClip_LoadsTheRuleWithoutOne()
+    public async Task ReflexRead_InvalidClip_LoadsRuleWithoutClip()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(
             """

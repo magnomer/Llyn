@@ -23,7 +23,7 @@ public sealed class TRequest
     }
 
     [Fact]
-    public void RequestApply_CardAddition_MintsNegativeIdAndRaisesBulletin()
+    public void RequestApply_CardAddition_MintsNegativeId()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -77,7 +77,7 @@ public sealed class TRequest
     }
 
     [Fact]
-    public void RequestApply_CardTitle_ChangesOnlyThatCard()
+    public void RequestApply_CardTitle_ChangesOnlyTitledCard()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -248,7 +248,7 @@ public sealed class TRequest
     }
 
     [Fact]
-    public void RequestApply_UnchangedText_WritesNothingAndRaisesNothing()
+    public void RequestApply_UnchangedText_KeepsVersionAndRaisesNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -269,7 +269,7 @@ public sealed class TRequest
     }
 
     [Fact]
-    public void RequestApply_SituationFields_ChangesThePanelSituation()
+    public void RequestApply_SituationFields_AccumulatesAllFields()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();

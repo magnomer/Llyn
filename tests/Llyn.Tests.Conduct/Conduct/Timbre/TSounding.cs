@@ -26,7 +26,7 @@ public sealed class TSounding
     }
 
     [Fact]
-    public void SoundingFanqieRead_StoredEntry_ShapesTheEngineGroups()
+    public void SoundingFanqieRead_StoredEntry_ShapesEngineGroups()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -69,7 +69,7 @@ public sealed class TSounding
     }
 
     [Fact]
-    public void SoundingReadingRead_RefusedRead_ShowsTheReadingFailure()
+    public void SoundingReadingRead_RefusedRead_ShowsReadingFailure()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -82,7 +82,7 @@ public sealed class TSounding
     }
 
     [Fact]
-    public void SoundingParadigmRead_RefusedMorphology_ShowsTheMorphologyFailure()
+    public void SoundingParadigmRead_RefusedMorphology_ShowsFailure()
     {
         List<string> notices = [];
         CSounding sounding = new TEditorFixture(TInterfaceEditor.TEditorCreate(
@@ -99,7 +99,7 @@ public sealed class TSounding
     }
 
     [Fact]
-    public void SoundingFanqieResolve_StoredEntry_AnnouncesTheChange()
+    public void SoundingFanqieResolve_StoredEntry_AnnouncesChange()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -119,7 +119,7 @@ public sealed class TSounding
     }
 
     [Fact]
-    public void SoundingFanqieResolve_RefusedRebuild_ShowsTheNotice()
+    public void SoundingFanqieResolve_RefusedRebuild_ShowsNotice()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -140,7 +140,7 @@ public sealed class TSounding
     }
 
     [Fact]
-    public void SoundingFanqieSet_StoredEntry_SendsTheRank()
+    public void SoundingFanqieSet_StoredEntry_SendsRank()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -161,7 +161,7 @@ public sealed class TSounding
     }
 
     [Fact]
-    public void SchemeKeyRead_SchemeOrBlank_PrefixesTheSchemeKey()
+    public void SchemeKeyRead_SchemeOrBlank_PrefixesSchemeKey()
     {
         Assert.Equal("Scheme.Yale", CScheme.CSchemeKeyRead("Yale"));
         Assert.Equal("Scheme.", CScheme.CSchemeKeyRead(string.Empty));
@@ -172,7 +172,7 @@ public sealed class TSounding
     [InlineData(true, false, "…", "Paradigm.Pending")]
     [InlineData(false, true, "…", "Paradigm.Held")]
     [InlineData(false, false, "…", "Paradigm.Absent")]
-    public void SoundingParadigmRead_UnansweredSlot_AnswersTheTipOfItsPendingAndMorphologyVerdicts(
+    public void SoundingParadigmRead_UnansweredSlot_AnswersVerdictTip(
         bool pending, bool morphology, string text, string tip)
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -195,7 +195,7 @@ public sealed class TSounding
     }
 
     [Fact]
-    public void SoundingParadigmRead_TwoSlotsOneForm_JoinsThemIntoOneRow()
+    public void SoundingParadigmRead_TwoSlotsOneForm_JoinsIntoOneRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -232,7 +232,7 @@ public sealed class TSounding
     }
 
     [Fact]
-    public void SoundingScriptRead_StoredEntry_AnswersTheWholeBlockInTheDraftLanguage()
+    public void SoundingScriptRead_StoredEntry_AnswersLanguageBlock()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -270,7 +270,7 @@ public sealed class TSounding
     }
 
     [Fact]
-    public void SoundingFanqieRead_NoStoredEntry_OffersNoRebuildAndWaitsForNothing()
+    public void SoundingFanqieRead_NoStoredEntry_OffersNoRebuildOrWait()
     {
         CSounding sounding = new TEditorFixture(TInterfaceEditor.TEditorCreate(
                 TEngineFake.TEngineStubCreate<LDraftPort>(),
@@ -302,7 +302,7 @@ public sealed class TSounding
     }
 
     [Fact]
-    public void SoundingDiweiOpen_HeldDraft_OpensTheCellInTheDraftLanguage()
+    public void SoundingDiweiOpen_HeldDraft_OpensCellInDraftLanguage()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

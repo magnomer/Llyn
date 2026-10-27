@@ -22,7 +22,7 @@ public sealed class TEngineFellow
     }
 
     [Fact]
-    public void FellowFind_SharedOnTwoSources_WordsTheCountAfterTheClerkRaisedIt()
+    public void FellowFind_SharedOnTwoSources_ShowsCountAsText()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -37,7 +37,7 @@ public sealed class TEngineFellow
     }
 
     [Fact]
-    public void FellowFind_SortsBySharedThenName()
+    public void FellowFind_MixedSharedCounts_SortsBySharedThenName()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -68,7 +68,7 @@ public sealed class TEngineFellow
     }
 
     [Fact]
-    public void UnionRead_PaddedKeptName_ReadsItTrimmed()
+    public void UnionRead_PaddedKeptName_ReadsTrimmedName()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

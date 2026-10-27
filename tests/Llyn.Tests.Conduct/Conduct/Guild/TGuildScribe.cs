@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TGuildScribe
 {
     [Fact]
-    public void GuildAuthorSelect_UnsavedDraftKept_StaysOnTheAutograph()
+    public void GuildAuthorSelect_UnsavedDraftKept_StaysOnAutograph()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -73,7 +73,7 @@ public sealed class TGuildScribe
     }
 
     [Fact]
-    public void GuildScribeToggle_NoAuthorChosen_ClosesThePanel()
+    public void GuildScribeToggle_NoAuthorChosen_ClosesPanel()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -90,7 +90,7 @@ public sealed class TGuildScribe
     }
 
     [Fact]
-    public void GuildScribeRestore_StoredAuthor_OpensTheAutographOverIt()
+    public void GuildScribeRestore_StoredAuthor_OpensAutograph()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -110,7 +110,7 @@ public sealed class TGuildScribe
     }
 
     [Fact]
-    public void GuildSessionSave_FreshAuthor_RefusesBlankThenStoresNamed()
+    public void GuildSessionSave_FreshAuthor_RefusesBlankStoresNamed()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

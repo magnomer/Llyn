@@ -18,7 +18,7 @@ namespace Llyn.Tests;
 public sealed class TEditorCardWalk
 {
     [Fact]
-    public void EditorMeaningRefine_OpenedEntry_ListsTheCardStepsOfTheEditorWalk()
+    public void EditorMeaningRefine_OpenedEntry_ListsWalkCardSteps()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -65,7 +65,7 @@ public sealed class TEditorCardWalk
     }
 
     [Fact]
-    public void EditorWalk_CaretMovedWithoutADraftChange_RestoresTheStepCaret()
+    public void EditorWalk_CaretMoveOnly_RestoresStepCaret()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -87,7 +87,7 @@ public sealed class TEditorCardWalk
     }
 
     [Fact]
-    public void EditorIntroduce_EntryWithSteps_EnablesTheUndoButton()
+    public void EditorIntroduce_EntryWithSteps_EnablesUndoButton()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -113,7 +113,7 @@ public sealed class TEditorCardWalk
     }
 
     [Fact]
-    public void EditorWalkChanged_DraftChanged_ListsTheCardsOnTheGui()
+    public void EditorWalkChanged_DraftChanged_ListsCardsOnGui()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -142,7 +142,7 @@ public sealed class TEditorCardWalk
     }
 
     [Fact]
-    public void EditorWalkChanged_CaretMovedWithoutADraftChange_RebuildsTheCardLists()
+    public void EditorWalkChanged_CaretMoveOnly_RebuildsCardLists()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -174,7 +174,7 @@ public sealed class TEditorCardWalk
     }
 
     [Fact]
-    public void ContextCloseObserve_SettleStandingPastAFailedObserver_LeavesNoKeptText()
+    public void ContextCloseObserve_FailedObserver_LeavesNoKeptText()
     {
         string? kept = TCardWalkSettle((card, placard, box, _, _, _) =>
         {
@@ -187,7 +187,7 @@ public sealed class TEditorCardWalk
     }
 
     [Fact]
-    public void LabelCloseObserve_SettleStandingPastAFailedObserver_LeavesNoKeptText()
+    public void LabelCloseObserve_FailedObserver_LeavesNoKeptText()
     {
         string? kept = TCardWalkSettle((card, placard, box, _, _, _) =>
         {
@@ -204,7 +204,7 @@ public sealed class TEditorCardWalk
     [InlineData("PProffer", true)]
     [InlineData("PSlate", false)]
     [InlineData("PSlate", true)]
-    public void EditorCardIntroduce_ChipTextSet_ReachesTheGateUnlessItIsTheLastAnswer(string list, bool echo)
+    public void EditorCardIntroduce_ChipTextSet_ReachesGateUnlessEcho(string list, bool echo)
     {
         Assert.Equal("1", TCardWalkSettle((card, placard, box, surface, caret, engine) =>
         {

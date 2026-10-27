@@ -18,7 +18,7 @@ public sealed class TEtymology
     }
 
     [Fact]
-    public void EtymologyInsert_NoBox_AnswersOneEmptyTextRowOnTheHeadword()
+    public void EtymologyInsert_NoBox_AnswersOneEmptyRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -35,7 +35,7 @@ public sealed class TEtymology
     }
 
     [Fact]
-    public void EtymologyInsert_AboveBox_AnswersTheNewBoxOneLevelHigher()
+    public void EtymologyInsert_AboveBox_AnswersNewBoxOneLevelHigher()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -51,7 +51,7 @@ public sealed class TEtymology
     }
 
     [Fact]
-    public void EtymologyAdd_Box_AnswersACoSourceBeside()
+    public void EtymologyAdd_Box_AnswersCoSourceBeside()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -67,7 +67,7 @@ public sealed class TEtymology
     }
 
     [Fact]
-    public void EtymologyRemove_BoxWithSource_AnswersTheSourceInItsPlace()
+    public void EtymologyRemove_BoxWithSource_AnswersSourceInPlace()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -84,7 +84,7 @@ public sealed class TEtymology
     }
 
     [Fact]
-    public void EtymologyTextSet_TextBox_AnswersTheTypedTextOnceDeferredWorkLands()
+    public void EtymologyTextSet_TextBox_AnswersTypedTextAfterPersist()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -101,7 +101,7 @@ public sealed class TEtymology
     }
 
     [Fact]
-    public void EtymologyTextSet_LinkedBox_DropsTheLinkAtOnce()
+    public void EtymologyTextSet_LinkedBox_DropsLink()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -118,7 +118,7 @@ public sealed class TEtymology
     }
 
     [Fact]
-    public void EtymologyTargetSet_BoxWithoutSource_AnswersTheLinkedEntryWithNoUndo()
+    public void EtymologyTargetSet_BoxWithoutSource_LinksWithoutUndo()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -136,7 +136,7 @@ public sealed class TEtymology
     }
 
     [Fact]
-    public void EtymologyTargetSet_BoxWithSource_SetsTheSourceAsideWithUndo()
+    public void EtymologyTargetSet_BoxWithSource_KeepsSourceRestorable()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -153,7 +153,7 @@ public sealed class TEtymology
     }
 
     [Fact]
-    public void EtymologyTargetSet_BoxWithSource_SignalsOnceAfterUndoSettles()
+    public void EtymologyTargetSet_BoxWithSource_SignalsOnceSettled()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -173,7 +173,7 @@ public sealed class TEtymology
     }
 
     [Fact]
-    public void EtymologyTargetSet_EntryWithMap_AnswersItsBoxesBorrowedAboveTheLink()
+    public void EtymologyTargetSet_EntryWithMap_AnswersBorrowedBoxes()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -198,7 +198,7 @@ public sealed class TEtymology
     }
 
     [Fact]
-    public void EtymologyRestore_SetAsideSource_ReturnsTheTextAndTheSource()
+    public void EtymologyRestore_SetAsideSource_ReturnsTextAndSource()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -221,7 +221,7 @@ public sealed class TEtymology
     }
 
     [Fact]
-    public void EtymologyLanguageSet_CustomTongueName_AnswersTheTongue()
+    public void EtymologyLanguageSet_CustomTongueName_AnswersTongue()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -238,7 +238,7 @@ public sealed class TEtymology
     }
 
     [Fact]
-    public void EtymologyLanguageSet_FreeText_AnswersTheTrimmedText()
+    public void EtymologyLanguageSet_FreeText_AnswersTrimmedText()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -254,7 +254,7 @@ public sealed class TEtymology
     }
 
     [Fact]
-    public void EtymologyGlossSet_Box_AnswersTheGlossOnceDeferredWorkLands()
+    public void EtymologyGlossSet_Box_AnswersGlossAfterPersist()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -269,7 +269,7 @@ public sealed class TEtymology
     }
 
     [Fact]
-    public void EtymologyRelationSet_BuiltinThenNone_AnswersTheRelationThenNone()
+    public void EtymologyRelationSet_BuiltinThenNone_SetsThenClears()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

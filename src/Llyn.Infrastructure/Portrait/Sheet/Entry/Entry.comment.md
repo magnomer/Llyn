@@ -63,7 +63,8 @@ The stamp footer closes the body.
 It only styles the chips.
 Unit and freedom are outlined, with no fill, a border and the muted colour.
 The speeches are filled.
-Unit and freedom are named through `lookup`.
+Unit and freedom are named by the portrait label for the draft's unit and freedom.
+The chip text stands in when the label has no name.
 A draft with no chip writes no speech block.
 `LSheetFrequencyAppend` writes one pill with no heading, showing the tier name and the gauge's sources as its `title`.
 The band prints lit pips and dim ones.
@@ -328,12 +329,12 @@ An unknown role throws, so a new Core role cannot pass uncoloured.
 
 ## Stamp
 
-Commit: `8c403d1df768`
+Commit: `9377e657b395`
 - `LSheetBox.cs` `b32b74e843b28e08`
 - `LSheetCascade.cs` `c1ae5e1cfac739da`
 - `LSheetDeck.cs` `741fe4790f692d58`
 - `LSheetEnsign.cs` `27a403c779ddd2cc`
-- `LSheetEntry.cs` `e2969340032e811c`
+- `LSheetEntry.cs` `fcd5a8ea3fb051b9`
 - `LSheetHeader.cs` `51370f27bc7b37bc`
 - `LSheetInflection.cs` `e0cadba77db7f1cb`
 - `LSheetLineage.cs` `e1c16782c82b9d2c`

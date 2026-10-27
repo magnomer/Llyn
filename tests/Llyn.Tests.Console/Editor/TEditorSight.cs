@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TEditorSight
 {
     [Fact]
-    public void EditorDraw_LitHeadwordClosed_ParksTheCursorAtTheEndOfTheText()
+    public void EditorDraw_LitHeadwordClosed_ParksCursorAtTextEnd()
     {
         TEditorFrame.TEditorFrameRun(
             ["fire"],
@@ -36,7 +36,7 @@ public sealed class TEditorSight
     }
 
     [Fact]
-    public void EditorDraw_SideTallerThanItsRows_ShowsAPositionMarkAndTheHiddenCount()
+    public void EditorDraw_SideTallerThanRows_ShowsMarkAndHiddenCount()
     {
         TEditorFrame.TEditorFrameRun(
             [],
@@ -75,7 +75,7 @@ public sealed class TEditorSight
     [Theory]
     [InlineData("x", 200)]
     [InlineData("火", 100)]
-    public void EditorDraw_LitHeadwordClosedLongerThanTheSide_ParksTheCursorInsideTheSide(string glyph, int repeats)
+    public void EditorDraw_LongClosedHeadword_ParksCursorInsideSide(string glyph, int repeats)
     {
         string headword = string.Concat(Enumerable.Repeat(glyph, repeats));
         TEditorFrame.TEditorFrameRun(
@@ -95,7 +95,7 @@ public sealed class TEditorSight
     [Theory]
     [InlineData(1, false)]
     [InlineData(2, true)]
-    public void EditorDraw_RowsAgainstTheSide_ShowThumbAndHiddenCountOnlyPastTheFit(int cards, bool overflows)
+    public void EditorDraw_RowsAgainstSide_ShowsThumbAndCountPastFit(int cards, bool overflows)
     {
         TEditorFrame.TEditorFrameRun(
             [],
@@ -116,7 +116,7 @@ public sealed class TEditorSight
     }
 
     [Fact]
-    public void EditorDraw_UncertainCardTitle_ShowsTheUnknownMark()
+    public void EditorDraw_UncertainCardTitle_ShowsUnknownMark()
     {
         TLibrary.TLibraryRun(
             ["fire"],
@@ -137,7 +137,7 @@ public sealed class TEditorSight
     }
 
     [Fact]
-    public void EditorKeymap_SaveWithAnUnreadableValue_RefusesWithValueUnreadable()
+    public void EditorKeymap_UnreadableValueOnSave_RefusesAsUnreadable()
     {
         List<string> asked = [];
         TLibrary.TLibraryRun(
@@ -167,7 +167,7 @@ public sealed class TEditorSight
     }
 
     [Fact]
-    public void EditorObserve_RefusedCardAddAfterTypingTheHeadword_ShowsTheUpdateFailureEachTimeAndKeepsTheText()
+    public void EditorObserve_RefusedCardAddTwice_ShowsFailureKeepsText()
     {
         TLibrary.TLibraryRun(
             [],
@@ -218,7 +218,7 @@ public sealed class TEditorSight
     }
 
     [Fact]
-    public void EditorDraw_PasteFailingAfterTheFirstPart_KeepsTheUntriedPart()
+    public void EditorDraw_PasteFailingAfterFirstPart_KeepsUntriedPart()
     {
         bool failing = false;
         List<string> asked = [];

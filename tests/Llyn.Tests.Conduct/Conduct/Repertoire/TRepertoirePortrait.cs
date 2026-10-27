@@ -11,7 +11,7 @@ namespace Llyn.Tests;
 public sealed class TRepertoirePortrait
 {
     [Fact]
-    public async Task RepertoirePortraitExport_OccurrenceOnDisplay_WritesTheEntry()
+    public async Task RepertoirePortraitExport_OccurrenceShown_WritesEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

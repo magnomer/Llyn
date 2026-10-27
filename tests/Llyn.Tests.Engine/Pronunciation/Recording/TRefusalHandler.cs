@@ -7,11 +7,13 @@ namespace Llyn.Tests;
 internal sealed class TRefusalHandler : HttpMessageHandler
 {
     private readonly int _tRefusalHandlerRefusals;
+    private readonly int _tRefusalHandlerSeconds;
     private int _tRefusalHandlerCount;
 
-    internal TRefusalHandler(int refusals)
+    internal TRefusalHandler(int refusals, int seconds = 1)
     {
         _tRefusalHandlerRefusals = refusals;
+        _tRefusalHandlerSeconds = seconds;
     }
 
     internal int TRefusalHandlerCount => Volatile.Read(ref _tRefusalHandlerCount);
@@ -26,7 +28,7 @@ internal sealed class TRefusalHandler : HttpMessageHandler
             {
                 Content = new StringContent("Too many requests"),
             };
-            refused.Headers.RetryAfter = new RetryConditionHeaderValue(TimeSpan.FromSeconds(1));
+            refused.Headers.RetryAfter = new RetryConditionHeaderValue(TimeSpan.FromSeconds(_tRefusalHandlerSeconds));
             return Task.FromResult(refused);
         }
 

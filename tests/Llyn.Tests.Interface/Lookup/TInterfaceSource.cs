@@ -46,7 +46,7 @@ internal static class TInterfaceSource
 
     internal static Task<(IReadOnlyList<LReflexDraft> LReflexFound, bool LReflexReached)> TReflexSourceFind(
         HttpClient client, string pattern, string character) =>
-        new LReflexSourceHttp(client).LReflexSourceFind(
+        new LReflexSourceHttp(client, TimeSpan.FromMilliseconds(1)).LReflexSourceFind(
             new LReflexRule(
                 "Xiang", "https://example.test/wiki/{word}", new Dictionary<string, string>(), pattern),
             character,
@@ -54,14 +54,14 @@ internal static class TInterfaceSource
 
     internal static Task<(LShengfu? LShengfuFound, bool LShengfuReached)> TShengfuSourceFind(
         HttpClient client, string pattern, string character) =>
-        new LShengfuSourceHttp(client).LShengfuSourceFind(
+        new LShengfuSourceHttp(client, TimeSpan.FromMilliseconds(1)).LShengfuSourceFind(
             new LShengfuRule("https://example.test/series/{word}", pattern, new Dictionary<string, string>()),
             character,
             CancellationToken.None);
 
     internal static Task<(IReadOnlyList<LScriptImage> LScriptFound, bool LScriptReached)> TScriptSourceFind(
         HttpClient client, string pattern, string character) =>
-        new LScriptSourceHttp(client).LScriptSourceFind(
+        new LScriptSourceHttp(client, TimeSpan.FromMilliseconds(1)).LScriptSourceFind(
             new LScriptStyle(
                 "Seal", "https://example.test/seal/search", new Dictionary<string, string>(), pattern, 0, 0),
             character,
@@ -69,7 +69,7 @@ internal static class TInterfaceSource
 
     internal static Task<(IReadOnlyList<LFanqieRow> LFanqieFound, bool LFanqieReached)> TFanqieSourceFind(
         HttpClient client, string pattern, string character) =>
-        new LFanqieSourceHttp(client).LFanqieSourceFind(
+        new LFanqieSourceHttp(client, TimeSpan.FromMilliseconds(1)).LFanqieSourceFind(
             new LFanqieBook(
                 "Broad",
                 "https://example.test/wiki/{word}",

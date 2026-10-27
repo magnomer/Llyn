@@ -43,7 +43,7 @@ public sealed class TTimbre
     }
 
     [Fact]
-    public void TimbreContourRead_EmptyDesk_AsksThePackForNoLanguage()
+    public void TimbreContourRead_EmptyDesk_AsksPackForNoLanguage()
     {
         List<string> asked = [];
         CTimbre timbre = TTimbrePrepare(new()
@@ -66,7 +66,7 @@ public sealed class TTimbre
     }
 
     [Fact]
-    public void TimbreContourRead_LevelsOffScale_DropsThemAndTheTone()
+    public void TimbreContourRead_LevelsOffScale_DropsLevelsAndTone()
     {
         TEditorFixture editor = TTimbreEditorPrepare(new()
         {
@@ -101,7 +101,7 @@ public sealed class TTimbre
     }
 
     [Fact]
-    public void TimbreContourRead_TonalPack_AnswersEverySyllableReadyToDraw()
+    public void TimbreContourRead_TonalPack_AnswersReadySyllables()
     {
         using TLanguageFixture pack = TDisplayAccent.TDisplayPackCreate();
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -119,7 +119,7 @@ public sealed class TTimbre
     }
 
     [Fact]
-    public void TimbreContourRead_ToneMarksInAPackWithoutTone_AnswersNothing()
+    public void TimbreContourRead_TonelessPackToneMarks_AnswersNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -129,7 +129,7 @@ public sealed class TTimbre
     }
 
     [Fact]
-    public void TimbreContourRead_TonalPackWithoutToneMarks_AnswersNothing()
+    public void TimbreContourRead_TonalPackNoMarks_AnswersNothing()
     {
         using TLanguageFixture pack = TDisplayAccent.TDisplayPackCreate();
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -183,7 +183,7 @@ public sealed class TTimbre
     }
 
     [Fact]
-    public void TimbreAccentRead_RespellingHidden_PrintsThePhoneticText()
+    public void TimbreAccentRead_RespellingHidden_PrintsPhoneticText()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -202,7 +202,7 @@ public sealed class TTimbre
     }
 
     [Fact]
-    public void TimbreAccentRead_EmptyDesk_AnswersTheMuteSheet()
+    public void TimbreAccentRead_EmptyDesk_AnswersMuteSheet()
     {
         CTimbre timbre = TTimbrePrepare([]);
 
@@ -215,7 +215,7 @@ public sealed class TTimbre
     }
 
     [Fact]
-    public void TimbreAccentSet_RespellingShown_WritesTheRespelling()
+    public void TimbreAccentSet_RespellingShown_WritesRespelling()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -232,7 +232,7 @@ public sealed class TTimbre
     }
 
     [Fact]
-    public void TimbreAccentSet_RespellingHidden_WritesThePhoneticText()
+    public void TimbreAccentSet_RespellingHidden_WritesPhoneticText()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -247,7 +247,7 @@ public sealed class TTimbre
     }
 
     [Fact]
-    public void TimbreAccentSet_EmptyDesk_TakesNothingAndAnswersTheEmptyText()
+    public void TimbreAccentSet_EmptyDesk_AnswersEmptyText()
     {
         CTimbre timbre = TTimbrePrepare([]);
 
@@ -255,7 +255,7 @@ public sealed class TTimbre
     }
 
     [Fact]
-    public void TimbreAccentSet_WhileFilling_TakesNothingAndAnswersTheHeldText()
+    public void TimbreAccentSet_WhileFilling_AnswersHeldText()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -272,7 +272,7 @@ public sealed class TTimbre
     }
 
     [Fact]
-    public void TimbrePronunciationAdd_AccentRow_PlacesTheBlankRowBelowIt()
+    public void TimbrePronunciationAdd_AccentRow_PlacesBlankRowBelow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -287,7 +287,7 @@ public sealed class TTimbre
     }
 
     [Fact]
-    public void TimbrePronunciationAdd_PrimaryOrGoneRow_PlacesTheBlankRowFirst()
+    public void TimbrePronunciationAdd_PrimaryOrGone_PlacesBlankFirst()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -302,7 +302,7 @@ public sealed class TTimbre
     }
 
     [Fact]
-    public void TimbrePronunciationRemove_AccentRow_DropsIt()
+    public void TimbrePronunciationRemove_AccentRow_DropsRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -315,7 +315,7 @@ public sealed class TTimbre
     }
 
     [Fact]
-    public void TimbrePronunciationRemove_Primary_DropsThePrimary()
+    public void TimbrePronunciationRemove_Primary_DropsPrimary()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -327,7 +327,7 @@ public sealed class TTimbre
     }
 
     [Fact]
-    public void TimbreFontRead_HeldDraft_AnswersThePackFontOfEachRole()
+    public void TimbreFontRead_HeldDraft_AnswersPackFontPerRole()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

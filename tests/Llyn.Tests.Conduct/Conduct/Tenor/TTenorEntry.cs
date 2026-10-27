@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TTenorEntry
 {
     [Fact]
-    public void TenorEntryCreate_PaddedWordingNothingChosen_AsksTheWordingAndOpensTheTrimmedRegisterChosen()
+    public void TenorEntryCreate_PaddedWording_OpensTrimmedRegister()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -36,7 +36,7 @@ public sealed class TTenorEntry
     }
 
     [Fact]
-    public void TenorEntryCreate_BlankWording_ShowsTheFailureAndOpensNothing()
+    public void TenorEntryCreate_BlankWording_ShowsFailure()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -73,7 +73,7 @@ public sealed class TTenorEntry
     }
 
     [Fact]
-    public void TenorEntryCreate_ChangedFreshEntryStayed_AsksOnlyTheLeaveQuestion()
+    public void TenorEntryCreate_FreshStayed_AsksOnlyLeave()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -91,7 +91,7 @@ public sealed class TTenorEntry
     }
 
     [Fact]
-    public void TenorEntryCreate_ChangedFreshEntryDiscarded_AsksTheLeaveThenTheWording()
+    public void TenorEntryCreate_FreshDiscarded_AsksLeaveThenWording()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -108,7 +108,7 @@ public sealed class TTenorEntry
     }
 
     [Fact]
-    public void TenorEntryCreate_RegisterChosen_StartsAnEntryWithoutAskingTheWording()
+    public void TenorEntryCreate_RegisterChosen_StartsEntrySkipsWording()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -126,7 +126,7 @@ public sealed class TTenorEntry
     }
 
     [Fact]
-    public void TenorEntryCreate_RegisterChosen_OpensAnEntryCarryingItThatListsOnceStored()
+    public void TenorEntryCreate_RegisterChosen_OpensEntryWithRegister()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -152,7 +152,7 @@ public sealed class TTenorEntry
     }
 
     [Fact]
-    public void TenorEntryCreate_EntryShownNoRegisterChosen_OpensABlankEntry()
+    public void TenorEntryCreate_EntryShownNoRegister_OpensBlankEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -171,7 +171,7 @@ public sealed class TTenorEntry
     }
 
     [Fact]
-    public void TenorPanelEntryClose_FreshEntryHeld_DropsTheDraft()
+    public void TenorPanelEntryClose_FreshEntryHeld_DropsDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -188,7 +188,7 @@ public sealed class TTenorEntry
     }
 
     [Fact]
-    public void PanelRowSelect_EntryRow_OpensItWithoutAStation()
+    public void PanelRowSelect_EntryRow_OpensWithoutStation()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 public sealed class TCatalogNames
 {
     [Fact]
-    public void MarkupRead_DuplicateHeadwords_CarriesSeparateDisplayNames()
+    public void MarkupRead_DuplicateHeadwords_CarriesNumberedNames()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

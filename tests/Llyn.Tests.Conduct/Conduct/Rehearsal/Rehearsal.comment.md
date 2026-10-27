@@ -120,13 +120,13 @@ The media facts use the atelier over `LMediaOutlet` and files written under the 
 
 ## Stamp
 
-Commit: `c37ca1837ded`
+Commit: `9377e657b395`
 - `TAccession.cs` `d40ee8c17003c6d5`
 - `TCharter.cs` `2adc5e66a188e32a`
 - `TCue.cs` `91b47b58da593b72`
-- `TDeck.cs` `b02b31d063a669ba`
+- `TDeck.cs` `2687032a86f8f433`
 - `TDepot.cs` `2d0b88b32165a1cc`
-- `TScoreboard.cs` `4af87d8fb47e40bc`
+- `TScoreboard.cs` `ec94f8f68b24c49f`
 - `TStencil.cs` `c6a716c83630b270`
 - `TStudy.cs` `a62d0c2eff3627b5`
 - `TStudySound.cs` `7e0a6ca8b4a25e3d`

@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TCorpus
 {
     [Fact]
-    public void DiptychEntryCreate_ExampleChosen_OpensAQuotingEntryInTheEditor()
+    public void DiptychEntryCreate_ExampleChosen_OpensQuotingEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -33,7 +33,7 @@ public sealed class TCorpus
     }
 
     [Fact]
-    public void CorpusExampleOpen_StoredExample_ShowsItOnTheExcerpt()
+    public void CorpusExampleOpen_StoredExample_ShowsOnExcerpt()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -53,7 +53,7 @@ public sealed class TCorpus
     }
 
     [Fact]
-    public void CorpusExampleOpen_HiddenByTheQuery_DropsTheQueryAndShowsIt()
+    public void CorpusExampleOpen_HiddenByQuery_DropsQueryShowsExample()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -75,7 +75,7 @@ public sealed class TCorpus
     }
 
     [Fact]
-    public void DiptychParentSelect_NothingUnsaved_RecordsAndShowsTheExample()
+    public void DiptychParentSelect_NothingUnsaved_RecordsShowsExample()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -95,7 +95,7 @@ public sealed class TCorpus
     }
 
     [Fact]
-    public void DiptychChildSelect_QuotingEntry_ShowsItOnTheDisplay()
+    public void DiptychChildSelect_QuotingEntry_ShowsOnDisplay()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -116,7 +116,7 @@ public sealed class TCorpus
     }
 
     [Fact]
-    public void CorpusWorkspaceResonate_ChosenExample_ClearsBothListsAndTellsTheDriver()
+    public void CorpusWorkspaceResonate_ChosenExample_ClearsBothLists()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -136,7 +136,7 @@ public sealed class TCorpus
     }
 
     [Fact]
-    public void CorpusEntryResonate_QuotationOnDisplay_KeepsTheQuotationSide()
+    public void CorpusEntryResonate_QuotationOnDisplay_KeepsQuotation()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -155,7 +155,7 @@ public sealed class TCorpus
     }
 
     [Fact]
-    public void CorpusRowsRead_ChosenExampleNarrowedAway_ClearsBothLists()
+    public void CorpusRowsRead_ChosenNarrowedAway_ClearsBothLists()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -176,7 +176,7 @@ public sealed class TCorpus
     }
 
     [Fact]
-    public void DiptychEntryDelete_ChosenExampleConfirmed_DeletesItAndClearsTheExcerpt()
+    public void DiptychEntryDelete_ChosenExample_DeletesClearsExcerpt()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -47,6 +47,12 @@ Most are generic, so other packs can reuse them, and the inflection table shows 
 `Card.SenseAdd` labels the chip that adds one more Meaning link.
 `Card.SenseLink`, `Card.SenseLight` and `Card.SenseDetach` label the keys of the linked meanings row.
 `Card.Remove`, `Card.Move`, `Card.Position`, `Card.PositionSettle` and `Card.PositionClose` label the card header keys and the number badge.
+`Card.ImageCaption` and `Card.VideoCaption` caption the console rows of a card's pictures and videos.
+`Card.ImageChoose` and `Card.VideoChoose` title the file dialog that the Browse menu item opens.
+`Card.ImageRemove` and `Card.VideoRemove` label the Delete key and the Remove menu item of a media row.
+`Card.MenuOpen` labels the Enter key that opens that menu.
+`Card.VideoSlot` labels the arrow keys that light the location or the span.
+`Card.AdderLight` labels the arrow keys that light the image or the video adder.
 `Scheme.Hanja`, `Scheme.Romanization` and `Scheme.Phonetic` name the reading schemes of an entry.
 English repeats the scheme name, and Korean writes 한자, 로마자 표기 and 발음 표기.
 `Card.ChipAdd` labels the Enter key of a chip field with typed text and no lit row.
@@ -213,6 +219,6 @@ The person headers spell out person and number instead of the English abbreviati
 
 ## Stamp
 
-Commit: `c37ca1837ded`
-- `en.json` `411eb8e53aa24339`
-- `ko.json` `9d1933d304168bb0`
+Commit: `9377e657b395`
+- `en.json` `2722886d69a233bf`
+- `ko.json` `5ada76cf76489202`

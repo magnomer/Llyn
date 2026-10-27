@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TMentionSpan
 {
     [Fact]
-    public void MentionSpanResolve_MidWord_ReturnsTheWholeWord()
+    public void MentionSpanResolve_MidWord_ReturnsWholeWord()
     {
         Assert.Equal((8, 3), TInterfaceMentionSpan.TMentionSpanResolve("he said the word", 9, true));
         Assert.Equal((12, 4), TInterfaceMentionSpan.TMentionSpanResolve("he said the word", 15, true));
@@ -27,7 +27,7 @@ public sealed class TMentionSpan
     }
 
     [Fact]
-    public void MentionSpanResolve_SurrogatePairInWord_CountsItOnce()
+    public void MentionSpanResolve_SurrogatePairInWord_CountsOnce()
     {
         Assert.Equal((3, 3), TInterfaceMentionSpan.TMentionSpanResolve("go 𝒜bc now", 4, true));
         Assert.Equal((7, 3), TInterfaceMentionSpan.TMentionSpanResolve("go 𝒜bc now", 8, true));
@@ -42,7 +42,7 @@ public sealed class TMentionSpan
         Assert.Equal((7, 0), TInterfaceMentionSpan.TMentionSpanResolve("学校に行きます。", 7, false));
     }
     [Fact]
-    public void MentionSpanDivide_TwoMentionsAndGap_CutsFivePiecesInOrder()
+    public void MentionSpanDivide_TwoMentionsAndGap_CutsFivePieces()
     {
         IReadOnlyList<LMentionPiece> pieces = TInterfaceMentionSpan.TMentionSpanDivide(
             "he said the word.",
@@ -63,7 +63,7 @@ public sealed class TMentionSpan
     }
 
     [Fact]
-    public void MentionSpanDivide_SurrogatePairBeforeMention_CutsAtTheMention()
+    public void MentionSpanDivide_PairBeforeMention_CutsAtMention()
     {
         IReadOnlyList<LMentionPiece> pieces = TInterfaceMentionSpan.TMentionSpanDivide(
             "go 𝒜bc now",
@@ -92,7 +92,7 @@ public sealed class TMentionSpan
     }
 
     [Fact]
-    public void MentionOffsetRead_AcrossSurrogatePair_RoundTripsWithUnitRead()
+    public void MentionOffsetRead_AcrossSurrogatePair_RoundTrips()
     {
         const string text = "go 𝒜bc";
 
@@ -118,7 +118,7 @@ public sealed class TMentionSpan
     }
 
     [Fact]
-    public void MentionSpanRead_PaddedSelection_DropsTheOuterSpaces()
+    public void MentionSpanRead_PaddedSelection_DropsOuterSpaces()
     {
         LMentionDraft span = TInterfaceMentionSpan.TMentionSpanRead("he said the word", 2, 6);
 
@@ -136,13 +136,13 @@ public sealed class TMentionSpan
     }
 
     [Fact]
-    public void MentionSpanRead_OnlySpaces_ReadsAnEmptySpan()
+    public void MentionSpanRead_OnlySpaces_ReadsEmptySpan()
     {
         Assert.Equal(0, TInterfaceMentionSpan.TMentionSpanRead("he said the word", 2, 1).LMentionDraftLength);
     }
 
     [Fact]
-    public void ExampleDraftFind_SelectionInsideMention_ReturnsIt()
+    public void ExampleDraftFind_SelectionInsideMention_ReturnsMention()
     {
         LMentionDraft held = TInterfaceMentionSpan.TMentionDraftCreate(1, 4, 3, 7);
         LExampleDraft example = TInterfaceExample.TExampleDraftCreate("he said the word") with
@@ -158,7 +158,7 @@ public sealed class TMentionSpan
     }
 
     [Fact]
-    public void DraftExampleRead_HeldCardAndSentence_ReturnsTheSentenceExample()
+    public void DraftExampleRead_HeldSentence_ReturnsSentenceExample()
     {
         LDraft draft = TInterface.TDraftNestedCreate("editor", "kindle");
         LCardDraft card = draft.LDraftContent.LEntryDraftMeanings[0];
@@ -172,7 +172,7 @@ public sealed class TMentionSpan
     }
 
     [Fact]
-    public void DraftExampleRead_CollocationSharingMeaningIds_ReturnsTheCollocationExample()
+    public void DraftExampleRead_SharedMeaningIds_ReturnsCollocation()
     {
         LDraft held = TInterface.TDraftNestedCreate("editor", "kindle");
         LCardDraft meaning = held.LDraftContent.LEntryDraftMeanings[0];

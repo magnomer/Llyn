@@ -36,7 +36,7 @@ public sealed class TSituation
     }
 
     [Fact]
-    public void SituationPick_CollocationCard_LandsOnThatCard()
+    public void SituationPick_CollocationCard_LandsOnCard()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -84,7 +84,7 @@ public sealed class TSituation
     }
 
     [Fact]
-    public void SituationDelete_StillReferenced_RefusesAndDetachKeepsIt()
+    public void SituationDelete_StillReferenced_ThrowsAndDetachKeepsRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

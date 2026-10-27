@@ -12,7 +12,7 @@ namespace Llyn.Tests;
 public sealed class TInflectionSwitch
 {
     [Fact]
-    public void LedgerChanged_Opened_ListsTheInflectionPageAfterListing()
+    public void LedgerChanged_Opened_ListsInflectionPageAfterListing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -33,7 +33,7 @@ public sealed class TInflectionSwitch
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    public void InflectionRefine_StoredSetting_PaintsTheSwitch(bool stored)
+    public void InflectionRefine_StoredSetting_PaintsSwitch(bool stored)
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -60,7 +60,7 @@ public sealed class TInflectionSwitch
     }
 
     [Fact]
-    public void InflectionObserve_SwitchClicked_SavesTheRawSwitch()
+    public void InflectionObserve_SwitchClicked_SavesRawSwitch()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

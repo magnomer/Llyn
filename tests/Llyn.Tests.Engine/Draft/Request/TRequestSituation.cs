@@ -7,7 +7,7 @@ namespace Llyn.Tests;
 public sealed class TRequestSituation
 {
     [Fact]
-    public void RequestApply_ImageRemovalOnSituationDraft_DropsTheRow()
+    public void RequestApply_SituationImageRemoval_DropsRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -28,7 +28,7 @@ public sealed class TRequestSituation
     }
 
     [Fact]
-    public void RequestApply_ImageLocationOnSituationDraft_RewritesTheLocation()
+    public void RequestApply_SituationImageLocation_RewritesLocation()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -47,7 +47,7 @@ public sealed class TRequestSituation
     }
 
     [Fact]
-    public void RequestApply_VideoRemovalOnSituationDraft_RefusesUnknownRow()
+    public void RequestApply_SituationVideoRemoval_RefusesUnknownRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -63,7 +63,7 @@ public sealed class TRequestSituation
     }
 
     [Fact]
-    public void RequestApply_ImageAdditionOnEntryDraft_StillRoutesToTheCard()
+    public void RequestApply_EntryImageAddition_RoutesToCard()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -20,7 +20,7 @@ public sealed class TEngineFanqieFault
     private static readonly TimeSpan TFaultLimit = TimeSpan.FromSeconds(5);
 
     [Fact]
-    public async Task FanqieStart_SourceThrows_HandsTheFaultToTheOwnerOnce()
+    public async Task FanqieStart_SourceThrows_HandsFaultToOwnerOnce()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TFaultPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

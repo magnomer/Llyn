@@ -6,7 +6,7 @@ namespace Llyn.Tests;
 public sealed class TVaultLanguage
 {
     [Fact]
-    public void LanguageRead_ShippedPack_ReturnsItsSources()
+    public void LanguageRead_ShippedPack_ReturnsSources()
     {
         LLanguageVault languages = TInterface.TLanguageVaultCreate();
 

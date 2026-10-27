@@ -23,6 +23,6 @@ It runs on its own STA thread, catches any failure there, and asserts that none 
 
 ## Stamp
 
-Commit: `aae5349dbb94`
-- `TEtymologyItem.cs` `044bc3bbb086afa0`
-- `TLecternEtymology.cs` `ccd2e8d29f2a024a`
+Commit: `9377e657b395`
+- `TEtymologyItem.cs` `5fc53474746dc43d`
+- `TLecternEtymology.cs` `aec7681891fbf191`

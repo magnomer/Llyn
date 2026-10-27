@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TTranscriptionSheet
 {
     [Fact]
-    public void TranscriptionRead_TwoRows_MarksTheSchemeTheOtherRowHolds()
+    public void TranscriptionRead_TwoRows_MarksSchemeHeldByOtherRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -36,7 +36,7 @@ public sealed class TTranscriptionSheet
     }
 
     [Fact]
-    public void TranscriptionRead_LanguageWithoutSchemes_AnswersTheHiddenBlockWithItsRows()
+    public void TranscriptionRead_NoSchemeLanguage_HidesBlockWithRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -54,7 +54,7 @@ public sealed class TTranscriptionSheet
     }
 
     [Fact]
-    public void TranscriptionRead_EmptyDesk_AnswersTheHiddenBlockThatAddsNothing()
+    public void TranscriptionRead_EmptyDesk_AnswersHiddenEmptyBlock()
     {
         CTranscriptionSheet sheet = TTranscriptionEmptyPrepare().CTranscriptionRead();
 
@@ -64,7 +64,7 @@ public sealed class TTranscriptionSheet
     }
 
     [Fact]
-    public void TranscriptionAdd_OneSchemeFree_AddsABlankRowUnderItThenNoMore()
+    public void TranscriptionAdd_OneSchemeFree_AddsBlankRowThenNoMore()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -84,7 +84,7 @@ public sealed class TTranscriptionSheet
     }
 
     [Fact]
-    public void TranscriptionAdd_PressedRowOrNone_PlacesTheRowAfterItOrAtTheEnd()
+    public void TranscriptionAdd_PressedRowOrNone_PlacesAfterRowOrAtEnd()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -114,7 +114,7 @@ public sealed class TTranscriptionSheet
     }
 
     [Fact]
-    public void TranscriptionAdd_GlyphRowBeforePressedRow_PlacesTheRowRightAfterIt()
+    public void TranscriptionAdd_GlyphRowBeforePressedRow_PlacesAfter()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -141,7 +141,7 @@ public sealed class TTranscriptionSheet
     }
 
     [Fact]
-    public void TranscriptionSchemeSet_FreeSchemeOrTakenScheme_SwitchesTheRowOrRefusesIt()
+    public void TranscriptionSchemeSet_FreeOrTaken_SwitchesOrRefuses()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -167,7 +167,7 @@ public sealed class TTranscriptionSheet
     }
 
     [Fact]
-    public void TranscriptionRemove_HeldRow_DropsItAndFreesItsScheme()
+    public void TranscriptionRemove_HeldRow_DropsRowAndFreesScheme()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

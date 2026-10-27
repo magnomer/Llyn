@@ -12,7 +12,7 @@ public sealed class TAuditConvention
     }
 
     [Fact]
-    public void AuditConvention_SettingGenerations_MatchTheTooling()
+    public void AuditConvention_SettingGenerations_MatchTooling()
     {
         (string TSidecarName, int TSidecarGeneration)[] sidecars =
         [

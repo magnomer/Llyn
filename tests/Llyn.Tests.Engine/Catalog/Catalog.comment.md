@@ -113,14 +113,14 @@ Two titles differ only in case.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `TCatalogAuthor.cs` `fd2ed8c2191e228d`
-- `TCatalogEntry.cs` `74f343bbbae11fce`
-- `TCatalogExample.cs` `94deca5620241070`
+Commit: `9377e657b395`
+- `TCatalogAuthor.cs` `49e18bef9e0452bd`
+- `TCatalogEntry.cs` `15d9370512b222d2`
+- `TCatalogExample.cs` `a8035891d0e105aa`
 - `TCatalogFavorite.cs` `6b5f02fb775f637c`
-- `TCatalogNames.cs` `7662272cb1d99b92`
+- `TCatalogNames.cs` `10dbf1361a7503a6`
 - `TCatalogOrder.cs` `1f202c2a833f5fa0`
-- `TCatalogPronunciation.cs` `54805b3d15bbc78c`
-- `TCatalogReference.cs` `7792c9eb54f4676b`
+- `TCatalogPronunciation.cs` `51c3953ca4359d55`
+- `TCatalogReference.cs` `c518649a38a3c6bf`
 - `TCatalogSituation.cs` `2b1d3667214be533`
-- `TCatalogTag.cs` `6214bc8f06c478bb`
+- `TCatalogTag.cs` `26e755b2ce5a4a72`

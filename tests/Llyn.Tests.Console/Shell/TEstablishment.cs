@@ -51,7 +51,7 @@ public sealed class TEstablishment
     }
 
     [Fact]
-    public void EstablishmentDraw_CourierLine_FollowsSeparatorUntilCleared()
+    public void EstablishmentDraw_CourierLine_ShowsThenClears()
     {
         BEstablishment establishment = TEstablishmentFixture.TEstablishmentCreate();
         establishment.BEstablishmentObserve(TEstablishmentSaved);
@@ -65,7 +65,7 @@ public sealed class TEstablishment
     }
 
     [Fact]
-    public void EstablishmentDraw_LongCourierLine_CutsWithEllipsisAndKeepsRightEnd()
+    public void EstablishmentDraw_LongCourierLine_CutsKeepingRightEnd()
     {
         BEstablishment establishment = TEstablishmentFixture.TEstablishmentCreate();
         establishment.BEstablishmentObserve(
@@ -100,7 +100,7 @@ public sealed class TEstablishment
     }
 
     [Fact]
-    public void EstablishmentDraw_NoRoomAtAll_CountLeavesEllipsisVisible()
+    public void EstablishmentDraw_HugeAmount_LeavesEllipsisVisible()
     {
         BEstablishment establishment = TEstablishmentFixture.TEstablishmentCreate();
         establishment.BEstablishmentObserve(TEstablishmentSaved with { CEstablishmentAmount = new string('9', 50) });

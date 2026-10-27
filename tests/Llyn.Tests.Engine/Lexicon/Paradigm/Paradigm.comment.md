@@ -125,9 +125,9 @@ Only the root carries the cut, so a reader draws one hyphen between them.
 
 ## Stamp
 
-Commit: `c37ca1837ded`
+Commit: `9377e657b395`
 - `TInflectionBook.cs` `c7bde04a10d9255d`
 - `TInflectionDifference.cs` `9eb78ad0182b77b0`
-- `TParadigm.cs` `bc4fc56ee1db2d47`
+- `TParadigm.cs` `6e808618846386a9`
 - `TParadigmCell.cs` `9448ea67ee03840b`
 - `TParadigmPiece.cs` `1fe5571e95a62e29`

@@ -121,7 +121,8 @@ internal sealed class BEditor
             changed);
         _bEditorPlacard = new BPlacard(
             catalog,
-            (editor.CEditorCaret, editor.CEditorDesk.CDeskDraft.CDeskDraftPersist),
+            (editor.CEditorCaret, editor.CEditorDesk.CDeskDraft.CDeskDraftPersist, editor.CEditorImage,
+                editor.CEditorVideo),
             () => _bEditorField is null && _bEditorLit > BEditorHeadSpan && here() is CStep step
                 ? (_bEditorStack == 1, step)
                 : null,
@@ -149,17 +150,14 @@ internal sealed class BEditor
             {
                 _bEditorField = null;
                 _bEditorCard.BCardReset();
-                foreach (BInlet inlet in _bEditorPlacard.BPlacardInlet)
-                {
-                    inlet.BInletReset();
-                }
+                _bEditorPlacard.BPlacardFieldReset();
             }
 
             changed();
         };
         _bEditorSight = new BEditorSight(
             catalog, editor.CEditorDesk, title, (_bEditorSpeaker, _bEditorRegard, _bEditorMarker),
-            (_bEditorPlacard.BPlacardInlet, _bEditorCard));
+            (_bEditorPlacard, _bEditorCard));
         Func<ConsoleKey, BKeymapRow> digit = key => new(key, 0, side, "Grasp.Mark", BEditorEsteemObserve, () =>
             key - ConsoleKey.D0 <= editor.CEditorEsteem.CEsteemGraspHit.Count
                 ? esteem()
@@ -364,11 +362,7 @@ internal sealed class BEditor
         _bEditorField = null;
         _bEditorPlacard.BPlacardClose();
         _bEditorCard.BCardClose();
-        foreach (BInlet inlet in _bEditorPlacard.BPlacardInlet)
-        {
-            inlet.BInletReset();
-        }
-
+        _bEditorPlacard.BPlacardFieldReset();
         _ = _bEditorGate.CEditorEntrySave();
     }
 

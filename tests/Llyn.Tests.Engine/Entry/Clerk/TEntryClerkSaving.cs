@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 public sealed class TEntryClerkSaving
 {
     [Fact]
-    public void EntryClerkSave_HeadwordOnlyDraft_StoresEntryAndRecordsCreate()
+    public void EntryClerkSave_HeadwordOnlyDraft_StoresEntry()
     {
         LRig rig = TInterface.TRigClerkCreate(new TVaultFake());
         LEntryClerk clerk = TInterface.TEntryClerkCreate(rig);
@@ -27,7 +27,7 @@ public sealed class TEntryClerkSaving
     }
 
     [Fact]
-    public void EntryClerkSave_PronunciationDraft_WritesRowAndRecordsCreate()
+    public void EntryClerkSave_PronunciationDraft_WritesRow()
     {
         LRig rig = TInterface.TRigClerkCreate(new TVaultFake());
         LEntryClerk clerk = TInterface.TEntryClerkCreate(rig);

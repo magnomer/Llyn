@@ -31,7 +31,7 @@ public sealed class TLecternEtymology
         """;
 
     [Fact]
-    public void LecternEtymologyApply_LinkedBorrowedBox_PaintsTextLinkAndDashedTrace()
+    public void LecternEtymologyApply_BorrowedBox_PaintsLinkAndTrace()
     {
         CAncestor box = new(4, "4", 0, "aqua", "Latin", 9, true, "water", 2, false);
         CAncestorChoice relation = new(2, string.Empty, "Kin", true, false);

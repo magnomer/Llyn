@@ -6,7 +6,7 @@ namespace Llyn.Tests;
 public sealed class TCitationPage
 {
     [Fact]
-    public void ExamplePageRead_GlossAndSource_CarriesWhatTheExcerptShows()
+    public void ExamplePageRead_GlossAndSource_CarriesExcerptFields()
     {
         LReference source = TInterface.TReferenceCreate(
             7, "Field Notes", null, LReferenceKind.LReferenceKindUnspecified, null, null,
@@ -25,7 +25,7 @@ public sealed class TCitationPage
     }
 
     [Fact]
-    public void ExamplePageRead_UnwrittenAndUncited_FallsBackToTheUnwrittenWord()
+    public void ExamplePageRead_UnwrittenUncited_ShowsUnwrittenTitle()
     {
         LExample example =
             TInterfaceExample.TExampleCreate(3, "English", null, null, TInterfaceState.TStateAnchorRead(null));
@@ -38,7 +38,7 @@ public sealed class TCitationPage
     }
 
     [Fact]
-    public void ReferencePageRead_TwoCreditsAndAYear_CarriesWhatTheColophonShows()
+    public void ReferencePageRead_CreditsAndYear_CarriesColophon()
     {
         LReference source = TInterface.TReferenceCreate(
             7, "Field Notes", "1999", LReferenceKind.LReferenceKindBook, null, "https://notes.example",
@@ -55,7 +55,7 @@ public sealed class TCitationPage
     }
 
     [Fact]
-    public void ReferencePageRead_AuthorsUnknown_ShowsTheMarkAlone()
+    public void ReferencePageRead_AuthorsUnknown_ShowsMarkAlone()
     {
         LReference source = TInterface.TReferenceCreate(
             7, "Field Notes", null, LReferenceKind.LReferenceKindUnspecified, null, null,
@@ -70,7 +70,7 @@ public sealed class TCitationPage
     }
 
     [Fact]
-    public void SituationPageRead_KindAndDescription_CarriesTheDescriptionAsANote()
+    public void SituationPageRead_KindAndDescription_CarriesNote()
     {
         LSituation situation = TInterface.TSituationCreate(
             5, "at the hearth", "Sitting **close** to the fire.", "domestic");

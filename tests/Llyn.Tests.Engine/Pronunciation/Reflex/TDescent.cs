@@ -87,7 +87,7 @@ public sealed class TDescent
     }
 
     [Fact]
-    public void ReflexAnchorScan_MandarinLevelTone_EstimatesItsClass()
+    public void ReflexAnchorScan_MandarinLevelTone_EstimatesClass()
     {
         LFanqieRow level = TInterface.TFanqieRowCreate("疑", "模", "模", "一", "平", false)
             with { LFanqieRowId = 5, LFanqieRowClass = "1" };

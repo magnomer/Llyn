@@ -189,7 +189,7 @@ public sealed class TPathfinderMedium
     }
 
     [Fact]
-    public void PathfinderSave_TypedNameWithoutSuffixExisting_AsksReplace()
+    public void PathfinderSave_TypedNameWithoutSuffix_AsksReplace()
     {
         string? answer = TPathfinder.TPathfinderRun(
             ["entry.llx"],
@@ -219,7 +219,7 @@ public sealed class TPathfinderMedium
     }
 
     [Fact]
-    public void PathfinderSave_RightWithTypedFolder_ListsThatFolder()
+    public void PathfinderSave_RightWithTypedFolder_ListsFolder()
     {
         TPathfinder.TPathfinderRun(
             ["b\\", "b\\x.html", "y.html"],
@@ -312,7 +312,7 @@ public sealed class TPathfinderMedium
     }
 
     [Fact]
-    public void PathfinderMediumRemove_KnownSuffix_StripsIt()
+    public void PathfinderMediumRemove_KnownSuffix_StripsSuffix()
     {
         BSPathfinderMedium medium = new(
         [

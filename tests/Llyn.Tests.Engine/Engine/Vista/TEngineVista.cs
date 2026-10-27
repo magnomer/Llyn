@@ -70,7 +70,7 @@ public sealed class TEngineVista
     }
 
     [Fact]
-    public void EntryFind_NoEpithetHeld_CarriesAnEmptyEpithet()
+    public void EntryFind_NoEpithetHeld_CarriesEmptyEpithet()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

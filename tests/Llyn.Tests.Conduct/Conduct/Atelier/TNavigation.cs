@@ -24,7 +24,7 @@ public sealed class TNavigation
     }
 
     [Fact]
-    public void NavigationTabOpen_StoredTab_OpensItAgainAndRestoresItsEditor()
+    public void NavigationTabOpen_StoredTab_ReopensAndRestoresEditor()
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
@@ -41,7 +41,7 @@ public sealed class TNavigation
     }
 
     [Fact]
-    public void NavigationTabOpen_StoredTabNotAllowed_FallsBackToFirstTabAndHidesIt()
+    public void NavigationTabOpen_TabNotAllowed_FallsBackAndHidesTab()
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
@@ -59,7 +59,7 @@ public sealed class TNavigation
     }
 
     [Fact]
-    public void NavigationTabSelect_TabClick_AsksOnlyTheOpenTab()
+    public void NavigationTabSelect_TabClick_AsksOnlyOpenTab()
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
@@ -80,7 +80,7 @@ public sealed class TNavigation
     }
 
     [Fact]
-    public void NavigationTabSelect_OpenTabRefuses_KeepsTheOpenTab()
+    public void NavigationTabSelect_OpenTabRefuses_KeepsOpenTab()
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
@@ -98,7 +98,7 @@ public sealed class TNavigation
     }
 
     [Fact]
-    public void NavigationEntryOpen_Jump_AsksTheTargetFirstRecordsTheStationAndArrives()
+    public void NavigationEntryOpen_Jump_AsksTargetFirstThenArrives()
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
@@ -122,7 +122,7 @@ public sealed class TNavigation
     }
 
     [Fact]
-    public void NavigationEntryOpen_TargetRefusesOrHasNoPanel_KeepsTheOpenTab()
+    public void NavigationEntryOpen_RefusedOrUnregistered_KeepsOpenTab()
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
@@ -143,7 +143,7 @@ public sealed class TNavigation
     [Theory]
     [InlineData(false, true, 1)]
     [InlineData(true, false, 2)]
-    public void NavigationEntryOpen_LeaveDeclined_AsksFirstAndRecordsNothing(bool target, bool standing, int questions)
+    public void NavigationEntryOpen_LeaveDeclined_RecordsNothing(bool target, bool standing, int questions)
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
@@ -167,7 +167,7 @@ public sealed class TNavigation
     }
 
     [Fact]
-    public void NavigationStationUndo_RecordedStation_ArrivesThereAndParksTheStandingOne()
+    public void NavigationStationUndo_Recorded_ArrivesAndParksStanding()
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
@@ -194,7 +194,7 @@ public sealed class TNavigation
     }
 
     [Fact]
-    public void NavigationStationUndo_LandingTabDeclines_StaysAndKeepsTheTrail()
+    public void NavigationStationUndo_LandingDeclines_StaysKeepsTrail()
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
@@ -239,7 +239,7 @@ public sealed class TNavigation
     }
 
     [Fact]
-    public void NavigationStationAdd_OpenTab_RecordsItsStationAndPaintsNoTab()
+    public void NavigationStationAdd_OpenTab_RecordsStationPaintsNoTab()
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
@@ -257,7 +257,7 @@ public sealed class TNavigation
     }
 
     [Fact]
-    public void NavigationUsageOpen_QuotedOrNamedPlace_OpensTheExampleOrTheEntry()
+    public void NavigationUsageOpen_QuotedOrNamed_OpensExampleOrEntry()
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
@@ -273,7 +273,7 @@ public sealed class TNavigation
     }
 
     [Fact]
-    public void NavigationDiweiOpen_Jump_OpensTheYunjingTabAndHandsTheCellToItsArea()
+    public void NavigationDiweiOpen_Jump_OpensYunjingTabHandsCell()
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
@@ -294,7 +294,7 @@ public sealed class TNavigation
     }
 
     [Fact]
-    public void NavigationStemOpen_Jump_OpensTheXieshengTabAndHandsTheSeriesToItsArea()
+    public void NavigationStemOpen_Jump_OpensXieshengTabHandsSeries()
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());

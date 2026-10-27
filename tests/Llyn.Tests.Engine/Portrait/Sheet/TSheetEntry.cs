@@ -9,7 +9,7 @@ public sealed class TSheetEntry
     private const string TSheetEntryFlag = "data:image/png;base64,iVBORw0KGgo=";
 
     [Fact]
-    public void SheetEntryFormat_StoredEntry_PaintsTheSurfaceWithThePaneInsets()
+    public void SheetEntryFormat_StoredEntry_PaintsSurfaceWithInsets()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -26,7 +26,7 @@ public sealed class TSheetEntry
     }
 
     [Fact]
-    public void SheetEntryFormat_VarietyWithFlag_ShowsFlagInsteadOfLabel()
+    public void SheetEntryFormat_VarietyWithFlag_ShowsFlagNotLabel()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -119,7 +119,7 @@ public sealed class TSheetEntry
     }
 
     [Fact]
-    public void SheetEntryFormat_RankedFrequency_WritesOnePillWithSourceTitle()
+    public void SheetEntryFormat_RankedFrequency_WritesOnePill()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -171,7 +171,7 @@ public sealed class TSheetEntry
     }
 
     [Fact]
-    public void SheetEntryFormat_HaberView_ChecksShortAndMarksIrregularRun()
+    public void SheetEntryFormat_HaberView_MarksIrregularRun()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -309,7 +309,7 @@ public sealed class TSheetEntry
     }
 
     [Fact]
-    public void SheetEntryFormat_FlagRepeated_EmbedsItOnce()
+    public void SheetEntryFormat_FlagRepeated_EmbedsFlagOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -328,7 +328,7 @@ public sealed class TSheetEntry
     }
 
     [Fact]
-    public void SheetEntryFormat_PrintStyle_KeepsTheScreenSurface()
+    public void SheetEntryFormat_PrintStyle_KeepsScreenSurface()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

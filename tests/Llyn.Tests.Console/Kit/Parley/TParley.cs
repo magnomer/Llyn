@@ -110,7 +110,7 @@ public sealed class TParley
     }
 
     [Fact]
-    public async Task ParleyKeyObserve_RightPastDisabled_SkipsIt()
+    public async Task ParleyKeyObserve_RightPastDisabled_SkipsButton()
     {
         BSParley parley = new(
             new ABootstrap().BBlueprintParts["ASParley"],
@@ -134,7 +134,7 @@ public sealed class TParley
     }
 
     [Fact]
-    public void ParleyDraw_NoButtonsWithBody_DrawsTheBodyOverTheButtonRow()
+    public void ParleyDraw_NoButtonsWithBody_DrawsBodyOverButtonRow()
     {
         ABootstrap bootstrap = new();
         BSParley parley = new(
@@ -156,7 +156,7 @@ public sealed class TParley
     }
 
     [Fact]
-    public async Task ParleyKeyObserve_NoButtons_BodyTakesEnterAndEscapeAnswersSafe()
+    public async Task ParleyKeyObserve_NoButtons_BodyTakesEnterEscapeSafe()
     {
         List<CCatalogOrder> chosen = [];
         BSParley parley = new(
@@ -177,7 +177,7 @@ public sealed class TParley
     }
 
     [Fact]
-    public async Task ParleyKeyObserve_BodyWithButton_TabHandsTheKeysToTheButton()
+    public async Task ParleyKeyObserve_BodyWithButton_TabHandsKeysToButton()
     {
         List<CCatalogOrder> chosen = [];
         BSParley parley = new(

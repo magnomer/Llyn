@@ -101,7 +101,7 @@ public sealed class TInflectionLoader
     }
 
     [Fact]
-    public void InflectionPackRead_SpanishPack_LoadsDefaultAndCustomLayouts()
+    public void InflectionPackRead_Spanish_LoadsBothLayouts()
     {
         LInflectionLayout layout = TInterface.TLanguageLoad("Spanish").LLanguageInflection!.LInflectionBookLayout!;
         LInflectionLayout? custom = layout.LInflectionLayoutCustom;
@@ -135,7 +135,7 @@ public sealed class TInflectionLoader
     }
 
     [Fact]
-    public void InflectionPackRead_LayoutWithoutCustom_UsesDefaultSheets()
+    public void InflectionPackRead_NoCustomLayout_UsesDefaultSheets()
     {
         string json = TInflectionBookJson.Replace(
             "\"folds\": [ [\"á\", \"a\"] ]",

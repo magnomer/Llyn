@@ -187,7 +187,7 @@ public sealed class TWindowLayer
     }
 
     [Fact]
-    public void WindowKeyObserve_EnterOnAbout_ShowsVersionAfterMenuCloses()
+    public void WindowKeyObserve_EnterOnAbout_ShowsVersion()
     {
         TConsoleFake console = new() { TConsoleFakeTerminal = true };
         console.TConsoleFakeKeys.Add(new ConsoleKeyInfo('\r', ConsoleKey.Enter, false, false, false));

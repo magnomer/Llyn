@@ -7,7 +7,7 @@ namespace Llyn.Tests;
 public sealed class TFavorite
 {
     [Fact]
-    public void FavoriteSave_MarkedEntry_ReadsBackAndKeepsItsIdentity()
+    public void FavoriteSave_MarkedEntry_ReadsBackSameEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -25,7 +25,7 @@ public sealed class TFavorite
     }
 
     [Fact]
-    public void FavoriteSave_SameEntryTwice_KeepsOneMarkWithTheFirstStamp()
+    public void FavoriteSave_SameEntryTwice_KeepsFirstStamp()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -41,7 +41,7 @@ public sealed class TFavorite
     }
 
     [Fact]
-    public void FavoriteFind_TypedQuery_ReturnsOnlyTheMarkedEntriesCarryingIt()
+    public void FavoriteFind_TypedQuery_ReturnsMarkedMatchesOnly()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -59,7 +59,7 @@ public sealed class TFavorite
     }
 
     [Fact]
-    public void FavoriteDelete_UnmarkedEntry_LeavesTheEntryInThePlace()
+    public void FavoriteDelete_UnmarkedEntry_KeepsEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -75,7 +75,7 @@ public sealed class TFavorite
     }
 
     [Fact]
-    public void EntryDelete_MarkedEntry_DropsTheMarkWithIt()
+    public void EntryDelete_MarkedEntry_DropsMark()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -11,7 +11,7 @@ public sealed class TLecternMention
     private const string TLecternMentionFoot = "Word: ←→ move  Enter look up  Esc stop";
 
     [Fact]
-    public void LecternMentionStart_EnterOnExample_LightsTheFirstCharacterAndShowsTheWordFoot()
+    public void LecternMentionStart_EnterOnLine_LightsFirstCharacter()
     {
         TLecternCard.TLecternCardRun(
             static (engine, _) => TLecternMentionSave(engine, TLecternMentionSentence, []),
@@ -30,7 +30,7 @@ public sealed class TLecternMention
     }
 
     [Fact]
-    public void LecternMentionMove_ArrowsAndControlArrows_StepCharactersAndJumpToWordsAndPieces()
+    public void LecternMentionMove_ArrowsAndControlArrows_StepsAndJumps()
     {
         TLecternCard.TLecternCardRun(
             static (engine, _) =>
@@ -78,7 +78,7 @@ public sealed class TLecternMention
     }
 
     [Fact]
-    public void LecternMentionFind_SoleAnswer_OpensTheEntry()
+    public void LecternMentionFind_SoleAnswer_OpensEntry()
     {
         TLecternCard.TLecternCardRun(
             static (engine, _) =>
@@ -102,7 +102,7 @@ public sealed class TLecternMention
     }
 
     [Fact]
-    public void LecternMentionFind_StoredMention_OpensItsEntryWithoutAMenu()
+    public void LecternMentionFind_StoredMention_OpensEntryWithoutMenu()
     {
         TLecternCard.TLecternCardRun(
             static (engine, _) =>
@@ -127,7 +127,7 @@ public sealed class TLecternMention
     }
 
     [Fact]
-    public void LecternMentionFind_StoredSenseFarBelow_ScrollsToItsCardAndLightsTheHeader()
+    public void LecternMentionFind_StoredSenseFarBelow_ScrollsToSense()
     {
         TLecternCard.TLecternCardRun(
             static (engine, save) =>
@@ -163,7 +163,7 @@ public sealed class TLecternMention
     }
 
     [Fact]
-    public void LecternObserve_LeavingTheSentenceAndComingBack_DoesNotReturnTheCursor()
+    public void LecternObserve_LeaveSentenceAndReturn_DropsCursor()
     {
         const string other = "The sky is blue.";
         TLecternCard.TLecternCardRun(
@@ -185,7 +185,7 @@ public sealed class TLecternMention
     }
 
     [Fact]
-    public void LecternMentionReset_OtherEntryWithTheSameItemName_DropsTheCursor()
+    public void LecternMentionReset_OtherEntrySameItemName_DropsCursor()
     {
         long other = 0;
         TLecternCard.TLecternCardRun(
@@ -210,7 +210,7 @@ public sealed class TLecternMention
     }
 
     [Fact]
-    public void LecternMentionStop_Escape_LeavesTheCursorAndKeepsTheLineLit()
+    public void LecternMentionStop_Escape_LeavesCursorKeepsLineLit()
     {
         TLecternCard.TLecternCardRun(
             static (engine, _) => TLecternMentionSave(engine, TLecternMentionSentence, []),
@@ -232,7 +232,7 @@ public sealed class TLecternMention
     }
 
     [Fact]
-    public void LecternMentionMove_WrappedSentence_FollowsTheCursorOntoTheNextRowAndOpensTheWord()
+    public void LecternMentionMove_WrappedSentence_FollowsCursorDown()
     {
         const string text =
             "The cold water ran over the stones and the light was clear and the brook was wide and deep by the quarry";

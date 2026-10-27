@@ -63,8 +63,8 @@ The atelier's close of the entry list is covered by `TEntryList`.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `TYunjing.cs` `7c8e32081613fc0b`
-- `TYunjingDiwei.cs` `5f750ce24d2199f6`
-- `TYunjingPortrait.cs` `1a706ef195a9944b`
-- `TYunjingVista.cs` `e5517afec5967aa6`
+Commit: `9377e657b395`
+- `TYunjing.cs` `09516b16c471d83c`
+- `TYunjingDiwei.cs` `0ce664a0879b7dd9`
+- `TYunjingPortrait.cs` `1a8534aff8a36dc9`
+- `TYunjingVista.cs` `a54ce985a60a2ffd`

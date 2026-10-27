@@ -93,7 +93,7 @@ public sealed class TLanguageLoaderSource
     }
 
     [Fact]
-    public void LanguageLoad_FrequencyWithBandsAndOnce_ReadsEachSourceOwnScale()
+    public void LanguageLoad_FrequencyBandsAndOnce_ReadsSourceScales()
     {
         LLanguage language = TLanguageFixture.TLanguageFixtureLoad(
             """
@@ -159,7 +159,7 @@ public sealed class TLanguageLoaderSource
     }
 
     [Fact]
-    public void LanguageLoad_GlyphWithSources_ReadsNameLanguageAndSource()
+    public void LanguageLoad_GlyphSources_ReadsNameLanguageAndSource()
     {
         LLanguage language = TInterface.TLanguageLoad("Mandarin");
 

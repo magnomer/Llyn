@@ -5,7 +5,7 @@ namespace Llyn.Tests;
 public sealed class TLocalizationLoader
 {
     [Fact]
-    public void LocalizationLoaderRead_EmbeddedEnglish_YieldsTermsAndTexts()
+    public void LocalizationLoaderRead_English_YieldsTermsAndTexts()
     {
         IReadOnlyDictionary<string, string> pairs = TInterface.TLocalizationLoaderRead("en");
 

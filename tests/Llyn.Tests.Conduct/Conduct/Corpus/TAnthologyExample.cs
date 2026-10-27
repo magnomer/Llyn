@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TAnthologyExample
 {
     [Fact]
-    public void AnthologyTextSet_TypedTextAndPickedLanguage_WriteTheTranscriptAndAnswerTheTextHint()
+    public void AnthologyTextSet_TypedTextAndLanguage_WritesTranscript()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -29,7 +29,7 @@ public sealed class TAnthologyExample
     }
 
     [Fact]
-    public void AnthologyTextCheck_BlankField_MatchesAnEmptyText()
+    public void AnthologyTextCheck_BlankField_MatchesEmptyText()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -48,7 +48,7 @@ public sealed class TAnthologyExample
     }
 
     [Fact]
-    public void AnthologyExampleRead_SoundText_DividesExcerptAtItsMentions()
+    public void AnthologyExampleRead_SoundText_SplitsExcerptAtMentions()
     {
         LExample example = TInterfaceExample.TExampleCreate(
                 5, "English", TInterfaceState.TStateValueCreate("a cat"), null, TInterfaceState.TStateAnchorRead(9))
@@ -92,7 +92,7 @@ public sealed class TAnthologyExample
     }
 
     [Fact]
-    public void AnthologyExampleRead_UnwrittenText_WordsItUnwrittenAndMuted()
+    public void AnthologyExampleRead_UnwrittenText_WordsUnwrittenMuted()
     {
         LExample example = TInterfaceExample.TExampleCreate(
             5,

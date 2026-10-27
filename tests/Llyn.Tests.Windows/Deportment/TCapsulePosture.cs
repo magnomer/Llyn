@@ -64,7 +64,7 @@ public sealed class TCapsulePosture
     }
 
     [Fact]
-    public void PostureRootRefine_OtherFolder_ReadsThatFolderAndWritesThere()
+    public void PostureRootRefine_OtherFolder_ReadsAndWritesThere()
     {
         using TWorkspace first = TWorkspace.TWorkspaceCreate();
         using TWorkspace second = TWorkspace.TWorkspaceCreate();
@@ -82,7 +82,7 @@ public sealed class TCapsulePosture
     }
 
     [Fact]
-    public void PostureWindowDefer_AtOnceAndMinimized_KeepsOnlyTheShownWindow()
+    public void PostureWindowDefer_ShownThenMinimized_KeepsShownWindow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using QPosture posture = TInterfaceDeportment.TPostureCreate(workspace.TWorkspaceFolder);

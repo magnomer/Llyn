@@ -7,7 +7,7 @@ namespace Llyn.Tests;
 public sealed class TPortraitClerk
 {
     [Fact]
-    public async Task PortraitClerkOpen_EntryPage_HandsTheSheetToThePressToPrint()
+    public async Task PortraitClerkOpen_EntryPage_HandsSheetToPress()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LRig rig = workspace.TWorkspaceRigCreate();

@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TCaretTrail
 {
     [Fact]
-    public void TrailMove_StepPastEitherEnd_RefusesAndKeepsTheAnchor()
+    public void TrailMove_StepPastEitherEnd_RefusesKeepsAnchor()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -31,7 +31,7 @@ public sealed class TCaretTrail
     }
 
     [Fact]
-    public void TrailRead_AnchorRemoved_ReadsTheNextAnchor()
+    public void TrailRead_AnchorRemoved_ReadsNextAnchor()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -49,7 +49,7 @@ public sealed class TCaretTrail
     }
 
     [Fact]
-    public void TrailRead_RegisterAddedBeforeTheAnchor_KeepsTheAnchor()
+    public void TrailRead_RegisterAddedBeforeAnchor_KeepsAnchor()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

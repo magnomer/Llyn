@@ -140,14 +140,14 @@ A blank variety has no flag key, and its label key is `Variety.` alone.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `TContourLevel.cs` `a938f302f311162a`
-- `TFont.cs` `2c3265599a0372d1`
+Commit: `9377e657b395`
+- `TContourLevel.cs` `34c2d097b9b39233`
+- `TFont.cs` `1904874473cdbca2`
 - `TParadigmView.cs` `53c8052a3ab43fe5`
-- `TSounding.cs` `a0996c09a994c1b5`
-- `TSoundingAnchor.cs` `d81e0fda8c148553`
-- `TTimbre.cs` `1fb3116aba4185a5`
-- `TTimbreEnsign.cs` `9c646574e0124bc9`
-- `TTimbreGlyph.cs` `a41a15856f584fdc`
-- `TTranscriptionSheet.cs` `7260acae7db115f2`
-- `TVariety.cs` `5615f674d01dea69`
+- `TSounding.cs` `21345a10b8ffaba7`
+- `TSoundingAnchor.cs` `9b56f21a27c160bf`
+- `TTimbre.cs` `4b43c5271b1ebf02`
+- `TTimbreEnsign.cs` `59aeab6d16ea2bcd`
+- `TTimbreGlyph.cs` `f86c158e8021a132`
+- `TTranscriptionSheet.cs` `9f9332d696f8cb86`
+- `TVariety.cs` `fc5ae869ebbe62d1`

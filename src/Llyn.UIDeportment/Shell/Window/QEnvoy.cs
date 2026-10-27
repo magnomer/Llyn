@@ -156,7 +156,8 @@ internal sealed class QEnvoy : CEnvoy
         Microsoft.Win32.OpenFileDialog dialog = new()
         {
             Title = title,
-            Filter = string.Concat(title, "|", string.Join(";", suffixes.Select(static suffix => "*" + suffix))),
+            Filter = string.Concat(
+                title, "|", string.Join(";", suffixes.Select(static suffix => "*" + suffix)), "|All files|*.*"),
             CheckFileExists = true,
         };
 

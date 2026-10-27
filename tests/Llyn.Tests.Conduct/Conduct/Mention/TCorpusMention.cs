@@ -11,7 +11,7 @@ namespace Llyn.Tests;
 public sealed class TCorpusMention
 {
     [Fact]
-    public void ChipRead_EngineFails_ShowsTheFindFailureAndAnswersNoChips()
+    public void ChipRead_EngineFails_ShowsFindFailureAnswersNoChips()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -27,7 +27,7 @@ public sealed class TCorpusMention
     }
 
     [Fact]
-    public void MentionSenseRead_EngineFails_ShowsTheFindFailureAndAnswersNothing()
+    public void MentionSenseRead_EngineFails_ShowsFailureAnswersNull()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -46,7 +46,7 @@ public sealed class TCorpusMention
     }
 
     [Fact]
-    public void MentionSenseRead_ReadyRows_LeadsWithTheWholeEntryAndMapsEachRow()
+    public void MentionSenseRead_ReadyRows_LeadsWithWholeEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -84,7 +84,7 @@ public sealed class TCorpusMention
     }
 
     [Fact]
-    public void MentionSenseRead_EngineFails_HandsTheEnvoyTheReadyNotice()
+    public void MentionSenseRead_EngineFails_HandsEnvoyNotice()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -122,7 +122,7 @@ public sealed class TCorpusMention
     }
 
     [Fact]
-    public void CorpusMentionFind_UnsavedTranscriptKept_AsksAndOffersNothing()
+    public void CorpusMentionFind_UnsavedTranscriptKept_AsksOffersNone()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -139,7 +139,7 @@ public sealed class TCorpusMention
     }
 
     [Fact]
-    public void AnthologyMentionFind_EngineFails_ShowsTheFindFailureAndOffersNothing()
+    public void AnthologyMentionFind_EngineFails_ShowsFindFailure()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -155,7 +155,7 @@ public sealed class TCorpusMention
     }
 
     [Fact]
-    public void AnthologyMentionFind_OneEntry_OpensItAndOffersAnEmptyMenu()
+    public void AnthologyMentionFind_OneEntry_OpensEntryOffersNoMenu()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -173,7 +173,7 @@ public sealed class TCorpusMention
     }
 
     [Fact]
-    public void AnthologyMentionFind_ManyEntries_OffersThemUnderTheFoundWord()
+    public void AnthologyMentionFind_ManyEntries_OffersUnderFoundWord()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -46,7 +46,7 @@ public sealed class TCapsulePathfinder
     }
 
     [Fact]
-    public void CapsulePathfinder_FileAccepted_NextStartsInItsFolder()
+    public void CapsulePathfinder_FileAccepted_NextStartsInFolder()
     {
         string parent = Directory.CreateTempSubdirectory("llyn-capsule-").FullName;
         try

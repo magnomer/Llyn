@@ -12,7 +12,7 @@ namespace Llyn.Tests;
 public sealed class TEngineParadigm
 {
     [Fact]
-    public void ParadigmShow_DeclaredPart_ReturnsItsSlots()
+    public void ParadigmShow_DeclaredPart_ReturnsUnspecifiedSlots()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

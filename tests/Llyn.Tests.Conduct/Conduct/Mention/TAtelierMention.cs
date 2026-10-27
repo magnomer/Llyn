@@ -44,7 +44,7 @@ public sealed class TAtelierMention
     [InlineData(3, 0)]
     [InlineData(4, 1)]
     [InlineData(5, 3)]
-    public void MentionUnitRead_OffsetInsidePiece_AnswersUnitFromPieceStart(int offset, int expected)
+    public void MentionUnitRead_OffsetInsidePiece_AnswersPieceUnit(int offset, int expected)
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
         using CAtelier atelier = TAtelierMentionCreate(engine);
@@ -85,7 +85,7 @@ public sealed class TAtelierMention
     [Theory]
     [InlineData(7, true)]
     [InlineData(0, false)]
-    public void MentionResultOpen_StoredMention_OpensItsEntryAndRaisesItsSense(long sense, bool raised)
+    public void MentionResultOpen_StoredMention_OpensEntryRaisesSense(long sense, bool raised)
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
         using CAtelier atelier = TAtelierMentionCreate(engine);
@@ -107,7 +107,7 @@ public sealed class TAtelierMention
     [Theory]
     [InlineData(0, true)]
     [InlineData(40, false)]
-    public void MentionResultOpen_StoredMentionUnlinkedOrLeaveDeclined_OpensNothingAndRaisesNoSense(
+    public void MentionResultOpen_UnlinkedOrLeaveDeclined_OpensNothing(
         long entry, bool leave)
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
@@ -128,7 +128,7 @@ public sealed class TAtelierMention
     }
 
     [Fact]
-    public void MentionResultOpen_SingleCandidate_OpensItAtOnce()
+    public void MentionResultOpen_SingleCandidate_OpensAtOnce()
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
         using CAtelier atelier = TAtelierMentionCreate(engine);
@@ -147,7 +147,7 @@ public sealed class TAtelierMention
     [Theory]
     [InlineData(2)]
     [InlineData(0)]
-    public void MentionResultOpen_ManyOrNoCandidates_OpensNothingAndOffersTheMany(int count)
+    public void MentionResultOpen_ManyOrNoCandidates_OpensNothing(int count)
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
         using CAtelier atelier = TAtelierMentionCreate(engine);
@@ -166,7 +166,7 @@ public sealed class TAtelierMention
     }
 
     [Fact]
-    public void MentionResultSingle_OneTarget_NamesItsId()
+    public void MentionResultSingle_OneTarget_NamesId()
     {
         CMentionResult single = new(0, null, [new CTranslationTarget(8, "wolf", "English")]);
         CMentionResult many = new(

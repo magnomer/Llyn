@@ -26,7 +26,7 @@ public sealed class TRequestGloss
     }
 
     [Fact]
-    public void RequestApply_GlossTextAndLanguage_ChangesOnlyThatRow()
+    public void RequestApply_GlossTextAndLanguage_ChangesOnlyOneRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -49,7 +49,7 @@ public sealed class TRequestGloss
     }
 
     [Fact]
-    public void RequestApply_GlossRemoval_DropsTheRow()
+    public void RequestApply_GlossRemoval_DropsRowAndThrowsOnRepeat()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -92,7 +92,7 @@ public sealed class TRequestGloss
     }
 
     [Fact]
-    public void DraftCommit_SharedExampleGlossChanged_UpdatesInPlaceWithoutForking()
+    public void DraftCommit_SharedGlossChanged_UpdatesInPlace()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -121,7 +121,7 @@ public sealed class TRequestGloss
     }
 
     [Fact]
-    public void ExampleCommit_CorpusGlosses_HoldsRowsOnTheExample()
+    public void ExampleCommit_CorpusGlosses_StoresEditedGloss()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();

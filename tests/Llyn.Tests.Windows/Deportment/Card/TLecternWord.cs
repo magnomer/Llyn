@@ -18,7 +18,7 @@ namespace Llyn.Tests;
 public sealed class TLecternWord
 {
     [Fact]
-    public void LecternWordStart_EnterOnExample_DrawsTheCursorOnTheFirstCharacter()
+    public void LecternWordStart_EnterOnExample_DrawsCursorAtStart()
     {
         TLecternWordRun((line, route, noticed) =>
         {
@@ -32,7 +32,7 @@ public sealed class TLecternWord
     }
 
     [Fact]
-    public void LecternWordObserve_EnterAfterMoving_LooksUpTheWordUnderTheCursor()
+    public void LecternWordObserve_EnterAfterMoving_LooksUpCursorWord()
     {
         TLecternWordRun((line, route, noticed) =>
         {
@@ -51,7 +51,7 @@ public sealed class TLecternWord
     }
 
     [Fact]
-    public void LecternWordStop_Escape_ClearsTheCursorAndEnterStartsAgain()
+    public void LecternWordStop_Escape_ClearsCursorAndEnterStartsAgain()
     {
         TLecternWordRun((line, route, noticed) =>
         {
@@ -68,7 +68,7 @@ public sealed class TLecternWord
     }
 
     [Fact]
-    public void LeafCardRefine_UnstoredChip_DisablesItAndKeepsTheStoredOne()
+    public void LeafCardRefine_UnstoredChip_DisablesAndKeepsStoredOne()
     {
         TCardHinge.TCardHingeRun(() =>
         {

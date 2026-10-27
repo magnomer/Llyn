@@ -82,9 +82,9 @@ An accepted file stores its parent folder, and the next prompt starts there.
 
 ## Stamp
 
-Commit: `c37ca1837ded`
-- `TCapsulePathfinder.cs` `3dea711812f94ba1`
+Commit: `9377e657b395`
+- `TCapsulePathfinder.cs` `8df42bcf0f0f3773`
 - `TDrive.cs` `e779c2a630a70602`
 - `TPathfinder.cs` `9ca54c28e8a5109e`
-- `TPathfinderMedium.cs` `7c4bccc9a851f992`
-- `TPathfinderPath.cs` `5d29d55b63342f9c`
+- `TPathfinderMedium.cs` `71af299a1e8b1f3f`
+- `TPathfinderPath.cs` `11a66d40beacd490`

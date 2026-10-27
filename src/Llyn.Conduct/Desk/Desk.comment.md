@@ -13,6 +13,7 @@ The only question it asks is whether an unreadable draft may be swept, through `
 It shows its own load and save failures through the same envoy, so no driver can lose one.
 The chronicle shows the hold failures through that envoy too.
 Only the controllers that own a desk build one, so the port never reaches a driver.
+`CDeskEnvoy` hands the same envoy to the picture and video gates, which ask it for a file to browse.
 
 `CDeskStarted` fires after the vigil has put the driver's observers on the new tenure.
 `CDeskStateChanged` fires when the tenure came, went or changed, so the store and chronicle buttons are read again.
@@ -309,8 +310,8 @@ The subject maps through `CCatalog.LCatalogSubjectRead`, so a subject it does no
 
 ## Stamp
 
-Commit: `c05429890cec`
-- `CDesk.cs` `3a9269fbfc672dda`
+Commit: `9377e657b395`
+- `CDesk.cs` `929eadba5b166784`
 - `CDeskChronicle.cs` `c454bfb840618d9b`
 - `CDeskDraft.cs` `a573193758b55776`
 - `CEditor.cs` `443b08b53ed18df8`

@@ -22,7 +22,7 @@ public sealed class TCatalogPronunciation
     }
 
     [Fact]
-    public void PronunciationFind_ReverseOrder_ReturnsReverseAlphabetical()
+    public void PronunciationFind_ReverseOrder_ReturnsDescending()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -53,7 +53,7 @@ public sealed class TCatalogPronunciation
     }
 
     [Fact]
-    public void PronunciationFind_PendingOrder_ReturnsOnlyUnwrittenSounds()
+    public void PronunciationFind_PendingOrder_ReturnsUnwrittenOnly()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -97,7 +97,7 @@ public sealed class TCatalogPronunciation
     }
 
     [Fact]
-    public void PronunciationText_NoSound_IsAnEmptyPairOfBrackets()
+    public void PronunciationText_NoSound_IsEmptyBracketPair()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -110,7 +110,7 @@ public sealed class TCatalogPronunciation
     }
 
     [Fact]
-    public void PronunciationFind_HeadwordOrder_LeavesOutUnwrittenSounds()
+    public void PronunciationFind_HeadwordOrder_OmitsUnwrittenSounds()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -120,7 +120,7 @@ public sealed class TCatalogPronunciation
     }
 
     [Fact]
-    public void PronunciationFind_RespellingShown_ReturnsTheRespellingInsteadOfTheIpa()
+    public void PronunciationFind_RespellingShown_ReturnsRespelling()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -141,7 +141,7 @@ public sealed class TCatalogPronunciation
 
 
     [Fact]
-    public void PronunciationSort_EqualSounds_ListsByLanguageHeadwordThenId()
+    public void PronunciationSort_EqualSounds_ListsByLanguageHeadwordId()
     {
         IReadOnlyList<LCatalogPronunciation> stored =
         [

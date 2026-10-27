@@ -44,7 +44,7 @@ A failing read at start is recorded once and raised once as `LPostureReadFailed`
 
 ## Stamp
 
-Commit: `c37ca1837ded`
-- `TPosture.cs` `cf80667ac6009d03`
+Commit: `9377e657b395`
+- `TPosture.cs` `95ae9071c7618a8d`
 - `TPostureFile.cs` `b37706d39b7c30e7`
-- `TPostureWorkspace.cs` `6904557928566577`
+- `TPostureWorkspace.cs` `40982c5fa03eb915`

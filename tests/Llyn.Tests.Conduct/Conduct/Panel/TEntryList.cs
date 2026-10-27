@@ -12,7 +12,7 @@ namespace Llyn.Tests;
 public sealed class TEntryList
 {
     [Fact]
-    public async Task EntryListLoad_FetchedSeries_AnswersItsEntryAfterTheFill()
+    public async Task EntryListLoad_FetchedSeries_ReturnsEntryAfterFill()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TXiesheng.TXieshengPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -31,7 +31,7 @@ public sealed class TEntryList
     }
 
     [Fact]
-    public async Task EntryListExport_ChosenEntry_WritesItAndNothingBefore()
+    public async Task EntryListExport_ChosenEntry_WritesOnlyChosenEntry()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TXiesheng.TXieshengPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -58,7 +58,7 @@ public sealed class TEntryList
     }
 
     [Fact]
-    public async Task EntryListPanelRowOpen_ScribeOn_OpensTheEntryInTheEditorUntilClosed()
+    public async Task EntryListPanelRowOpen_ScribeOn_EditsEntryUntilClosed()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TXiesheng.TXieshengPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -80,7 +80,7 @@ public sealed class TEntryList
     }
 
     [Fact]
-    public async Task EntryListClose_KindredExitGate_ClosesTheEditorAndStopsTheRecording()
+    public async Task EntryListClose_KindredExitGate_StopsEditorRecording()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TXiesheng.TXieshengPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -108,7 +108,7 @@ public sealed class TEntryList
     }
 
     [Fact]
-    public void EntryListClose_XiaoyunExitGate_ClosesTheEditorAndStopsTheRecording()
+    public void EntryListClose_XiaoyunExitGate_StopsEditorRecording()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TYunjing.TYunjingPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

@@ -38,7 +38,7 @@ public sealed class TStemArchive
     }
 
     [Fact]
-    public void StemApply_SeriesGone_DropsTheRowNothingLinksTo()
+    public void StemApply_SeriesGone_DropsOrphanStem()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TStemArchivePack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -105,7 +105,7 @@ public sealed class TStemArchive
     }
 
     [Fact]
-    public void ShengfuSave_Refetch_DropsStaleLinksAndKeepsTheRest()
+    public void ShengfuSave_Refetch_DropsStaleLinksAndKeepsRest()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TStemArchivePack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

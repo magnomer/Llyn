@@ -85,7 +85,7 @@ public sealed class TImprint
     }
 
     [Fact]
-    public void ImprintOpen_StoredSource_ShowsItsFieldsThroughTheReferenceNotice()
+    public void ImprintOpen_StoredSource_ShowsFieldsInNotice()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -106,7 +106,7 @@ public sealed class TImprint
     }
 
     [Fact]
-    public void ImprintKindRead_Menu_OffersEachKindWithItsTagAndKeyInMenuOrder()
+    public void ImprintKindRead_Menu_OffersKindsInMenuOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -126,13 +126,13 @@ public sealed class TImprint
     }
 
     [Fact]
-    public void ImprintKindRead_NoRows_AnswersAnEmptyMenu()
+    public void ImprintKindRead_NoRows_AnswersEmptyMenu()
     {
         Assert.Empty(TInterfaceConductPanel.TImprintKindRead([]));
     }
 
     [Fact]
-    public void ImprintKindRead_RepeatedTags_KeepsTheFirstKindOfEach()
+    public void ImprintKindRead_RepeatedTags_KeepsFirstKindOfEach()
     {
         IReadOnlyList<CReferenceKind> menu = TInterfaceConductPanel.TImprintKindRead(
         [
@@ -153,7 +153,7 @@ public sealed class TImprint
     }
 
     [Fact]
-    public void ImprintEmptyRead_NoDraft_ReadsTheBlankSource()
+    public void ImprintEmptyRead_NoDraft_ReadsBlankSource()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -171,7 +171,7 @@ public sealed class TImprint
     }
 
     [Fact]
-    public void ImprintCancel_HeldDraft_DropsTheDraftAndClosesTheByline()
+    public void ImprintCancel_HeldDraft_DropsDraftAndClosesByline()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

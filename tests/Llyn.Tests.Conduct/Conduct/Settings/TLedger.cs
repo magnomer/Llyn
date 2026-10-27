@@ -27,7 +27,7 @@ public sealed class TLedger
     }
 
     [Fact]
-    public void LedgerFind_SwitchLabel_ReadsOnlyItsPage()
+    public void LedgerFind_SwitchLabel_ReadsOnlyMatchingPage()
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
@@ -50,7 +50,7 @@ public sealed class TLedger
     }
 
     [Fact]
-    public void LedgerChanged_AfterFind_KeepsTheCatalogNarrowed()
+    public void LedgerChanged_AfterFind_KeepsCatalogNarrowed()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -70,7 +70,7 @@ public sealed class TLedger
     [Theory]
     [InlineData(true, "Layout.LinkedMeta")]
     [InlineData(false, "Layout.FreeMeta")]
-    public void LedgerMetaRead_LinkedFlag_WordsTheLayoutPage(bool linked, string key)
+    public void LedgerMetaRead_LinkedFlag_WordsLayoutPage(bool linked, string key)
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
@@ -99,7 +99,7 @@ public sealed class TLedger
     }
 
     [Fact]
-    public void LedgerChanged_WebPage_FormatsTheOnlineTallyOutOfTwo()
+    public void LedgerChanged_WebPage_FormatsOnlineTallyOutOfTwo()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -116,7 +116,7 @@ public sealed class TLedger
     }
 
     [Fact]
-    public void LedgerChanged_LayoutPage_LeavesTheSummaryToTheDriver()
+    public void LedgerChanged_LayoutPage_LeavesSummaryToDriver()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -144,7 +144,7 @@ public sealed class TLedger
     }
 
     [Fact]
-    public void LedgerNotebookSave_PaddedTitle_AnswersAndShowsTheTrimmedTitle()
+    public void LedgerNotebookSave_PaddedTitle_AnswersTrimmedTitle()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -160,7 +160,7 @@ public sealed class TLedger
     }
 
     [Fact]
-    public void LedgerDepotSave_RelativeFolder_ShowsTheStoredFolder()
+    public void LedgerDepotSave_RelativeFolder_ShowsStoredFolder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -225,7 +225,7 @@ public sealed class TLedger
     }
 
     [Fact]
-    public void LedgerChanged_FakePort_ReadsTheNormalisedLanguageAndOnlineCount()
+    public void LedgerChanged_FakePort_ReadsNormalisedLanguage()
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TInterfaceConduct.TLedgerPortCreate([]));
@@ -240,7 +240,7 @@ public sealed class TLedger
     }
 
     [Fact]
-    public void LedgerChanged_ScannedLanguage_ReadsItsNativeNameAndAnUnscannedOneItsCode()
+    public void LedgerChanged_ScannedLanguage_ReadsNativeNameOrCode()
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TInterfaceConduct.TLedgerPortCreate([]));
@@ -276,7 +276,7 @@ public sealed class TLedger
     }
 
     [Fact]
-    public void LedgerAnalysisSave_Off_SavesAndRepaintsTheInflectionBox()
+    public void LedgerAnalysisSave_Off_SavesAndRepaintsInflectionBox()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

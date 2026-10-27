@@ -7,7 +7,7 @@ namespace Llyn.Tests;
 public sealed class TPortraitSheet
 {
     [Fact]
-    public void SheetFormat_OpenedPage_PrintsTheFoldedRowOpen()
+    public void SheetFormat_OpenedPage_PrintsFoldedRowOpen()
     {
         LPortraitPage opened = TInterface.TPortraitPageOpen(TPortraitSample.TPortraitRowCreate());
 
@@ -36,7 +36,7 @@ public sealed class TPortraitSheet
     }
 
     [Fact]
-    public void SheetFormat_FullPortrait_CarriesEveryFieldTheDisplayShows()
+    public void SheetFormat_FullPortrait_CarriesDisplayedFields()
     {
         string page = TInterface.TSheetFormat(
             TPortraitSample.TPortraitSampleCreate(), TInterface.TThemeLoad());
@@ -70,7 +70,7 @@ public sealed class TPortraitSheet
     }
 
     [Fact]
-    public void SheetFormat_ThemedPortrait_CarriesTheDisplayPalette()
+    public void SheetFormat_ThemedPortrait_CarriesDisplayPalette()
     {
         LTheme theme = TInterface.TThemeLoad();
         string page = TInterface.TSheetFormat(TPortraitSample.TPortraitSampleCreate(), theme);
@@ -91,7 +91,7 @@ public sealed class TPortraitSheet
     }
 
     [Fact]
-    public void SheetFormat_YouTubeVideo_ShowsThePosterFrameAndTheLink()
+    public void SheetFormat_YouTubeVideo_ShowsPosterFrameAndLink()
     {
         string page = TInterface.TSheetFormat(
             TPortraitSample.TPortraitSampleCreate(), TInterface.TThemeLoad());

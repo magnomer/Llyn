@@ -11,7 +11,7 @@ namespace Llyn.Tests;
 public sealed class TExample
 {
     [Fact]
-    public void ExampleRead_FortyThousandExamples_ReadsEveryGlossAndMention()
+    public void ExampleRead_FortyThousandExamples_ReadsGlossAndMention()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LExampleArchive examples = TInterface.TExampleArchiveCreate(workspace.TWorkspaceDatabase);
@@ -176,7 +176,7 @@ public sealed class TExample
     }
 
     [Fact]
-    public void EntryUpdate_SharedExampleEdited_LeavesOtherCardsSentence()
+    public void EntryUpdate_SharedExampleEdited_KeepsOtherSentence()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

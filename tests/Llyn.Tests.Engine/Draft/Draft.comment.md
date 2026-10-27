@@ -175,14 +175,14 @@ The card carries a negative id from the test counter, not one the engine minted.
 
 ## Stamp
 
-Commit: `8c403d1df768`
-- `TClaim.cs` `3717bbbfffe16b67`
-- `TClaimClerk.cs` `79fcef1e200d2842`
-- `TDraftArchive.cs` `adeba8a2994531ab`
-- `TDraftClerk.cs` `efcc969a25afff62`
-- `TDraftExample.cs` `3f1d3998d7a49532`
-- `TDraftLeftover.cs` `9e4e68a23d143a0c`
-- `TDraftReference.cs` `32f442cd70178839`
-- `TDraftSituation.cs` `25860dbb392ccf0b`
-- `TIdentity.cs` `91d8f92b072ca101`
-- `TSpeechClerk.cs` `d4b2191233d1245f`
+Commit: `9377e657b395`
+- `TClaim.cs` `107e9e254699fd1f`
+- `TClaimClerk.cs` `3710c188abe922ed`
+- `TDraftArchive.cs` `792fe8def8a7a166`
+- `TDraftClerk.cs` `48692075f65688b4`
+- `TDraftExample.cs` `56722bde5ce2c08c`
+- `TDraftLeftover.cs` `26dbd00073567596`
+- `TDraftReference.cs` `cd9fe87ba89c014a`
+- `TDraftSituation.cs` `6c294f084cc7f170`
+- `TIdentity.cs` `62097428604cb5af`
+- `TSpeechClerk.cs` `36f58f81649a4138`

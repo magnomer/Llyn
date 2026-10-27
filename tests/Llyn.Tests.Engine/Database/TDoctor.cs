@@ -66,7 +66,7 @@ public sealed class TDoctor
     }
 
     [Fact]
-    public void DoctorDatabaseCreate_FileCannotOpen_RethrowsWithoutRescue()
+    public void DoctorDatabaseCreate_UnopenableFile_Rethrows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         Directory.CreateDirectory(TDoctorFileRead(workspace));

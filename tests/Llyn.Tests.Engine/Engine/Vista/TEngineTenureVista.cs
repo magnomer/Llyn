@@ -7,7 +7,7 @@ namespace Llyn.Tests;
 public sealed class TEngineTenureVista
 {
     [Fact]
-    public void OccurrenceStart_SituationGiven_StartsAFreshEntryAlreadyLinked()
+    public void OccurrenceStart_SituationGiven_StartsFreshLinkedEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -26,7 +26,7 @@ public sealed class TEngineTenureVista
     }
 
     [Fact]
-    public void OccurrenceStart_NoSituation_StartsABlankEntry()
+    public void OccurrenceStart_NoSituation_StartsBlankEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -42,7 +42,7 @@ public sealed class TEngineTenureVista
     }
 
     [Fact]
-    public void TenureStorable_UnnamedOccurrence_AnswersFalseUntilTheHeadwordIsWritten()
+    public void TenureStorable_UnnamedOccurrence_TurnsTrueOnHeadword()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -65,7 +65,7 @@ public sealed class TEngineTenureVista
     }
 
     [Fact]
-    public void QuotationStart_ExampleGiven_StartsAFreshEntryCitingIt()
+    public void QuotationStart_ExampleGiven_CitesExample()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -86,7 +86,7 @@ public sealed class TEngineTenureVista
     }
 
     [Fact]
-    public void FootnoteStart_SourceGiven_StartsAFreshEntryCitingIt()
+    public void FootnoteStart_SourceGiven_CitesSource()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -102,7 +102,7 @@ public sealed class TEngineTenureVista
     }
 
     [Fact]
-    public void FootnoteStart_NoSource_StartsABlankEntry()
+    public void FootnoteStart_NoSource_StartsBlankEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -115,7 +115,7 @@ public sealed class TEngineTenureVista
     }
 
     [Fact]
-    public void MembershipStart_TagGiven_StartsAFreshEntryCarryingIt()
+    public void MembershipStart_TagGiven_CarriesTag()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -131,7 +131,7 @@ public sealed class TEngineTenureVista
     }
 
     [Fact]
-    public void MembershipStart_NoTag_StartsABlankEntry()
+    public void MembershipStart_NoTag_StartsBlankEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -144,7 +144,7 @@ public sealed class TEngineTenureVista
     }
 
     [Fact]
-    public void CohortStart_RegisterGiven_StartsAFreshEntryCarryingIt()
+    public void CohortStart_RegisterGiven_CarriesRegister()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -160,7 +160,7 @@ public sealed class TEngineTenureVista
     }
 
     [Fact]
-    public void CohortStart_NoRegister_StartsABlankEntry()
+    public void CohortStart_NoRegister_StartsBlankEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

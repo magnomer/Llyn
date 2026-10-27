@@ -79,7 +79,7 @@ public sealed class TMarkupCargo
     }
 
     [Fact]
-    public void MarkupImport_CargoOmissions_CarriesThemIntoOutcome()
+    public void MarkupImport_CargoOmissions_CarriesIntoOutcome()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

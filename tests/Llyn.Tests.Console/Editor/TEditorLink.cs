@@ -17,7 +17,7 @@ public sealed class TEditorLink
     private static readonly ConsoleKeyInfo TEditorLinkBack = new('\b', ConsoleKey.Backspace, false, false, false);
 
     [Fact]
-    public void EditorDraw_EmptyTranslationField_ShowsItsHintLitOnTheCard()
+    public void EditorDraw_EmptyTranslationField_ShowsLitHint()
     {
         TEditorLinkRun((library, find) =>
         {
@@ -28,7 +28,7 @@ public sealed class TEditorLink
     }
 
     [Fact]
-    public void EditorKeymap_TypedCommaAfterAStoredWord_MakesAnAngledChipNamingTheLanguage()
+    public void EditorKeymap_CommaAfterStoredWord_MakesAngledChip()
     {
         TEditorLinkRun((library, find) =>
         {
@@ -45,7 +45,7 @@ public sealed class TEditorLink
     }
 
     [Fact]
-    public void EditorKeymap_EnterOnAWholeMatch_LightsItSoASecondEnterLinksIt()
+    public void EditorKeymap_EnterOnWholeMatch_LightsThenLinks()
     {
         TEditorLinkRun((library, find) =>
         {
@@ -71,7 +71,7 @@ public sealed class TEditorLink
     }
 
     [Fact]
-    public void EditorKeymap_LitFreshRow_HandsTheRawRowAndLinksATentativeEntry()
+    public void EditorKeymap_LitFreshRow_LinksTentativeEntry()
     {
         TEditorLinkRun((library, find) =>
         {
@@ -93,7 +93,7 @@ public sealed class TEditorLink
     }
 
     [Fact]
-    public void EditorDraw_RepeatedHeadwordInTheList_ReadsItsNumber()
+    public void EditorDraw_RepeatedHeadwordInList_ReadsNumber()
     {
         TEditorLinkRun(
             (library, _) =>
@@ -114,7 +114,7 @@ public sealed class TEditorLink
     }
 
     [Fact]
-    public void EditorKeymap_ClosingTheField_LinksAWordOneEntryAnswersAndKeepsTheRest()
+    public void EditorKeymap_ClosingField_LinksOneMatchKeepsRest()
     {
         TEditorLinkRun((library, find) =>
         {
@@ -140,7 +140,7 @@ public sealed class TEditorLink
     }
 
     [Fact]
-    public void EditorKeymap_FailedResolveOnClose_ShowsTheTranslationFailureAndKeepsTheText()
+    public void EditorKeymap_FailedResolveOnClose_ShowsFailureKeepsText()
     {
         bool failing = false;
         List<string> asked = [];
@@ -172,7 +172,7 @@ public sealed class TEditorLink
     }
 
     [Fact]
-    public void EditorKeymap_BackspaceOnAnEmptyEntry_RemovesTheLinkChipBeforeIt()
+    public void EditorKeymap_BackspaceOnEmptyEntry_RemovesLinkChip()
     {
         TEditorLinkRun((library, _) =>
         {

@@ -66,7 +66,7 @@ public sealed class TReflex
     }
 
     [Fact]
-    public void EntryUpdate_BlankRow_DropsOnlyThatRow()
+    public void EntryUpdate_BlankRow_DropsBlankRowOnly()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -123,7 +123,7 @@ public sealed class TReflex
     }
 
     [Fact]
-    public void RequestApply_ReflexRemoval_KeepsOnlyTheRowsNamed()
+    public void RequestApply_ReflexRemoval_KeepsOtherRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -142,7 +142,7 @@ public sealed class TReflex
     }
 
     [Fact]
-    public void DraftCheck_RowWithLanguageOnly_IsAChange()
+    public void DraftCheck_LanguageOnlyRow_CountsAsChange()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -218,7 +218,7 @@ public sealed class TReflex
     }
 
     [Fact]
-    public void RequestApply_OnlyReflexMeaning_MarksTheRowAsOwned()
+    public void RequestApply_OnlyReflexMeaning_MarksRowOwned()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -288,7 +288,7 @@ public sealed class TReflex
     }
 
     [Fact]
-    public void ReflexFind_DraftRows_FindsOnlyTheRowTheIdNames()
+    public void ReflexFind_DraftRows_FindsRowByNamedId()
     {
         LEntryDraft content = TInterface.TReflexDraftCreate(
             [

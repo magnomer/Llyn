@@ -21,7 +21,7 @@ public sealed class TErrandClip
         """;
 
     [Fact]
-    public async Task RecordingStart_HeldDraft_FillsTheClipFromEveryStep()
+    public async Task RecordingStart_HeldDraft_FillsClipFromAllSteps()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TErrandClipPack);
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
@@ -67,7 +67,7 @@ public sealed class TErrandClip
     }
 
     [Fact]
-    public async Task RecordingStart_BlankHeadword_AnswersTheEmptyNotice()
+    public async Task RecordingStart_BlankHeadword_AnswersEmptyNotice()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -89,7 +89,7 @@ public sealed class TErrandClip
     }
 
     [Fact]
-    public async Task ErrandEnsignLoad_FlaggedPack_StoresTheVarietyFlagsAndAnswersTheClip()
+    public async Task ErrandEnsignLoad_FlaggedPack_StoresVarietyFlags()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("{}");
         string flag = Path.Combine(AppContext.BaseDirectory, "languages", pack.TLanguageFixtureName, "hill.svg");
@@ -145,7 +145,7 @@ public sealed class TErrandClip
     }
 
     [Fact]
-    public async Task PreviewStart_StepLandsMidFetch_KeepsThePreviewState()
+    public async Task PreviewStart_StepLandsMidFetch_KeepsPreviewState()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("{}");
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
@@ -187,7 +187,7 @@ public sealed class TErrandClip
     }
 
     [Fact]
-    public async Task PreviewStart_HostRefuses_MarksTheReadingRefused()
+    public async Task PreviewStart_HostRefuses_MarksReadingRefused()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("{}");
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
@@ -239,7 +239,7 @@ public sealed class TErrandClip
     }
 
     [Fact]
-    public async Task RecordingSave_HeldSearch_SavesTheRecordingWithItsVariety()
+    public async Task RecordingSave_HeldSearch_SavesRecordingWithVariety()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("{}");
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
@@ -277,7 +277,7 @@ public sealed class TErrandClip
     }
 
     [Fact]
-    public async Task RecordingSave_HostRefuses_OffersTheRetry()
+    public async Task RecordingSave_HostRefuses_OffersRetry()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("{}");
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();

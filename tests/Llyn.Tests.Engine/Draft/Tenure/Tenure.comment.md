@@ -143,13 +143,13 @@ The kept read answers null.
 
 ## Stamp
 
-Commit: `36e31eb71c98`
-- `TChronicle.cs` `47fd8579113e846b`
-- `TDraft.cs` `8490b5283bb57a47`
-- `TDraftCancelling.cs` `8e5113e3e3f1289b`
-- `TDraftCommitting.cs` `6cd5dee712aff104`
-- `TEstablishment.cs` `7c95814d06051070`
-- `TTenureLanguage.cs` `e4c5c6b4324fd3df`
-- `TTenureObserver.cs` `48226af69615022a`
-- `TTenureQueue.cs` `902b2ee7b18c788a`
-- `TTenureStale.cs` `c52bd3cb1c5726cc`
+Commit: `9377e657b395`
+- `TChronicle.cs` `c06c969f44165fa4`
+- `TDraft.cs` `8c6f59becd6fe8aa`
+- `TDraftCancelling.cs` `b6fd198deca40b9b`
+- `TDraftCommitting.cs` `a66529224253647f`
+- `TEstablishment.cs` `e1c0a775279b82c5`
+- `TTenureLanguage.cs` `eba5ebbddb54d246`
+- `TTenureObserver.cs` `460d8b98b6164047`
+- `TTenureQueue.cs` `009c9100e268e023`
+- `TTenureStale.cs` `047ba49514f38ebc`

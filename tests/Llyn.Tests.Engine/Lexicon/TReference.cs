@@ -275,7 +275,7 @@ public sealed class TReference
     }
 
     [Fact]
-    public void ReferenceStart_BrokenAuthorStateWord_ReadsUnreadableAndRefusesCommit()
+    public void ReferenceStart_BrokenAuthorState_RefusesCommit()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

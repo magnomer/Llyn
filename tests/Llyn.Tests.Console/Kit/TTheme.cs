@@ -32,7 +32,7 @@ public sealed class TTheme
     }
 
     [Fact]
-    public void ThemeSpareRead_ConsoleBlue_MatchesTheFile()
+    public void ThemeSpareRead_ConsoleBlue_MatchesFile()
     {
         Func<string, string> read = LThemeLoader.LThemeLoaderLoad(BTheme.BThemeDefault).LThemeColorRead;
         List<string> differing = [];
@@ -66,7 +66,7 @@ public sealed class TTheme
     }
 
     [Fact]
-    public void ThemeRead_TrueColour_FollowsTheConsoleColour()
+    public void ThemeRead_TrueColour_FollowsConsoleColour()
     {
         BTheme theme = new(_ => "white #FFFFFF on darkBlue #000080");
 

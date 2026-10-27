@@ -12,7 +12,7 @@ public sealed class TTally
     private const string TTallyLanguage = "Classical Chinese";
 
     [Fact]
-    public void TallyRead_InitialOverTwoDivisions_CountsCharactersPerPart()
+    public void TallyRead_InitialOverTwoDivisions_CountsPerPart()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -90,7 +90,7 @@ public sealed class TTally
     }
 
     [Fact]
-    public void TallyRead_RowAnchoredToOnePlacement_CountsOnlyOnThatPage()
+    public void TallyRead_AnchoredRow_CountsOnlyOnAnchoredPage()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -207,7 +207,7 @@ public sealed class TTally
     }
 
     [Fact]
-    public void TallyLineScan_LanguageCaseDiffersFromDeclared_OrdersAsTheReflexList()
+    public void TallyLineScan_LanguageCaseDiffers_OrdersAsReflexList()
     {
         LReflexOrder order = TInterface.TReflexOrderCreate(
             ["Xiang", "Korean"], new Dictionary<string, IReadOnlyList<string>>());

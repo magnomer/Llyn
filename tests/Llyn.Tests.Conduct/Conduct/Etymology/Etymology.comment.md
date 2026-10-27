@@ -48,7 +48,7 @@ Deleting an unused tongue still confirms, then deletes.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
-- `TEtymology.cs` `358aa907a8d96520`
-- `TEtymologyDisplay.cs` `b03edd16391799ce`
-- `TEtymologyList.cs` `71792b146951b7d6`
+Commit: `9377e657b395`
+- `TEtymology.cs` `0d3d8e672921539e`
+- `TEtymologyDisplay.cs` `780696ef0d023f46`
+- `TEtymologyList.cs` `425509e5e43befc9`

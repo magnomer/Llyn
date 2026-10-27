@@ -20,7 +20,7 @@ public sealed class TDraftFact
     }
 
     [Fact]
-    public void EntryDraftAccents_ThreePronunciations_SkipsThePrimary()
+    public void EntryDraftAccents_ThreePronunciations_SkipsPrimary()
     {
         LEntryDraft draft = TInterface.TEntryDraftCreate("colour", "English", "ˈkʌlə", "a note", [], []) with
         {
@@ -74,7 +74,7 @@ public sealed class TDraftFact
     }
 
     [Fact]
-    public void StateAnchorShown_ZeroAndStoredIds_ReportsOnlyTheStoredOne()
+    public void StateAnchorShown_UnspecifiedAndStored_ReportsOnlyStored()
     {
         LStateAnchor linked = TInterface.TStateAnchorCreate(42);
 
@@ -85,7 +85,7 @@ public sealed class TDraftFact
     }
 
     [Fact]
-    public void MentionSpanDivide_SilentAndLinkedMentions_MarksOnlyTheLinkedPiece()
+    public void MentionSpanDivide_SilentAndLinked_MarksLinkedPiece()
     {
         IReadOnlyList<LMentionPiece> pieces = TInterfaceMentionSpan.TMentionSpanDivide(
             "the grey wolf",

@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TCorpusScribe
 {
     [Fact]
-    public void DiptychEntryCreate_NoRowChosen_StartsABlankTranscript()
+    public void DiptychEntryCreate_NoRowChosen_StartsBlankTranscript()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -28,7 +28,7 @@ public sealed class TCorpusScribe
     }
 
     [Fact]
-    public void DiptychParentSelect_UnsavedTranscriptKept_RecordsNothing()
+    public void DiptychParentSelect_UnsavedKept_RecordsNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -51,7 +51,7 @@ public sealed class TCorpusScribe
     }
 
     [Fact]
-    public void CorpusLeaveConfirm_UnsavedTranscriptDiscarded_LeavesWithoutStoring()
+    public void CorpusLeaveConfirm_UnsavedDiscarded_LeavesUnstored()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -72,7 +72,7 @@ public sealed class TCorpusScribe
     }
 
     [Fact]
-    public void CorpusLeaveConfirm_UnsavedTranscriptKept_StaysOnTheTranscript()
+    public void CorpusLeaveConfirm_UnsavedKept_StaysOnTranscript()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -90,7 +90,7 @@ public sealed class TCorpusScribe
     }
 
     [Fact]
-    public void CorpusLeaveConfirm_UnsavedTranscriptStored_StoresTheExample()
+    public void CorpusLeaveConfirm_UnsavedStored_StoresExample()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -105,7 +105,7 @@ public sealed class TCorpusScribe
     }
 
     [Fact]
-    public void CorpusSessionSave_FreshTranscript_ShowsTheStoredExampleOnTheExcerpt()
+    public void CorpusSessionSave_FreshTranscript_ShowsStoredExample()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -123,7 +123,7 @@ public sealed class TCorpusScribe
     }
 
     [Fact]
-    public void DiptychScribeToggle_ClosingTheTranscript_CancelsTheDesk()
+    public void DiptychScribeToggle_ClosingTranscript_CancelsDesk()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -145,7 +145,7 @@ public sealed class TCorpusScribe
     }
 
     [Fact]
-    public void DiptychScribeToggle_ClosingTheQuotationEditor_FallsBackToTheChosenExample()
+    public void DiptychScribeToggle_ClosingEditor_ShowsChosenExample()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -163,7 +163,7 @@ public sealed class TCorpusScribe
     }
 
     [Fact]
-    public void CorpusEntryResonate_NoChosenQuotation_KeepsTheTranscript()
+    public void CorpusEntryResonate_NoChosenQuotation_KeepsTranscript()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

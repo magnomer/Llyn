@@ -15,7 +15,7 @@ public sealed class TEditorMarker
     private static readonly ConsoleKeyInfo TEditorMarkerBack = new('\b', ConsoleKey.Backspace, false, false, false);
 
     [Fact]
-    public void EditorKeymap_EnterOnTheUnitChooser_OpensItsListAndAPickSetsTheUnit()
+    public void EditorKeymap_EnterOnUnitChooser_OpensListPickSetsUnit()
     {
         TEditorMarkerRun((library, find) =>
         {
@@ -41,7 +41,7 @@ public sealed class TEditorMarker
     }
 
     [Fact]
-    public void EditorKeymap_PickingTheHeldFreedom_ChecksItThenClearsIt()
+    public void EditorKeymap_PickingHeldFreedom_ChecksThenClears()
     {
         TEditorMarkerRun((library, find) =>
         {
@@ -66,7 +66,7 @@ public sealed class TEditorMarker
     }
 
     [Fact]
-    public void EditorKeymap_TypingOnTheSpeechField_OffersTheMenuAndALitRowBecomesAChip()
+    public void EditorKeymap_TypingOnSpeechField_OffersMenuThenChip()
     {
         TEditorMarkerRun((library, find) =>
         {
@@ -99,7 +99,7 @@ public sealed class TEditorMarker
     }
 
     [Fact]
-    public void EditorKeymap_EscapeOnTheSpeechMenu_ShutsItKeepingTheTypingThenClosesTheField()
+    public void EditorKeymap_EscapeOnSpeechMenu_ShutsThenClosesField()
     {
         TEditorMarkerRun((library, find) =>
         {
@@ -125,7 +125,7 @@ public sealed class TEditorMarker
     }
 
     [Fact]
-    public void EditorKeymap_ArrowOnAnUnmatchedSpeechField_ShowsTheHintAsOneDimLine()
+    public void EditorKeymap_ArrowOnUnmatchedSpeechField_ShowsDimHint()
     {
         TEditorMarkerRun((library, find) =>
         {
@@ -144,7 +144,7 @@ public sealed class TEditorMarker
     }
 
     [Fact]
-    public void EditorKeymap_LightLeavingTheMarkerRow_ClosesItsOpenList()
+    public void EditorKeymap_LightLeavingMarkerRow_ClosesOpenList()
     {
         TEditorMarkerRun((library, find) =>
         {
@@ -159,7 +159,7 @@ public sealed class TEditorMarker
     }
 
     [Fact]
-    public void EditorKeymap_FailedLanguageLoad_OpensAnEmptyList()
+    public void EditorKeymap_FailedLanguageLoad_OpensEmptyList()
     {
         TEditorWindowRun(
             (_, atelier, _) =>

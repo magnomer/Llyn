@@ -39,7 +39,7 @@ public sealed class TXiesheng
     private static readonly TimeSpan TXieshengPatience = TimeSpan.FromSeconds(5);
 
     [Fact]
-    public void XieshengGroveRead_NothingFetched_ListsNothingUnderTheBareKeys()
+    public void XieshengGroveRead_NothingFetched_ListsNothingBareKeys()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -59,7 +59,7 @@ public sealed class TXiesheng
     }
 
     [Fact]
-    public async Task XieshengStemOpen_FetchedSeries_ChoosesItAndListsItsEntry()
+    public async Task XieshengStemOpen_FetchedSeries_ChoosesAndListsEntry()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TXieshengPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -87,7 +87,7 @@ public sealed class TXiesheng
     }
 
     [Fact]
-    public async Task XieshengStemRead_ShownSeries_CarriesTheFontsOfTheSeriesLanguage()
+    public async Task XieshengStemRead_ShownSeries_CarriesLanguageFonts()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TXieshengPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -131,7 +131,7 @@ public sealed class TXiesheng
     }
 
     [Fact]
-    public async Task XieshengStemSelect_ChosenTwiceThenWorkspaceChanged_TogglesAndClears()
+    public async Task XieshengStemSelect_ChosenTwice_TogglesAndClears()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TXieshengPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -186,7 +186,7 @@ public sealed class TXiesheng
     }
 
     [Fact]
-    public async Task XieshengStemSelect_UnsavedDraftDiscarded_TogglesAndCloses()
+    public async Task XieshengStemSelect_DraftDiscarded_TogglesAndCloses()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TXieshengPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -213,7 +213,7 @@ public sealed class TXiesheng
     }
 
     [Fact]
-    public async Task XieshengGlyphSelect_StemShown_OpensTheGlyphEntryInTheSeriesLanguage()
+    public async Task XieshengGlyphSelect_StemShown_OpensSeriesLanguageEntry()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TXieshengPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -238,7 +238,7 @@ public sealed class TXiesheng
     }
 
     [Fact]
-    public async Task XieshengApertureQuerySet_UnmatchedQuery_ReadsTheUnmatchedKeys()
+    public async Task XieshengApertureQuerySet_NoMatch_ReadsUnmatchedKeys()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TXieshengPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -263,7 +263,7 @@ public sealed class TXiesheng
     }
 
     [Fact]
-    public async Task XieshengStemOpen_QueriedSeries_EmptiesTheQueryBeforeTheOpening()
+    public async Task XieshengStemOpen_QueriedSeries_EmptiesQueryFirst()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TXieshengPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -283,7 +283,7 @@ public sealed class TXiesheng
     }
 
     [Fact]
-    public void XieshengApertureOrderSet_NullAfterAnOrder_KeepsTheChosenOne()
+    public void XieshengApertureOrderSet_NullAfterOrder_KeepsOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -55,7 +55,7 @@ public sealed class TTag
     }
 
     [Fact]
-    public void TagCreate_WordingNoCardCarries_ListsItInTheCatalog()
+    public void TagCreate_WordingNoCardCarries_ListsInCatalog()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -69,7 +69,7 @@ public sealed class TTag
     }
 
     [Fact]
-    public void TagCreate_WordingAlreadyStored_ReturnsTheStoredRow()
+    public void TagCreate_WordingAlreadyStored_ReturnsStoredRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -97,7 +97,7 @@ public sealed class TTag
     }
 
     [Fact]
-    public void TagSave_KnownId_LinksThatRowWhateverTheText()
+    public void TagSave_KnownId_LinksRowWhateverText()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

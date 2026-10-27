@@ -20,6 +20,8 @@ internal sealed class BEditorSight
 
     private readonly BMarker _bEditorSightMarker;
 
+    private readonly BPlacard _bEditorSightPlacard;
+
     private readonly IReadOnlyList<BInlet> _bEditorSightInlet;
 
     private readonly BCard _bEditorSightCard;
@@ -31,7 +33,7 @@ internal sealed class BEditorSight
         CDesk desk,
         string title,
         (BSpeaker, BRegard, BMarker) head,
-        (IReadOnlyList<BInlet>, BCard) body)
+        (BPlacard, BCard) body)
     {
         ArgumentNullException.ThrowIfNull(catalog);
         ArgumentNullException.ThrowIfNull(desk);
@@ -46,7 +48,8 @@ internal sealed class BEditorSight
         _bEditorSightGate = desk;
         _bEditorSightTitle = title;
         (_bEditorSightSpeaker, _bEditorSightRegard, _bEditorSightMarker) = head;
-        (_bEditorSightInlet, _bEditorSightCard) = body;
+        (_bEditorSightPlacard, _bEditorSightCard) = body;
+        _bEditorSightInlet = _bEditorSightPlacard.BPlacardInlet;
     }
 
     internal static IReadOnlyList<string> BEditorSightAdder { get; } = ["Input.MeaningAdd", "Input.CollocationAdd"];
@@ -149,6 +152,14 @@ internal sealed class BEditorSight
                         lines.Add((string.Empty, "text", item, part, paint, entry));
                     }
                 }
+
+                foreach ((int part, Func<int, IEnumerable<BCanvasText>> paint, int? entry) in folded
+                    ? (IReadOnlyList<(int, Func<int, IEnumerable<BCanvasText>>, int?)>)[]
+                    : _bEditorSightPlacard.BPlacardMediaDraw(
+                        glyphs, measure, (column, width), (stack == 1, card), (tone, focused)))
+                {
+                    lines.Add((string.Empty, "text", item, part, paint, entry));
+                }
             }
             else
             {
@@ -248,11 +259,7 @@ internal sealed class BEditorSight
                     _bEditorSightMarker.BMarkerDropDraw(glyphs, measure, display, (under, column), focused));
             }
 
-            foreach (BInlet lane in _bEditorSightInlet)
-            {
-                dropped.AddRange(lane.BInletDropDraw(glyphs, measure, display, (anchored, focused)));
-            }
-
+            dropped.AddRange(_bEditorSightPlacard.BPlacardDropDraw(glyphs, measure, display, (anchored, focused)));
             dropped.AddRange(_bEditorSightCard.BCardBond.BBondDropDraw(glyphs, measure, display, (anchored, focused)));
         }
 

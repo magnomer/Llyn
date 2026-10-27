@@ -20,7 +20,7 @@ public sealed class TEditorBond
     private static readonly ConsoleKeyInfo TEditorBondEscape = new('\u001b', ConsoleKey.Escape, false, false, false);
 
     [Fact]
-    public void EditorDraw_CollocationCard_ShowsTheExpressionAndTheLinkedMeaningsRow()
+    public void EditorDraw_CollocationCard_ShowsExpressionAndLinkedRow()
     {
         TEditorBondRun((library, _) =>
         {
@@ -39,7 +39,7 @@ public sealed class TEditorBond
     }
 
     [Fact]
-    public void EditorKeymap_EnterOnTheLinkMark_OpensEveryMeaningIndentedByDepth()
+    public void EditorKeymap_EnterOnLinkMark_OpensIndentedMeanings()
     {
         TEditorBondRun((library, find) =>
         {
@@ -63,7 +63,7 @@ public sealed class TEditorBond
     }
 
     [Fact]
-    public void EditorKeymap_PickInTheMeaningList_AttachesTheMeaningAsAChip()
+    public void EditorKeymap_PickInMeaningList_AttachesMeaningChip()
     {
         TEditorBondRun((library, _) =>
         {
@@ -110,7 +110,7 @@ public sealed class TEditorBond
     }
 
     [Fact]
-    public void EditorKeymap_UndoShrinkingTheChipsBeneathTheLight_KeepsAChipOrTheLinkMarkLit()
+    public void EditorKeymap_UndoShrinkingChips_KeepsChipOrLinkMarkLit()
     {
         TEditorBondRun((library, find) =>
         {
@@ -128,7 +128,7 @@ public sealed class TEditorBond
     }
 
     [Fact]
-    public void EditorKeymap_CardSeekAwayAndBack_LightsTheLinkMarkAgain()
+    public void EditorKeymap_CardSeekAwayAndBack_LightsLinkMarkAgain()
     {
         TEditorBondRun((library, find) =>
         {
@@ -158,7 +158,7 @@ public sealed class TEditorBond
     }
 
     [Fact]
-    public void EditorKeymap_EscapeInTheMeaningList_ClosesItAndLinksNothing()
+    public void EditorKeymap_EscapeInMeaningList_ClosesAndLinksNothing()
     {
         TEditorBondRun((library, find) =>
         {
@@ -172,7 +172,7 @@ public sealed class TEditorBond
     }
 
     [Fact]
-    public void EditorKeymap_LeftThenDeleteOnTheLinkedRow_DetachesTheLitChip()
+    public void EditorKeymap_LeftThenDeleteOnLinkedRow_DetachesLitChip()
     {
         TEditorBondRun((library, find) =>
         {
@@ -196,7 +196,7 @@ public sealed class TEditorBond
     }
 
     [Fact]
-    public void EditorKeymap_TypingOnTheExpressionRow_OpensItsFieldAndKeepsTheText()
+    public void EditorKeymap_TypingOnExpressionRow_OpensFieldKeepsText()
     {
         TEditorBondRun((library, find) =>
         {
@@ -217,7 +217,7 @@ public sealed class TEditorBond
     }
 
     [Fact]
-    public void EditorKeymap_MeaningCard_EditsTheDefinitionAndShowsNoLinkedMeaningsRow()
+    public void EditorKeymap_MeaningCard_EditsDefinitionHidesLinkedRow()
     {
         TEditorFrameRun(
             [],

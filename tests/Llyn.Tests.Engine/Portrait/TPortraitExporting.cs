@@ -37,7 +37,7 @@ public sealed class TPortraitExporting
     }
 
     [Fact]
-    public async Task PortraitExport_ExemplarPdf_HandsTheEntrySheetToThePress()
+    public async Task PortraitExport_ExemplarPdf_HandsEntrySheetToPress()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -54,7 +54,7 @@ public sealed class TPortraitExporting
     }
 
     [Fact]
-    public async Task PortraitPrint_StoredEntry_HandsTheEntrySheetToThePress()
+    public async Task PortraitPrint_StoredEntry_HandsEntrySheetToPress()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

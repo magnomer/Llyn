@@ -67,7 +67,7 @@ public sealed class TEnsign
     }
 
     [Fact]
-    public void EnsignFormat_NamedOrBlankVariety_KeysTheFlagOrNothing()
+    public void EnsignFormat_NamedOrBlankVariety_KeysFlagOrNothing()
     {
         Assert.Equal("English/Scottish", TInterface.TEngineEnsignFormat("English", "Scottish"));
         Assert.Equal(string.Empty, TInterface.TEngineEnsignFormat("English", string.Empty));
@@ -143,7 +143,7 @@ public sealed class TEnsign
     }
 
     [Fact]
-    public async Task EnsignLoad_OverlappingFills_FetchesAndStoresEachFlagOnce()
+    public async Task EnsignLoad_OverlappingFills_FetchesAndStoresOnce()
     {
         TUsherFake usher = new();
         usher.TUsherPresent.Add("C:/flags/gb.svg");
@@ -160,7 +160,7 @@ public sealed class TEnsign
     }
 
     [Fact]
-    public async Task EnsignLoad_FlagFileFails_AnswersTheLanguages()
+    public async Task EnsignLoad_FlagFileFails_ReturnsLanguages()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("{ \"flag\": \"gb\" }");
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();

@@ -100,9 +100,9 @@ The archive shelves every surviving row first, so both ids survive and only the 
 
 ## Stamp
 
-Commit: `c37ca1837ded`
-- `TPronunciation.cs` `9b426873c075fcd4`
-- `TReflex.cs` `7c6ce6a407088f9a`
-- `TReflexOrder.cs` `8c81c82e194f8fb1`
-- `TRespellingDraft.cs` `37a8ceeeb6b10da2`
-- `TTranscription.cs` `9a7fc295dc68d7d6`
+Commit: `9377e657b395`
+- `TPronunciation.cs` `9a0ea0181dbc2ec6`
+- `TReflex.cs` `53bbcf2a9907b853`
+- `TReflexOrder.cs` `9574375efb271f55`
+- `TRespellingDraft.cs` `aa1a00986788c510`
+- `TTranscription.cs` `42c0d4e7cd77fe51`

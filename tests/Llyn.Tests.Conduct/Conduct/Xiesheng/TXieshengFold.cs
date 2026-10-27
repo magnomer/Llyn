@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TXieshengFold
 {
     [Fact]
-    public async Task XieshengFoldToggle_ShownMember_StoresItsOwnStateAndRedrawsThePage()
+    public async Task XieshengFoldToggle_ShownMember_StoresStateAndRedraws()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TXiesheng.TXieshengPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -32,7 +32,7 @@ public sealed class TXieshengFold
     }
 
     [Fact]
-    public async Task XieshengChanged_EntryFoldNotice_StaysSilentWhileSeriesFoldRedraws()
+    public async Task XieshengChanged_EntryFoldNotice_StaysSilent()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TXiesheng.TXieshengPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -54,7 +54,7 @@ public sealed class TXieshengFold
     }
 
     [Fact]
-    public async Task XieshengFoldToggle_NoSeriesShown_AnswersFalseAndStoresNothing()
+    public async Task XieshengFoldToggle_NoSeriesShown_AnswersFalse()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TXiesheng.TXieshengPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -71,7 +71,7 @@ public sealed class TXieshengFold
     }
 
     [Fact]
-    public async Task XieshengFoldToggle_FailingPort_ShowsTheNoticeAndAnswersFalse()
+    public async Task XieshengFoldToggle_FailingPort_ShowsNotice()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TXiesheng.TXieshengPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -91,7 +91,7 @@ public sealed class TXieshengFold
     }
 
     [Fact]
-    public void StemMemberRead_UnfoldedLanguageRows_FoldableWhileABareMemberIsNot()
+    public void StemMemberRead_LanguageRows_MarksMemberFoldable()
     {
         LStemMember written = TInterface.TStemMemberCreate(
             "龍",

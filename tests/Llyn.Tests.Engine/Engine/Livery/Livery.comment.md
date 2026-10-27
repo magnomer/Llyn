@@ -30,7 +30,7 @@ Every selector of the CSS starts with `.llyn`, and no hex, `rgb`, `hsl` or named
 `TThemeStyleFormat` maps every role the style reads to a `var` token.
 A role missing from the theme would fall back to a hex colour and fail the colour fact.
 
-## `LiveryStyleFormat_CardSummary_DrawsFoldChevronAtRightEnd`
+## `LiveryStyleFormat_CardSummary_DrawsFoldChevron`
 
 The chevron mirrors the app's right-aligned hinge.
 The native webkit details marker would sit at the left, so the style hides it.
@@ -45,7 +45,7 @@ The summary rule pushes the pill right with an auto left margin and right text a
 No rule styles every cell or tone of a `llyn-card`.
 The card cell rule skips the readings table, so a series member card matches the entry.
 
-## `LiveryStyleFormat_CollocationHeading_LeavesHeadingPillAlone`
+## `LiveryStyleFormat_CollocationHeading_ClearsHeadingPill`
 
 Exactly one rule has the bare `.llyn .llyn-heading` selector, keeping the `accentSoft` fill and `accent` text.
 The collocations heading rule clears the fill and takes `muted`.
@@ -136,9 +136,9 @@ Each box keeps its tongue and gloss spans, and the headword closes the tree in `
 
 ## Stamp
 
-Commit: `36e31eb71c98`
-- `TEngineLivery.cs` `171299b8324074fb`
-- `TEngineLiveryCard.cs` `1ed64c2aa8199036`
-- `TEngineLiveryInflection.cs` `f92f64ecc5403946`
-- `TEngineLiveryLanguage.cs` `93be9c93139a750d`
-- `TEngineLiveryPage.cs` `1a4ada8744458819`
+Commit: `9377e657b395`
+- `TEngineLivery.cs` `852bf3e89f2a9533`
+- `TEngineLiveryCard.cs` `bb7cbe21e304d642`
+- `TEngineLiveryInflection.cs` `a92d7b883ae1703a`
+- `TEngineLiveryLanguage.cs` `2abb0f06bea208f0`
+- `TEngineLiveryPage.cs` `3d82aa01f6365af3`

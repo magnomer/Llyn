@@ -26,7 +26,7 @@ public sealed class TDraftCoverage
     }
 
     [Fact]
-    public void DraftCoverage_Setting_MatchesTheRecords()
+    public void DraftCoverage_Setting_MatchesRecords()
     {
         Dictionary<string, IReadOnlyList<string>> records = TDraftRead();
         HashSet<string> properties = new(records.Values.SelectMany(names => names), StringComparer.Ordinal);

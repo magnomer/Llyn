@@ -71,8 +71,8 @@ Twice the ceiling in bad attributes reports the ceiling and one `...` row.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `TMarkupFormatting.cs` `53ff55fe6a447494`
-- `TMarkupNode.cs` `77beb2a7bb71e7e2`
+Commit: `9377e657b395`
+- `TMarkupFormatting.cs` `2afb0411e035ccfa`
+- `TMarkupNode.cs` `79c3d9cb8ab53a0d`
 - `TMarkupParsing.cs` `c6b7e95715b1a546`
 - `TMarkupSample.cs` `12e7ebfb6ea226c1`

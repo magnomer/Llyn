@@ -9,13 +9,13 @@ public sealed class TUsage
     [InlineData(false, false, "Display.MeaningSingle")]
     [InlineData(true, false, "Display.CollocationSingle")]
     [InlineData(false, true, "Vita.Example")]
-    public void UsageOwnerKey_Kind_NamesTheCitingSide(bool collocated, bool quoted, string key)
+    public void UsageOwnerKey_Kind_NamesCitingSide(bool collocated, bool quoted, string key)
     {
         Assert.Equal(key, TUsageCreate(quoted, collocated, CStateValue.CStateValueEmpty).CUsageOwnerKey);
     }
 
     [Fact]
-    public void UsageTitleKey_UncertainOrKnownTitle_MarksOnlyTheUnknown()
+    public void UsageTitleKey_UncertainOrKnownTitle_MarksOnlyUnknown()
     {
         Assert.Equal(
             "Display.Unknown",

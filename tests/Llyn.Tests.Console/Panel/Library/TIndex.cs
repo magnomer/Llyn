@@ -113,7 +113,7 @@ public sealed class TIndex
     }
 
     [Fact]
-    public void IndexLitSettle_SettledRowGone_TakesTheRowInItsPlace()
+    public void IndexLitSettle_SettledRowGone_TakesRowInPlace()
     {
         BIndex<CVistaRow> index = TIndexBuild(TIndexRows);
 
@@ -224,7 +224,7 @@ public sealed class TIndex
     }
 
     [Fact]
-    public void BlueprintGlyphs_EverySet_CarriesTheListMarks()
+    public void BlueprintGlyphs_AllSets_CarriesListMarks()
     {
         IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlyList<string>>> sets =
             new ABootstrap().BBlueprintGlyphs.ToDictionary(static set => set.Key, static set => set.Value);

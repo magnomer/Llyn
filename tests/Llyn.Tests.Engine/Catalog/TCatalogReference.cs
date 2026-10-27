@@ -54,7 +54,7 @@ public sealed class TCatalogReference
     }
 
     [Fact]
-    public void ReferenceFind_AuthorOrder_ReturnsCreditedAfterUncredited()
+    public void ReferenceFind_AuthorOrder_ReturnsUncreditedFirst()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -93,7 +93,7 @@ public sealed class TCatalogReference
     }
 
     [Fact]
-    public void ReferenceFind_TypedQuery_ReturnsSourcesStatingIt()
+    public void ReferenceFind_TypedQuery_ReturnsMatchingSources()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -174,7 +174,7 @@ public sealed class TCatalogReference
     }
 
     [Fact]
-    public void CitationCreate_TypedLine_ReturnsSourceTitledWithIt()
+    public void CitationCreate_PaddedLine_ReturnsTrimmedTitle()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

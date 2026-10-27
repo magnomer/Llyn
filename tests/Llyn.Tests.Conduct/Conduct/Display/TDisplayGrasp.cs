@@ -53,7 +53,7 @@ public sealed class TDisplayGrasp
     }
 
     [Fact]
-    public void DisplayGraspSet_StandingStepPressedAgain_ClearsTheGrasp()
+    public void DisplayGraspSet_StandingStepPressedAgain_ClearsGrasp()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -76,7 +76,7 @@ public sealed class TDisplayGrasp
     }
 
     [Fact]
-    public void DisplayGraspMove_PastEitherEnd_StopsAtTheEnd()
+    public void DisplayGraspMove_PastEitherEnd_StopsAtEnd()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

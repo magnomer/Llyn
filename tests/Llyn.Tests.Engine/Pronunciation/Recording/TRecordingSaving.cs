@@ -43,7 +43,7 @@ public sealed class TRecordingSaving
     }
 
     [Fact]
-    public async Task RecordingSave_DeviceNameHeadword_PrefixesTheFile()
+    public async Task RecordingSave_DeviceNameHeadword_PrefixesFile()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using HttpClient client = TPronunciationHelper.TSourceClientCreate("audio", HttpStatusCode.OK);
@@ -126,30 +126,52 @@ public sealed class TRecordingSaving
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         TRefusalHandler handler = new(1);
         using HttpClient client = new(handler);
+        TClockFake clock = new(true);
         LRecording recording = TInterface.TRecordingCreate(
             "Wiktionary", "https://example.test/Fr-manger.ogg.mp3", 0, true, string.Empty);
 
         string path = await TInterface.TWorkspaceRecordingPrepare(
-            recording, workspace.TWorkspaceFolder, client, CancellationToken.None);
+            recording, workspace.TWorkspaceFolder, client, CancellationToken.None, clock);
 
         Assert.Equal(2, handler.TRefusalHandlerCount);
+        Assert.Equal([TimeSpan.FromSeconds(5)], clock.TClockFakeSpans);
         Assert.Equal("audio", await File.ReadAllTextAsync(path));
     }
 
     [Fact]
-    public async Task RecordingPrepare_HostKeepsRefusing_RaisesAfterThreeTries()
+    public async Task RecordingPrepare_RetryPastCeiling_ThrowsAtOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
-        TRefusalHandler handler = new(9);
+        TRefusalHandler handler = new(9, 31);
         using HttpClient client = new(handler);
+        TClockFake clock = new(true);
         LRecording recording = TInterface.TRecordingCreate(
             "Wiktionary", "https://example.test/Fr-manger.ogg.mp3", 0, true, string.Empty);
 
         LVaultFault fault = await Assert.ThrowsAsync<LVaultFault>(() => TInterface.TWorkspaceRecordingPrepare(
-            recording, workspace.TWorkspaceFolder, client, CancellationToken.None));
+            recording, workspace.TWorkspaceFolder, client, CancellationToken.None, clock));
+
+        Assert.IsType<HttpRequestException>(fault.InnerException);
+        Assert.Equal(1, handler.TRefusalHandlerCount);
+        Assert.Empty(clock.TClockFakeSpans);
+    }
+
+    [Fact]
+    public async Task RecordingPrepare_HostRefusing_ThrowsAfterThreeTries()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        TRefusalHandler handler = new(9);
+        using HttpClient client = new(handler);
+        TClockFake clock = new(true);
+        LRecording recording = TInterface.TRecordingCreate(
+            "Wiktionary", "https://example.test/Fr-manger.ogg.mp3", 0, true, string.Empty);
+
+        LVaultFault fault = await Assert.ThrowsAsync<LVaultFault>(() => TInterface.TWorkspaceRecordingPrepare(
+            recording, workspace.TWorkspaceFolder, client, CancellationToken.None, clock));
 
         Assert.IsType<HttpRequestException>(fault.InnerException);
         Assert.Equal(3, handler.TRefusalHandlerCount);
+        Assert.Equal([TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5)], clock.TClockFakeSpans);
         Assert.False(Directory.Exists(Path.Combine(workspace.TWorkspaceFolder, "temp")));
     }
 

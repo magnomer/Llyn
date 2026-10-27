@@ -13,7 +13,7 @@ public sealed class TTranscriptMention
     private const string TMentionText = "she knelt to kindle the damp logs";
 
     [Fact]
-    public void TranscriptSenseSet_LinkedMention_OffersItsMeaningsAndNarrowsItToTheSense()
+    public void TranscriptSenseSet_LinkedMention_NarrowsToChosenSense()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -33,7 +33,7 @@ public sealed class TTranscriptMention
     }
 
     [Fact]
-    public void TranscriptMentionCheck_SilentMention_AllowsUnlinkButOffersNoSense()
+    public void TranscriptMentionCheck_SilentMention_AllowsUnlinkOnly()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -49,7 +49,7 @@ public sealed class TTranscriptMention
     }
 
     [Fact]
-    public void TranscriptMentionRemove_BySelectionAndByChip_DropsEachMention()
+    public void TranscriptMentionRemove_SelectionAndChip_DropsBoth()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -67,7 +67,7 @@ public sealed class TTranscriptMention
     }
 
     [Fact]
-    public void TranscriptMentionRead_LinkedAndSilentMentions_NamesTheHeadwordAndKeysTheSilentChip()
+    public void TranscriptMentionRead_LinkedAndSilent_KeysSilentChip()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -88,7 +88,7 @@ public sealed class TTranscriptMention
     }
 
     [Fact]
-    public void TranscriptMentionRead_NoExampleHeld_AnswersNoChipsAndOffersNoMeanings()
+    public void TranscriptMentionRead_NoExampleHeld_ReturnsNoChips()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -104,7 +104,7 @@ public sealed class TTranscriptMention
     }
 
     [Fact]
-    public void TranscriptMentionOpen_SelectedWord_OffersTheExampleLanguageAndLinksThePick()
+    public void TranscriptMentionOpen_SelectedWord_OffersLanguage()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -130,7 +130,7 @@ public sealed class TTranscriptMention
     }
 
     [Fact]
-    public void TranscriptMentionAdd_SpanOverEntry_LinksTheSpanWithoutASense()
+    public void TranscriptMentionAdd_SpanOverEntry_LinksWithoutSense()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

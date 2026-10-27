@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TShelfRoll
 {
     [Fact]
-    public void ShelfRollRead_CitedSourceChosen_CarriesItsTallyWithTheRows()
+    public void ShelfRollRead_CitedSourceChosen_CarriesTallyWithRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -28,7 +28,7 @@ public sealed class TShelfRoll
     }
 
     [Fact]
-    public void ShelfRollRead_ChosenSourceFilteredOut_WordsTheTallyAfterTheClose()
+    public void ShelfRollRead_ChosenSourceFilteredOut_WordsEmptyTally()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -47,7 +47,7 @@ public sealed class TShelfRoll
     }
 
     [Fact]
-    public void ShelfRollRead_UnknownAndUnsetValues_WordsEachByItsKey()
+    public void ShelfRollRead_UnknownAndUnsetValues_WordsEachByKey()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -67,7 +67,7 @@ public sealed class TShelfRoll
     }
 
     [Fact]
-    public void ShelfRollRead_StatedYearAndCredit_ShowsTheirTextWithNoKey()
+    public void ShelfRollRead_StatedYearAndCredit_ShowsTextWithNoKey()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -126,7 +126,7 @@ public sealed class TMarkupLink
     }
 
     [Fact]
-    public void MarkupImport_TwoNewEntriesCitingEachOther_LinksBothSenses()
+    public void MarkupImport_MutualCitation_LinksBothSenses()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

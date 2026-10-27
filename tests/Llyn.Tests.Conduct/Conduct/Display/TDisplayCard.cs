@@ -54,7 +54,7 @@ public sealed class TDisplayCard
     }
 
     [Fact]
-    public void DisplayCardRead_SentenceRow_AnswersTheReadyLine()
+    public void DisplayCardRead_SentenceRow_AnswersReadyLine()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -87,7 +87,7 @@ public sealed class TDisplayCard
     }
 
     [Fact]
-    public void DisplayCardRead_NothingShown_AnswersNoCardsAndNoSections()
+    public void DisplayCardRead_NothingShown_AnswersNoCardsOrSections()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -103,7 +103,7 @@ public sealed class TDisplayCard
     }
 
     [Fact]
-    public void FolioImageRead_RowNobodyLocated_CarriesTheEmptyVerdict()
+    public void FolioImageRead_RowNobodyLocated_CarriesEmptyVerdict()
     {
         IReadOnlyList<CImageDraft> images = TInterfaceConductCard.TCardImageRead(
             [TInterface.TImageDraftCreate(string.Empty, 3), TInterface.TImageDraftCreate("still.png", 4)],
@@ -117,7 +117,7 @@ public sealed class TDisplayCard
     }
 
     [Fact]
-    public void FolioImageRead_LocatedRow_CarriesTheAddressTheEngineResolved()
+    public void FolioImageRead_LocatedRow_CarriesResolvedAddress()
     {
         Uri still = new("https://example.org/still.png");
         List<string?> asked = [];
@@ -138,7 +138,7 @@ public sealed class TDisplayCard
     }
 
     [Fact]
-    public void FolioVideoRead_LocatedRow_CarriesTheScreenTheEngineResolved()
+    public void FolioVideoRead_LocatedRow_CarriesResolvedScreen()
     {
         CScreen reel = new(new Uri("https://example.org/reel.mp4"), null);
         List<string?> asked = [];
@@ -160,7 +160,7 @@ public sealed class TDisplayCard
     }
 
     [Fact]
-    public void FolioVideoRead_WrittenSpan_CarriesTheMomentsTheEngineRead()
+    public void FolioVideoRead_WrittenSpan_CarriesParsedMoments()
     {
         IReadOnlyList<CVideoDraft> videos = TInterfaceConductCard.TCardVideoRead(
             [TInterface.TVideoDraftCreate("reel.mp4", "0:10 - 0:40"), TInterface.TVideoDraftCreate("reel.mp4")],
@@ -172,7 +172,7 @@ public sealed class TDisplayCard
     }
 
     [Fact]
-    public void FolioVideoRead_HostedOrOtherLocation_CarriesAddressAndEngineFilmId()
+    public void FolioVideoRead_HostedOrOther_CarriesAddressAndFilmId()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -204,7 +204,7 @@ public sealed class TDisplayCard
     }
 
     [Fact]
-    public void DisplayChipOpen_StoredRecord_RaisesTheTabItsKindPicks()
+    public void DisplayChipOpen_StoredRecord_RaisesTabPerKind()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -239,7 +239,7 @@ public sealed class TDisplayCard
     }
 
     [Fact]
-    public void CompassCardFind_ShownCards_AnswersTheListAndThePlace()
+    public void CompassCardFind_ShownCards_AnswersPlaceOrNone()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -266,7 +266,7 @@ public sealed class TDisplayCard
     }
 
     [Fact]
-    public void DisplaySeeOpen_FoldedCollocation_UnfoldsItAndRaisesItsPlace()
+    public void DisplaySeeOpen_FoldedCollocation_UnfoldsAndRaisesPlace()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -289,7 +289,7 @@ public sealed class TDisplayCard
     }
 
     [Fact]
-    public void MentionSenseChosen_LibraryEntryOpened_RaisesTheSensePlace()
+    public void MentionSenseChosen_LibraryEntryOpened_RaisesSensePlace()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

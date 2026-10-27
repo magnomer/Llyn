@@ -23,7 +23,7 @@ public sealed class TCardHinge
     internal static readonly CStateWording TCardHingeMeaning = new("a liquid", null, false, null);
 
     [Fact]
-    public void CardRowRefine_FoldedCard_CollapsesBodyChecksHingeAndClosesHeader()
+    public void CardRowRefine_FoldedCard_CollapsesBodyChecksHinge()
     {
         TCardHingeRun(() =>
         {
@@ -55,7 +55,7 @@ public sealed class TCardHinge
     }
 
     [Fact]
-    public void CardRowRefine_FoldedCardWithBlankTitle_ShowsPeekBehindTheKeptTitleBox()
+    public void CardRowRefine_FoldedBlankTitle_ShowsPeekAndTitleBox()
     {
         TCardHingeRun(() =>
         {
@@ -69,7 +69,7 @@ public sealed class TCardHinge
     }
 
     [Fact]
-    public void CardRowRefine_FoldedCardWithTitle_ShowsTitleBoxAndHidesPeek()
+    public void CardRowRefine_FoldedTitledCard_ShowsTitleHidesPeek()
     {
         TCardHingeRun(() =>
         {
@@ -93,7 +93,7 @@ public sealed class TCardHinge
     }
 
     [Fact]
-    public void CardHingeAttach_StoredCard_FoldsTheCardByIdThroughTheEditorList()
+    public void CardHingeAttach_StoredCard_FoldsByIdThroughEditorList()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -128,7 +128,7 @@ public sealed class TCardHinge
     }
 
     [Fact]
-    public void CardHingeAttach_TwoTogglesBeforeTheRebuild_LeavesTheCardUnfolded()
+    public void CardHingeAttach_TwoTogglesBeforeRebuild_LeavesUnfolded()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -158,7 +158,7 @@ public sealed class TCardHinge
     }
 
     [Fact]
-    public void CardHingeAttach_RefusedWrite_PutsTheHingeBack()
+    public void CardHingeAttach_RefusedWrite_RestoresHinge()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -190,7 +190,7 @@ public sealed class TCardHinge
     }
 
     [Fact]
-    public void CardHingeAttach_RefusedUnfold_PutsTheHingeBack()
+    public void CardHingeAttach_RefusedUnfold_RestoresHinge()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -219,7 +219,7 @@ public sealed class TCardHinge
     }
 
     [Fact]
-    public void LookSettingRead_UnfoldedCard_TurnsTheExpandIconHalfway()
+    public void LookSettingRead_UnfoldedCard_TurnsExpandIconHalfway()
     {
         TWindow.TWindowRun(() =>
         {
@@ -239,7 +239,7 @@ public sealed class TCardHinge
     }
 
     [Fact]
-    public void LookSettingRead_FoldedCard_LeavesTheExpandIconUnturned()
+    public void LookSettingRead_FoldedCard_LeavesExpandIconUnturned()
     {
         TWindow.TWindowRun(() =>
         {

@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 public sealed class TLectern
 {
     [Fact]
-    public void LecternDraw_NoEntry_ShowsThePromptCentredAndTakesNoKey()
+    public void LecternDraw_NoEntry_ShowsPromptCentred()
     {
         TLecternCard.TLecternCardRun(
             static (_, save) => save("fire", [TInterface.TCardCreate("a meaning", 1)]),
@@ -35,7 +35,7 @@ public sealed class TLectern
     }
 
     [Fact]
-    public void LibraryRowSelect_EnterThroughTheWindow_KeepsTheLibraryDrawn()
+    public void LibraryRowSelect_EnterThroughWindow_KeepsLibraryDrawn()
     {
         TLecternCard.TLecternCardRun(
             static (_, save) => save("fire", [TInterface.TCardCreate("a meaning", 1)]),
@@ -55,7 +55,7 @@ public sealed class TLectern
     }
 
     [Fact]
-    public void LibraryObserve_EnterThenTab_MovesTheFocusBetweenSides()
+    public void LibraryObserve_EnterThenTab_MovesFocusBetweenSides()
     {
         TLecternCard.TLecternCardRun(
             static (engine, save) =>
@@ -83,7 +83,7 @@ public sealed class TLectern
     }
 
     [Fact]
-    public void LibraryKeymapFocus_ReadingSide_KeepsLettersAndEnterFromTheIndex()
+    public void LibraryKeymapFocus_ReadingSide_KeepsKeysFromIndex()
     {
         TLecternCard.TLecternCardRun(
             static (engine, save) =>
@@ -117,7 +117,7 @@ public sealed class TLectern
     }
 
     [Fact]
-    public void LecternObserve_DownAndUp_WalkTheItems()
+    public void LecternObserve_DownAndUp_WalksItems()
     {
         TLecternCard.TLecternCardRun(
             static (_, save) => save("fire", [TInterface.TCardCreate("a meaning", 1)]),
@@ -148,7 +148,7 @@ public sealed class TLectern
     }
 
     [Fact]
-    public void LecternObserve_PageAndEndKeys_ScrollAndLightTheFirstItemInView()
+    public void LecternObserve_PageAndEndKeys_ScrollsAndLightsFirst()
     {
         TLecternCard.TLecternCardRun(
             static (_, save) => save(
@@ -187,7 +187,7 @@ public sealed class TLectern
     }
 
     [Fact]
-    public void LecternDraw_FrequencyFails_NoticesOnceAndReadsTheRest()
+    public void LecternDraw_FrequencyFails_NoticesOnceAndReadsRest()
     {
         TLecternCard.TLecternCardRun(
             static (_, save) => save("fire", [TInterface.TCardCreate("a meaning", 1)]),
@@ -208,7 +208,7 @@ public sealed class TLectern
     }
 
     [Fact]
-    public void LecternDraw_EntryEditedElsewhere_ShowsTheNewHeadword()
+    public void LecternDraw_EntryEditedElsewhere_ShowsNewHeadword()
     {
         TLecternCard.TLecternCardRun(
             static (_, save) => save("fire", [TInterface.TCardCreate("a meaning", 1)]),
@@ -227,22 +227,28 @@ public sealed class TLectern
     }
 
     [Fact]
-    public void LibraryRowSelect_OpenFails_KeepsTheFocusOnTheIndex()
+    public void LibraryRowSelect_OpenFails_KeepsFocusOnIndex()
     {
-        TLecternCard.TLecternCardRun(
+        int closes = TLecternCard.TLecternCardRun(
             static (_, save) => save("fire", [TInterface.TCardCreate("a meaning", 1)]),
             static (send, rows, lit, _, console) =>
             {
+                Assert.DoesNotContain(rows(), static row => row.StartsWith("fire", StringComparison.Ordinal));
+                Assert.Contains(console.TConsoleFakeGrid, static row => row.Contains("fire", StringComparison.Ordinal));
+
                 send(ConsoleKey.Enter);
                 send(ConsoleKey.DownArrow);
 
                 Assert.Contains("Select an entry to read it", rows());
                 Assert.Null(lit());
+                Assert.Equal(1, TLecternNoticeRead(console, "The entry could not be opened."));
             },
             "ALTER TABLE entry RENAME TO entry_gone;",
             24,
             false,
             "could not be");
+
+        Assert.Equal(1, closes);
     }
 
     internal static int TLecternNoticeRead(TConsoleFake console, string notice)
@@ -255,8 +261,9 @@ public sealed class TLectern
         return shown.Where((up, index) => up && (index == 0 || !shown[index - 1])).Count();
     }
 
-    internal static void TLecternNoticeClose(TConsoleFake console, string notice, BLoop loop, Action batch)
+    internal static Func<int> TLecternNoticeClose(TConsoleFake console, string notice, BLoop loop, Action batch)
     {
+        int sent = 0;
         Func<bool> shown = () =>
         {
             try
@@ -275,11 +282,13 @@ public sealed class TLectern
             {
                 if (SpinWait.SpinUntil(shown, TimeSpan.FromSeconds(1)))
                 {
+                    _ = Interlocked.Increment(ref sent);
                     console.TConsoleFakeSettle(
                         TLecternKeyCreate(ConsoleKey.Escape), loop, batch, CancellationToken.None);
                 }
             }
         });
+        return () => Volatile.Read(ref sent);
     }
 
     internal static string? TLecternRoleRead(TConsoleFake console, string text)

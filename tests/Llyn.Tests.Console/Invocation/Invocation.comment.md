@@ -78,9 +78,9 @@ A failure prints its sentence even under `-quiet`, and an omission then prints n
 
 ## Stamp
 
-Commit: `36e31eb71c98`
-- `TEnvoyStrict.cs` `36a77c55fd844082`
-- `TInvocation.cs` `42aa50b5b7cfc622`
-- `TInvocationLectern.cs` `f30b793190565dfc`
-- `TInvocationPortrait.cs` `6dd3a46182199551`
-- `TInvocationWrite.cs` `5731f47f567fa54d`
+Commit: `9377e657b395`
+- `TEnvoyStrict.cs` `5fa5ccbee034a359`
+- `TInvocation.cs` `a4886a3e424979be`
+- `TInvocationLectern.cs` `785dafc086674fba`
+- `TInvocationPortrait.cs` `e92be20c3c887d24`
+- `TInvocationWrite.cs` `2eb9347f889f8f81`

@@ -41,8 +41,8 @@ One exact headword resolves, padding trimmed, and a prefix of it resolves to not
 
 ## Stamp
 
-Commit: `c37ca1837ded`
+Commit: `9377e657b395`
 - `TEntryClerk.cs` `16a67fe2e7556e44`
-- `TEntryClerkSaving.cs` `b0d7747bf10586c8`
+- `TEntryClerkSaving.cs` `4c249d112f1d6b5c`
 - `TEntryQueryClerk.cs` `7dbfdddb283eb430`
-- `TTranslationClerk.cs` `725efc805d3d1cf9`
+- `TTranslationClerk.cs` `64c99ec398b9091a`

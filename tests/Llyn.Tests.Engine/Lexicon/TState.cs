@@ -90,7 +90,7 @@ public sealed class TState
     }
 
     [Fact]
-    public void EntrySave_UnknownSourceCited_LinksTheSeededRow()
+    public void EntrySave_UnknownSourceCited_LinksSeededRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -327,7 +327,7 @@ public sealed class TState
     }
 
     [Fact]
-    public void DraftNormalize_UnreadableField_DropsItAndCommits()
+    public void DraftNormalize_UnreadableField_DropsFieldAndCommits()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

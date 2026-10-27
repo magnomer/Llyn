@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TAtelierVista
 {
     [Fact]
-    public void AtelierVistaStart_EverySubjectAndOrder_ReachesTheEngineByName()
+    public void AtelierVistaStart_SubjectsAndOrders_ReachesEngineByName()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

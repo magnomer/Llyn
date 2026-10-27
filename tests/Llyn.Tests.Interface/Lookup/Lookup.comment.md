@@ -86,6 +86,9 @@ Each relay is transparent.
 The source builder returns the source as its interface, so a test never names the infrastructure type.
 The reflex find reads one character through the page source with a bare rule holding only the given pattern.
 The shengfu, script and fanqie finds do the same for their sources.
+Each of the four builds its source with a one-millisecond regex patience.
+The recording save and prepare relays take an optional clock for the archive.
+Without one they hand it an instant fake clock, so a throttled fetch never waits in a test.
 
 ## `TListenerStub`
 
@@ -135,9 +138,9 @@ It lets the lookup fan-out be tested without a client or a language pack.
 
 ## Stamp
 
-Commit: `c37ca1837ded`
-- `TInterfacePronunciation.cs` `b4361dea0e1318c0`
-- `TInterfaceSource.cs` `cdac272edbe526b4`
+Commit: `9377e657b395`
+- `TInterfacePronunciation.cs` `f2c2a5c57d79238a`
+- `TInterfaceSource.cs` `4b4f2b085c8ef313`
 - `TListenerStub.cs` `cd67f626a506e3b1`
 - `TPronunciationHelper.cs` `5e32f29b42e25acc`
 - `TReceiverStub.cs` `5dcf9eb20ede4012`

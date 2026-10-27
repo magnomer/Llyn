@@ -54,7 +54,7 @@ public sealed class TPanelBin
     }
 
     [Fact]
-    public void PanelBinDelete_CreditedAuthor_AsksWithTheTally()
+    public void PanelBinDelete_CreditedAuthor_AsksWithTally()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

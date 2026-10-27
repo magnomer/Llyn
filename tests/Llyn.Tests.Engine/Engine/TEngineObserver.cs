@@ -59,7 +59,7 @@ public sealed class TEngineObserver
     }
 
     [Fact]
-    public void TenureStateRead_NothingChanged_AnswersTheKeptStateAgain()
+    public void TenureStateRead_NothingChanged_ReturnsSameState()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -73,7 +73,7 @@ public sealed class TEngineObserver
     }
 
     [Fact]
-    public void TenureStateRead_RequestApplied_ComputesAFreshStateThatSeesTheChange()
+    public void TenureStateRead_RequestApplied_ComputesFreshState()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -93,7 +93,7 @@ public sealed class TEngineObserver
     }
 
     [Fact]
-    public void TenureStateRead_Undone_ComputesAFreshStateThatSeesTheStepBack()
+    public void TenureStateRead_Undone_ComputesFreshState()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -114,7 +114,7 @@ public sealed class TEngineObserver
     }
 
     [Fact]
-    public void TenureStateRead_SameRecordStoredByAnotherTenure_ComputesAFreshStateThatSeesTheStoredRecord()
+    public void TenureStateRead_AnotherTenureStored_ComputesFreshState()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -140,7 +140,7 @@ public sealed class TEngineObserver
     }
 
     [Fact]
-    public void TenureStateRead_Cancelled_AnswersTheEndedStateInsteadOfTheKeptOne()
+    public void TenureStateRead_Cancelled_ReturnsEndedState()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

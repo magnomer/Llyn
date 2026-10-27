@@ -33,7 +33,7 @@ The held row stays as it was, and the lead is kept.
 
 ## Stamp
 
-Commit: `2f9a06b8eb95`
+Commit: `9377e657b395`
 - `TAtelierRespelling.cs` `060c6d6e0be58f03`
-- `TReflexOpening.cs` `b6425deb38756489`
-- `TReflexRow.cs` `f65e1ea1223e53ac`
+- `TReflexOpening.cs` `817d257866410ca8`
+- `TReflexRow.cs` `c78dd20b873ac79d`

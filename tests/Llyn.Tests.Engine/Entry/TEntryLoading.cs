@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TEntryLoading
 {
     [Fact]
-    public void EntryLoad_FrameWithNoExample_KeepsTheFrame()
+    public void EntryLoad_FrameWithNoExample_KeepsFrame()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -226,7 +226,7 @@ public sealed class TEntryLoading
     }
 
     [Fact]
-    public void EntryLoad_TitleOnBothCardKinds_KeepsThemApart()
+    public void EntryLoad_TitleOnBothCardKinds_KeepsKindsApart()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -125,7 +125,7 @@ public sealed class TCapsule
     }
 
     [Fact]
-    public void CapsuleWindow_WorkspaceChange_AdoptsItsLook()
+    public void CapsuleWindow_WorkspaceChange_AdoptsStoredGlyph()
     {
         using TWorkspace first = TWorkspace.TWorkspacePrepare();
         using TWorkspace second = TWorkspace.TWorkspacePrepare();
@@ -142,7 +142,7 @@ public sealed class TCapsule
     }
 
     [Fact]
-    public void CapsuleWindow_WorkspaceChangeMissingValue_ResetsToDefault()
+    public void CapsuleWindow_MissingValueChange_ResetsToDefault()
     {
         using TWorkspace first = TWorkspace.TWorkspacePrepare();
         using TWorkspace second = TWorkspace.TWorkspacePrepare();
@@ -189,7 +189,7 @@ public sealed class TCapsule
     }
 
     [Fact]
-    public void CapsuleWindow_WorkspaceChangeStaleTheme_FallsBackQuietly()
+    public void CapsuleWindow_StaleThemeChange_FallsBackQuietly()
     {
         using TWorkspace first = TWorkspace.TWorkspacePrepare();
         using TWorkspace second = TWorkspace.TWorkspacePrepare();

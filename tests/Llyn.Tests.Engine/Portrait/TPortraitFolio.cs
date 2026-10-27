@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TPortraitFolio
 {
     [Fact]
-    public void FolioSave_FoldedRow_PrintsTheRowOpen()
+    public void FolioSave_FoldedRow_PrintsRowOpen()
     {
         string path = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".docx");
 
@@ -38,7 +38,7 @@ public sealed class TPortraitFolio
     }
 
     [Fact]
-    public void FolioSave_FullPortrait_WritesAReadablePackage()
+    public void FolioSave_FullPortrait_WritesReadablePackage()
     {
         string path = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".docx");
 
@@ -70,7 +70,7 @@ public sealed class TPortraitFolio
     }
 
     [Fact]
-    public void FolioSave_FullPortrait_CarriesEveryFieldTheDisplayShows()
+    public void FolioSave_FullPortrait_CarriesDisplayedFields()
     {
         string path = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".docx");
 

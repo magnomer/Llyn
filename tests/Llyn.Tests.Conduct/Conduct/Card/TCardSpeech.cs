@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TCardSpeech
 {
     [Fact]
-    public void SpeechSet_TypedText_KeepsItPendingInTheDraft()
+    public void SpeechSet_TypedText_KeepsPendingInDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -27,7 +27,7 @@ public sealed class TCardSpeech
     }
 
     [Fact]
-    public void SpeechSet_TypedPart_OffersTheDraftLanguagesPartsMarkedWhenHeld()
+    public void SpeechSet_TypedPart_OffersPartsMarkedWhenHeld()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -47,7 +47,7 @@ public sealed class TCardSpeech
     }
 
     [Fact]
-    public void SpeechRead_Draft_CarriesTheCategoryMenuForTheSettledText()
+    public void SpeechRead_Draft_CarriesCategoryMenuForSettledText()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -67,7 +67,7 @@ public sealed class TCardSpeech
     }
 
     [Fact]
-    public void SpeechAdd_CommittedName_BecomesAChipAndClearsTheText()
+    public void SpeechAdd_CommittedName_BecomesChipClearsText()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -97,7 +97,7 @@ public sealed class TCardSpeech
     }
 
     [Fact]
-    public void SpeechRemove_Chip_DropsItAndKeepsTheTypedText()
+    public void SpeechRemove_Chip_DropsChipKeepsTypedText()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -115,7 +115,7 @@ public sealed class TCardSpeech
     }
 
     [Fact]
-    public void SpeechRead_DraftChangedElsewhere_ClearsTheTypedText()
+    public void SpeechRead_DraftChangedElsewhere_ClearsTypedText()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -131,7 +131,7 @@ public sealed class TCardSpeech
     }
 
     [Fact]
-    public void SpeechRead_DraftUndone_ShowsTheDraftsOwnList()
+    public void SpeechRead_DraftUndone_ShowsOwnDraftList()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

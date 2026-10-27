@@ -22,21 +22,21 @@ public sealed class TAtelier
     }
 
     [Fact]
-    public void AtelierRefusalRead_BusyOrNot_ReadsItsOwnKey()
+    public void AtelierRefusalRead_BusyOrNot_ReadsKeyPerState()
     {
         Assert.Equal("Workspace.Busy", CAtelier.CAtelierRefusalRead(true));
         Assert.Equal("Workspace.OpenFailed", CAtelier.CAtelierRefusalRead(false));
     }
 
     [Fact]
-    public void AtelierRescueRead_SetAsideOrNot_ReadsTheKeyOnlyWhenDone()
+    public void AtelierRescueRead_SetAsideOrNot_ReadsKeyOnlyWhenDone()
     {
         Assert.Equal("Workspace.DatabaseReset", CAtelier.CAtelierRescueRead(true));
         Assert.Null(CAtelier.CAtelierRescueRead(false));
     }
 
     [Fact]
-    public void AtelierVolumeRead_FreshEngine_ReadsDefaultVolumeAndSplit()
+    public void AtelierVolumeRead_FreshEngine_ReadsDefaultLevelAndSplit()
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
@@ -61,7 +61,7 @@ public sealed class TAtelier
     }
 
     [Fact]
-    public void AtelierVolumeSet_Settled_WritesTheLevel()
+    public void AtelierVolumeSet_Settled_WritesLevel()
     {
         List<double> played = [];
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
@@ -76,7 +76,7 @@ public sealed class TAtelier
     }
 
     [Fact]
-    public void AtelierVolumeSet_FaultingPostureStore_ShowsTheLayoutFailureOnceAndRecordsEachFault()
+    public void AtelierVolumeSet_FaultingPostureStore_ShowsFailureOnce()
     {
         List<double> played = [];
         List<string> notices = [];
@@ -120,7 +120,7 @@ public sealed class TAtelier
     }
 
     [Fact]
-    public void AtelierOpen_LayoutFailureBeforeOpen_ShowsTheNoticeOnTheOpen()
+    public void AtelierOpen_LayoutFailureBeforeOpen_ShowsNoticeOnce()
     {
         List<string> notices = [];
         LPostureVault faulting = TEngineFake.TEngineCreate<LPostureVault>(
@@ -151,7 +151,7 @@ public sealed class TAtelier
     [InlineData(double.NaN, 1)]
     [InlineData(double.PositiveInfinity, 1)]
     [InlineData(double.NegativeInfinity, 0)]
-    public void AtelierVolumeRead_KeptLevelOutOfRange_ReadsAFiniteLevelFromSilenceToFull(double level, double read)
+    public void AtelierVolumeRead_KeptLevelOutOfRange_ReadsFiniteLevel(double level, double read)
     {
         LPostureVault kept = TEngineFake.TEngineCreate<LPostureVault>(new Dictionary<string, Func<object?[]?, object?>>
         {
@@ -170,7 +170,7 @@ public sealed class TAtelier
     [InlineData(double.NaN, 1)]
     [InlineData(double.PositiveInfinity, 1)]
     [InlineData(double.NegativeInfinity, 0)]
-    public void AtelierVolumeSet_LevelOutOfRange_PlaysAndKeepsAFiniteLevelFromSilenceToFull(double level, double kept)
+    public void AtelierVolumeSet_LevelOutOfRange_KeepsFiniteLevel(double level, double kept)
     {
         List<double> played = [];
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
@@ -186,7 +186,7 @@ public sealed class TAtelier
     }
 
     [Fact]
-    public void WorkspaceEstablishmentChanged_Opened_ShowsTheStatusAtOnceAndStopsOnDetach()
+    public void WorkspaceEstablishmentChanged_Opened_RaisesUntilDetach()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -206,7 +206,7 @@ public sealed class TAtelier
     [InlineData(0, 0L, 3000L, "Establishment.Entry", "Establishment.Kilobyte", 3d)]
     [InlineData(2, 1L, 1024L * 1024, "Establishment.EntryOne", "Establishment.Megabyte", 1d)]
     [InlineData(0, 7L, 3L * 1024 * 1024 / 2, "Establishment.Entry", "Establishment.Megabyte", 1.5d)]
-    public void AtelierEstablishmentRead_EngineVerdicts_ChoosesWordingKeysAndAmount(
+    public void AtelierEstablishmentRead_Verdicts_ChoosesKeysAndAmount(
         int unsaved, long entry, long size, string entryKey, string sizeKey, double amount)
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -232,7 +232,7 @@ public sealed class TAtelier
     }
 
     [Fact]
-    public void AtelierOpen_Opened_RaisesTheViewsBeforeTheirState()
+    public void AtelierOpen_Opened_RaisesViewsBeforeState()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -248,7 +248,7 @@ public sealed class TAtelier
     }
 
     [Fact]
-    public void AtelierOpen_BlankLeftoverDraft_SweepsItBeforeTheViewsRestore()
+    public void AtelierOpen_BlankLeftoverDraft_SweepsBeforeViewsRestore()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         long blank;
@@ -286,7 +286,7 @@ public sealed class TAtelier
     }
 
     [Fact]
-    public void AtelierWorkspaceChange_InputHeld_OpenLeavesTheInputOnABlankEntry()
+    public void AtelierWorkspaceChange_InputHeld_LeavesBlankEntry()
     {
         using TWorkspace first = TWorkspace.TWorkspacePrepare();
         using TWorkspace second = TWorkspace.TWorkspacePrepare();
@@ -314,7 +314,7 @@ public sealed class TAtelier
     }
 
     [Fact]
-    public void AtelierQuitConfirm_InputUnsaved_AsksOnceAndDiscardsEveryArea()
+    public void AtelierQuitConfirm_InputUnsaved_AsksOnceAndDiscardsAll()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

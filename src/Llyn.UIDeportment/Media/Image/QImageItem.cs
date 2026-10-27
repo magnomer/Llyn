@@ -93,18 +93,6 @@ internal sealed class QImageItem : INotifyPropertyChanged, QImagePending
         QImageItemBuild();
     }
 
-    internal static string? QImageItemOpen(Window owner)
-    {
-        Microsoft.Win32.OpenFileDialog dialog = new()
-        {
-            Title = "Choose an image",
-            Filter = "Image files|*.png;*.jpg;*.jpeg;*.gif;*.bmp;*.webp;*.tif;*.tiff|All files|*.*",
-            CheckFileExists = true,
-        };
-
-        return dialog.ShowDialog(owner) == true ? dialog.FileName : null;
-    }
-
     internal static void QImageItemRefine(FrameworkElement container, object item, string? _)
     {
         if (item is not QImageItem row)

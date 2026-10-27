@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 public sealed class TRequestList
 {
     [Fact]
-    public void RequestApply_SentenceAddition_MintsNegativeIdWithNoExample()
+    public void RequestApply_SentenceAddition_MintsNegativeIdNoExample()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -43,7 +43,7 @@ public sealed class TRequestList
     }
 
     [Fact]
-    public void RequestApply_SentenceRemoval_DropsTheRowNamed()
+    public void RequestApply_SentenceRemoval_DropsRowNamed()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -79,7 +79,7 @@ public sealed class TRequestList
     }
 
     [Fact]
-    public void RequestApply_SentenceExample_KeepsThePositiveId()
+    public void RequestApply_SentenceExample_KeepsPositiveId()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -119,7 +119,7 @@ public sealed class TRequestList
     }
 
     [Fact]
-    public void RequestApply_SituationPick_CopiesTheStoredRow()
+    public void RequestApply_SituationPick_CopiesStoredRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -143,7 +143,7 @@ public sealed class TRequestList
     }
 
     [Fact]
-    public void RequestApply_SituationTitle_ChangesEveryCardHoldingIt()
+    public void RequestApply_SituationTitle_ChangesAllHoldingCards()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -219,7 +219,7 @@ public sealed class TRequestList
     }
 
     [Fact]
-    public void RequestApply_TranslationPick_HoldsTheEntryOnce()
+    public void RequestApply_TranslationPick_HoldsEntryOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -252,7 +252,7 @@ public sealed class TRequestList
     }
 
     [Fact]
-    public void DraftCommit_FullRequestSequence_StoresTheSameRowsAsTheFixture()
+    public void DraftCommit_FullRequestSequence_StoresFixtureRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -300,7 +300,7 @@ public sealed class TRequestList
     }
 
     [Fact]
-    public void ReferenceCommit_AuthorsAddedAndPicked_AttachesThemInOrder()
+    public void ReferenceCommit_AuthorsAddedAndPicked_AttachesInOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -326,7 +326,7 @@ public sealed class TRequestList
     }
 
     [Fact]
-    public void RequestApply_AuthorRemovalAndShift_ReorderTheCredits()
+    public void RequestApply_AuthorRemovalAndShift_ReordersCredits()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -345,7 +345,7 @@ public sealed class TRequestList
     }
 
     [Fact]
-    public void RequestApply_AuthorAdditionOfKnownName_CreditsTheStoredAuthor()
+    public void RequestApply_KnownAuthorName_CreditsStoredAuthor()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -365,7 +365,7 @@ public sealed class TRequestList
     }
 
     [Fact]
-    public void AuthorFind_TypedText_ReadsTheAuthorsItMatches()
+    public void AuthorFind_TypedText_ReadsMatchingAuthors()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();

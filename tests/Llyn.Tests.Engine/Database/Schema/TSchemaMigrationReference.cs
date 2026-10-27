@@ -5,7 +5,7 @@ namespace Llyn.Tests;
 public sealed class TSchemaMigrationReference
 {
     [Fact]
-    public void DatabaseCreate_UnknownSourceWording_LinksTheUnknownSource()
+    public void DatabaseCreate_UnknownSourceWording_LinksUnknownSource()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
 
@@ -33,7 +33,7 @@ public sealed class TSchemaMigrationReference
     }
 
     [Fact]
-    public void DatabaseCreate_UnknownSourceDeleted_MintsItForOldWording()
+    public void DatabaseCreate_UnknownSourceDeleted_MintsUnknownSource()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
 
@@ -54,7 +54,7 @@ public sealed class TSchemaMigrationReference
     }
 
     [Fact]
-    public void DatabaseCreate_NewWorkspace_SeedsTheUnknownSource()
+    public void DatabaseCreate_NewWorkspace_SeedsUnknownSource()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
 

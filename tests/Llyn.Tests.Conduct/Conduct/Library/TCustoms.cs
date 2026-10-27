@@ -7,7 +7,7 @@ namespace Llyn.Tests;
 public sealed class TCustoms
 {
     [Fact]
-    public void CustomsRowRead_OneCandidate_MergesIntoIt()
+    public void CustomsRowRead_OneCandidate_MergesIntoCandidate()
     {
         CSCustomsRow row = TCustomsPrepare([7]).TCustomsRowRead(0);
 
@@ -15,7 +15,7 @@ public sealed class TCustoms
     }
 
     [Fact]
-    public void CustomsRowRead_SeveralCandidates_StartsFreshWithoutTarget()
+    public void CustomsRowRead_SeveralCandidates_StartsFresh()
     {
         CSCustoms customs = TCustomsPrepare([7, 8], []);
 
@@ -26,7 +26,7 @@ public sealed class TCustoms
     }
 
     [Fact]
-    public void CustomsRowRead_FreshAfterPick_KeepsThePick()
+    public void CustomsRowRead_FreshAfterPick_KeepsPick()
     {
         CSCustoms customs = TCustomsPrepare([7, 8]);
         customs.TCustomsTargetSet(0, 8);
@@ -47,7 +47,7 @@ public sealed class TCustoms
     }
 
     [Fact]
-    public void CustomsRowRead_ReplaceWithTarget_WordsTheLostCards()
+    public void CustomsRowRead_ReplaceWithTarget_WordsLostCards()
     {
         CSCustoms customs = TCustomsPrepare([7], [7, 8]);
         Assert.Null(customs.TCustomsRowRead(0).CSCustomsRowLoss);

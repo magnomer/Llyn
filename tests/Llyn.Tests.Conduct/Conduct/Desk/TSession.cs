@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TSession
 {
     [Fact]
-    public void Save_NamedDraft_StoresAndShowsTheStoredId()
+    public void Save_NamedDraft_StoresAndShowsStoredId()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -31,7 +31,7 @@ public sealed class TSession
     }
 
     [Fact]
-    public void Save_Unchanged_KeepsTheDraft()
+    public void Save_Unchanged_KeepsDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -49,7 +49,7 @@ public sealed class TSession
     }
 
     [Fact]
-    public void Finish_NotReady_RefusesAndKeepsTheDraft()
+    public void Finish_NotReady_RefusesAndKeepsDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -66,7 +66,7 @@ public sealed class TSession
     }
 
     [Fact]
-    public void Close_Store_FinishesWithoutTheReadyCheck()
+    public void Close_Store_FinishesWithoutReadyCheck()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -82,7 +82,7 @@ public sealed class TSession
     }
 
     [Fact]
-    public void Cancel_HeldDraft_DropsItAndAnnouncesHeld()
+    public void Cancel_HeldDraft_DropsAndAnnouncesHeld()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -102,7 +102,7 @@ public sealed class TSession
     }
 
     [Fact]
-    public void Undo_OwnDraft_StepsTheDeskBackAndForward()
+    public void Undo_OwnDraft_StepsDeskBackAndForward()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -124,7 +124,7 @@ public sealed class TSession
     }
 
     [Fact]
-    public void Undo_WorkspaceChanged_ShowsTheHoldFailureOnce()
+    public void Undo_WorkspaceChanged_ShowsHoldFailureOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -143,7 +143,7 @@ public sealed class TSession
     }
 
     [Fact]
-    public void Finish_EditorShown_HandsTheEditorTheDecision()
+    public void Finish_EditorShown_HandsEditorDecision()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -160,7 +160,7 @@ public sealed class TSession
     }
 
     [Fact]
-    public void Finish_EditorHidden_FinishesTheOwnDesk()
+    public void Finish_EditorHidden_FinishesOwnDesk()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -176,7 +176,7 @@ public sealed class TSession
     }
 
     [Fact]
-    public void QuitConfirm_NothingUnsaved_ClosesEveryEditorWithoutAsking()
+    public void QuitConfirm_NothingUnsaved_ClosesEditorsWithoutAsking()
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());

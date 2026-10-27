@@ -34,7 +34,7 @@ public sealed class TMarkupImporting
     }
 
     [Fact]
-    public void MarkupImport_AbsentTranslation_StoresEntryAndReportsOmission()
+    public void MarkupImport_AbsentTranslation_ReportsOmission()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

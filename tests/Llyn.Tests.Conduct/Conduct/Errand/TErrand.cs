@@ -11,7 +11,7 @@ namespace Llyn.Tests;
 public sealed class TErrand
 {
     [Fact]
-    public void ErrandRecordingRead_EngineRecording_CarriesEveryFieldBothWays()
+    public void ErrandRecordingRead_EngineRecording_RoundTripsAllFields()
     {
         LRecording recording = TInterface.TRecordingCreate("Oxford", "https://example.test/a.mp3", 2, false, "British");
 
@@ -67,7 +67,7 @@ public sealed class TErrand
     }
 
     [Fact]
-    public void ErrandHarvestResonate_ThreeSteps_RaisesTheClipOnceEach()
+    public void ErrandHarvestResonate_ThreeSteps_RaisesClipOnceEach()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -86,7 +86,7 @@ public sealed class TErrand
     }
 
     [Fact]
-    public void ErrandHarvestResonate_SourcesOutOfOrder_KeepsThePackOrderOnce()
+    public void ErrandHarvestResonate_SourcesOutOfOrder_KeepsPackOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -106,7 +106,7 @@ public sealed class TErrand
     }
 
     [Fact]
-    public void ErrandHarvestResonate_NoAddress_ChoosesMissingWhenReachedAndBrokenOtherwise()
+    public void ErrandHarvestResonate_NoAddress_ChoosesMissingOrBroken()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -125,7 +125,7 @@ public sealed class TErrand
     }
 
     [Fact]
-    public void ErrandHarvestResonate_EmptyAnswerAfterARecording_KeepsTheRecording()
+    public void ErrandHarvestResonate_EmptyAnswerLater_KeepsRecording()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -172,7 +172,7 @@ public sealed class TErrand
     }
 
     [Fact]
-    public void ErrandRecordingStart_WorkspaceChanged_ShowsNothingAndFinishes()
+    public void ErrandRecordingStart_WorkspaceChanged_ShowsNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

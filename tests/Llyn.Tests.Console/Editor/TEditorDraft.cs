@@ -11,7 +11,7 @@ namespace Llyn.Tests;
 public sealed class TEditorDraft
 {
     [Fact]
-    public void WindowKeyObserve_TypedThenLeaveKeyInOneBatch_RaisesTheLeaveQuestionAndKeepsTheWindow()
+    public void WindowKeyObserve_TypedLeaveBatch_RaisesLeaveQuestion()
     {
         TEditorWindowRun(
             (window, atelier, console) =>
@@ -30,7 +30,7 @@ public sealed class TEditorDraft
     }
 
     [Fact]
-    public void EditorKeymap_SaveWithAnOpenField_ClosesTheFieldAndStoresItsText()
+    public void EditorKeymap_SaveWithOpenField_ClosesFieldStoresText()
     {
         List<string> asked = [];
         TEditorFrameRun(
@@ -53,7 +53,7 @@ public sealed class TEditorDraft
     }
 
     [Fact]
-    public void EditorEntrySave_RefusedSaveOnAnotherEditor_ShowsTheRefusalOnceAndKeepsTheDraftAndTheLitBar()
+    public void EditorEntrySave_RefusedOnOtherEditor_ShowsRefusalOnce()
     {
         List<string> asked = [];
         CEnvoy envoy = TEnvoyFake.TEnvoyFolderCreate(null, asked);
@@ -126,7 +126,7 @@ public sealed class TEditorDraft
     [InlineData("Favorite", "AltRight")]
     [InlineData("Favorite", "F10")]
     [InlineData("Favorite", "Workspace")]
-    public void WindowKeymap_LeaveKeysOnABrowseTab_AskOnlyOverAnAlteredDraft(string tab, string trigger)
+    public void WindowKeymap_LeaveKeysOnBrowseTab_AsksOnAlteredDraft(string tab, string trigger)
     {
         Assert.False(TEditorDraftRun(tab, trigger, false));
         Assert.True(TEditorDraftRun(tab, trigger, true));
@@ -138,14 +138,14 @@ public sealed class TEditorDraft
     [InlineData("AltRight", false)]
     [InlineData("F10", true)]
     [InlineData("Workspace", true)]
-    public void WindowKeymap_LeaveKeysOffInput_AskOnlyOnQuitOrWorkspaceChange(string trigger, bool asks)
+    public void WindowKeymap_InputTabLeaveKeys_AsksOnQuitOrWorkspace(string trigger, bool asks)
     {
         Assert.False(TEditorDraftRun("Input", trigger, false));
         Assert.Equal(asks, TEditorDraftRun("Input", trigger, true));
     }
 
     [Fact]
-    public void LibraryObserve_CancelAfterEnterOnAnotherRow_LightsTheEditedEntry()
+    public void LibraryObserve_CancelAfterOtherRow_LightsEditedEntry()
     {
         List<string> asked = [];
         TLibrary.TLibraryRun(
@@ -176,7 +176,7 @@ public sealed class TEditorDraft
     [InlineData(true)]
     [InlineData(false)]
     [InlineData(null)]
-    public void LibraryKeymap_LeaveAnswers_SaveStoresDiscardDropsCancelStays(bool? answer)
+    public void LibraryKeymap_LeaveAnswers_StoresDropsOrStays(bool? answer)
     {
         List<string> asked = [];
         TLibrary.TLibraryRun(
@@ -205,7 +205,7 @@ public sealed class TEditorDraft
     }
 
     [Fact]
-    public void LibraryKeymap_F2OnAStoredEntry_ReopensItAndTheLitRowFollows()
+    public void LibraryKeymap_F2OnStoredEntry_ReopensLitRowFollows()
     {
         TLibrary.TLibraryRun(
             ["fire", "stone", "water"],
@@ -235,7 +235,7 @@ public sealed class TEditorDraft
     }
 
     [Fact]
-    public void LibraryKeymap_F2OnAFreshEntry_LightsTheStoredEntry()
+    public void LibraryKeymap_F2OnFreshEntry_LightsStoredEntry()
     {
         TLibrary.TLibraryRun(
             ["fire", "stone", "water"],

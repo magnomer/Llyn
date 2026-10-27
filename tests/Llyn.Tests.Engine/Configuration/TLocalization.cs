@@ -26,7 +26,7 @@ public sealed class TLocalization
     }
 
     [Fact]
-    public void LocalizationTextRead_MissingKey_ReturnsTheKey()
+    public void LocalizationTextRead_MissingKey_ReturnsKey()
     {
         TInterface.TLocalizationLoad(TLocalizationSample, "en");
 
@@ -35,7 +35,7 @@ public sealed class TLocalization
     }
 
     [Fact]
-    public void LocalizationLoad_EmbeddedKorean_SwitchesTheCatalog()
+    public void LocalizationLoad_EmbeddedKorean_SwitchesCatalog()
     {
         IReadOnlyDictionary<string, string> english = TInterface.TLocalizationLoad("en");
         IReadOnlyDictionary<string, string> korean = TInterface.TLocalizationLoad("ko");
@@ -45,7 +45,7 @@ public sealed class TLocalization
     }
 
     [Fact]
-    public void LocalizationNormalize_UnknownLanguage_FallsBackToEnglish()
+    public void LocalizationNormalize_UnknownLanguage_ReturnsEnglish()
     {
         Assert.Equal("en", TInterface.TLocalizationNormalize("fr"));
         Assert.Equal("ko", TInterface.TLocalizationNormalize("ko"));
@@ -54,7 +54,7 @@ public sealed class TLocalization
     }
 
     [Fact]
-    public void LocalizationGroupFind_SearchText_ReadsTheGroupsWhoseTextsMatch()
+    public void LocalizationGroupFind_SearchText_ReadsMatchingGroups()
     {
         TInterface.TLocalizationLoad(TLocalizationSample, "en");
         IReadOnlyList<(string, IReadOnlyList<string>)> groups =
@@ -70,7 +70,7 @@ public sealed class TLocalization
     }
 
     [Fact]
-    public void LocalizationGroupFind_BlankOrNullText_ReadsEveryGroupInOrder()
+    public void LocalizationGroupFind_BlankOrNull_ReadsAllGroupsInOrder()
     {
         IReadOnlyList<(string, IReadOnlyList<string>)> groups = [("One", []), ("Two", ["Display.Note"])];
 

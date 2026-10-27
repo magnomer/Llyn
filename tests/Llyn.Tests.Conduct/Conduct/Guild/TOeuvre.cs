@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 public sealed class TOeuvre
 {
     [Fact]
-    public void OeuvreRowsRead_ChosenAuthor_ListsSourcesCreditingIt()
+    public void OeuvreRowsRead_ChosenAuthor_ListsCreditedSources()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -38,7 +38,7 @@ public sealed class TOeuvre
     }
 
     [Fact]
-    public void OeuvreRowsRead_ChosenSourceLeftTheList_ClosesThePanel()
+    public void OeuvreRowsRead_ChosenSourceLeftList_ClosesPanel()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -79,7 +79,7 @@ public sealed class TOeuvre
     }
 
     [Fact]
-    public void ApertureQuerySet_Comb_NarrowsTheSources()
+    public void ApertureQuerySet_Comb_NarrowsSources()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -93,7 +93,7 @@ public sealed class TOeuvre
     }
 
     [Fact]
-    public void OeuvreVistaRestore_FreshVistas_CarriesTheComb()
+    public void OeuvreVistaRestore_FreshVistas_CarriesComb()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -122,7 +122,7 @@ public sealed class TOeuvre
     }
 
     [Fact]
-    public void OeuvrePanelRowOpen_SourceDraft_RaisesItsSheet()
+    public void OeuvrePanelRowOpen_SourceDraft_RaisesSheet()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -138,7 +138,7 @@ public sealed class TOeuvre
     }
 
     [Fact]
-    public void OeuvreAuthorRead_OneWork_WordsTheWork()
+    public void OeuvreAuthorRead_OneWork_WordsWork()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

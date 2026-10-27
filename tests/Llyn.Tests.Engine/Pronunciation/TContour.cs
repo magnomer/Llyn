@@ -87,7 +87,7 @@ public sealed class TContour
     }
 
     [Fact]
-    public void EngineContourRead_TonalPack_DrawsOnlyTheTonalLanguage()
+    public void EngineContourRead_TonalPack_DrawsOnlyTonalLanguage()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -116,7 +116,7 @@ public sealed class TContour
     }
 
     [Fact]
-    public void ContourToned_MarkedAndBareSyllables_FlagsOnlyTheMarkedOne()
+    public void ContourToned_MarkedAndBareSyllables_FlagsOnlyMarked()
     {
         IReadOnlyList<LContour> syllables = TInterface.TContourParse("ma˧˥ ma");
 

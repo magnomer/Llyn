@@ -42,7 +42,7 @@ public sealed class TEngineFanqieSource
     }
 
     [Fact]
-    public async Task FanqieStart_LineBook_StoresPartsUnderItsSource()
+    public async Task FanqieStart_LineBook_StoresPartsUnderSource()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineWikiPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

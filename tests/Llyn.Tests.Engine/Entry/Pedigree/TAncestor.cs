@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TAncestor
 {
     [Fact]
-    public void AncestorInsertion_AboveTheHeadword_TakesOverTheRoots()
+    public void AncestorInsertion_AboveHeadword_TakesOverRoots()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -27,7 +27,7 @@ public sealed class TAncestor
     }
 
     [Fact]
-    public void AncestorInsertion_AboveABox_TakesOverItsSources()
+    public void AncestorInsertion_AboveBox_TakesOverSources()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -44,7 +44,7 @@ public sealed class TAncestor
     }
 
     [Fact]
-    public void AncestorAddition_BesideABox_SharesItsChild()
+    public void AncestorAddition_BesideBox_SharesChild()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -62,7 +62,7 @@ public sealed class TAncestor
     }
 
     [Fact]
-    public void AncestorRemoval_BoxWithSources_HandsThemItsPlace()
+    public void AncestorRemoval_BoxWithSources_PromotesSources()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -77,7 +77,7 @@ public sealed class TAncestor
     }
 
     [Fact]
-    public void AncestorTarget_BoxWithSources_SetsThemAside()
+    public void AncestorTarget_BoxWithSources_DropsSourcesAndLanguage()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -94,7 +94,7 @@ public sealed class TAncestor
     }
 
     [Fact]
-    public void AncestorRestoration_AfterPick_RestoresTheSources()
+    public void AncestorRestoration_AfterPick_RestoresSources()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -115,7 +115,7 @@ public sealed class TAncestor
     }
 
     [Fact]
-    public void AncestorRestoration_SecondUndo_RefusesTheBox()
+    public void AncestorRestoration_SecondUndo_ThrowsItemRefusal()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -132,7 +132,7 @@ public sealed class TAncestor
     }
 
     [Fact]
-    public void AncestorRestoration_TextAfterPick_RefusesTheBox()
+    public void AncestorRestoration_TextAfterPick_ThrowsItemRefusal()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -150,7 +150,7 @@ public sealed class TAncestor
     }
 
     [Fact]
-    public void AncestorText_LinkedBox_ClearsTheLink()
+    public void AncestorText_LinkedBox_ClearsLink()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -167,7 +167,7 @@ public sealed class TAncestor
     }
 
     [Fact]
-    public void AncestorInsertion_AboveALinkedBox_RefusesTheSource()
+    public void AncestorInsertion_AboveLinkedBox_ThrowsLinkRefusal()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -188,7 +188,7 @@ public sealed class TAncestor
     }
 
     [Fact]
-    public void AncestorTarget_UnknownEntry_RefusesTheLink()
+    public void AncestorTarget_UnknownEntry_ThrowsLinkRefusal()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -204,7 +204,7 @@ public sealed class TAncestor
     }
 
     [Fact]
-    public void AncestorLanguage_Tongue_ClearsTheAppLanguage()
+    public void AncestorLanguage_Tongue_ClearsAppLanguage()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -222,7 +222,7 @@ public sealed class TAncestor
     }
 
     [Fact]
-    public void AncestorLanguage_UnknownTongue_RefusesTheItem()
+    public void AncestorLanguage_UnknownTongue_ThrowsItemRefusal()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -237,7 +237,7 @@ public sealed class TAncestor
     }
 
     [Fact]
-    public void AncestorRelation_BuiltinThenNone_ClearsTheRelation()
+    public void AncestorRelation_BuiltinThenNone_ClearsRelation()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -256,7 +256,7 @@ public sealed class TAncestor
     }
 
     [Fact]
-    public void AncestorRelation_UnknownRelation_RefusesTheItem()
+    public void AncestorRelation_UnknownRelation_ThrowsItemRefusal()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -271,7 +271,7 @@ public sealed class TAncestor
     }
 
     [Fact]
-    public void AncestorGloss_TextBox_StoresTheGloss()
+    public void AncestorGloss_TextBox_StoresGloss()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -285,7 +285,7 @@ public sealed class TAncestor
     }
 
     [Fact]
-    public void AncestorRemoval_UnknownBox_RefusesTheItem()
+    public void AncestorRemoval_UnknownBox_ThrowsItemRefusal()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

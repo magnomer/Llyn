@@ -41,7 +41,7 @@ public sealed class TInvocation
     [InlineData(new[] { "-help", "-version" }, "The options -help and -version are both verbs, and only one verb")]
     [InlineData(new[] { "-yes", "-no", "-version" }, "The options -yes and -no cannot be given together.")]
     [InlineData(new[] { "-quiet" }, "Name one verb as an option, in the form -name or -name:value.")]
-    public void BootstrapIntroduce_UsageError_PrintsTheSentence(string[] args, string sentence)
+    public void BootstrapIntroduce_UsageError_PrintsSentence(string[] args, string sentence)
     {
         TConsoleFake console = new();
 
@@ -98,7 +98,7 @@ public sealed class TInvocation
     }
 
     [Fact]
-    public void InvocationRun_HelpVerb_ListsThatVerbOnly()
+    public void InvocationRun_HelpVerb_ListsVerbOnly()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         TConsoleFake console = new();
@@ -112,7 +112,7 @@ public sealed class TInvocation
     }
 
     [Fact]
-    public void InvocationRun_Version_PrintsTheVersionLine()
+    public void InvocationRun_Version_PrintsVersionLine()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         TConsoleFake console = new();
@@ -127,7 +127,7 @@ public sealed class TInvocation
     }
 
     [Fact]
-    public void InvocationRun_Workspace_PrintsTheFolder()
+    public void InvocationRun_Workspace_PrintsFolder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         TConsoleFake console = new();
@@ -139,7 +139,7 @@ public sealed class TInvocation
     }
 
     [Fact]
-    public void InvocationRun_WorkspacePath_MovesTheWorkspace()
+    public void InvocationRun_WorkspacePath_MovesWorkspace()
     {
         using TWorkspace first = TWorkspace.TWorkspacePrepare();
         using TWorkspace second = TWorkspace.TWorkspacePrepare();
@@ -264,7 +264,7 @@ public sealed class TInvocation
     }
 
     [Fact]
-    public void InvocationRun_FindLeasedWorkspace_PrintsTheMatch()
+    public void InvocationRun_FindLeasedWorkspace_PrintsMatch()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine holder = new(

@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TCardTranslation
 {
     [Fact]
-    public void TranslationAdd_TypedList_LinksResolvedWordsAndKeepsTheUnresolved()
+    public void TranslationAdd_TypedList_LinksResolvedKeepsUnresolved()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -26,7 +26,7 @@ public sealed class TCardTranslation
     }
 
     [Fact]
-    public void TranslationAdd_TypedWord_OffersTheMatchingEntriesWithNoneChosen()
+    public void TranslationAdd_TypedWord_OffersMatchesNoneChosen()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -48,7 +48,7 @@ public sealed class TCardTranslation
     }
 
     [Fact]
-    public void TranslationAdd_TypedWord_OffersAFreshEntryInEveryLanguageWithTheDraftLanguageLast()
+    public void TranslationAdd_TypedWord_OrdersLanguagesDraftLast()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -70,7 +70,7 @@ public sealed class TCardTranslation
     }
 
     [Fact]
-    public void TranslationAdd_EditedEntry_LeavesItOutAndKeepsItsTwinNumbered()
+    public void TranslationAdd_EditedEntry_OmitsEditedNumbersTwin()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -92,7 +92,7 @@ public sealed class TCardTranslation
     }
 
     [Fact]
-    public void TranslationInsert_StoredEntry_LinksItOnce()
+    public void TranslationInsert_StoredEntry_LinksOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -107,7 +107,7 @@ public sealed class TCardTranslation
     }
 
     [Fact]
-    public void TranslationInsert_CaretMovedBack_InsertsBeforeTheAnchor()
+    public void TranslationInsert_CaretMovedBack_InsertsBeforeAnchor()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -128,7 +128,7 @@ public sealed class TCardTranslation
     }
 
     [Fact]
-    public void TranslationResolve_OfferedWord_AnswersTheProspectsWithTheWholeMatchChosen()
+    public void TranslationResolve_OfferedWord_ReturnsChosenWholeMatch()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -151,7 +151,7 @@ public sealed class TCardTranslation
     }
 
     [Fact]
-    public void TranslationResolve_LeftWord_LinksTheWholeMatchAndEmptiesTheEntry()
+    public void TranslationResolve_LeftWord_LinksWholeMatchEmptiesEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -170,7 +170,7 @@ public sealed class TCardTranslation
     }
 
     [Fact]
-    public void MentionRead_PaddedWord_FindsTheEntryTheTrimmedWordFinds()
+    public void MentionRead_PaddedWord_FindsTrimmedMatch()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -182,7 +182,7 @@ public sealed class TCardTranslation
     }
 
     [Fact]
-    public void MentionRead_DraftInEnglish_OffersOnlyEnglishEntriesWithTheFirstChosen()
+    public void MentionRead_DraftInEnglish_OffersEnglishFirstChosen()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -217,7 +217,7 @@ public sealed class TCardTranslation
     }
 
     [Fact]
-    public void TranslationInsert_FreshRow_StartsACourtThatRemoveDrops()
+    public void TranslationInsert_FreshRow_StartsCourtRemoveDrops()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -239,7 +239,7 @@ public sealed class TCardTranslation
     }
 
     [Fact]
-    public void TranslationRemove_StoredEntry_UnlinksItAndKeepsTheEntry()
+    public void TranslationRemove_StoredEntry_UnlinksKeepsEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -256,7 +256,7 @@ public sealed class TCardTranslation
     }
 
     [Fact]
-    public void TranslationInsert_BlankFreshWord_ShowsTheTranslationFailure()
+    public void TranslationInsert_BlankFreshWord_ShowsFailure()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -275,7 +275,7 @@ public sealed class TCardTranslation
     }
 
     [Fact]
-    public void TranslationAdd_DuplicateHeadwords_CarriesNamesWithoutChangingStoredText()
+    public void TranslationAdd_DuplicateHeadwords_CarriesNumberedNames()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

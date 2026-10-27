@@ -57,7 +57,7 @@ public sealed class TEngineShengfu
     private static readonly TimeSpan TEngineShengfuPatience = TimeSpan.FromSeconds(5);
 
     [Fact]
-    public async Task FanqieStart_SeriesModule_PrintsItOnTheCharactersFirstBlock()
+    public async Task FanqieStart_SeriesModule_PrintsOnFirstCharacterBlock()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineShengfuPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -78,7 +78,7 @@ public sealed class TEngineShengfu
     }
 
     [Fact]
-    public async Task FanqieStart_TwoSeriesRows_JoinsThemInAnswerOrder()
+    public async Task FanqieStart_TwoSeriesRows_JoinsInAnswerOrder()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineShengfuPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

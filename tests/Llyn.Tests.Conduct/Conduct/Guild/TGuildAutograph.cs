@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TGuildAutograph
 {
     [Fact]
-    public void GuildNameSet_FreshAuthor_StoresTheTypedName()
+    public void GuildNameSet_FreshAuthor_StoresTypedName()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -45,7 +45,7 @@ public sealed class TGuildAutograph
     }
 
     [Fact]
-    public void GuildUnionCleared_AuthorStarted_TellsTheDriverOnce()
+    public void GuildUnionCleared_AuthorStarted_TellsDriverOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -65,7 +65,7 @@ public sealed class TGuildAutograph
     }
 
     [Fact]
-    public void GuildCreate_DraftNotice_ShowsTheDraftThroughTheMarshal()
+    public void GuildCreate_DraftNotice_ShowsDraftThroughMarshal()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

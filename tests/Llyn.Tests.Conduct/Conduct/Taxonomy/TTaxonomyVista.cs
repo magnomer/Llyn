@@ -11,7 +11,7 @@ namespace Llyn.Tests;
 public sealed class TTaxonomyVista
 {
     [Fact]
-    public async Task TaxonomyRowsLoad_StoredTag_AnswersTheRowsAndTheLanguagesAfterTheFill()
+    public async Task TaxonomyRowsLoad_StoredTag_AnswersRowsAndLanguages()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -27,7 +27,7 @@ public sealed class TTaxonomyVista
     }
 
     [Fact]
-    public void TaxonomyVistaRestore_QueriesHeld_CarriesBothIntoTheFreshVistas()
+    public void TaxonomyVistaRestore_QueriesHeld_CarriesBothQueries()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -45,7 +45,7 @@ public sealed class TTaxonomyVista
     }
 
     [Fact]
-    public void TaxonomyVistaRestore_SettingsNoticeAfterASecondRestore_RaisesTheTagRowsThenTheEntryRowsOnce()
+    public void TaxonomyVistaRestore_SettingsNotice_RaisesTagThenEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -70,7 +70,7 @@ public sealed class TTaxonomyVista
     }
 
     [Fact]
-    public void TaxonomyCreate_SettingsNoticeWithoutARestore_RaisesTheTagRowsThenTheEntryRowsOnce()
+    public void TaxonomyCreate_SettingsNotice_RaisesTagThenEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -94,7 +94,7 @@ public sealed class TTaxonomyVista
     }
 
     [Fact]
-    public void TaxonomyVistaRestore_TagNoticeWithAnEntryShown_RaisesTheRowsBeforeTheDraftReread()
+    public void TaxonomyVistaRestore_TagNotice_RaisesRowsBeforeDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -113,7 +113,7 @@ public sealed class TTaxonomyVista
     }
 
     [Fact]
-    public void TaxonomyVistaRestore_WorkspaceNotice_ClosesTheEntryLetsGoOfTheTagAndTellsTheDriverLast()
+    public void TaxonomyVistaRestore_WorkspaceNotice_ClosesEntryAndTag()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -141,7 +141,7 @@ public sealed class TTaxonomyVista
     }
 
     [Fact]
-    public void TaxonomyRowsRead_EngineFails_ShowsOneLoadFailureAndLeavesTheEntriesUnread()
+    public void TaxonomyRowsRead_EngineFails_ShowsFailureSkipsEntries()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -156,7 +156,7 @@ public sealed class TTaxonomyVista
     }
 
     [Fact]
-    public void TaxonomyVistaRestore_SettingsNoticeWithBothReadsFailing_ShowsOneLoadFailure()
+    public void TaxonomyVistaRestore_BothReadsFailing_ShowsOneFailure()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -172,7 +172,7 @@ public sealed class TTaxonomyVista
     }
 
     [Fact]
-    public void MembershipRowsRead_EngineFails_ShowsTheLoadFailureAndAnswersNoRows()
+    public void MembershipRowsRead_EngineFails_ShowsFailureAnswersNone()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

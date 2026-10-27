@@ -7,7 +7,7 @@ namespace Llyn.Tests;
 public sealed class TMarkupReplace
 {
     [Fact]
-    public void MarkupImport_ReplaceEntry_KeepsIdGraspFavoriteAndRenames()
+    public void MarkupImport_ReplaceEntry_KeepsIdGraspAndFavorite()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -35,7 +35,7 @@ public sealed class TMarkupReplace
     }
 
     [Fact]
-    public void MarkupImport_ReplaceCitedSense_ClearsMentionSenseAndReportsOmission()
+    public void MarkupImport_ReplaceCitedSense_ClearsMentionSense()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -140,7 +140,7 @@ public sealed class TMarkupReplace
     }
 
     [Fact]
-    public void MarkupImport_ReplaceEntry_KeepsSituationAndDetachedExample()
+    public void MarkupImport_ReplaceEntry_KeepsSituationAndExample()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

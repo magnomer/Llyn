@@ -11,7 +11,7 @@ namespace Llyn.Tests;
 public sealed class TAtelierWorkspace
 {
     [Fact]
-    public void AtelierWorkspaceChange_Path_MovesEngineThenWritesPointer()
+    public void AtelierWorkspaceChange_Path_MovesEngineBeforePointer()
     {
         List<string> pointed = [];
         using TWorkspace first = TWorkspace.TWorkspacePrepare();
@@ -28,7 +28,7 @@ public sealed class TAtelierWorkspace
     }
 
     [Fact]
-    public void AtelierOpen_EstablishmentFails_ShowsTheFailureAndRaisesNoStatus()
+    public void AtelierOpen_EstablishmentFails_ShowsFailureNoStatus()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -50,7 +50,7 @@ public sealed class TAtelierWorkspace
     }
 
     [Fact]
-    public void AtelierOpen_SecondEnvoy_ShowsALaterEstablishmentFailureThroughTheLatestEnvoy()
+    public void AtelierOpen_SecondEnvoy_ShowsLaterFailureOnLatest()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -89,7 +89,7 @@ public sealed class TAtelierWorkspace
     }
 
     [Fact]
-    public void AtelierWorkspaceChange_FolderFails_ShowsTheFailureAndWritesNoPointer()
+    public void AtelierWorkspaceChange_FolderFails_ShowsFailureNoWrite()
     {
         List<string> pointed = [];
         using LEngine engine = new(
@@ -111,7 +111,7 @@ public sealed class TAtelierWorkspace
     [Theory]
     [InlineData("   ")]
     [InlineData(" fake ")]
-    public void AtelierWorkspaceChange_BlankOrSamePath_AsksNothingAndStays(string chosen)
+    public void AtelierWorkspaceChange_BlankOrSamePath_AsksNothingStays(string chosen)
     {
         List<string> pointed = [];
         using LEngine engine = new(
@@ -156,7 +156,7 @@ public sealed class TAtelierWorkspace
     }
 
     [Fact]
-    public void AtelierWorkspaceChange_UnsavedStored_AsksOnceAndStoresEveryArea()
+    public void AtelierWorkspaceChange_UnsavedStored_AsksOnceStoresAll()
     {
         using TWorkspace first = TWorkspace.TWorkspacePrepare();
         using TWorkspace second = TWorkspace.TWorkspacePrepare();
@@ -174,7 +174,7 @@ public sealed class TAtelierWorkspace
     }
 
     [Fact]
-    public void AtelierWorkspaceChange_Moved_OpensTheNewWorkspaceState()
+    public void AtelierWorkspaceChange_Moved_OpensNewWorkspaceState()
     {
         using TWorkspace first = TWorkspace.TWorkspacePrepare();
         using TWorkspace second = TWorkspace.TWorkspacePrepare();
@@ -196,7 +196,7 @@ public sealed class TAtelierWorkspace
     }
 
     [Fact]
-    public void AtelierWorkspaceChange_Moved_RestoresEveryAreaVistaBeforeTheViews()
+    public void AtelierWorkspaceChange_Moved_RestoresVistaBeforeViews()
     {
         using TWorkspace first = TWorkspace.TWorkspacePrepare();
         using TWorkspace second = TWorkspace.TWorkspacePrepare();
@@ -215,7 +215,7 @@ public sealed class TAtelierWorkspace
     }
 
     [Fact]
-    public void AtelierWorkspaceChange_FolderAnswered_AsksFromTheFolderInUseAndMoves()
+    public void AtelierWorkspaceChange_Answered_AsksFromHeldAndMoves()
     {
         List<string> pointed = [];
         using TWorkspace first = TWorkspace.TWorkspacePrepare();
@@ -251,7 +251,7 @@ public sealed class TAtelierWorkspace
     }
 
     [Fact]
-    public void AtelierWorkspaceChange_FolderQuestionFails_ShowsTheFailure()
+    public void AtelierWorkspaceChange_FolderQuestionFails_ShowsFailure()
     {
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
         using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, TEngineFake.TEngineStubCreate<LMediaPort>());
@@ -265,7 +265,7 @@ public sealed class TAtelierWorkspace
     }
 
     [Fact]
-    public void AtelierWorkspaceChange_LeasedFolder_KeepsTheOldWorkspace()
+    public void AtelierWorkspaceChange_LeasedFolder_KeepsOldWorkspace()
     {
         List<string> pointed = [];
         List<string> asked = [];

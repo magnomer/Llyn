@@ -17,7 +17,7 @@ public sealed class TSentenceOrder
     }
 
     [Fact]
-    public void SentenceOrderLoad_LanguageWithNoPack_WritesTheMarkerFirst()
+    public void SentenceOrderLoad_LanguageWithNoPack_WritesMarkerFirst()
     {
         LSentenceOrder order = TInterface.TSentenceOrderLoad("Klingon");
 

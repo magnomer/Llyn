@@ -24,7 +24,7 @@ The legend shows `1Help` at column 0, `9Menu` at column 64 and `10Quit` at colum
 Resizing to 64 by 18 and then to 101 by 30 ends on the large frame.
 The odd width gives the left half 50 columns and the right half 51.
 
-## `WindowSizeObserve_BelowEightyByTwentyFour_DrawsFramedNotice`
+## `WindowSizeObserve_BelowMinimum_DrawsFramedNotice`
 
 A console of 64 by 18 shows the small-console notice in a framed box instead of the frame.
 The box is 42 cells wide, centred, with ` Llyn ` on its top border.
@@ -227,14 +227,14 @@ Its Enter, Escape and F10 keys are shared with `TCapsulePathfinder`.
 
 ## Stamp
 
-Commit: `c37ca1837ded`
+Commit: `9377e657b395`
 - `TBootstrap.cs` `c4356b19e67b4c41`
 - `TCabinet.cs` `ce20853cde2f2f7e`
-- `TCapsule.cs` `656e8a7db7825d0d`
+- `TCapsule.cs` `f2296db49c9ee3ae`
 - `TEnvoy.cs` `ad12f1bf4da06bd6`
-- `TEstablishment.cs` `13a9c3ba60eb79bc`
+- `TEstablishment.cs` `f233bab4744e97b3`
 - `TEstablishmentFixture.cs` `d9e7172b48d235ca`
 - `THelp.cs` `4bda3615b5d519f4`
 - `TRoof.cs` `d4ebea47cc21cee3`
-- `TWindow.cs` `b561257947b5df5a`
-- `TWindowLayer.cs` `9404b09c62f2e292`
+- `TWindow.cs` `b8a7592d1bd8b1d8`
+- `TWindowLayer.cs` `a705b7fa09a2cc89`

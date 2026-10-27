@@ -68,7 +68,7 @@ public sealed class TDraftSituation
     }
 
     [Fact]
-    public void LeftoverSweep_SituationMatchingStoredSituation_SweepsIt()
+    public void LeftoverSweep_DraftMatchingStoredSituation_SweepsDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
 

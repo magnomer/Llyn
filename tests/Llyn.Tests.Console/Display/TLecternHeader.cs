@@ -6,7 +6,7 @@ namespace Llyn.Tests;
 public sealed class TLecternHeader
 {
     [Fact]
-    public void LecternObserve_EnterOnTheHeartAndF6_ToggleTheFavorite()
+    public void LecternObserve_EnterOnHeartAndF6_TogglesFavorite()
     {
         TLecternCard.TLecternCardRun(
             static (_, save) => save("fire", [TInterface.TCardCreate("a meaning", 1)]),
@@ -36,7 +36,7 @@ public sealed class TLecternHeader
     }
 
     [Fact]
-    public void LecternObserve_ArrowsOnTheStars_MoveTheGraspAndLeftClearsIt()
+    public void LecternObserve_ArrowsOnStars_MovesGraspAndLeftClears()
     {
         TLecternCard.TLecternCardRun(
             static (_, save) => save("fire", [TInterface.TCardCreate("a meaning", 1)]),
@@ -67,7 +67,7 @@ public sealed class TLecternHeader
     }
 
     [Fact]
-    public void LecternDraw_Frequency_ShowsTheRungAndTheSourceWhileLit()
+    public void LecternDraw_Frequency_ShowsRungAndSourceWhileLit()
     {
         TLecternCard.TLecternCardRun(
             static (_, save) => save("fire", [TInterface.TCardCreate("a meaning", 1)]),
@@ -95,7 +95,7 @@ public sealed class TLecternHeader
     }
 
     [Fact]
-    public void LecternDraw_StoredEntry_DrawsTheStampsBelowTheHeader()
+    public void LecternDraw_StoredEntry_DrawsStampsBelowHeader()
     {
         TLecternCard.TLecternCardRun(
             static (_, save) => save("fire", [TInterface.TCardCreate("a meaning", 1)]),
@@ -113,7 +113,7 @@ public sealed class TLecternHeader
     }
 
     [Fact]
-    public void LecternCardDraw_GlyphSection_ShowsTheChip()
+    public void LecternCardDraw_GlyphSection_ShowsChip()
     {
         TLecternCard.TLecternCardRun(
             static (engine, _) => engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
@@ -143,7 +143,7 @@ public sealed class TLecternHeader
     }
 
     [Fact]
-    public void LibraryKeymap_TabWhileTheScribeShows_MovesTheFocusToTheEditor()
+    public void LibraryKeymap_TabWithScribeShown_MovesFocusToEditor()
     {
         TLecternCard.TLecternCardRun(
             static (_, save) => save("fire", [TInterface.TCardCreate("a meaning", 1)]),
@@ -162,7 +162,7 @@ public sealed class TLecternHeader
     }
 
     [Fact]
-    public void LecternLineDivide_LongText_WrapsAtAWordWithAnIndent()
+    public void LecternLineDivide_LongText_WrapsAtWordWithIndent()
     {
         BCanvasWidth measure = new(false);
         BLecternLine line = new([("one two three", "text", null)], 0);
@@ -174,7 +174,7 @@ public sealed class TLecternHeader
     }
 
     [Fact]
-    public void LecternLineDivide_OwnedPieces_TrimTheTrailingSpaceOfEachRow()
+    public void LecternLineDivide_OwnedPieces_TrimsTrailingSpace()
     {
         BCanvasWidth measure = new(false);
         BLecternLine line = new([("The water ", "text", "Item"), ("is cold.", "text", "Item")], 0);
@@ -187,7 +187,7 @@ public sealed class TLecternHeader
     }
 
     [Fact]
-    public void LecternLineDivide_ItemAndLongWord_KeepTheItemWholeAndCutTheWord()
+    public void LecternLineDivide_ItemAndLongWord_KeepsItemCutsWord()
     {
         BCanvasWidth measure = new(false);
         BLecternLine item = new([("ab ", "text", null), ("ITEM", "lit", "Item")], 0);

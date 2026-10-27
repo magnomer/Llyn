@@ -23,7 +23,7 @@ public sealed class TErrandNotation
         """;
 
     [Fact]
-    public async Task TranscriptionStart_PaddedHeadword_StreamsEveryStepThroughTheDeskMarshal()
+    public async Task TranscriptionStart_PaddedHeadword_StreamsAllSteps()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TErrandNotationPack);
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
@@ -65,7 +65,7 @@ public sealed class TErrandNotation
     }
 
     [Fact]
-    public async Task TranscriptionStart_EarlierSearchStep_ListsNothingOfIt()
+    public async Task TranscriptionStart_EarlierSearchStep_ListsNothing()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TErrandNotationPack);
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
@@ -97,7 +97,7 @@ public sealed class TErrandNotation
     }
 
     [Fact]
-    public async Task TranscriptionStart_BlankHeadword_StartsNothingAndStopsTheClip()
+    public async Task TranscriptionStart_BlankHeadword_StartsNothingStopsClip()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TErrandNotationPack);
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
@@ -121,7 +121,7 @@ public sealed class TErrandNotation
     }
 
     [Fact]
-    public async Task FlagLoad_FlaggedPack_StoresTheVarietyFlagsOnlyForAnUnschemedSearch()
+    public async Task FlagLoad_FlaggedPack_StoresFlagsUnschemedOnly()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("{}");
         string flag = Path.Combine(AppContext.BaseDirectory, "languages", pack.TLanguageFixtureName, "hill.svg");

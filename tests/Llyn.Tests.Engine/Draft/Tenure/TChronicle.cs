@@ -205,7 +205,7 @@ public sealed class TChronicle
     }
 
     [Fact]
-    public void DraftCommit_ClearsChronicle()
+    public void DraftCommit_UndoableDraft_ClearsChronicle()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();

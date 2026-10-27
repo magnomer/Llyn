@@ -61,9 +61,9 @@ Clearing a session drops every scheme it held and leaves another session's holds
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `TLookup.cs` `dcbc5c3e948c53ce`
+Commit: `9377e657b395`
+- `TLookup.cs` `b42f986cb9780f9b`
 - `TReading.cs` `90dbf2aa8f082f59`
 - `TReceiverRespelling.cs` `bfa1fef6048ff512`
-- `TRespelling.cs` `75ffcbe41bb3b86c`
+- `TRespelling.cs` `3912212efffbceb1`
 - `TTrove.cs` `3e97d43994b785d0`

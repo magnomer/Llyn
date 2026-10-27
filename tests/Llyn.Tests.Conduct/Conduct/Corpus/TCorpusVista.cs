@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TCorpusVista
 {
     [Fact]
-    public async Task CorpusRowsLoad_StoredExample_AnswersTheRowsAndTheLanguagesAfterTheFill()
+    public async Task CorpusRowsLoad_StoredExample_ReturnsRowsAndLanguages()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -26,7 +26,7 @@ public sealed class TCorpusVista
     }
 
     [Fact]
-    public void CorpusVistaRestore_QueriesHeld_CarriesThemIntoTheFreshVistas()
+    public void CorpusVistaRestore_QueriesHeld_CarriesIntoFreshVistas()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -44,7 +44,7 @@ public sealed class TCorpusVista
     }
 
     [Fact]
-    public void CorpusVistaRestore_ExampleNoticeAfterASecondRestore_RaisesEachListOnceThroughTheMarshal()
+    public void VistaRestore_ExampleNoticeAfterRestore_RaisesListsOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -74,7 +74,7 @@ public sealed class TCorpusVista
     }
 
     [Fact]
-    public void CorpusCreate_ExampleNoticeWithoutARestore_RaisesEachListOnceThroughTheMarshal()
+    public void CorpusCreate_ExampleNoticeNoRestore_RaisesListsOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -103,7 +103,7 @@ public sealed class TCorpusVista
     }
 
     [Fact]
-    public void CorpusVistaRestore_EntryNotice_RaisesTheExampleRowsForTheirTallies()
+    public void CorpusVistaRestore_EntryNotice_RaisesExampleRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -119,7 +119,7 @@ public sealed class TCorpusVista
     }
 
     [Fact]
-    public void AnthologyApertureTallyRead_QuotingEntriesAdded_WordsEachForm()
+    public void ApertureTallyRead_QuotingEntriesAdded_WordsEachForm()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

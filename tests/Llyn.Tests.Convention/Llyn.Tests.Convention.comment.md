@@ -138,9 +138,9 @@ Prefixes compare exactly.
 
 ## Stamp
 
-Commit: `c37ca1837ded`
+Commit: `9377e657b395`
 - `Llyn.Tests.Convention.csproj` `ce887e848efbe5d9`
-- `TAuditConvention.cs` `0c3cf82c9fed7e99`
+- `TAuditConvention.cs` `f983a806f329512b`
 - `TAuditHit.cs` `695336cb3b584873`
 - `TAuditLedger.cs` `3bf02bd2a94ba410`
 - `TAuditRatchet.cs` `44c2e33eb2deca58`

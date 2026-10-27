@@ -39,9 +39,9 @@ The capacity test records fifty-one stations to verify that only the oldest stat
 
 ## Stamp
 
-Commit: `c37ca1837ded`
-- `TAtelier.cs` `601e5969302e97d5`
-- `TAtelierVista.cs` `9f1ef11ced7f4b40`
-- `TAtelierWorkspace.cs` `11be6151fca3b740`
-- `TNavigation.cs` `c6a168bfe7d17ce9`
-- `TVoyage.cs` `e2a0037bd030e947`
+Commit: `9377e657b395`
+- `TAtelier.cs` `b2f9104f5936e9b2`
+- `TAtelierVista.cs` `9172f7a6f3ee053c`
+- `TAtelierWorkspace.cs` `f6002fe2ea103522`
+- `TNavigation.cs` `c4ee3943ab861846`
+- `TVoyage.cs` `75c8d50a4bd8b856`

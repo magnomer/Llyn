@@ -22,6 +22,8 @@ The plain overload builds the atelier over real outlets on the engine.
 Its detached flag defaults to false, and true builds an atelier that reads and stores no layout.
 Its stub player accepts a stop but never plays.
 The stub resolves every media location to no address and no screen, so a scenario's media rows still read.
+The plain overload hands that stub to an overload taking the engine, the detached flag and a media port.
+That overload builds over the real outlets and swaps in the given port, so a case can observe media calls.
 A workspace engine is needed, since disposing sweeps drafts through the real draft outlet.
 Disposing also runs each area's registered close, and the corpus's close stops its display's playback.
 The media overload builds the atelier with the given media port standing in for the player.
@@ -510,9 +512,9 @@ The arrival opens relay a panel's open as the navigation runs it.
 
 ## Stamp
 
-Commit: `36e31eb71c98`
+Commit: `9377e657b395`
 - `TInterfaceArea.cs` `bf5825a6e7d0f03b`
-- `TInterfaceConduct.cs` `3077d72e4990c6a6`
+- `TInterfaceConduct.cs` `08f188d526d51301`
 - `TInterfaceConductCard.cs` `f8e5f359beae4895`
 - `TInterfaceConductDesk.cs` `ef7f5acb3c7aa03d`
 - `TInterfaceConductDialog.cs` `3c2d58ee2694a179`

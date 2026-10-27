@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TCard
 {
     [Fact]
-    public void CardStateRead_UnknownValue_CarriesTheUncertainVerdict()
+    public void CardStateRead_UnknownValue_CarriesUncertainVerdict()
     {
         Assert.Equal(
             new CStateValue(string.Empty, true),
@@ -17,7 +17,7 @@ public sealed class TCard
     }
 
     [Fact]
-    public void CardEntryRead_UnknownBlankAndWrittenFields_WordsEachFieldWithItsSheetHint()
+    public void CardEntryRead_MixedFields_WordsFieldsWithSheetHints()
     {
         LEntryDraft draft = TInterface.TEntryDraftCreate(
             "water",
@@ -49,7 +49,7 @@ public sealed class TCard
     }
 
     [Fact]
-    public void CardEntryRead_SentenceWithoutExample_WordsTextParticleAndDependence()
+    public void CardEntryRead_SentenceWithoutExample_WordsRowFields()
     {
         LCardDraft card = TInterface.TCardCreate("a liquid", 1) with
         {
@@ -74,7 +74,7 @@ public sealed class TCard
     }
 
     [Fact]
-    public void DraftWording_CitedAndUncitedRows_MarksOnlyTheCitedRowCited()
+    public void DraftWording_CitedAndUncitedRows_MarksCitedRowOnly()
     {
         LCardDraft card = TInterface.TCardCreate("a liquid", 1) with
         {
@@ -97,7 +97,7 @@ public sealed class TCard
     }
 
     [Fact]
-    public void DraftWording_GlossImageAndSituation_WordsEachValueForItsRow()
+    public void DraftWording_GlossImageAndSituation_WordsValuePerRow()
     {
         CStateValue unknown = new(string.Empty, true);
         CStateValue written = new("le chat", false);
@@ -123,7 +123,7 @@ public sealed class TCard
     }
 
     [Fact]
-    public void DraftName_ImageAndVideo_NamesTheFileElseTheAddress()
+    public void DraftName_ImageAndVideo_NamesFileElseAddress()
     {
         Uri web = new("https://example.com/");
 
@@ -147,7 +147,7 @@ public sealed class TCard
     }
 
     [Fact]
-    public void FolioStateRead_UnreadableStoreValue_ArrivesUncertainWithItsText()
+    public void FolioStateRead_UnreadableValue_ArrivesUncertainWithText()
     {
         CStateValue shown = CFolio.CFolioStateRead(TInterface.TStateUnreadableCreate("w0lf"));
 
@@ -158,7 +158,7 @@ public sealed class TCard
     }
 
     [Fact]
-    public void PanelRowRead_EngineRow_CopiesEveryFieldAndTheMark()
+    public void PanelRowRead_EngineRow_CopiesAllFieldsAndMark()
     {
         CVistaRow row = TInterfaceConductPanel.TPanelRowRead(TInterfaceConductPanel.TVistaRowCreate(4, "gloss", true));
 

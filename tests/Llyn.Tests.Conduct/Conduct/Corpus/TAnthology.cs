@@ -23,7 +23,7 @@ public sealed class TAnthology
     }
 
     [Fact]
-    public void AnthologyRowsRead_UnknownText_WordsTheRowWithTheUnknownWord()
+    public void AnthologyRowsRead_UnknownText_WordsRowUnknown()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -43,7 +43,7 @@ public sealed class TAnthology
     }
 
     [Fact]
-    public void AnthologyRowsRead_EngineFails_ShowsTheLoadFailureAndAnswersNothing()
+    public void AnthologyRowsRead_EngineFails_ShowsLoadFailure()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -56,7 +56,7 @@ public sealed class TAnthology
     }
 
     [Fact]
-    public void AnthologyApertureTallyRead_EngineRefuses_ShowsTheLoadFailureAndAnswersEmpty()
+    public void ApertureTallyRead_EngineRefuses_ShowsLoadFailure()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -73,7 +73,7 @@ public sealed class TAnthology
     }
 
     [Fact]
-    public void AnthologyOrderRead_Menu_OffersTextLanguageSourceAndUsage()
+    public void AnthologyOrderRead_Menu_OffersTextLanguageSourceUsage()
     {
         Assert.Equal(
             [
@@ -86,7 +86,7 @@ public sealed class TAnthology
     }
 
     [Fact]
-    public void ApertureQuerySet_MatchingText_NarrowsTheRows()
+    public void ApertureQuerySet_MatchingText_NarrowsRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -102,7 +102,7 @@ public sealed class TAnthology
     }
 
     [Fact]
-    public void ApertureOrderSet_NoOrderRow_KeepsTheOrder()
+    public void ApertureOrderSet_NoOrderRow_KeepsOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -117,7 +117,7 @@ public sealed class TAnthology
     }
 
     [Fact]
-    public void ApertureFilterSet_HiddenLanguage_MarksTheListFiltered()
+    public void ApertureFilterSet_HiddenLanguage_MarksListFiltered()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -11,7 +11,7 @@ public sealed class TVideo
     [InlineData("https://www.youtube.com/shorts/dQw4w9WgXcQ/")]
     [InlineData("https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ")]
     [InlineData("https://YouTube.com/live/dQw4w9WgXcQ")]
-    public void VideoFilmRead_HostedShape_AnswersTheFilmId(string address)
+    public void VideoFilmRead_HostedShape_AnswersFilmId(string address)
     {
         Assert.Equal("dQw4w9WgXcQ", TInterface.TVideoFilmRead(new Uri(address)));
     }
@@ -37,7 +37,7 @@ public sealed class TVideo
     [InlineData("0:05:07:09", 0, null)]
     [InlineData("-0:05", 5, null)]
     [InlineData("", 0, null)]
-    public void VideoSpanRead_WrittenSpan_AnswersItsMomentsOrTheWholeFilm(string span, int from, int? until)
+    public void VideoSpanRead_WrittenSpan_AnswersMomentsOrWholeFilm(string span, int from, int? until)
     {
         (TimeSpan start, TimeSpan? end) = TInterface.TVideoSpanRead(span);
 

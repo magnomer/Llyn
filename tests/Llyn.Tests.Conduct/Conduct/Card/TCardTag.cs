@@ -11,7 +11,7 @@ namespace Llyn.Tests;
 public sealed class TCardTag
 {
     [Fact]
-    public void TagAdd_TypedPrefix_OffersTheStoredTagSplitAroundTheWord()
+    public void TagAdd_TypedPrefix_OffersStoredTagSplit()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -56,7 +56,7 @@ public sealed class TCardTag
     }
 
     [Fact]
-    public void TagSettle_ObserverFailsAfterTheFirstPart_KeepsTheUntriedPart()
+    public void TagSettle_ObserverFailsAfterFirstPart_KeepsUntriedPart()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -87,7 +87,7 @@ public sealed class TCardTag
     }
 
     [Fact]
-    public void TagSettle_RefusedPart_KeepsItAsTyped()
+    public void TagSettle_RefusedPart_KeepsPartAsTyped()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -102,7 +102,7 @@ public sealed class TCardTag
     }
 
     [Fact]
-    public void TagAdd_EchoOfTheLastAnswer_KeepsTheLantern()
+    public void TagAdd_EchoOfLastAnswer_KeepsLantern()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -141,7 +141,7 @@ public sealed class TCardTag
     }
 
     [Fact]
-    public void TagAdd_NineMatchingTags_OffersTheFirstEight()
+    public void TagAdd_NineMatchingTags_OffersFirstEight()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -160,7 +160,7 @@ public sealed class TCardTag
     }
 
     [Fact]
-    public void TagAdd_PaddedText_AddsTheTrimmedTagOnce()
+    public void TagAdd_PaddedText_AddsTrimmedTagOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -177,7 +177,7 @@ public sealed class TCardTag
     }
 
     [Fact]
-    public void TagInsert_StoredTag_LinksItUnderItsOwnId()
+    public void TagInsert_StoredTag_LinksUnderOwnId()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -194,7 +194,7 @@ public sealed class TCardTag
     }
 
     [Fact]
-    public void TagRemove_AddedTag_DropsIt()
+    public void TagRemove_AddedTag_DropsTag()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -209,7 +209,7 @@ public sealed class TCardTag
     }
 
     [Fact]
-    public void TagAdd_TypedList_AddsTheCompletedTagsAndKeepsTheRest()
+    public void TagAdd_TypedList_AddsCompletedTagsKeepsRest()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -226,7 +226,7 @@ public sealed class TCardTag
     }
 
     [Fact]
-    public void TagAdd_TagHeldOnTheCard_LeavesItOutOfTheOffer()
+    public void TagAdd_TagHeldOnCard_LeavesOutOfOffer()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -243,7 +243,7 @@ public sealed class TCardTag
     }
 
     [Fact]
-    public void TagInsert_StoredTag_LinksItAtTheCaretAndOfferLeavesItOut()
+    public void TagInsert_StoredTag_LinksAtCaretOfferLeavesOut()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -263,7 +263,7 @@ public sealed class TCardTag
     }
 
     [Fact]
-    public void TagSettle_CaretMovedBack_AddsBeforeTheAnchor()
+    public void TagSettle_CaretMovedBack_AddsBeforeAnchor()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -281,7 +281,7 @@ public sealed class TCardTag
     }
 
     [Fact]
-    public void CaretTrailDelete_StepEitherSide_RemovesTheTagBesideTheCaret()
+    public void CaretTrailDelete_StepEitherSide_RemovesBesideCaret()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

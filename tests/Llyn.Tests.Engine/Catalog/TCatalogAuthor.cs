@@ -67,7 +67,7 @@ public sealed class TCatalogAuthor
     }
 
     [Fact]
-    public void AuthorFind_TypedQuery_ReturnsAuthorsNamingIt()
+    public void AuthorFind_TypedQuery_ReturnsNameMatches()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -83,7 +83,7 @@ public sealed class TCatalogAuthor
     }
 
     [Fact]
-    public void OeuvreFind_ChosenAuthor_ReturnsSourcesCreditingIt()
+    public void OeuvreFind_ChosenAuthor_ReturnsCreditedSources()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -121,7 +121,7 @@ public sealed class TCatalogAuthor
     }
 
     [Fact]
-    public void OeuvreFind_KindFilterAndQuery_NarrowTheSources()
+    public void OeuvreFind_KindFilterAndQuery_NarrowSources()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

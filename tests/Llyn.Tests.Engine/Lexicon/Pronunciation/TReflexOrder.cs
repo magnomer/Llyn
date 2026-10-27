@@ -15,7 +15,7 @@ public sealed class TReflexOrder
         """;
 
     [Fact]
-    public void ReflexOrderSort_UndeclaredLanguageAndKind_FollowDeclaredByName()
+    public void ReflexOrderSort_UndeclaredNames_SortsAfterDeclared()
     {
         LReflexOrder order = TInterface.TReflexOrderCreate(
             ["Mandarin", "Japanese"],

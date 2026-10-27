@@ -9,7 +9,7 @@ public sealed class TVistaLoading
     [Theory]
     [InlineData("yunjing")]
     [InlineData("yunmu")]
-    public void Delete_StructuralVista_DoesNotTreatItsSelectionAsAnEntry(string tab)
+    public void Delete_StructuralVista_KeepsSelectedEntry(string tab)
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -52,7 +52,7 @@ public sealed class TVistaLoading
     [InlineData("membership")]
     [InlineData("cohort")]
     [InlineData("xiaoyun")]
-    public void Load_EntryVista_UsesChosenAndDeleteClearsIt(string tab)
+    public void Load_EntryVista_UsesChosenAndClearsOnDelete(string tab)
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -74,7 +74,7 @@ public sealed class TVistaLoading
     }
 
     [Fact]
-    public void Load_CatalogVistas_ReturnTheirOwnSubjectWithoutStartingAnEditingDraft()
+    public void Load_CatalogVistas_ReturnOwnSubjectWithNoDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -116,7 +116,7 @@ public sealed class TVistaLoading
     }
 
     [Fact]
-    public void Delete_CatalogVistas_DeleteTheirOwnSubjectAndDetachFirst()
+    public void Delete_CatalogVistas_DetachThenDeleteOwnSubject()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

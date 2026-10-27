@@ -34,7 +34,7 @@ public sealed class TDraftClerk
     }
 
     [Fact]
-    public void DraftClerkApply_TagText_TrimsTheWording()
+    public void DraftClerkApply_TagText_TrimsWording()
     {
         LDraftClerk clerk = TInterface.TDraftClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
         LDraft draft = TInterface.TDraftNestedCreate("Input", "kindle");
@@ -48,7 +48,7 @@ public sealed class TDraftClerk
     }
 
     [Fact]
-    public void DraftListParse_UnsettledWithoutComma_KeepsTheTextWhole()
+    public void DraftListParse_UnsettledWithoutComma_KeepsTextWhole()
     {
         List<string> handed = [];
 
@@ -59,7 +59,7 @@ public sealed class TDraftClerk
     }
 
     [Fact]
-    public void DraftListParse_TypedList_HandsTrimmedPartsAndKeepsRefusedBeforeTheRest()
+    public void DraftListParse_TypedList_HandsTrimmedKeepsRefused()
     {
         List<string> handed = [];
 
@@ -71,7 +71,7 @@ public sealed class TDraftClerk
     }
 
     [Fact]
-    public void DraftListParse_Settled_HandsEveryPartAndKeepsOnlyTheRefused()
+    public void DraftListParse_Settled_HandsAllKeepsRefused()
     {
         List<string> handed = [];
 
@@ -98,7 +98,7 @@ public sealed class TDraftClerk
     }
 
     [Fact]
-    public void GlossEmptyCheck_ExampleWithAndWithoutGloss_AnswersOnlyForAnExampleHoldingNone()
+    public void GlossEmptyCheck_ThreeDrafts_AnswersTrueForBareExample()
     {
         LDraftClerk clerk = TInterface.TDraftClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
         LDraft entry = TInterface.TDraftNestedCreate("Input", "kindle");
@@ -117,7 +117,7 @@ public sealed class TDraftClerk
     }
 
     [Fact]
-    public void DraftClerkApply_GlossAdditionOnCollocationSharingMeaningIds_ChangesTheCollocationOnly()
+    public void DraftClerkApply_CollocationGlossAddition_KeepsMeaning()
     {
         LDraftClerk clerk = TInterface.TDraftClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
         (LDraft draft, long card, long sentence) = TDraftTwinCreate();
@@ -131,7 +131,7 @@ public sealed class TDraftClerk
     }
 
     [Fact]
-    public void DraftClerkApply_MentionAdditionOnCollocationSharingMeaningIds_ChangesTheCollocationOnly()
+    public void DraftClerkApply_CollocationMentionAddition_KeepsMeaning()
     {
         LDraftClerk clerk = TInterface.TDraftClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
         (LDraft draft, long card, long sentence) = TDraftTwinCreate();
@@ -145,7 +145,7 @@ public sealed class TDraftClerk
     }
 
     [Fact]
-    public void DraftClerkApply_SentenceAdditionOnCollocationSharingMeaningIds_ChangesTheCollocationOnly()
+    public void DraftClerkApply_CollocationSentenceRow_KeepsMeaning()
     {
         LDraftClerk clerk = TInterface.TDraftClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
         (LDraft draft, long card, _) = TDraftTwinCreate();
@@ -158,7 +158,7 @@ public sealed class TDraftClerk
     }
 
     [Fact]
-    public void DraftClerkApply_TitleOnCollocationSharingMeaningIds_ChangesTheCollocationOnly()
+    public void DraftClerkApply_CollocationTitle_KeepsMeaning()
     {
         LDraftClerk clerk = TInterface.TDraftClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
         (LDraft draft, long card, _) = TDraftTwinCreate();
@@ -176,7 +176,7 @@ public sealed class TDraftClerk
     }
 
     [Fact]
-    public void DraftClerkApply_ExpressionOnCollocationSharingMeaningIds_ChangesTheCollocationOnly()
+    public void DraftClerkApply_CollocationExpression_KeepsMeaning()
     {
         LDraftClerk clerk = TInterface.TDraftClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
         (LDraft draft, long card, _) = TDraftTwinCreate();
@@ -194,7 +194,7 @@ public sealed class TDraftClerk
     }
 
     [Fact]
-    public void DraftClerkApply_RemovalOfCollocationSharingMeaningIds_RemovesTheCollocationOnly()
+    public void DraftClerkApply_CollocationRemoval_KeepsMeaning()
     {
         LDraftClerk clerk = TInterface.TDraftClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
         (LDraft draft, long card, _) = TDraftTwinCreate();
@@ -207,7 +207,7 @@ public sealed class TDraftClerk
     }
 
     [Fact]
-    public void DraftClerkApply_SenseAdditionOnCollocationSharingMeaningIds_ChangesTheCollocationOnly()
+    public void DraftClerkApply_CollocationSenseAddition_KeepsMeaning()
     {
         LDraftClerk clerk = TInterface.TDraftClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
         (LDraft draft, long card, _) = TDraftTwinCreate();
@@ -221,7 +221,7 @@ public sealed class TDraftClerk
     }
 
     [Fact]
-    public void DraftClerkApply_TagAdditionOnCollocationSharingMeaningIds_ChangesTheCollocationOnly()
+    public void DraftClerkApply_CollocationTagAddition_KeepsMeaning()
     {
         LDraftClerk clerk = TInterface.TDraftClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
         (LDraft draft, long card, _) = TDraftTwinCreate();
@@ -233,7 +233,7 @@ public sealed class TDraftClerk
     }
 
     [Fact]
-    public void DraftClerkApply_TranslationPickOnCollocationSharingMeaningIds_ChangesTheCollocationOnly()
+    public void DraftClerkApply_CollocationTranslationPick_KeepsMeaning()
     {
         LDraftClerk clerk = TInterface.TDraftClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
         (LDraft draft, long card, _) = TDraftTwinCreate();
@@ -245,7 +245,7 @@ public sealed class TDraftClerk
     }
 
     [Fact]
-    public void DraftClerkApply_RegisterRemovalOnCollocationSharingMeaningIds_ChangesTheCollocationOnly()
+    public void DraftClerkApply_CollocationRegisterRemoval_KeepsMeaning()
     {
         LDraftClerk clerk = TInterface.TDraftClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
         (LDraft held, long card, _) = TDraftTwinCreate();
@@ -271,7 +271,7 @@ public sealed class TDraftClerk
     }
 
     [Fact]
-    public void DraftClerkApply_SituationRemovalOnCollocationSharingMeaningIds_ChangesTheCollocationOnly()
+    public void DraftClerkApply_CollocationSituation_KeepsMeaning()
     {
         LDraftClerk clerk = TInterface.TDraftClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
         (LDraft draft, long card, _) = TDraftTwinCreate();
@@ -284,7 +284,7 @@ public sealed class TDraftClerk
     }
 
     [Fact]
-    public void DraftClerkApply_ImageAdditionOnCollocationSharingMeaningIds_ChangesTheCollocationOnly()
+    public void DraftClerkApply_CollocationImageAddition_KeepsMeaning()
     {
         LDraftClerk clerk = TInterface.TDraftClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
         (LDraft draft, long card, _) = TDraftTwinCreate();
@@ -296,7 +296,7 @@ public sealed class TDraftClerk
     }
 
     [Fact]
-    public void DraftClerkApply_VideoAdditionOnCollocationSharingMeaningIds_ChangesTheCollocationOnly()
+    public void DraftClerkApply_CollocationVideoAddition_KeepsMeaning()
     {
         LDraftClerk clerk = TInterface.TDraftClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
         (LDraft draft, long card, _) = TDraftTwinCreate();
@@ -308,7 +308,7 @@ public sealed class TDraftClerk
     }
 
     [Fact]
-    public void DraftClerkApply_ShiftOfCollocationSharingMeaningIds_MovesTheCollocationOnly()
+    public void DraftClerkApply_CollocationShift_KeepsMeaningOrder()
     {
         LDraftClerk clerk = TInterface.TDraftClerkCreate(TInterface.TRigClerkCreate(new TVaultFake()));
         (LDraft held, long card, _) = TDraftTwinCreate();
@@ -335,7 +335,7 @@ public sealed class TDraftClerk
     }
 
     [Fact]
-    public void CardShiftRead_CollocationSharingMeaningIds_ReadsTheCollocationList()
+    public void CardShiftRead_CollocationKind_ReadsCollocationList()
     {
         (LDraft held, long card, _) = TDraftTwinCreate();
         LCardDraft other = held.LDraftContent.LEntryDraftCollocations[0] with

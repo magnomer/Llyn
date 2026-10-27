@@ -36,7 +36,7 @@ public sealed class TCardFold
     }
 
     [Fact]
-    public void DisplayFoldToggle_StoredCard_FoldsThenUnfoldsAndRaisesTheDisplayFold()
+    public void DisplayFoldToggle_StoredCard_FoldsThenUnfolds()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -65,7 +65,7 @@ public sealed class TCardFold
     }
 
     [Fact]
-    public void EntryDraftChanged_FoldedCard_CarriesTheStoredFold()
+    public void EntryDraftChanged_FoldedCard_CarriesStoredFold()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -85,7 +85,7 @@ public sealed class TCardFold
     }
 
     [Fact]
-    public void CardFoldToggle_StoredCard_FoldsTheCardById()
+    public void CardFoldToggle_StoredCard_FoldsCardById()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -114,7 +114,7 @@ public sealed class TCardFold
     }
 
     [Fact]
-    public void CardFoldToggle_UnsavedCard_AnswersItCannotFoldAndStoresNothing()
+    public void CardFoldToggle_UnsavedCard_RefusesAndStoresNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -135,7 +135,7 @@ public sealed class TCardFold
     }
 
     [Fact]
-    public void DisplayFoldToggle_OneEntry_LeavesAnotherEntrysCardsUnfolded()
+    public void DisplayFoldToggle_OneEntry_LeavesOtherEntryUnfolded()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -157,7 +157,7 @@ public sealed class TCardFold
     }
 
     [Fact]
-    public void DisplayFoldToggle_EditorOnTheSameEntry_RefreshesTheEditorCards()
+    public void DisplayFoldToggle_SameEntryEditor_RefreshesEditorCards()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -177,7 +177,7 @@ public sealed class TCardFold
     }
 
     [Fact]
-    public void CardFoldToggle_ReadingViewOnTheSameEntry_RaisesTheDisplayFold()
+    public void CardFoldToggle_SameEntryReadingView_RaisesDisplayFold()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -223,7 +223,7 @@ public sealed class TCardFold
     }
 
     [Fact]
-    public void DisplayFoldToggle_NoEntryChosen_AnswersFalseAndStoresNothing()
+    public void DisplayFoldToggle_NoEntryChosen_RefusesAndStoresNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -240,7 +240,7 @@ public sealed class TCardFold
     }
 
     [Fact]
-    public void CardFoldToggle_NoStoredEntry_AnswersFalseAndStoresNothing()
+    public void CardFoldToggle_NoStoredEntry_RefusesAndStoresNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

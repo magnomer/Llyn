@@ -6,7 +6,7 @@ namespace Llyn.Tests;
 public sealed class TVariety
 {
     [Fact]
-    public void VarietyRead_NamedOrBlankVariety_KeysTheLabelAndTheFlag()
+    public void VarietyRead_NamedOrBlankVariety_KeysLabelAndFlag()
     {
         Assert.Equal(
             new CVariety("Scottish", "Variety.Scottish", "English/Scottish"),

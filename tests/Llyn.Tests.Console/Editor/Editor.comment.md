@@ -23,6 +23,7 @@ The Enter label tells which kind of row is lit.
 Three head rows lie between the headword and the tab line.
 So a test presses Down past them to reach the tabs.
 The window the case runs is wired as the real one is, with the loop's key and batch routes attached.
+A case may hand in its own atelier builder, so it can observe what the atelier opens.
 Enter on a stored card header folds it through Conduct, and the header glyph turns from down to right.
 F3 widens the editor over the list.
 The first Escape closes an open field, and the next Escape gives the list back.
@@ -154,14 +155,14 @@ So no cell of the box or its shadow leaves the part.
 
 ## Stamp
 
-Commit: `c37ca1837ded`
-- `TEditorChronicle.cs` `ed8d5edbb5c92302`
-- `TEditorDraft.cs` `c85e82a5c120686d`
-- `TEditorDrop.cs` `ba90316114a19401`
-- `TEditorFrame.cs` `f35fd996d88e72f6`
-- `TEditorHead.cs` `3115a20cd327ac3e`
-- `TEditorInlet.cs` `1429cb65fb1685dd`
-- `TEditorKey.cs` `c5b384923a4ebe0f`
-- `TEditorLink.cs` `93d3462c24b89438`
-- `TEditorMarker.cs` `942a2bd8a8747e92`
-- `TEditorSight.cs` `060f3bceccb72cd7`
+Commit: `9377e657b395`
+- `TEditorChronicle.cs` `a5048e9474a96f92`
+- `TEditorDraft.cs` `60012140173b72d3`
+- `TEditorDrop.cs` `38133086dd6bd519`
+- `TEditorFrame.cs` `5b6e26d411975cd2`
+- `TEditorHead.cs` `2d0c70c4882a8b28`
+- `TEditorInlet.cs` `1141eaa74e31ff68`
+- `TEditorKey.cs` `ee02440dc2fa5088`
+- `TEditorLink.cs` `c2b0a7e95140ff20`
+- `TEditorMarker.cs` `721f070d4c8c36c9`
+- `TEditorSight.cs` `e42af8f614791040`

@@ -87,10 +87,10 @@ So it reaches product code only through the relay.
 
 ## Stamp
 
-Commit: `c37ca1837ded`
-- `TEngineScript.cs` `6c767cd0e7838c9c`
-- `TEngineScriptFault.cs` `3344baab7502ba88`
-- `TEngineShengfu.cs` `eaac04dc820fc310`
-- `TEngineStem.cs` `007dc5a5a957da60`
-- `TEpoch.cs` `3ecf24a8d1625d8c`
-- `TGlyph.cs` `744fa63fe86f45ed`
+Commit: `9377e657b395`
+- `TEngineScript.cs` `5d1c436a4247071a`
+- `TEngineScriptFault.cs` `fffb00d3df0eb8f2`
+- `TEngineShengfu.cs` `09ab6bd48aa647a6`
+- `TEngineStem.cs` `e1879685b85c3409`
+- `TEpoch.cs` `03a4f1b47bf77d69`
+- `TGlyph.cs` `ba29118798c80ace`

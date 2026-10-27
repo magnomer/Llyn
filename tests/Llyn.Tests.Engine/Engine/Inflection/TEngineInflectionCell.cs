@@ -86,7 +86,7 @@ public sealed class TEngineInflectionCell
     }
 
     [Fact]
-    public async Task InflectionStart_CellMissed_MarksOnlyThatCellUnknown()
+    public async Task InflectionStart_CellMissed_MarksCellUnknownOnly()
     {
         using TLanguageFixture pack = TInflectionPackCreate();
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

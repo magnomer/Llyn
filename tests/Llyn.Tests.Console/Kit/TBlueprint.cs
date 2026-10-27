@@ -22,7 +22,7 @@ public sealed class TBlueprint
     }
 
     [Fact]
-    public void BlueprintLoad_UnlistedBlueprint_SkipsIt()
+    public void BlueprintLoad_UnlistedBlueprint_SkipsPart()
     {
         TBlueprintFake fake = new();
 
@@ -50,7 +50,7 @@ public sealed class TBlueprint
     }
 
     [Fact]
-    public void BlueprintDraw_AsciiGlyphs_DrawsTheAsciiFrame()
+    public void BlueprintDraw_AsciiGlyphs_DrawsAsciiFrame()
     {
         const string xml = "<Blueprint x:Name=\"AWindow\" xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\">"
             + "<Frame Glyphs=\"ascii\" /></Blueprint>";

@@ -33,7 +33,7 @@ public sealed class TPathfinderPath
     }
 
     [Fact]
-    public void PathfinderMedia_TypedFolderPart_ListsThatFolder()
+    public void PathfinderMedia_TypedFolderPart_ListsFolder()
     {
         string? answer = TPathfinderRun(
             ["b\\", "b\\x.mp3", "xa.mp3"],
@@ -63,7 +63,7 @@ public sealed class TPathfinderPath
     }
 
     [Fact]
-    public void PathfinderMedia_TypedFolderUnreadableSegment_ListsNothing()
+    public void PathfinderMedia_UnreadableFolderSegment_ListsNothing()
     {
         TPathfinderRun(
             ["a.mp3"],

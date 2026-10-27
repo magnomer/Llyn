@@ -48,7 +48,7 @@ public sealed class TGuild
     }
 
     [Fact]
-    public void ApertureOrderSet_NoOrderRow_KeepsTheOrder()
+    public void ApertureOrderSet_NoOrderRow_KeepsOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -62,7 +62,7 @@ public sealed class TGuild
     }
 
     [Fact]
-    public void ApertureFilterSet_HiddenKind_MarksTheRollFiltered()
+    public void ApertureFilterSet_HiddenKind_MarksRollFiltered()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -76,7 +76,7 @@ public sealed class TGuild
     }
 
     [Fact]
-    public void GuildRollRead_NothingChosen_ReadsTheVitaOfNobody()
+    public void GuildRollRead_NothingChosen_ReadsVitaOfNobody()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -137,7 +137,7 @@ public sealed class TGuild
     }
 
     [Fact]
-    public void GuildAuthorSelect_Click_RecordsTheStationItLeaves()
+    public void GuildAuthorSelect_Click_RecordsLeftStation()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -179,7 +179,7 @@ public sealed class TGuild
     }
 
     [Fact]
-    public void GuildRollRead_ChosenAuthorGone_ClosesThePanel()
+    public void GuildRollRead_ChosenAuthorGone_ClosesPanel()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -196,7 +196,7 @@ public sealed class TGuild
     }
 
     [Fact]
-    public void DiptychEntryDelete_Confirmed_RemovesTheAuthor()
+    public void DiptychEntryDelete_Confirmed_RemovesAuthor()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -214,7 +214,7 @@ public sealed class TGuild
     }
 
     [Fact]
-    public void EngineBulletinRaise_ChosenAuthor_EmptiesThePanel()
+    public void EngineBulletinRaise_ChosenAuthor_EmptiesPanel()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -230,7 +230,7 @@ public sealed class TGuild
     }
 
     [Fact]
-    public void EngineBulletinRaise_Catalog_RefreshesTheRollAndTheVerdicts()
+    public void EngineBulletinRaise_Catalog_RefreshesRollAndVerdicts()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

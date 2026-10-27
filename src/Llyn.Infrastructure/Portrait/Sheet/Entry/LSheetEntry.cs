@@ -30,7 +30,7 @@ public static class LSheetEntry
 
         LSheetHeader.LSheetHeaderAppend(sheet, livery, ensigns, lookup);
         LSheetSound.LSheetSoundAppend(sheet, livery, ensigns, theme, lookup);
-        LSheetSpeechAppend(sheet, livery, lookup);
+        LSheetSpeechAppend(sheet, livery, label);
         LSheetFrequencyAppend(sheet, livery, lookup);
         LSheetParadigm.LSheetParadigmAppend(sheet, livery, lookup);
 
@@ -53,7 +53,7 @@ public static class LSheetEntry
         return sheet.ToString();
     }
 
-    private static void LSheetSpeechAppend(StringBuilder sheet, LLiveryPage page, Func<string, string> lookup)
+    private static void LSheetSpeechAppend(StringBuilder sheet, LLiveryPage page, LPortraitLabel label)
     {
         LEntryDraft draft = page.LLiveryPageDraft;
         IReadOnlyList<LEntryChip> chips = LEntryChip.LEntryChipRead(
@@ -68,8 +68,10 @@ public static class LSheetEntry
         {
             (string style, string text) = chip.LEntryChipKind switch
             {
-                LEntryChipKind.LEntryChipUnit => ("chip unit", lookup(chip.LEntryChipText)),
-                LEntryChipKind.LEntryChipFreedom => ("chip freedom", lookup(chip.LEntryChipText)),
+                LEntryChipKind.LEntryChipUnit => ("chip unit",
+                    label.LPortraitLabelUnit.GetValueOrDefault(draft.LEntryDraftUnit, chip.LEntryChipText)),
+                LEntryChipKind.LEntryChipFreedom => ("chip freedom",
+                    label.LPortraitLabelFreedom.GetValueOrDefault(draft.LEntryDraftFreedom, chip.LEntryChipText)),
                 _ => ("chip", chip.LEntryChipText),
             };
             sheet.Append("<span class=\"").Append(style).Append("\">")

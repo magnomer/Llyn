@@ -71,7 +71,7 @@ public sealed class TEngineFanqie
     };
 
     [Fact]
-    public async Task FanqieStart_GroupedCell_StoresEachGroupWithItsParts()
+    public async Task FanqieStart_GroupedCell_StoresEachGroupWithParts()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineFanqiePack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -116,7 +116,7 @@ public sealed class TEngineFanqie
     }
 
     [Fact]
-    public async Task FanqieStart_OneBookBusy_StoresTheOther()
+    public async Task FanqieStart_OneBookBusy_StoresOtherBook()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineFanqiePack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

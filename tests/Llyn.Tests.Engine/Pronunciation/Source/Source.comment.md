@@ -18,6 +18,7 @@ A `{word}` token in a pattern is the headword, escaped so a regex character in i
 A link reading answers the fetched address itself, with `{headword}` filled as typed before any spelling rule.
 A decoded attempt matches characters the page writes as entities, which a plain attempt misses.
 A missed guard is a blank answer and a server failure is a lost one.
+A server failure is fetched once, so the stub handler counts a single request.
 A page that only points at another headword is followed there, and the reading comes from the page pointed at.
 A page with its own readings that also points elsewhere keeps its own and adds the pointed page's.
 Two pages pointing at each other stop at the hop limit with a blank reached answer.
@@ -67,8 +68,8 @@ The fake client answers the body for any address, so the live URL is never calle
 
 ## Stamp
 
-Commit: `aae5349dbb94`
-- `TSourceGeneric.cs` `095a67904a6f352c`
+Commit: `9377e657b395`
+- `TSourceGeneric.cs` `a4f430e26fef1672`
 - `TSourceMorphology.cs` `dad89363daf96f29`
 - `TSourcePack.cs` `2ee512e52a57fe5f`
-- `TSourceSpanish.cs` `19854b0c39cfbb71`
+- `TSourceSpanish.cs` `67b8cdcc99e0c28a`

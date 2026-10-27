@@ -11,7 +11,7 @@ namespace Llyn.Tests;
 public sealed class TAncestorArchive
 {
     [Fact]
-    public void AncestorSave_UnsavedKeys_ReadsTheTreeBackLinked()
+    public void AncestorSave_UnsavedKeys_ReadsTreeBackLinked()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -34,7 +34,7 @@ public sealed class TAncestorArchive
     }
 
     [Fact]
-    public void AncestorSave_EmptyList_ClearsTheMap()
+    public void AncestorSave_EmptyList_ClearsMap()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -66,7 +66,7 @@ public sealed class TAncestorArchive
     }
 
     [Fact]
-    public void EntryDelete_LinkedEntry_KeepsTheBoxAsText()
+    public void EntryDelete_LinkedEntry_KeepsBoxAsText()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -83,7 +83,7 @@ public sealed class TAncestorArchive
     }
 
     [Fact]
-    public void EntryDelete_Owner_TakesTheMapAway()
+    public void EntryDelete_Owner_DropsAncestorRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -98,7 +98,7 @@ public sealed class TAncestorArchive
     }
 
     [Fact]
-    public void AncestorRead_BoxDeleted_TakesItsSourcesAway()
+    public void AncestorRead_RootBoxDeleted_ReturnsNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -113,7 +113,7 @@ public sealed class TAncestorArchive
     }
 
     [Fact]
-    public void RelationRead_FreshWorkspace_HoldsTheBuiltinsThatStay()
+    public void RelationRead_FreshWorkspace_ReturnsUndeletableBuiltins()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LAncestorArchive archive = TInterface.TAncestorArchiveCreate(workspace.TWorkspaceDatabase);
@@ -174,7 +174,7 @@ public sealed class TAncestorArchive
     }
 
     [Fact]
-    public void AncestorSave_DeletedRelationAndTongue_SavesThemCleared()
+    public void AncestorSave_DeletedRelationAndTongue_SavesBothCleared()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -201,7 +201,7 @@ public sealed class TAncestorArchive
     }
 
     [Fact]
-    public void AncestorSave_DeletedLinkedEntry_KeepsTheBoxAsText()
+    public void AncestorSave_DeletedLinkedEntry_SavesBoxAsText()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -219,7 +219,7 @@ public sealed class TAncestorArchive
     }
 
     [Fact]
-    public void EntryLoad_SavedMap_FillsTheDraft()
+    public void EntryLoad_SavedMap_FillsDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

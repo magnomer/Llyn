@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TFootnote
 {
     [Fact]
-    public async Task FootnoteRowsLoad_NoSourceChosen_AnswersEveryEntryAfterTheFill()
+    public async Task FootnoteRowsLoad_NoSourceChosen_AnswersAllEntries()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -52,7 +52,7 @@ public sealed class TFootnote
     }
 
     [Fact]
-    public void ApertureQuerySet_UnmatchedText_EmptiesTheRowsAndWordsTheEmptyList()
+    public void ApertureQuerySet_UnmatchedText_EmptiesRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -73,7 +73,7 @@ public sealed class TFootnote
     }
 
     [Fact]
-    public void FootnoteEntryCreate_SourceChosen_OpensAFreshEntryCitingIt()
+    public void FootnoteEntryCreate_SourceChosen_CitesChosenSource()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -92,7 +92,7 @@ public sealed class TFootnote
     }
 
     [Fact]
-    public void FootnoteEntryCreate_NoSourceChosen_OpensAFreshEntryCitingNothing()
+    public void FootnoteEntryCreate_NoSourceChosen_CitesNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

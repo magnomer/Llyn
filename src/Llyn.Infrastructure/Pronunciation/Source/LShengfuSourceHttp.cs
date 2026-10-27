@@ -20,12 +20,13 @@ public sealed class LShengfuSourceHttp : LShengfuSource
 
     private static readonly Regex LShengfuSourceTag = new("<[^>]+>", RegexOptions.CultureInvariant);
 
-    private static readonly TimeSpan LShengfuSourcePatience = TimeSpan.FromSeconds(2);
+    private readonly TimeSpan _lShengfuSourcePatience;
 
-    public LShengfuSourceHttp(HttpClient client)
+    public LShengfuSourceHttp(HttpClient client, TimeSpan patience)
     {
         ArgumentNullException.ThrowIfNull(client);
         _lShengfuSourceClient = client;
+        _lShengfuSourcePatience = patience;
     }
 
     public async Task<(LShengfu? LShengfuFound, bool LShengfuReached)> LShengfuSourceFind(
@@ -44,7 +45,7 @@ public sealed class LShengfuSourceHttp : LShengfuSource
         try
         {
             if (!string.IsNullOrEmpty(rule.LShengfuRuleBusy)
-                && Regex.IsMatch(body, rule.LShengfuRuleBusy, RegexOptions.CultureInvariant, LShengfuSourcePatience))
+                && Regex.IsMatch(body, rule.LShengfuRuleBusy, RegexOptions.CultureInvariant, _lShengfuSourcePatience))
             {
                 return (null, false);
             }
@@ -57,7 +58,7 @@ public sealed class LShengfuSourceHttp : LShengfuSource
         }
     }
 
-    public static LShengfu? LShengfuSourceScan(LShengfuRule rule, string character, string body)
+    public LShengfu? LShengfuSourceScan(LShengfuRule rule, string character, string body)
     {
         ArgumentNullException.ThrowIfNull(rule);
         ArgumentNullException.ThrowIfNull(character);
@@ -65,7 +66,7 @@ public sealed class LShengfuSourceHttp : LShengfuSource
 
         string pattern = rule.LShengfuRulePattern.Replace(
             LShengfuSourceToken, Regex.Escape(character), StringComparison.Ordinal);
-        Regex line = new(pattern, LShengfuSourceLoose, LShengfuSourcePatience);
+        Regex line = new(pattern, LShengfuSourceLoose, _lShengfuSourcePatience);
 
         List<string> found = [];
         foreach (Match match in line.Matches(body))

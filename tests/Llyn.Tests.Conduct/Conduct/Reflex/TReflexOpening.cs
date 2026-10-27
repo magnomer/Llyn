@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TReflexOpening
 {
     [Fact]
-    public void DisplaySpreadCheck_StoredStateWrittenTwice_ReadsThatEntryOpened()
+    public void DisplaySpreadCheck_WrittenTwice_ReadsEntryOpened()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -24,7 +24,7 @@ public sealed class TReflexOpening
     }
 
     [Fact]
-    public void DisplayFoldOpened_AnotherEntryOpened_ShowsEachEntrysOwnStoredState()
+    public void DisplayFoldOpened_AnotherEntry_ShowsOwnStoredState()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -46,7 +46,7 @@ public sealed class TReflexOpening
     }
 
     [Fact]
-    public void DisplayReflexToggle_ShownEntry_StoresTheStateAnswersTrueAndRaisesTheDisplayFold()
+    public void DisplayReflexToggle_ShownEntry_StoresStateRaisesFold()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -66,7 +66,7 @@ public sealed class TReflexOpening
     }
 
     [Fact]
-    public void DisplayReflexToggle_NoEntryShown_AnswersFalseAndStoresNothing()
+    public void DisplayReflexToggle_NoEntryShown_StoresNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -82,7 +82,7 @@ public sealed class TReflexOpening
     }
 
     [Fact]
-    public void DisplayReflexToggle_FailingPort_ShowsTheNoticeAndAnswersFalse()
+    public void DisplayReflexToggle_FailingPort_ShowsNoticeReturnsFalse()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -123,7 +123,7 @@ public sealed class TReflexOpening
     }
 
     [Fact]
-    public void DisplayReflexToggle_EditorOnTheSameEntry_RefreshesTheEditorReflexFromTheStore()
+    public void DisplayReflexToggle_EditorOnSameEntry_RefreshesEditor()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -143,7 +143,7 @@ public sealed class TReflexOpening
     }
 
     [Fact]
-    public void KindredRead_AnotherEntryHeld_ReadsEachHeldEntrysOwnStoredState()
+    public void KindredRead_AnotherEntryHeld_ReadsOwnStoredState()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -161,7 +161,7 @@ public sealed class TReflexOpening
     }
 
     [Fact]
-    public void KindredSpread_HeldEntry_StoresTheStateAnswersTrueAndRaisesTheDisplayFold()
+    public void KindredSpread_HeldEntry_StoresStateRaisesDisplayFold()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -198,7 +198,7 @@ public sealed class TReflexOpening
     }
 
     [Fact]
-    public void KindredSpread_FailingPort_ShowsTheNoticeAndAnswersFalse()
+    public void KindredSpread_FailingPort_ShowsNoticeReturnsFalse()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

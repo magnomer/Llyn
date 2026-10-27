@@ -36,9 +36,10 @@ Null is Conduct's word for no card, so no magic id is sent.
 
 ### `QImageOpenObserve`
 
-The chosen path goes raw to the file gate, which sends it as the row's location at once.
+The click asks the gate to open a file for the row, and the gate asks the desk's envoy.
+The envoy shows the window's file dialog, so the driver builds no dialog itself.
 A cancelled dialog hands null, and the gate does nothing.
-The path is written as it stands rather than copied anywhere.
+The chosen path is written as it stands rather than copied anywhere.
 Browsing is a convenience for the local case only, since the field takes a web address as well.
 
 ## `QImageItem`
@@ -86,10 +87,6 @@ A local file is read whole when decoded, so the preview never holds the file ope
 The id is not taken, since it was fixed at construction.
 A changed address reloads the preview of a row already seen, and an unchanged one keeps it.
 So a typed location reloads nothing until it reaches a new address.
-
-### `QImageItemOpen`
-
-It lives on the row because every editor drawing the row offers the same chooser.
 
 ### `_qImageItemAddress`
 
@@ -154,8 +151,8 @@ A row already loaded does nothing on a repeat load.
 
 ## Stamp
 
-Commit: `8c403d1df768`
-- `QImage.cs` `5a19e6bfbfb5d7fb`
-- `QImageItem.cs` `b0193f844e268a9b`
+Commit: `9377e657b395`
+- `QImage.cs` `806da20504e40ca0`
+- `QImageItem.cs` `435cd13c8ff08e60`
 - `QImageLazy.cs` `1ff9279b6097bd60`
 - `QImagePending.cs` `0cdc26e686b37582`

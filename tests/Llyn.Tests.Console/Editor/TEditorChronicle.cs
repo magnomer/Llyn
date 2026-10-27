@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TEditorChronicle
 {
     [Fact]
-    public void EditorKeymap_ControlZWithAStep_UndoesAndKeepsTheFieldOpenAtItsEnd()
+    public void EditorKeymap_ControlZWithStep_UndoesAndKeepsFieldOpen()
     {
         TEditorFrameRun(
             ["fire"],
@@ -40,7 +40,7 @@ public sealed class TEditorChronicle
     }
 
     [Fact]
-    public void EditorKeymap_ControlZOnADimRow_KeepsTheCaretWhereTyped()
+    public void EditorKeymap_ControlZOnDimRow_KeepsCaretWhereTyped()
     {
         TEditorFrameRun(
             ["fire"],
@@ -65,7 +65,7 @@ public sealed class TEditorChronicle
     }
 
     [Fact]
-    public void EditorKeymap_ControlYAndControlShiftZ_RedoTheStep()
+    public void EditorKeymap_ControlYAndControlShiftZ_RedoesStep()
     {
         TEditorFrameRun(
             ["fire"],
@@ -95,7 +95,7 @@ public sealed class TEditorChronicle
     }
 
     [Fact]
-    public void NavigationDraw_EditorOnTheRightSide_ShowsUndoAndRedoDimmedByTheChronicle()
+    public void NavigationDraw_EditorOnRightSide_ShowsUndoRedoDimmed()
     {
         TEditorFrameRun(
             ["fire"],
@@ -136,7 +136,7 @@ public sealed class TEditorChronicle
     }
 
     [Fact]
-    public void EditorDraw_HaltedChronicle_DimsTheRowsRefusesTheFieldAndNamesTheHoldFailure()
+    public void EditorDraw_HaltedChronicle_RefusesFieldNamesFailure()
     {
         LEngine? engine = null;
         List<string> asked = [];

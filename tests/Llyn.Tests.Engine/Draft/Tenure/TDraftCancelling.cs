@@ -32,7 +32,7 @@ public sealed class TDraftCancelling
     }
 
     [Fact]
-    public void DraftCancel_TargetOfAnotherDraft_StrikesItsIdFromThatDraft()
+    public void DraftCancel_TargetOfAnotherDraft_StrikesIdFromOwner()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -63,7 +63,7 @@ public sealed class TDraftCancelling
     }
 
     [Fact]
-    public void DraftCancel_TargetHeldByAnotherEngine_LeavesItAlone()
+    public void DraftCancel_TargetHeldByAnotherEngine_LeavesTarget()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
 
@@ -82,7 +82,7 @@ public sealed class TDraftCancelling
     }
 
     [Fact]
-    public void DraftDelete_DraftOwningLinks_DropsThem()
+    public void DraftDelete_DraftOwningLinks_DropsLinks()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();

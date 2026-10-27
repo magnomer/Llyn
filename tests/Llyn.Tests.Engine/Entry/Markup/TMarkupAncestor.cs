@@ -37,7 +37,7 @@ public sealed class TMarkupAncestor
     }
 
     [Fact]
-    public void MarkupImport_ExportedMap_StoresTheSameTree()
+    public void MarkupImport_ExportedMap_StoresSameTree()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -56,7 +56,7 @@ public sealed class TMarkupAncestor
     }
 
     [Fact]
-    public void MarkupImport_OldEtymology_LoadsTheEntryWithAnOmission()
+    public void MarkupImport_OldEtymology_LoadsEntryWithOmission()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -84,7 +84,7 @@ public sealed class TMarkupAncestor
     }
 
     [Fact]
-    public void MarkupImport_UnknownLink_KeepsTheHeadwordAsText()
+    public void MarkupImport_UnknownLink_KeepsHeadwordAsText()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

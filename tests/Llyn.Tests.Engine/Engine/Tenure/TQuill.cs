@@ -72,7 +72,7 @@ public sealed class TQuill
     }
 
     [Fact]
-    public void GlossInsert_PlaceGiven_AddsGlossInTheGlossLanguageAtThePlace()
+    public void GlossInsert_PlaceGiven_AddsGlossInGlossLanguage()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -85,7 +85,7 @@ public sealed class TQuill
     }
 
     [Fact]
-    public void GlossRemove_AddedGloss_DropsIt()
+    public void GlossRemove_AddedGloss_DropsGloss()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -159,7 +159,7 @@ public sealed class TQuill
     }
 
     [Fact]
-    public void TranslationRemove_CourtDeleteFails_RaisesTheFailure()
+    public void TranslationRemove_CourtDeleteFails_ThrowsFailure()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -178,7 +178,7 @@ public sealed class TQuill
     }
 
     [Fact]
-    public void ReferenceFind_StaleDraft_ThrowsTheRefusal()
+    public void ReferenceFind_StaleDraft_ThrowsRefusal()
     {
         using TWorkspace first = TWorkspace.TWorkspacePrepare();
         using TWorkspace second = TWorkspace.TWorkspaceCreate();

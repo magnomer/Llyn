@@ -35,6 +35,6 @@ The fold bulletin is raised on the entry, so other open views of it re-read thei
 
 ## Stamp
 
-Commit: `8c403d1df768`
-- `TFold.cs` `d8e9dd27befc18c7`
-- `TFoldBox.cs` `cfb24f0580d8822c`
+Commit: `9377e657b395`
+- `TFold.cs` `ddd303528bc4fa47`
+- `TFoldBox.cs` `c0b078c7f91c8dee`

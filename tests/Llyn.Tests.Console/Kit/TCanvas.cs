@@ -18,7 +18,7 @@ public sealed class TCanvas
     }
 
     [Fact]
-    public void CanvasFrameDraw_HalfOfWideCharacter_BlanksTheOtherHalf()
+    public void CanvasFrameDraw_HalfOfWideCharacter_BlanksOtherHalf()
     {
         TConsoleFake console = new() { TConsoleFakeWidth = 4, TConsoleFakeHeight = 1 };
         BCanvas canvas = new(console, new BCanvasWidth(false), new BTheme(BTheme.BThemeSpareRead), 4, 1);
@@ -30,7 +30,7 @@ public sealed class TCanvas
     }
 
     [Fact]
-    public void CanvasSync_OneCellChanged_WritesThatRunOnly()
+    public void CanvasSync_OneCellChanged_WritesRunOnly()
     {
         TConsoleFake console = new() { TConsoleFakeWidth = 4, TConsoleFakeHeight = 2 };
         BCanvas canvas = new(console, new BCanvasWidth(false), new BTheme(BTheme.BThemeSpareRead), 4, 2);

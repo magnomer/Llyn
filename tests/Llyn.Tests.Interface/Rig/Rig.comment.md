@@ -9,8 +9,10 @@ It also holds the relays for the clerks of the application ring.
 The clock every test engine is built over, running on the system clock until a test sets it.
 Setting it is the one way to freeze or advance time inside an engine.
 Setting a reader lets a test advance a captured variable between requests.
+Every pause is recorded, and `TClockFakeSpans` returns the spans asked for in order.
 The pause is a real wait through `Task.Delay`, so test timing stays as it was.
-Setting the clock never shortens that wait.
+A clock built as instant skips that wait and answers at once, unless the token is already cancelled.
+Setting the clock never shortens a wait.
 
 ## `TEngineFake`
 
@@ -234,8 +236,8 @@ One reversal is shared between hiding and restoring.
 
 ## Stamp
 
-Commit: `8c403d1df768`
-- `TClockFake.cs` `dffa2b2fcf999593`
+Commit: `9377e657b395`
+- `TClockFake.cs` `891d06355fcde29c`
 - `TEngineFake.cs` `364e90d7a21a82f8`
 - `TEngineFault.cs` `deab7d5e61cdcbfb`
 - `TEnvoyFake.cs` `6d5bffee0960fa06`

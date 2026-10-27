@@ -30,7 +30,7 @@ public sealed class TEngineWorkspace
     }
 
     [Fact]
-    public void FolderOpen_OpenWorkspace_HandsItsFolderToTheUsher()
+    public void FolderOpen_OpenWorkspace_PassesFolderToUsher()
     {
         TUsherOpened usher = new();
         using LEngine engine =
@@ -117,7 +117,7 @@ public sealed class TEngineWorkspace
     }
 
     [Fact]
-    public void WorkspaceOpen_HeldDraftId_IsNeverIssuedToTheNextWorkspace()
+    public void WorkspaceOpen_HeldDraftId_StaysUnissued()
     {
         using TWorkspace first = TWorkspace.TWorkspaceCreate();
         using TWorkspace second = TWorkspace.TWorkspaceCreate();
@@ -132,7 +132,7 @@ public sealed class TEngineWorkspace
     }
 
     [Fact]
-    public void WorkspaceOpen_HeldDraftCancelled_ReleasesItsStaleId()
+    public void WorkspaceOpen_HeldDraftCancelled_ReleasesStaleId()
     {
         using TWorkspace first = TWorkspace.TWorkspaceCreate();
         using TWorkspace second = TWorkspace.TWorkspaceCreate();
@@ -190,7 +190,7 @@ public sealed class TEngineWorkspace
     }
 
     [Fact]
-    public void LeaseClose_EngineDisposed_FreesTheWorkspace()
+    public void LeaseClose_EngineDisposed_FreesWorkspace()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         TLeaseStart(workspace, workspace).Dispose();
@@ -201,7 +201,7 @@ public sealed class TEngineWorkspace
     }
 
     [Fact]
-    public void LeaseOpen_WorkspaceChanged_MovesToTheTarget()
+    public void LeaseOpen_WorkspaceChanged_MovesToTarget()
     {
         using TWorkspace first = TWorkspace.TWorkspacePrepare();
         using TWorkspace second = TWorkspace.TWorkspacePrepare();
@@ -215,7 +215,7 @@ public sealed class TEngineWorkspace
     }
 
     [Fact]
-    public void LeaseClose_ConstructionFailed_FreesTheWorkspace()
+    public void LeaseClose_ConstructionFailed_FreesWorkspace()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LLanguageVault failing = TEngineFake.TEngineCreate<LLanguageVault>(

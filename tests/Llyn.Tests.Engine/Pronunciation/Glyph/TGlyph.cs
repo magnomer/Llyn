@@ -26,7 +26,7 @@ public sealed class TGlyph
     }
 
     [Fact]
-    public void GlyphOrderSort_SupplementaryIdeograph_SortsByCodePointNotUtf16()
+    public void GlyphOrderSort_SupplementaryIdeograph_SortsByCodePoint()
     {
         string rare = char.ConvertFromUtf32(0x20000);
         string compatibility = char.ConvertFromUtf32(0xF900);
@@ -54,7 +54,7 @@ public sealed class TGlyph
     }
 
     [Fact]
-    public void GlyphDivide_NativeHeadwordAndEmptyGlyphRow_AnswersNoCells()
+    public void GlyphDivide_NativeHeadwordEmptyGlyphRow_AnswersNoCells()
     {
         LGlyph glyph = TInterface.TGlyphCreate("Hanja", "Classical Chinese");
         LEntryDraft draft = TInterface.TEntryDraftCreate(
@@ -69,7 +69,7 @@ public sealed class TGlyph
     }
 
     [Fact]
-    public void GlyphOtherRead_GlyphAndEmptyRows_KeepsOnlyOtherFilledRows()
+    public void GlyphOtherRead_GlyphAndEmptyRows_KeepsOtherFilledRows()
     {
         LGlyph glyph = TInterface.TGlyphCreate("Traditional", "Classical Chinese");
         IReadOnlyList<LTranscriptionDraft> rows =
@@ -131,7 +131,7 @@ public sealed class TGlyph
     }
 
     [Fact]
-    public void GlyphRead_PackWithSection_ReadsItAndPackWithoutReadsNull()
+    public void GlyphRead_PackWithAndWithoutSection_ReadsGlyphOrNull()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -141,7 +141,7 @@ public sealed class TGlyph
     }
 
     [Fact]
-    public void FontRead_BlankLanguage_AnswersTheEmptyFont()
+    public void FontRead_BlankLanguage_AnswersEmptyFont()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

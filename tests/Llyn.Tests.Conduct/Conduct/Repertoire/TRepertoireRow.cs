@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TRepertoireRow
 {
     [Fact]
-    public void RepertoireRowsRead_UnknownKind_WordsTheKindWithTheUnknownWording()
+    public void RepertoireRowsRead_UnknownKind_WordsKindWithUnknown()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -30,7 +30,7 @@ public sealed class TRepertoireRow
     }
 
     [Fact]
-    public void RepertoireRowsRead_UsedAndUnusedSituations_WordsTheCountBlankWhenUnused()
+    public void RepertoireRowsRead_UsedAndUnused_BlanksUnusedCount()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

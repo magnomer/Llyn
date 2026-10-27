@@ -50,7 +50,7 @@ public sealed class TCatalogChosen
     }
 
     [Fact]
-    public void Find_UnknownExamples_TwinsTheLocalizedFallback()
+    public void Find_UnknownExamples_NumbersTwinNames()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

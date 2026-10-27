@@ -35,7 +35,7 @@ public sealed class TFold
     }
 
     [Fact]
-    public void FoldSave_MeaningSharingCollocationId_LeavesCollocationUnfolded()
+    public void FoldSave_SharedCollocationId_LeavesCollocationUnfolded()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -73,7 +73,7 @@ public sealed class TFold
     }
 
     [Fact]
-    public void FoldRead_TwoEntriesFolded_ReturnsOnlyEachEntrysOwnFoldedCards()
+    public void FoldRead_TwoEntriesFolded_ReturnsOwnCardsOnly()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -96,7 +96,7 @@ public sealed class TFold
     }
 
     [Fact]
-    public void EntryUpdate_DroppedFoldedMeaning_DeletesItsFoldAndKeepsTheOthers()
+    public void EntryUpdate_DroppedFoldedMeaning_DropsFoldKeepsOthers()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -113,7 +113,7 @@ public sealed class TFold
     }
 
     [Fact]
-    public void EntryDelete_FoldedEntry_DropsItsCardFolds()
+    public void EntryDelete_FoldedEntry_DropsCardFolds()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -148,7 +148,7 @@ public sealed class TFold
     }
 
     [Fact]
-    public void FoldSave_StoredCard_RaisesFoldBulletinOnItsEntry()
+    public void FoldSave_StoredCard_RaisesFoldBulletinForEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -182,7 +182,7 @@ public sealed class TFold
     }
 
     [Fact]
-    public void ReflexSpread_ClosedAfterOpened_AnswersClosedAndKeepsNoRow()
+    public void ReflexSpread_ClosedAfterOpened_DropsRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -216,7 +216,7 @@ public sealed class TFold
     }
 
     [Fact]
-    public void EntryDelete_SpreadEntry_DropsItsReflexFold()
+    public void EntryDelete_SpreadEntry_DropsReflexFold()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -232,7 +232,7 @@ public sealed class TFold
     [Theory]
     [InlineData(0)]
     [InlineData(-1)]
-    public void ReflexSpread_IdAtOrBelowZero_WritesNothingAndThrowsNothing(long entryId)
+    public void ReflexSpread_IdAtOrBelowZero_WritesNothing(long entryId)
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -249,7 +249,7 @@ public sealed class TFold
     }
 
     [Fact]
-    public void ReflexSpread_StoredEntry_RaisesFoldBulletinOnItsEntry()
+    public void ReflexSpread_StoredEntry_RaisesFoldBulletinForEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

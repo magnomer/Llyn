@@ -52,7 +52,7 @@ public sealed class TPostureWorkspace
     }
 
     [Fact]
-    public void WorkspaceOpen_TargetLegacySettingsOnly_MigratesTargetPosture()
+    public void WorkspaceOpen_LegacySettingsOnly_MigratesPosture()
     {
         using TWorkspace first = TWorkspace.TWorkspacePrepare();
         using TWorkspace second = TWorkspace.TWorkspaceCreate();
@@ -73,7 +73,7 @@ public sealed class TPostureWorkspace
     }
 
     [Fact]
-    public void WorkspaceOpen_TargetPostureUnreadable_KeepsHeldPostureAndFile()
+    public void WorkspaceOpen_PostureUnreadable_KeepsHeldPosture()
     {
         using TWorkspace first = TWorkspace.TWorkspacePrepare();
         using TWorkspace second = TWorkspace.TWorkspaceCreate();
@@ -93,7 +93,7 @@ public sealed class TPostureWorkspace
     }
 
     [Fact]
-    public void PostureStart_ReadFault_RaisesReadFailedWithTheFault()
+    public void PostureStart_ReadFault_RaisesReadFailedWithFault()
     {
         List<Exception> thrown = [];
         List<Exception> failed = [];
@@ -129,7 +129,7 @@ public sealed class TPostureWorkspace
     }
 
     [Fact]
-    public void PostureSave_FaultAfterWorkspaceOpens_RaisesTheFailureAgain()
+    public void PostureSave_FaultAfterRigApply_RaisesFailureAgain()
     {
         List<Exception> thrown = [];
         List<Exception> failed = [];

@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TFavoriteRoster
 {
     [Fact]
-    public void FavoriteRowsRead_FreshArea_ListsTheStoredFavorites()
+    public void FavoriteRowsRead_FreshArea_ListsStoredFavorites()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -25,7 +25,7 @@ public sealed class TFavoriteRoster
     }
 
     [Fact]
-    public void FavoriteRowsRead_MarkedEntry_ListsOnlyTheMarked()
+    public void FavoriteRowsRead_MarkedEntry_ListsOnlyMarked()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -38,7 +38,7 @@ public sealed class TFavoriteRoster
     }
 
     [Fact]
-    public void ApertureQuerySet_MatchingHeadword_NarrowsTheRows()
+    public void ApertureQuerySet_MatchingHeadword_NarrowsRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -53,7 +53,7 @@ public sealed class TFavoriteRoster
     }
 
     [Fact]
-    public void ApertureOrderSet_NoOrderRow_KeepsTheOrder()
+    public void ApertureOrderSet_NoOrderRow_KeepsOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -67,7 +67,7 @@ public sealed class TFavoriteRoster
     }
 
     [Fact]
-    public void ApertureFilterSet_HiddenLanguage_MarksTheListFiltered()
+    public void ApertureFilterSet_HiddenLanguage_MarksListFiltered()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -84,7 +84,7 @@ public sealed class TFavoriteRoster
     }
 
     [Fact]
-    public void FavoriteGraspResonate_GraspOrder_RefreshesTheRows()
+    public void FavoriteGraspResonate_GraspOrder_RefreshesRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -106,7 +106,7 @@ public sealed class TFavoriteRoster
     }
 
     [Fact]
-    public void FavoritePanelRowOpen_ScribeOn_OpensTheEntryInTheEditor()
+    public void FavoritePanelRowOpen_ScribeOn_OpensEntryInEditor()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

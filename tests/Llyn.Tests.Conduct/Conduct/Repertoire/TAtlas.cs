@@ -23,7 +23,7 @@ public sealed class TAtlas
     }
 
     [Fact]
-    public void AtlasRowsRead_BlankTitle_NamesTheRowWithTheUntitledWord()
+    public void AtlasRowsRead_BlankTitle_NamesRowUntitled()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -44,7 +44,7 @@ public sealed class TAtlas
     }
 
     [Fact]
-    public void ApertureQuerySet_MatchingTitle_NarrowsTheRows()
+    public void ApertureQuerySet_MatchingTitle_NarrowsRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -60,7 +60,7 @@ public sealed class TAtlas
     }
 
     [Fact]
-    public void ApertureOrderSet_NoOrderRow_KeepsTheOrder()
+    public void ApertureOrderSet_NoOrderRow_KeepsOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -75,7 +75,7 @@ public sealed class TAtlas
     }
 
     [Fact]
-    public void ApertureFilterSet_HiddenLanguage_MarksTheListFiltered()
+    public void ApertureFilterSet_HiddenLanguage_MarksListFiltered()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -90,7 +90,7 @@ public sealed class TAtlas
     }
 
     [Fact]
-    public void AtlasApertureTallyRead_CitedSituationChosen_WordsItsTally()
+    public void AtlasApertureTallyRead_CitedSituationChosen_WordsTally()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -131,7 +131,7 @@ public sealed class TAtlas
     }
 
     [Fact]
-    public void AtlasLanguageRead_Workspace_OffersTheCatalogLanguages()
+    public void AtlasLanguageRead_Workspace_OffersCatalogLanguages()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -170,7 +170,7 @@ public sealed class TAtlas
     }
 
     [Fact]
-    public void AtlasSituationRead_WrittenFields_ShowsTheirTextWithNoKey()
+    public void AtlasSituationRead_WrittenFields_ShowsTextWithNoKey()
     {
         LSituation situation = TInterface.TSituationCreate(
             7, TInterfaceState.TStateValueCreate("Hearth"), "By the fire", TInterfaceState.TStateValueCreate("home"));
@@ -184,7 +184,7 @@ public sealed class TAtlas
     }
 
     [Fact]
-    public void AtlasSituationRead_MarkdownDescription_ArrivesAsParsedBlocks()
+    public void AtlasSituationRead_MarkdownDescription_ParsesBlocks()
     {
         LSituation situation = TInterface.TSituationCreate(7, "Hearth", "By the **fire**\n\n- warm", null);
 
@@ -197,7 +197,7 @@ public sealed class TAtlas
     }
 
     [Fact]
-    public void AtlasSituationRead_UnknownFields_WordsEachWithTheUnknownMark()
+    public void AtlasSituationRead_UnknownFields_MarksEachUnknown()
     {
         LSituation situation = TInterface.TSituationCreate(
             7, LStateValue.LStateValueUnknown, LStateValue.LStateValueUnknown, LStateValue.LStateValueUnknown);
@@ -213,7 +213,7 @@ public sealed class TAtlas
     }
 
     [Fact]
-    public void AtlasSituationRead_UnwrittenFields_MutesTheTitleAndWordsNoKindOrDescription()
+    public void AtlasSituationRead_UnwrittenFields_MutesAllFields()
     {
         LSituation situation = TInterface.TSituationCreate(7, null, null, null);
 
@@ -225,7 +225,7 @@ public sealed class TAtlas
     }
 
     [Fact]
-    public void AtlasSituationRead_BlankMediaRows_CarriesOnlyTheFilledRowsInOrder()
+    public void AtlasSituationRead_BlankMediaRows_KeepsOnlyFilledRows()
     {
         LSituation situation = TInterface.TSituationCreate(7, "Hearth", null, null) with
         {
@@ -259,7 +259,7 @@ public sealed class TAtlas
     }
 
     [Fact]
-    public void AtlasRowsRead_EngineFails_ShowsTheLoadFailureAndAnswersNothing()
+    public void AtlasRowsRead_EngineFails_ShowsLoadFailureReturnsNone()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -271,7 +271,7 @@ public sealed class TAtlas
     }
 
     [Fact]
-    public void AtlasApertureTallyRead_EngineRefuses_ShowsTheLoadFailureAndAnswersEmpty()
+    public void AtlasApertureTallyRead_EngineRefuses_ShowsLoadFailure()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

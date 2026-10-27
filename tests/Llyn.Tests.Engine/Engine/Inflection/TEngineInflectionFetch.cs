@@ -20,7 +20,7 @@ public sealed class TEngineInflectionFetch
     private static readonly TimeSpan TInflectionFetchPatience = TimeSpan.FromSeconds(5);
 
     [Fact]
-    public async Task InflectionStart_BothFormsFound_MarksSlotsSpecifiedRaisesOnce()
+    public async Task InflectionStart_BothFormsFound_MarksSlotsSpecified()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart(
@@ -267,7 +267,7 @@ public sealed class TEngineInflectionFetch
     }
 
     [Fact]
-    public async Task InflectionStart_SourceUnreached_StoresNothingAndAsksOncePerSession()
+    public async Task InflectionStart_SourceUnreached_AsksOncePerSession()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         TSourceHandler handler = new(string.Empty, HttpStatusCode.ServiceUnavailable);

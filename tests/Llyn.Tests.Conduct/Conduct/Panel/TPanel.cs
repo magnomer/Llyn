@@ -25,7 +25,7 @@ public sealed class TPanel
     }
 
     [Fact]
-    public void PanelScribeToggle_UnsavedLeaveStored_FinishesAndShowsViewer()
+    public void PanelScribeToggle_LeaveStored_FinishesAndShowsViewer()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -41,7 +41,7 @@ public sealed class TPanel
     }
 
     [Fact]
-    public void PanelScribeToggle_UnsavedLeaveDiscarded_ShowsViewerUnfinished()
+    public void PanelScribeToggle_LeaveDiscarded_ShowsViewerUnfinished()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -71,7 +71,7 @@ public sealed class TPanel
     }
 
     [Fact]
-    public void PanelScribeToggle_ChosenRow_HandsItToTheEditor()
+    public void PanelScribeToggle_ChosenRow_HandsRowToEditor()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -116,7 +116,7 @@ public sealed class TPanel
     }
 
     [Fact]
-    public void PanelOrderRead_EveryEngineOrder_ReturnsTheSameNamedMirror()
+    public void PanelOrderRead_AllEngineOrders_ReturnsSameNamedMirror()
     {
         LCatalogOrder[] orders = Enum.GetValues<LCatalogOrder>();
 
@@ -137,7 +137,7 @@ public sealed class TPanel
     }
 
     [Fact]
-    public void PanelSubjectRead_EverySubject_ReturnsTheSameNamedEngineSubject()
+    public void PanelSubjectRead_AllSubjects_ReturnsSameNamedSubject()
     {
         CSubject[] subjects = Enum.GetValues<CSubject>();
 
@@ -149,7 +149,7 @@ public sealed class TPanel
     }
 
     [Fact]
-    public void PanelFilterRead_HiddenLanguages_CarriesThemOver()
+    public void PanelFilterRead_HiddenLanguages_CarriesOver()
     {
         CCatalogFilter filter =
             TInterfaceConductPanel.TPanelFilterRead(TInterface.TCatalogFilterCreate("Latin", "Greek"));

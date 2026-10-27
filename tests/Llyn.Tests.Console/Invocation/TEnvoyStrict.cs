@@ -23,7 +23,7 @@ public sealed class TEnvoyStrict
     }
 
     [Fact]
-    public void EnvoyConfirm_No_RefusesTheRun()
+    public void EnvoyConfirm_No_RefusesRun()
     {
         TConsoleFake console = new() { TConsoleFakeTerminal = true, TConsoleFakeAnswer = "y" };
         BLocalizationCatalog catalog = new();
@@ -87,7 +87,7 @@ public sealed class TEnvoyStrict
     }
 
     [Fact]
-    public void EnvoyFailureShow_Key_PrintsTheSentence()
+    public void EnvoyFailureShow_Key_PrintsSentence()
     {
         TConsoleFake console = new();
         BLocalizationCatalog catalog = new();

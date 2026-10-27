@@ -6,7 +6,7 @@ namespace Llyn.Tests;
 public sealed class TSchemaMigrationVersion
 {
     [Fact]
-    public void DatabaseCreate_BuildHoldingEtymology_DropsTheOldTablesAndKeepsTheEntries()
+    public void DatabaseCreate_BuildHoldingEtymology_DropsOldTables()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
 
@@ -29,7 +29,7 @@ public sealed class TSchemaMigrationVersion
     }
 
     [Fact]
-    public void DatabaseCreate_CollocationSharingMeaningId_RenumbersItAndItsLinks()
+    public void DatabaseCreate_SharedMeaningId_RenumbersCollocation()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
 
@@ -60,7 +60,7 @@ public sealed class TSchemaMigrationVersion
     }
 
     [Fact]
-    public void DatabaseCreate_OlderBuildHoldingOneNamePerLanguage_KeepsOneRowAndEveryMark()
+    public void DatabaseCreate_RepeatedRegisterName_KeepsOneRowAndMarks()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
 
@@ -92,7 +92,7 @@ public sealed class TSchemaMigrationVersion
     }
 
     [Fact]
-    public void DatabaseCreate_OlderBuildWithEntryFrequency_MovesItIntoTheFrequencyTable()
+    public void DatabaseCreate_EntryFrequency_MovesToFrequencyTable()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
 
@@ -115,7 +115,7 @@ public sealed class TSchemaMigrationVersion
     }
 
     [Fact]
-    public void DatabaseCreate_SituationMediaAbsent_RebuildsWithSituationsIntact()
+    public void DatabaseCreate_SituationMediaAbsent_KeepsSituations()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
 
@@ -139,7 +139,7 @@ public sealed class TSchemaMigrationVersion
     }
 
     [Fact]
-    public void DatabaseCreate_RetiredUnits_ClearsThemAndKeepsTheEntries()
+    public void DatabaseCreate_RetiredUnits_ClearsUnitsAndKeepsEntries()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
 

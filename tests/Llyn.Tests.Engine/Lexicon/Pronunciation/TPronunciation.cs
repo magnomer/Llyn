@@ -111,7 +111,7 @@ public sealed class TPronunciation
     }
 
     [Fact]
-    public void EntryUpdate_DroppedPronunciation_ClosesTheGap()
+    public void EntryUpdate_DroppedPronunciation_ClosesGap()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -149,7 +149,7 @@ public sealed class TPronunciation
     }
 
     [Fact]
-    public void RequestApply_Ipa_EditsThePrimaryRowOnly()
+    public void RequestApply_Ipa_EditsPrimaryRowOnly()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -173,7 +173,7 @@ public sealed class TPronunciation
     }
 
     [Fact]
-    public void RequestApply_RemovalOfZeroId_RemovesThePrimaryRow()
+    public void RequestApply_RemovalOfZeroId_RemovesPrimaryRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -188,7 +188,7 @@ public sealed class TPronunciation
     }
 
     [Fact]
-    public void DraftCheck_PrimaryClearedAgain_IsNoChangeWhereAddedBlankRowIs()
+    public void DraftCheck_PrimaryClearedAgain_ReportsNoChange()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -204,7 +204,7 @@ public sealed class TPronunciation
     }
 
     [Fact]
-    public void EntrySave_AddedBlankRow_StoresItEmpty()
+    public void EntrySave_AddedBlankRow_StoresEmpty()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -219,7 +219,7 @@ public sealed class TPronunciation
     }
 
     [Fact]
-    public void RequestApply_AdditionOnEmptyList_SeedsThePrimaryFirst()
+    public void RequestApply_AdditionOnEmptyList_SeedsPrimaryFirst()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -234,7 +234,7 @@ public sealed class TPronunciation
     }
 
     [Fact]
-    public void RequestApply_PronunciationShift_MakesTheMovedRowPrimary()
+    public void RequestApply_PronunciationShift_MakesMovedRowPrimary()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();

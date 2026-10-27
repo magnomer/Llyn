@@ -27,7 +27,7 @@ public sealed class TSpeechRetirement
     }
 
     [Fact]
-    public void SpeechRetirementApply_EntryHoldingBoth_KeepsOneLinkInOrder()
+    public void SpeechRetirementApply_EntryHoldingBoth_KeepsOneLink()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -93,7 +93,7 @@ public sealed class TSpeechRetirement
     }
 
     [Fact]
-    public void LanguageImport_RetiredPack_KeepsUserPartAndDropsSubtypes()
+    public void LanguageImport_RetiredPack_KeepsUserPartOnly()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using (LEngine engine = workspace.TWorkspaceEngineStart())

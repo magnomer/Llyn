@@ -82,7 +82,7 @@ public sealed class TRegister
     }
 
     [Fact]
-    public void EntrySave_NameTheUserWroteFirst_BecomesBuiltin()
+    public void EntrySave_NameUserWroteFirst_BecomesBuiltin()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -179,7 +179,7 @@ public sealed class TRegister
     }
 
     [Fact]
-    public void EntryFind_ByRegister_ReturnsTheEntriesMarkedWithIt()
+    public void EntryFind_ByRegister_ReturnsMarkedEntries()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -196,7 +196,7 @@ public sealed class TRegister
     }
 
     [Fact]
-    public void RegisterCreate_WordingNoCardCarries_ListsItAsWritten()
+    public void RegisterCreate_WordingNoCardCarries_ListsWithNoUsage()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -214,7 +214,7 @@ public sealed class TRegister
     }
 
     [Fact]
-    public void RegisterCreate_WordingAlreadyOnShelf_ReturnsTheStoredRow()
+    public void RegisterCreate_WordingAlreadyOnShelf_ReturnsStoredRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -230,7 +230,7 @@ public sealed class TRegister
     }
 
     [Fact]
-    public void RegisterOffer_StoredBeforeTheMarkedOne_OffersMostMarkedFirstThenByName()
+    public void RegisterOffer_StoredBeforeMarked_OffersMostMarkedFirst()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

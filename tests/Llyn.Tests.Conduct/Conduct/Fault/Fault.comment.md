@@ -59,7 +59,7 @@ Portrait print and export rows live in `TFaultPortrait` and join the list last.
 The gate names of every row, so each theory runs once per gate under a readable name.
 One theory runs a row with its member answering a faulted task, and another with it throwing before any task.
 
-## `EnvoyFailureShow_EveryTaskGate_HoldsASweepRow`
+## `EnvoyFailureShow_AllTaskGates_HoldSweepRow`
 
 Every public method returning a task on a public Conduct type must hold a row.
 A new gate therefore fails the sweep until it is given a row.
@@ -230,9 +230,9 @@ This arrange step answers the gate call and an optional read-back of the state t
 
 ## Stamp
 
-Commit: `c37ca1837ded`
-- `TDisplayFailure.cs` `0d68c5876d9cc12a`
-- `TFault.cs` `fa397c15b685eb43`
+Commit: `9377e657b395`
+- `TDisplayFailure.cs` `79e5a311db383fa9`
+- `TFault.cs` `3c6178b102c3c4f9`
 - `TFaultList.cs` `e993e6b5885af5a2`
 - `TFaultMark.cs` `49690789b8e6973c`
 - `TFaultPortrait.cs` `548737d4700eceaf`

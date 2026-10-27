@@ -103,7 +103,7 @@ public sealed class TAuditName
     }
 
     [Fact]
-    public void AuditName_InternalSealedTurf_AllowsTheType()
+    public void AuditName_InternalSealedTurf_AllowsType()
     {
         SyntaxNode root = CSharpSyntaxTree
             .ParseText("namespace Llyn.Conduct;\ninternal sealed class LDisplay { }")

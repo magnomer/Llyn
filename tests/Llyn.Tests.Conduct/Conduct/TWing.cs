@@ -11,7 +11,7 @@ namespace Llyn.Tests;
 public sealed class TWing
 {
     [Fact]
-    public void WingEntryOpen_LeftSide_LoadsTheEntryAndSavesTheLeftSlot()
+    public void WingEntryOpen_LeftSide_LoadsEntrySavesLeftSlot()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -29,7 +29,7 @@ public sealed class TWing
     }
 
     [Fact]
-    public void WingDisplayIncomingRead_EntryPointedAt_AnswersTheCitingCardsInTheirShape()
+    public void WingDisplayIncomingRead_CitedEntry_AnswersCitingCards()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -49,7 +49,7 @@ public sealed class TWing
     }
 
     [Fact]
-    public void WingEntryOpen_RightSide_SavesTheRightSlot()
+    public void WingEntryOpen_RightSide_SavesRightSlot()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -63,7 +63,7 @@ public sealed class TWing
     }
 
     [Fact]
-    public void WingEntryRestore_WorkspaceOpened_LoadsTheSideEntryAndSavesNothing()
+    public void WingEntryRestore_WorkspaceOpened_LoadsEntrySavesNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -88,7 +88,7 @@ public sealed class TWing
     }
 
     [Fact]
-    public void WingEntryRestore_WorkspaceOpened_ClosesTheShownEntryBeforeLoading()
+    public void WingEntryRestore_WorkspaceOpened_ClosesShownEntryFirst()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -121,7 +121,7 @@ public sealed class TWing
     }
 
     [Fact]
-    public void WingVistaRestore_WorkspaceChanged_StartsAFreshVista()
+    public void WingVistaRestore_WorkspaceChanged_StartsFreshVista()
     {
         using TWorkspace first = TWorkspace.TWorkspacePrepare();
         using TWorkspace second = TWorkspace.TWorkspacePrepare();
@@ -138,7 +138,7 @@ public sealed class TWing
     }
 
     [Fact]
-    public void WingClose_AtelierClosed_StopsThePlayback()
+    public void WingClose_AtelierClosed_StopsPlayback()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -160,7 +160,7 @@ public sealed class TWing
     }
 
     [Fact]
-    public void WingEntryOpen_LoadThrows_ReportsTheFailureAndRaisesNothing()
+    public void WingEntryOpen_LoadThrows_ReportsFailureRaisesNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -195,7 +195,7 @@ public sealed class TWing
     }
 
     [Fact]
-    public void WingQuerySet_MatchingText_ListsTheMatchAndAnnounces()
+    public void WingQuerySet_MatchingText_ListsMatchAndAnnounces()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -213,7 +213,7 @@ public sealed class TWing
     }
 
     [Fact]
-    public void WingOrderSet_NoOrder_KeepsTheOrdering()
+    public void WingOrderSet_NoOrder_KeepsOrdering()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -227,7 +227,7 @@ public sealed class TWing
     }
 
     [Fact]
-    public void WingFilterSet_HiddenLanguage_MarksTheSideFiltered()
+    public void WingFilterSet_HiddenLanguage_MarksSideFiltered()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -241,7 +241,7 @@ public sealed class TWing
     }
 
     [Fact]
-    public void WingRowMove_ListedEntry_MarksTheRowWithoutLoading()
+    public void WingRowMove_ListedEntry_MarksRowWithoutLoading()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -263,7 +263,7 @@ public sealed class TWing
     }
 
     [Fact]
-    public void WingRowMove_NoChosenDown_PicksTheFirstRow()
+    public void WingRowMove_NoChosenDown_PicksFirstRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -275,7 +275,7 @@ public sealed class TWing
     }
 
     [Fact]
-    public void WingRowMove_NoChosenUp_PicksTheFirstRow()
+    public void WingRowMove_NoChosenUp_PicksFirstRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -303,7 +303,7 @@ public sealed class TWing
     }
 
     [Fact]
-    public void WingRowMove_EndChosen_StaysAtTheEnd()
+    public void WingRowMove_EndChosen_StaysAtEnd()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

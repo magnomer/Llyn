@@ -28,7 +28,7 @@ public sealed class TVistaMode
     }
 
     [Fact]
-    public void EditingSet_WorkspaceReopened_AllVistasStartFromSavedMode()
+    public void EditingSet_WorkspaceReopened_VistasStartFromSavedMode()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         bool editing;
@@ -48,7 +48,7 @@ public sealed class TVistaMode
     }
 
     [Fact]
-    public void EditingSet_UnchangedVistaMode_StillUpdatesSharedPreference()
+    public void EditingSet_UnchangedVistaMode_UpdatesSharedPreference()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

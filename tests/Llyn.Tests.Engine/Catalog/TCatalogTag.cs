@@ -49,7 +49,7 @@ public sealed class TCatalogTag
     }
 
     [Fact]
-    public void CatalogMarkFind_WordInsideText_SplitsAroundTheMatchIgnoringCase()
+    public void CatalogMarkFind_WordInsideText_SplitsAroundMatchAnyCase()
     {
         Assert.Equal(("phrasal ", "Verb", " form"), TInterface.TCatalogMarkFind("phrasal Verb form", "verb"));
         Assert.Equal(("animal", string.Empty, string.Empty), TInterface.TCatalogMarkFind("animal", "plant"));
@@ -57,7 +57,7 @@ public sealed class TCatalogTag
     }
 
     [Fact]
-    public void CatalogUsageFormat_UnusedOrUsedRow_ShowsNothingOrTheCount()
+    public void CatalogUsageFormat_UnusedOrUsedRow_ShowsNothingOrCount()
     {
         Assert.Equal(string.Empty, TInterface.TCatalogUsageFormat(0));
         Assert.Equal("1", TInterface.TCatalogUsageFormat(1));
@@ -65,7 +65,7 @@ public sealed class TCatalogTag
     }
 
     [Fact]
-    public void CatalogTallyFormat_EachCountAndRealm_WordsTheRealmsForm()
+    public void CatalogTallyFormat_ZeroOneMany_PicksCountedWording()
     {
         Assert.Equal("text:Source.UsageNone", TInterface.TCatalogTallyFormat(0, "Source"));
         Assert.Equal("text:Example.UsageOne", TInterface.TCatalogTallyFormat(1, "Example"));

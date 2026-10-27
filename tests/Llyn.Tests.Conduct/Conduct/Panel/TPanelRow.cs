@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 public sealed class TPanelRow
 {
     [Fact]
-    public void PanelRowSelect_UnsavedLeaveKept_KeepsTheRow()
+    public void PanelRowSelect_UnsavedLeaveKept_KeepsRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -23,7 +23,7 @@ public sealed class TPanelRow
     }
 
     [Fact]
-    public void PanelRowSelect_LeaveCancelledOrLoadFails_AnswersStayedOrFailed()
+    public void PanelRowSelect_CancelledOrFailed_ReturnsStayedOrFailed()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -46,7 +46,7 @@ public sealed class TPanelRow
     [Theory]
     [InlineData(false, true)]
     [InlineData(null, false)]
-    public void PanelRowSelect_UnsavedDraft_AsksBeforeRecordingTheStation(bool? answer, bool left)
+    public void PanelRowSelect_UnsavedDraft_AsksBeforeRecordingStation(bool? answer, bool left)
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -66,7 +66,7 @@ public sealed class TPanelRow
     }
 
     [Fact]
-    public void PanelRowOpen_StoredRow_ChoosesTheRow()
+    public void PanelRowOpen_StoredRow_ChoosesRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -84,7 +84,7 @@ public sealed class TPanelRow
     }
 
     [Fact]
-    public void PanelRowOpen_MissingRow_ClosesThePanel()
+    public void PanelRowOpen_MissingRow_ClosesPanel()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -103,7 +103,7 @@ public sealed class TPanelRow
     }
 
     [Fact]
-    public void PanelRowOpen_EditingPanel_HandsTheRowToTheEditor()
+    public void PanelRowOpen_EditingPanel_HandsRowToEditor()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -120,7 +120,7 @@ public sealed class TPanelRow
     }
 
     [Fact]
-    public void PanelDraftResonate_StoredEntry_RepaintsThePanel()
+    public void PanelDraftResonate_StoredEntry_RepaintsPanel()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -136,7 +136,7 @@ public sealed class TPanelRow
     }
 
     [Fact]
-    public void PanelDraftResonate_DeletedEntry_ClosesThePanel()
+    public void PanelDraftResonate_DeletedEntry_ClosesPanel()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -152,7 +152,7 @@ public sealed class TPanelRow
     }
 
     [Fact]
-    public void PanelDraftResonate_EngineFails_ShowsTheLoadFailureOnce()
+    public void PanelDraftResonate_EngineFails_ShowsLoadFailureOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -171,7 +171,7 @@ public sealed class TPanelRow
     }
 
     [Fact]
-    public void PanelEntryResonate_StoredBulletin_RelistsTheRows()
+    public void PanelEntryResonate_StoredBulletin_RelistsRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -188,7 +188,7 @@ public sealed class TPanelRow
     }
 
     [Fact]
-    public void PanelEntrySelect_StoredWhileFreshEditing_AdoptsTheEntry()
+    public void PanelEntrySelect_StoredWhileFreshEditing_AdoptsEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

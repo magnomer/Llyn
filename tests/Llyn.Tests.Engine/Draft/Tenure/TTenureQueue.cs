@@ -9,7 +9,7 @@ public sealed class TTenureQueue
     private readonly List<LBulletin> _tTenureQueueNotices = [];
 
     [Fact]
-    public void TenureQueueApply_RefusedRequest_RaisesDraftBulletinWithRefusal()
+    public void TenureQueueApply_RefusedRequest_RaisesRefusalBulletin()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

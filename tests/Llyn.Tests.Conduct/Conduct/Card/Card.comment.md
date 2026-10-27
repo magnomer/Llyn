@@ -94,14 +94,14 @@ A caret moved back inserts a picked row before its anchor and leaves the anchor 
 
 ## Stamp
 
-Commit: `c37ca1837ded`
-- `TCard.cs` `5d913b60171a6f8b`
-- `TCardList.cs` `47ce99f474a2c752`
-- `TCardReference.cs` `5ae0de3298070eaa`
-- `TCardRegister.cs` `ed26ea1928bbe26e`
-- `TCardSentence.cs` `d1a5ad65440da628`
-- `TCardSituation.cs` `a3a2cb6b7d517506`
-- `TCardSpeech.cs` `8c3b0ecae8677f2f`
-- `TCardTag.cs` `f40aae7ac671c5b5`
-- `TCardTranslation.cs` `4b84fdd8de1d9064`
-- `TCaretTrail.cs` `4c9e1085cbdf6aa5`
+Commit: `9377e657b395`
+- `TCard.cs` `cfcb44c8b6fc70ee`
+- `TCardList.cs` `f6fbdaec88c415d7`
+- `TCardReference.cs` `f00a4d6d1315659e`
+- `TCardRegister.cs` `5cddb184e2e14620`
+- `TCardSentence.cs` `ab4b603ea6546af2`
+- `TCardSituation.cs` `32d8033f8ebedc3f`
+- `TCardSpeech.cs` `26854dc20c0f1a67`
+- `TCardTag.cs` `43668d10865ba917`
+- `TCardTranslation.cs` `de20dd6ed25364df`
+- `TCaretTrail.cs` `46a47c7f4587b3b0`

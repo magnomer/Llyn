@@ -226,7 +226,7 @@ public sealed class TCardSense
     }
 
     [Fact]
-    public void DisplayCardRead_MeaningSharingCollocationId_TakesNoCollocationMarkers()
+    public void DisplayCardRead_SharedLinkId_TakesNoMarkers()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -264,7 +264,7 @@ public sealed class TCardSense
     }
 
     [Fact]
-    public void DisplayCardRead_MeaningSharingCollocationId_KeepsEachTranslation()
+    public void DisplayCardRead_SharedLinkId_KeepsEachTranslation()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

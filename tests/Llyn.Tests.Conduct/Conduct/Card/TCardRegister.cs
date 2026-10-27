@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TCardRegister
 {
     [Fact]
-    public void RegisterAdd_TypedList_AddsTheCompletedNamesOnceAndKeepsTheRest()
+    public void RegisterAdd_TypedList_AddsCompletedNamesKeepsRest()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -29,7 +29,7 @@ public sealed class TCardRegister
     }
 
     [Fact]
-    public void RegisterInsert_StoredRegister_LinksItOnceAndOfferLeavesItOut()
+    public void RegisterInsert_StoredRegister_LinksOnceOfferOmits()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -52,7 +52,7 @@ public sealed class TCardRegister
     }
 
     [Fact]
-    public void RegisterRemove_LinkedRegister_DropsItAndKeepsTheOthers()
+    public void RegisterRemove_LinkedRegister_DropsOneKeepsOthers()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -70,7 +70,7 @@ public sealed class TCardRegister
     }
 
     [Fact]
-    public void RegisterAdd_TypedPrefix_OffersTheStoredRegisterSplitAroundTheWord()
+    public void RegisterAdd_TypedPrefix_OffersStoredRegisterSplit()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -124,7 +124,7 @@ public sealed class TCardRegister
     }
 
     [Fact]
-    public void RegisterAdd_DraftInEnglish_OffersThePackRegisterOfThatLanguage()
+    public void RegisterAdd_DraftInEnglish_OffersPackRegister()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -140,7 +140,7 @@ public sealed class TCardRegister
     }
 
     [Fact]
-    public void RegisterInsert_StoredRegister_LinksItAtTheCaret()
+    public void RegisterInsert_StoredRegister_LinksAtCaret()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -159,7 +159,7 @@ public sealed class TCardRegister
     }
 
     [Fact]
-    public void RegisterSettle_CaretMovedBack_AddsBeforeTheAnchor()
+    public void RegisterSettle_CaretMovedBack_AddsBeforeAnchor()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -178,7 +178,7 @@ public sealed class TCardRegister
     }
 
     [Fact]
-    public void CaretTrailDelete_StepEitherSide_RemovesTheRegisterBesideTheCaret()
+    public void CaretTrailDelete_StepEitherSide_RemovesBesideCaret()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

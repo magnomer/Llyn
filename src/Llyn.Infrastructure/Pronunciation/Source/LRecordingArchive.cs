@@ -21,6 +21,8 @@ public sealed class LRecordingArchive : LRecordingVault
 
     private static readonly TimeSpan LRecordingArchivePatience = TimeSpan.FromSeconds(5);
 
+    private static readonly TimeSpan LRecordingArchiveCeiling = TimeSpan.FromSeconds(30);
+
     private static readonly string[] LRecordingArchiveExtensions =
         [".mp3", ".ogg", ".oga", ".wav", ".m4a", ".aac", ".flac", ".opus", ".webm"];
 
@@ -34,12 +36,16 @@ public sealed class LRecordingArchive : LRecordingVault
 
     private readonly HttpClient _lRecordingArchiveClient;
 
-    public LRecordingArchive(string root, HttpClient client)
+    private readonly LClock _lRecordingArchiveClock;
+
+    public LRecordingArchive(string root, HttpClient client, LClock clock)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
         ArgumentNullException.ThrowIfNull(client);
+        ArgumentNullException.ThrowIfNull(clock);
         _lRecordingArchiveRoot = root;
         _lRecordingArchiveClient = client;
+        _lRecordingArchiveClock = clock;
     }
 
     public async Task<string> LRecordingSave(
@@ -135,15 +141,17 @@ public sealed class LRecordingArchive : LRecordingVault
             using HttpResponseMessage response = await _lRecordingArchiveClient
                 .GetAsync(address, cancellation)
                 .ConfigureAwait(false);
-            if (response.StatusCode != HttpStatusCode.TooManyRequests || attempt >= LRecordingArchiveAttempts)
+            TimeSpan asked = response.Headers.RetryAfter?.Delta ?? TimeSpan.Zero;
+            if (response.StatusCode != HttpStatusCode.TooManyRequests
+                || attempt >= LRecordingArchiveAttempts
+                || asked > LRecordingArchiveCeiling)
             {
                 response.EnsureSuccessStatusCode();
                 return await response.Content.ReadAsByteArrayAsync(cancellation).ConfigureAwait(false);
             }
 
-            TimeSpan asked = response.Headers.RetryAfter?.Delta ?? TimeSpan.Zero;
             TimeSpan pause = asked > LRecordingArchivePatience ? asked : LRecordingArchivePatience;
-            await Task.Delay(pause, cancellation).ConfigureAwait(false);
+            await _lRecordingArchiveClock.LClockPause(pause, cancellation).ConfigureAwait(false);
         }
     }
 

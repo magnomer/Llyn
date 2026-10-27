@@ -18,7 +18,7 @@ public sealed class TRecordingClerk
         """;
 
     [Fact]
-    public async Task RecordingClerkFind_PackWithSource_EmitsStepsAndAnswersRecordings()
+    public async Task RecordingClerkFind_PackWithSource_EmitsStepsAndAnswers()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TRecordingClerkPack);
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
@@ -37,7 +37,7 @@ public sealed class TRecordingClerk
     }
 
     [Fact]
-    public void RecordingClerkSweep_UnnamedFile_DeletesItAndKeepsTheStoredOne()
+    public void RecordingClerkSweep_UnnamedFile_DeletesOnlyOrphan()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LRig rig = workspace.TWorkspaceRigCreate();
@@ -69,7 +69,7 @@ public sealed class TRecordingClerk
     }
 
     [Fact]
-    public void RecordingClerkPlay_ExistingFile_PlaysTheResolvedPath()
+    public void RecordingClerkPlay_ExistingFile_PlaysResolvedPath()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LRig rig = workspace.TWorkspaceRigCreate();
@@ -136,7 +136,7 @@ public sealed class TRecordingClerk
     }
 
     [Fact]
-    public void RecordingClerkStop_TicketOfAnEarlierPlay_LeavesTheLaterPlayRunning()
+    public void RecordingClerkStop_EarlierTicket_KeepsLaterPlay()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LRecordingClerk clerk = TInterface.TRecordingClerkCreate(workspace.TWorkspaceRigCreate());

@@ -9,7 +9,7 @@ public sealed class TEngineFrequencyFault
     private const string TFaultText = "frequency source broke";
 
     [Fact]
-    public async Task FrequencyStart_SourceThrows_HandsTheFaultToTheOwnerOnce()
+    public async Task FrequencyStart_SourceThrows_HandsFaultToOwnerOnce()
     {
         using TLanguageFixture pack =
             TLanguageFixture.TLanguageFixtureCreate(TEngineFrequency.TEngineFrequencyPack);

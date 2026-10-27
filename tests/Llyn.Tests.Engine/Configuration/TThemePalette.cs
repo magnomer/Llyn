@@ -27,7 +27,7 @@ public sealed class TThemePalette
     }
 
     [Fact]
-    public void ThemeRead_MissingName_YieldsTheSpare()
+    public void ThemeRead_MissingName_ReturnsBlack()
     {
         LTheme theme = TInterface.TThemeLoad();
 

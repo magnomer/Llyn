@@ -22,7 +22,7 @@ public sealed class TEasel
     }
 
     [Fact]
-    public void ImageRemove_AddedRow_DropsIt()
+    public void ImageRemove_AddedRow_DropsImage()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -36,7 +36,7 @@ public sealed class TEasel
     }
 
     [Fact]
-    public void ImageRemove_ChildCard_DropsIt()
+    public void ImageRemove_ChildCard_DropsImage()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -95,7 +95,7 @@ public sealed class TEasel
     }
 
     [Fact]
-    public void VideoRemove_AddedRow_DropsIt()
+    public void VideoRemove_AddedRow_DropsVideo()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -109,7 +109,7 @@ public sealed class TEasel
     }
 
     [Fact]
-    public void VideoRemove_ChildCard_DropsIt()
+    public void VideoRemove_ChildCard_DropsVideo()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

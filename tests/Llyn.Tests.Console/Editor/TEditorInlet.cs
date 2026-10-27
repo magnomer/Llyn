@@ -18,7 +18,7 @@ public sealed class TEditorInlet
     private static readonly ConsoleKeyInfo TEditorInletUp = new('\0', ConsoleKey.UpArrow, false, false, false);
 
     [Fact]
-    public void EditorDraw_EmptyChipFields_ShowTheirHintsDimmedAndTheLitOneOnTheFoot()
+    public void EditorDraw_EmptyChipFields_ShowsDimmedHintsAndLitFoot()
     {
         TEditorInletRun(1, (library, _) =>
         {
@@ -35,7 +35,7 @@ public sealed class TEditorInlet
     }
 
     [Fact]
-    public void EditorKeymap_TypedCommaOnTheSituationField_MakesABracketedChipAndDropsTheHint()
+    public void EditorKeymap_CommaOnSituationField_MakesBracketedChip()
     {
         TEditorInletRun(1, (library, find) =>
         {
@@ -56,7 +56,7 @@ public sealed class TEditorInlet
     }
 
     [Fact]
-    public void EditorKeymap_LitStoredRowOnTheSituationList_BecomesAChipAndClearsTheEntry()
+    public void EditorKeymap_LitStoredRowOnSituationList_BecomesChip()
     {
         TEditorInletRun(1, (library, find) =>
         {
@@ -85,7 +85,7 @@ public sealed class TEditorInlet
     }
 
     [Fact]
-    public void EditorKeymap_EnterWithNoRowLit_SettlesTheTypedText()
+    public void EditorKeymap_EnterWithNoRowLit_SettlesTypedText()
     {
         TEditorInletRun(1, (library, _) =>
         {
@@ -98,7 +98,7 @@ public sealed class TEditorInlet
     }
 
     [Fact]
-    public void EditorKeymap_EscapeTwiceOnTheSituationField_ShutsTheListThenClosesSettlingTheText()
+    public void EditorKeymap_EscapeTwiceOnSituationField_SettlesText()
     {
         TEditorInletRun(1, (library, find) =>
         {
@@ -123,7 +123,7 @@ public sealed class TEditorInlet
     }
 
     [Fact]
-    public void EditorKeymap_BackspaceAndLeftOnAnEmptyEntry_RemoveAndStepPastChipsThroughTheTrail()
+    public void EditorKeymap_BackspaceAndLeftOnEmpty_WalksChipTrail()
     {
         TEditorInletRun(1, (library, _) =>
         {
@@ -149,7 +149,7 @@ public sealed class TEditorInlet
     }
 
     [Fact]
-    public void EditorKeymap_LightLeavingAnOpenChipField_ClosesItSettlingTheText()
+    public void EditorKeymap_LightLeavingOpenChipField_SettlesText()
     {
         TEditorInletRun(1, (library, find) =>
         {
@@ -166,7 +166,7 @@ public sealed class TEditorInlet
     }
 
     [Fact]
-    public void EditorKeymap_RegisterAndTagFields_ShowBracedAndHashedChips()
+    public void EditorKeymap_RegisterAndTag_ShowsBracedAndHashedChips()
     {
         TEditorInletRun(2, (library, _) =>
         {
@@ -182,7 +182,7 @@ public sealed class TEditorInlet
     }
 
     [Fact]
-    public void EditorDraw_ManyChips_WrapInsideTheCard()
+    public void EditorDraw_ManyChips_WrapsInsideCard()
     {
         TEditorInletRun(1, (library, _) =>
         {
@@ -198,7 +198,7 @@ public sealed class TEditorInlet
     }
 
     [Fact]
-    public void EditorKeymap_SettleStandingPastAFailedObserver_LeavesNoKeptText()
+    public void EditorKeymap_SettlePastFailedObserver_LeavesNoKeptText()
     {
         bool failing = false;
         List<string> asked = [];
@@ -236,7 +236,7 @@ public sealed class TEditorInlet
     }
 
     [Fact]
-    public void EditorDraw_SettleStandingPastAFailedObserver_ShowsNoKeptText()
+    public void EditorDraw_SettlePastFailedObserver_ShowsNoKeptText()
     {
         TEditorInletSettle("rain", (library, _) =>
         {
@@ -249,7 +249,7 @@ public sealed class TEditorInlet
     }
 
     [Fact]
-    public void EditorKeymap_LightLeavingTheCardAfterARefusedSettle_DropsTheKeptText()
+    public void EditorKeymap_LeaveCardAfterRefusedSettle_DropsKeptText()
     {
         TEditorInletSettle("rain", (library, find) =>
         {
@@ -267,7 +267,7 @@ public sealed class TEditorInlet
     }
 
     [Fact]
-    public void EditorKeymap_SaveAfterARefusedSettle_DropsTheKeptText()
+    public void EditorKeymap_SaveAfterRefusedSettle_DropsKeptText()
     {
         TEditorInletSettle("dry,rain", (library, find) =>
         {
@@ -281,7 +281,7 @@ public sealed class TEditorInlet
     }
 
     [Fact]
-    public void EditorKeymap_HaltWithAnOpenChipField_ClosesItAndTakesNoMoreKeys()
+    public void EditorKeymap_HaltWithOpenChipField_ClosesAndIgnoresKeys()
     {
         LEngine? held = null;
         List<long> drafts = [];

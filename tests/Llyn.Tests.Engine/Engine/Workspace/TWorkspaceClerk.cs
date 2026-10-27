@@ -6,7 +6,7 @@ namespace Llyn.Tests;
 public sealed class TWorkspaceClerk
 {
     [Fact]
-    public void WorkspaceRescueCreate_DoctorRefuses_ThrowsBeforeAnythingIsRead()
+    public void WorkspaceRescueCreate_DoctorRefuses_ThrowsBeforeRead()
     {
         LRig fake = TRigFake.TRigFakeBuild();
         LRig rig = fake with { LRigKeeping = fake.LRigKeeping with { LRigKeepingDoctor = new TDoctorFake() } };
@@ -18,19 +18,19 @@ public sealed class TWorkspaceClerk
     [InlineData("")]
     [InlineData("   ")]
     [InlineData(" held ")]
-    public void WorkspaceChosenRead_BlankOrTheFolderInUse_AnswersNothing(string chosen)
+    public void WorkspaceChosenRead_BlankOrFolderInUse_ReturnsNull(string chosen)
     {
         Assert.Null(TInterface.TWorkspaceChosenRead(chosen, "held"));
     }
 
     [Fact]
-    public void WorkspaceChosenRead_AnotherFolder_AnswersItTrimmed()
+    public void WorkspaceChosenRead_AnotherFolder_ReturnsTrimmed()
     {
         Assert.Equal("other", TInterface.TWorkspaceChosenRead("  other  ", "held"));
     }
 
     [Fact]
-    public void WorkspaceSettingsRead_NothingStored_AnswersTheFallbackUnsettled()
+    public void WorkspaceSettingsRead_NothingStored_ReturnsFallback()
     {
         LRig rig = TRigFake.TRigFakeBuild();
         LSettings fallback = TInterface.TSettingsCreate("ko", respelled: true);
@@ -42,7 +42,7 @@ public sealed class TWorkspaceClerk
     }
 
     [Fact]
-    public void WorkspaceSettingsRead_SettingsStored_AnswersTheStoredOnesSettled()
+    public void WorkspaceSettingsRead_SettingsStored_MarksSettled()
     {
         LRig rig = TRigFake.TRigFakeBuild();
         rig.LRigSettings.TSettingsSave(TInterface.TSettingsCreate("fr"));
@@ -55,7 +55,7 @@ public sealed class TWorkspaceClerk
     }
 
     [Fact]
-    public void WorkspaceNoticeRead_RefusalWrappedTwice_AnswersTheReason()
+    public void WorkspaceNoticeRead_RefusalWrappedTwice_ReturnsReason()
     {
         Exception wrapped = new InvalidOperationException(
             "outer", new AggregateException(TInterface.TRefusalCreate(LRefusal.LRefusalStale)));

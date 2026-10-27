@@ -14,7 +14,7 @@ public sealed class TAnatomy
         TInterface.TLanguageLoad(TAnatomyLanguage).LLanguageAnatomies;
 
     [Fact]
-    public void LanguageLoaderLoad_ClassicalChinesePack_ReadsAnatomyRules()
+    public void LanguageLoaderLoad_ClassicalChinese_ReadsAnatomyRules()
     {
         IReadOnlyList<LAnatomyRule> rules = TAnatomyRuleRead();
 
@@ -71,7 +71,7 @@ public sealed class TAnatomy
     }
 
     [Fact]
-    public void AnatomyScan_MandarinAffricate_SplitsIpaAndRespellingApart()
+    public void AnatomyScan_MandarinAffricate_SplitsIpaFromRespelling()
     {
         LAnatomy anatomy = TInterface.TAnatomyScan(TAnatomyRuleRead(), "Mandarin", "ʈ͡ʂɤŋ²¹⁴", "tʂəŋ²¹⁴");
 

@@ -214,7 +214,7 @@ public sealed class TDraft
     }
 
     [Fact]
-    public void DraftCommit_NamesStoredEntry_UpdatesIt()
+    public void DraftCommit_NamesStoredEntry_UpdatesEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -310,7 +310,7 @@ public sealed class TDraft
     }
 
     [Fact]
-    public void DraftCommit_TargetHeldByAnotherEngine_LeavesItNamingTheStoredEntry()
+    public void DraftCommit_TargetHeldElsewhere_KeepsNamingStoredEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
 
@@ -338,7 +338,7 @@ public sealed class TDraft
     }
 
     [Fact]
-    public void DraftCommit_TranslationNamingNoEntry_DropsItInsteadOfFailing()
+    public void DraftCommit_TranslationNamingNoEntry_DropsTranslation()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();

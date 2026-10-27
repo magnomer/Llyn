@@ -12,7 +12,7 @@ namespace Llyn.Tests;
 public sealed class TLedgerNotice
 {
     [Fact]
-    public void LedgerFolderOpen_Pressed_OpensTheWorkspaceFolderAndAsksNothing()
+    public void LedgerFolderOpen_Pressed_OpensWorkspaceFolder()
     {
         int opened = 0;
         List<string> asked = [];
@@ -35,7 +35,7 @@ public sealed class TLedgerNotice
     }
 
     [Fact]
-    public void LedgerFolderOpen_ShellFails_ShowsTheFolderFailure()
+    public void LedgerFolderOpen_ShellFails_ShowsFolderFailure()
     {
         List<string> asked = [];
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
@@ -115,7 +115,7 @@ public sealed class TLedgerNotice
     }
 
     [Fact]
-    public void LedgerRepaintShow_OtherAtelier_ShowsTheKeyAgain()
+    public void LedgerRepaintShow_OtherAtelier_ShowsKeyAgain()
     {
         List<string> asked = [];
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());
@@ -130,7 +130,7 @@ public sealed class TLedgerNotice
     }
 
     [Fact]
-    public void LedgerRepaintShow_SettingsSavedBetween_ShowsTheKeyAgain()
+    public void LedgerRepaintShow_SettingsSavedBetween_ShowsKeyAgain()
     {
         List<string> asked = [];
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -149,7 +149,7 @@ public sealed class TLedgerNotice
     }
 
     [Fact]
-    public void LedgerFailureShow_RefusedSaves_ShowsEachSaveFailureAndRepaints()
+    public void LedgerFailureShow_RefusedSaves_ShowsEachSaveFailure()
     {
         List<string> asked = [];
         Func<object?[]?, object?> refuse = _ => throw new IOException("The disk is full.");
@@ -182,7 +182,7 @@ public sealed class TLedgerNotice
     }
 
     [Fact]
-    public void LedgerEpithetSave_FaultingStore_ShowsTheSaveFailureAndRecordsTheFaultOnce()
+    public void LedgerEpithetSave_FaultingStore_RecordsFaultOnce()
     {
         List<string> asked = [];
         List<Exception> recorded = [];
@@ -216,7 +216,7 @@ public sealed class TLedgerNotice
     }
 
     [Fact]
-    public void LedgerNoticeRead_WrappedRefusal_AnswersItsReasonAlone()
+    public void LedgerNoticeRead_WrappedRefusal_AnswersReasonAlone()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -228,7 +228,7 @@ public sealed class TLedgerNotice
     }
 
     [Fact]
-    public void LedgerNoticeRead_Fault_AnswersTheUnexpectedKeyAndItsAuditFile()
+    public void LedgerNoticeRead_Fault_AnswersUnexpectedKeyAndAuditFile()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

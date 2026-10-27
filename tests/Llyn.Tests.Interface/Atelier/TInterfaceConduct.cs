@@ -9,18 +9,23 @@ namespace Llyn.Tests;
 
 internal static class TInterfaceConduct
 {
-    internal static CAtelier TAtelierCreate(LEngine engine, bool detached = false) => new(
-        new LPosture(engine),
-        new LDraftOutlet(engine),
-        TEntryBundleCreate(engine),
-        new LSettingsOutlet(engine),
-        TPhonologyBundleCreate(engine),
+    internal static CAtelier TAtelierCreate(LEngine engine, bool detached = false) => TAtelierCreate(
+        engine,
+        detached,
         TEngineFake.TEngineCreate<LMediaPort>(new Dictionary<string, Func<object?[]?, object?>>
         {
             ["LEngineRecordingStop"] = _ => null,
             ["LEngineLocationRead"] = _ => null,
             ["LEngineScreenRead"] = _ => null,
-        }),
+        }));
+
+    internal static CAtelier TAtelierCreate(LEngine engine, bool detached, LMediaPort media) => new(
+        new LPosture(engine),
+        new LDraftOutlet(engine),
+        TEntryBundleCreate(engine),
+        new LSettingsOutlet(engine),
+        TPhonologyBundleCreate(engine),
+        media,
         new LPortraitOutlet(engine),
         static run => run(),
         detached);

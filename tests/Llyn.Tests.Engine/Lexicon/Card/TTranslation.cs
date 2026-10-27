@@ -124,7 +124,7 @@ public sealed class TTranslation
     }
 
     [Fact]
-    public void TranslationTargetRead_FortyThousandIds_ReadsPastTheParameterCap()
+    public void TranslationTargetRead_FortyThousandIds_ReadsAllTargets()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
@@ -140,7 +140,7 @@ public sealed class TTranslation
     }
 
     [Fact]
-    public void TranslationTargetRead_UnknownId_PassesOverIt()
+    public void TranslationTargetRead_UnknownId_PassesOver()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
@@ -258,7 +258,7 @@ public sealed class TTranslation
     }
 
     [Fact]
-    public void EntrySave_CardWithOnlyALink_StoresCard()
+    public void EntrySave_CardWithOnlyLink_StoresTranslation()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -63,7 +63,7 @@ public sealed class TTranscription
     }
 
     [Fact]
-    public void EntryUpdate_BlankText_KeepsTheRowEmpty()
+    public void EntryUpdate_BlankText_KeepsEmptyRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -83,7 +83,7 @@ public sealed class TTranscription
     }
 
     [Fact]
-    public void EntrySave_SeededBlankRow_DropsOnlyThatRow()
+    public void EntrySave_SeededBlankRow_DropsSeededRowOnly()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -157,7 +157,7 @@ public sealed class TTranscription
     }
 
     [Fact]
-    public void RequestApply_TranscriptionAddition_MintsRowAndRefusesDoubledScheme()
+    public void RequestApply_TranscriptionAddition_RefusesDoubleScheme()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -179,7 +179,7 @@ public sealed class TTranscription
     }
 
     [Fact]
-    public void RequestApply_TranscriptionShiftAndRemoval_KeepsOnlyTheRowsNamed()
+    public void RequestApply_ShiftAndRemoval_KeepsNamedRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -246,7 +246,7 @@ public sealed class TTranscription
     }
 
     [Fact]
-    public void SchemeTakenCheck_OtherRowHoldsTheScheme_AnswersTakenForEveryOtherRow()
+    public void SchemeTakenCheck_OtherRowHoldsScheme_ReturnsTaken()
     {
         IReadOnlyList<LTranscriptionDraft> rows =
         [
@@ -260,7 +260,7 @@ public sealed class TTranscription
     }
 
     [Fact]
-    public void TranscriptionSheetRead_GlyphRowHoldsAScheme_OffersItNotAsFree()
+    public void TranscriptionSheetRead_GlyphRowScheme_OffersNotFree()
     {
         LTranscriptionDraft glyph = TInterface.TTranscriptionDraftCreate("Hanja", "漢字", 1);
         LTranscriptionDraft roman = TInterface.TTranscriptionDraftCreate("Romanization", "hanja", 2);
@@ -277,7 +277,7 @@ public sealed class TTranscription
     }
 
     [Fact]
-    public void TranscriptionPositionRead_GlyphRowBeforePressedRow_AnswersTheSlotAfterIt()
+    public void TranscriptionPositionRead_GlyphFirst_ReturnsNextSlot()
     {
         IReadOnlyList<LTranscriptionDraft> rows =
         [

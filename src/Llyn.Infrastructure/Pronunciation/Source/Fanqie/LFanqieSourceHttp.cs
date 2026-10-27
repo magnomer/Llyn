@@ -32,12 +32,13 @@ public sealed class LFanqieSourceHttp : LFanqieSource
 
     private static readonly Regex LFanqieSourceTag = new("<[^>]+>", RegexOptions.CultureInvariant);
 
-    private static readonly TimeSpan LFanqieSourcePatience = TimeSpan.FromSeconds(2);
+    private readonly TimeSpan _lFanqieSourcePatience;
 
-    public LFanqieSourceHttp(HttpClient client)
+    public LFanqieSourceHttp(HttpClient client, TimeSpan patience)
     {
         ArgumentNullException.ThrowIfNull(client);
         _lFanqieSourceClient = client;
+        _lFanqieSourcePatience = patience;
     }
 
     public async Task<(IReadOnlyList<LFanqieRow> LFanqieFound, bool LFanqieReached)> LFanqieSourceFind(
@@ -57,12 +58,12 @@ public sealed class LFanqieSourceHttp : LFanqieSource
         try
         {
             if (!string.IsNullOrEmpty(book.LFanqieBookBusy)
-                && Regex.IsMatch(body, book.LFanqieBookBusy, RegexOptions.CultureInvariant, LFanqieSourcePatience))
+                && Regex.IsMatch(body, book.LFanqieBookBusy, RegexOptions.CultureInvariant, _lFanqieSourcePatience))
             {
                 return ([], false);
             }
 
-            LFanqieShape shape = LFanqieShape.LFanqieShapeCreate(book, character);
+            LFanqieShape shape = LFanqieShape.LFanqieShapeCreate(book, character, _lFanqieSourcePatience);
             IReadOnlyList<LFanqieRow> found = shape.LFanqieShapeLine is null
                 ? LFanqieTableScan(shape, body)
                 : LFanqieMatchScan(shape, body);

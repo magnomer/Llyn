@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TCardList
 {
     [Fact]
-    public void CardMeaningAdd_HeldMeanings_AppendsTheNewCardLast()
+    public void CardMeaningAdd_HeldMeanings_AppendsNewCardLast()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -26,7 +26,7 @@ public sealed class TCardList
     }
 
     [Fact]
-    public void CardCollocationAdd_HeldCard_AppendsTheNewCardLast()
+    public void CardCollocationAdd_HeldCard_AppendsNewCardLast()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -42,7 +42,7 @@ public sealed class TCardList
     }
 
     [Fact]
-    public void CardRemove_OneOfTwoMeanings_DropsIt()
+    public void CardRemove_OneOfTwoMeanings_DropsMeaning()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -55,7 +55,7 @@ public sealed class TCardList
     }
 
     [Fact]
-    public void CardRemove_LoneMeaning_KeepsIt()
+    public void CardRemove_LoneMeaning_KeepsMeaning()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -84,7 +84,7 @@ public sealed class TCardList
     }
 
     [Fact]
-    public void CardMove_DraggedPlace_PlacesTheCardThere()
+    public void CardMove_DraggedPlace_PlacesCardAtPlace()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -97,7 +97,7 @@ public sealed class TCardList
     }
 
     [Fact]
-    public void CardMove_CardTheDraftLacks_KeepsTheOrder()
+    public void CardMove_CardMissingFromDraft_KeepsOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -126,7 +126,7 @@ public sealed class TCardList
     }
 
     [Fact]
-    public void CardMove_OrdinalForACardTheDraftLacks_KeepsTheOrder()
+    public void CardMove_OrdinalForMissingCard_KeepsOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -141,7 +141,7 @@ public sealed class TCardList
     }
 
     [Fact]
-    public void CardShiftRead_DraggedPlaces_AnswersOnlyARealMove()
+    public void CardShiftRead_DraggedPlaces_AnswersOnlyRealMove()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -158,7 +158,7 @@ public sealed class TCardList
     }
 
     [Fact]
-    public void CardLoneCheck_ListOfOneOrTwo_MarksOnlyTheLoneCard()
+    public void CardLoneCheck_ListOfOneOrTwo_MarksOnlyLoneCard()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -174,7 +174,7 @@ public sealed class TCardList
     }
 
     [Fact]
-    public void CardEndRead_EachKind_AnswersItsListLength()
+    public void CardEndRead_EachKind_AnswersListLength()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

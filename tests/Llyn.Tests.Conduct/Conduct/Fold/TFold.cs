@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TFold
 {
     [Fact]
-    public void FoldOpened_AnotherEntryHeld_ReadsEachHeldEntrysOwnStoredState()
+    public void FoldOpened_AnotherEntryHeld_ReadsOwnStoredState()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -30,7 +30,7 @@ public sealed class TFold
     }
 
     [Fact]
-    public void FoldFanqieSpread_HeldEntry_StoresBothBoxesAnswersTrueAndRefreshesTheEditor()
+    public void FoldFanqieSpread_HeldEntry_StoresBoxesRefreshesEditor()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -58,7 +58,7 @@ public sealed class TFold
     }
 
     [Fact]
-    public void FoldFanqieSpread_NoStoredEntryHeld_AnswersFalseAndStoresNothing()
+    public void FoldFanqieSpread_NoEntryHeld_AnswersFalseStoresNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -78,7 +78,7 @@ public sealed class TFold
     }
 
     [Fact]
-    public void FoldFanqieSpread_FailingPort_ShowsTheNoticeAnswersFalseAndTellsNoOtherEditor()
+    public void FoldFanqieSpread_FailingPort_ShowsNoticeAnswersFalse()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -108,7 +108,7 @@ public sealed class TFold
     }
 
     [Fact]
-    public void FoldOpened_FaultingPort_AnswersFoldedAndShowsTheReadNoticeOnce()
+    public void FoldOpened_FaultingPort_AnswersFoldedShowsNoticeOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -131,7 +131,7 @@ public sealed class TFold
     }
 
     [Fact]
-    public void FoldFanqieSpread_TwoEntriesAndTwoBoxes_KeepsEachStateApart()
+    public void FoldFanqieSpread_TwoEntriesTwoBoxes_KeepsStatesApart()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -151,7 +151,7 @@ public sealed class TFold
     }
 
     [Fact]
-    public void FoldFanqieSpread_FreshEditorOnTheSameEntry_ReadsTheStoredState()
+    public void FoldFanqieSpread_FreshEditorSameEntry_ReadsStoredState()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -169,7 +169,7 @@ public sealed class TFold
     }
 
     [Fact]
-    public void FoldFanqieSpread_SecondEditorOnTheSameEntry_RefreshesThatEditorFromTheStore()
+    public void FoldFanqieSpread_SecondEditorSameEntry_RefreshesEditor()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -190,7 +190,7 @@ public sealed class TFold
     }
 
     [Fact]
-    public void FoldFanqieSpread_SecondEditorClosed_RefreshesNothingThere()
+    public void FoldFanqieSpread_SecondEditorClosed_RefreshesNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -210,7 +210,7 @@ public sealed class TFold
     }
 
     [Fact]
-    public void DisplayFold_AnotherEntryShown_ReadsEachShownEntrysOwnStoredState()
+    public void DisplayFold_AnotherEntryShown_ReadsOwnStoredState()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -233,7 +233,7 @@ public sealed class TFold
     }
 
     [Fact]
-    public void DisplayFold_ShownEntry_StoresBothBoxesAnswersTrueAndRaisesTheDisplayFold()
+    public void DisplayFold_ShownEntry_StoresBoxesRaisesDisplayFold()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -277,7 +277,7 @@ public sealed class TFold
     }
 
     [Fact]
-    public void DisplayFold_FailingPort_ShowsTheNoticeAndAnswersFalse()
+    public void DisplayFold_FailingPort_ShowsNoticeAndAnswersFalse()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -302,7 +302,7 @@ public sealed class TFold
     }
 
     [Fact]
-    public void DisplayFold_EditorOnTheSameEntry_RefreshesTheEditorAndReadsBackThere()
+    public void DisplayFold_EditorSameEntry_RefreshesEditorReadsBack()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -324,7 +324,7 @@ public sealed class TFold
     }
 
     [Fact]
-    public void FoldFanqieSpread_DisplayOnTheSameEntry_RaisesTheDisplayFoldAndReadsBackThere()
+    public void FoldFanqieSpread_DisplaySameEntry_RaisesDisplayFold()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

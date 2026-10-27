@@ -17,7 +17,7 @@ public sealed class TYunjing
     internal const string TYunjingBook = "Classical Chinese";
 
     [Fact]
-    public async Task YunjingEntryListLoad_FixtureCell_AnswersTheCellEntriesAfterTheFill()
+    public async Task YunjingEntryListLoad_FixtureCell_AnswersCellEntries()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TYunjingPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -36,7 +36,7 @@ public sealed class TYunjing
     }
 
     [Fact]
-    public void YunjingShengmuRead_NothingPlaced_ListsNothingUnderTheBareKeys()
+    public void YunjingShengmuRead_NothingPlaced_ListsNothingBareKeys()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -59,7 +59,7 @@ public sealed class TYunjing
     }
 
     [Fact]
-    public void YunjingShengmuRead_NoCellChosen_ListsTheFirstBookLanguage()
+    public void YunjingShengmuRead_NoCellChosen_ListsFirstBookLanguage()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -75,7 +75,7 @@ public sealed class TYunjing
     }
 
     [Fact]
-    public void YunjingDiweiOpen_FixtureCell_ListsThatLanguageWithTheCellChosen()
+    public void YunjingDiweiOpen_FixtureCell_ListsLanguageCellChosen()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TYunjingPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -122,7 +122,7 @@ public sealed class TYunjing
     }
 
     [Fact]
-    public void YunjingDiweiSelect_ChosenRimeAgain_HidesThePage()
+    public void YunjingDiweiSelect_ChosenRimeAgain_HidesPage()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TYunjingPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -179,7 +179,7 @@ public sealed class TYunjing
     }
 
     [Fact]
-    public void YunjingDiweiSelect_UnsavedDraftDiscarded_TogglesAndCloses()
+    public void YunjingDiweiSelect_DraftDiscarded_TogglesAndCloses()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TYunjingPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -206,7 +206,7 @@ public sealed class TYunjing
     }
 
     [Fact]
-    public void YunjingApertureQuerySet_UnmatchedQuery_UnchoosesAndReadsTheUnmatchedKeys()
+    public void YunjingApertureQuerySet_NoMatch_ReadsUnmatchedKeys()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TYunjingPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -234,7 +234,7 @@ public sealed class TYunjing
     }
 
     [Fact]
-    public void YunjingDiweiOpen_QueriedColumns_EmptiesBothQueriesBeforeTheOpening()
+    public void YunjingDiweiOpen_QueriedColumns_EmptiesQueriesFirst()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TYunjingPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -256,7 +256,7 @@ public sealed class TYunjing
     }
 
     [Fact]
-    public void YunjingApertureOrderSet_NullAfterAnOrder_KeepsTheChosenOne()
+    public void YunjingApertureOrderSet_NullAfterOrder_KeepsOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -276,7 +276,7 @@ public sealed class TYunjing
     }
 
     [Fact]
-    public void YunjingPanelRowOpen_ScribeOn_OpensTheEntryInTheEditorUntilClosed()
+    public void YunjingPanelRowOpen_ScribeOn_OpensEntryInEditor()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TYunjingPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -301,7 +301,7 @@ public sealed class TYunjing
     }
 
     [Fact]
-    public void YunjingOrderRead_Menu_OffersTheThreeOrderings()
+    public void YunjingOrderRead_Menu_OffersThreeOrderings()
     {
         Assert.Equal(
             [

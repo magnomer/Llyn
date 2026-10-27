@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TXieshengVista
 {
     [Fact]
-    public async Task XieshengVistaRestore_WorkspaceNotice_UnchoosesTheSeriesAndTellsTheDriver()
+    public async Task XieshengVistaRestore_WorkspaceNotice_UnchoosesSeries()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TXiesheng.TXieshengPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -35,7 +35,7 @@ public sealed class TXieshengVista
     }
 
     [Fact]
-    public void XieshengVistaRestore_FanqieNotice_RaisesTheGroveAndTheEntryList()
+    public void XieshengVistaRestore_FanqieNotice_RaisesGroveAndList()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -52,7 +52,7 @@ public sealed class TXieshengVista
     }
 
     [Fact]
-    public void XieshengVistaRestore_SettingsNotice_RaisesTheGroveAndTheEntryList()
+    public void XieshengVistaRestore_SettingsNotice_RaisesGroveAndList()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -69,7 +69,7 @@ public sealed class TXieshengVista
     }
 
     [Fact]
-    public void XieshengVistaRestore_EntryNotice_RaisesTheGroveAndRelistsTheEntries()
+    public void XieshengVistaRestore_EntryNotice_RaisesGroveAndRelists()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -88,7 +88,7 @@ public sealed class TXieshengVista
     }
 
     [Fact]
-    public async Task XieshengVistaRestore_QueriesHeld_CarriesEachIntoItsFreshVista()
+    public async Task XieshengVistaRestore_QueriesHeld_CarriesBothQueries()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TXiesheng.TXieshengPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -109,7 +109,7 @@ public sealed class TXieshengVista
     }
 
     [Fact]
-    public void XieshengVistaRestore_FanqieNoticeAfterASecondRestore_RaisesTheGroveOnceThroughTheMarshal()
+    public void XieshengVistaRestore_FanqieAfterRestore_RaisesOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -135,7 +135,7 @@ public sealed class TXieshengVista
     }
 
     [Fact]
-    public void XieshengCreate_FanqieNoticeWithoutARestore_RaisesTheGroveOnceThroughTheMarshal()
+    public void XieshengCreate_FanqieNoRestore_RaisesOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -160,7 +160,7 @@ public sealed class TXieshengVista
     }
 
     [Fact]
-    public void XieshengOrderRead_Menu_OffersTheThreeOrderings()
+    public void XieshengOrderRead_Menu_OffersThreeOrderings()
     {
         Assert.Equal(
             [

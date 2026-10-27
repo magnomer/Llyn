@@ -35,7 +35,7 @@ public sealed class TEtymologyDisplay
     }
 
     [Fact]
-    public void EtymologyRead_EngineFails_ShowsTheFailureAndAnswersNoRows()
+    public void EtymologyRead_EngineFails_ShowsFailureNoRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -50,7 +50,7 @@ public sealed class TEtymologyDisplay
     }
 
     [Fact]
-    public void DisplayEtymologyRead_StoredEntry_AnswersTheRows()
+    public void DisplayEtymologyRead_StoredEntry_AnswersRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -65,7 +65,7 @@ public sealed class TEtymologyDisplay
     }
 
     [Fact]
-    public void DisplayEtymologyRead_EngineFails_ShowsTheFailureAndAnswersNoRows()
+    public void DisplayEtymologyRead_EngineFails_ShowsFailureNoRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

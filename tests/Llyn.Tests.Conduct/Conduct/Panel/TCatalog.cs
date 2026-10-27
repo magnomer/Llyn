@@ -14,7 +14,7 @@ namespace Llyn.Tests;
 public sealed class TCatalog
 {
     [Fact]
-    public void CatalogAidRead_PulmonicChart_KeysEveryHeaderAndSplitsEveryCell()
+    public void CatalogAidRead_PulmonicChart_KeysHeadersSplitsCells()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -38,7 +38,7 @@ public sealed class TCatalog
     }
 
     [Fact]
-    public void CatalogAidRead_TrapezoidChart_KeysEveryHeaderAndSplitsEveryCell()
+    public void CatalogAidRead_TrapezoidChart_KeysHeadersSplitsCells()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -61,7 +61,7 @@ public sealed class TCatalog
     }
 
     [Fact]
-    public void CatalogArticulationRead_EmptyChart_AnswersAnEmptyGrid()
+    public void CatalogArticulationRead_EmptyChart_ReturnsEmptyGrid()
     {
         CArticulation chart = TInterfaceConductPanel.TCatalogArticulationRead([], [], []);
 
@@ -104,7 +104,7 @@ public sealed class TCatalog
     }
 
     [Fact]
-    public async Task CatalogEnsignLoad_PendingFill_ReadsTheRowsOnlyAfterTheFill()
+    public async Task CatalogEnsignLoad_PendingFill_ReadsRowsOnlyAfterFill()
     {
         TaskCompletionSource<IReadOnlyList<string>> fill = new();
         List<CEnsignRow> stored = [];
@@ -142,7 +142,7 @@ public sealed class TCatalog
     }
 
     [Fact]
-    public async Task CatalogEnsignLoad_FailedFill_ShowsTheFailureAndAnswersNoLanguages()
+    public async Task CatalogEnsignLoad_FailedFill_ShowsFailureNoLanguages()
     {
         List<string> asked = [];
         LSettingsPort settings = TEngineFake.TEngineCreate<LSettingsPort>(new()
@@ -165,7 +165,7 @@ public sealed class TCatalog
     }
 
     [Fact]
-    public async Task CatalogEnsignLoad_ThrownFill_ShowsTheFailureAndAnswersNoLanguages()
+    public async Task CatalogEnsignLoad_ThrownFill_ShowsFailureNoLanguages()
     {
         List<string> asked = [];
         LSettingsPort settings = TEngineFake.TEngineCreate<LSettingsPort>(new()
@@ -187,7 +187,7 @@ public sealed class TCatalog
     }
 
     [Fact]
-    public async Task CatalogEnsignLoad_Workspace_AnswersTheCatalogLanguages()
+    public async Task CatalogEnsignLoad_Workspace_ReturnsCatalogLanguages()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -201,7 +201,7 @@ public sealed class TCatalog
     }
 
     [Fact]
-    public async Task CatalogEnsignLoad_FlagsLoaded_StoresTheRowsAndAnswersTheLanguages()
+    public async Task CatalogEnsignLoad_FlagsLoaded_StoresRowsListsLanguages()
     {
         List<CEnsignRow> stored = [];
         using LEngine engine = TRigFake.TRigFakeStart(TRigFake.TRigFakeBuild());

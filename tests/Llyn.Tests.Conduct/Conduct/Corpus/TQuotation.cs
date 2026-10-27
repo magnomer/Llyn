@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 public sealed class TQuotation
 {
     [Fact]
-    public async Task QuotationRowsLoad_ChosenExample_AnswersTheQuotingEntriesAfterTheFill()
+    public async Task QuotationRowsLoad_ChosenExample_ReturnsQuotingEntries()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -27,7 +27,7 @@ public sealed class TQuotation
     }
 
     [Fact]
-    public void QuotationRowsRead_ChosenExample_ListsTheQuotingEntries()
+    public void QuotationRowsRead_ChosenExample_ListsQuotingEntries()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -47,7 +47,7 @@ public sealed class TQuotation
     }
 
     [Fact]
-    public void QuotationRowsRead_EngineFails_ShowsTheLoadFailureAndAnswersNoRows()
+    public void QuotationRowsRead_EngineFails_ShowsLoadFailure()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -70,7 +70,7 @@ public sealed class TQuotation
     }
 
     [Fact]
-    public void ApertureQuerySet_UnmatchedText_EmptiesTheRowsAndWordsTheEmptyList()
+    public void ApertureQuerySet_UnmatchedText_EmptiesRowsWordsList()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -94,7 +94,7 @@ public sealed class TQuotation
     }
 
     [Fact]
-    public void QuotationFileRead_QuotingEntryOnDisplay_OffersItsHeadword()
+    public void QuotationFileRead_QuotingEntryOnDisplay_OffersHeadword()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

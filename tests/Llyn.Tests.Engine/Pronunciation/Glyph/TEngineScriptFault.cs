@@ -20,7 +20,7 @@ public sealed class TEngineScriptFault
     private static readonly TimeSpan TFaultLimit = TimeSpan.FromSeconds(5);
 
     [Fact]
-    public async Task ScriptStart_SourceThrows_HandsTheFaultToTheOwnerOnce()
+    public async Task ScriptStart_SourceThrows_HandsFaultToOwnerOnce()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TFaultPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

@@ -87,7 +87,7 @@ public sealed class TCatalogEntry
     }
 
     [Fact]
-    public void EntryFind_StarWildcard_ReturnsHeadwordsAnchoredAroundIt()
+    public void EntryFind_StarWildcard_ReturnsPrefixAndSuffixMatches()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -108,7 +108,7 @@ public sealed class TCatalogEntry
     }
 
     [Fact]
-    public void EntryFind_QuestionWildcard_ReturnsHeadwordsOfThatLength()
+    public void EntryFind_QuestionWildcard_ReturnsSingleLetterMatches()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

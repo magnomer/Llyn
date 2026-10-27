@@ -13,7 +13,7 @@ namespace Llyn.Tests;
 public sealed class TYunjingPortrait
 {
     [Fact]
-    public async Task YunjingEntryListExport_ChosenEntry_WritesItAndNothingBefore()
+    public async Task YunjingEntryListExport_ChosenEntry_WritesFile()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TYunjing.TYunjingPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

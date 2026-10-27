@@ -6,7 +6,7 @@ namespace Llyn.Tests;
 public sealed class TSchemaMigrationReflex
 {
     [Fact]
-    public void DatabaseCreate_OlderBuildBeforeTheNote_DropsEveryReflexRow()
+    public void DatabaseCreate_BeforeNote_DropsReflexRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
 
@@ -24,7 +24,7 @@ public sealed class TSchemaMigrationReflex
     }
 
     [Fact]
-    public void DatabaseCreate_OlderBuildBeforeTheRegion_KeepsRowsAsRomanizations()
+    public void DatabaseCreate_BeforeRegion_KeepsNoteAsRomanization()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
 

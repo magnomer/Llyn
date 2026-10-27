@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 public sealed class TEngineXiaoyun
 {
     [Fact]
-    public void XiaoyunFind_QueryFiltersHeadword()
+    public void XiaoyunFind_QueryGiven_FiltersByHeadword()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("""{ "language": "Fixture" }""");
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -27,7 +27,7 @@ public sealed class TEngineXiaoyun
     }
 
     [Fact]
-    public void XiaoyunFind_StoredOutOfHeadwordOrder_ListsInThePanelOrder()
+    public void XiaoyunFind_StoredOutOfHeadwordOrder_ListsInPanelOrder()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("""{ "language": "Fixture" }""");
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -46,7 +46,7 @@ public sealed class TEngineXiaoyun
     }
 
     [Fact]
-    public void DiweiFind_StoredKey_AnswersTheCellAndItsColumn()
+    public void DiweiFind_StoredKey_ReturnsCellAndColumn()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("""{ "language": "Fixture" }""");
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

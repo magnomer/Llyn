@@ -125,7 +125,7 @@ public sealed class TCatalogExample
     }
 
     [Fact]
-    public void CitationRead_ShownEntry_WritesEveryCitedSourceItsLine()
+    public void CitationRead_ShownEntry_ReturnsLinePerCitedSource()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

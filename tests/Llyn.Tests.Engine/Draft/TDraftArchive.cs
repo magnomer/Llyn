@@ -36,7 +36,7 @@ public sealed class TDraftArchive
     }
 
     [Fact]
-    public void DraftArchiveSave_DerivedProperties_LeavesThemOutOfTheFile()
+    public void DraftArchiveSave_DerivedProperties_LeavesOutOfFile()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         LDraft draft = TInterface.TDraftNestedCreate("editor", "kindle");
@@ -121,7 +121,7 @@ public sealed class TDraftArchive
     }
 
     [Fact]
-    public void DraftArchiveScan_BrokenFile_SkipsIt()
+    public void DraftArchiveScan_BrokenFile_SkipsFile()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         LDraft draft = TInterface.TDraftNestedCreate("editor", "kindle");
@@ -163,7 +163,7 @@ public sealed class TDraftArchive
     }
 
     [Fact]
-    public void CourtArchiveSettle_OtherTargetLink_LeavesIt()
+    public void CourtArchiveSettle_OtherTargetLink_LeavesLink()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         long target = TInterface.TIdentityCreate();

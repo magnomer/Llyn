@@ -17,7 +17,7 @@ public sealed class TSoundingAnchor
         """;
 
     [Fact]
-    public void SoundingAnchorOpen_AnchoredReflex_MarksTheHeldReading()
+    public void SoundingAnchorOpen_AnchoredReflex_MarksHeldReading()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TSoundingAnchorPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -39,7 +39,7 @@ public sealed class TSoundingAnchor
     }
 
     [Fact]
-    public void SoundingAnchorOpen_FreshDraft_AnswersTheEmptyMenu()
+    public void SoundingAnchorOpen_FreshDraft_AnswersEmptyMenu()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -53,7 +53,7 @@ public sealed class TSoundingAnchor
     }
 
     [Fact]
-    public void SoundingAnchorSet_OpenedReflex_TiesAndUntiesTheReadingInTheDraft()
+    public void SoundingAnchorSet_OpenedReflex_TiesAndUntiesReading()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -72,7 +72,7 @@ public sealed class TSoundingAnchor
     }
 
     [Fact]
-    public void SoundingAnchorClose_ClosedMenu_LeavesTheDraftAlone()
+    public void SoundingAnchorClose_ClosedMenu_LeavesDraftAlone()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

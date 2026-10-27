@@ -103,12 +103,12 @@ It is addressed only while it carries a non-empty address.
 
 ## Stamp
 
-Commit: `c37ca1837ded`
+Commit: `9377e657b395`
 - `TCandidate.cs` `ea5097af3de7a77c`
-- `TErrand.cs` `531f5cecd763e2c8`
-- `TErrandClip.cs` `8f7981aa9bfcfdf1`
-- `TErrandFault.cs` `fc7504c00cfc67f5`
-- `TErrandNotation.cs` `2cf220a9fd7b420f`
-- `TErrandNotationReading.cs` `d64260cf4771f331`
-- `TErrandNotationRoll.cs` `839f0a57d04fd60d`
+- `TErrand.cs` `2f148e07d143e2de`
+- `TErrandClip.cs` `984526d96379fadb`
+- `TErrandFault.cs` `038020e77658a60e`
+- `TErrandNotation.cs` `da7019dfa0840ebf`
+- `TErrandNotationReading.cs` `dec35637f5c10742`
+- `TErrandNotationRoll.cs` `09e2372bef5b9169`
 - `TRecording.cs` `334b415330962833`

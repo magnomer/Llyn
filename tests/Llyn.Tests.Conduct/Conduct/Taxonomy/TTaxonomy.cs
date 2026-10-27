@@ -13,7 +13,7 @@ namespace Llyn.Tests;
 public sealed class TTaxonomy
 {
     [Fact]
-    public void TaxonomyRowsRead_FreshArea_ListsTheStoredTags()
+    public void TaxonomyRowsRead_FreshArea_ListsStoredTags()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -46,7 +46,7 @@ public sealed class TTaxonomy
     }
 
     [Fact]
-    public void ApertureOrderSet_ReverseThenNull_KeepsTheChosenOrderAndRaisesTheRows()
+    public void ApertureOrderSet_ReverseThenNull_KeepsOrderRaisesRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -86,7 +86,7 @@ public sealed class TTaxonomy
     }
 
     [Fact]
-    public void ApertureFilterSet_HiddenLanguage_MarksTheTaxonomyFiltered()
+    public void ApertureFilterSet_HiddenLanguage_MarksTaxonomyFiltered()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -104,7 +104,7 @@ public sealed class TTaxonomy
     }
 
     [Fact]
-    public async Task MembershipPortraitExport_EntryShown_WritesItAndNothingBefore()
+    public async Task MembershipPortraitExport_EntryShown_WritesOnlyOpenEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -127,7 +127,7 @@ public sealed class TTaxonomy
     }
 
     [Fact]
-    public void PanelRowSelect_EntryRow_OpensItWithoutAStation()
+    public void PanelRowSelect_EntryRow_OpensWithoutStation()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -172,7 +172,7 @@ public sealed class TTaxonomy
     }
 
     [Fact]
-    public void TaxonomyTagToggle_RowClick_RecordsTheStationAndTogglesTheTag()
+    public void TaxonomyTagToggle_RowClick_RecordsStationTogglesTag()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -199,7 +199,7 @@ public sealed class TTaxonomy
     }
 
     [Fact]
-    public void TaxonomyTagOpen_Arrival_ChoosesTheTagAndRaisesTheOpeningThenTheRows()
+    public void TaxonomyTagOpen_Arrival_ChoosesTagRaisesOpeningThenRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -217,7 +217,7 @@ public sealed class TTaxonomy
     }
 
     [Fact]
-    public void TaxonomyTagOpen_QueriedLists_EmptiesBothQueriesBeforeTheOpening()
+    public void TaxonomyTagOpen_QueriedLists_EmptiesBothQueriesFirst()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -239,7 +239,7 @@ public sealed class TTaxonomy
     }
 
     [Fact]
-    public void AtelierClose_EntryHeldOnTheEditor_CancelsTheEditorDeskAndStopsPlayback()
+    public void AtelierClose_EntryHeld_CancelsEditorDeskStopsPlayback()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

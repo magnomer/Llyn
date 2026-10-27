@@ -29,7 +29,7 @@ public sealed class TEngineFrequencyOrder
     }
 
     [Fact]
-    public void FrequencyResolve_FirstSourceRefetchedLast_GaugeShowsDeclaredFirstBand()
+    public void FrequencyResolve_RefetchedFirst_KeepsDeclaredOrder()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineFrequency.TEngineFrequencyPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -50,7 +50,7 @@ public sealed class TEngineFrequencyOrder
     }
 
     [Fact]
-    public void FrequencySort_UndeclaredSupplementaryName_OrdersByCodepoint()
+    public void FrequencySort_UndeclaredNames_OrdersByCodepoint()
     {
         string supplementary = char.ConvertFromUtf32(0x20000);
         string wide = "Ａ";

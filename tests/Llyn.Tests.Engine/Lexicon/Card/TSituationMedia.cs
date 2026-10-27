@@ -89,7 +89,7 @@ public sealed class TSituationMedia
     }
 
     [Fact]
-    public void SituationRead_ListWithMedia_GroupsEveryRowUnderItsOwner()
+    public void SituationRead_ListWithMedia_GroupsRowsUnderOwner()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TPortraitEntry
 {
     [Fact]
-    public void PortraitRead_EntryWithCardAndSentence_CarriesTheTreeTheDisplayShows()
+    public void PortraitRead_CardAndSentence_CarriesDisplayedTree()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -59,7 +59,7 @@ public sealed class TPortraitEntry
     }
 
     [Fact]
-    public void PortraitRead_ChosenUnitAndFreedom_LeadTheSpeechChips()
+    public void PortraitRead_ChosenUnitAndFreedom_LeadsSpeechChips()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -74,7 +74,7 @@ public sealed class TPortraitEntry
     }
 
     [Fact]
-    public void PortraitRead_LinkedCollocation_ShowsUnderTheLinkedMeaning()
+    public void PortraitRead_LinkedCollocation_ShowsUnderLinkedMeaning()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -136,7 +136,7 @@ public sealed class TPortraitEntry
     }
 
     [Fact]
-    public void PortraitRead_FoldedCollocation_CarriesTheFoldOnItsRow()
+    public void PortraitRead_FoldedCollocation_CarriesFoldOnRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -220,7 +220,7 @@ public sealed class TPortraitEntry
     }
 
     [Fact]
-    public void PortraitRead_LinkedAncestor_DrawsTheBorrowedMapAboveIt()
+    public void PortraitRead_LinkedAncestor_DrawsBorrowedMapAbove()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -245,7 +245,7 @@ public sealed class TPortraitEntry
     }
 
     [Fact]
-    public void SheetEntryFormat_LinkedAncestor_DrawsTheTreeAboveTheHeadword()
+    public void SheetEntryFormat_LinkedAncestor_DrawsTreeAboveHeadword()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

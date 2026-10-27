@@ -121,7 +121,7 @@ public sealed class TScoreboard
     }
 
     [Fact]
-    public void ScoreboardCensusRead_AllDecksWithoutCards_ReturnsScoreboardEmpty()
+    public void ScoreboardCensusRead_AllDecksEmpty_ReturnsEmptyKey()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -180,7 +180,7 @@ public sealed class TScoreboard
     }
 
     [Fact]
-    public void ScoreboardCensusRead_KoreanMachineCulture_WordsWeeksInInterfaceLanguage()
+    public void ScoreboardCensusRead_KoreanCulture_KeepsEnglishMonths()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

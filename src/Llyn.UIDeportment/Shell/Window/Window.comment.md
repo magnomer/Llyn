@@ -102,7 +102,7 @@ The markup question passes the gate's title key and wanted suffixes on to the di
 The dialog words the title and the filter.
 The flashcard folder dialog opens in the folder the gate hands it and answers the chosen path as picked.
 The media dialog is an open dialog, titled by the gate's key and filtered to the gate's suffixes.
-  It offers no all-files choice, so the phone gets only a file kind it plays.
+  It also offers an all-files choice, so a picture or video with an unlisted suffix can be picked.
 The customs window keeps its declared rows in the gate and hands none back.
 Every Print command reaches the print window through the print gate, so every command shows the preview.
 The coinage dialog answers the wording as typed, or null on retreat.
@@ -207,9 +207,9 @@ Device pixels become layout units first, so a scaled display still lands the win
 
 ## Stamp
 
-Commit: `36e31eb71c98`
+Commit: `9377e657b395`
 - `QCaption.cs` `a94cfc236ad84fe3`
-- `QEnvoy.cs` `c603997dffa036fe`
+- `QEnvoy.cs` `a08212fba46d4ece`
 - `QHeadquarter.cs` `eff4f717bc13c623`
 - `QNavigation.cs` `7470d827236035a6`
 - `QPanelRoster.cs` `7d2d7adf6ae30d16`

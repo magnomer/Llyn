@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TEditorUnit
 {
     [Fact]
-    public void CardSpeechRead_SpacedLanguage_OffersMorphemeWordAndExpression()
+    public void CardSpeechRead_SpacedLanguage_OffersThreeUnits()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -22,7 +22,7 @@ public sealed class TEditorUnit
     }
 
     [Fact]
-    public void CardSpeechRead_UnspacedLanguage_OffersMorphemeWordAndExpression()
+    public void CardSpeechRead_UnspacedLanguage_OffersThreeUnits()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -47,7 +47,7 @@ public sealed class TEditorUnit
     }
 
     [Fact]
-    public void EntryUnitSet_OfferedKey_MarksTheRowAndStoresTheUnit()
+    public void EntryUnitSet_OfferedKey_MarksRowAndStoresUnit()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -62,7 +62,7 @@ public sealed class TEditorUnit
     }
 
     [Fact]
-    public void EntryUnitSet_TakenKey_ClearsTheUnit()
+    public void EntryUnitSet_TakenKey_ClearsUnit()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -75,7 +75,7 @@ public sealed class TEditorUnit
     }
 
     [Fact]
-    public void EntryFreedomSet_OfferedKey_MarksTheRowAndStoresTheFreedom()
+    public void EntryFreedomSet_OfferedKey_MarksRowAndStoresFreedom()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -92,7 +92,7 @@ public sealed class TEditorUnit
     }
 
     [Fact]
-    public void EntryFreedomSet_TakenKey_ClearsTheFreedom()
+    public void EntryFreedomSet_TakenKey_ClearsFreedom()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

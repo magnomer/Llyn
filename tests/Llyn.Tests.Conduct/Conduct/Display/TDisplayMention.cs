@@ -11,7 +11,7 @@ namespace Llyn.Tests;
 public sealed class TDisplayMention
 {
     [Fact]
-    public void DisplayMentionFind_SentenceWithoutLanguage_ReadsItInTheShownLanguageAndOpensTheSoleEntry()
+    public void DisplayMentionFind_UnlabeledSentence_OpensSoleEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -39,7 +39,7 @@ public sealed class TDisplayMention
     }
 
     [Fact]
-    public void DisplayMentionFind_SoleEntryLeaveDeclined_OpensNothingAndOffersNothing()
+    public void DisplayMentionFind_LeaveDeclined_OffersNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -59,7 +59,7 @@ public sealed class TDisplayMention
     }
 
     [Fact]
-    public void DisplayMentionFind_ManyEntries_OffersThemUnderTheFoundWordAndOpensNothing()
+    public void DisplayMentionFind_ManyEntries_OffersAllUnderFoundWord()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -84,7 +84,7 @@ public sealed class TDisplayMention
     }
 
     [Fact]
-    public void DisplayMentionFind_AstralCharacterBeforeWordStartingInAnEarlierPiece_OffersItsWholeTextUnit()
+    public void DisplayMentionFind_AstralPrefix_OffersWholeTextUnit()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -115,7 +115,7 @@ public sealed class TDisplayMention
     }
 
     [Fact]
-    public void DisplayMentionFind_NoEntry_OffersAnEmptyMenuAndOpensNothing()
+    public void DisplayMentionFind_NoEntry_OffersEmptyMenu()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -135,7 +135,7 @@ public sealed class TDisplayMention
     }
 
     [Fact]
-    public void DisplayMentionFind_StoredMention_OpensItsEntryAndRaisesItsSense()
+    public void DisplayMentionFind_StoredMention_OpensEntryRaisesSense()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -166,7 +166,7 @@ public sealed class TDisplayMention
     }
 
     [Fact]
-    public void DisplayMentionFind_RowNotShown_OffersAnEmptyMenuAndOpensNothing()
+    public void DisplayMentionFind_RowNotShown_OffersEmptyMenu()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -186,7 +186,7 @@ public sealed class TDisplayMention
     }
 
     [Fact]
-    public void DisplayMentionFind_EngineFails_ShowsTheFindFailureAndOffersNothing()
+    public void DisplayMentionFind_EngineFails_ShowsFindFailure()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -204,7 +204,7 @@ public sealed class TDisplayMention
     }
 
     [Fact]
-    public void DisplayWordMove_StepsAndSeeks_StopOnTextElementsWordsAndPieces()
+    public void DisplayWordMove_StepsAndSeeks_StopsOnWordsAndPieces()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -247,7 +247,7 @@ public sealed class TDisplayMention
     }
 
     [Fact]
-    public void DisplayWordFind_ManyEntries_OffersThemAndLeadsFromTheFoundWord()
+    public void DisplayWordFind_ManyEntries_OffersAllAndLeadsFoundWord()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -277,7 +277,7 @@ public sealed class TDisplayMention
     }
 
     [Fact]
-    public void DisplayWordStart_CollocationLineSharingTheMeaningLinkId_StartsOnAndFindsTheCollocationSentence()
+    public void DisplayWordStart_SharedLinkId_StartsOnCollocationLine()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -303,7 +303,7 @@ public sealed class TDisplayMention
     }
 
     [Fact]
-    public void DisplayCardRead_UnchangedCardDrawnAgain_KeepsEveryLineKey()
+    public void DisplayCardRead_RedrawnCard_KeepsLineKeys()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

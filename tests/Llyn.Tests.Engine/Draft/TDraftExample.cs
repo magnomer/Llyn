@@ -69,7 +69,7 @@ public sealed class TDraftExample
     }
 
     [Fact]
-    public void LeftoverSweep_SentenceMatchingStoredExample_SweepsIt()
+    public void LeftoverSweep_SentenceMatchingStoredExample_SweepsDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
 
@@ -106,7 +106,7 @@ public sealed class TDraftExample
     }
 
     [Fact]
-    public void ExampleCommit_SentenceWithNoLanguage_StoresIt()
+    public void ExampleCommit_NoLanguage_StoresEmptyLanguage()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();

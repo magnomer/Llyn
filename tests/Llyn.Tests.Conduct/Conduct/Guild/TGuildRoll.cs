@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TGuildRoll
 {
     [Fact]
-    public void GuildRollRead_ChosenAuthor_CarriesItsVitaWithTheRows()
+    public void GuildRollRead_ChosenAuthor_CarriesVitaWithRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -49,7 +49,7 @@ public sealed class TGuildRoll
     }
 
     [Fact]
-    public void GuildRollRead_ChosenAuthorGone_ReadsTheVitaAfterTheClose()
+    public void GuildRollRead_ChosenAuthorGone_ReadsVitaAfterClose()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -66,7 +66,7 @@ public sealed class TGuildRoll
     }
 
     [Fact]
-    public void GuildRollRead_StoredAndUncreditedRows_CarryTheirIconsAndWordedCounts()
+    public void GuildRollRead_StoredAndOrphanRows_CarryIconsAndCounts()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

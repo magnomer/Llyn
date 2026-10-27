@@ -167,15 +167,19 @@ internal static partial class TInterface
         string language,
         string root,
         HttpClient client,
-        CancellationToken cancellation) =>
-        new LRecordingArchive(root, client).LRecordingSave(recording, word, language, cancellation);
+        CancellationToken cancellation,
+        LClock? clock = null) =>
+        new LRecordingArchive(root, client, clock ?? new TClockFake(true))
+            .LRecordingSave(recording, word, language, cancellation);
 
     internal static Task<string> TWorkspaceRecordingPrepare(
         LRecording recording,
         string root,
         HttpClient client,
-        CancellationToken cancellation) =>
-        new LRecordingArchive(root, client).LRecordingPrepare(recording, cancellation);
+        CancellationToken cancellation,
+        LClock? clock = null) =>
+        new LRecordingArchive(root, client, clock ?? new TClockFake(true))
+            .LRecordingPrepare(recording, cancellation);
 
     internal static Task TEngineRecordingFind(
         this LEngine engine,

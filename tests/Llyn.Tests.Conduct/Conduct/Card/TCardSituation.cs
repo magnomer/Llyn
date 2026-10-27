@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TCardSituation
 {
     [Fact]
-    public void SituationAdd_TypedList_AddsTheCompletedTitlesOnceAndKeepsTheRest()
+    public void SituationAdd_TypedList_AddsCompletedTitlesKeepsRest()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -31,7 +31,7 @@ public sealed class TCardSituation
     }
 
     [Fact]
-    public void SituationInsert_StoredSituation_LinksItOnceAndRemoveDropsIt()
+    public void SituationInsert_StoredSituation_LinksOnceRemoveDrops()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -51,7 +51,7 @@ public sealed class TCardSituation
     }
 
     [Fact]
-    public void SituationInsert_StoredSituation_LinksItOnceAndOfferLeavesItOut()
+    public void SituationInsert_StoredSituation_LinksOnceOfferOmits()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -71,7 +71,7 @@ public sealed class TCardSituation
     }
 
     [Fact]
-    public void SituationAdd_TypedWord_OffersTheStoredSituationSplitAroundTheWord()
+    public void SituationAdd_TypedWord_OffersStoredSituationSplit()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -126,7 +126,7 @@ public sealed class TCardSituation
     }
 
     [Fact]
-    public void SituationSettle_CaretMovedBack_AddsBeforeTheAnchor()
+    public void SituationSettle_CaretMovedBack_AddsBeforeAnchor()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -146,7 +146,7 @@ public sealed class TCardSituation
     }
 
     [Fact]
-    public void SituationDelete_StepEitherSide_RemovesTheSituationBesideTheCaret()
+    public void SituationDelete_StepEitherSide_RemovesBesideCaret()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

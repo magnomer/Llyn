@@ -12,7 +12,7 @@ namespace Llyn.Tests;
 public sealed class TPortrait
 {
     [Fact]
-    public void PortraitMediumRead_EveryMirrorFormat_ReturnsTheSameNamedEngineFormat()
+    public void PortraitMediumRead_AllMirrors_ReturnsSameNamedFormat()
     {
         CPortraitMedium[] media = Enum.GetValues<CPortraitMedium>();
 
@@ -31,7 +31,7 @@ public sealed class TPortrait
     }
 
     [Fact]
-    public void PortraitLabelRead_EngineWording_WordsEveryHeadingByItsKey()
+    public void PortraitLabelRead_EngineWording_WordsAllHeadingsByKey()
     {
         LPortraitLabel label = TInterfaceConductPortrait.TPortraitLabelRead(TPortraitSettingsCreate());
 
@@ -55,7 +55,7 @@ public sealed class TPortrait
     [InlineData("Example", "text:Example.Unwritten")]
     [InlineData("Source", "text:Source.Untitled")]
     [InlineData("Situation", "text:Situation.Untitled")]
-    public void PortraitLegendRead_Realm_WordsTheFallbackTallyAndEveryKind(string realm, string untitled)
+    public void PortraitLegendRead_Realm_WordsFallbackTallyAndKinds(string realm, string untitled)
     {
         LPortraitLegend legend = TInterfaceConductPortrait.TPortraitLegendRead(TPortraitSettingsCreate(), realm);
 
@@ -72,7 +72,7 @@ public sealed class TPortrait
     }
 
     [Fact]
-    public void PortraitChoiceRead_EngineFormats_OffersEveryFormatWithHtmlFirstChosen()
+    public void PortraitChoiceRead_EngineFormats_OffersAllChoosesHtml()
     {
         IReadOnlyList<CPortraitChoice> choices = TInterfaceConductPortrait.TPortraitChoiceRead();
 
@@ -115,7 +115,7 @@ public sealed class TPortrait
     }
 
     [Fact]
-    public void PortraitChoiceRead_NoChosenRow_ChoosesTheFirst()
+    public void PortraitChoiceRead_NoChosenRow_ChoosesFirst()
     {
         IReadOnlyList<CPortraitChoice> choices = TInterfaceConductPortrait.TPortraitChoiceRead(
         [
@@ -128,7 +128,7 @@ public sealed class TPortrait
     }
 
     [Fact]
-    public void PortraitChoiceRead_ManyChosenRows_KeepsTheFirstChosen()
+    public void PortraitChoiceRead_ManyChosenRows_KeepsFirstChosen()
     {
         IReadOnlyList<CPortraitChoice> choices = TInterfaceConductPortrait.TPortraitChoiceRead(
         [
@@ -154,7 +154,7 @@ public sealed class TPortrait
     }
 
     [Fact]
-    public async Task PortraitFileExport_DeclinedOrFailed_AsksWithTheNameThenExportsNothingOrShowsTheFailure()
+    public async Task PortraitFileExport_DeclinedOrFailed_ExportsOnlyAccepted()
     {
         List<string> asked = [];
         List<(string, LPortraitMedium)> exported = [];
@@ -185,7 +185,7 @@ public sealed class TPortrait
     }
 
     [Fact]
-    public async Task PortraitFileExport_NameReadFails_ShowsTheNameFailureAndExportsNothing()
+    public async Task PortraitFileExport_NameReadFails_ShowsNameFailure()
     {
         List<string> asked = [];
         List<string> exported = [];
@@ -215,7 +215,7 @@ public sealed class TPortrait
     }
 
     [Fact]
-    public async Task PortraitPrint_SucceededOrFailed_AsksNothingThenPrintsOrShowsTheFailure()
+    public async Task PortraitPrint_SucceededOrFailed_PrintsOrShowsFailure()
     {
         List<string> asked = [];
         int printed = 0;

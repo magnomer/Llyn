@@ -134,7 +134,7 @@ public sealed class TEngineLiveryPage
     }
 
     [Fact]
-    public void LiveryRead_OpenedFanqie_KeepsTheOpenedBox()
+    public void LiveryRead_OpenedFanqie_KeepsOpenedBox()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -175,7 +175,7 @@ public sealed class TEngineLiveryPage
     }
 
     [Fact]
-    public void LiveryRead_SpanishVerbWithMorphologyOff_CarriesStoredFormInTheExpandedTable()
+    public void LiveryRead_SpanishVerbMorphologyOff_KeepsStoredForm()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -213,7 +213,7 @@ public sealed class TEngineLiveryPage
     }
 
     [Fact]
-    public void LiveryRead_EnglishVerbWithBreakRows_CarriesOneShownPerRow()
+    public void LiveryRead_EnglishVerbBreakRows_CarriesOneShownPerRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -344,7 +344,7 @@ public sealed class TEngineLiveryPage
     }
 
     [Fact]
-    public void LiveryFormat_LinkedAncestor_DrawsTheBorrowedMapAboveIt()
+    public void LiveryFormat_LinkedAncestor_DrawsBorrowedMapAbove()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

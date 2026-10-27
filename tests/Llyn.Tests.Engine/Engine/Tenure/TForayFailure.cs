@@ -22,7 +22,7 @@ public sealed class TForayFailure
     private static readonly TimeSpan TForayLimit = TimeSpan.FromSeconds(5);
 
     [Fact]
-    public async Task ForayRun_SearchThrows_RecordsTheFaultAndFinishes()
+    public async Task ForayRun_SearchThrows_RecordsFaultAndFinishes()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TForay.TForayPack);
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
@@ -44,7 +44,7 @@ public sealed class TForayFailure
     }
 
     [Fact]
-    public async Task ForayRun_LookupThrows_RecordsTheFaultAndFinishesOnce()
+    public async Task ForayRun_LookupThrows_RecordsFaultAndFinishesOnce()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TForayLookupPack);
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
@@ -97,7 +97,7 @@ public sealed class TForayFailure
     }
 
     [Fact]
-    public async Task ForayRun_RecordingSourcesUnbuilt_RecordsTheFaultAndFinishesOnce()
+    public async Task ForayRun_RecordingSourcesUnbuilt_RecordsFault()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TForay.TForayPack);
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
@@ -119,7 +119,7 @@ public sealed class TForayFailure
     }
 
     [Fact]
-    public async Task ForayRun_TranscriptionSourcesUnbuilt_RecordsTheFaultAndFinishesOnce()
+    public async Task ForayRun_TranscriptionSourcesUnbuilt_RecordsFault()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TForayLookupPack);
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();

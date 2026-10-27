@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 public sealed class TLecternEtymology
 {
     [Fact]
-    public void LecternEtymologyDraw_Map_DrawsTheHeadwordOnTopAndTheSourcesAsATree()
+    public void LecternEtymologyDraw_Map_DrawsHeadwordAboveSourceTree()
     {
         TLecternCard.TLecternCardRun(
             static (engine, _) => TLecternEtymologySave(engine, "flow"),
@@ -31,7 +31,7 @@ public sealed class TLecternEtymology
     }
 
     [Fact]
-    public void LecternEtymologyOpen_EnterOnTheLinkedBox_OpensItsEntry()
+    public void LecternEtymologyOpen_EnterOnLinkedBox_OpensEntry()
     {
         TLecternCard.TLecternCardRun(
             static (engine, _) => TLecternEtymologySave(engine, "stream"),
@@ -51,7 +51,7 @@ public sealed class TLecternEtymology
     }
 
     [Fact]
-    public void LecternEtymologyDraw_LongGloss_WrapsTheTextAndKeepsTheTrunk()
+    public void LecternEtymologyDraw_LongGloss_WrapsTextKeepsTrunk()
     {
         const string gloss = "a small natural stream of fresh water that runs through the low meadows to the sea";
         TLecternCard.TLecternCardRun(
@@ -81,7 +81,7 @@ public sealed class TLecternEtymology
     }
 
     [Fact]
-    public void LecternDraw_PageOrder_FollowsTheCompass()
+    public void LecternDraw_PageOrder_FollowsCompass()
     {
         Dictionary<CCompassPart, string> headings = new()
         {

@@ -14,7 +14,7 @@ namespace Llyn.Tests;
 public sealed class TReflexHinge
 {
     [Fact]
-    public void LecternCreate_NoEntryShown_PutsTheHingeBackAndStoresNothing()
+    public void LecternCreate_NoEntryShown_RevertsHingeStoresNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -37,7 +37,7 @@ public sealed class TReflexHinge
     }
 
     [Fact]
-    public void LecternFoldRefine_StoredOpenedEntry_ChecksTheRenamedHinge()
+    public void LecternFoldRefine_StoredOpenedEntry_ChecksRenamedHinge()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -61,7 +61,7 @@ public sealed class TReflexHinge
     }
 
     [Fact]
-    public void ReflexCreate_NoHeldEntry_PutsTheRenamedHingeBackAndStoresNothing()
+    public void ReflexCreate_NoHeldEntry_RevertsRenamedHinge()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

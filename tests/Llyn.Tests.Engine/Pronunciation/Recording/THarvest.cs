@@ -115,7 +115,7 @@ public sealed class THarvest
     }
 
     [Fact]
-    public void HarvestRecordingScan_TwoSourcesAmerican_KeepsOnePerSource()
+    public void HarvestRecordingScan_AmericanVariety_KeepsOnePerSource()
     {
         LRecording[] found =
         [

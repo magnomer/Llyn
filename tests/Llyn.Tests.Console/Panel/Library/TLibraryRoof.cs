@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 public sealed class TLibraryRoof
 {
     [Fact]
-    public void LibraryMenuBuild_ImportItem_RepaintsFromTheBulletin()
+    public void LibraryMenuBuild_ImportItem_ListsImportedEntry()
     {
         List<string> asked = [];
         string? file = null;
@@ -50,7 +50,7 @@ public sealed class TLibraryRoof
     }
 
     [Fact]
-    public void LibraryMenuBuild_ImportMalformed_ShowsTheImportFailure()
+    public void LibraryMenuBuild_ImportMalformed_ShowsImportFailure()
     {
         List<string> asked = [];
         string? file = null;
@@ -71,7 +71,7 @@ public sealed class TLibraryRoof
     }
 
     [Fact]
-    public void LibraryMenuBuild_ExportItem_LiveOnlyWhileAnEntryIsRead()
+    public void LibraryMenuBuild_ExportItem_LiveOnlyWhileEntryRead()
     {
         TLibrary.TLibraryRun(
             ["fire"],
@@ -96,7 +96,7 @@ public sealed class TLibraryRoof
     }
 
     [Fact]
-    public void LibraryMenuBuild_ExportItem_WritesTheChosenFile()
+    public void LibraryMenuBuild_ExportItem_WritesChosenFile()
     {
         List<string> asked = [];
         string? file = null;

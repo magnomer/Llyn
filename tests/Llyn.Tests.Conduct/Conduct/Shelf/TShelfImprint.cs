@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TShelfImprint
 {
     [Fact]
-    public void AtelierClose_BylineOffered_ClosesTheBylineWhenTheAtelierCloses()
+    public void AtelierClose_BylineOffered_ClosesByline()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -31,7 +31,7 @@ public sealed class TShelfImprint
     }
 
     [Fact]
-    public void ShelfCreate_DraftNotice_ShowsTheSourceThroughTheMarshal()
+    public void ShelfCreate_DraftNotice_ShowsSourceThroughMarshal()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

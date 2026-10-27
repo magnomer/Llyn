@@ -68,13 +68,13 @@ The flags name each language once, in first-seen order.
 The example count is two.
 The further paths name only the second meaning, though the first is linked twice.
 
-## `DisplayCardRead_MeaningSharingCollocationId_TakesNoCollocationMarkers`
+## `DisplayCardRead_SharedLinkId_TakesNoMarkers`
 
 A meaning and a collocation may carry the same card id, since each kind numbers its own cards.
 The meaning must not take the collocation's phrase or markers by that id.
 The collocation homed under the first meaning keeps its own phrase.
 
-## `DisplayCardRead_MeaningSharingCollocationId_KeepsEachTranslation`
+## `DisplayCardRead_SharedLinkId_KeepsEachTranslation`
 
 A meaning and an Other collocation share an id but link different entries.
 Each card keeps only its own translation link, and the collocation alone carries its flag.
@@ -151,19 +151,19 @@ Conduct chooses the one-off key for the driver's frequency lookup, and an unrank
 The wing, entry and atelier builders here are shared with `TDisplayGrasp`.
 The atelier's media port only answers a stop, since closing the view stops its play.
 
-## `CompassRead_HiddenPartSharesACardLabel_NamesOnlyTheShownRows`
+## `CompassRead_HiddenPartSharesCardLabel_NamesShownRows`
 
 A meaning titled like a part's own wording must not make that part show.
 Only the meaning part and its card give rows.
 
-## `CompassShown_EntryWithSomeParts_KeepsOnlyThoseInPageOrder`
+## `CompassShown_EntryWithSomeParts_KeepsPartsInPageOrder`
 
 An entry with a speech, a note, a collocation card and a stored stamp shows exactly those parts.
 They come in page order.
 The card, usage and frequency reads come first, since the compass is refined from them.
 Closing the entry and reading again empties the shown parts.
 
-## `CompassShown_OpenOtherEntryBeforeReads_DropsPreviousEntryParts`
+## `CompassShown_OtherEntryOpened_DropsPreviousParts`
 
 Opening another entry empties what the first entry's reads left, before any read of the second.
 So the contents never show a part of the entry that was shown before.
@@ -308,14 +308,14 @@ Saves an English noun whose paradigm asks for a plural nothing stores.
 
 ## Stamp
 
-Commit: `c37ca1837ded`
-- `TCardSense.cs` `807f30e127fe9c46`
-- `TDisplay.cs` `b5edef95cb9836d8`
-- `TDisplayAccent.cs` `bc384431fa7b13d5`
-- `TDisplayArea.cs` `223ba1aa3bbd7df5`
-- `TDisplayCard.cs` `b64f9accedb0df5a`
-- `TDisplayGrasp.cs` `7f3390215a60e0ff`
-- `TDisplayMention.cs` `fe2130ecf737059c`
-- `TDisplayPlayback.cs` `4841acad0b56316f`
-- `TDisplaySound.cs` `3d21b438c154a999`
-- `TDisplaySoundBlock.cs` `968cd78df93869a1`
+Commit: `9377e657b395`
+- `TCardSense.cs` `fce4ce633cf2c874`
+- `TDisplay.cs` `63ec5d937b6ee501`
+- `TDisplayAccent.cs` `3ff2daaf0205bbdd`
+- `TDisplayArea.cs` `ca6b38c9def58968`
+- `TDisplayCard.cs` `8a288014d28d9996`
+- `TDisplayGrasp.cs` `23e7a73a2ee36b48`
+- `TDisplayMention.cs` `6cb0d719e5f6c96f`
+- `TDisplayPlayback.cs` `98646f3e09a2e650`
+- `TDisplaySound.cs` `cb1c4ad73236a17d`
+- `TDisplaySoundBlock.cs` `6622a641b0853946`

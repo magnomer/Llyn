@@ -66,7 +66,7 @@ public sealed class TDraftReference
     }
 
     [Fact]
-    public void LeftoverSweep_ReferenceMatchingStoredReference_SweepsIt()
+    public void LeftoverSweep_DraftMatchingStoredReference_SweepsDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
 

@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TRepertoire
 {
     [Fact]
-    public void DiptychEntryCreate_SituationChosen_OpensALinkedEntryInTheEditor()
+    public void DiptychEntryCreate_SituationChosen_OpensLinkedEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -32,7 +32,7 @@ public sealed class TRepertoire
     }
 
     [Fact]
-    public void RepertoireSituationOpen_StoredSituation_ShowsItOnTheVignette()
+    public void RepertoireSituationOpen_StoredSituation_ShowsVignette()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -52,7 +52,7 @@ public sealed class TRepertoire
     }
 
     [Fact]
-    public void RepertoireSituationOpen_HiddenByTheQuery_DropsTheQueryAndShowsIt()
+    public void RepertoireSituationOpen_HiddenByQuery_DropsQueryShows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -75,7 +75,7 @@ public sealed class TRepertoire
     }
 
     [Fact]
-    public void DiptychParentSelect_NothingUnsaved_RecordsAndShowsTheSituation()
+    public void DiptychParentSelect_NothingUnsaved_RecordsAndShows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -95,7 +95,7 @@ public sealed class TRepertoire
     }
 
     [Fact]
-    public void DiptychChildSelect_ReferencingEntry_ShowsItOnTheDisplay()
+    public void DiptychChildSelect_ReferencingEntry_ShowsOnDisplay()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -115,7 +115,7 @@ public sealed class TRepertoire
     }
 
     [Fact]
-    public void RepertoireWorkspaceResonate_ChosenSituation_ClearsBothLists()
+    public void RepertoireWorkspaceResonate_ChosenSituation_ClearsLists()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -132,7 +132,7 @@ public sealed class TRepertoire
     }
 
     [Fact]
-    public void DiptychChildResonate_OccurrenceOnDisplay_KeepsTheOccurrenceSide()
+    public void DiptychChildResonate_OccurrenceShown_KeepsOccurrence()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -150,7 +150,7 @@ public sealed class TRepertoire
     }
 
     [Fact]
-    public void RepertoireRowsRead_ChosenSituationNarrowedAway_ClearsBothLists()
+    public void RepertoireRowsRead_ChosenNarrowedAway_ClearsBothLists()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -171,7 +171,7 @@ public sealed class TRepertoire
     }
 
     [Fact]
-    public void DiptychEntryDelete_ChosenSituationConfirmed_DeletesItAndClearsTheVignette()
+    public void DiptychEntryDelete_ChosenConfirmed_DeletesAndClears()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -296,7 +296,7 @@ public sealed class TEngineLivery
     }
 
     [Fact]
-    public void LiveryStyleFormat_CardSummary_DrawsFoldChevronAtRightEnd()
+    public void LiveryStyleFormat_CardSummary_DrawsFoldChevron()
     {
         string css = TThemeStyleFormat();
 
@@ -336,7 +336,7 @@ public sealed class TEngineLivery
     }
 
     [Fact]
-    public void LiveryStyleFormat_CollocationHeading_LeavesHeadingPillAlone()
+    public void LiveryStyleFormat_CollocationHeading_ClearsHeadingPill()
     {
         string css = TThemeStyleFormat();
 

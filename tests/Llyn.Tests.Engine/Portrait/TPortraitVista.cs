@@ -7,7 +7,7 @@ namespace Llyn.Tests;
 public sealed class TPortraitVista
 {
     [Fact]
-    public async Task Export_Vista_UsesChosenEntryAndDoesNotCreateAFileForEmptySelection()
+    public async Task PortraitExport_EmptySelection_WritesNoFile()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -44,7 +44,7 @@ public sealed class TPortraitVista
     }
 
     [Fact]
-    public async Task Print_CatalogVista_ResolvesItsSubject()
+    public async Task Print_CatalogVista_ResolvesSubject()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

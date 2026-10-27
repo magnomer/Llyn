@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TAncestorSaving
 {
     [Fact]
-    public void AncestorUpdate_EditedMap_StoresTheTree()
+    public void AncestorUpdate_EditedMap_StoresTree()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -31,7 +31,7 @@ public sealed class TAncestorSaving
     }
 
     [Fact]
-    public void AncestorUpdate_NewEntry_StoresTheMap()
+    public void AncestorUpdate_NewEntry_StoresMap()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -49,7 +49,7 @@ public sealed class TAncestorSaving
     }
 
     [Fact]
-    public void AncestorUpdate_FirstMap_RecordsACreate()
+    public void AncestorUpdate_FirstMap_RecordsCreate()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -66,7 +66,7 @@ public sealed class TAncestorSaving
     }
 
     [Fact]
-    public void AncestorUpdate_ChangedMap_RecordsAnUpdate()
+    public void AncestorUpdate_ChangedMap_RecordsUpdate()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -84,7 +84,7 @@ public sealed class TAncestorSaving
     }
 
     [Fact]
-    public void AncestorUpdate_ClearedMap_RecordsADelete()
+    public void AncestorUpdate_ClearedMap_RecordsDelete()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

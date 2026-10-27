@@ -13,7 +13,7 @@ public sealed class TEaselDesk
     private const int TEaselDeskHold = 600000;
 
     [Fact]
-    public void ImageAdd_ScenarioWithARow_AppendsABlankRowAfterIt()
+    public void ImageAdd_ScenarioWithRow_AppendsBlankRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -32,7 +32,7 @@ public sealed class TEaselDesk
     }
 
     [Fact]
-    public void ImageFileSet_ChosenFile_WritesTheScenarioRowAtOnce()
+    public void ImageFileSet_ScenarioChosenFile_WritesAtOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -48,7 +48,7 @@ public sealed class TEaselDesk
     }
 
     [Fact]
-    public void ImageFileSet_CancelledDialog_KeepsTheRowBlank()
+    public void ImageFileSet_CancelledDialog_KeepsRowBlank()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -63,7 +63,7 @@ public sealed class TEaselDesk
     }
 
     [Fact]
-    public void ImageRemove_ScenarioRow_DropsTheRow()
+    public void ImageRemove_ScenarioRow_DropsRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -80,7 +80,7 @@ public sealed class TEaselDesk
     }
 
     [Fact]
-    public void VideoAdd_ScenarioWithARow_AppendsABlankRowAfterIt()
+    public void VideoAdd_ScenarioWithRow_AppendsBlankRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -99,7 +99,7 @@ public sealed class TEaselDesk
     }
 
     [Fact]
-    public void VideoFileSet_ChosenFile_WritesTheScenarioRowAtOnce()
+    public void VideoFileSet_ScenarioChosenFile_WritesAtOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -115,7 +115,7 @@ public sealed class TEaselDesk
     }
 
     [Fact]
-    public void VideoFileSet_CancelledDialog_KeepsTheRowBlank()
+    public void VideoFileSet_CancelledDialog_KeepsRowBlank()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -130,7 +130,7 @@ public sealed class TEaselDesk
     }
 
     [Fact]
-    public void VideoRemove_ScenarioRow_DropsTheRow()
+    public void VideoRemove_ScenarioRow_DropsRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -147,7 +147,7 @@ public sealed class TEaselDesk
     }
 
     [Fact]
-    public void ImageAdd_SecondCard_AppendsTheRowToThatCardOnly()
+    public void ImageAdd_SecondCard_AppendsRowToCardOnly()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -166,7 +166,7 @@ public sealed class TEaselDesk
     }
 
     [Fact]
-    public void ImageRemove_RowOnSecondCard_DropsItFromItsCard()
+    public void ImageRemove_RowOnSecondCard_DropsFromCard()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -184,7 +184,7 @@ public sealed class TEaselDesk
     }
 
     [Fact]
-    public void ImageFileSet_ChosenFile_WritesTheCardRowAtOnce()
+    public void ImageFileSet_CardChosenFile_WritesAtOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -201,7 +201,7 @@ public sealed class TEaselDesk
     }
 
     [Fact]
-    public void ImageFileSet_FileThatExists_CarriesItsAddress()
+    public void ImageFileSet_ExistingFile_CarriesAddress()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -218,7 +218,7 @@ public sealed class TEaselDesk
     }
 
     [Fact]
-    public void ImageFileSet_FileThatIsMissing_CarriesNoAddress()
+    public void ImageFileSet_MissingFile_CarriesNoAddress()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -233,7 +233,7 @@ public sealed class TEaselDesk
     }
 
     [Fact]
-    public void VideoFileSet_FileThatExists_CarriesItsScreen()
+    public void VideoFileSet_ExistingFile_CarriesScreen()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -251,7 +251,7 @@ public sealed class TEaselDesk
     }
 
     [Fact]
-    public void VideoFileSet_FileThatIsMissing_CarriesNoScreen()
+    public void VideoFileSet_MissingFile_CarriesNoScreen()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -266,7 +266,7 @@ public sealed class TEaselDesk
     }
 
     [Fact]
-    public void VideoAdd_SecondCard_AppendsTheRowToThatCardOnly()
+    public void VideoAdd_SecondCard_AppendsRowToCardOnly()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -285,7 +285,7 @@ public sealed class TEaselDesk
     }
 
     [Fact]
-    public void VideoRemove_RowOnSecondCard_DropsItFromItsCard()
+    public void VideoRemove_RowOnSecondCard_DropsFromCard()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -303,7 +303,7 @@ public sealed class TEaselDesk
     }
 
     [Fact]
-    public void VideoFileSet_ChosenFile_WritesTheCardRowAtOnce()
+    public void VideoFileSet_CardChosenFile_WritesAtOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -5,7 +5,7 @@ namespace Llyn.Tests;
 public sealed class TPortraitOutline
 {
     [Fact]
-    public void OutlineFormat_FoldedRow_PrintsTheRowOpen()
+    public void OutlineFormat_FoldedRow_PrintsRowOpen()
     {
         string page = TInterface.TOutlineFormat(TPortraitSample.TPortraitRowCreate());
 
@@ -13,7 +13,7 @@ public sealed class TPortraitOutline
     }
 
     [Fact]
-    public void OutlineFormat_FullPortrait_KeepsTheDisplayReadingOrder()
+    public void OutlineFormat_FullPortrait_KeepsDisplayReadingOrder()
     {
         string page = TInterface.TOutlineFormat(TPortraitSample.TPortraitSampleCreate());
 
@@ -31,7 +31,7 @@ public sealed class TPortraitOutline
     }
 
     [Fact]
-    public void OutlineFormat_MarkdownInFieldText_EscapesEveryControlCharacter()
+    public void OutlineFormat_MarkdownInFields_EscapesControlCharacters()
     {
         string page = TInterface.TOutlineFormat(TPortraitSample.TPortraitSampleCreate());
 
@@ -54,7 +54,7 @@ public sealed class TPortraitOutline
     }
 
     [Fact]
-    public void OutlineFormat_MarkdownNote_KeepsTheNoteUnescaped()
+    public void OutlineFormat_MarkdownNote_KeepsNoteUnescaped()
     {
         string page = TInterface.TOutlineFormat(TPortraitSample.TPortraitSampleCreate());
 

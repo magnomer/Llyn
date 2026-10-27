@@ -159,7 +159,7 @@ public sealed class TParadigm
     }
 
     [Fact]
-    public void ParadigmClerkCheck_WrittenOrEmptyForm_AnswersTextOrAbsentWhateverIsPending()
+    public void ParadigmClerkCheck_WrittenOrEmpty_AnswersTextOrAbsent()
     {
         LInflection wolves = TInterfaceInflection.TInflectionCreate(1, 0, "wolves", null, 1, [1]);
         LInflection empty = TInterfaceInflection.TInflectionCreate(1, 0, string.Empty, null, 1, [1]);
@@ -171,7 +171,7 @@ public sealed class TParadigm
     }
 
     [Fact]
-    public void ParadigmClerkCheck_NoFormUnknownSlot_AnswersUnknownBeforePendingOrLost()
+    public void ParadigmClerkCheck_NoFormUnknownSlot_AnswersUnknown()
     {
         Assert.Equal(
             LParadigmStatus.LParadigmStatusUnknown, TParadigmStatusRead(null, LState.LStateUnknown, true, true));
@@ -180,7 +180,7 @@ public sealed class TParadigm
     }
 
     [Fact]
-    public void ParadigmClerkCheck_NoFormUnansweredSlot_AnswersPendingLostOrAbsent()
+    public void ParadigmClerkCheck_UnansweredSlot_AnswersByPendingFlags()
     {
         Assert.Equal(
             LParadigmStatus.LParadigmStatusPending, TParadigmStatusRead(null, LState.LStateUnspecified, true, true));

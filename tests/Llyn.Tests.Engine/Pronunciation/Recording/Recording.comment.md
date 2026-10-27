@@ -60,6 +60,9 @@ A preview asked twice for one address returns the same cache file, even while a 
 Two addresses sharing a file name land in two cache files.
 A host answering 429 once is asked again and the second answer is saved.
 A host that never stops refusing raises `LVaultFault` after the third try, with the refusal inside.
+The cases run on an instant fake clock, and each wait it records is the five-second floor.
+A Retry-After of 31 seconds passes the 30-second ceiling.
+So the fetch fails on the first refusal, with no wait.
 It leaves no cache folder behind.
 An audio folder blocked by a file raises `LVaultFault` with the file failure inside.
 A cancellation the caller asked for is raised as a cancellation, not wrapped.
@@ -68,16 +71,17 @@ The bytes come from a stub handler, so the test runs offline.
 ## `TRefusalHandler`
 
 A message handler that answers the first few requests with 429 and every later one with audio bytes.
-Each refusal names a one-second Retry-After, the value Wikimedia's audio host sends.
+Each refusal names a Retry-After of one second unless the test gives another.
+One second is the value Wikimedia's audio host sends.
 It counts the requests it saw, so a test can read how many tries a fetch took.
 It stands in for a host throttling bursts, so the workspace's retry runs offline.
 
 ## Stamp
 
-Commit: `bd299c638b2c`
-- `THarvest.cs` `6195e46689619707`
-- `THarvestStep.cs` `47edebe26fa56bfd`
-- `TRecordingClerk.cs` `373ca9025d21c62a`
+Commit: `9377e657b395`
+- `THarvest.cs` `65be9d76415bfb69`
+- `THarvestStep.cs` `adad55fedc135ac9`
+- `TRecordingClerk.cs` `59e9d37cf2442b61`
 - `TRecordingFinding.cs` `365b70e5aa73e843`
-- `TRecordingSaving.cs` `72b0224e0435c9d9`
-- `TRefusalHandler.cs` `650e47d07ed9c632`
+- `TRecordingSaving.cs` `ccd82561737ba2c0`
+- `TRefusalHandler.cs` `27b0133f4016fafd`

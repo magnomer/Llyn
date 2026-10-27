@@ -72,7 +72,7 @@ public sealed class TWindow
     }
 
     [Fact]
-    public void WindowSizeObserve_BelowEightyByTwentyFour_DrawsFramedNotice()
+    public void WindowSizeObserve_BelowMinimum_DrawsFramedNotice()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         TConsoleFake console = new() { TConsoleFakeTerminal = true };

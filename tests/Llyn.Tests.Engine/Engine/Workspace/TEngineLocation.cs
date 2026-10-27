@@ -24,7 +24,7 @@ public sealed class TEngineLocation
     }
 
     [Fact]
-    public void LocationResolve_RelativeInsideWorkspace_ReturnsWorkspaceFile()
+    public void LocationResolve_RelativeInsideWorkspace_ReturnsFileUri()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

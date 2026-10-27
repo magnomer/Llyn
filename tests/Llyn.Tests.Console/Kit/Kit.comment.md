@@ -71,13 +71,13 @@ Two halves of a surrogate pair typed apart insert one character and report once.
 
 ## Stamp
 
-Commit: `c37ca1837ded`
-- `TBlueprint.cs` `1429a675f738f38a`
+Commit: `9377e657b395`
+- `TBlueprint.cs` `086cdcd1b0c4cbf3`
 - `TBlueprintFake.cs` `000e50a0d9cf0b07`
 - `TBlueprintFake.xaml` `0d000834862bab6c`
 - `TBlueprintListed.xaml` `5b0e022ddbcd8a05`
 - `TBlueprintUnlisted.xaml` `c90b948e5b5fd904`
-- `TCanvas.cs` `a1a559a9fb2846eb`
+- `TCanvas.cs` `3d8a48b164f9ee3b`
 - `TCanvasWidth.cs` `20114b19fd1e54cc`
 - `TField.cs` `fb6494e05476d8cb`
-- `TTheme.cs` `a65066d14995ec46`
+- `TTheme.cs` `b67bc485e720aecd`

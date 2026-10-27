@@ -11,7 +11,7 @@ namespace Llyn.Tests;
 public sealed class TFavoriteVista
 {
     [Fact]
-    public async Task FavoriteRowsLoad_MarkedEntry_AnswersTheRowsAndTheLanguagesAfterTheFill()
+    public async Task FavoriteRowsLoad_MarkedEntry_AnswersRowsAndLanguages()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -27,7 +27,7 @@ public sealed class TFavoriteVista
     }
 
     [Fact]
-    public void FavoriteVistaRestore_QueryHeld_CarriesItIntoTheFreshVista()
+    public void FavoriteVistaRestore_QueryHeld_CarriesQuery()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -43,7 +43,7 @@ public sealed class TFavoriteVista
     }
 
     [Fact]
-    public void FavoriteVistaRestore_FavoriteNoticeAfterASecondRestore_RaisesTheRowsOnceThroughTheMarshal()
+    public void FavoriteVistaRestore_NoticeAfterRestore_RaisesRowsOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -70,7 +70,7 @@ public sealed class TFavoriteVista
     }
 
     [Fact]
-    public void FavoriteCreate_FavoriteNoticeWithoutARestore_RaisesTheRowsOnceThroughTheMarshal()
+    public void FavoriteCreate_NoticeWithoutRestore_RaisesRowsOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -96,7 +96,7 @@ public sealed class TFavoriteVista
     }
 
     [Fact]
-    public void FavoriteVistaRestore_WorkspaceNotice_ClosesTheChosenEntryAndTellsTheDriver()
+    public void FavoriteVistaRestore_WorkspaceNotice_ClosesChosenEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -115,7 +115,7 @@ public sealed class TFavoriteVista
     }
 
     [Fact]
-    public void FavoriteVistaRestore_SettingsNotice_RaisesTheRowsThroughTheMarshal()
+    public void FavoriteVistaRestore_SettingsNotice_RaisesRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -130,7 +130,7 @@ public sealed class TFavoriteVista
     }
 
     [Fact]
-    public void FavoriteRowsRead_EngineFails_ShowsTheLoadFailureAndAnswersNoRows()
+    public void FavoriteRowsRead_EngineFails_ShowsLoadFailureNoRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -141,7 +141,7 @@ public sealed class TFavoriteVista
     }
 
     [Fact]
-    public void FavoriteOrderRead_Menu_OffersTheFiveOrderings()
+    public void FavoriteOrderRead_Menu_OffersFiveOrderings()
     {
         Assert.Equal(
             [
@@ -155,7 +155,7 @@ public sealed class TFavoriteVista
     }
 
     [Fact]
-    public void FavoriteClose_ExitGate_ClosesTheEditorAndStopsTheRecording()
+    public void FavoriteClose_ExitGate_ClosesEditorAndStopsRecording()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

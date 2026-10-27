@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TRepertoireVista
 {
     [Fact]
-    public async Task RepertoireRowsLoad_StoredSituation_AnswersTheRowsAndTheLanguagesAfterTheFill()
+    public async Task RepertoireRowsLoad_Situation_AnswersRowsAndLanguages()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -26,7 +26,7 @@ public sealed class TRepertoireVista
     }
 
     [Fact]
-    public void RepertoireVistaRestore_QueriesHeld_CarriesThemIntoTheFreshVistas()
+    public void RepertoireVistaRestore_QueriesHeld_CarriesIntoVistas()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -45,7 +45,7 @@ public sealed class TRepertoireVista
     }
 
     [Fact]
-    public void RepertoireVistaRestore_SituationNoticeAfterASecondRestore_RaisesEachListOnceThroughTheMarshal()
+    public void RepertoireVistaRestore_SecondRestore_RaisesEachListOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -75,7 +75,7 @@ public sealed class TRepertoireVista
     }
 
     [Fact]
-    public void RepertoireCreate_SituationNoticeWithoutARestore_RaisesEachListOnceThroughTheMarshal()
+    public void RepertoireCreate_NoRestore_RaisesEachListOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -104,7 +104,7 @@ public sealed class TRepertoireVista
     }
 
     [Fact]
-    public void RepertoireVistaRestore_EntryNotice_RaisesTheSituationRowsForTheirTallies()
+    public void RepertoireVistaRestore_EntryNotice_RaisesRowsForTallies()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -121,7 +121,7 @@ public sealed class TRepertoireVista
     }
 
     [Fact]
-    public void RepertoireVistaRestore_WorkspaceNotice_ClosesTheChosenSituationAndTellsTheDriver()
+    public void RepertoireVistaRestore_WorkspaceNotice_ClosesSituation()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -141,7 +141,7 @@ public sealed class TRepertoireVista
     }
 
     [Fact]
-    public void RepertoireVistaRestore_SettingsNotice_RaisesTheSituationRowsThroughTheMarshal()
+    public void RepertoireVistaRestore_SettingsNotice_RaisesRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

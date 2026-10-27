@@ -80,9 +80,9 @@ internal sealed class QImage
 
     private void QImageOpenObserve(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: QImageItem row } source)
+        if (sender is FrameworkElement { DataContext: QImageItem row })
         {
-            _cImage.CImageFileSet(row.QImageItemId, QImageItem.QImageItemOpen(Window.GetWindow(source)));
+            _cImage.CImageFileOpen(row.QImageItemId);
         }
     }
 

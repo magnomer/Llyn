@@ -35,7 +35,7 @@ public sealed class TEngineStem
     private static readonly TimeSpan TEngineStemPatience = TimeSpan.FromSeconds(5);
 
     [Fact]
-    public async Task StemApply_FetchedSeries_OpensAsAPageWithItsEntries()
+    public async Task StemApply_FetchedSeries_OpensAsPageWithEntries()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineStemPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -66,7 +66,7 @@ public sealed class TEngineStem
     }
 
     [Fact]
-    public void StemFind_PackWithoutSeries_StoresNoSeriesOfItsOwn()
+    public void StemFind_PackWithoutSeries_StoresNoOwnSeries()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(
             """
@@ -83,7 +83,7 @@ public sealed class TEngineStem
     }
 
     [Fact]
-    public void StemResolve_StoredOutOfCodePointOrder_ListsCharactersByCodePoint()
+    public void StemResolve_UnorderedCharacters_ListsByCodePoint()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("""{ "language": "Fixture" }""");
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -108,7 +108,7 @@ public sealed class TEngineStem
     }
 
     [Fact]
-    public void KindredFind_StoredOutOfHeadwordOrder_ListsInThePanelOrder()
+    public void KindredFind_StoredOutOfHeadwordOrder_ListsInPanelOrder()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("""{ "language": "Fixture" }""");
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -131,7 +131,7 @@ public sealed class TEngineStem
     }
 
     [Fact]
-    public void StemResolve_MembersWithAndWithoutEntry_MatchByHeadwordAndCreateNothing()
+    public void StemResolve_MembersWithAndWithoutEntry_CreatesNothing()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("""{ "language": "Fixture" }""");
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -170,7 +170,7 @@ public sealed class TEngineStem
     }
 
     [Fact]
-    public void StemSpread_MemberOpenedThenClosed_KeepsItsStateApartFromTheEntryPage()
+    public void StemSpread_MemberOpenedThenClosed_KeepsStateSeparate()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(
             """

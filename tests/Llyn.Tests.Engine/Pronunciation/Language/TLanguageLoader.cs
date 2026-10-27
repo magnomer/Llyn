@@ -33,7 +33,7 @@ public sealed class TLanguageLoader
     }
 
     [Fact]
-    public void LanguageLoad_UnlistedPack_ReadsUnlistedAndStaysOffTheList()
+    public void LanguageLoad_UnlistedPack_ReadsButStaysOffList()
     {
         Assert.True(TInterface.TLanguageLoad("Wu").LLanguagePhonemic);
         Assert.DoesNotContain("Wu", TInterface.TLanguageScan());
@@ -170,7 +170,7 @@ public sealed class TLanguageLoader
     }
 
     [Fact]
-    public void LanguageLoad_BrokenRegex_DropsThatGroupOnly()
+    public void LanguageLoad_BrokenRegex_DropsGroupOnly()
     {
         LLanguage language = TLanguageFixture.TLanguageFixtureLoad(
             """

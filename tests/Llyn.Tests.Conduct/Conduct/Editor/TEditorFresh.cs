@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TEditorFresh
 {
     [Fact]
-    public void EntryOpen_Null_ResetsToAFreshDraft()
+    public void EntryOpen_Null_ResetsToFreshDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -27,7 +27,7 @@ public sealed class TEditorFresh
     }
 
     [Fact]
-    public void EntryOpen_MissingEntry_FallsBackToAFreshDraft()
+    public void EntryOpen_MissingEntry_FallsBackToFreshDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -56,7 +56,7 @@ public sealed class TEditorFresh
     }
 
     [Fact]
-    public void MembershipStart_TagGiven_OpensAFreshDraftCarryingIt()
+    public void MembershipStart_TagGiven_OpensFreshDraftWithTag()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -75,7 +75,7 @@ public sealed class TEditorFresh
     }
 
     [Fact]
-    public void CohortStart_RegisterGiven_OpensAFreshDraftCarryingIt()
+    public void CohortStart_RegisterGiven_OpensFreshDraftWithRegister()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -94,7 +94,7 @@ public sealed class TEditorFresh
     }
 
     [Fact]
-    public void OccurrenceStart_SituationGiven_OpensAFreshDraftAlreadyLinked()
+    public void OccurrenceStart_SituationGiven_OpensLinkedDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -114,7 +114,7 @@ public sealed class TEditorFresh
     }
 
     [Fact]
-    public void OccurrenceStart_NoSituation_OpensABlankDraft()
+    public void OccurrenceStart_NoSituation_OpensBlankDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -127,7 +127,7 @@ public sealed class TEditorFresh
     }
 
     [Fact]
-    public void QuotationStart_ExampleGiven_OpensAFreshDraftCitingIt()
+    public void QuotationStart_ExampleGiven_OpensDraftCitingExample()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -151,7 +151,7 @@ public sealed class TEditorFresh
     }
 
     [Fact]
-    public void FootnoteStart_SourceGiven_OpensAFreshDraftCitingIt()
+    public void FootnoteStart_SourceGiven_OpensDraftCitingSource()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

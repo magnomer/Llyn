@@ -44,7 +44,9 @@ The draft routes it.
 
 ### `QVideoOpenObserve`
 
-The chosen path goes raw to the file gate, which sends it as the row's location at once.
+The click asks the gate to open a file for the row, and the gate asks the desk's envoy.
+The envoy shows the window's file dialog, so the driver builds no dialog itself.
+The chosen path is sent as the row's location at once.
 A cancelled dialog hands null, and the gate does nothing.
 The field takes a web address as well.
 Nothing is copied into the workspace, because a Video is never kept.
@@ -114,8 +116,8 @@ The playing flag is bound both ways, since the screen's own switch changes it.
 
 ## Stamp
 
-Commit: `8c403d1df768`
+Commit: `9377e657b395`
 - `QMedia.cs` `321762919a3d50ca`
-- `QVideo.cs` `094441ca006e82be`
+- `QVideo.cs` `6ef7145f1303f642`
 - `QVideoFrame.cs` `035e9d17ffed88d5`
 - `QVideoItem.cs` `d8fff67a4d97dbce`

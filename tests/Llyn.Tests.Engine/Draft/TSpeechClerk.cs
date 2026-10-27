@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 public sealed class TSpeechClerk
 {
     [Fact]
-    public void SpeechParse_TypedText_AppendsItTrimmedOnce()
+    public void SpeechParse_TypedText_AppendsTrimmedOnce()
     {
         IReadOnlyList<LSpeechDraft> held = [TInterface.TSpeechCreate(5, "Noun")];
 
@@ -18,7 +18,7 @@ public sealed class TSpeechClerk
     }
 
     [Fact]
-    public void SpeechAdd_DeclinedName_KeepsItAsTyped()
+    public void SpeechAdd_DeclinedName_KeepsAsTyped()
     {
         LSpeechDraft added = Assert.Single(TInterface.TSpeechAdd([], " Noun ", static _ => null)!);
 
@@ -27,7 +27,7 @@ public sealed class TSpeechClerk
     }
 
     [Fact]
-    public void SpeechAdd_DeclaredName_CarriesTheCatalogValue()
+    public void SpeechAdd_DeclaredName_CarriesCatalogValue()
     {
         List<string> declared = [];
 
@@ -53,7 +53,7 @@ public sealed class TSpeechClerk
     }
 
     [Fact]
-    public void SpeechRemove_ShownName_DropsThatChipOnly()
+    public void SpeechRemove_ShownName_DropsChipOnly()
     {
         IReadOnlyList<LSpeechDraft> held = [TInterface.TSpeechCreate(5, "Noun"), TInterface.TSpeechCreate(0, "verb")];
 
@@ -61,7 +61,7 @@ public sealed class TSpeechClerk
     }
 
     [Fact]
-    public void SpeechSettle_DraftAgrees_KeepsTheTypedText()
+    public void SpeechSettle_DraftAgrees_KeepsTypedText()
     {
         IReadOnlyList<LSpeechDraft> held = [TInterface.TSpeechCreate(5, "Noun")];
         IReadOnlyList<LSpeechDraft> shown = [TInterface.TSpeechCreate(5, "Noun"), TInterface.TSpeechCreate(0, "ver")];
@@ -73,7 +73,7 @@ public sealed class TSpeechClerk
     }
 
     [Fact]
-    public void SpeechSettle_DraftChangedElsewhere_TakesItsCleanedPartsAndClearsTheText()
+    public void SpeechSettle_DraftChangedElsewhere_TakesCleanedParts()
     {
         IReadOnlyList<LSpeechDraft> shown =
         [
@@ -91,7 +91,7 @@ public sealed class TSpeechClerk
     }
 
     [Fact]
-    public void SpeechPendingRead_TypedText_NamesOnlyAnAppendedPart()
+    public void SpeechPendingRead_TypedText_NamesOnlyAppendedPart()
     {
         IReadOnlyList<LSpeechDraft> held = [TInterface.TSpeechCreate(0, "noun")];
 
@@ -101,7 +101,7 @@ public sealed class TSpeechClerk
     }
 
     [Fact]
-    public void SpeechChipRead_PendingLast_LeavesItOutOfTheChips()
+    public void SpeechChipRead_PendingLast_DropsFromChips()
     {
         IReadOnlyList<LSpeechDraft> shown = [TInterface.TSpeechCreate(0, "noun"), TInterface.TSpeechCreate(0, "verb")];
 
@@ -111,7 +111,7 @@ public sealed class TSpeechClerk
     }
 
     [Fact]
-    public void SpeechFind_TypedPart_OffersTheMatchingPartsMarkedWhenHeld()
+    public void SpeechFind_TypedPart_OffersMatchesMarkedWhenHeld()
     {
         IReadOnlyList<LSpeechValue> values =
         [

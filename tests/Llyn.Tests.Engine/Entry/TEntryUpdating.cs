@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TEntryUpdating
 {
     [Fact]
-    public void EntryUpdate_DraftNamesItsCards_KeepsThemRecordsChanges()
+    public void EntryUpdate_EditedMeanings_KeepsIdsAndRecordsDeltas()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

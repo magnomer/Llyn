@@ -7,7 +7,7 @@ namespace Llyn.Tests;
 public sealed class TSentence
 {
     [Fact]
-    public void SentenceSave_Frame_ReadsItBack()
+    public void SentenceSave_Frame_ReadsBack()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LSentenceArchive sentences = TInterface.TSentenceArchiveCreate(workspace.TWorkspaceDatabase);
@@ -30,7 +30,7 @@ public sealed class TSentence
     }
 
     [Fact]
-    public void SentenceSave_FrameWithNoExample_ReadsItBack()
+    public void SentenceSave_FrameWithNoExample_ReadsBack()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LSentenceArchive sentences = TInterface.TSentenceArchiveCreate(workspace.TWorkspaceDatabase);
@@ -49,7 +49,7 @@ public sealed class TSentence
     }
 
     [Fact]
-    public void SentenceFrameRead_SavedRows_OffersWhatTheLanguageHolds()
+    public void SentenceFrameRead_SavedRows_OffersOwnLanguageFrames()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LSentenceArchive sentences = TInterface.TSentenceArchiveCreate(workspace.TWorkspaceDatabase);
@@ -97,7 +97,7 @@ public sealed class TSentence
     }
 
     [Fact]
-    public void SentenceSave_ManyRows_KeepsTheOrderGiven()
+    public void SentenceSave_ManyRows_KeepsGivenOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LSentenceArchive sentences = TInterface.TSentenceArchiveCreate(workspace.TWorkspaceDatabase);
@@ -123,7 +123,7 @@ public sealed class TSentence
     }
 
     [Fact]
-    public void SentenceSave_RowNamedAgain_KeepsItsId()
+    public void SentenceSave_RowNamedAgain_KeepsId()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LSentenceArchive sentences = TInterface.TSentenceArchiveCreate(workspace.TWorkspaceDatabase);
@@ -176,7 +176,7 @@ public sealed class TSentence
     }
 
     [Fact]
-    public void SentenceSave_CollocationFrame_ReadsItBack()
+    public void SentenceSave_CollocationFrame_ReadsBack()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LSentenceArchive sentences = TInterface.TSentenceArchiveCreate(workspace.TWorkspaceDatabase);

@@ -11,7 +11,7 @@ namespace Llyn.Tests;
 public sealed class TCardReference
 {
     [Fact]
-    public void ReferenceFind_TypedWord_OffersTheStoredSourceSplitAroundTheWord()
+    public void ReferenceFind_TypedWord_OffersStoredSourceSplit()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -46,7 +46,7 @@ public sealed class TCardReference
     }
 
     [Fact]
-    public void ReferenceFind_BylineTheSentenceCites_OffersNothing()
+    public void ReferenceFind_BylineSentenceCites_OffersNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -68,7 +68,7 @@ public sealed class TCardReference
     }
 
     [Fact]
-    public void CitationRead_CitedAndUncitedSentence_HandsTheStoredTitle()
+    public void CitationRead_CitedAndUncitedSentence_HandsStoredTitle()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -85,7 +85,7 @@ public sealed class TCardReference
     }
 
     [Fact]
-    public void CaretReferenceFind_StoredTitle_OffersNothingAndKeepsTheLantern()
+    public void CaretReferenceFind_StoredTitle_OffersNoneKeepsLantern()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -126,7 +126,7 @@ public sealed class TCardReference
     }
 
     [Fact]
-    public void CitationSet_EngineFails_ShowsTheCreateFailureAndKeepsTheCitation()
+    public void CitationSet_EngineFails_ShowsCreateFailure()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -146,7 +146,7 @@ public sealed class TCardReference
     }
 
     [Fact]
-    public void ReferenceRead_EngineFails_ShowsTheLoadFailureAndAnswersNone()
+    public void ReferenceRead_EngineFails_ShowsLoadFailureAnswersNone()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -163,7 +163,7 @@ public sealed class TCardReference
     }
 
     [Fact]
-    public void ReferenceFind_EngineFails_ShowsTheFindFailureOnceAndOffersNone()
+    public void ReferenceFind_EngineFails_ShowsFindFailureOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -182,7 +182,7 @@ public sealed class TCardReference
     }
 
     [Fact]
-    public void CitationSet_TypedTitle_CitesTheResolvedSource()
+    public void CitationSet_TypedTitle_CitesResolvedSource()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

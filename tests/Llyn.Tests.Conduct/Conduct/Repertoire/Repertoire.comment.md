@@ -100,12 +100,12 @@ The flag-fill load answers the rows and their languages once the fill has run.
 
 ## Stamp
 
-Commit: `c37ca1837ded`
-- `TAtlas.cs` `da89b3998b94b6df`
-- `TOccurrence.cs` `06e681cc296996b8`
-- `TRepertoire.cs` `792e9564c50c838a`
-- `TRepertoireHold.cs` `93226cdecc7ff294`
-- `TRepertoirePortrait.cs` `fc919f1d67df0ecc`
-- `TRepertoireRow.cs` `fee32a749b0766b0`
-- `TRepertoireScribe.cs` `581b9bc5fcf7fdd6`
-- `TRepertoireVista.cs` `c805a883a8b90f6d`
+Commit: `9377e657b395`
+- `TAtlas.cs` `a0b3771bb28b1e40`
+- `TOccurrence.cs` `d462a0dcf96242c5`
+- `TRepertoire.cs` `c9c7b425aa8d4b38`
+- `TRepertoireHold.cs` `bfeae349d5f97956`
+- `TRepertoirePortrait.cs` `e75708d27edc1f11`
+- `TRepertoireRow.cs` `c804b5757408fced`
+- `TRepertoireScribe.cs` `a99c6658faffad5d`
+- `TRepertoireVista.cs` `2e974178891d25af`

@@ -30,7 +30,7 @@ public sealed class TFrequencyGauge
     }
 
     [Fact]
-    public void FrequencyGaugeResolve_BandedRow_BandsItsRank()
+    public void FrequencyGaugeResolve_BandedRow_BandsRank()
     {
         LFrequency[] rows =
         [
@@ -42,7 +42,7 @@ public sealed class TFrequencyGauge
     }
 
     [Fact]
-    public void FrequencyGaugeResolve_UnknownBandFirst_BandsTheNextRank()
+    public void FrequencyGaugeResolve_UnknownBandFirst_BandsNextRank()
     {
         LFrequency[] rows =
         [
@@ -73,7 +73,7 @@ public sealed class TFrequencyGauge
     [Theory]
     [InlineData(-1)]
     [InlineData(int.MinValue)]
-    public void FrequencyGaugeCreate_NegativeBand_SparesAFullRow(int band)
+    public void FrequencyGaugeCreate_NegativeBand_SparesFullRow(int band)
     {
         LFrequencyGauge gauge = TInterface.TFrequencyGaugeCreate(band, "src");
 
@@ -83,7 +83,7 @@ public sealed class TFrequencyGauge
     }
 
     [Fact]
-    public void FrequencyGaugeResolve_OnceInterval_FormatsTheInterval()
+    public void FrequencyGaugeResolve_OnceInterval_FormatsInterval()
     {
         LFrequency[] rows =
         [

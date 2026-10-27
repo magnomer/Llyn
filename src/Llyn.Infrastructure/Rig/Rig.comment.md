@@ -40,6 +40,7 @@ The engine runs the doctor and settings reads on the rig it receives.
 A folder that cannot be opened therefore fails in the engine, before the old rig is let go.
 
 The trail, the clock and the process id are read here.
+The one clock is also handed to the recording archive, so its waits follow the same clock.
 The root is the one place outside the rings that may touch them.
 The lease is built over the root but not opened here, so building a rig claims nothing.
 The engine opens it when it is built as leased.
@@ -65,5 +66,5 @@ Cambridge and some Wiktionary edge caches reject requests without a browser-like
 
 ## Stamp
 
-Commit: `52c21d68b4c4`
-- `LRigFactory.cs` `926ac783c4e30d09`
+Commit: `9377e657b395`
+- `LRigFactory.cs` `b3ba336bb19454b4`

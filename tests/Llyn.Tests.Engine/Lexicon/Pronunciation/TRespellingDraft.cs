@@ -199,7 +199,7 @@ public sealed class TRespellingDraft
     }
 
     [Fact]
-    public void WorkspaceRespellingUpdate_StaleAndEdited_RenewsOnlyStale()
+    public void WorkspaceRespellingUpdate_StaleAndEdited_RenewsStale()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         long entryId;
@@ -249,7 +249,7 @@ public sealed class TRespellingDraft
     }
 
     [Fact]
-    public void MarkRead_SwitchAndPack_SlashOnlyARespelledPhonemicReading()
+    public void MarkRead_SwitchAndPack_SlashesRespelledPhonemic()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();

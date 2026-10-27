@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TDisplaySound
 {
     [Fact]
-    public void DisplayGlyphRead_HanjaRow_AnswersTheRowReadyToShow()
+    public void DisplayGlyphRead_HanjaRow_AnswersRowReadyToShow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -29,7 +29,7 @@ public sealed class TDisplaySound
     }
 
     [Fact]
-    public void DisplayFontRead_ShownEntryOrNothingShown_ReadsThePackFontOfTheShownLanguage()
+    public void DisplayFontRead_ShownEntryOrBlank_ReadsPackFont()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -50,7 +50,7 @@ public sealed class TDisplaySound
     }
 
     [Fact]
-    public void DisplayGlyphRead_LanguageWithoutGlyphOrNothingShown_AnswersTheHiddenRow()
+    public void DisplayGlyphRead_NoGlyphOrBlank_AnswersHiddenRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -68,7 +68,7 @@ public sealed class TDisplaySound
     }
 
     [Fact]
-    public void DisplayGlyphOpen_LinkedCell_RaisesTheCharacterEntryForTheLibrary()
+    public void DisplayGlyphOpen_LinkedCell_RaisesCharacterEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -92,7 +92,7 @@ public sealed class TDisplaySound
     }
 
     [Fact]
-    public void DisplayTranscriptionRead_GlyphAndEmptyRows_ListsOnlyOtherFilledRows()
+    public void DisplayTranscriptionRead_GlyphAndEmpty_ListsFilledRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -109,7 +109,7 @@ public sealed class TDisplaySound
     }
 
     [Fact]
-    public void DisplayReflexRead_StoredEntry_AnswersWrittenRowsWithTheirAnchors()
+    public void DisplayReflexRead_StoredEntry_AnswersWrittenRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -137,7 +137,7 @@ public sealed class TDisplaySound
     }
 
     [Fact]
-    public void DisplayReflexResonate_ShownDraftWithoutRows_ReadsTheStoredRows()
+    public void DisplayReflexResonate_DraftWithoutRows_ReadsStoredRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

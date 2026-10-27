@@ -34,7 +34,7 @@ public sealed class TDeskChronicle
     }
 
     [Fact]
-    public void Undo_WorkspaceChanged_ShowsTheHoldFailureOnce()
+    public void Undo_WorkspaceChanged_ShowsHoldFailureOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -55,7 +55,7 @@ public sealed class TDeskChronicle
     }
 
     [Fact]
-    public void Redo_WorkspaceChanged_ShowsTheHoldFailureOnce()
+    public void Redo_WorkspaceChanged_ShowsHoldFailureOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

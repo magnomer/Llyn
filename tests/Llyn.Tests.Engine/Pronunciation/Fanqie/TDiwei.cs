@@ -7,7 +7,7 @@ namespace Llyn.Tests;
 public sealed class TDiwei
 {
     [Fact]
-    public void DiweiRankRead_RimeDivisionOrder()
+    public void DiweiRankRead_RimeDivisions_ReturnsDivisionOrder()
     {
         LHypothesis hypothesis = TInterfaceFanqie.THypothesisCreate(
             new Dictionary<string, string>(),
@@ -34,7 +34,7 @@ public sealed class TDiwei
     [Theory]
     [InlineData(false, "l", "爛")]
     [InlineData(true, "L", "蘭")]
-    public void DiweiSectionScan_TallyUnderHeading_KeepsOnlyTheShownSet(bool respelled, string text, string character)
+    public void DiweiSectionScan_TallyUnderHeading_KeepsOnlyShownSet(bool respelled, string text, string character)
     {
         LDiweiSection section = TInterfaceFanqie.TDiweiSectionScan(respelled, static _ => null);
 
@@ -49,7 +49,7 @@ public sealed class TDiwei
     }
 
     [Fact]
-    public void DiweiSectionScan_CharactersStoredOutOfCodepointOrder_ListsLineInCodepointOrder()
+    public void DiweiSectionScan_UnorderedCharacters_SortsByCodepoint()
     {
         LDiweiSection section = Assert.Single(TInterfaceFanqie.TDiweiSectionScan(
         [
@@ -64,7 +64,7 @@ public sealed class TDiwei
     }
 
     [Fact]
-    public void DiweiSectionScan_HeadingsTiedOnRank_ListsByHeadingCodepoint()
+    public void DiweiSectionScan_TiedHeadings_SortsByCodepoint()
     {
         IReadOnlyList<LDiweiSection> sections = TInterfaceFanqie.TDiweiSectionScan(
             [
@@ -79,7 +79,7 @@ public sealed class TDiwei
     }
 
     [Fact]
-    public void DiweiSectionScan_LinesTiedOnRank_ListsByLabelCodepointThenUnroundedFirst()
+    public void DiweiSectionScan_TiedLines_SortsByLabelThenRounding()
     {
         LDiweiSection section = Assert.Single(TInterfaceFanqie.TDiweiSectionScan(
         [
@@ -96,7 +96,7 @@ public sealed class TDiwei
     }
 
     [Fact]
-    public void TallyMarkScan_CharactersStoredOutOfCodepointOrder_ListsMarkInCodepointOrder()
+    public void TallyMarkScan_UnorderedCharacters_SortsByCodepoint()
     {
         IReadOnlyList<LTallyMark> marks = TInterfaceFanqie.TTallyMarkScan(
             new Dictionary<string, List<string>> { ["l"] = ["\U00020000", "\uF900", "林"] });
@@ -109,7 +109,7 @@ public sealed class TDiwei
     [InlineData(null, "一")]
     [InlineData("Division {1}", "Division I")]
     [InlineData("{0}등", "一등")]
-    public void DiweiSectionScan_DivisionHeading_LabelsItByTheLocalizedPattern(string? pattern, string label)
+    public void DiweiSectionScan_DivisionHeading_LabelsByPattern(string? pattern, string label)
     {
         LDiweiSection section = TInterfaceFanqie.TDiweiSectionScan(
             false, key => key == "Yunjing.Division" ? pattern : null);

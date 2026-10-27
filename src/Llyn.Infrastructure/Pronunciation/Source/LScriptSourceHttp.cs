@@ -20,12 +20,13 @@ public sealed class LScriptSourceHttp : LScriptSource
     private static readonly Regex LScriptSourceBreak = new(
         "<br\\s*/?>", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
-    private static readonly TimeSpan LScriptSourcePatience = TimeSpan.FromSeconds(2);
+    private readonly TimeSpan _lScriptSourcePatience;
 
-    public LScriptSourceHttp(HttpClient client)
+    public LScriptSourceHttp(HttpClient client, TimeSpan patience)
     {
         ArgumentNullException.ThrowIfNull(client);
         _lScriptSourceClient = client;
+        _lScriptSourcePatience = patience;
     }
 
     public async Task<(IReadOnlyList<LScriptImage> LScriptFound, bool LScriptReached)> LScriptSourceFind(
@@ -103,12 +104,12 @@ public sealed class LScriptSourceHttp : LScriptSource
         }
     }
 
-    private static IReadOnlyList<(string LScriptAddress, string LScriptCaption, string LScriptEpoch)> LScriptHitScan(
+    private IReadOnlyList<(string LScriptAddress, string LScriptCaption, string LScriptEpoch)> LScriptHitScan(
         LScriptStyle style, string body)
     {
         List<(string, string, string)> hits = [];
         foreach (Match match in Regex.Matches(
-            body, style.LScriptStylePattern, RegexOptions.CultureInvariant, LScriptSourcePatience))
+            body, style.LScriptStylePattern, RegexOptions.CultureInvariant, _lScriptSourcePatience))
         {
             string address = LScriptGroupRead(match, style.LScriptStyleImage);
             if (address.Length == 0)
@@ -124,14 +125,15 @@ public sealed class LScriptSourceHttp : LScriptSource
         return hits;
     }
 
-    private static string LScriptGlossRead(LScriptStyle style, string body)
+    private string LScriptGlossRead(LScriptStyle style, string body)
     {
         if (string.IsNullOrEmpty(style.LScriptStyleGloss))
         {
             return string.Empty;
         }
 
-        Match match = Regex.Match(body, style.LScriptStyleGloss, RegexOptions.CultureInvariant, LScriptSourcePatience);
+        Match match = Regex.Match(
+            body, style.LScriptStyleGloss, RegexOptions.CultureInvariant, _lScriptSourcePatience);
         return match.Success ? LScriptTextNormalize(LScriptGroupRead(match, 1)) : string.Empty;
     }
 

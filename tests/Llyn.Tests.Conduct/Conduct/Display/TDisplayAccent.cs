@@ -13,7 +13,7 @@ namespace Llyn.Tests;
 public sealed class TDisplayAccent
 {
     [Fact]
-    public void DisplayAccentRead_ShownEntry_AnswersTheBlockReadyToShow()
+    public void DisplayAccentRead_ShownEntry_AnswersBlockReadyToShow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -36,7 +36,7 @@ public sealed class TDisplayAccent
     }
 
     [Fact]
-    public void DisplayAccentRead_RespellingShown_PrintsEachReadingRespelled()
+    public void DisplayAccentRead_RespellingShown_PrintsRespelledText()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -56,7 +56,7 @@ public sealed class TDisplayAccent
     }
 
     [Fact]
-    public void DisplayAccentRead_NothingShown_AnswersTheMuteBlock()
+    public void DisplayAccentRead_NothingShown_AnswersMuteBlock()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -72,7 +72,7 @@ public sealed class TDisplayAccent
     }
 
     [Fact]
-    public async Task DisplayAccentLoad_FlaggedPack_StoresTheVarietyFlagsAndAnswersTheBlock()
+    public async Task DisplayAccentLoad_FlaggedPack_StoresFlagsAndAnswers()
     {
         using TLanguageFixture pack = TDisplayPackCreate();
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -100,7 +100,7 @@ public sealed class TDisplayAccent
     }
 
     [Fact]
-    public async Task DisplayAccentLoad_AnotherEntryShownMeanwhile_AnswersNothing()
+    public async Task DisplayAccentLoad_EntrySwitched_AnswersNothing()
     {
         using TLanguageFixture pack = TDisplayPackCreate();
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -121,7 +121,7 @@ public sealed class TDisplayAccent
     }
 
     [Fact]
-    public async Task DisplayAccentLoad_StoreFails_ShowsTheLoadFailureOnce()
+    public async Task DisplayAccentLoad_StoreFails_ShowsLoadFailureOnce()
     {
         using TLanguageFixture pack = TDisplayPackCreate();
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

@@ -11,7 +11,7 @@ public sealed class TCardMention
     private const string TMentionText = "she knelt to kindle the damp logs";
 
     [Fact]
-    public void SenseSet_SelectionInsideLinkedMention_OffersItsMeaningsAndNarrowsItToTheSense()
+    public void SenseSet_LinkedMentionSelection_NarrowsToSense()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -68,7 +68,7 @@ public sealed class TCardMention
     }
 
     [Fact]
-    public void MentionRead_LinkedAndSilentMentions_NamesTheHeadwordAndKeysTheSilentChip()
+    public void MentionRead_LinkedAndSilentMentions_KeysSilentChip()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -92,7 +92,7 @@ public sealed class TCardMention
     }
 
     [Fact]
-    public void SentenceMentionRead_CollocationSentenceSharingTheMeaningLinkId_KeepsEachLineItsOwnLabels()
+    public void SentenceMentionRead_SharedLinkId_KeepsLabelsApart()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -144,7 +144,7 @@ public sealed class TCardMention
     }
 
     [Fact]
-    public void SentenceMentionRead_SentenceInsertedBefore_KeepsEachLabelOnItsOwnLine()
+    public void SentenceMentionRead_InsertedBefore_KeepsLabelOnOwnLine()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -162,7 +162,7 @@ public sealed class TCardMention
     }
 
     [Fact]
-    public void MentionRead_EngineFails_ShowsTheFindFailureAndKeysEverySentenceEmpty()
+    public void MentionRead_EngineFails_ShowsFindFailureKeysAllEmpty()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -209,7 +209,7 @@ public sealed class TCardMention
     }
 
     [Fact]
-    public void SentenceMentionRead_NullLines_ShowsTheFindFailure()
+    public void SentenceMentionRead_NullLines_ShowsFindFailure()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

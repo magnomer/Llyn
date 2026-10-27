@@ -26,7 +26,7 @@ public sealed class TLookup
     }
 
     [Fact]
-    public async Task LookupStart_UntaggedReadingTwoVarieties_ReturnsOnePerVariety()
+    public async Task LookupStart_UntaggedTwoVarieties_ReturnsOnePerVariety()
     {
         LSeeker lookup = TInterface.TLookupCreate(
             [TPronunciationHelper.TSourceStubCreate(TInterface.TReadingCreate(string.Empty, "təˈmɑːtəʊ"))],
@@ -42,7 +42,7 @@ public sealed class TLookup
     }
 
     [Fact]
-    public async Task LookupStart_UntaggedReadingNoVarieties_ReturnsOneUntagged()
+    public async Task LookupStart_UntaggedNoVarieties_ReturnsOneUntagged()
     {
         LSeeker lookup = TInterface.TLookupCreate(
             [TPronunciationHelper.TSourceStubCreate(TInterface.TReadingCreate(string.Empty, "toˈmate"))]);
@@ -75,7 +75,7 @@ public sealed class TLookup
     }
 
     [Fact]
-    public async Task LookupStart_EmptyAnswerWithVarieties_ReturnsOneUntaggedNull()
+    public async Task LookupStart_EmptyAnswerVarieties_ReturnsUntaggedNull()
     {
         LSeeker lookup = TInterface.TLookupCreate(
             [TPronunciationHelper.TSourceStubCreate()],

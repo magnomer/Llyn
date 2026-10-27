@@ -89,9 +89,9 @@ That is what stops SQLite reusing a deleted id.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
-- `TSchemaMigration.cs` `59dc0c10918ea99c`
-- `TSchemaMigrationReference.cs` `720f13444005e50b`
-- `TSchemaMigrationReflex.cs` `afa08e2720b02717`
-- `TSchemaMigrationVersion.cs` `4657fd7cc52fb9f6`
-- `TSchemaRealm.cs` `c8fcae2f1ea45a3b`
+Commit: `9377e657b395`
+- `TSchemaMigration.cs` `30802ec724580e8b`
+- `TSchemaMigrationReference.cs` `a84342cc1a2c8c37`
+- `TSchemaMigrationReflex.cs` `b71e1e080d23719d`
+- `TSchemaMigrationVersion.cs` `e2fbcbd6d696975f`
+- `TSchemaRealm.cs` `571a08cb66aea87d`

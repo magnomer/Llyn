@@ -12,7 +12,7 @@ namespace Llyn.Tests;
 public sealed class TEditor
 {
     [Fact]
-    public void EntryOpen_StoredEntry_HoldsItOnTheDesk()
+    public void EntryOpen_StoredEntry_HoldsOnDesk()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -31,7 +31,7 @@ public sealed class TEditor
     }
 
     [Fact]
-    public void EntryOpen_AnyDraft_AnnouncesTheShapedContent()
+    public void EntryOpen_AnyDraft_AnnouncesShapedContent()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -62,7 +62,7 @@ public sealed class TEditor
     }
 
     [Fact]
-    public void EntrySave_StoredEntry_ReopensIt()
+    public void EntrySave_StoredEntry_ReopensEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -116,7 +116,7 @@ public sealed class TEditor
     }
 
     [Fact]
-    public void EntryUndo_StoredEntry_DropsTheTyping()
+    public void EntryUndo_StoredEntry_DropsTyping()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -132,7 +132,7 @@ public sealed class TEditor
     }
 
     [Fact]
-    public void DeskVarietySet_PrimaryReading_TagsWhateverPrimaryTheDraftHolds()
+    public void DeskVarietySet_PrimaryReading_TagsHeldPrimary()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -181,7 +181,7 @@ public sealed class TEditor
     }
 
     [Fact]
-    public void EditorWalk_OpenedEntry_OpensWithTheHeadwordAndStackRowsThenTheCards()
+    public void EditorWalk_OpenedEntry_ListsFixedRowsThenCards()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

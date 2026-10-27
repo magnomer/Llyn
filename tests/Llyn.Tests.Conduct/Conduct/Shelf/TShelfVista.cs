@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TShelfVista
 {
     [Fact]
-    public async Task ShelfRollLoad_StoredSource_AnswersTheRollAndTheLanguagesAfterTheFill()
+    public async Task ShelfRollLoad_StoredSource_AnswersRollAndLanguages()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -28,7 +28,7 @@ public sealed class TShelfVista
     }
 
     [Fact]
-    public void ShelfVistaRestore_QueriesHeld_CarriesThemIntoTheFreshVistas()
+    public void ShelfVistaRestore_QueriesHeld_CarriesIntoVistas()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -46,7 +46,7 @@ public sealed class TShelfVista
     }
 
     [Fact]
-    public void ShelfVistaRestore_ReferenceNoticeAfterASecondRestore_RaisesTheShelfOnceThroughTheMarshal()
+    public void ShelfVistaRestore_SecondRestore_RaisesShelfOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -69,7 +69,7 @@ public sealed class TShelfVista
     }
 
     [Fact]
-    public void ShelfCreate_ReferenceNoticeWithoutARestore_RaisesTheShelfOnceThroughTheMarshal()
+    public void ShelfCreate_NoRestore_RaisesShelfOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -91,7 +91,7 @@ public sealed class TShelfVista
     }
 
     [Fact]
-    public void ShelfVistaRestore_EntryNotice_RaisesTheShelfRowsForTheirTallies()
+    public void ShelfVistaRestore_EntryNotice_RaisesRowsForTallies()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -107,7 +107,7 @@ public sealed class TShelfVista
     }
 
     [Fact]
-    public void ShelfVistaRestore_EntryNotice_RaisesTheFootnoteRowsThroughTheMarshal()
+    public void ShelfVistaRestore_EntryNotice_RaisesFootnoteRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -126,7 +126,7 @@ public sealed class TShelfVista
     }
 
     [Fact]
-    public void ShelfVistaRestore_SettingsNotice_RaisesTheShelfRowsThroughTheMarshal()
+    public void ShelfVistaRestore_SettingsNotice_RaisesShelfRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -143,7 +143,7 @@ public sealed class TShelfVista
     }
 
     [Fact]
-    public void ShelfVistaRestore_WorkspaceNotice_ClosesTheChosenReferenceThroughTheMarshal()
+    public void ShelfVistaRestore_WorkspaceNotice_ClosesReference()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -162,7 +162,7 @@ public sealed class TShelfVista
     }
 
     [Fact]
-    public void AtelierClose_EntryEditorOpen_CancelsTheEditorDeskAndStopsPlayback()
+    public void AtelierClose_EntryEditorOpen_CancelsEditorDesk()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -203,7 +203,7 @@ public sealed class TShelfVista
     }
 
     [Fact]
-    public void ShelfEntryResonate_EntrySideClosed_ReshowsTheChosenSource()
+    public void ShelfEntryResonate_EntrySideClosed_ReshowsChosenSource()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -95,7 +95,7 @@ public sealed class TMention
     }
 
     [Fact]
-    public void EntryDelete_MentionedEntry_DropsTheMention()
+    public void EntryDelete_MentionedEntry_DropsMention()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LExampleArchive examples = TInterface.TExampleArchiveCreate(workspace.TWorkspaceDatabase);
@@ -114,7 +114,7 @@ public sealed class TMention
     }
 
     [Fact]
-    public void MeaningDelete_MentionedSense_KeepsTheEntry()
+    public void MeaningDelete_MentionedSense_ClearsSenseOnly()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LExampleArchive examples = TInterface.TExampleArchiveCreate(workspace.TWorkspaceDatabase);
@@ -136,7 +136,7 @@ public sealed class TMention
     }
 
     [Fact]
-    public void ExampleTextUpdate_ShorterText_DropsOnlyTheSpanPastTheEnd()
+    public void ExampleTextUpdate_ShorterText_DropsOnlySpanPastEnd()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LExampleArchive examples = TInterface.TExampleArchiveCreate(workspace.TWorkspaceDatabase);
@@ -204,7 +204,7 @@ public sealed class TMention
         return (entry.LEntryId, meaning.LMeaningId);
     }
     [Fact]
-    public void MentionDraftResolve_NegativeId_KeepsTheSpan()
+    public void MentionDraftResolve_NegativeId_KeepsSpan()
     {
         LMention resolved =
             TInterfaceMentionSpan.TMentionDraftResolve(TInterfaceMentionSpan.TMentionDraftCreate(-3, 12, 4, 7, 9));

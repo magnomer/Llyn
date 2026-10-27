@@ -59,7 +59,7 @@ public sealed class TEstablishment
     [InlineData(1024L * 1024 - 1, false, 1024d)]
     [InlineData(1024L * 1024, true, 1d)]
     [InlineData(5L * 1024 * 1024 / 2, true, 2.5d)]
-    public void EstablishmentAmount_AnySize_CountsMegabytesFromOneAndKilobytesRoundedUp(
+    public void EstablishmentAmount_AnySize_CountsMegabytesAndKilobytes(
         long size, bool large, double amount)
     {
         LEstablishment establishment = TInterfaceEngineWorkspace.TEstablishmentCreate(0, 1, size);

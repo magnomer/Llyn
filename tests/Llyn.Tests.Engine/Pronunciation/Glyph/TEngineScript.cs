@@ -77,7 +77,7 @@ public sealed class TEngineScript
     }
 
     [Fact]
-    public async Task ScriptRead_FetchedOutOfEpochOrder_ListsInDeclaredEpochOrder()
+    public async Task ScriptRead_UnorderedEpochs_ListsDeclaredEpochOrder()
     {
         const string epochPack =
             """
@@ -111,7 +111,7 @@ public sealed class TEngineScript
     }
 
     [Fact]
-    public void ScriptImageSort_StoredOutOfPackOrder_ListsByCharacterStyleThenEpoch()
+    public void ScriptImageSort_ShuffledImages_OrdersByStyleThenEpoch()
     {
         LEpoch[] epochs = [TInterface.TEpochCreate("early", "Early"), TInterface.TEpochCreate("late", "Late")];
         IReadOnlyList<LScriptStyle> styles =
@@ -139,7 +139,7 @@ public sealed class TEngineScript
     }
 
     [Fact]
-    public void ScriptImageSort_CharacterOutsideHeadword_FollowsByCodePointThenStoredId()
+    public void ScriptImageSort_NonHeadwordCharacter_OrdersByCodePoint()
     {
         IReadOnlyList<LScriptStyle> styles = [TInterface.TScriptStyleCreate("seal")];
         IReadOnlyList<LScriptImage> images =
@@ -156,7 +156,7 @@ public sealed class TEngineScript
     }
 
     [Fact]
-    public async Task ScriptStart_ImageUnreachable_SkipsThatFormAlone()
+    public async Task ScriptStart_ImageUnreachable_SkipsFormAlone()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineScriptPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -223,7 +223,7 @@ public sealed class TEngineScript
     }
 
     [Fact]
-    public async Task ScriptRebuild_ImagesStored_DropsThemAndFetchesAgain()
+    public async Task ScriptRebuild_ImagesStored_DropsAndFetchesAgain()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineScriptPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -245,7 +245,7 @@ public sealed class TEngineScript
     }
 
     [Fact]
-    public async Task ScriptRebuild_SourcesOnceSilent_AsksThemAgain()
+    public async Task ScriptRebuild_SourcesOnceSilent_AsksAgain()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineScriptPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -281,7 +281,7 @@ public sealed class TEngineScript
     }
 
     [Fact]
-    public void ScriptStart_LanguageWithoutStyles_ReadsEmptyWithoutFetch()
+    public void ScriptStart_LanguageWithoutStyles_SkipsFetch()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("{}");
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

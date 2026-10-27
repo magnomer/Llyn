@@ -65,7 +65,7 @@ public sealed class TMarkupFormatting
     }
 
     [Fact]
-    public void MarkupFormat_ControlCharacter_DropsIt()
+    public void MarkupFormat_ControlCharacter_DropsCharacter()
     {
         LMarkupEntry entry = TInterface.TMarkupEntryCreate("em\u0001ber", "en", note: "a\fnote");
 

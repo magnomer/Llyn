@@ -92,7 +92,7 @@ public sealed class TForay
     }
 
     [Fact]
-    public async Task ForayRecordingPrepare_RemoteAddress_AnswersTheCachedFile()
+    public async Task ForayRecordingPrepare_RemoteAddress_ReturnsCachedFile()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart(
@@ -114,7 +114,7 @@ public sealed class TForay
     }
 
     [Fact]
-    public async Task ForayRecordingPrepare_HostRefuses_PassesTheVaultFaultUp()
+    public async Task ForayRecordingPrepare_HostRefuses_ThrowsVaultFault()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart(
@@ -126,7 +126,7 @@ public sealed class TForay
     }
 
     [Fact]
-    public async Task ForayRecordingSave_HostRefuses_PassesTheVaultFaultUp()
+    public async Task ForayRecordingSave_HostRefuses_ThrowsVaultFault()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart(
@@ -138,7 +138,7 @@ public sealed class TForay
     }
 
     [Fact]
-    public async Task ForayRecordingSave_AudioFolderBlocked_PassesTheVaultFaultUp()
+    public async Task ForayRecordingSave_AudioFolderBlocked_ThrowsVaultFault()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         File.WriteAllText(Path.Combine(workspace.TWorkspaceFolder, "audio"), string.Empty);
@@ -151,7 +151,7 @@ public sealed class TForay
     }
 
     [Fact]
-    public async Task ForayRecordingPrepare_CacheFolderBlocked_PassesTheVaultFaultUp()
+    public async Task ForayRecordingPrepare_CacheBlocked_ThrowsVaultFault()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         File.WriteAllText(Path.Combine(workspace.TWorkspaceFolder, "temp"), string.Empty);
@@ -205,7 +205,7 @@ public sealed class TForay
     }
 
     [Fact]
-    public void RecordingStart_HeadwordPadded_SearchesTheTrimmedWord()
+    public void RecordingStart_HeadwordPadded_SearchesTrimmedWord()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TForayPack);
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
@@ -242,7 +242,7 @@ public sealed class TForay
     }
 
     [Fact]
-    public void TranscriptionStart_HeadwordPadded_SearchesTheTrimmedWord()
+    public void TranscriptionStart_HeadwordPadded_SearchesTrimmedWord()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TForayPack);
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();

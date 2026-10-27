@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TLecternNote
 {
     [Fact]
-    public void LecternNoteDraw_EveryBlockKind_DrawsItsConsoleLook()
+    public void LecternNoteDraw_AllBlockKinds_DrawsConsoleLook()
     {
         const string note = "# Title\n\nPlain **bold** and *soft* with `tick`.\n\n## Smaller\n\n- one\n- two\n\n"
             + "> quoted words\n\n```\ncode  line\n    indented\n```\n\n---\n\nLast words.";
@@ -73,7 +73,7 @@ public sealed class TLecternNote
     }
 
     [Fact]
-    public void LecternNoteOpen_EnterOnTheLink_OpensTheAddress()
+    public void LecternNoteOpen_EnterOnLink_OpensAddress()
     {
         List<string> opened = [];
         TLecternCard.TLecternCardRun(
@@ -99,7 +99,7 @@ public sealed class TLecternNote
     }
 
     [Fact]
-    public void LecternNoteOpen_RefusedScheme_ShowsPlainTextAndOpensNothing()
+    public void LecternNoteOpen_RefusedScheme_ShowsPlainOpensNothing()
     {
         List<string> opened = [];
         TLecternCard.TLecternCardRun(
@@ -124,7 +124,7 @@ public sealed class TLecternNote
     }
 
     [Fact]
-    public void LecternNoteOpen_DrawnItem_OpensTheAddressReadAtDraw()
+    public void LecternNoteOpen_DrawnItem_OpensAddressReadAtDraw()
     {
         List<string> opened = [];
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

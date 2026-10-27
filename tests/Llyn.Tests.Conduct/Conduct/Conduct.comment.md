@@ -38,11 +38,11 @@ Keyboard selection tests distinguish marking rows from loading entries and savin
 
 ## Stamp
 
-Commit: `c37ca1837ded`
+Commit: `9377e657b395`
 - `TLantern.cs` `a0a4f67dca4a3f12`
 - `TMarkdown.cs` `299d86e17a73ffc2`
-- `TPhonology.cs` `aa517d06433c9366`
-- `TPlayback.cs` `1c4ee29bf84cdede`
-- `TStateValue.cs` `f7358dccbc2fdd45`
-- `TUsage.cs` `670e2af1d20f3d1a`
-- `TWing.cs` `b7a0c1a0b236eb6b`
+- `TPhonology.cs` `0335a4ec45a4a4cb`
+- `TPlayback.cs` `e1ad1bd3d853df5f`
+- `TStateValue.cs` `d7577eed0ca7ed73`
+- `TUsage.cs` `31bc4f564f4de317`
+- `TWing.cs` `efd927e47c71959f`

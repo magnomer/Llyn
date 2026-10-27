@@ -7,7 +7,7 @@ namespace Llyn.Tests;
 public sealed class TEngineFanqieRank
 {
     [Fact]
-    public async Task FanqieSet_HeldRank_StoresTheResolvedRank()
+    public async Task FanqieSet_HeldRank_StoresResolvedRank()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineFanqieSource.TEngineWikiPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -35,7 +35,7 @@ public sealed class TEngineFanqieRank
     }
 
     [Fact]
-    public async Task FanqieRead_RanksSetOutOfStoredOrder_ListsRankedRowsFirstInRankOrder()
+    public async Task FanqieRead_ReorderedRanks_ListsRankedRowsFirst()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineFanqieSource.TEngineWikiPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

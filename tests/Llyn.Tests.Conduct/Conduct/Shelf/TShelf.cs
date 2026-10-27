@@ -41,7 +41,7 @@ public sealed class TShelf
     }
 
     [Fact]
-    public void DiptychEntryCreate_SourceChosen_OpensAnEntryCitingIt()
+    public void DiptychEntryCreate_SourceChosen_OpensEntryCitingSource()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -63,7 +63,7 @@ public sealed class TShelf
     }
 
     [Fact]
-    public void DiptychEntryCreate_NothingChosen_OpensASourceDraft()
+    public void DiptychEntryCreate_NothingChosen_OpensSourceDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -110,7 +110,7 @@ public sealed class TShelf
     }
 
     [Fact]
-    public void DiptychEntryDelete_EntrySide_LeavesTheSource()
+    public void DiptychEntryDelete_EntrySide_LeavesSource()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -172,7 +172,7 @@ public sealed class TShelf
     }
 
     [Fact]
-    public void ApertureQuerySet_UnmatchedText_EmptiesTheShelfAndClosesTheSource()
+    public void ApertureQuerySet_UnmatchedText_ClosesSource()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -189,7 +189,7 @@ public sealed class TShelf
     }
 
     [Fact]
-    public void ApertureFilterSet_HiddenLanguage_MarksTheShelfFiltered()
+    public void ApertureFilterSet_HiddenLanguage_MarksShelfFiltered()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -207,7 +207,7 @@ public sealed class TShelf
     }
 
     [Fact]
-    public void ShelfScribeToggle_SourceSideOff_DropsTheSourceDraft()
+    public void ShelfScribeToggle_SourceSideOff_DropsSourceDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -230,7 +230,7 @@ public sealed class TShelf
     }
 
     [Fact]
-    public async Task ShelfPortraitExport_EntryOnDisplay_WritesTheEntry()
+    public async Task ShelfPortraitExport_EntryOnDisplay_WritesEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

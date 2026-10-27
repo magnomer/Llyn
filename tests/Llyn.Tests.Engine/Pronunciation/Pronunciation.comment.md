@@ -17,5 +17,5 @@ The engine draws a Mandarin contour, and draws none for English or a blank langu
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `TContour.cs` `a56cfee488b20e3b`
+Commit: `9377e657b395`
+- `TContour.cs` `275c58ccfc06dc54`

@@ -59,7 +59,7 @@ public sealed class TMeaning
     }
 
     [Fact]
-    public void MeaningRead_ReadyRows_WalksSubSensesUnderTheirParentInReadingOrder()
+    public void MeaningRead_ReadyRows_WalksSubSensesUnderParent()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -85,7 +85,7 @@ public sealed class TMeaning
     }
 
     [Fact]
-    public void MeaningClerkSort_NestedMeanings_ReadsDepthFirstByPosition()
+    public void MeaningClerkSort_NestedMeanings_ReadsDepthFirst()
     {
         LStateValue blank = LStateValue.LStateValueUnspecified;
 
@@ -102,7 +102,7 @@ public sealed class TMeaning
     }
 
     [Fact]
-    public void MeaningClerkSort_BlankName_TakesTheUnknownText()
+    public void MeaningClerkSort_BlankName_TakesUnknownText()
     {
         LStateValue blank = LStateValue.LStateValueUnspecified;
 
@@ -113,7 +113,7 @@ public sealed class TMeaning
     }
 
     [Fact]
-    public void MeaningName_TitleOrDefinition_PrefersTheTitle()
+    public void MeaningName_TitleOrDefinition_PrefersTitle()
     {
         LStateValue blank = LStateValue.LStateValueUnspecified;
 

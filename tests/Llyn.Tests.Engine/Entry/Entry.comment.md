@@ -172,11 +172,11 @@ An empty query lists everything, ordered by headword.
 
 ## Stamp
 
-Commit: `c37ca1837ded`
-- `TCollocationSense.cs` `1d440d218e98f1be`
+Commit: `9377e657b395`
+- `TCollocationSense.cs` `3b07875a5a3cc53a`
 - `TEntryDraft.cs` `e7076b12c7cffecf`
-- `TEntryLoading.cs` `312bb2445f4a871e`
-- `TEntryQueryArchive.cs` `b3d51eb9f87237ac`
+- `TEntryLoading.cs` `ec3766d4e8655267`
+- `TEntryQueryArchive.cs` `424c68b2f7177a79`
 - `TEntrySaving.cs` `67390bade7cf6ab7`
 - `TEntryStore.cs` `de0802e0a187965c`
-- `TEntryUpdating.cs` `5f0f1bfe8d654d3e`
+- `TEntryUpdating.cs` `c9b8ebd520115104`

@@ -115,13 +115,13 @@ A rime page sections its tallies by the articulatory place of the initial, so ea
 
 ## Stamp
 
-Commit: `c37ca1837ded`
-- `TAnatomy.cs` `1e0a9c9e99f93f07`
-- `TAnchor.cs` `b0ad444f9ea39ae7`
-- `TDescent.cs` `870bf17fcb401a80`
-- `TEngineReflex.cs` `a2e632174bd7534c`
-- `TEngineReflexClip.cs` `74eae8d42102ef05`
+Commit: `9377e657b395`
+- `TAnatomy.cs` `022343afbcf0429b`
+- `TAnchor.cs` `38e0e5c95c3816c9`
+- `TDescent.cs` `82197dd5afeadeef`
+- `TEngineReflex.cs` `3b8519d8693c1fe9`
+- `TEngineReflexClip.cs` `2e5e237f5f6e5961`
 - `TEngineReflexSource.cs` `657b16091b41c7c8`
-- `TEngineReflexStore.cs` `a71d60a9b25ed165`
+- `TEngineReflexStore.cs` `975f84daab05c265`
 - `TReflexObserver.cs` `e009b72135411401`
-- `TTally.cs` `a2a1ba18f1db07b4`
+- `TTally.cs` `b23674adda36cea4`

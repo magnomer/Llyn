@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 public sealed class TIdentity
 {
     [Fact]
-    public void RequestApply_TwoNewSentencesSharingText_MintsTwoIdsAndCommitStoresTwoRows()
+    public void RequestApply_SameTextSentences_MintsDistinctIds()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -40,7 +40,7 @@ public sealed class TIdentity
     }
 
     [Fact]
-    public void RequestApply_SentencePickingStoredExample_KeepsIdAndCommitReusesRow()
+    public void RequestApply_StoredExampleSentence_KeepsExampleId()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -72,7 +72,7 @@ public sealed class TIdentity
     }
 
     [Fact]
-    public void DraftCommit_EveryNegativeIdHeld_AppearsInTheOutcomeMap()
+    public void DraftCommit_NegativeIdsHeld_FillsOutcomeMap()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -148,7 +148,7 @@ public sealed class TIdentity
     }
 
     [Fact]
-    public void RequestApply_WrittenNameStoredAlready_PicksTheStoredRow()
+    public void RequestApply_WrittenNameStoredAlready_PicksStoredRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

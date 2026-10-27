@@ -30,6 +30,7 @@ public static class LRigFactory
 
         LDatabase database = new(root);
         LTheme theme = LThemeLoader.LThemeLoaderLoad();
+        LClockSystem clock = new();
 
         return new LRig(
             database,
@@ -46,7 +47,7 @@ public static class LRigFactory
             LRigFactorySound.LRigSoundBuild(database),
             LRigFactorySentence.LRigSentenceBuild(database),
             LRigFactoryContext.LRigContextBuild(database),
-            LRigFactorySource.LRigSourceBuild(client, root),
+            LRigFactorySource.LRigSourceBuild(client, root, clock),
             LRigFactoryRehearsal.LRigRehearsalBuild(database, root),
             new LOutpostHttp(),
             new LLanguageLoader(root, client),
@@ -57,7 +58,7 @@ public static class LRigFactory
             usher,
             phonograph,
             new LTrailSystem(),
-            new LClockSystem(),
+            clock,
             new LLeaseFile(root),
             Environment.ProcessId,
             root);

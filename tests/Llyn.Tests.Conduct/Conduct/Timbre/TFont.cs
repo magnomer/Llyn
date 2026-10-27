@@ -11,7 +11,7 @@ namespace Llyn.Tests;
 public sealed class TFont
 {
     [Fact]
-    public void FontRead_LanguageAndRole_ReadsThePortFont()
+    public void FontRead_LanguageAndRole_ReadsPortFont()
     {
         List<(string, LFontRole)> asked = [];
         LSettingsPort settings = TEngineFake.TEngineCreate<LSettingsPort>(new()
@@ -44,7 +44,7 @@ public sealed class TFont
     }
 
     [Fact]
-    public void FontRead_BlankLanguage_PassesItOnAndMapsTheEmptyFont()
+    public void FontRead_BlankLanguage_PassesOnMapsEmptyFont()
     {
         List<string> asked = [];
         LSettingsPort settings = TEngineFake.TEngineCreate<LSettingsPort>(new()
@@ -63,7 +63,7 @@ public sealed class TFont
     }
 
     [Fact]
-    public void FontRead_RefusedRead_RaisesTheFailure()
+    public void FontRead_RefusedRead_ThrowsFailure()
     {
         LSettingsPort settings = TEngineFake.TEngineCreate<LSettingsPort>(new()
         {
@@ -77,7 +77,7 @@ public sealed class TFont
     }
 
     [Fact]
-    public void FontRead_SlantInAnyCaseOrUnknown_ArrivesLowerCaseOrBlank()
+    public void FontRead_SlantAnyCaseOrUnknown_MapsToSlantOrTheme()
     {
         LSettingsPort settings = TEngineFake.TEngineCreate<LSettingsPort>(new()
         {
@@ -96,7 +96,7 @@ public sealed class TFont
     }
 
     [Fact]
-    public void FontRead_EveryEngineRole_CastsToTheSameNamedMirror()
+    public void FontRead_AllEngineRoles_CastsToSameNamedMirror()
     {
         LFontRole[] roles = Enum.GetValues<LFontRole>();
 

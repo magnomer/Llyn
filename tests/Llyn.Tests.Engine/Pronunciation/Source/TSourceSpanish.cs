@@ -131,7 +131,7 @@ public sealed class TSourceSpanish
     ];
 
     [Fact]
-    public async Task SourceFind_SpanishTable_ReturnsSixtyFourCellsKeyedByCode()
+    public async Task SourceFind_SpanishTable_ReturnsSixtyFourKeyedCells()
     {
         LParadigm verb = Assert.Single(
             TInterface.TSpeechPackLoad("Spanish").LSpeechPackParadigms, row => row.LParadigmSpeechCode == 6);
@@ -146,7 +146,7 @@ public sealed class TSourceSpanish
     }
 
     [Fact]
-    public async Task SourceFind_VosSecond_KeepsTheTuForm()
+    public async Task SourceFind_VosSecond_KeepsTuForm()
     {
         IReadOnlyList<LReading> readings = await TSourceSpanishRead();
 

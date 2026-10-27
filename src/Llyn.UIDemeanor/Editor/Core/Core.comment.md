@@ -43,6 +43,9 @@ They cross to the next row only past the last part.
 Crossing upward lands on the last part of the card above, so the light retraces its steps.
 The page keys, Control with Home or End, the card jumps and a section pick all land on a header.
 Enter folds only while the header is the lit part.
+Each picture and video row of a card is a part after the chip fields.
+An adder row ends the card.
+The media rows are drawn and keyed by `BPlacard`, through `BImage` and `BVideo`.
 Moving the light, the part or the section closes the open chip field and the marker's.
 So no field outlives its light.
 A printable key opens the lit chip field and types the key, as the headword does.
@@ -122,6 +125,8 @@ So it lies over the rows under it.
 A language list hangs from the pill, and the marker's lists hang from the marker row.
 The header and the definition row are drawn by `BCard`, and a collocation adds its linked meanings row.
 The chip fields of an unfolded card follow, one `BInlet` after another.
+The picture rows, the video rows and an adder row follow them, drawn by `BPlacard`.
+A menu a media row opens is drawn last, with the other lists.
 A section that adds cards ends with a `+` row that names the add key.
 The chip fields and the linked meanings wrap their pieces through `BEditorSightDivide`, which cuts a run of cells into lines.
 The field of the lit part takes the lit tone as one bar, and a halted tenure mutes them.
@@ -170,9 +175,9 @@ Drawing returns nothing when the tab is not shown.
 
 ## Stamp
 
-Commit: `c37ca1837ded`
-- `BEditor.cs` `01b4aa913597157d`
+Commit: `9377e657b395`
+- `BEditor.cs` `5da1102c7b77cbbf`
 - `BEditorChronicle.cs` `9419b865bc578853`
-- `BEditorSight.cs` `dfb79aa8c53e6ef5`
+- `BEditorSight.cs` `9afcf326a15001f0`
 - `BInput.cs` `21f0003272ef471e`
 - `BRegard.cs` `749e910e9229c0b4`

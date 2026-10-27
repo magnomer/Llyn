@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TTaxonomyEntry
 {
     [Fact]
-    public void TaxonomyEntryCreate_PaddedWordingNothingChosen_AsksTheWordingAndOpensTheTrimmedTagChosen()
+    public void TaxonomyEntryCreate_PaddedWording_OpensTrimmedTag()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -33,7 +33,7 @@ public sealed class TTaxonomyEntry
     }
 
     [Fact]
-    public void TaxonomyEntryCreate_BlankWording_ShowsTheFailureAndOpensNothing()
+    public void TaxonomyEntryCreate_BlankWording_ShowsFailure()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -71,7 +71,7 @@ public sealed class TTaxonomyEntry
     }
 
     [Fact]
-    public void TaxonomyEntryCreate_ChangedFreshEntryStayed_AsksOnlyTheLeaveQuestion()
+    public void TaxonomyEntryCreate_FreshStayed_AsksOnlyLeave()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -89,7 +89,7 @@ public sealed class TTaxonomyEntry
     }
 
     [Fact]
-    public void TaxonomyEntryCreate_ChangedFreshEntryDiscarded_AsksTheLeaveThenTheWording()
+    public void TaxonomyEntryCreate_FreshDiscarded_AsksLeaveThenWording()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -107,7 +107,7 @@ public sealed class TTaxonomyEntry
     }
 
     [Fact]
-    public void TaxonomyEntryCreate_TagChosen_StartsAnEntryWithoutAskingTheWording()
+    public void TaxonomyEntryCreate_TagChosen_StartsEntrySkipsWording()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -125,7 +125,7 @@ public sealed class TTaxonomyEntry
     }
 
     [Fact]
-    public void TaxonomyEntryCreate_TagChosen_OpensAnEntryCarryingItThatListsOnceStored()
+    public void TaxonomyEntryCreate_TagChosen_OpensEntryCarryingTag()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -149,7 +149,7 @@ public sealed class TTaxonomyEntry
     }
 
     [Fact]
-    public void TaxonomyEntryCreate_EntryShownNoTagChosen_OpensABlankEntry()
+    public void TaxonomyEntryCreate_EntryShownNoTag_OpensBlankEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -168,7 +168,7 @@ public sealed class TTaxonomyEntry
     }
 
     [Fact]
-    public void TaxonomyPanelEntryClose_FreshEntryHeld_DropsTheDraft()
+    public void TaxonomyPanelEntryClose_FreshEntryHeld_DropsDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -179,7 +179,7 @@ public sealed class TCollocationSense
     }
 
     [Fact]
-    public void CardApply_EmptyExpressionOnMeaning_LeavesTheMeaningUnchanged()
+    public void CardApply_BlankExpression_LeavesMeaningUnchanged()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

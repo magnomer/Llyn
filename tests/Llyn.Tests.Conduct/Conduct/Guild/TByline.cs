@@ -97,7 +97,7 @@ public sealed class TByline
     }
 
     [Fact]
-    public void ImprintAuthorFinish_LitRowOffered_InsertsItsAuthor()
+    public void ImprintAuthorFinish_LitRowOffered_InsertsLitAuthor()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -117,7 +117,7 @@ public sealed class TByline
     }
 
     [Fact]
-    public void ImprintAuthorFinish_BylineOfferedNothingLit_CreditsTheTypedName()
+    public void ImprintAuthorFinish_NothingLit_CreditsTypedName()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -135,7 +135,7 @@ public sealed class TByline
     }
 
     [Fact]
-    public void ImprintAuthorCancel_BylineOffered_ClosesOnlyTheByline()
+    public void ImprintAuthorCancel_BylineOffered_ClosesOnlyByline()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -182,7 +182,7 @@ public sealed class TByline
     }
 
     [Fact]
-    public void BylineRowsRead_FindFails_ShowsTheFindFailureAndOffersNone()
+    public void BylineRowsRead_FindFails_ShowsFindFailureOffersNone()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -197,7 +197,7 @@ public sealed class TByline
     }
 
     [Fact]
-    public void BylineRowsRead_WorkspaceChanged_ShowsTheFindFailureAndOffersNone()
+    public void BylineRowsRead_WorkspaceChanged_ShowsFindFailure()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

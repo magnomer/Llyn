@@ -27,7 +27,7 @@ public sealed class TTrail
     }
 
     [Fact]
-    public void TrailRelativeResolve_NameStartingWithDots_ReturnsRelative()
+    public void TrailRelativeResolve_LeadingDots_ReturnsRelative()
     {
         LTrail trail = TInterface.TTrailCreate();
 
@@ -40,7 +40,7 @@ public sealed class TTrail
     }
 
     [Fact]
-    public void TrailResolve_QualifiedPath_KeepsIt()
+    public void TrailResolve_QualifiedPath_KeepsPath()
     {
         LTrail trail = TInterface.TTrailCreate();
         string qualified = Path.Combine(Path.GetTempPath(), "elsewhere", "a.mp3");

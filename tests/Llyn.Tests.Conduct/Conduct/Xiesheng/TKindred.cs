@@ -12,7 +12,7 @@ namespace Llyn.Tests;
 public sealed class TKindred
 {
     [Fact]
-    public void KindredRead_StoredEntry_AnswersEveryRowWithItsAnchorAndTheFold()
+    public void KindredRead_StoredEntry_AnswersRowsWithAnchorAndFold()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -98,7 +98,7 @@ public sealed class TKindred
     }
 
     [Fact]
-    public void KindredRead_RefusedAnchor_AnswersTheRowsUnanchored()
+    public void KindredRead_RefusedAnchor_AnswersRowsUnanchored()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -117,7 +117,7 @@ public sealed class TKindred
     }
 
     [Fact]
-    public async Task KindredStart_StoredEntryWithoutReflexes_StartsTheLookupWhenTheDraftOpens()
+    public async Task KindredStart_StoredEntryNoReflexes_StartsLookup()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TReflexFixture.TReflexPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -157,7 +157,7 @@ public sealed class TKindred
     }
 
     [Fact]
-    public void KindredAdd_PressedRow_PlacesARowOfItsLanguageAndKindBelowIt()
+    public void KindredAdd_PressedRow_PlacesSameLanguageKindBelow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -173,7 +173,7 @@ public sealed class TKindred
     }
 
     [Fact]
-    public void KindredAdd_NoOrGoneRow_AppendsABlankRow()
+    public void KindredAdd_NoOrGoneRow_AppendsBlankRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -189,7 +189,7 @@ public sealed class TKindred
     }
 
     [Fact]
-    public void KindredRemove_HeldRow_DropsIt()
+    public void KindredRemove_HeldRow_DropsRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -201,7 +201,7 @@ public sealed class TKindred
     }
 
     [Fact]
-    public void KindredToggle_HeldRow_FlipsItsMainEachTime()
+    public void KindredToggle_HeldRow_FlipsMainEachTime()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -217,7 +217,7 @@ public sealed class TKindred
     }
 
     [Fact]
-    public void KindredSet_TypedLanguage_WritesItAndLeadsByTheOverlaidRows()
+    public void KindredSet_TypedLanguage_WritesAndLeadsByOverlaidRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -248,7 +248,7 @@ public sealed class TKindred
     }
 
     [Fact]
-    public void KindredSet_TextOfARespelledRow_WritesTheRespelling()
+    public void KindredSet_RespelledRowText_WritesRespelling()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -267,7 +267,7 @@ public sealed class TKindred
     }
 
     [Fact]
-    public void KindredSet_TextOfAPlainRow_WritesThePhoneticText()
+    public void KindredSet_PlainRowText_WritesPhoneticText()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -314,7 +314,7 @@ public sealed class TKindred
     }
 
     [Fact]
-    public void KindredSet_WhileTheDeskFills_TakesNothingAndAnswersTheHeldText()
+    public void KindredSet_WhileDeskFills_AnswersHeldText()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

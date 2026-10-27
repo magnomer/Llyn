@@ -18,7 +18,7 @@ public sealed class TFrequency
     }
 
     [Fact]
-    public void OnceResolve_PerMillionFigure_DividesTheMillion()
+    public void OnceResolve_PerMillionFigure_DividesMillion()
     {
         LSourceSpec spec = TInterfaceSource.TSourceSpecCreate("Datamuse", [TFrequencyAttemptCreate()], total: 1000000);
 

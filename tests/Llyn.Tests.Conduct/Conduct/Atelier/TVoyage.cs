@@ -16,7 +16,7 @@ public sealed class TVoyage
     }
 
     [Fact]
-    public void VoyageStationAdd_EmptyOrStandingStation_RecordsNothingTwice()
+    public void VoyageStationAdd_EmptyOrStanding_RecordsNothing()
     {
         CVoyage voyage = new();
 
@@ -31,7 +31,7 @@ public sealed class TVoyage
     }
 
     [Fact]
-    public void VoyageUndo_ShownStation_ParksTheStandingStationForRedo()
+    public void VoyageUndo_ShownStation_ParksStandingStationForRedo()
     {
         CVoyage voyage = new();
         voyage.TVoyageStationAdd("Library", 4);
@@ -59,7 +59,7 @@ public sealed class TVoyage
     }
 
     [Fact]
-    public void VoyageStationAdd_AfterUndo_ForgetsTheFuture()
+    public void VoyageStationAdd_AfterUndo_ForgetsFuture()
     {
         CVoyage voyage = new();
         voyage.TVoyageStationAdd("Library", 4);
@@ -71,7 +71,7 @@ public sealed class TVoyage
     }
 
     [Fact]
-    public void VoyageStationAdd_PastTheCap_DropsTheOldestStation()
+    public void VoyageStationAdd_PastCap_DropsOldestStation()
     {
         CVoyage voyage = new();
         for (long id = 1; id <= 51; id++)

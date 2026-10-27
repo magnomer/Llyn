@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TDeskDraft
 {
     [Fact]
-    public void DraftUpdate_HeldDraft_AnnouncesItWhileFilling()
+    public void DraftUpdate_HeldDraft_AnnouncesWhileFilling()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 public sealed class TReflexLabel
 {
     [Fact]
-    public void ReflexTypeRefine_TypedNames_LabelsTheNewNames()
+    public void ReflexTypeRefine_TypedNames_LabelsNewNames()
     {
         List<string> shown = [];
 

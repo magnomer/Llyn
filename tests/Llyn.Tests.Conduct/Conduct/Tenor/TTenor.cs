@@ -13,7 +13,7 @@ namespace Llyn.Tests;
 public sealed class TTenor
 {
     [Fact]
-    public void TenorRowsRead_FreshArea_ListsTheStoredRegisters()
+    public void TenorRowsRead_FreshArea_ListsStoredRegisters()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -46,7 +46,7 @@ public sealed class TTenor
     }
 
     [Fact]
-    public void ApertureOrderSet_ReverseThenNull_KeepsTheChosenOrderAndRaisesTheRows()
+    public void ApertureOrderSet_ReverseThenNull_KeepsOrderRaisesRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -86,7 +86,7 @@ public sealed class TTenor
     }
 
     [Fact]
-    public void ApertureFilterSet_HiddenLanguage_MarksTheTenorFiltered()
+    public void ApertureFilterSet_HiddenLanguage_MarksTenorFiltered()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -104,7 +104,7 @@ public sealed class TTenor
     }
 
     [Fact]
-    public async Task CohortPortraitExport_EntryShown_WritesItAndNothingBefore()
+    public async Task CohortPortraitExport_EntryShown_WritesOnlyOpenEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -128,7 +128,7 @@ public sealed class TTenor
     }
 
     [Fact]
-    public void TenorRegisterToggle_RowClick_RecordsTheStationAndTogglesTheRegister()
+    public void TenorRegisterToggle_RowClick_RecordsStationToggles()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -151,7 +151,7 @@ public sealed class TTenor
     }
 
     [Fact]
-    public void TenorRegisterOpen_Arrival_ChoosesTheRegisterAndRaisesTheOpeningThenTheRows()
+    public void TenorRegisterOpen_Arrival_ChoosesRegisterRaisesOpening()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -169,7 +169,7 @@ public sealed class TTenor
     }
 
     [Fact]
-    public void TenorRegisterOpen_QueriedLists_EmptiesBothQueriesBeforeTheOpening()
+    public void TenorRegisterOpen_QueriedLists_EmptiesBothQueriesFirst()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -188,7 +188,7 @@ public sealed class TTenor
     }
 
     [Fact]
-    public void AtelierClose_EntryHeldOnTheEditor_CancelsTheEditorDeskAndStopsPlayback()
+    public void AtelierClose_EntryHeld_CancelsEditorDeskStopsPlayback()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

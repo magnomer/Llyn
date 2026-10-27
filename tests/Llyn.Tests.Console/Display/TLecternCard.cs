@@ -11,7 +11,7 @@ namespace Llyn.Tests;
 public sealed class TLecternCard
 {
     [Fact]
-    public void LecternCardDraw_StoredMeaning_ShowsHeaderBodyAndMissingPicture()
+    public void LecternCardDraw_StoredMeaning_ShowsAllParts()
     {
         TLecternCardRun(
             (engine, save) =>
@@ -54,7 +54,7 @@ public sealed class TLecternCard
     }
 
     [Fact]
-    public void LecternFoldToggle_SpaceThenEnterOnHeader_FoldsToThePeekAndOpens()
+    public void LecternFoldToggle_SpaceThenEnter_FoldsToPeekThenOpens()
     {
         TLecternCardRun(
             (engine, save) => save("apple", [TInterface.TCardCreate("a round fruit", 1)]),
@@ -79,7 +79,7 @@ public sealed class TLecternCard
     }
 
     [Fact]
-    public void LecternFoldToggle_FoldRefused_KeepsTheMarkAndNotices()
+    public void LecternFoldToggle_FoldRefused_KeepsMarkAndNotices()
     {
         TLecternCardRun(
             (engine, save) => save("apple", [TInterface.TCardCreate("a round fruit", 1)]),
@@ -100,7 +100,7 @@ public sealed class TLecternCard
     }
 
     [Fact]
-    public void LecternSeeObserve_FoldRefused_KeepsTheSeeLit()
+    public void LecternSeeObserve_FoldRefused_KeepsSeeLit()
     {
         TLecternCardRun(
             (engine, save) =>
@@ -143,7 +143,7 @@ public sealed class TLecternCard
     }
 
     [Fact]
-    public void LecternSeeObserve_RowUnderFoldedCard_KeepsTheSeeLit()
+    public void LecternSeeObserve_RowUnderFoldedCard_KeepsSeeLit()
     {
         TLecternCardRun(
             (engine, save) =>
@@ -210,7 +210,7 @@ public sealed class TLecternCard
     }
 
     [Fact]
-    public void LecternChipOpen_EnterOnTranslation_OpensTheTarget()
+    public void LecternChipOpen_EnterOnTranslation_OpensTarget()
     {
         TLecternCardRun(
             (engine, save) =>
@@ -250,7 +250,7 @@ public sealed class TLecternCard
     }
 
     [Fact]
-    public void LecternCardDraw_OtherCollocation_FoldsToAClosedRow()
+    public void LecternCardDraw_OtherCollocation_FoldsToClosedRow()
     {
         TLecternCardRun(
             (engine, save) => engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
@@ -284,7 +284,7 @@ public sealed class TLecternCard
             });
     }
 
-    internal static void TLecternCardRun(
+    internal static int TLecternCardRun(
         Action<LEngine, Func<string, IReadOnlyList<LCardDraft>, long>> seed,
         Action<Action<ConsoleKey>, Func<IReadOnlyList<string>>, Func<(string, string)?>, CAtelier, TConsoleFake>
             check,
@@ -296,10 +296,13 @@ public sealed class TLecternCard
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
-        seed(
-            engine,
-            (headword, meanings) => engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
-                headword, "English", string.Empty, string.Empty, meanings, [])).LEntryId);
+        List<string> seeded = [];
+        seed(engine, (headword, meanings) =>
+        {
+            seeded.Add(headword);
+            return engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+                headword, "English", string.Empty, string.Empty, meanings, [])).LEntryId;
+        });
         SynchronizationContext? context = SynchronizationContext.Current;
         BLoop loop = new(static _ => { });
         SynchronizationContext.SetSynchronizationContext(loop);
@@ -331,9 +334,10 @@ public sealed class TLecternCard
                 capsule);
             loop.BLoopBatchAttach(window.BWindowBatchObserve);
             loop.BLoopKeyAttach(console, window.BWindowKeyObserve);
+            Func<int> closed = static () => 0;
             if (notice is not null)
             {
-                TLectern.TLecternNoticeClose(console, notice, loop, window.BWindowBatchObserve);
+                closed = TLectern.TLecternNoticeClose(console, notice, loop, window.BWindowBatchObserve);
             }
 
             Action<Action> settle = work =>
@@ -355,6 +359,14 @@ public sealed class TLecternCard
             settle(() => Assert.True(atelier.CAtelierNavigation.CNavigationTabSelect("Library")));
             if (script is not null)
             {
+                _ = SpinWait.SpinUntil(
+                    () =>
+                    {
+                        settle(static () => { });
+                        return seeded.TrueForAll(headword => console.TConsoleFakeGrid.Any(
+                            row => row.Contains(headword, StringComparison.Ordinal)));
+                    },
+                    TimeSpan.FromSeconds(10));
                 workspace.TWorkspaceScriptRun(script);
             }
 
@@ -377,6 +389,7 @@ public sealed class TLecternCard
                 },
                 atelier,
                 console);
+            return closed();
         }
         finally
         {

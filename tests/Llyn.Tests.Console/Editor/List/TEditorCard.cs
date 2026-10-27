@@ -18,7 +18,7 @@ public sealed class TEditorCard
     private static readonly ConsoleKeyInfo TEditorCardBadge = new('#', ConsoleKey.D3, true, false, false);
 
     [Fact]
-    public void EditorKeymap_ListOfOneCard_OffersNoMoveNorBadgeAndKeepsTheCard()
+    public void EditorKeymap_ListOfOneCard_OffersNoMoveOrBadge()
     {
         TEditorCardRun(["a meaning"], (library, find) =>
         {
@@ -36,7 +36,7 @@ public sealed class TEditorCard
     }
 
     [Fact]
-    public void EditorObserve_HashOnAListOfOneCard_StartsTheTitleWithIt()
+    public void EditorObserve_HashOnListOfOneCard_StartsTitleWithHash()
     {
         TEditorCardRun(["a meaning"], (library, _) =>
         {
@@ -50,7 +50,7 @@ public sealed class TEditorCard
     }
 
     [Fact]
-    public void EditorKeymap_HashTypedOnAnotherLayout_OpensTheBadgeByItsSign()
+    public void EditorKeymap_HashTypedOnOtherLayout_OpensBadgeBySign()
     {
         TEditorCardRun(["a meaning", "b meaning"], (library, _) =>
         {
@@ -72,7 +72,7 @@ public sealed class TEditorCard
     }
 
     [Fact]
-    public void EditorKeymap_RefusedMoveThenUndo_KeepsTheLitBarInPlace()
+    public void EditorKeymap_RefusedMoveThenUndo_KeepsLitBarInPlace()
     {
         TEditorCardRun(["a meaning", "b meaning"], (library, _) =>
         {
@@ -89,7 +89,7 @@ public sealed class TEditorCard
     }
 
     [Fact]
-    public void EditorReset_BadgeOpen_ClosesThePositionInConduct()
+    public void EditorReset_BadgeOpen_ClosesPositionInConduct()
     {
         TEditorCardStart((editor, send) =>
         {
@@ -103,7 +103,7 @@ public sealed class TEditorCard
     }
 
     [Fact]
-    public void EditorKeymap_EscapeInTheBadge_ClosesThePositionInConduct()
+    public void EditorKeymap_EscapeInBadge_ClosesPositionInConduct()
     {
         TEditorCardStart((editor, send) =>
         {
@@ -116,7 +116,7 @@ public sealed class TEditorCard
     }
 
     [Fact]
-    public void EditorKeymap_TooLargeNumberInTheBadge_SettlesTheCardLast()
+    public void EditorKeymap_TooLargeNumberInBadge_SettlesCardLast()
     {
         TEditorCardRun(["a meaning", "b meaning"], (library, _) =>
         {
@@ -132,7 +132,7 @@ public sealed class TEditorCard
     }
 
     [Fact]
-    public void EditorKeymap_ControlPageOffAHeader_LightsTheNeighbourCards()
+    public void EditorKeymap_ControlPageOffHeader_LightsNeighbourCards()
     {
         TEditorCardRun(["a meaning", "b meaning"], (library, find) =>
         {
@@ -151,7 +151,7 @@ public sealed class TEditorCard
     }
 
     [Fact]
-    public void EditorKeymap_FoldOnAStoredCard_LeavesTheEntryUnaltered()
+    public void EditorKeymap_FoldOnStoredCard_LeavesEntryUnaltered()
     {
         TEditorCardRun(["a meaning"], (library, _) =>
         {
@@ -162,7 +162,7 @@ public sealed class TEditorCard
     }
 
     [Fact]
-    public void EditorDraw_StoredCardWithTheSingleGlyphSet_DrawsTheFoldMarkFromTheSet()
+    public void EditorDraw_StoredCardSingleGlyphs_DrawsFoldMarks()
     {
         TEditorCardRun(["a meaning"], (library, _) =>
         {
@@ -181,7 +181,7 @@ public sealed class TEditorCard
     }
 
     [Fact]
-    public void EditorKeymap_InsertOnAHeader_AddsAnUnstoredCardAndOpensItsTitle()
+    public void EditorKeymap_InsertOnHeader_AddsUnstoredCardOpensTitle()
     {
         TEditorCardRun(["a meaning"], (library, _) =>
         {
@@ -201,7 +201,7 @@ public sealed class TEditorCard
     }
 
     [Fact]
-    public void EditorKeymap_ControlDownOnAHeader_MovesTheCardAndTheLitBarFollows()
+    public void EditorKeymap_ControlDownOnHeader_MovesCardWithLitBar()
     {
         TEditorCardRun(["a meaning", "b meaning"], (library, find) =>
         {
@@ -217,7 +217,7 @@ public sealed class TEditorCard
     }
 
     [Fact]
-    public void EditorKeymap_TypedNumberInTheBadge_SettlesTheCardThere()
+    public void EditorKeymap_TypedNumberInBadge_SettlesCardThere()
     {
         TEditorCardRun(["a meaning", "b meaning"], (library, _) =>
         {
@@ -236,7 +236,7 @@ public sealed class TEditorCard
     }
 
     [Fact]
-    public void EditorKeymap_EscapeInTheBadge_KeepsTheOldNumber()
+    public void EditorKeymap_EscapeInBadge_KeepsOldNumber()
     {
         TEditorCardRun(["a meaning", "b meaning"], (library, _) =>
         {
@@ -252,7 +252,7 @@ public sealed class TEditorCard
     }
 
     [Fact]
-    public void EditorKeymap_DeleteOnAHeaderOfTwo_RemovesTheCard()
+    public void EditorKeymap_DeleteOnHeaderOfTwo_RemovesCard()
     {
         TEditorCardRun(["a meaning", "b meaning"], (library, _) =>
         {
@@ -265,7 +265,7 @@ public sealed class TEditorCard
     }
 
     [Fact]
-    public void EditorDraw_FoldedUntitledMeaning_PeeksItsDefinitionInTheHeader()
+    public void EditorDraw_FoldedUntitledMeaning_PeeksDefinition()
     {
         TEditorCardRun(["a meaning"], (library, _) =>
         {
@@ -278,7 +278,7 @@ public sealed class TEditorCard
     }
 
     [Fact]
-    public void EditorKeymap_EnterOnTheAddRow_AddsACollocationOnTheCollocationTab()
+    public void EditorKeymap_EnterOnAddRow_AddsCollocationOnTab()
     {
         TEditorCardRun(["a meaning"], (library, find) =>
         {

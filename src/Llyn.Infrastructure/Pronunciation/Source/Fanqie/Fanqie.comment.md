@@ -86,13 +86,13 @@ The first `td` of a row names the initial and the rest hold groups.
 The anchor pattern finds the first link in a group, which starts the fanqie spelling and character list.
 The group's head is everything before it.
 The strike pattern drops the struck-through division digit the site prints inside a group.
-A two-second patience bounds the busy pattern over one answer.
+The adapter's patience bounds the busy pattern over one answer.
 
 ## `LFanqieShape`
 
 The compiled patterns of one book for one character, built once per answer.
 Every pattern comes from the pack row, with the character in place of the `{word}` token, escaped for the regex.
-Any one pattern may run two seconds over one text before it is given up.
+Any one pattern may run for the patience the caller passes in before it is given up.
 `LFanqieShapeCreate` requires the marker from the loader.
 Every other pattern compiles to `null` when the pack omits it.
 
@@ -114,7 +114,7 @@ Its division and tone come from the column pattern, and are empty without it.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `9377e657b395`
 - `LFanqieColumn.cs` `fe092d15c9a6224c`
-- `LFanqieShape.cs` `2a63beeb2864d0cb`
-- `LFanqieSourceHttp.cs` `e69d1b6764990620`
+- `LFanqieShape.cs` `da5256c124724a34`
+- `LFanqieSourceHttp.cs` `15e2b774ce9a94c6`

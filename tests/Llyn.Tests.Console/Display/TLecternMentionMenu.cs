@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TLecternMentionMenu
 {
     [Fact]
-    public void LecternMentionFind_ManyAnswers_OpensTheMenuUnderTheWordAndOpensThePick()
+    public void LecternMentionFind_ManyAnswers_OpensMenuUnderWord()
     {
         TLecternCard.TLecternCardRun(
             static (engine, _) => TLecternMenuSave(engine),
@@ -41,7 +41,7 @@ public sealed class TLecternMentionMenu
     }
 
     [Fact]
-    public void LecternMentionFind_MenuEscape_ClosesTheMenuAndKeepsTheCursor()
+    public void LecternMentionFind_MenuEscape_ClosesMenuKeepsCursor()
     {
         TLecternCard.TLecternCardRun(
             static (engine, _) => TLecternMenuSave(engine),
@@ -66,7 +66,7 @@ public sealed class TLecternMentionMenu
     }
 
     [Fact]
-    public void LecternMentionFind_Landing_ClosesTheMenu()
+    public void LecternMentionFind_Landing_ClosesMenu()
     {
         long landing = 0;
         TLecternCard.TLecternCardRun(
@@ -104,7 +104,7 @@ public sealed class TLecternMentionMenu
     }
 
     [Fact]
-    public void LecternMentionFind_NoEntry_OpensNoMenuAndKeepsTheCursor()
+    public void LecternMentionFind_NoEntry_OpensNoMenuKeepsCursor()
     {
         TLecternCard.TLecternCardRun(
             static (engine, _) =>
@@ -151,7 +151,7 @@ public sealed class TLecternMentionMenu
     }
 
     [Fact]
-    public void LecternMentionFind_ManyAnswers_FirstRowStartsLitAndEnterOpensIt()
+    public void LecternMentionFind_FirstRowLit_OpensFirstEntryOnEnter()
     {
         TLecternCard.TLecternCardRun(
             static (engine, _) => TLecternMenuSave(engine),
@@ -172,7 +172,7 @@ public sealed class TLecternMentionMenu
     }
 
     [Fact]
-    public void LecternMentionFind_ManyAnswers_DownAndUpWrapAndEnterOpensTheSecondRow()
+    public void LecternMentionFind_DownDownUp_WrapsAndOpensSecondRow()
     {
         TLecternCard.TLecternCardRun(
             static (engine, _) => TLecternMenuSave(engine),

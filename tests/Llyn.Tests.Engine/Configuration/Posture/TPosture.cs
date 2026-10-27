@@ -54,7 +54,7 @@ public sealed class TPosture
     }
 
     [Fact]
-    public void PostureVistaStart_WorkspaceReopened_RestartsVistaOnChosenOrdering()
+    public void PostureVistaStart_WorkspaceReopened_RestoresVistaState()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
 
@@ -173,7 +173,7 @@ public sealed class TPosture
     }
 
     [Fact]
-    public void PostureVolumeSave_NotANumber_WritesNothing()
+    public void PostureVolumeSave_NonNumeric_WritesNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -191,7 +191,7 @@ public sealed class TPosture
     }
 
     [Fact]
-    public void PostureVolumeSet_NoSave_ReadsTheNewLevelAndWritesNothing()
+    public void PostureVolumeSet_NoSave_ReadsNewLevelAndWritesNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -287,7 +287,7 @@ public sealed class TPosture
     }
 
     [Fact]
-    public void PostureSave_FaultingStore_RecordsEachFaultAndRaisesTheFailureOnce()
+    public void PostureSave_FaultingStore_RaisesFailureOnce()
     {
         List<Exception> thrown = [];
         List<Exception> recorded = [];

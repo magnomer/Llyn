@@ -49,7 +49,7 @@ public sealed class TDesk
     }
 
     [Fact]
-    public void Start_StoredAuthor_ShowsItsName()
+    public void Start_StoredAuthor_ShowsName()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -81,7 +81,7 @@ public sealed class TDesk
     }
 
     [Fact]
-    public void Start_OriginAndSubject_HoldsAFreshDraft()
+    public void Start_OriginAndSubject_HoldsFreshDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -112,7 +112,7 @@ public sealed class TDesk
     }
 
     [Fact]
-    public void Start_RefusedTenure_ShowsTheLoadFailureOnce()
+    public void Start_RefusedTenure_ShowsLoadFailureOnce()
     {
         List<string> asked = [];
         LDraftPort drafts = TEngineFake.TEngineCreate<LDraftPort>(new Dictionary<string, Func<object?[]?, object?>>
@@ -134,7 +134,7 @@ public sealed class TDesk
     }
 
     [Fact]
-    public void Start_OverAHeldTenure_AnnouncesTheChangeOfStateOnce()
+    public void Start_OverHeldTenure_AnnouncesStateChangeOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -150,7 +150,7 @@ public sealed class TDesk
     }
 
     [Fact]
-    public void Start_RefusedTenure_AnnouncesTheChangeOfStateOnce()
+    public void Start_RefusedTenure_AnnouncesStateChangeOnce()
     {
         LDraftPort drafts = TEngineFake.TEngineCreate<LDraftPort>(new Dictionary<string, Func<object?[]?, object?>>
         {
@@ -173,7 +173,7 @@ public sealed class TDesk
     }
 
     [Fact]
-    public void Cancel_HeldTenure_AnnouncesTheChangeOfStateOnce()
+    public void Cancel_HeldTenure_AnnouncesStateChangeOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

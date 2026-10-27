@@ -35,7 +35,7 @@ public sealed class TMarkupTarget
     }
 
     [Fact]
-    public void MarkupFind_Matches_FindsTheEntryIds()
+    public void MarkupFind_Matches_FindsEntryIds()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

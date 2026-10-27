@@ -10,8 +10,6 @@ namespace Llyn.Infrastructure;
 
 internal static class LSourceReader
 {
-    private const int LSourceReaderRetry = 2;
-
     public static async Task<(LAnswer, string?)> LSourceReaderRead(
         HttpClient client,
         IReadOnlyList<string> urls,
@@ -39,51 +37,43 @@ internal static class LSourceReader
         IReadOnlyDictionary<string, string>? headers,
         CancellationToken cancellation)
     {
-        for (int attempt = 0; ; attempt++)
+        try
         {
-            try
+            using HttpRequestMessage request = new(HttpMethod.Get, url);
+            if (headers is not null)
             {
-                using HttpRequestMessage request = new(HttpMethod.Get, url);
-                if (headers is not null)
+                foreach (KeyValuePair<string, string> header in headers)
                 {
-                    foreach (KeyValuePair<string, string> header in headers)
-                    {
-                        request.Headers.TryAddWithoutValidation(header.Key, header.Value);
-                    }
-                }
-
-                using HttpResponseMessage response =
-                    await client.SendAsync(request, cancellation).ConfigureAwait(false);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    string body = await response.Content.ReadAsStringAsync(cancellation).ConfigureAwait(false);
-                    return string.IsNullOrEmpty(body) ? LAnswer.LAnswerBlank : LAnswer.LAnswerCreate(body);
-                }
-
-                if (!LSourceReaderConfirm(response.StatusCode))
-                {
-                    return LAnswer.LAnswerBlank;
+                    request.Headers.TryAddWithoutValidation(header.Key, header.Value);
                 }
             }
-            catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
+
+            using HttpResponseMessage response =
+                await client.SendAsync(request, cancellation).ConfigureAwait(false);
+
+            if (response.IsSuccessStatusCode)
             {
-                throw;
-            }
-            catch (OperationCanceledException)
-            {
-            }
-            catch (HttpRequestException)
-            {
+                string body = await response.Content.ReadAsStringAsync(cancellation).ConfigureAwait(false);
+                return string.IsNullOrEmpty(body) ? LAnswer.LAnswerBlank : LAnswer.LAnswerCreate(body);
             }
 
-            if (attempt >= LSourceReaderRetry)
+            if (!LSourceReaderConfirm(response.StatusCode))
             {
-                return LAnswer.LAnswerLost;
+                return LAnswer.LAnswerBlank;
             }
-
-            await Task.Delay(TimeSpan.FromMilliseconds(250 * (attempt + 1)), cancellation).ConfigureAwait(false);
         }
+        catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch (OperationCanceledException)
+        {
+        }
+        catch (HttpRequestException)
+        {
+        }
+
+        return LAnswer.LAnswerLost;
     }
 
     private static bool LSourceReaderConfirm(HttpStatusCode status)

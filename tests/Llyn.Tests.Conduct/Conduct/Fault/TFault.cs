@@ -177,14 +177,14 @@ public sealed partial class TFault
 
     [Theory]
     [MemberData(nameof(TFaultGates))]
-    public Task EnvoyFailureShow_FaultedTask_ReceivesTheKeyOnce(string gate) => TFaultRun(gate, false);
+    public Task EnvoyFailureShow_FaultedTask_ReceivesKeyOnce(string gate) => TFaultRun(gate, false);
 
     [Theory]
     [MemberData(nameof(TFaultGates))]
-    public Task EnvoyFailureShow_ThrownFault_ReceivesTheKeyOnce(string gate) => TFaultRun(gate, true);
+    public Task EnvoyFailureShow_ThrownFault_ReceivesKeyOnce(string gate) => TFaultRun(gate, true);
 
     [Fact]
-    public void EnvoyFailureShow_EveryTaskGate_HoldsASweepRow()
+    public void EnvoyFailureShow_AllTaskGates_HoldSweepRow()
     {
         HashSet<string> held = TFaultRows.Select(static row => row.TFaultRowGate).ToHashSet(StringComparer.Ordinal);
 

@@ -1,10 +1,14 @@
 using System;
+using System.Collections.Generic;
 using Llyn.Core;
 
 namespace Llyn.Conduct;
 
 public sealed class CVideo
 {
+    private static readonly IReadOnlyList<string> CVideoSuffix =
+        [".mp4", ".m4v", ".mov", ".avi", ".wmv", ".mkv", ".webm"];
+
     private readonly CDesk _cVideoDesk;
 
     internal CVideo(CDesk desk)
@@ -44,5 +48,10 @@ public sealed class CVideo
         }
 
         _cVideoDesk.CDeskDraft.CDeskDraftEasel?.LEaselVideoSet(videoId, file, false);
+    }
+
+    public void CVideoFileOpen(long videoId)
+    {
+        CVideoFileSet(videoId, _cVideoDesk.CDeskEnvoy.CEnvoyMediaRead("Card.VideoChoose", CVideoSuffix));
     }
 }

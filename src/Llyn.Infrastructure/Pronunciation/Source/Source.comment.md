@@ -126,10 +126,11 @@ Collects the distinct variety tags across all readings, computed once at constru
 
 A resilient page reader for HTML pronunciation sources.
 It tries each candidate URL in turn.
-Per URL it retries transient failures (timeout, 408, 429, 5xx) with a short backoff.
-Non-transient responses (403, 404) fall through to the next URL rather than being retried.
+Each URL is fetched once, with no retry.
+A transient failure (timeout, network error, 408, 429, 5xx) counts as lost for that URL.
+Other failing responses (403, 404) count as blank, and both fall through to the next URL.
 A 404 is an answer, since the site is up and has no such word.
-An exhausted 5xx or timeout is not an answer, and a menu reports that as a failure to retrieve.
+A transient failure is not an answer, and a menu reports that as a failure to retrieve.
 
 ### `LSourceReaderRead`
 
@@ -189,6 +190,8 @@ A file that will not delete is left for the next sweep.
 Fetches the bytes of one recording, the path both saving and previewing go through.
 A host answering 429 is asked again after a pause, up to three tries in all.
 The pause is the host's Retry-After when longer than five seconds, and five seconds otherwise.
+It waits through the `LClock` handed to the archive, so a test clock can make it instant.
+A host naming a Retry-After over 30 seconds is not waited for, and the fetch fails at once.
 Wikimedia's audio host answers 429 to a handful of quick fetches and names one second, which retries proved too short.
 Any other failing status raises, so the caller sees a refused fetch rather than an empty file.
 The two public callers wrap that raise in `LVaultFault`.
@@ -242,7 +245,8 @@ The adapter behind the `LReflexSource` port.
 It asks one rule's site for one character and reads the readings it answers with.
 The page is matched by the rule's pattern, and each match becomes draft rows.
 The address, the form, the pattern and the format come from the pack.
-The rule pattern runs case-blind with dots crossing lines, within a two-second patience.
+The rule pattern runs case-blind with dots crossing lines, within the patience handed to the adapter.
+The rig passes two seconds to every adapter, through `LRigFactorySource`.
 
 ### `LReflexSourceFind`
 
@@ -393,12 +397,12 @@ It is retried.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
+Commit: `9377e657b395`
 - `LPronunciationText.cs` `1c97f580d1fbea73`
-- `LRecordingArchive.cs` `db5e03769dd9cc13`
-- `LReflexSourceHttp.cs` `7de288f3ccdddd8b`
-- `LScriptSourceHttp.cs` `b6c875b5ac8aa0de`
-- `LShengfuSourceHttp.cs` `a68541ea74e50135`
+- `LRecordingArchive.cs` `12f1ccbbedafaaba`
+- `LReflexSourceHttp.cs` `7eff40edf76169ca`
+- `LScriptSourceHttp.cs` `5de8c0ab0e4ce91b`
+- `LShengfuSourceHttp.cs` `b1d791a971da1010`
 - `LSourceFactoryHttp.cs` `0e012faa3406448c`
 - `LSourceGeneric.cs` `44c2f25ca2150c9d`
-- `LSourceReader.cs` `0d0f672d3ac08039`
+- `LSourceReader.cs` `1c84ff8ab48e7f13`

@@ -82,8 +82,8 @@ The pack-level blocks are covered in `TLanguageLoader`.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `TInflectionLoader.cs` `fcd1cc2164aeb2e2`
-- `TLanguageLoader.cs` `7ba02339d8b50f67`
-- `TLanguageLoaderHan.cs` `9e642063ca1a3564`
-- `TLanguageLoaderSource.cs` `231a3f5dde13f148`
+Commit: `9377e657b395`
+- `TInflectionLoader.cs` `fb00170e07407c24`
+- `TLanguageLoader.cs` `de88531fff757dd9`
+- `TLanguageLoaderHan.cs` `ba36fb2e39ca900d`
+- `TLanguageLoaderSource.cs` `e6108512a020eb8f`

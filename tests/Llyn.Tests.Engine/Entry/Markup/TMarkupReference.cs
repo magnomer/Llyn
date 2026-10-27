@@ -37,7 +37,7 @@ public sealed class TMarkupReference
     }
 
     [Fact]
-    public void MarkupImport_TextlessSentenceReference_CreatesNoReference()
+    public void MarkupImport_TextlessReference_CreatesNoReference()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

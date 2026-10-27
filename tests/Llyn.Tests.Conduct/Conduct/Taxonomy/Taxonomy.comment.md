@@ -58,7 +58,7 @@ The flag-fill load answers the Tag rows and their languages once the fill has ru
 
 ## Stamp
 
-Commit: `c37ca1837ded`
-- `TTaxonomy.cs` `87fb2a6087aeb763`
-- `TTaxonomyEntry.cs` `07974851f6f20d2f`
-- `TTaxonomyVista.cs` `5b2a371d5bdbce5c`
+Commit: `9377e657b395`
+- `TTaxonomy.cs` `c292b6363afa1c0a`
+- `TTaxonomyEntry.cs` `d91e1617360324e0`
+- `TTaxonomyVista.cs` `7b415bd580aad0cf`

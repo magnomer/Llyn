@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TCardSentence
 {
     [Fact]
-    public void SentenceAdd_BelowTheFirstRow_PlacesTheNewRowSecond()
+    public void SentenceAdd_BelowFirstRow_PlacesNewRowSecond()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -24,7 +24,7 @@ public sealed class TCardSentence
     }
 
     [Fact]
-    public void SentenceRemove_HeldRow_DropsIt()
+    public void SentenceRemove_HeldRow_DropsRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -56,7 +56,7 @@ public sealed class TCardSentence
     }
 
     [Fact]
-    public void CitationSet_PickedSource_CitesItById()
+    public void CitationSet_PickedSource_CitesSourceById()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -100,7 +100,7 @@ public sealed class TCardSentence
     }
 
     [Fact]
-    public void SentenceMentionAdd_SelectedWord_LinksTheSpanToTheEntry()
+    public void SentenceMentionAdd_SelectedWord_LinksSpanToEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

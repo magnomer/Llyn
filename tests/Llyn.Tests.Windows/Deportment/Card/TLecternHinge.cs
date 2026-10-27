@@ -13,7 +13,7 @@ namespace Llyn.Tests;
 public sealed class TLecternHinge
 {
     [Fact]
-    public void LeafCardRefine_FoldedCard_CollapsesBodyChecksHingeAndClosesHeader()
+    public void LeafCardRefine_FoldedCard_CollapsesBodyAndClosesHeader()
     {
         TCardHinge.TCardHingeRun(() =>
         {
@@ -44,7 +44,7 @@ public sealed class TLecternHinge
     }
 
     [Fact]
-    public void LeafCardRefine_FoldedCardWithBlankTitle_ShowsMeaningPeekInTheTitlePlace()
+    public void LeafCardRefine_FoldedBlankTitle_ShowsMeaningPeek()
     {
         TCardHinge.TCardHingeRun(() =>
         {
@@ -58,7 +58,7 @@ public sealed class TLecternHinge
     }
 
     [Fact]
-    public void LeafCardRefine_FoldedCardWithTitle_ShowsTitleAndHidesPeek()
+    public void LeafCardRefine_FoldedTitle_ShowsTitleAndHidesPeek()
     {
         TCardHinge.TCardHingeRun(() =>
         {
@@ -82,7 +82,7 @@ public sealed class TLecternHinge
     }
 
     [Fact]
-    public void LecternCardCreate_StoredCard_FoldsTheCardByIdThroughTheReadingView()
+    public void LecternCardCreate_StoredCard_FoldsCardById()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -115,7 +115,7 @@ public sealed class TLecternHinge
     }
 
     [Fact]
-    public void LecternCardCreate_RefusedWrite_PutsTheHingeBack()
+    public void LecternCardCreate_RefusedWrite_PutsHingeBack()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -172,7 +172,7 @@ public sealed class TLecternHinge
     }
 
     [Fact]
-    public void LecternCardCreate_FoldedRow_OpensRowAndRaisesItsPlace()
+    public void LecternCardCreate_FoldedRow_OpensRowAndRaisesPlace()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 public sealed class TChoice
 {
     [Fact]
-    public void ParleyBodyDraw_AppliedOrder_MarksAndLightsIt()
+    public void ParleyBodyDraw_AppliedOrder_MarksAndLightsOrder()
     {
         BLocalizationCatalog catalog = new();
         catalog.BLocalizationCatalogApply(TInterface.TLocalizationLoad("en"));
@@ -61,7 +61,7 @@ public sealed class TChoice
     }
 
     [Fact]
-    public void OrderObserve_Escape_LeavesItToSublevel()
+    public void OrderObserve_Escape_LeavesToSublevel()
     {
         List<CCatalogOrder> chosen = [];
         BSChoiceOrder chooser = new(

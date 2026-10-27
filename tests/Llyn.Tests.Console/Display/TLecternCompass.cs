@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 public sealed class TLecternCompass
 {
     [Fact]
-    public void CompassShow_AltF3_ListsTheRowsAndLightsTheFirstAtTheTop()
+    public void CompassShow_AltF3_ListsRowsAndLightsFirstAtTop()
     {
         TLecternCard.TLecternCardRun(
             static (_, save) => TLecternCompassSave(save, 2),
@@ -26,7 +26,7 @@ public sealed class TLecternCompass
     }
 
     [Fact]
-    public void CompassShow_ScrolledToMeaningFive_LightsItsRow()
+    public void CompassShow_ScrolledToMeaningFive_LightsMeaningRow()
     {
         TLecternCard.TLecternCardRun(
             static (_, save) => TLecternCompassSave(save, 12),
@@ -43,7 +43,7 @@ public sealed class TLecternCompass
     }
 
     [Fact]
-    public void ParleyBodyObserve_DownThenEnter_ScrollsAndLightsTheCard()
+    public void ParleyBodyObserve_DownThenEnter_ScrollsAndLightsCard()
     {
         TLecternCard.TLecternCardRun(
             static (_, save) => TLecternCompassSave(save, 12),
@@ -83,7 +83,7 @@ public sealed class TLecternCompass
     }
 
     [Fact]
-    public void CompassShow_HiddenParts_ListsOnlyTheShownParts()
+    public void CompassShow_HiddenParts_ListsOnlyShownParts()
     {
         TLecternCard.TLecternCardRun(
             static (_, save) => TLecternCompassSave(save, 1),
@@ -99,7 +99,7 @@ public sealed class TLecternCompass
     }
 
     [Fact]
-    public void CompassShow_OtherCollocation_ListsItsRow()
+    public void CompassShow_OtherCollocation_ListsCollocationRow()
     {
         TLecternCard.TLecternCardRun(
             static (engine, _) => engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
@@ -125,7 +125,7 @@ public sealed class TLecternCompass
     }
 
     [Fact]
-    public void LibraryWhole_F3ThenF3_GivesTheWindowAndTheListBack()
+    public void LibraryWhole_F3ThenF3_GivesWindowAndListBack()
     {
         TLecternCard.TLecternCardRun(
             static (_, save) => TLecternCompassSave(save, 2),
@@ -147,7 +147,7 @@ public sealed class TLecternCompass
     }
 
     [Fact]
-    public void LibraryWhole_Escape_GivesTheListBack()
+    public void LibraryWhole_Escape_GivesListBack()
     {
         TLecternCard.TLecternCardRun(
             static (_, save) => TLecternCompassSave(save, 2),
@@ -164,7 +164,7 @@ public sealed class TLecternCompass
     }
 
     [Fact]
-    public void LecternSeeObserve_CardFarAbove_ScrollsToItsCardAndLightsTheHeader()
+    public void LecternSeeObserve_CardFarAbove_ScrollsAndLightsHeader()
     {
         TLecternCard.TLecternCardRun(
             static (engine, save) =>

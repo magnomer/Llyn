@@ -165,7 +165,7 @@ public sealed class TEngineLiveryCard
     }
 
     [Fact]
-    public void LiveryFormat_StoredOpenCard_WritesOpenDetailsWithSummary()
+    public void LiveryFormat_StoredOpenCard_WritesOpenDetails()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -7,18 +7,23 @@ Every verdict, list and chip comes from Conduct's caret, and these classes only 
 ## `BPlacard`
 
 This is the four chip fields of the lit card, taken together.
+It also holds the card's picture and video rows after them.
 Their order is situation, register, tag and translation.
 The order is the order of the card's parts, so a key can walk from one field to the next.
 The part is the one field that may open.
-The last part is the card's lead parts plus the four fields.
+The last part is the lead parts, the four fields, each picture and video row, and the adder row.
 The lead parts are the header and the rows of `BCard`, which `BCardLeadRead` counts.
-A folded card shows no chip field, so its last part is 0.
+A folded card shows no chip field or media row, so its last part is 0.
 The part is clamped to that last part when read, so a fold never leaves it pointing at nothing.
 Each field is built with a spot test that answers only while its part is the lit one.
 So a field opens only on the card and the part the light is on.
+The picture and video rows are drawn by `BImage` and `BVideo`, one part each, pictures first.
+The adder row ends the card and offers Add image and Add video.
+Left and Right light one of them, and Enter adds that kind.
 The Escape row shuts every open field at once and keeps the draft.
 It is live only while some field is open with no list showing, so a shown list takes Escape first.
 Closing calls the keeper only when a field was open, so a quiet close writes nothing.
+A closing field of a media row keeps the draft too.
 A change of the lit card resets every field, since text belongs to the card it was typed on.
 
 ## `BInlet`
@@ -82,7 +87,7 @@ The choice takes the card's kind and id, so a row inserts into the card it was o
 
 ## Stamp
 
-Commit: `c37ca1837ded`
+Commit: `9377e657b395`
 - `BInlet.cs` `b78149e840d967c0`
 - `BInletRow.cs` `ebe5c40765094e71`
-- `BPlacard.cs` `c84041f8d271ae1d`
+- `BPlacard.cs` `bba0cb87ad106fb4`

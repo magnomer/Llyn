@@ -147,16 +147,18 @@ A language change leaves both as chosen.
 The dropdown's second choice of the held value clears it.
 The unit and freedom chips lead the speech chips of a Joplin note.
 The print sheet writes them in the same chip row as the speeches, with no separate scope line.
+The sheet names each chip from the portrait label for the entry's unit and freedom, not through the text lookup.
+So a Korean lookup leaves the chip reading Word and Standalone.
 
 ## Stamp
 
-Commit: `c37ca1837ded`
-- `TAuthorAbsorbing.cs` `2d18dd4c46364a19`
-- `TFavorite.cs` `00998332c4948308`
-- `TGrasp.cs` `fc971b3834a60e34`
-- `TMarkdownNote.cs` `14407d8ac4c9c600`
-- `TReference.cs` `9aff50e3983b04ef`
-- `TSpeech.cs` `6f08a573cb6494d2`
-- `TSpeechRetirement.cs` `9c83a1639d8c4839`
-- `TState.cs` `40a7ada7b5110e57`
-- `TUnit.cs` `276a7c295c73568e`
+Commit: `9377e657b395`
+- `TAuthorAbsorbing.cs` `f6b2c15d6c83ffa5`
+- `TFavorite.cs` `6b5f783f464a8242`
+- `TGrasp.cs` `73b7502cc0f6787f`
+- `TMarkdownNote.cs` `59629da758f6fae1`
+- `TReference.cs` `73c7378021a554ca`
+- `TSpeech.cs` `58360baad277f7c3`
+- `TSpeechRetirement.cs` `030fd68b364ade22`
+- `TState.cs` `526cbd8fb0fcca42`
+- `TUnit.cs` `234753e14f3d69a5`

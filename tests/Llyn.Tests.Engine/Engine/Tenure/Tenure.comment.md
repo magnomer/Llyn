@@ -130,12 +130,12 @@ A typed phonetic reading and a typed respelling land on the primary pronunciatio
 
 ## Stamp
 
-Commit: `c37ca1837ded`
-- `TEasel.cs` `6a7075afbbcbe909`
+Commit: `9377e657b395`
+- `TEasel.cs` `f92eb2be2ea122ae`
 - `TEngineGloss.cs` `c1402f7638e6237b`
 - `TEngineTenure.cs` `1e2175cac1b9c907`
-- `TEngineTenureSubject.cs` `f6a05df885035ad7`
-- `TForay.cs` `c61708681cad4fd0`
-- `TForayFailure.cs` `039821f324ec1d94`
-- `TQuill.cs` `6597c8fe95bffaa8`
+- `TEngineTenureSubject.cs` `fc4cfaadc9168ecd`
+- `TForay.cs` `e517ceb07b06a639`
+- `TForayFailure.cs` `5986521ce3b3c518`
+- `TQuill.cs` `98420aeee63d4ed8`
 - `TTenureField.cs` `b93c929cdeed7a0c`

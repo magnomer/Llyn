@@ -84,7 +84,7 @@ public sealed class TDiweiArchive
     }
 
     [Fact]
-    public void DiweiRebuild_NewHypothesis_ReplacesToneClassesAndDropsOrphans()
+    public void DiweiRebuild_NullHypothesis_ClearsToneClasses()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TDiweiArchivePack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -142,7 +142,7 @@ public sealed class TDiweiArchive
     [InlineData("模", "")]
     [InlineData("W", "")]
     [InlineData("", "")]
-    public void ChongniuRead_TrailingCapital_ReadsTheLetterAlone(string rime, string expected)
+    public void ChongniuRead_TrailingCapital_ReadsLetterAlone(string rime, string expected)
     {
         Assert.Equal(expected, TInterfaceFanqie.TDiweiChongniuRead(rime));
     }

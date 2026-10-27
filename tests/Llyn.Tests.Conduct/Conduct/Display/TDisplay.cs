@@ -25,7 +25,7 @@ public sealed class TDisplay
     }
 
     [Fact]
-    public void DisplayReflexRead_LoadedReflex_PrefersIt()
+    public void DisplayReflexRead_LoadedReflex_PrefersLoadedRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -61,7 +61,7 @@ public sealed class TDisplay
     }
 
     [Fact]
-    public void DisplayCompassRead_ShownCards_NamesEachPartAndCardAndNumbersTwins()
+    public void DisplayCompassRead_ShownCards_NamesPartsAndNumbersTwins()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -116,7 +116,7 @@ public sealed class TDisplay
     }
 
     [Fact]
-    public void CompassRead_PageOrder_FollowsTheOrder()
+    public void CompassRead_PageOrder_ListsFixedSequence()
     {
         Assert.Equal(
             [
@@ -133,13 +133,13 @@ public sealed class TDisplay
     }
 
     [Fact]
-    public void CompassLitRead_MutedRowReached_LightsTheLastSelectableReached()
+    public void CompassLitRead_MutedRowReached_LightsLastSelectable()
     {
         Assert.Equal(1, CCompass.CCompassLitRead([(false, true), (false, true), (true, true), (false, false)]));
     }
 
     [Fact]
-    public void CompassLitRead_NothingReached_LightsTheFirstSelectable()
+    public void CompassLitRead_NothingReached_LightsFirstSelectable()
     {
         Assert.Equal(1, CCompass.CCompassLitRead([(true, false), (false, false), (false, false)]));
     }
@@ -159,7 +159,7 @@ public sealed class TDisplay
     [InlineData(2, 2, CFrequencyTier.CFrequencyTierAdvanced, true)]
     [InlineData(3, 3, CFrequencyTier.CFrequencyTierEveryday, true)]
     [InlineData(4, 4, CFrequencyTier.CFrequencyTierCore, true)]
-    public void DisplayFrequencyRead_HostileBand_KeepsAFullStarRow(
+    public void DisplayFrequencyRead_HostileBand_KeepsFullStarRow(
         int band, int stars, CFrequencyTier rank, bool ranked)
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

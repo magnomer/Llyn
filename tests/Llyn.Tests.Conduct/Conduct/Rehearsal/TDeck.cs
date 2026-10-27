@@ -61,7 +61,7 @@ public sealed class TDeck
     }
 
     [Fact]
-    public void DeckRead_HoldsCues_CountsThem()
+    public void DeckRead_HoldsCues_ReturnsCueCount()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -286,7 +286,7 @@ public sealed class TDeck
     }
 
     [Fact]
-    public void DeckDestinationRead_DeckInFolder_ListsTopFirstThenOtherFolders()
+    public void DeckDestinationRead_DeckInFolder_ListsTopThenOthers()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

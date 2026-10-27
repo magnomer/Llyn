@@ -54,8 +54,8 @@ An entry already on the path shows once more and then stops, so a cycle cannot l
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `TAncestor.cs` `4ada25a33d377d64`
+Commit: `9377e657b395`
+- `TAncestor.cs` `bd674d9fd2927d04`
 - `TAncestorClerk.cs` `32e5a74d6c4fc997`
-- `TAncestorSaving.cs` `8e0e044061e8fb46`
+- `TAncestorSaving.cs` `78b70c2be8ae567c`
 - `TLineage.cs` `ab0ce0d8b348f71d`

@@ -150,7 +150,7 @@ public sealed class TKeymap
     }
 
     [Fact]
-    public void Keymap_TwoRowsOnOneKey_FindsTheLiveRow()
+    public void Keymap_TwoRowsOnOneKey_FindsLiveRow()
     {
         bool editing = false;
         BKeymapRow edit = new(
@@ -171,7 +171,7 @@ public sealed class TKeymap
     }
 
     [Fact]
-    public void Keymap_HiddenRow_PassesItsKeyOn()
+    public void Keymap_HiddenRow_PassesKeyOn()
     {
         BKeymap keymap = new(
         [
@@ -184,7 +184,7 @@ public sealed class TKeymap
     }
 
     [Fact]
-    public void Keymap_DimRow_TakesItsKeyAndRunsNothing()
+    public void Keymap_DimRow_TakesKeyAndRunsNothing()
     {
         int ran = 0;
         BKeymap keymap = new(

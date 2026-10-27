@@ -12,7 +12,7 @@ public sealed class TEpoch
         TInterface.TEpochTableRead(TInterface.TLanguageLoad(TEpochLanguage));
 
     [Fact]
-    public void LanguageLoaderLoad_ClassicalChinesePack_ReadsEpochLabels()
+    public void LanguageLoaderLoad_ClassicalChinese_ReadsEpochLabels()
     {
         IReadOnlyList<LEpoch> epochs = TEpochTableRead();
 
@@ -22,7 +22,7 @@ public sealed class TEpoch
     }
 
     [Fact]
-    public void LanguageLoaderLoad_ClassicalChinesePack_GivesEveryStyleTheSharedTable()
+    public void LanguageLoaderLoad_ClassicalChinese_SharesStyleTable()
     {
         IReadOnlyList<LScriptStyle> styles = TInterface.TLanguageLoad(TEpochLanguage).LLanguageScripts;
 
@@ -49,7 +49,7 @@ public sealed class TEpoch
     }
 
     [Fact]
-    public void EpochResolve_DynastyAndPeriod_TakesTheLongerLabel()
+    public void EpochResolve_DynastyAndPeriod_TakesLongerLabel()
     {
         Assert.Equal("ZhouWesternLate", TInterface.TEpochResolve(TEpochTableRead(), "西周晚期 頌壺").LEpochFound);
         Assert.Equal("ZhouWestern", TInterface.TEpochResolve(TEpochTableRead(), "西周 頌壺").LEpochFound);
@@ -76,7 +76,7 @@ public sealed class TEpoch
     }
 
     [Fact]
-    public void EpochResolve_NoTable_LeavesTheCaptionWhole()
+    public void EpochResolve_NoTable_LeavesCaptionWhole()
     {
         (string code, string caption) = TInterface.TEpochResolve([], "西周早期 大盂鼎");
 
@@ -87,7 +87,7 @@ public sealed class TEpoch
     [Theory]
     [InlineData("en")]
     [InlineData("ko")]
-    public void LocalizationLoaderRead_EveryEpochCode_HasItsOwnText(string language)
+    public void LocalizationLoaderRead_EpochCodes_ProvidesTexts(string language)
     {
         IReadOnlyDictionary<string, string> texts = TInterface.TLocalizationLoaderRead(language);
 

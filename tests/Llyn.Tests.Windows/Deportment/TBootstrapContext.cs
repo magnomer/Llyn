@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TBootstrapContext
 {
     [Fact]
-    public void BootstrapContext_ResumesAnUnfinishedAwaitOnTheStartupThread()
+    public void ContextIntroduce_UnfinishedAwait_ResumesOnStartupThread()
     {
         int startup = 0;
         int resumed = 0;

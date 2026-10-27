@@ -11,7 +11,7 @@ namespace Llyn.Tests;
 public sealed class TCorpusPortrait
 {
     [Fact]
-    public async Task QuotationPortraitExport_EntryOnDisplay_WritesTheEntry()
+    public async Task QuotationPortraitExport_EntryOnDisplay_WritesEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

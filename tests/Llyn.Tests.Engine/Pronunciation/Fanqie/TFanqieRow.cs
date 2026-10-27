@@ -26,7 +26,7 @@ public sealed class TFanqieRow
     }
 
     [Fact]
-    public void FanqieRowFormat_UnpartedRow_KeepsOnlyItsText()
+    public void FanqieRowFormat_UnpartedRow_KeepsOnlyText()
     {
         LFanqieRow row = TInterface.TFanqieRowCreate("完", "集韻", "胡官切");
 
@@ -41,7 +41,7 @@ public sealed class TFanqieRow
     }
 
     [Fact]
-    public void FanqieGroupScan_TwoCharactersTwoBooks_HeadsEachCharacterOnce()
+    public void FanqieGroupScan_TwoBooks_HeadsEachCharacterOnce()
     {
         LFanqieBook guangyun = TInterface.TFanqieBookCreate("廣韻", "web");
         LFanqieBook wiki = TInterface.TFanqieBookCreate("廣韻", "wiki");
@@ -63,7 +63,7 @@ public sealed class TFanqieRow
     }
 
     [Fact]
-    public void FanqieRowSort_StoredOutOfDeclaredOrder_ListsRankThenBookThenReadingThenId()
+    public void FanqieRowSort_UnorderedRows_ListsRankBookReadingId()
     {
         LFanqieBook guangyun = TInterface.TFanqieBookCreate("廣韻", "廣韻");
         LFanqieBook jiyun = TInterface.TFanqieBookCreate("集韻", "集韻");
@@ -83,7 +83,7 @@ public sealed class TFanqieRow
     }
 
     [Fact]
-    public void FanqieRowSort_BookMissingFromPack_ListsItAfterDeclaredBooks()
+    public void FanqieRowSort_BookMissingFromPack_ListsLast()
     {
         IReadOnlyList<LFanqieRow> rows =
         [
@@ -98,7 +98,7 @@ public sealed class TFanqieRow
     }
 
     [Fact]
-    public void FanqieGroupScan_RankedRowInLaterBook_ListsThatBookFirstAndRowsInDeclaredOrder()
+    public void FanqieGroupScan_RankedRowInLaterBook_ListsBookFirst()
     {
         LFanqieBook guangyun = TInterface.TFanqieBookCreate("廣韻", "廣韻");
         LFanqieBook jiyun = TInterface.TFanqieBookCreate("集韻", "集韻");
@@ -118,7 +118,7 @@ public sealed class TFanqieRow
     }
 
     [Fact]
-    public void ScriptGroupScan_StylesInPackOrder_GroupsByCharacterThenStyle()
+    public void ScriptGroupScan_StylesInPackOrder_GroupsByCharacter()
     {
         IReadOnlyList<LScriptImage> images =
         [
@@ -151,7 +151,7 @@ public sealed class TFanqieRow
     }
 
     [Fact]
-    public void FanqieReadingFormat_RankedRows_ReadsEveryMarkedRowPerCharacter()
+    public void FanqieReadingFormat_RankedRows_JoinsMarkedReadings()
     {
         IReadOnlyList<LFanqieRow> rows =
         [

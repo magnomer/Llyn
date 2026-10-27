@@ -7,7 +7,7 @@ namespace Llyn.Tests;
 public sealed class TInvocationLectern
 {
     [Fact]
-    public void InvocationRun_Show_PrintsTheReadingView()
+    public void InvocationRun_Show_PrintsReadingView()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         long id;
@@ -38,7 +38,7 @@ public sealed class TInvocationLectern
     }
 
     [Fact]
-    public void InvocationRun_ShowMissingId_RefusesTheId()
+    public void InvocationRun_ShowMissingId_RefusesId()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         long id;

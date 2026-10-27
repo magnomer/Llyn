@@ -29,12 +29,13 @@ public sealed class LReflexSourceHttp : LReflexSource
     private static readonly Regex LReflexSourceOption =
         new("\\[\\[(?<body>.*?)\\]\\]", RegexOptions.CultureInvariant | RegexOptions.Singleline);
 
-    private static readonly TimeSpan LReflexSourcePatience = TimeSpan.FromSeconds(2);
+    private readonly TimeSpan _lReflexSourcePatience;
 
-    public LReflexSourceHttp(HttpClient client)
+    public LReflexSourceHttp(HttpClient client, TimeSpan patience)
     {
         ArgumentNullException.ThrowIfNull(client);
         _lReflexSourceClient = client;
+        _lReflexSourcePatience = patience;
     }
 
     public async Task<(IReadOnlyList<LReflexDraft> LReflexFound, bool LReflexReached)> LReflexSourceFind(
@@ -54,7 +55,7 @@ public sealed class LReflexSourceHttp : LReflexSource
         try
         {
             if (!string.IsNullOrEmpty(rule.LReflexRuleBusy)
-                && Regex.IsMatch(body, rule.LReflexRuleBusy, RegexOptions.CultureInvariant, LReflexSourcePatience))
+                && Regex.IsMatch(body, rule.LReflexRuleBusy, RegexOptions.CultureInvariant, _lReflexSourcePatience))
             {
                 return ([], false);
             }
@@ -67,7 +68,7 @@ public sealed class LReflexSourceHttp : LReflexSource
         }
     }
 
-    public static IReadOnlyList<LReflexDraft> LReflexSourceScan(LReflexRule rule, string character, string body)
+    public IReadOnlyList<LReflexDraft> LReflexSourceScan(LReflexRule rule, string character, string body)
     {
         ArgumentNullException.ThrowIfNull(rule);
         ArgumentNullException.ThrowIfNull(character);
@@ -75,7 +76,7 @@ public sealed class LReflexSourceHttp : LReflexSource
 
         string pattern = rule.LReflexRulePattern.Replace(
             LReflexSourceToken, Regex.Escape(character), StringComparison.Ordinal);
-        Regex line = new(pattern, LReflexSourceLoose, LReflexSourcePatience);
+        Regex line = new(pattern, LReflexSourceLoose, _lReflexSourcePatience);
 
         List<LReflexDraft> rows = [];
         foreach (Match match in line.Matches(body))
@@ -145,7 +146,7 @@ public sealed class LReflexSourceHttp : LReflexSource
             .Trim();
     }
 
-    private static IReadOnlyList<string> LReflexPieceScan(LReflexRule rule, string text)
+    private IReadOnlyList<string> LReflexPieceScan(LReflexRule rule, string text)
     {
         if (string.IsNullOrEmpty(rule.LReflexRuleSplit) || text.Length == 0)
         {
@@ -153,7 +154,8 @@ public sealed class LReflexSourceHttp : LReflexSource
         }
 
         List<string> pieces = [];
-        foreach (string piece in Regex.Split(text, rule.LReflexRuleSplit, LReflexSourceLoose, LReflexSourcePatience))
+        foreach (string piece in Regex.Split(
+            text, rule.LReflexRuleSplit, LReflexSourceLoose, _lReflexSourcePatience))
         {
             string trimmed = piece.Trim();
             if (trimmed.Length > 0)
@@ -165,7 +167,7 @@ public sealed class LReflexSourceHttp : LReflexSource
         return pieces.Count == 0 ? [text] : pieces;
     }
 
-    private static (string LReflexNote, string LReflexMeaning) LReflexGlossRead(
+    private (string LReflexNote, string LReflexMeaning) LReflexGlossRead(
         LReflexRule rule, string body, Match match, string roman)
     {
         string note = LReflexGroupRead(match, LReflexRule.LReflexRuleNote);
@@ -175,7 +177,7 @@ public sealed class LReflexSourceHttp : LReflexSource
             : LReflexGlossFind(rule, body, match.Index + match.Length, roman);
     }
 
-    private static (string LReflexNote, string LReflexMeaning) LReflexGlossFind(
+    private (string LReflexNote, string LReflexMeaning) LReflexGlossFind(
         LReflexRule rule, string body, int start, string roman)
     {
         if (string.IsNullOrEmpty(rule.LReflexRuleGloss) || roman.Length == 0 || start >= body.Length)
@@ -186,7 +188,8 @@ public sealed class LReflexSourceHttp : LReflexSource
         int end = body.Length;
         if (!string.IsNullOrEmpty(rule.LReflexRuleUntil))
         {
-            Match stop = new Regex(rule.LReflexRuleUntil, LReflexSourceLoose, LReflexSourcePatience).Match(body, start);
+            Match stop = new Regex(rule.LReflexRuleUntil, LReflexSourceLoose, _lReflexSourcePatience)
+                .Match(body, start);
             if (stop.Success)
             {
                 end = stop.Index;
@@ -195,7 +198,8 @@ public sealed class LReflexSourceHttp : LReflexSource
 
         string pattern = rule.LReflexRuleGloss.Replace(
             "{" + LReflexRule.LReflexRuleRomanization + "}", Regex.Escape(roman), StringComparison.Ordinal);
-        Match found = new Regex(pattern, LReflexSourceLoose, LReflexSourcePatience).Match(body, start, end - start);
+        Match found = new Regex(pattern, LReflexSourceLoose, _lReflexSourcePatience)
+            .Match(body, start, end - start);
         return found.Success
             ? (LReflexGroupRead(found, LReflexRule.LReflexRuleNote),
                 LReflexGroupRead(found, LReflexRule.LReflexRuleMeaning))

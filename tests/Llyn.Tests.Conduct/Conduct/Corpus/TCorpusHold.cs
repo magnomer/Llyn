@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TCorpusHold
 {
     [Fact]
-    public void CorpusCreate_TranscriptEdited_HandsTheHeldExampleThroughTheMarshal()
+    public void CorpusCreate_TranscriptEdited_RoutesDraftViaMarshal()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -41,7 +41,7 @@ public sealed class TCorpusHold
     }
 
     [Fact]
-    public void CorpusTranscriptChanged_StoredExampleThenCancel_RaisesItsTallyThenABlankExample()
+    public void TranscriptChanged_StoredThenCancel_RaisesTallyThenBlank()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -69,7 +69,7 @@ public sealed class TCorpusHold
     }
 
     [Fact]
-    public void AtelierClose_QuotingEntryOnTheEditor_CancelsTheEditorDeskAndStopsPlayback()
+    public void AtelierClose_QuotingEntry_CancelsDeskStopsPlayback()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -89,9 +89,9 @@ Only a change of length moves the later spans.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `TRequest.cs` `50746c3c8c590192`
-- `TRequestGloss.cs` `7812b66c298ffbe8`
-- `TRequestList.cs` `fbebdd5557b297cc`
-- `TRequestMention.cs` `8c77716a894e181c`
-- `TRequestSituation.cs` `d3464c9cd4221713`
+Commit: `9377e657b395`
+- `TRequest.cs` `82f995465716dab5`
+- `TRequestGloss.cs` `79d804e1a57abd67`
+- `TRequestList.cs` `f2472021678351ec`
+- `TRequestMention.cs` `60240776dab6ce7f`
+- `TRequestSituation.cs` `ec54f86c0786f306`

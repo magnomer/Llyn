@@ -64,7 +64,7 @@ public sealed class TClaim
     }
 
     [Fact]
-    public void LeftoverRead_ClaimHeldByAnotherProcess_PassesOverIt()
+    public void LeftoverRead_ClaimHeldByAnotherProcess_SkipsDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         Process held = TClaimProcessStart();
@@ -91,7 +91,7 @@ public sealed class TClaim
     }
 
     [Fact]
-    public void DraftCommit_StoredDraft_DropsItsClaim()
+    public void DraftCommit_StoredDraft_DropsClaim()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -107,7 +107,7 @@ public sealed class TClaim
     }
 
     [Fact]
-    public void DraftCancel_DiscardedDraft_DropsItsClaim()
+    public void DraftCancel_DiscardedDraft_DropsClaim()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 public sealed class TContourLevel
 {
     [Fact]
-    public void ContourRead_LevelsOffScale_DropsThemAndTheTone()
+    public void ContourRead_LevelsOffScale_DropsLevelsAndTone()
     {
         IReadOnlyList<CContour> syllables = TInterfaceConductSound.TContourRead(
             [

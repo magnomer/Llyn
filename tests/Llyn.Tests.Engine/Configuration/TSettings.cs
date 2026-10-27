@@ -238,7 +238,7 @@ public sealed class TSettings
     }
 
     [Fact]
-    public void SettingsLoad_LegacyBoxKeys_LoadsTheOtherFieldsAndDropsThemOnSave()
+    public void SettingsLoad_LegacyBoxKeys_DropsKeysOnSave()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         string path = Path.Combine(workspace.TWorkspaceFolder, "settings.json");
@@ -294,7 +294,7 @@ public sealed class TSettings
     [Theory]
     [InlineData("  Lexicon  ", "Lexicon")]
     [InlineData("   ", "Llyn")]
-    public void NotebookSave_TypedTitle_StoresTheResolvedTitle(string typed, string stored)
+    public void NotebookSave_TypedTitle_StoresResolvedTitle(string typed, string stored)
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

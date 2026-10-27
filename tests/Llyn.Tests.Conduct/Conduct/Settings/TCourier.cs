@@ -47,7 +47,7 @@ public sealed class TCourier
     }
 
     [Fact]
-    public async Task CourierSend_RefusedToken_DropsTheTokenAndShowsConnect()
+    public async Task CourierSend_RefusedToken_DropsTokenAndShowsConnect()
     {
         List<string> asked = [];
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -68,7 +68,7 @@ public sealed class TCourier
     }
 
     [Fact]
-    public async Task CourierSend_FirstPush_SavesNotebooksAndReconstructionNotes()
+    public async Task CourierSend_FirstPush_SavesReconstructionNotes()
     {
         TOutpostFake outpost = new();
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -86,7 +86,7 @@ public sealed class TCourier
     }
 
     [Fact]
-    public async Task CourierSend_SecondPush_KeepsTheReconstructionNotes()
+    public async Task CourierSend_SecondPush_KeepsReconstructionNotes()
     {
         TOutpostFake outpost = new();
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -102,7 +102,7 @@ public sealed class TCourier
     }
 
     [Fact]
-    public async Task CourierSend_GoneSeries_TrashesItsNote()
+    public async Task CourierSend_GoneSeries_TrashesSeriesNote()
     {
         TOutpostFake outpost = new();
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -118,7 +118,7 @@ public sealed class TCourier
     }
 
     [Fact]
-    public async Task CourierSend_StoredSeries_LinksTheEntryChipToItsNote()
+    public async Task CourierSend_StoredSeries_LinksEntryChipToNote()
     {
         TOutpostFake outpost = new();
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -134,7 +134,7 @@ public sealed class TCourier
     }
 
     [Fact]
-    public async Task CourierSend_UnsentSeries_LeavesTheEntryChipPlain()
+    public async Task CourierSend_UnsentSeries_LeavesEntryChipPlain()
     {
         TOutpostFake outpost = new();
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -149,7 +149,7 @@ public sealed class TCourier
     }
 
     [Fact]
-    public async Task CourierSend_NotebookRenamed_RenamesTheSameTopNotebook()
+    public async Task CourierSend_NotebookRenamed_RenamesSameTopNotebook()
     {
         TOutpostFake outpost = new();
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -169,7 +169,7 @@ public sealed class TCourier
     }
 
     [Fact]
-    public async Task CourierSend_LanguageGoneFromEntriesAndScan_GuardRefusesToTrashItsSeriesNote()
+    public async Task CourierSend_LanguageGone_KeepsSeriesNote()
     {
         TOutpostFake outpost = new();
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -189,7 +189,7 @@ public sealed class TCourier
     }
 
     [Fact]
-    public async Task CourierSend_InitialRimeAndToneCategories_FilesEachNoteInItsNotebookAndLinksTheEntryChips()
+    public async Task CourierSend_FanqieCategories_FilesNotesAndLinksChips()
     {
         TOutpostFake outpost = new();
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -234,7 +234,7 @@ public sealed class TCourier
     }
 
     [Fact]
-    public async Task CourierSend_SeriesNoteFailsToSave_ListsItsTitleAndLeavesTheEntryChipPlain()
+    public async Task CourierSend_SeriesNoteFailsToSave_ListsFailedTitle()
     {
         TOutpostFake outpost = new();
         outpost.TOutpostFakeRefusal.Add("龍");
@@ -251,7 +251,7 @@ public sealed class TCourier
     }
 
     [Fact]
-    public async Task CourierSend_LanguageFailsToRead_SendsItsEntriesWithoutItsNotesAndTrashesNothing()
+    public async Task CourierSend_LanguageFailsToRead_TrashesNothing()
     {
         TOutpostFake outpost = new();
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

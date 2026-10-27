@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 public sealed class TExampleLine
 {
     [Fact]
-    public void EngineLineRead_TrailingOrder_WritesTheRoleBeforeTheMarker()
+    public void EngineLineRead_TrailingOrder_WritesRoleBeforeMarker()
     {
         LSentenceDraft sentence = TInterfaceExample.TSentenceDraftCreate(
             "an example", 0, LStateAnchor.LStateAnchorUnspecified, "of", "Something");
@@ -23,7 +23,7 @@ public sealed class TExampleLine
     }
 
     [Fact]
-    public void EngineLineRead_UnknownMarker_WritesTheMark()
+    public void EngineLineRead_UnknownMarker_WritesMark()
     {
         LSentenceDraft sentence = TInterfaceExample.TSentenceDraftCreate(
             LStateValue.LStateValueUnknown, LStateValue.LStateValueUnspecified);
@@ -35,7 +35,7 @@ public sealed class TExampleLine
     }
 
     [Fact]
-    public void EngineLineRead_EmptyFields_DropsTheHead()
+    public void EngineLineRead_EmptyFields_DropsHead()
     {
         LSentenceDraft marker = TInterfaceExample.TSentenceDraftCreate("to", LStateValue.LStateValueUnspecified);
         LSentenceDraft none = TInterfaceExample.TSentenceDraftCreate(
@@ -50,7 +50,7 @@ public sealed class TExampleLine
     }
 
     [Fact]
-    public void EngineLineRead_CitedSource_AnswersItsLine()
+    public void EngineLineRead_CitedSource_AnswersCitation()
     {
         LSentenceDraft cited = TInterfaceExample.TSentenceDraftCreate("a line", 0, TInterface.TStateAnchorCreate(5));
         LSentenceDraft lost = TInterfaceExample.TSentenceDraftCreate("a line", 0, TInterface.TStateAnchorCreate(6));
@@ -64,7 +64,7 @@ public sealed class TExampleLine
     }
 
     [Fact]
-    public void EngineLineRead_LinkedMention_DividesTheSentenceAroundIt()
+    public void EngineLineRead_LinkedMention_DividesSentence()
     {
         LSentenceDraft sentence = TInterfaceExample.TSentenceDraftCreate("the cat sat");
         sentence = sentence with

@@ -46,7 +46,7 @@ An unknown slot survives a reopen of the same workspace, so it does not ask the 
 An entry no source could be reached for is asked again after a reopen, since nothing was stored.
 A hand set after the reopen deletes the lacuna rows, so the web may be asked again.
 
-## `InflectionStart_BothFormsFound_MarksSlotsSpecifiedRaisesOnce`
+## `InflectionStart_BothFormsFound_MarksSlotsSpecified`
 
 The frequency fill is switched off first, so the stub client only sees the morphology request.
 The short wait after the bulletin lets a second bulletin land if the fetch wrongly raised twice.
@@ -157,10 +157,10 @@ With every cell as predicted no display slot remains, yet the font language stil
 
 ## Stamp
 
-Commit: `c37ca1837ded`
-- `TEngineInflectionCell.cs` `b84f4974489b1e07`
-- `TEngineInflectionFetch.cs` `005f94240360259f`
+Commit: `9377e657b395`
+- `TEngineInflectionCell.cs` `970d743b104e86be`
+- `TEngineInflectionFetch.cs` `6426c656494ad635`
 - `TEngineInflectionHeld.cs` `30cac3cd224a8078`
 - `TEngineInflectionRegular.cs` `30dfcb246d3dbb7a`
-- `TEngineParadigm.cs` `16fddf3b493beeab`
-- `TEngineParadigmView.cs` `b0d30c06175ac036`
+- `TEngineParadigm.cs` `e17434bf9fc8b8a2`
+- `TEngineParadigmView.cs` `73336d0f19801821`

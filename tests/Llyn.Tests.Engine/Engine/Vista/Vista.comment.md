@@ -95,11 +95,11 @@ A key never stored answers nothing.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `TEngineFellow.cs` `029ab233ddf9f890`
-- `TEngineTenureVista.cs` `4f996cf9289b7ea7`
-- `TEngineVista.cs` `e9cb70f4eea963de`
+Commit: `9377e657b395`
+- `TEngineFellow.cs` `2735c6fb7b6b0a4b`
+- `TEngineTenureVista.cs` `dfb4b4b7348cf02d`
+- `TEngineVista.cs` `de1fc64e14ba441c`
 - `TEngineVistaBulletin.cs` `0a1ba9717c4eacd6`
-- `TEngineVistaList.cs` `65473bd9496f0185`
-- `TEngineVistaRelay.cs` `b4e9f899151dd3c6`
-- `TEngineXiaoyun.cs` `ab8517408741cd07`
+- `TEngineVistaList.cs` `1421427398e7e300`
+- `TEngineVistaRelay.cs` `573b5f858d89ec51`
+- `TEngineXiaoyun.cs` `c7580df10b93bc98`

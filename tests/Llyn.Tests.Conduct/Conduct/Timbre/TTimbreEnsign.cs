@@ -11,7 +11,7 @@ namespace Llyn.Tests;
 public sealed class TTimbreEnsign
 {
     [Fact]
-    public async Task TimbreFlagRead_FlaggedPack_StoresTheVarietyFlagsAndAnswersTheSheet()
+    public async Task TimbreFlagRead_FlaggedPack_StoresFlagsAndAnswersSheet()
     {
         using TLanguageFixture pack = TDisplayAccent.TDisplayPackCreate();
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -64,7 +64,7 @@ public sealed class TTimbreEnsign
     }
 
     [Fact]
-    public async Task TimbreFlagRead_UnflaggedPack_AnswersNothingAndLoadsNothing()
+    public async Task TimbreFlagRead_UnflaggedPack_LoadsNothing()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("{}");
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

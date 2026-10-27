@@ -30,7 +30,7 @@ public sealed class TDraftCommitting
     }
 
     [Fact]
-    public void DraftCommit_PaddedHeadword_StoresItTrimmed()
+    public void DraftCommit_PaddedHeadword_StoresTrimmed()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -62,7 +62,7 @@ public sealed class TDraftCommitting
     }
 
     [Fact]
-    public void DraftCheck_BlankHeadword_NamesTheRefusal()
+    public void DraftCheck_BlankHeadword_NamesRefusal()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -77,7 +77,7 @@ public sealed class TDraftCommitting
     }
 
     [Fact]
-    public void DraftCheck_BlankAuthorName_NamesTheRefusalUntilNamed()
+    public void DraftCheck_BlankAuthorName_NamesRefusalUntilNamed()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -129,7 +129,7 @@ public sealed class TDraftCommitting
     }
 
     [Fact]
-    public void RequestApply_CollocationSituationPickOnCardZero_LandsOnFirstMeaning()
+    public void RequestApply_ZeroCollocationCard_LandsOnFirstMeaning()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();

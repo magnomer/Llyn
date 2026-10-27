@@ -60,7 +60,7 @@ public sealed class TEngineReflexStore
     }
 
     [Fact]
-    public async Task ReflexRebuild_RowsStored_DropsThemAndFetchesAgain()
+    public async Task ReflexRebuild_RowsStored_DropsAndFetchesAgain()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TReflexFixture.TReflexPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -86,7 +86,7 @@ public sealed class TEngineReflexStore
     }
 
     [Fact]
-    public async Task ReflexRebuild_HandTypedMeaning_RestoresItByRowShape()
+    public async Task ReflexRebuild_HandTypedMeaning_RestoresByRowShape()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TReflexMeaningPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -115,7 +115,7 @@ public sealed class TEngineReflexStore
     }
 
     [Fact]
-    public async Task ReflexRebuild_ScrapedMeaning_ReadsTheCorrectedSource()
+    public async Task ReflexRebuild_ScrapedMeaning_ReadsCorrectedSource()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TReflexMeaningPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -199,7 +199,7 @@ public sealed class TEngineReflexStore
     }
 
     [Fact]
-    public async Task ReflexStart_HeldDraftWithoutRows_FillsTheDraft()
+    public async Task ReflexStart_HeldDraftWithoutRows_FillsDraft()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TReflexFixture.TReflexPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -236,7 +236,7 @@ public sealed class TEngineReflexStore
         """;
 
     [Fact]
-    public void EpithetSave_RulesListedOutOfPackOrder_JoinsPiecesInDeclaredOrder()
+    public void EpithetSave_UnorderedRules_JoinsInDeclaredOrder()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TReflexEpithetPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -257,7 +257,7 @@ public sealed class TEngineReflexStore
     }
 
     [Fact]
-    public void WorkspaceOpen_MigratedBlankColumns_DerivesEpithetAndRespelling()
+    public void WorkspaceOpen_MigratedBlankColumns_DerivesBothColumns()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TReflexFixture.TReflexPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

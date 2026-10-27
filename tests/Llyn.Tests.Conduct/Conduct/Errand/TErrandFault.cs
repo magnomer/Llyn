@@ -11,7 +11,7 @@ namespace Llyn.Tests;
 public sealed class TErrandFault
 {
     [Fact]
-    public async Task PreviewStart_HostBroken_ShowsTheNoticeAndMarksTheReadingRefused()
+    public async Task PreviewStart_HostBroken_ShowsNoticeAndMarksRefused()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("{}");
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
@@ -34,7 +34,7 @@ public sealed class TErrandFault
     }
 
     [Fact]
-    public async Task RecordingSave_HostBroken_ShowsTheNoticeAndOffersTheRetry()
+    public async Task RecordingSave_HostBroken_ShowsNoticeAndOffersRetry()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("{}");
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
@@ -57,7 +57,7 @@ public sealed class TErrandFault
     }
 
     [Fact]
-    public async Task RecordingSave_StoreFaults_ShowsTheNoticeRecordsTheFaultAndOffersTheRetry()
+    public async Task RecordingSave_StoreFaults_RecordsFaultAndOffersRetry()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("{}");
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
@@ -87,7 +87,7 @@ public sealed class TErrandFault
     }
 
     [Fact]
-    public async Task PreviewStart_StoreFaults_ShowsTheNoticeRecordsTheFaultAndMarksTheReadingRefused()
+    public async Task PreviewStart_StoreFaults_RecordsFaultAndMarksRefused()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("{}");
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
@@ -114,7 +114,7 @@ public sealed class TErrandFault
     }
 
     [Fact]
-    public async Task ErrandEnsignLoad_FlagBroken_ShowsTheNotice()
+    public async Task ErrandEnsignLoad_FlagBroken_ShowsNotice()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(
             "{ \"varieties\": { \"shown\": \"flag\", \"list\": [ { \"name\": \"British\", \"flag\": \"gb\" } ] } }");

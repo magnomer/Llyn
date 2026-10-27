@@ -133,12 +133,12 @@ A chip of a record never saved is disabled, and a stored chip stays enabled.
 
 ## Stamp
 
-Commit: `c37ca1837ded`
-- `TBerthSeat.cs` `75eb74163de8d120`
-- `TCardHinge.cs` `b1f2ffb9898ed7cc`
+Commit: `9377e657b395`
+- `TBerthSeat.cs` `a99f5301812862be`
+- `TCardHinge.cs` `523920c947648f34`
 - `TCardOrdinal.cs` `ecf2476428289e78`
 - `TCardRow.cs` `618531bdc90512ef`
 - `TCaretKey.cs` `6eaf4b7930a95206`
-- `TEditorCardWalk.cs` `561f7a9ade36a86f`
-- `TLecternHinge.cs` `aa4e3734e262bd24`
-- `TLecternWord.cs` `1499663521c44396`
+- `TEditorCardWalk.cs` `e8cbd7f5a3860147`
+- `TLecternHinge.cs` `67496750ce7f996b`
+- `TLecternWord.cs` `68bd0cc4289e13e6`

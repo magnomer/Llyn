@@ -16,7 +16,7 @@ public sealed class TBerthSeat
     [InlineData("b", 1)]
     [InlineData(null, 3)]
     [InlineData("gone", 3)]
-    public void BerthAnchor_SeatsTheEntryBeforeItsChipWithoutTouchingTheChips(string? anchor, int seat)
+    public void BerthAnchor_ChipAnchor_SeatsEntryBeforeChip(string? anchor, int seat)
     {
         List<object>? order = null;
         TextBox? entry = null;

@@ -98,7 +98,7 @@ public sealed class TSourceGeneric
     }
 
     [Fact]
-    public async Task SourceFind_DecodedAttempt_MatchesEntityWrittenCharacters()
+    public async Task SourceFind_DecodedAttempt_MatchesEntityCharacters()
     {
         const string body = "<title>&#x6574; - site</title><td>&#x56DB;&#x5E93;</td><td>&#x6574;</td><td>48825</td>";
         LSourceReading count = TInterfaceSource.TSourceReadingCreate(
@@ -340,6 +340,24 @@ public sealed class TSourceGeneric
 
         Assert.True(answer.LAnswerEmpty);
         Assert.False(answer.LAnswerReached);
+    }
+
+    [Fact]
+    public async Task SourceFind_ServerFailure_AsksOnce()
+    {
+        TSourceHandler handler = new(string.Empty, HttpStatusCode.InternalServerError);
+        using HttpClient client = new(handler);
+        LSource source = TInterfaceSource.TSourceGenericCreate(
+            TInterfaceSource.TSourceSpecCreate(
+                "Stub",
+                [TPronunciationHelper.TSourceAttemptCreate(
+                    TPronunciationHelper.TSourceReadingCreate("British", "span", TSourceGenericBritish))]),
+            client);
+
+        LAnswer answer = await source.TSourceFind("tomato", CancellationToken.None);
+
+        Assert.False(answer.LAnswerReached);
+        Assert.Equal(1, handler.TSourceHandlerCount);
     }
 
     private static LSource TSourceGenericCreate(string body, LSourceAttempt attempt)

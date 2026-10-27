@@ -30,7 +30,7 @@ public sealed class TEngineFrequencyBand
     }
 
     [Fact]
-    public void FrequencyRead_StaleStoredBand_RegradesFromRawAndStoresIt()
+    public void FrequencyRead_StaleStoredBand_RegradesAndStores()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineFrequency.TEngineFrequencyPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -51,7 +51,7 @@ public sealed class TEngineFrequencyBand
     }
 
     [Fact]
-    public void FrequencyRead_MigratedRowWithoutBand_ResolvesAndStoresIt()
+    public void FrequencyRead_MigratedRowWithoutBand_ResolvesAndStores()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineFrequency.TEngineFrequencyPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -69,7 +69,7 @@ public sealed class TEngineFrequencyBand
     }
 
     [Fact]
-    public void FrequencyRead_BlankLanguageWithStoredRow_LeavesBandAndOnceNull()
+    public void FrequencyRead_BlankLanguage_LeavesBandAndOnceNull()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

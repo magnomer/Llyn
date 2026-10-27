@@ -13,7 +13,7 @@ public sealed class TEditorKey
     private static readonly ConsoleKeyInfo TEditorKeyEight = new('\0', ConsoleKey.F8, false, false, false);
 
     [Fact]
-    public void EditorKeymap_ControlPageUpOnALaterCard_LightsThePreviousCardHeader()
+    public void EditorKeymap_ControlPageUpOnLaterCard_LightsPrevious()
     {
         TEditorFrame.TEditorFrameRun(
             [],
@@ -45,7 +45,7 @@ public sealed class TEditorKey
     }
 
     [Fact]
-    public void LibraryKeymap_F8WhileEditing_AsksBeforeDeletingTheEditedEntry()
+    public void LibraryKeymap_F8WhileEditing_AsksBeforeDelete()
     {
         List<string> asked = [];
         TEditorFrame.TEditorFrameRun(
@@ -63,7 +63,7 @@ public sealed class TEditorKey
     }
 
     [Fact]
-    public void LibraryKeymap_F8WhileEditing_IsLiveAndKeepsTheEntryWhenDeclined()
+    public void LibraryKeymap_F8WhileEditingDeclined_IsLiveKeepsEntry()
     {
         TFavoriteTab.TFavoriteTabRun(
             [("apple", "English", 0)],
@@ -84,7 +84,7 @@ public sealed class TEditorKey
     }
 
     [Fact]
-    public void InputKeymap_F8WhileEditing_LeavesTheDraftAlone()
+    public void InputKeymap_F8WhileEditing_LeavesDraftAlone()
     {
         TEditorFrame.TEditorWindowRun(
             (window, atelier, console) =>
@@ -107,7 +107,7 @@ public sealed class TEditorKey
     }
 
     [Fact]
-    public void LibraryKeymap_TabFromTheList_GoesBackToTheEditor()
+    public void LibraryKeymap_TabFromList_GoesBackToEditor()
     {
         TEditorFrame.TEditorFrameRun(
             ["fire"],
@@ -125,7 +125,7 @@ public sealed class TEditorKey
     }
 
     [Fact]
-    public void EditorKeymap_EscapeOnAnOpenField_ClosesItAndKeepsTheHeadwordLit()
+    public void EditorKeymap_EscapeOnOpenField_ClosesKeepingHeadwordLit()
     {
         TEditorFrame.TEditorFrameRun(
             ["fire"],
@@ -145,7 +145,7 @@ public sealed class TEditorKey
     }
 
     [Fact]
-    public void EditorKeymap_UpAndDownOnAnOpenField_CloseItAndMoveTheLight()
+    public void EditorKeymap_UpAndDownOnOpenField_ClosesAndMovesLight()
     {
         TEditorFrame.TEditorFrameRun(
             ["fire"],
@@ -192,7 +192,7 @@ public sealed class TEditorKey
     }
 
     [Fact]
-    public void EditorDraw_AltThreeAtANarrowWidth_KeepsTheChosenTabWhole()
+    public void EditorDraw_AltThreeAtNarrowWidth_KeepsChosenTabWhole()
     {
         TEditorFrame.TEditorFrameRun(
             ["fire"],

@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 public sealed class TInvocationPortrait
 {
     [Fact]
-    public void InvocationRun_ImportYes_PrintsTheCount()
+    public void InvocationRun_ImportYes_PrintsCount()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         long id;
@@ -33,7 +33,7 @@ public sealed class TInvocationPortrait
     }
 
     [Fact]
-    public void InvocationRun_ImportTerminalYes_ShowsTheRowsAndImports()
+    public void InvocationRun_ImportTerminalYes_ShowsRowsAndImports()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         string file = TInterface.TMarkupSave(workspace, TInterface.TMarkupLone);
@@ -72,7 +72,7 @@ public sealed class TInvocationPortrait
     }
 
     [Fact]
-    public void InvocationRun_ExportTo_PrintsThePath()
+    public void InvocationRun_ExportTo_PrintsPath()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         long id;
@@ -119,7 +119,7 @@ public sealed class TInvocationPortrait
     }
 
     [Fact]
-    public void InvocationRun_ExportMissingId_RefusesTheId()
+    public void InvocationRun_ExportMissingId_RefusesId()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         long id;

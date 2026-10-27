@@ -55,7 +55,7 @@ public sealed class TImprintCredit
     }
 
     [Fact]
-    public void ImprintAuthorAdd_BlankRow_OnlyAsksForTheCaret()
+    public void ImprintAuthorAdd_BlankRow_AsksOnlyForCaret()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -80,7 +80,7 @@ public sealed class TImprintCredit
     }
 
     [Fact]
-    public void ImprintAuthorMove_FirstCreditLater_ShiftsItBack()
+    public void ImprintAuthorMove_FirstCreditLater_ShiftsCreditBack()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -144,7 +144,7 @@ public sealed class TImprintCredit
     }
 
     [Fact]
-    public void ImprintAuthorFinish_BlankNameOnBlankRow_KeepsTheBlankRow()
+    public void ImprintAuthorFinish_BlankNameOnBlankRow_KeepsBlankRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -188,7 +188,7 @@ public sealed class TImprintCredit
     }
 
     [Fact]
-    public void ImprintAuthorCancel_NoBylineOffered_RevertsTheField()
+    public void ImprintAuthorCancel_NoBylineOffered_RevertsField()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

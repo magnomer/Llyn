@@ -36,7 +36,7 @@ public sealed class TTranslationClerk
     }
 
     [Fact]
-    public void TranslationWordRead_PaddedOrBlankText_AnswersTheTrimmedWordOrNothing()
+    public void TranslationWordRead_PaddedOrBlank_ReturnsTrimmedOrNull()
     {
         Assert.Equal("chat", TInterface.TTranslationWordRead("  chat "));
         Assert.Equal("chat noir", TInterface.TTranslationWordRead("chat noir"));
@@ -45,7 +45,7 @@ public sealed class TTranslationClerk
     }
 
     [Fact]
-    public void TranslationClerkResolve_TwoEntriesShareHeadword_AnswersNothing()
+    public void TranslationClerkResolve_SharedHeadword_ReturnsNull()
     {
         TVaultFake entries = new();
         entries.TVaultFakeAdd(TInterface.TEntryCreate(0, "break", "English", 0, null, null));
@@ -56,7 +56,7 @@ public sealed class TTranslationClerk
     }
 
     [Fact]
-    public void TranslationClerkResolve_OneExactHeadword_AnswersIt()
+    public void TranslationClerkResolve_OneExactHeadword_ReturnsEntry()
     {
         TVaultFake entries = new();
         entries.TVaultFakeAdd(TInterface.TEntryCreate(0, "breakfast", "English", 0, null, null));

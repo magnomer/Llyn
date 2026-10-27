@@ -63,6 +63,8 @@ public sealed class CDesk
 
     internal CVigil CDeskVigil { get; }
 
+    internal CEnvoy CDeskEnvoy => _cDeskEnvoy;
+
     public bool CDeskHeld => CDeskDraft.CDeskDraftTenure is not null;
 
     public long CDeskId => CDeskDraft.CDeskDraftTenure?.LTenureId ?? 0;

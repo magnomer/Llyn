@@ -7,7 +7,7 @@ namespace Llyn.Tests;
 public sealed class TPortraitPage
 {
     [Fact]
-    public void PortraitRead_ExampleWithGlossAndSource_CarriesWhatTheExcerptShows()
+    public void PortraitRead_ExampleGlossAndSource_CarriesExcerpt()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -28,7 +28,7 @@ public sealed class TPortraitPage
     }
 
     [Fact]
-    public void PortraitRead_UnwrittenExample_FallsBackToTheUnwrittenWord()
+    public void PortraitRead_UnwrittenExample_FallsBackToUnwritten()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -44,7 +44,7 @@ public sealed class TPortraitPage
     }
 
     [Fact]
-    public void PortraitRead_SourceWithCredits_CarriesWhatTheColophonShows()
+    public void PortraitRead_SourceWithCredits_CarriesColophon()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -65,7 +65,7 @@ public sealed class TPortraitPage
     }
 
     [Fact]
-    public void PortraitRead_SituationWithDescription_CarriesItAsANote()
+    public void PortraitRead_SituationWithDescription_CarriesNote()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -94,7 +94,7 @@ public sealed class TPortraitPage
     }
 
     [Fact]
-    public void PortraitPageOpen_FoldedRow_ClearsTheFold()
+    public void PortraitPageOpen_FoldedRow_ClearsFold()
     {
         LPortraitPage opened = TInterface.TPortraitPageOpen(TPortraitSample.TPortraitRowCreate());
 
@@ -131,7 +131,7 @@ public sealed class TPortraitPage
     }
 
     [Fact]
-    public async Task PortraitPrint_ExampleOnFakePress_HandsThePageToThePressToPrint()
+    public async Task PortraitPrint_ExampleOnFakePress_HandsPageToPress()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -6,7 +6,7 @@ namespace Llyn.Tests;
 public sealed class TLanguageLoaderHan
 {
     [Fact]
-    public void LanguageLoad_ScriptStyles_ReadsFormPatternGroupsAndRewrite()
+    public void LanguageLoad_ScriptStyles_ReadsFormPatternAndRewrite()
     {
         LLanguage language = TInterface.TLanguageLoad("Classical Chinese");
 
@@ -81,7 +81,7 @@ public sealed class TLanguageLoaderHan
         Assert.Null(language.LLanguageHypothesis);
     }
     [Fact]
-    public void LanguageLoad_HypothesisNamesFile_ReadsTablesFromPackFolder()
+    public void LanguageLoad_HypothesisNamesFile_ReadsPackFolderTables()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(
             """
@@ -99,7 +99,7 @@ public sealed class TLanguageLoaderHan
         Assert.Equal("o", hypothesis.LHypothesisFinals["模 一"]);
     }
     [Fact]
-    public void LanguageLoad_HypothesisNamesMissingOrOutsideFile_ReadsNull()
+    public void LanguageLoad_HypothesisFileMissingOrOutside_ReadsNull()
     {
         using TLanguageFixture missing = TLanguageFixture.TLanguageFixtureCreate(
             """
@@ -114,7 +114,7 @@ public sealed class TLanguageLoaderHan
         Assert.Null(TInterface.TLanguageLoad(outside.TLanguageFixtureName).LLanguageHypothesis);
     }
     [Fact]
-    public void LanguageLoad_FanqieMissingMatch_SkipsThatBook()
+    public void LanguageLoad_FanqieMissingMatch_SkipsBook()
     {
         LLanguage language = TLanguageHanLoad(
             """
@@ -132,7 +132,7 @@ public sealed class TLanguageLoaderHan
         Assert.Equal(0, book.LFanqieBookInterval);
     }
     [Fact]
-    public void LanguageLoad_ScriptMissingMatch_SkipsThatStyle()
+    public void LanguageLoad_ScriptMissingMatch_SkipsStyle()
     {
         LLanguage language = TLanguageHanLoad(
             """

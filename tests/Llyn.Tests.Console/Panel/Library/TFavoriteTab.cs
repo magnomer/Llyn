@@ -12,7 +12,7 @@ public sealed class TFavoriteTab
         [.. Enumerable.Repeat(ConsoleKey.DownArrow, 4), ConsoleKey.Enter];
 
     [Fact]
-    public void LibraryKeymap_ControlFunctionKeys_PickTheFiveOrderings()
+    public void LibraryKeymap_ControlFunctionKeys_PicksFiveOrderings()
     {
         TFavoriteTabRun(
             [("apple", "English", 0), ("fire", "French", 0)],
@@ -38,7 +38,7 @@ public sealed class TFavoriteTab
     }
 
     [Fact]
-    public void LibraryKeymap_NoNew_LeavesFunctionSevenBlankAndOffersExportAlone()
+    public void LibraryKeymap_NoNew_LeavesSevenBlankExportOnly()
     {
         TFavoriteTabRun(
             [("apple", "English", 0)],
@@ -53,7 +53,7 @@ public sealed class TFavoriteTab
     }
 
     [Fact]
-    public void LibraryKeymap_FunctionSixOnTheChosenRow_UnmarksItAndLightsTheRowInItsPlace()
+    public void LibraryKeymap_FunctionSixOnChosenRow_UnmarksHoldsLight()
     {
         TFavoriteTabRun(
             [("apple", "English", 0), ("fire", "English", 0), ("stone", "English", 0)],
@@ -77,7 +77,7 @@ public sealed class TFavoriteTab
     }
 
     [Fact]
-    public void LibraryKeymap_FunctionSixOnTheLastRow_LightsTheRowAbove()
+    public void LibraryKeymap_FunctionSixOnLastRow_LightsRowAbove()
     {
         TFavoriteTabRun(
             [("apple", "English", 0), ("fire", "English", 0), ("stone", "English", 0)],
@@ -94,7 +94,7 @@ public sealed class TFavoriteTab
     }
 
     [Fact]
-    public void LibraryObserve_GraspRaisedUnderTheGraspOrder_ResortsAndTheLitRowFollows()
+    public void LibraryObserve_GraspRaisedInOrder_ResortsLitRowFollows()
     {
         TFavoriteTabRun(
             [("apple", "English", 2), ("fire", "English", 1), ("stone", "English", 0)],
@@ -121,7 +121,7 @@ public sealed class TFavoriteTab
     }
 
     [Fact]
-    public void LibraryDraw_NoFavorites_ShowsTheEmptyNotice()
+    public void LibraryDraw_NoFavorites_ShowsEmptyNotice()
     {
         TFavoriteTabRun(
             [],

@@ -99,12 +99,12 @@ A row with a once interval shows the interval in the given pattern, and a plain 
 
 ## Stamp
 
-Commit: `c37ca1837ded`
+Commit: `9377e657b395`
 - `TEngineFrequency.cs` `1d4be01c6335f7b0`
-- `TEngineFrequencyBand.cs` `fd58ade5d27080e7`
-- `TEngineFrequencyEntry.cs` `7c9da840e11489cf`
-- `TEngineFrequencyFault.cs` `f91334488e09dc46`
-- `TEngineFrequencyOrder.cs` `7b50311f228195d8`
+- `TEngineFrequencyBand.cs` `f356fe9d9b8957da`
+- `TEngineFrequencyEntry.cs` `422df579132a3d25`
+- `TEngineFrequencyFault.cs` `2701e4aa6f02ca21`
+- `TEngineFrequencyOrder.cs` `33d7ff924f8ee282`
 - `TEngineFrequencySession.cs` `975626fe233e0c31`
-- `TFrequency.cs` `9bf0396b5536deed`
-- `TFrequencyGauge.cs` `340d7d7ba7c75f43`
+- `TFrequency.cs` `66c7fe118099a7a1`
+- `TFrequencyGauge.cs` `cfcc43f158058d79`

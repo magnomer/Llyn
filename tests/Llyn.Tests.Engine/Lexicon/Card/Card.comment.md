@@ -187,12 +187,12 @@ The player is told these moments, so a bad span must play the film rather than r
 
 ## Stamp
 
-Commit: `c37ca1837ded`
+Commit: `9377e657b395`
 - `TImage.cs` `a00f8c19ff29160b`
-- `TMeaning.cs` `e0969500a3c587ad`
-- `TRegister.cs` `d96edc5045420c8b`
-- `TSituation.cs` `330635d9363c2e16`
-- `TSituationMedia.cs` `a05133ab1254cfa8`
-- `TTag.cs` `0200895230f0ca8f`
-- `TTranslation.cs` `f7b6241d9396bff9`
-- `TVideo.cs` `2884e3c748bec951`
+- `TMeaning.cs` `c50b8895594c4f6f`
+- `TRegister.cs` `9dec8012bed9ff58`
+- `TSituation.cs` `dc7041c8ecddfc52`
+- `TSituationMedia.cs` `bb5654a5bb6670a0`
+- `TTag.cs` `f7310f4a1c3615c5`
+- `TTranslation.cs` `7eff055a5e91c3bf`
+- `TVideo.cs` `703599c12305a342`

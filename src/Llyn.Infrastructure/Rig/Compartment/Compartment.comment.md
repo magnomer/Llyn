@@ -24,13 +24,14 @@ Nothing here is opened or read.
 
 ## `LRigFactorySource`
 
-This sub-root builds every fetcher over the client and the recording archive over the root and client.
+This sub-root builds every fetcher over the client and the recording archive over the root, client and clock.
+Every page adapter gets one two-second regex patience from here.
 The caller owns the client, so nothing here holds it across builds.
 Nothing here is opened or read.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
+Commit: `9377e657b395`
 - `LRigFactoryAsset.cs` `1b0e0e9d6cf95305`
 - `LRigFactoryCitation.cs` `df638484473ad0ef`
 - `LRigFactoryContext.cs` `e3d3902dfb5cc9d9`
@@ -40,4 +41,4 @@ Commit: `aae5349dbb94`
 - `LRigFactoryRehearsal.cs` `bf1eb3024ebfd474`
 - `LRigFactorySentence.cs` `476cf0db15cd6c04`
 - `LRigFactorySound.cs` `d903e45a869d5e10`
-- `LRigFactorySource.cs` `53b6af5940676cc4`
+- `LRigFactorySource.cs` `767b380f920c1702`

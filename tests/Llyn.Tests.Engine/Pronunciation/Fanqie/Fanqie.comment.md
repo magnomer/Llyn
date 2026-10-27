@@ -7,13 +7,13 @@ They cover fanqie spellings with their rank and source, rows, diwei and the hypo
 
 Covers the Diwei category's own rules, apart from any store.
 
-### `DiweiRankRead_RimeDivisionOrder`
+### `DiweiRankRead_RimeDivisions_ReturnsDivisionOrder`
 
 Divisions rank in table order, an unlisted division after them, and a blank heading last.
 Places rank as the hypothesis lists them, an unlisted place after them, and a blank heading last.
 With no hypothesis every place is unlisted, and a negative line rank normalizes to last.
 
-### `DiweiSectionScan_TallyUnderHeading_KeepsOnlyTheShownSet`
+### `DiweiSectionScan_TallyUnderHeading_KeepsOnlyShownSet`
 
 A section's tally rows carry only the marks of the set the page shows.
 A line with no mark in the respelled set is left out of a respelled section.
@@ -27,7 +27,7 @@ Headings tied on rank follow by code point, and the blank heading still comes la
 Lines of equal rank list by label, and two lines sharing a label list unrounded first.
 A tally mark lists its characters in code point order, whatever order they were gathered in.
 
-### `DiweiSectionScan_DivisionHeading_LabelsItByTheLocalizedPattern`
+### `DiweiSectionScan_DivisionHeading_LabelsByPattern`
 
 A division section is headed by the localized pattern, filled with the division and its Roman numeral.
 Without a pattern the raw division heads the section.
@@ -96,11 +96,11 @@ A place ranks its initials in pack order across all places, and an unplaced init
 
 ## Stamp
 
-Commit: `c37ca1837ded`
-- `TDiwei.cs` `a4edda17d7808789`
-- `TEngineFanqie.cs` `e8b027c5e77dc27d`
-- `TEngineFanqieFault.cs` `7b5037970ff82b1a`
-- `TEngineFanqieRank.cs` `2640d00b351d0c49`
-- `TEngineFanqieSource.cs` `34822f7f149db3d9`
-- `TFanqieRow.cs` `848333a15eb2c3e4`
-- `THypothesis.cs` `b8f7e0bac583dab3`
+Commit: `9377e657b395`
+- `TDiwei.cs` `3259b0dbf13df778`
+- `TEngineFanqie.cs` `604de5e949b8e0fa`
+- `TEngineFanqieFault.cs` `f54249c188949cf9`
+- `TEngineFanqieRank.cs` `a5ab054c656701c4`
+- `TEngineFanqieSource.cs` `130b8cb074e4a27c`
+- `TFanqieRow.cs` `1694526acce00fdf`
+- `THypothesis.cs` `5c84d0225f9c0b0a`

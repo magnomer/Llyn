@@ -12,7 +12,7 @@ namespace Llyn.Tests;
 public sealed class TEditorField
 {
     [Fact]
-    public void CardTitleSet_TypedTexts_WritesTitleExpressionAndDefinition()
+    public void CardTitleSet_TypedTexts_WritesTitleExpressionMeaning()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -36,7 +36,7 @@ public sealed class TEditorField
     }
 
     [Fact]
-    public void DraftRead_LinkedEntries_CarriesThemOnTheCardInItsOrder()
+    public void DraftRead_LinkedEntries_CarriesTargetsInOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -55,7 +55,7 @@ public sealed class TEditorField
     }
 
     [Fact]
-    public void DraftChanged_LinkedEntry_CarriesTheLinkOnItsCard()
+    public void DraftChanged_LinkedEntry_CarriesLinkOnCard()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -83,7 +83,7 @@ public sealed class TEditorField
     }
 
     [Fact]
-    public void ImageLocationSet_TypedLocation_WritesTheRow()
+    public void ImageLocationSet_TypedLocation_WritesRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -100,7 +100,7 @@ public sealed class TEditorField
     }
 
     [Fact]
-    public void VideoSet_TypedLocationAndSpan_WritesTheRow()
+    public void VideoSet_TypedLocationAndSpan_WritesRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -120,7 +120,7 @@ public sealed class TEditorField
     }
 
     [Fact]
-    public void GlossSet_TypedText_WritesTheGloss()
+    public void GlossSet_TypedText_WritesGloss()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -138,7 +138,7 @@ public sealed class TEditorField
     }
 
     [Fact]
-    public void GlossAdd_PressedRow_AppendsAGlossInTheGlossLanguage()
+    public void GlossAdd_PressedRow_AppendsGlossInGlossLanguage()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -155,7 +155,7 @@ public sealed class TEditorField
     }
 
     [Fact]
-    public void GlossRead_BlankAndNamedLanguage_CarriesTheHintOnlyForTheBlankOne()
+    public void GlossRead_BlankAndNamedLanguage_CarriesBlankHintOnly()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -175,7 +175,7 @@ public sealed class TEditorField
     }
 
     [Fact]
-    public void SentenceGlossRemove_PickedGloss_DropsOneAndRetagsTheOther()
+    public void SentenceGlossRemove_PickedGloss_DropsOneRetagsOther()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -213,7 +213,7 @@ public sealed class TEditorField
     }
 
     [Fact]
-    public void EditorEntryOpen_ClosedThenReopened_HearsTheBoxFoldAgain()
+    public void EditorEntryOpen_ClosedThenReopened_HearsBoxFoldAgain()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -235,7 +235,7 @@ public sealed class TEditorField
     }
 
     [Fact]
-    public void EntryLanguage_HeldDraft_ReadsTheDraftsLanguage()
+    public void EntryLanguage_HeldDraft_ReadsDraftLanguage()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -247,7 +247,7 @@ public sealed class TEditorField
     }
 
     [Fact]
-    public void EditorCreate_WorkspaceOpened_OpensAFreshDraft()
+    public void EditorCreate_WorkspaceOpened_OpensFreshDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -261,7 +261,7 @@ public sealed class TEditorField
     }
 
     [Fact]
-    public void ObserverAttach_DraftEdited_ShowsTheDraftThroughTheMarshal()
+    public void ObserverAttach_DraftEdited_ShowsDraftThroughMarshal()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

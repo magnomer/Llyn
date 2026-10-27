@@ -146,7 +146,7 @@ public sealed class TUnit
     }
 
     [Fact]
-    public void LiveryFormat_ChosenUnitAndFreedom_LeadTheSpeechChips()
+    public void LiveryFormat_ChosenUnitAndFreedom_LeadsSpeechChips()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -197,11 +197,36 @@ public sealed class TUnit
             page, engine.TEnginePortraitRead(entry.LEntryId, TInterface.TPortraitLabelRead()), static key => key);
 
         Assert.Contains(
-            "<div class=\"chips\"><span class=\"chip unit\">Unit.Word</span>"
-            + "<span class=\"chip freedom\">Freedom.Dependent</span><span class=\"chip\">Determiner</span></div>",
+            "<div class=\"chips\"><span class=\"chip unit\">Word</span>"
+            + "<span class=\"chip freedom\">Dependent</span><span class=\"chip\">Determiner</span></div>",
             sheet,
             StringComparison.Ordinal);
         Assert.DoesNotContain("class=\"scope\"", sheet, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void SheetEntryFormat_KoreanLookup_KeepsLabelChips()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "water", "English", string.Empty, string.Empty, [TInterface.TCardCreate("a liquid", 1)], []) with
+        {
+            LEntryDraftUnit = LUnit.LUnitWord,
+            LEntryDraftFreedom = LFreedom.LFreedomStandalone,
+        });
+        LLiveryPage page = Assert.IsType<LLiveryPage>(engine.TLiveryRead(entry.LEntryId));
+        IReadOnlyDictionary<string, string> korean = TInterface.TLocalizationLoaderRead("ko");
+
+        string sheet = TInterface.TSheetEntryFormat(
+            page,
+            engine.TEnginePortraitRead(entry.LEntryId, TInterface.TPortraitLabelRead()),
+            key => korean.GetValueOrDefault(key, key));
+
+        Assert.Contains(
+            "<span class=\"chip unit\">Word</span><span class=\"chip freedom\">Standalone</span>",
+            sheet,
+            StringComparison.Ordinal);
     }
 
     private static LEntryDraft TUnitDraftCreate()

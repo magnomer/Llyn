@@ -68,8 +68,8 @@ A link over an Entry keeps the selection's span and carries no sense.
 
 ## Stamp
 
-Commit: `36e31eb71c98`
-- `TAtelierMention.cs` `3af14e590ada7db8`
-- `TCardMention.cs` `2b81e2df5f75a181`
-- `TCorpusMention.cs` `a20176ffba3a7860`
-- `TTranscriptMention.cs` `2fef1d74f0e5c94c`
+Commit: `9377e657b395`
+- `TAtelierMention.cs` `2f33a68851660a5c`
+- `TCardMention.cs` `d797976677f2542d`
+- `TCorpusMention.cs` `21a3b07ba3803695`
+- `TTranscriptMention.cs` `81f6d9d73e064a39`

@@ -7,7 +7,7 @@ namespace Llyn.Tests;
 public sealed class TTenureStale
 {
     [Fact]
-    public void TenureStoredRead_DraftGoneStale_AnswersNullWithoutRefusal()
+    public void TenureStoredRead_DraftGoneStale_AnswersNull()
     {
         using TWorkspace first = TWorkspace.TWorkspacePrepare();
         using TWorkspace second = TWorkspace.TWorkspacePrepare();
@@ -19,7 +19,7 @@ public sealed class TTenureStale
     }
 
     [Fact]
-    public void TenureStoredRead_LiveDraft_AnswersNullForABlankEntry()
+    public void TenureStoredRead_LiveDraft_AnswersNullForBlankEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

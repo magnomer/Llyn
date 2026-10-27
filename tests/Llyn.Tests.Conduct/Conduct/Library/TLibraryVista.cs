@@ -11,7 +11,7 @@ namespace Llyn.Tests;
 public sealed class TLibraryVista
 {
     [Fact]
-    public async Task LibraryRowsLoad_StoredEntry_AnswersTheRowsAndTheLanguagesAfterTheFill()
+    public async Task LibraryRowsLoad_StoredEntry_AnswersRowsAndLanguages()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -27,7 +27,7 @@ public sealed class TLibraryVista
     }
 
     [Fact]
-    public void LibraryVistaRestore_QueryHeld_CarriesItIntoTheFreshVista()
+    public void LibraryVistaRestore_QueryHeld_CarriesIntoFreshVista()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -43,7 +43,7 @@ public sealed class TLibraryVista
     }
 
     [Fact]
-    public void LibraryVistaRestore_ReflexNoticeAfterASecondRestore_RaisesTheRowsOnceThroughTheMarshal()
+    public void LibraryVistaRestore_SecondRestoreNotice_RaisesRowsOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -69,7 +69,7 @@ public sealed class TLibraryVista
     }
 
     [Fact]
-    public void LibraryCreate_ReflexNoticeWithoutARestore_RaisesTheRowsOnceThroughTheMarshal()
+    public void LibraryCreate_NoticeWithoutRestore_RaisesRowsOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -94,7 +94,7 @@ public sealed class TLibraryVista
     }
 
     [Fact]
-    public void LibraryVistaRestore_WorkspaceNotice_ClosesTheChosenEntryAndTellsTheDriver()
+    public void LibraryVistaRestore_WorkspaceNotice_ClosesChosenEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -113,7 +113,7 @@ public sealed class TLibraryVista
     }
 
     [Fact]
-    public void LibraryVistaRestore_SettingsNotice_RaisesTheRowsThroughTheMarshal()
+    public void LibraryVistaRestore_SettingsNotice_RaisesRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -128,7 +128,7 @@ public sealed class TLibraryVista
     }
 
     [Fact]
-    public void LibraryOrderRead_Menu_OffersTheFourOrderings()
+    public void LibraryOrderRead_Menu_OffersFourOrderings()
     {
         Assert.Equal(
             [
@@ -141,7 +141,7 @@ public sealed class TLibraryVista
     }
 
     [Fact]
-    public void CatalogOrderFormat_EveryOrder_HasItsOwnWord()
+    public void CatalogOrderFormat_AllOrders_HaveOwnWords()
     {
         string[] words = [.. Enum.GetValues<CCatalogOrder>().Select(CCatalog.CCatalogOrderFormat)];
 
@@ -151,7 +151,7 @@ public sealed class TLibraryVista
     }
 
     [Fact]
-    public void LibraryClose_ExitGate_ClosesTheEditorAndStopsTheRecording()
+    public void LibraryClose_ExitGate_ClosesEditorStopsRecording()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

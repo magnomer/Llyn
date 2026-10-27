@@ -28,7 +28,7 @@ public sealed class TEngineReflex
     }
 
     [Fact]
-    public void GuiseRead_FoldedRule_FoldsTheTrimmedLanguage()
+    public void GuiseRead_FoldedRule_FoldsTrimmedLanguage()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(
             """
@@ -47,7 +47,7 @@ public sealed class TEngineReflex
     }
 
     [Fact]
-    public void GuiseRead_PhonemicBorrowerPack_FlagsOnlyThatLanguagePhonemic()
+    public void GuiseRead_PhonemicBorrower_FlagsPhonemicOnly()
     {
         using TLanguageFixture borrower = TLanguageFixture.TLanguageFixtureCreate("""{ "phonemic": true }""");
         using TLanguageFixture plain = TLanguageFixture.TLanguageFixtureCreate("""{ "respelling": [] }""");
@@ -71,7 +71,7 @@ public sealed class TEngineReflex
     }
 
     [Fact]
-    public void GuiseRead_RespellingPack_CarriesTheShownText()
+    public void GuiseRead_RespellingPack_CarriesShownText()
     {
         using TLanguageFixture respelt = TLanguageFixture.TLanguageFixtureCreate(
             """{ "respelling": [ { "name": "Plain", "rules": [["ʊ", "u"]] } ] }""");
@@ -120,7 +120,7 @@ public sealed class TEngineReflex
     }
 
     [Fact]
-    public async Task ReflexStart_OptionalSegmentUncaptured_DropsTheSegment()
+    public async Task ReflexStart_OptionalSegmentUncaptured_DropsSegment()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TReflexFixture.TReflexPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

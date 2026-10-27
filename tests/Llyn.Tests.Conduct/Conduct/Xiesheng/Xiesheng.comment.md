@@ -86,8 +86,8 @@ So the fake answers what the engine would.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `TKindred.cs` `bb5d0d3788c3884f`
-- `TXiesheng.cs` `83ab5684508b32c9`
-- `TXieshengFold.cs` `e5f06714d68bdbd0`
-- `TXieshengVista.cs` `c466753a64fb3d33`
+Commit: `9377e657b395`
+- `TKindred.cs` `e7328ebf1730fe20`
+- `TXiesheng.cs` `52c0635ba1e1ea4c`
+- `TXieshengFold.cs` `cc5aec5c9e1f5485`
+- `TXieshengVista.cs` `21139593f7a7551b`

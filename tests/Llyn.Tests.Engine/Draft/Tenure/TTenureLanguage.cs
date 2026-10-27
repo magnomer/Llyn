@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TTenureLanguage
 {
     [Fact]
-    public void Language_ReadsHeldDraftAndAnswersEmptyAfterCancel()
+    public void FlaggedCheck_CancelledTenure_AnswersFalse()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -24,7 +24,7 @@ public sealed class TTenureLanguage
     }
 
     [Fact]
-    public void TenureTranscriptionRead_TwoRows_MarksTheSchemeTheOtherRowHolds()
+    public void TenureTranscriptionRead_TwoRows_MarksTakenScheme()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

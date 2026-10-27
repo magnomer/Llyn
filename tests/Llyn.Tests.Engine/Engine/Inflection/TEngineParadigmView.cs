@@ -179,7 +179,7 @@ public sealed class TEngineParadigmView
     }
 
     [Fact]
-    public void ParadigmScan_SpanishVerb_LeavesVerbSlotsToTheView()
+    public void ParadigmScan_SpanishVerb_ReturnsNoSlots()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

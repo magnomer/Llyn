@@ -43,7 +43,7 @@ public sealed class TMarkupNode
     }
 
     [Fact]
-    public void MarkupFileFormat_ControlCharacter_DropsIt()
+    public void MarkupFileFormat_ControlCharacter_DropsCharacter()
     {
         LMarkupNode root = TInterface.TMarkupNodeCreate(
             "llyn", [TInterface.TMarkupNodeCreate("note", "em\u0001ber")]);

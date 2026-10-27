@@ -46,7 +46,7 @@ public sealed class TEngineLiveryLanguage
         });
 
     [Fact]
-    public async Task LiveryRead_FetchedSeries_CarriesItsPageAndEntries()
+    public async Task LiveryRead_FetchedSeries_CarriesPageAndEntries()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TLiveryLanguagePack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -70,7 +70,7 @@ public sealed class TEngineLiveryLanguage
     }
 
     [Fact]
-    public void LiveryRead_PlacedCharacter_ListsInitialRimeAndToneWithTheirKind()
+    public void LiveryRead_PlacedCharacter_ListsInitialRimeAndTone()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -90,7 +90,7 @@ public sealed class TEngineLiveryLanguage
     }
 
     [Fact]
-    public void LiveryRead_RespellingAndTallyOn_SectionsFollowTheRespellingSetting()
+    public void LiveryRead_RespellingAndTallyOn_MarksSectionsRespelled()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -115,7 +115,7 @@ public sealed class TEngineLiveryLanguage
     }
 
     [Fact]
-    public void LiveryRead_LanguageWithoutBooksOrSeries_AnswersEmptyLists()
+    public void LiveryRead_NoBooksOrSeries_ReturnsEmptyLists()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("""{ "language": "Fixture" }""");
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -131,7 +131,7 @@ public sealed class TEngineLiveryLanguage
     }
 
     [Fact]
-    public void LiveryFormat_SeriesNote_LinksTheStoredEntryAndLeavesAnUnstoredCharacterPlain()
+    public void LiveryFormat_SeriesNote_LinksStoredEntryOnly()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -151,7 +151,7 @@ public sealed class TEngineLiveryLanguage
     }
 
     [Fact]
-    public void LiveryFormat_SeriesNote_FoldsEachMemberReflexRowsByItsOpenedStateAndLeavesABareMemberAlone()
+    public void LiveryFormat_SeriesNote_FoldsReflexRowsByOpenedState()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -205,7 +205,7 @@ public sealed class TEngineLiveryLanguage
     }
 
     [Fact]
-    public void LiveryFormat_SeriesNoteRespelled_PrintsEachMemberRowAsTheEntryNotePrintsIt()
+    public void LiveryFormat_SeriesNoteRespelled_MatchesEntryNoteRows()
     {
         using TLanguageFixture borrower = TLanguageFixture.TLanguageFixtureCreate(
             """{ "phonemic": true, "respelling": [ { "name": "Plain", "rules": [["ʊ", "u"], ["⁵¹", "4"]] } ] }""");
@@ -247,7 +247,7 @@ public sealed class TEngineLiveryLanguage
     }
 
     [Fact]
-    public void LiveryFormat_RimeNote_PrintsSectionsInPageOrderWithReadingsAndTallies()
+    public void LiveryFormat_RimeNote_PrintsSectionsInPageOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -280,7 +280,7 @@ public sealed class TEngineLiveryLanguage
     }
 
     [Fact]
-    public void LiveryFormat_ToneNote_PrintsTheToneLabelAndLinksThePlacedEntry()
+    public void LiveryFormat_ToneNote_PrintsLabelAndLinksPlacedEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -51,7 +51,7 @@ public sealed class TEngineRig
     }
 
     [Fact]
-    public void RigApply_UnwritableDefaultSettings_StillOpensTheSecondRig()
+    public void RigApply_UnwritableDefaultSettings_OpensSecondRig()
     {
         List<Exception> recorded = [];
         Dictionary<string, Func<object?[]?, object?>> stored = new()

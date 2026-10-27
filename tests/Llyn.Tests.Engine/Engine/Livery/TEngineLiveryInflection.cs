@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 public sealed class TEngineLiveryInflection
 {
     [Fact]
-    public void LiveryFormat_InflectionView_WritesExpandedTableWithHeaderLabelAndForm()
+    public void LiveryFormat_InflectionView_WritesExpandedTable()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -57,7 +57,7 @@ public sealed class TEngineLiveryInflection
     }
 
     [Fact]
-    public void LiveryFormat_EmptyCollapsedSheet_WritesOneTableWithoutSwitch()
+    public void LiveryFormat_EmptyCollapsedSheet_WritesSingleTable()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -87,7 +87,7 @@ public sealed class TEngineLiveryInflection
     }
 
     [Fact]
-    public void LiveryFormat_IdenticalSheets_WritesOneTableWithoutSwitch()
+    public void LiveryFormat_IdenticalSheets_WritesSingleTable()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -112,7 +112,7 @@ public sealed class TEngineLiveryInflection
     }
 
     [Fact]
-    public void LiveryFormat_MissingAndMarkedForms_RenderMutedGlyphWithTipAndMarkedRun()
+    public void LiveryFormat_MissingAndMarkedForms_RendersMutedGlyphs()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

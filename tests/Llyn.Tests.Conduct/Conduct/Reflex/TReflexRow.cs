@@ -6,7 +6,7 @@ namespace Llyn.Tests;
 public sealed class TReflexRow
 {
     [Fact]
-    public void ReflexLanguageKey_NamedOrBlank_PrefixesTheReflexKey()
+    public void ReflexLanguageKey_NamedOrBlank_PrefixesReflexKey()
     {
         CReflex named = TReflexRowCreate("Wu", "Go-on", false);
         CReflex blank = TReflexRowCreate(string.Empty, string.Empty, false);
@@ -26,7 +26,7 @@ public sealed class TReflexRow
     }
 
     [Fact]
-    public void ReflexHiddenCheck_FoldAndOpening_HidesAFoldedRowWhileClosed()
+    public void ReflexHiddenCheck_FoldAndOpening_HidesFoldedWhileClosed()
     {
         Assert.True(TReflexRowCreate("Jin", string.Empty, true).CReflexHiddenCheck(false));
         Assert.False(TReflexRowCreate("Jin", string.Empty, true).CReflexHiddenCheck(true));
@@ -34,7 +34,7 @@ public sealed class TReflexRow
     }
 
     [Fact]
-    public void ReflexTypedApply_TypedCell_ChangesThatCellAlone()
+    public void ReflexTypedApply_TypedCell_ChangesCellAlone()
     {
         CReflex held = TReflexRowCreate("Wu", "Go-on", true);
 

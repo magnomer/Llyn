@@ -7,7 +7,7 @@ namespace Llyn.Tests;
 public sealed class TClaimClerk
 {
     [Fact]
-    public void ClaimClerkStart_ThisProcess_HoldsTheDraft()
+    public void ClaimClerkStart_ThisProcess_HoldsDraft()
     {
         LRig rig = TInterface.TRigClaimCreate();
         LClaimClerk clerk = TInterface.TClaimClerkCreate(rig);
@@ -21,7 +21,7 @@ public sealed class TClaimClerk
     }
 
     [Fact]
-    public void ClaimForeignCheck_AnotherProcessHoldsTheDraft_SeesTheClaim()
+    public void ClaimForeignCheck_AnotherProcessHoldsDraft_SeesClaim()
     {
         LRig rig = TInterface.TRigClaimCreate();
         LClaimClerk first = TInterface.TClaimClerkCreate(rig);
@@ -51,7 +51,7 @@ public sealed class TClaimClerk
     }
 
     [Fact]
-    public void ClaimClerkSweep_StaleDraft_CancelsItWithItsClaim()
+    public void ClaimClerkSweep_StaleDraft_CancelsDraftAndClaim()
     {
         LRig rig = TInterface.TRigClaimCreate();
         LClaimClerk clerk = TInterface.TClaimClerkCreate(rig);
@@ -68,7 +68,7 @@ public sealed class TClaimClerk
     }
 
     [Fact]
-    public void ClaimClerkCancel_OwnerOfATentativeTarget_DropsTargetAndRow()
+    public void ClaimClerkCancel_TentativeOwner_DropsTargetAndRow()
     {
         LRig rig = TInterface.TRigClaimCreate();
         LClaimClerk clerk = TInterface.TClaimClerkCreate(rig);
@@ -86,7 +86,7 @@ public sealed class TClaimClerk
     }
 
     [Fact]
-    public void ClaimClerkCancel_TargetAnotherDraftStillLinks_KeepsTarget()
+    public void ClaimClerkCancel_TargetLinkedElsewhere_KeepsTarget()
     {
         LRig rig = TInterface.TRigClaimCreate();
         LClaimClerk clerk = TInterface.TClaimClerkCreate(rig);

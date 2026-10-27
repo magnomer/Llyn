@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TGuildVista
 {
     [Fact]
-    public void GuildVistaRestore_QueryHeld_CarriesItIntoTheFreshVista()
+    public void GuildVistaRestore_QueryHeld_CarriesIntoFreshVista()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -25,7 +25,7 @@ public sealed class TGuildVista
     }
 
     [Fact]
-    public void GuildVistaRestore_OeuvreQueryHeld_CarriesItIntoTheFreshVista()
+    public void GuildVistaRestore_OeuvreQueryHeld_CarriesIntoFreshVista()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -41,7 +41,7 @@ public sealed class TGuildVista
     }
 
     [Fact]
-    public void GuildVistaRestore_AuthorNoticeAfterASecondRestore_RaisesTheRollOnceThroughTheMarshal()
+    public void GuildVistaRestore_SecondRestoreNotice_RaisesRollOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -68,7 +68,7 @@ public sealed class TGuildVista
     }
 
     [Fact]
-    public void GuildCreate_AuthorNoticeWithoutARestore_RaisesTheRollOnceThroughTheMarshal()
+    public void GuildCreate_NoticeWithoutRestore_RaisesRollOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -94,7 +94,7 @@ public sealed class TGuildVista
     }
 
     [Fact]
-    public void GuildVistaRestore_OeuvreVistaNotice_RaisesTheOeuvreRowsThroughTheMarshal()
+    public void GuildVistaRestore_OeuvreVistaNotice_RaisesOeuvreRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -120,7 +120,7 @@ public sealed class TGuildVista
     }
 
     [Fact]
-    public void GuildOrderRead_Menu_OffersTheFourOrderings()
+    public void GuildOrderRead_Menu_OffersFourOrderings()
     {
         Assert.Equal(
             [

@@ -8,8 +8,6 @@ internal sealed class LFanqieShape
 {
     private const string LFanqieShapeToken = "{word}";
 
-    private static readonly TimeSpan LFanqieShapePatience = TimeSpan.FromSeconds(2);
-
     private LFanqieShape(
         Regex marker, Regex? split, Regex? head, Regex? column, Regex? rounded, Regex? line, Regex? spelling)
     {
@@ -36,22 +34,22 @@ internal sealed class LFanqieShape
 
     internal Regex? LFanqieShapeSpelling { get; }
 
-    internal static LFanqieShape LFanqieShapeCreate(LFanqieBook book, string character)
+    internal static LFanqieShape LFanqieShapeCreate(LFanqieBook book, string character, TimeSpan patience)
     {
         ArgumentNullException.ThrowIfNull(book);
         ArgumentException.ThrowIfNullOrWhiteSpace(character);
 
         return new LFanqieShape(
-            LFanqieRegexCreate(book.LFanqieBookPattern, character)!,
-            LFanqieRegexCreate(book.LFanqieBookSplit, character),
-            LFanqieRegexCreate(book.LFanqieBookHead, character),
-            LFanqieRegexCreate(book.LFanqieBookColumn, character),
-            LFanqieRegexCreate(book.LFanqieBookRounded, character),
-            LFanqieRegexCreate(book.LFanqieBookLine, character),
-            LFanqieRegexCreate(book.LFanqieBookSpelling, character));
+            LFanqieRegexCreate(book.LFanqieBookPattern, character, patience)!,
+            LFanqieRegexCreate(book.LFanqieBookSplit, character, patience),
+            LFanqieRegexCreate(book.LFanqieBookHead, character, patience),
+            LFanqieRegexCreate(book.LFanqieBookColumn, character, patience),
+            LFanqieRegexCreate(book.LFanqieBookRounded, character, patience),
+            LFanqieRegexCreate(book.LFanqieBookLine, character, patience),
+            LFanqieRegexCreate(book.LFanqieBookSpelling, character, patience));
     }
 
-    private static Regex? LFanqieRegexCreate(string? pattern, string character)
+    private static Regex? LFanqieRegexCreate(string? pattern, string character, TimeSpan patience)
     {
         if (string.IsNullOrEmpty(pattern))
         {
@@ -61,6 +59,6 @@ internal sealed class LFanqieShape
         return new Regex(
             pattern.Replace(LFanqieShapeToken, Regex.Escape(character), StringComparison.Ordinal),
             RegexOptions.CultureInvariant | RegexOptions.Singleline,
-            LFanqieShapePatience);
+            patience);
     }
 }

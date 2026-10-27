@@ -28,7 +28,7 @@ public sealed class TEngineFrequencyEntry
     }
 
     [Fact]
-    public async Task EntryUpdate_HeadwordChanged_ClearsStoredRowsThenRefetches()
+    public async Task EntryUpdate_HeadwordChanged_ClearsRowsThenRefetches()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineFrequency.TEngineFrequencyPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

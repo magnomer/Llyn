@@ -37,7 +37,7 @@ Later views use that preference, while the first view keeps its mode.
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `TCatalogChosen.cs` `11fa574e87a195bd`
-- `TVistaLoading.cs` `56d6934dd158f892`
-- `TVistaMode.cs` `4cceca8026f95a96`
+Commit: `9377e657b395`
+- `TCatalogChosen.cs` `3eed6e1a5c13e5cb`
+- `TVistaLoading.cs` `84deed1ff84cd7ae`
+- `TVistaMode.cs` `7c5ff62b6b8c4f21`

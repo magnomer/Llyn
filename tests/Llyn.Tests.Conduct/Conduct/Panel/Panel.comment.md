@@ -114,13 +114,13 @@ A throwing window escapes to the caller, since only the open call is guarded by 
 
 ## Stamp
 
-Commit: `fe7e11daae88`
+Commit: `9377e657b395`
 - `TAperture.cs` `5ec65d9a18316bee`
-- `TCatalog.cs` `490668e03758f42c`
+- `TCatalog.cs` `20bce9435ca77388`
 - `TCatalogFilter.cs` `d3f1b60b77c6957d`
 - `TCoinage.cs` `28e73c2c1f3b58a7`
-- `TEntryList.cs` `3ed9071e02cf0aad`
-- `TPanel.cs` `75b98cf0395da741`
-- `TPanelBin.cs` `30b10a6f864ccc72`
-- `TPanelRow.cs` `dbd20cdc2c054230`
-- `TPortrait.cs` `82c5fca76ce1769b`
+- `TEntryList.cs` `08d139237d63e8a7`
+- `TPanel.cs` `9762ba0941a6b1e2`
+- `TPanelBin.cs` `4e8bff6ef93ef0fd`
+- `TPanelRow.cs` `351344c53694b933`
+- `TPortrait.cs` `803af763b066a585`

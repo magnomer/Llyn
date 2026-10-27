@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TEditorFrame
 {
     [Fact]
-    public void LibraryDraw_EditingAnEntry_TitlesTheRightSideWithEditingAndTheHeadword()
+    public void LibraryDraw_EditingEntry_TitlesRightSideWithHeadword()
     {
         TEditorFrameRun(
             ["fire"],
@@ -30,7 +30,7 @@ public sealed class TEditorFrame
     }
 
     [Fact]
-    public void EditorKeymap_EnterOnTheHeadword_OpensTheFieldAndTypingReachesTheDraft()
+    public void EditorKeymap_EnterOnHeadword_OpensFieldTypesIntoDraft()
     {
         TEditorFrameRun(
             ["fire"],
@@ -55,7 +55,7 @@ public sealed class TEditorFrame
     }
 
     [Fact]
-    public void EditorObserve_PrintableKeyOnTheLitHeadword_OpensTheFieldAndTypesTheKey()
+    public void EditorObserve_KeyOnLitHeadword_OpensFieldTypesKey()
     {
         TEditorFrameRun(
             ["fire"],
@@ -69,7 +69,7 @@ public sealed class TEditorFrame
     }
 
     [Fact]
-    public void EditorKeymap_ArrowsOnTheTabLine_ChooseTheStackTab()
+    public void EditorKeymap_ArrowsOnTabLine_ChoosesStackTab()
     {
         TEditorFrameRun(
             ["fire"],
@@ -91,7 +91,7 @@ public sealed class TEditorFrame
     }
 
     [Fact]
-    public void EditorKeymap_AltDigit_ChoosesThatStackTab()
+    public void EditorKeymap_AltDigit_ChoosesNumberedStackTab()
     {
         TEditorFrameRun(
             ["fire"],
@@ -110,7 +110,7 @@ public sealed class TEditorFrame
     }
 
     [Fact]
-    public void EditorKeymap_EnterOnAStoredCardHeader_FoldsItThroughConduct()
+    public void EditorKeymap_EnterOnStoredCardHeader_FoldsViaConduct()
     {
         TEditorFrameRun(
             ["fire"],
@@ -148,7 +148,7 @@ public sealed class TEditorFrame
     }
 
     [Fact]
-    public void EditorKeymap_ControlHomeAndEnd_LightTheFirstAndLastRow()
+    public void EditorKeymap_ControlHomeAndEnd_LightsFirstAndLastRow()
     {
         TEditorFrameRun(
             ["fire"],
@@ -163,7 +163,7 @@ public sealed class TEditorFrame
     }
 
     [Fact]
-    public void LibraryKeymap_F3AndEscapeWhileEditing_WidenAndGiveTheListBack()
+    public void LibraryKeymap_F3AndEscapeEditing_WidensThenRestores()
     {
         TEditorFrameRun(
             ["fire"],
@@ -182,7 +182,7 @@ public sealed class TEditorFrame
     }
 
     [Fact]
-    public void LibraryKeymap_TabWhileEditing_GoesBackToTheList()
+    public void LibraryKeymap_TabWhileEditing_GoesBackToList()
     {
         TEditorFrameRun(
             ["fire"],
@@ -195,7 +195,7 @@ public sealed class TEditorFrame
     }
 
     [Fact]
-    public void WindowKeyObserve_InputTab_EditsOverTheWholeWindowAndF7StartsBlank()
+    public void WindowKeyObserve_InputTab_EditsOverWholeWindow()
     {
         TEditorWindowRun(
             (window, atelier, console) =>
@@ -223,7 +223,7 @@ public sealed class TEditorFrame
     }
 
     [Fact]
-    public void EditorDraw_EntryWithSteps_LightsTheUndoMarkAtFirstDraw()
+    public void EditorDraw_EntryWithSteps_LightsUndoMarkAtFirstDraw()
     {
         TEditorWindowRun(
             (_, atelier, _) =>
@@ -256,7 +256,7 @@ public sealed class TEditorFrame
     }
 
     [Fact]
-    public void EditorDraw_CaretMovedWithoutADraftChange_RedrawsTheFace()
+    public void EditorDraw_CaretMovedWithoutDraftChange_RedrawsFace()
     {
         TEditorWindowRun(
             (_, atelier, _) =>
@@ -334,7 +334,8 @@ public sealed class TEditorFrame
         loop.BLoopRun(settled.Task.WaitAsync(TimeSpan.FromSeconds(10)));
     }
 
-    internal static void TEditorWindowRun(Action<BWindow, CAtelier, TConsoleFake> check)
+    internal static void TEditorWindowRun(
+        Action<BWindow, CAtelier, TConsoleFake> check, Func<LEngine, CAtelier>? build = null)
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -347,7 +348,7 @@ public sealed class TEditorFrame
             BLocalizationCatalog catalog = new();
             catalog.BLocalizationCatalogApply(TInterface.TLocalizationLoad("en"));
             ABootstrap bootstrap = new();
-            using CAtelier atelier = TInterfaceConduct.TAtelierCreate(engine, false);
+            using CAtelier atelier = build is null ? TInterfaceConduct.TAtelierCreate(engine, false) : build(engine);
             BTheme spare = new(BTheme.BThemeSpareRead);
             BEnvoy envoy = new(console, catalog, bootstrap);
             LCapsuleConsole capsule = new();

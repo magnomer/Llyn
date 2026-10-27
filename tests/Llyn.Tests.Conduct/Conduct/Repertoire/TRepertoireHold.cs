@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TRepertoireHold
 {
     [Fact]
-    public void RepertoireCreate_ScenarioEdited_HandsTheHeldSituationThroughTheMarshal()
+    public void RepertoireCreate_ScenarioEdited_RoutesDraftViaMarshal()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -38,7 +38,7 @@ public sealed class TRepertoireHold
     }
 
     [Fact]
-    public void PlaywrightTitleSet_TitleTyped_WritesItAndAnswersTheTypedLine()
+    public void PlaywrightTitleSet_TitleTyped_WritesTitleReturnsLine()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -59,7 +59,7 @@ public sealed class TRepertoireHold
     }
 
     [Fact]
-    public void PlaywrightKindSet_KindTypedThenCleared_WordsTheMeasureOnlyWhileEmpty()
+    public void PlaywrightKindSet_TypedThenCleared_WordsMeasureIfEmpty()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -78,7 +78,7 @@ public sealed class TRepertoireHold
     }
 
     [Fact]
-    public void PlaywrightScenarioChanged_UnknownKindThenCancel_RaisesTheUnknownHintThenABlankScenario()
+    public void PlaywrightScenarioChanged_UnknownKindCancel_RaisesBlank()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -113,7 +113,7 @@ public sealed class TRepertoireHold
     }
 
     [Fact]
-    public void AtelierClose_OccurrenceEditorOpen_CancelsTheEditorDeskAndStopsPlayback()
+    public void AtelierClose_OccurrenceEditor_CancelsDeskStopsRecording()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

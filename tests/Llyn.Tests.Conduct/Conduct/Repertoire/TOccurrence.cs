@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TOccurrence
 {
     [Fact]
-    public async Task OccurrenceRowsLoad_ChosenSituation_AnswersTheReferencingEntriesAfterTheFill()
+    public async Task OccurrenceRowsLoad_ChosenSituation_ReturnsAfterFill()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -27,7 +27,7 @@ public sealed class TOccurrence
     }
 
     [Fact]
-    public void OccurrenceRowsRead_ChosenSituation_ListsTheReferencingEntries()
+    public void OccurrenceRowsRead_ChosenSituation_ListsCitingEntries()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -44,7 +44,7 @@ public sealed class TOccurrence
     }
 
     [Fact]
-    public void OccurrenceRowsRead_EngineFails_ShowsTheLoadFailureAndAnswersNoRows()
+    public void OccurrenceRowsRead_EngineFails_ShowsLoadFailure()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -55,7 +55,7 @@ public sealed class TOccurrence
     }
 
     [Fact]
-    public void ApertureQuerySet_UnmatchedText_EmptiesTheRowsAndWordsTheEmptyList()
+    public void ApertureQuerySet_UnmatchedText_EmptiesRowsKeysUnmatched()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

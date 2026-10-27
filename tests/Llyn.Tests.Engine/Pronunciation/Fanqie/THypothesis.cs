@@ -126,7 +126,7 @@ public sealed class THypothesis
     }
 
     [Fact]
-    public void HypothesisResolve_RoundedWithoutRoundedKey_ReadsPlainFinal()
+    public void HypothesisResolve_RoundedWithoutKey_ReadsPlainFinal()
     {
         LFanqieRow row = TInterface.TFanqieRowCreate("疑", "模", "模", "一", "平", true);
 

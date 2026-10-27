@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 public sealed class TEntry
 {
     [Fact]
-    public void HeadwordSet_ThenPersist_ChangesTheDraft()
+    public void HeadwordSet_ThenPersist_ChangesDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -40,7 +40,7 @@ public sealed class TEntry
     }
 
     [Fact]
-    public void LanguageSet_Empty_KeepsTheLanguage()
+    public void LanguageSet_Empty_KeepsLanguage()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -57,7 +57,7 @@ public sealed class TEntry
     }
 
     [Fact]
-    public void PronunciationSet_UnrespelledLanguage_WritesThePhoneticReading()
+    public void PronunciationSet_UnrespelledLanguage_WritesIpa()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -9,7 +9,7 @@ public sealed class TTenureObserver
     private readonly List<LBulletin> _tTenureNotices = [];
 
     [Fact]
-    public void Prepare_RequestApplied_ReturnsNewestDraftAndDropsItsNotice()
+    public void Prepare_RequestApplied_ReturnsNewestDraftDropsNotice()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -28,7 +28,7 @@ public sealed class TTenureObserver
     }
 
     [Fact]
-    public void Attach_SubjectAndDraftFilters_DeliverOnlyMatchingNotices()
+    public void Attach_SubjectAndDraftFilters_DeliversMatchingOnly()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -51,7 +51,7 @@ public sealed class TTenureObserver
     }
 
     [Fact]
-    public void EntryAttach_StoredEntryIdentity_IsDistinctFromDraftIdentity()
+    public void EntryAttach_StoredEntryId_DiffersFromDraftId()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -96,7 +96,7 @@ public sealed class TTenureObserver
     }
 
     [Fact]
-    public void Cancel_DiscardFails_EndsTheTenureRaisesItsStateAndThrows()
+    public void Cancel_DiscardFails_EndsTenureRaisesStateAndThrows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -132,7 +132,7 @@ public sealed class TTenureObserver
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public void Prepare_NestedNotices_DropsEveryOneUntilOutermostScopeExits(bool fails)
+    public void Prepare_NestedNotices_DropsAllUntilOutermostExit(bool fails)
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

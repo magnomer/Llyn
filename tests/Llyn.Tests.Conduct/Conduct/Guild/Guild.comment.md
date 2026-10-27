@@ -109,13 +109,13 @@ Most tests build the oeuvre over a fresh roll vista and oeuvre vista, as the gui
 
 ## Stamp
 
-Commit: `c37ca1837ded`
-- `TByline.cs` `56eade5948ec66cb`
-- `TGuild.cs` `b50ab760bec4fa04`
-- `TGuildAutograph.cs` `b6c5e2ce42a02875`
-- `TGuildMode.cs` `9bdfcce083988ba0`
-- `TGuildRoll.cs` `3dc687227a7b24e2`
-- `TGuildScribe.cs` `2e89b5a9fc71ec97`
+Commit: `9377e657b395`
+- `TByline.cs` `ce7cfd0562a403cd`
+- `TGuild.cs` `ad52b3d49aa514c5`
+- `TGuildAutograph.cs` `37e0de9aae5b96a0`
+- `TGuildMode.cs` `9c31423a4b6ec866`
+- `TGuildRoll.cs` `c191ee1cf721acb3`
+- `TGuildScribe.cs` `eae281d6ed883180`
 - `TGuildUnion.cs` `0fd0484c73c1f0d4`
-- `TGuildVista.cs` `5a6b95948aa2c1fa`
-- `TOeuvre.cs` `cf3a79d7cc7bebd8`
+- `TGuildVista.cs` `c5743866a2a705dd`
+- `TOeuvre.cs` `e2eaff758219d2b1`

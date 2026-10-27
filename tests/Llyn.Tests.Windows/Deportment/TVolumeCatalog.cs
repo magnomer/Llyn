@@ -7,7 +7,7 @@ namespace Llyn.Tests;
 public sealed class TVolumeCatalog
 {
     [Fact]
-    public void VolumeCatalogLevel_RepeatedLevel_RaisesOneNoticePerChange()
+    public void VolumeCatalogLevel_RepeatedLevel_RaisesNoticePerChange()
     {
         QVolumeCatalog catalog = new();
         List<double> heard = [];

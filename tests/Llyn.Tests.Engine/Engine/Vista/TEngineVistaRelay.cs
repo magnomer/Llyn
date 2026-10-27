@@ -43,7 +43,7 @@ public sealed class TEngineVistaRelay
     }
 
     [Fact]
-    public void VistaUsageRead_CreditedAuthor_CountsItsWorks()
+    public void VistaUsageRead_CreditedAuthor_CountsWorks()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

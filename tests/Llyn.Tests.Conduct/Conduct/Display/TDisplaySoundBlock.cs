@@ -36,7 +36,7 @@ public sealed class TDisplaySoundBlock
     }
 
     [Fact]
-    public void DisplayFanqieRead_EnglishEntry_AnswersNoRimeScriptOrParadigmRows()
+    public void DisplayFanqieRead_EnglishEntry_AnswersNoRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -59,7 +59,7 @@ public sealed class TDisplaySoundBlock
     }
 
     [Fact]
-    public void DisplayParadigmRead_MorphologyOff_AnswersTheAbsentTipWithoutALookup()
+    public void DisplayParadigmRead_MorphologyOff_AnswersAbsentTip()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         TaskCompletionSource gate = new(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -81,7 +81,7 @@ public sealed class TDisplaySoundBlock
     }
 
     [Fact]
-    public async Task DisplayParadigmRead_LookupGatedThenLost_AnswersThePendingTipThenTheLostTip()
+    public async Task DisplayParadigmRead_LookupLost_AnswersPendingThenLost()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         TaskCompletionSource gate = new(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -112,7 +112,7 @@ public sealed class TDisplaySoundBlock
     }
 
     [Fact]
-    public void DisplayDiweiOpen_ShownEntry_RaiseTheShownLanguage()
+    public void DisplayDiweiOpen_ShownEntry_RaisesShownLanguage()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -157,7 +157,7 @@ public sealed class TDisplaySoundBlock
     }
 
     [Fact]
-    public void DisplayFanqieSet_ShownEntry_SetsTheRankForTheShownEntry()
+    public void DisplayFanqieSet_ShownEntry_SetsRankForShownEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

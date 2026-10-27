@@ -12,7 +12,7 @@ public sealed class TLibrary
     internal static readonly ConsoleKeyInfo TLibraryEnter = new('\r', ConsoleKey.Enter, false, false, false);
 
     [Fact]
-    public void LibraryObserve_ArrowsThenEnter_SelectsOnceWithOneStation()
+    public void LibraryObserve_ArrowsThenEnter_SelectsOnceOneStation()
     {
         TLibraryRun(
             ["fire", "stone", "water"],
@@ -71,7 +71,7 @@ public sealed class TLibrary
     }
 
     [Fact]
-    public void LibraryKeymap_ControlF7AndF8_ShowTheChoosers()
+    public void LibraryKeymap_ControlF7AndF8_ShowsChoosers()
     {
         TLibraryRun(
             ["fire"],
@@ -152,7 +152,7 @@ public sealed class TLibrary
     }
 
     [Fact]
-    public void LibraryObserve_SelectFails_KeepsTheLitRow()
+    public void LibraryObserve_SelectFails_KeepsLitRow()
     {
         List<string> asked = [];
         TLibraryRun(
@@ -174,7 +174,7 @@ public sealed class TLibrary
     }
 
     [Fact]
-    public void LibraryDraw_ChosenEntryFailsToLoad_ShowsThePrompt()
+    public void LibraryDraw_ChosenEntryFailsToLoad_ShowsPrompt()
     {
         TLibraryRun(
             ["fire", "stone"],

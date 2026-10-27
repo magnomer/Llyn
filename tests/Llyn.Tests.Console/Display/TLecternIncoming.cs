@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 public sealed class TLecternIncoming
 {
     [Fact]
-    public void LecternIncomingDraw_EntryLinkedFrom_ShowsTheRowAndEnterOpensTheSource()
+    public void LecternIncomingDraw_EntryLinkedFrom_ShowsLinkingRow()
     {
         TLecternCard.TLecternCardRun(
             (engine, save) =>
@@ -69,7 +69,7 @@ public sealed class TLecternIncoming
     }
 
     [Fact]
-    public void LecternCardDraw_Video_ShowsTheSpanAndMissing()
+    public void LecternCardDraw_Video_ShowsSpanAndMissing()
     {
         TLecternCard.TLecternCardRun(
             static (_, save) => save(
@@ -93,7 +93,7 @@ public sealed class TLecternIncoming
     }
 
     [Fact]
-    public void LecternSeeObserve_EnterOnSee_LightsTheTarget()
+    public void LecternSeeObserve_EnterOnSee_LightsTarget()
     {
         TLecternCard.TLecternCardRun(
             static (engine, save) =>
@@ -135,7 +135,7 @@ public sealed class TLecternIncoming
     }
 
     [Fact]
-    public void LecternChipObserve_StoredTagWithoutConsolePanel_KeepsTheEntry()
+    public void LecternChipObserve_StoredTagWithoutPanel_KeepsEntry()
     {
         TLecternCard.TLecternCardRun(
             static (_, save) => save(
@@ -161,7 +161,7 @@ public sealed class TLecternIncoming
     }
 
     [Fact]
-    public void LecternChipObserve_StoredTagWithTaxonomy_OpensTheTabAndAltLeftComesBack()
+    public void LecternChipObserve_TaxonomyTag_OpensTabThenComesBack()
     {
         TLecternCard.TLecternCardRun(
             static (_, save) => save(
@@ -195,7 +195,7 @@ public sealed class TLecternIncoming
     }
 
     [Fact]
-    public void LecternChipOpen_TranslationThenAltLeft_ComesBackToTheEntry()
+    public void LecternChipOpen_TranslationThenAltLeft_ReturnsToEntry()
     {
         TLecternCard.TLecternCardRun(
             static (engine, save) =>

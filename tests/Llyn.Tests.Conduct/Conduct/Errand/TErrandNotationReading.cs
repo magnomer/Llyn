@@ -14,7 +14,7 @@ namespace Llyn.Tests;
 public sealed class TErrandNotationReading
 {
     [Fact]
-    public async Task ReadingSet_PrimarySearch_WritesTheIpaAtOnceWithItsVariety()
+    public async Task ReadingSet_PrimarySearch_WritesIpaWithVariety()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TErrandNotation.TErrandNotationPack);
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
@@ -35,7 +35,7 @@ public sealed class TErrandNotationReading
     }
 
     [Fact]
-    public void ReadingSet_AccentSearch_WritesTheRowAndSkipsItOnceRemoved()
+    public void ReadingSet_AccentSearch_WritesRowThenSkipsRemoved()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TErrandNotation.TErrandNotationPack);
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
@@ -67,7 +67,7 @@ public sealed class TErrandNotationReading
     }
 
     [Fact]
-    public void ReadingSet_SchemedSearch_WritesTheTranscriptionAtOnceAndNoVariety()
+    public void ReadingSet_SchemedSearch_WritesTranscriptionNoVariety()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TErrandNotation.TErrandNotationPack);
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();

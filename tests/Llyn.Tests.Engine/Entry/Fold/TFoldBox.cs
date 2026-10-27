@@ -42,7 +42,7 @@ public sealed class TFoldBox
     [Theory]
     [InlineData(LFoldBox.LFoldBoxFanqie, LFoldBox.LFoldBoxScript)]
     [InlineData(LFoldBox.LFoldBoxScript, LFoldBox.LFoldBoxFanqie)]
-    public void BoxSpread_OneBoxOpened_LeavesTheOtherBoxAndTheReflexFoldClosed(LFoldBox box, LFoldBox other)
+    public void BoxSpread_OneBoxOpened_LeavesOtherFoldsClosed(LFoldBox box, LFoldBox other)
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -91,7 +91,7 @@ public sealed class TFoldBox
     }
 
     [Fact]
-    public void EntryDelete_SpreadBoxes_DropsTheirRows()
+    public void EntryDelete_SpreadBoxes_DropsRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -131,7 +131,7 @@ public sealed class TFoldBox
     [Theory]
     [InlineData(LFoldBox.LFoldBoxFanqie)]
     [InlineData(LFoldBox.LFoldBoxScript)]
-    public void BoxSpread_StoredEntry_RaisesFoldBulletinOnItsEntry(LFoldBox box)
+    public void BoxSpread_StoredEntry_RaisesFoldBulletinForEntry(LFoldBox box)
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

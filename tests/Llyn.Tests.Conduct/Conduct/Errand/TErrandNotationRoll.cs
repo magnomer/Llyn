@@ -16,7 +16,7 @@ public sealed class TErrandNotationRoll
     [Theory]
     [InlineData(true, "WAW-tuh")]
     [InlineData(false, "ˈwɔːtə")]
-    public void LookupResonate_FoundReadings_ListsEachReadingReadyWithTheSearchMark(bool respelled, string text)
+    public void LookupResonate_FoundReadings_ListsReadingsReadyMarked(bool respelled, string text)
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -52,7 +52,7 @@ public sealed class TErrandNotationRoll
     }
 
     [Fact]
-    public void LookupResonate_SchemedSearch_ListsThePhoneticBare()
+    public void LookupResonate_SchemedSearch_ListsPhoneticBare()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -75,7 +75,7 @@ public sealed class TErrandNotationRoll
     }
 
     [Fact]
-    public void LookupResonate_NoReading_ChoosesMissingWhenReachedAndBrokenOtherwise()
+    public void LookupResonate_NoReading_ChoosesMissingOrBroken()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TErrandNotation.TErrandNotationPack);
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
@@ -105,7 +105,7 @@ public sealed class TErrandNotationRoll
     }
 
     [Fact]
-    public void LookupResonate_SourcesThenEnd_KeepsThePackOrderAndEndsOnTheSchemeNotice()
+    public void LookupResonate_SourcesThenEnd_KeepsPackOrderThenNotice()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TErrandNotation.TErrandNotationPack);
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();

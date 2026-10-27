@@ -13,7 +13,7 @@ namespace Llyn.Tests;
 public sealed class TPhonology
 {
     [Fact]
-    public async Task PhonologyRowsLoad_StoredEntry_AnswersTheRowsAndTheLanguagesAfterTheFill()
+    public async Task PhonologyRowsLoad_StoredEntry_AnswersRowsAndLanguages()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -30,7 +30,7 @@ public sealed class TPhonology
     }
 
     [Fact]
-    public void PhonologyRowsRead_FreshArea_ListsTheStoredEntries()
+    public void PhonologyRowsRead_FreshArea_ListsStoredEntries()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -78,7 +78,7 @@ public sealed class TPhonology
     }
 
     [Fact]
-    public void PhonologyRowsRead_ChosenRow_MarksThatRowAlone()
+    public void PhonologyRowsRead_ChosenRow_MarksChosenRowAlone()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -112,7 +112,7 @@ public sealed class TPhonology
     }
 
     [Fact]
-    public void ApertureOrderSet_NullAfterAnOrder_KeepsTheChosenOne()
+    public void ApertureOrderSet_NullAfterOrder_KeepsChosenOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -131,7 +131,7 @@ public sealed class TPhonology
     }
 
     [Fact]
-    public void ApertureFilterSet_HiddenLanguage_MarksThePanelFiltered()
+    public void ApertureFilterSet_HiddenLanguage_MarksPanelFiltered()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -150,7 +150,7 @@ public sealed class TPhonology
     }
 
     [Fact]
-    public async Task PhonologyPortraitExport_ChosenEntry_WritesItAndNothingBefore()
+    public async Task PhonologyPortraitExport_ChosenEntry_WritesChosenEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -172,7 +172,7 @@ public sealed class TPhonology
     }
 
     [Fact]
-    public void PhonologyPanelRowOpen_ScribeOn_OpensTheEntryInTheEditorUntilClosed()
+    public void PhonologyPanelRowOpen_ScribeOn_OpensEntryInEditor()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -191,7 +191,7 @@ public sealed class TPhonology
     }
 
     [Fact]
-    public void PhonologyVistaRestore_QueryHeld_CarriesItIntoTheFreshVista()
+    public void PhonologyVistaRestore_QueryHeld_CarriesIntoFreshVista()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -209,7 +209,7 @@ public sealed class TPhonology
     }
 
     [Fact]
-    public void PhonologyVistaRestore_ReflexNoticeAfterASecondRestore_RaisesTheRowsOnceThroughTheMarshal()
+    public void PhonologyVistaRestore_SecondRestore_RaisesRowsOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -235,7 +235,7 @@ public sealed class TPhonology
     }
 
     [Fact]
-    public void PhonologyCreate_ReflexNoticeWithoutARestore_RaisesTheRowsOnceThroughTheMarshal()
+    public void PhonologyCreate_NoRestore_RaisesRowsOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -260,7 +260,7 @@ public sealed class TPhonology
     }
 
     [Fact]
-    public void PhonologyVistaRestore_SettingsNotice_RaisesTheRows()
+    public void PhonologyVistaRestore_SettingsNotice_RaisesRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -275,7 +275,7 @@ public sealed class TPhonology
     }
 
     [Fact]
-    public void ApertureFilterSet_HiddenLanguage_RaisesTheRowsSoTheMarkRepaints()
+    public void ApertureFilterSet_HiddenLanguage_RaisesRowsForMark()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -291,7 +291,7 @@ public sealed class TPhonology
     }
 
     [Fact]
-    public void PhonologyVistaRestore_WorkspaceNotice_ClosesTheChosenEntryAndTellsTheDriver()
+    public void PhonologyVistaRestore_WorkspaceNotice_ClosesEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -310,7 +310,7 @@ public sealed class TPhonology
     }
 
     [Fact]
-    public void PhonologyOrderRead_Menu_OffersTheFourOrderings()
+    public void PhonologyOrderRead_Menu_OffersFourOrderings()
     {
         Assert.Equal(
             [
@@ -323,7 +323,7 @@ public sealed class TPhonology
     }
 
     [Fact]
-    public void PhonologyClose_ExitGate_ClosesTheEditorAndStopsTheRecording()
+    public void PhonologyClose_ExitGate_ClosesEditorAndStopsRecording()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

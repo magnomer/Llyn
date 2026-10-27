@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TLookPart
 {
     [Fact]
-    public void LookPartFind_TemplateSelector_FindsThePartOfTheChosenTemplate()
+    public void LookPartFind_TemplateSelector_FindsChosenTemplatePart()
     {
         TextBlock? part = null;
         Exception? failure = null;

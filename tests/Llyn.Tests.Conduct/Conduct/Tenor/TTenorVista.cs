@@ -11,7 +11,7 @@ namespace Llyn.Tests;
 public sealed class TTenorVista
 {
     [Fact]
-    public async Task TenorRowsLoad_StoredRegister_AnswersTheRowsAndTheLanguagesAfterTheFill()
+    public async Task TenorRowsLoad_StoredRegister_AnswersRowsAndLanguages()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -27,7 +27,7 @@ public sealed class TTenorVista
     }
 
     [Fact]
-    public void TenorVistaRestore_QueriesHeld_CarriesBothIntoTheFreshVistas()
+    public void TenorVistaRestore_QueriesHeld_CarriesBothQueries()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -45,7 +45,7 @@ public sealed class TTenorVista
     }
 
     [Fact]
-    public void TenorVistaRestore_SettingsNoticeAfterASecondRestore_RaisesTheRegisterRowsThenTheEntryRowsOnce()
+    public void TenorVistaRestore_SettingsNotice_RaisesTenorThenEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -70,7 +70,7 @@ public sealed class TTenorVista
     }
 
     [Fact]
-    public void TenorCreate_SettingsNoticeWithoutARestore_RaisesTheRegisterRowsThenTheEntryRowsOnce()
+    public void TenorCreate_SettingsNotice_RaisesTenorThenEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -94,7 +94,7 @@ public sealed class TTenorVista
     }
 
     [Fact]
-    public void TenorVistaRestore_RegisterNoticeWithAnEntryShown_RaisesTheRowsBeforeTheDraftReread()
+    public void TenorVistaRestore_RegisterNotice_RaisesRowsBeforeDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -113,7 +113,7 @@ public sealed class TTenorVista
     }
 
     [Fact]
-    public void TenorVistaRestore_WorkspaceNotice_ClosesTheEntryLetsGoOfTheRegisterAndTellsTheDriverLast()
+    public void TenorVistaRestore_WorkspaceNotice_ClosesEntryAndTenor()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -141,7 +141,7 @@ public sealed class TTenorVista
     }
 
     [Fact]
-    public void TenorRowsRead_EngineFails_ShowsOneLoadFailureAndLeavesTheEntriesUnread()
+    public void TenorRowsRead_EngineFails_ShowsFailureSkipsEntries()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -156,7 +156,7 @@ public sealed class TTenorVista
     }
 
     [Fact]
-    public void TenorVistaRestore_SettingsNoticeWithBothReadsFailing_ShowsOneLoadFailure()
+    public void TenorVistaRestore_BothReadsFailing_ShowsOneFailure()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -172,7 +172,7 @@ public sealed class TTenorVista
     }
 
     [Fact]
-    public void CohortRowsRead_EngineFails_ShowsTheLoadFailureAndAnswersNoRows()
+    public void CohortRowsRead_EngineFails_ShowsFailureAnswersNone()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

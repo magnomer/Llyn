@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 public sealed class TMarkupClerkImporting
 {
     [Fact]
-    public void MarkupClerkImport_PairTree_ReExportsAnEqualTree()
+    public void MarkupClerkImport_PairTree_ReExportsEqualTree()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LRig rig = workspace.TWorkspaceRigCreate();

@@ -76,7 +76,7 @@ public sealed class TRespelling
     }
 
     [Fact]
-    public void RespellingResolve_DecomposedInput_MatchesComposedPattern()
+    public void RespellingResolve_DecomposedInput_MatchesComposed()
     {
         LRespelling group = TInterface.TRespellingCreate(
             [], [TInterface.TRespellingRuleCreate("é", "E")]);
