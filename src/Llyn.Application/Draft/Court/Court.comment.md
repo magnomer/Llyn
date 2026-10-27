@@ -129,9 +129,9 @@ It makes a draft named by the issuer and stamped by the clock, not yet written a
 
 ## `LClaimClerk.LClaimClerkStart`
 
-It writes the first file and writes a claim naming this process beside it.
+It asks the draft port to write the first file and a claim naming this process beside it.
 Then it takes the id into the held set.
-This process is the one the rig names, so a test may pose as another process without starting one.
+The port names the process, so a test fake may pose as another process without starting one.
 Another launch reading the folder then knows the work is live.
 
 ## `LClaimClerk.LDraftRead`
@@ -186,13 +186,14 @@ A stale claim is swept by the check itself and answers false.
 ## `LClaimClerk.LClaimClerkFinish`
 
 It ends a draft whose work is stored.
-The held set, the chronicle, the claim and the file all let it go.
+The held set and the chronicle let it go here, and the port drops the claim and the file.
 Nothing here touches the court, because the commit settled it before the files went.
 
 ## `LClaimClerk.LClaimClerkDelete`
 
 It removes one held draft with its claim, after the links that draft owns are settled.
 The rows pointing at this draft are left, because the caller dropping a chip already took its own row back.
+The cascade runs inside the draft port, and the clerk only applies the release it answers.
 
 ## `LClaimClerk.LClaimClerkCancel`
 
@@ -200,22 +201,29 @@ It discards held work, the court first and the file second.
 The rows this draft owns go with their targets, and the rows pointing at it are settled to nothing.
 Each row pointing at it has its tentative id struck from the draft that held it.
 A chip left carrying it would be stored as a translation of a record that never existed.
+The cascade runs inside the draft port, and the clerk only applies the release it answers.
 
 ## `LClaimClerk.LClaimClerkSweep`
 
-It clears what both archives keep forever, before anything counts what is left.
+It asks the draft port to clear what the stores keep forever, before anything counts what is left.
 The half-written pending files go, and a draft file of another version goes with its claim and its court rows.
 A claim whose draft file is gone goes too, since nothing will ever ask about that draft again.
 The engine then walks the drafts left and cancels the ones holding nothing unsaved.
 
-## `LClaimClerk.LCourtRemove`
+## `LClaimClerk.LClaimClerkSync`
 
-It drops every court row one draft owns, and the tentative target each row named when nothing else wants it.
-A target another draft still links to stays, because that draft's chip would otherwise point at nothing.
-A target goes only while this clerk holds it, so another window's editor is never emptied.
-A target whose claim is gone was left by an earlier launch, and its own recovery will offer it back.
-A row whose owner draft is gone is dropped as well, wherever the sweep meets one.
-Cancelling and deleting share this, because both end a draft and both leave its links behind otherwise.
+It runs when a delete, a cancel or a sweep of the port throws midway.
+The port may have dropped some claims before it failed.
+So each held id the port no longer claims leaves the held set and the chronicle.
+The original failure is thrown on.
+The clerk never keeps a draft held that the store no longer backs.
+
+## `LClaimClerk.LDraftReleaseApply`
+
+It applies one release the draft port answered.
+Each released draft leaves the held set and the chronicle.
+Each rewritten owner leaves the chronicle, because a snapshot from before the rewrite would bring the draft id back.
+The held set goes to the port as it stands, so a target goes only while this clerk holds it.
 
 ## `LCourtClerk`
 
@@ -236,8 +244,7 @@ It returns the row so the caller can drop it again by id.
 
 ## `LCourtClerk.LCourtClerkScan`
 
-The plain scan lists every court row the workspace holds.
-The owner scan lists every row one draft holds, whatever it points at.
+It lists every row one draft holds, whatever it points at.
 Committing and cancelling both act on the whole set.
 
 ## `LCourtClerk.LCourtClerkFind`
@@ -253,14 +260,8 @@ It removes one court row, for a chip the user took back.
 
 It settles every row pointing at `draftId` and rewrites the draft that held each one.
 A real id of zero strikes the tentative id instead, which is how a cancelled target leaves its owners.
-`LCourtClerkUpdate` rewrites the one draft that held a settled link.
-The owner's chronicle is dropped first, because a snapshot from before the rewrite would bring the draft id back.
-`LTranslationUpdate` swaps the tentative id for the real one wherever a card's translations name it.
-An empty real id drops the tentative one instead, and every other translation is copied through unchanged.
-
-## `LCourtClerk.LCourtClerkSweep`
-
-It drops the rows whose file is of another version or half written.
+The draft port does the rewrite through Core's `LEntryDraft.LEntryDraftSettle` and answers the owners it rewrote.
+Each owner's chronicle is dropped, because a snapshot from before the rewrite would bring the draft id back.
 
 ## `LCourtClerk.LCourtClerkApply`
 
@@ -352,9 +353,9 @@ The draft is saved and its court settled after the session, so a failed round le
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `LChronicleClerk.cs` `e36ae342c56f6f67`
-- `LClaimClerk.cs` `4c508f427f5f59e8`
-- `LCourtClerk.cs` `40b042225e3ef37d`
+Commit: `1f3467bbe5c6`
+- `LChronicleClerk.cs` `af0a4478272c0830`
+- `LClaimClerk.cs` `d1ae3bcdb451a317`
+- `LCourtClerk.cs` `06e2ab7d81fc26cd`
 - `LIdentity.cs` `5e1bafe1d4235f90`
 - `LOutcomeClerk.cs` `1844015f999d9a62`

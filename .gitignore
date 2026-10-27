@@ -159,6 +159,10 @@ $RECYCLE.BIN/
 !/scripts/AuditObject.html
 !/scripts/AuditObject.json
 !/scripts/AuditObject.ps1
+!/scripts/AuditModule.cs
+!/scripts/AuditModule.html
+!/scripts/AuditModule.json
+!/scripts/AuditModule.ps1
 !/scripts/AuditObjectHistory.html
 !/scripts/AuditObjectHistory.json
 !/scripts/AuditObjectHistory.ps1

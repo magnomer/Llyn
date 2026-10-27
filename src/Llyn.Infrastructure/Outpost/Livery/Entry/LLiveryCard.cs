@@ -289,7 +289,7 @@ internal static class LLiveryCard
 
             sheet.Append(LLiveryAddressCheck(location)
                 ? LLiveryAddressFormat(location)
-                : LLiverySheet.LLiveryVideoHead + WebUtility.HtmlEncode(location) + "\"></video>");
+                : LEngraverEntrance.LLiveryVideoHead + WebUtility.HtmlEncode(location) + "\"></video>");
             string span = video.LVideoDraftSpan.LStateValueShow();
             if (span.Length > 0)
             {

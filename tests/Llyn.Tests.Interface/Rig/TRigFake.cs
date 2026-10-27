@@ -36,11 +36,9 @@ internal static class TRigFake
             new TRigFakeAudit(),
             new TPostureFake(),
             new LRigAsset(
-                TRigStubCreate<LManifestVault>(),
                 TRigStubCreate<LLocalizationVault>(),
                 TRigStubCreate<LMarkupVault>(),
-                TRigStubCreate<LPortraitVault>(),
-                TRigStubCreate<LLivery>()),
+                TRigStubCreate<LPortraitVault>()),
             entries,
             entries,
             new LRigLexicon(
@@ -52,10 +50,7 @@ internal static class TRigFake
                 TRigStubCreate<LMeaningVault>(),
                 TRigStubCreate<LMorphologyVault>(),
                 TRigStubCreate<LSpeechVault>()),
-            new LRigDraft(
-                TRigStubCreate<LDraftVault>(),
-                TRigStubCreate<LClaimVault>(),
-                TRigStubCreate<LCourtVault>()),
+            TRigStubCreate<LDraftVault>(),
             new LRigCitation(
                 TRigStubCreate<LAuthorVault>(),
                 TRigStubCreate<LImageVault>(),
@@ -92,8 +87,7 @@ internal static class TRigFake
                 TRigStubCreate<LDeckFolderVault>(),
                 TRigStubCreate<LCueVault>(),
                 TRigStubCreate<LStencilVault>(),
-                TRigStubCreate<LDepot>(),
-                TRigStubCreate<LDeckManifestVault>()),
+                TRigStubCreate<LDepot>()),
             TRigStubCreate<LOutpost>(),
             languages,
             new TPress(),
@@ -105,7 +99,6 @@ internal static class TRigFake
             new LTrailSystem(),
             new TClockFake(),
             TRigStubCreate<LLease>(),
-            1,
             workspace);
     }
 

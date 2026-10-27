@@ -32,14 +32,13 @@ internal static class TInterfaceEngineWorkspace
 
     internal static void TEngineWorkspaceOpen(this LEngine engine, string path)
     {
-        engine.LEngineWorkspace.LEngineRigApply(LRigFactory.LRigFactoryBuild(
-            path,
+        engine.LEngineWorkspace.LEngineRigApply(new LRigFactory(
             TPronunciationHelper.TSourceClientCreate(string.Empty, HttpStatusCode.NotFound),
             new LUsherFile(),
             new TPress(),
             new TPressQueue(),
             new TWarrantFake(),
-            new TPhonographFake())
+            new TPhonographFake()).LRigFactoryBuild(path)
             with { LRigClock = new TClockFake() });
     }
 

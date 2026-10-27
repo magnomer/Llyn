@@ -30,14 +30,16 @@ The cue clerk takes the same clerks the stencil clerk takes, for its listing lin
 The resolve relay crosses here with a stored cue, a template and the portrait label.
 The deck outlet is built over an engine, and its deck, folder, cue and template calls pass through unchanged.
 So a gate test prepares its decks through the deck port without asking the user.
-The depot relays build the folder adapter, relay its digest read and drive its save with no cancellation.
-The sheet relay builds a sheet from settings, a header and rows, so a test writes cells inline.
-The manifest file is built over a keep file in a given folder, and its read and save are relayed.
-A manifest is built from a deck map as given, and a save on any manifest store is relayed too.
+The locker relay builds the locker entrance over a keep file in a given folder and a `TClockFake`.
+The shipment relay builds a shipment for deck 1 from cells.
+It numbers the cues from 1, so a test writes cells inline.
+Its typed rows hold the trimmed value of each picture or sound cell that is a full path.
+They hold null elsewhere.
+The export relay drives any depot with a silent fault sink and no cancellation.
 A fresh latch is built here, so a test holds one without constructing it.
 The latch relay reads one engine's latch from its workspace staff.
 The latch's start, finish and check are relayed as they are.
-The depot rig relay swaps the depot and the manifest of a real rig for fakes.
+The depot rig relay swaps the depot of a real rig for a fake.
 So an export test reads real decks and cues and writes nowhere.
 The depot clerk is built with a fresh gate, a silent fault sink and the phone folder `Phone`.
 Its export runs with the default portrait label and no cancellation.
@@ -50,21 +52,13 @@ It stands apart from `TInterfaceRehearsal.cs` because the statistics tab is its 
 
 ## `TDepotFake`
 
-An in-memory phone folder, copying `TOutpostFake`.
-It holds one folder, so it keys files and media by deck code alone.
-Each save stores a fresh digest, so a test can fake a phone export by changing it.
-Copies and deletes are recorded by name, so a test can count them.
-A media name comes from a map of source paths, so two paths can share one content name.
-
-## `TDeckManifestFake`
-
-An in-memory deck manifest that starts empty.
-A save replaces the stored manifest whole, as the file store does.
+A depot that writes nowhere, copying `TOutpostFake`.
+It records each shipment, so a clerk test reads what the clerk resolved and sent.
+Each export answers the receipt the test set, empty by default.
 
 ## Stamp
 
-Commit: `121691f60459`
-- `TDeckManifestFake.cs` `3fab1686919043f2`
-- `TDepotFake.cs` `af48a461923f322d`
-- `TInterfaceRehearsal.cs` `a8edaca8dc1ab647`
+Commit: `1f3467bbe5c6`
+- `TDepotFake.cs` `586b148721938e7f`
+- `TInterfaceRehearsal.cs` `efc086788daa0e6e`
 - `TInterfaceScoreboard.cs` `0b65d5a981d9ea08`

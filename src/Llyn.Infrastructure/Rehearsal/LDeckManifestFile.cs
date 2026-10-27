@@ -8,7 +8,7 @@ using Llyn.Core;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LDeckManifestFile : LDeckManifestVault
+internal sealed class LDeckManifestFile
 {
     private const string LDeckManifestKeep = "rehearsal";
     private const string LDeckManifestDecks = "decks";

@@ -15,6 +15,28 @@ A control raising its own event, which a driver handles with a gate call, report
 The surface signals and the driver requests, so the event is no puppet string.
 It fails when events join the relay set before the puppeteering snapshot is taken.
 
+## `TAssayModule`
+
+Assays of the module walker, run through `TAuditBinder.TAuditAssayRun` with one hand-built module row.
+A module row names an entrance type, its contract types and the files that own it.
+A caller outside the module that uses only the entrance and a contract type passes.
+An unrelated type with the same simple name in another namespace is no use of the hidden type.
+An internal type is `Bypassing` when reached by base list, interface, attribute, alias or `using static`.
+A `nameof`, a `typeof`, a generic argument or a pattern reaches it the same way.
+A caller of an announced module's internal type that sits outside every module is `Bypassing` too.
+No module row covers it.
+The findings come out sorted by key, so a report diffs the same on every run.
+An entrance member that shows an internal type is `Exposing`, once per member and leaked type.
+The type may show through a base, interface, event, tuple, property, generic return, parameter or constraint.
+Internal and private protected members count as exposed members too.
+Three modules calling each other in a ring are one `Cycling` finding under the key of the whole component, `Cycling:P/A+B+C`.
+A badly shaped row is refused with an exception before any finding is counted.
+The shapes are a missing file, a missing entrance type, a repeated file and an entrance outside its files.
+A contract outside its files and a partial type split across files are refused too.
+One assay pins a limit.
+A caller that copies, caches, transfers or completes a contract object is not judged.
+The walker reads symbols and never who owns an object at runtime.
+
 ## `TAssayRelay`
 
 Assays of the relay reading, meaning which delegates and members count as a request.
@@ -239,8 +261,9 @@ A method a driver itself names `nameof` resolves to a symbol and is not one.
 
 ## Stamp
 
-Commit: `8c403d1df768`
+Commit: `1f3467bbe5c6`
 - `TAssayControl.cs` `065e9fa6d18090dc`
+- `TAssayModule.cs` `4fefb41bb477ace3`
 - `TAssayRelay.cs` `f4f232d8e0412019`
 - `TAssaySink.cs` `3bfb09db25c8f6f2`
 - `TAssayTruth.cs` `8afb77d51791d442`

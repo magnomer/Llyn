@@ -12,13 +12,19 @@ using Llyn.Core;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LOutpostHttp : LOutpost
+internal sealed class LOutpostHttp
 {
     private const int LOutpostFirst = 41184;
 
     private const int LOutpostLast = 41194;
 
-    private readonly LOutpostWire _lOutpostHttpWire = new();
+    private readonly LOutpostWire _lOutpostHttpWire;
+
+    public LOutpostHttp(LOutpostWire wire)
+    {
+        ArgumentNullException.ThrowIfNull(wire);
+        _lOutpostHttpWire = wire;
+    }
 
     public async Task<int?> LOutpostFind(int port, CancellationToken cancellation)
     {

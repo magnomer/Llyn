@@ -3,13 +3,6 @@
 Draft holds the tentative records held in the workspace folder before they reach the database.
 Every record here is plain data that knows nothing of files or the database.
 
-## `LClaim`
-
-One running program's hold on a tentative record, written where every launch can read it.
-A held draft is otherwise known only to the copy of the program that started it.
-A second copy would report that live work as a leftover of a crash and offer to recover it.
-A process id is reused once its process is gone, so the start time tells the holder from its successor.
-
 ## `LCourt`
 
 One tentative link, waiting for the record it points at to become real or be dropped.
@@ -56,6 +49,13 @@ It is called only after the user agreed to lose what the store could not read.
 It walks the cards and their children for the card, then answers its sentence row.
 A card found without that row ends the walk, since card ids are unique.
 
+## `LDraftRelease`
+
+What ending one or more drafts let go of, answered by the vault and applied by the engine.
+The drafts are the ids that ended, so the engine forgets them.
+The owners are the drafts whose content the vault rewrote, so the engine forgets only what it kept for them.
+The vault never touches the engine's memory, so the release is the only way that news travels.
+
 ## `LOutcome`
 
 What one draft commit produced.
@@ -70,9 +70,9 @@ It is a record, so two readings compare by value and a tenure raises its bulleti
 
 ## Stamp
 
-Commit: `8c403d1df768`
-- `LClaim.cs` `4bf25b6887736f62`
+Commit: `1f3467bbe5c6`
 - `LCourt.cs` `9660b9f2ce0f287e`
 - `LDraft.cs` `9a4c1cda19eb42c0`
+- `LDraftRelease.cs` `9b14f9b95df708e1`
 - `LOutcome.cs` `a1f449a024fa30b3`
 - `LTenureState.cs` `cf447781d6e742b6`

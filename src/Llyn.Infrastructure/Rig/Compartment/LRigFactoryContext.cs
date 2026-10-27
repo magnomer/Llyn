@@ -2,7 +2,7 @@ using Llyn.Core;
 
 namespace Llyn.Infrastructure;
 
-public static class LRigFactoryContext
+internal static class LRigFactoryContext
 {
     public static LRigContext LRigContextBuild(LDatabase database) =>
         new(

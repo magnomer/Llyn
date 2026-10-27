@@ -15,10 +15,10 @@
     A bare name reaches its script in any letter case. Windows finds the
     dispatcher and the script without regard to case, so audit, auditlines,
     auditlineshistory, auditcomments, auditencoding, auditfake, auditfault,
-    auditnames, auditnamesnew, auditobject, auditobjecthistory, auditplatform,
+    auditnames, auditnamesnew, auditobject, auditmodule, auditobjecthistory, auditplatform,
     auditstructure and auditui run Audit.ps1, AuditLines.ps1,
     AuditLinesHistory.ps1, AuditComments.ps1, AuditEncoding.ps1, AuditFake.ps1,
-    AuditFault.ps1, AuditNames.ps1, AuditNamesNew.ps1, AuditObject.ps1,
+    AuditFault.ps1, AuditNames.ps1, AuditNamesNew.ps1, AuditObject.ps1, AuditModule.ps1,
     AuditObjectHistory.ps1, AuditPlatform.ps1, AuditStructure.ps1 and AuditUI.ps1.
     The helpers work the same way, for example timemachine and syncnames.
     An older dispatcher file named in another case keeps working and is

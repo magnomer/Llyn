@@ -94,4 +94,46 @@ public sealed record LEntryDraft(
                 .ToList(),
         };
     }
+
+    public LEntryDraft LEntryDraftSettle(long draftId, long realId)
+    {
+        return this with
+        {
+            LEntryDraftMeanings = LEntryDraftSettle(LEntryDraftMeanings, draftId, realId),
+            LEntryDraftCollocations = LEntryDraftSettle(LEntryDraftCollocations, draftId, realId),
+        };
+    }
+
+    private static IReadOnlyList<LCardDraft> LEntryDraftSettle(
+        IReadOnlyList<LCardDraft> cards, long draftId, long realId)
+    {
+        List<LCardDraft> written = new(cards.Count);
+        foreach (LCardDraft card in cards)
+        {
+            List<long> translations = new(card.LCardDraftTranslation.Count);
+            foreach (long translation in card.LCardDraftTranslation)
+            {
+                if (translation != draftId)
+                {
+                    translations.Add(translation);
+                    continue;
+                }
+
+                if (realId != 0
+                    && !translations.Contains(realId)
+                    && !card.LCardDraftTranslation.Contains(realId))
+                {
+                    translations.Add(realId);
+                }
+            }
+
+            written.Add(card with
+            {
+                LCardDraftTranslation = translations,
+                LCardDraftChild = LEntryDraftSettle(card.LCardDraftChild, draftId, realId),
+            });
+        }
+
+        return written;
+    }
 }

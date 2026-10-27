@@ -154,14 +154,14 @@ A member appends its own name, so a member is told apart from its type.
 
 ## Stamp
 
-Commit: `8c403d1df768`
+Commit: `1f3467bbe5c6`
 - `TAuditBoundary.cs` `51ad50d413ce0aab`
-- `TAuditBoundarySetting.cs` `c496055813de23bd`
+- `TAuditBoundarySetting.cs` `54de2b373bd11f04`
 - `TAuditCensus.cs` `1927cbc5ad714acf`
-- `TAuditCensusSetting.cs` `8fb52cbc35a34b4e`
+- `TAuditCensusSetting.cs` `08b9a4d8333323e1`
 - `TAuditCensusWalker.cs` `301bfbc58a822e20`
 - `TAuditCharter.cs` `9640ab92d9a80db5`
-- `TAuditCharterSetting.cs` `19b123ffcd93e927`
+- `TAuditCharterSetting.cs` `8cb6d1ff6431d5d6`
 - `TAuditPurity.cs` `9acbad32aaa34359`
-- `TAuditPuritySetting.cs` `c6e04528213a5c9d`
+- `TAuditPuritySetting.cs` `02d1d746b4cc400f`
 - `TAuditPurityWalker.cs` `77f32b04ab93854e`

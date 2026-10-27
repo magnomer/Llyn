@@ -9,6 +9,9 @@ The relays for the infrastructure layer.
 They open a store and run one store operation.
 Entry-owned rows, forms, speeches, examples, media, notes, inflections, lacunae and readings are relayed here.
 The database session, the doctor, the realm, the revision log and the workspace root are relayed here too.
+The draft vault relay builds the dossier entrance over a root.
+The draft delete relay only finishes the draft.
+It drops the claim and the file and settles no court row.
 A retirement of a part of speech is built and applied here, against the speech store.
 The fanqie store saves and reads a character's rows here, and sets a row's representative rank.
 The stores of what hangs on a meaning or collocation are relayed in `TInterfaceMeaning`.
@@ -111,9 +114,9 @@ The realm is always the empty `Guid`, since no schema ever wrote one here.
 
 ## Stamp
 
-Commit: `c37ca1837ded`
+Commit: `1f3467bbe5c6`
 - `TInterfaceDatabase.cs` `371337238cdda9b9`
-- `TInterfaceVault.cs` `77bad45b5f2ce34c`
+- `TInterfaceVault.cs` `2df11a8940d3229b`
 - `TVaultFake.cs` `7d9c55a8e3e857fb`
 - `TVaultFakeCue.cs` `f7557ad5edf8898a`
 - `TVaultFakeDeck.cs` `47f068bafbd3bf0e`

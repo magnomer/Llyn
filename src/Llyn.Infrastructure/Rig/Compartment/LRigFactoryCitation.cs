@@ -2,7 +2,7 @@ using Llyn.Core;
 
 namespace Llyn.Infrastructure;
 
-public static class LRigFactoryCitation
+internal static class LRigFactoryCitation
 {
     public static LRigCitation LRigCitationBuild(LDatabase database) =>
         new(

@@ -7,19 +7,13 @@ This folder holds the factory sub-roots, each building one group of the rig.
 Each sub-root builds one group of the rig over the one database the factory opened.
 It names only that group's adapters, so `LRigFactory` stays free of them.
 Nothing here is opened or read.
-`LRigFactoryRehearsal` also takes the workspace root, since the deck manifest is a workspace file.
-
-## `LRigFactoryDraft`
-
-This sub-root builds the draft group over the workspace root the factory resolved.
-It names only the draft archives.
-Nothing here is opened or read.
+`LRigFactoryRehearsal` also takes the workspace root and the clock.
+They build the locker entrance, whose deck manifest is a workspace file stamped with that clock.
 
 ## `LRigFactoryAsset`
 
-This sub-root builds the asset group.
-The manifest lands under the root.
-The portrait and livery wear the one theme handed in.
+This sub-root builds the asset group over the theme alone.
+The portrait adapter wears the one theme handed in.
 Nothing here is opened or read.
 
 ## `LRigFactorySource`
@@ -27,18 +21,18 @@ Nothing here is opened or read.
 This sub-root builds every fetcher over the client and the recording archive over the root, client and clock.
 Every page adapter gets one two-second regex patience from here.
 The caller owns the client, so nothing here holds it across builds.
+The recording archive also takes the clock, so its waits follow it.
 Nothing here is opened or read.
 
 ## Stamp
 
-Commit: `9377e657b395`
-- `LRigFactoryAsset.cs` `1b0e0e9d6cf95305`
-- `LRigFactoryCitation.cs` `df638484473ad0ef`
-- `LRigFactoryContext.cs` `e3d3902dfb5cc9d9`
-- `LRigFactoryDraft.cs` `dce49fea44c85c7d`
-- `LRigFactoryKeeping.cs` `d2b3c98cc215a0a2`
-- `LRigFactoryLexicon.cs` `222aad69e5594ba2`
-- `LRigFactoryRehearsal.cs` `bf1eb3024ebfd474`
-- `LRigFactorySentence.cs` `476cf0db15cd6c04`
-- `LRigFactorySound.cs` `d903e45a869d5e10`
-- `LRigFactorySource.cs` `767b380f920c1702`
+Commit: `1f3467bbe5c6`
+- `LRigFactoryAsset.cs` `47bb7430f0dd3962`
+- `LRigFactoryCitation.cs` `7634dabcf93a95a6`
+- `LRigFactoryContext.cs` `3ad86ac77c55c2a3`
+- `LRigFactoryKeeping.cs` `1fcb4dbc484efd5f`
+- `LRigFactoryLexicon.cs` `042c11d9ecf3a395`
+- `LRigFactoryRehearsal.cs` `65c4d261bcdf4545`
+- `LRigFactorySentence.cs` `255e9ba6957041d9`
+- `LRigFactorySound.cs` `740daebef13359b6`
+- `LRigFactorySource.cs` `df49b6e0d010d2ed`

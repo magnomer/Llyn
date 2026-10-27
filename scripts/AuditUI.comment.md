@@ -125,3 +125,62 @@ Every fact the tests gate is one counter, and the counters sum to zero exactly w
 The report lists every hit in the line format of the test reports, so the two diff directly.
 The `enforced` flag of the `strict` and `truth` settings gates the kinds of each audit.
 An informative kind that waits on an empty driver adds no row to its counter.
+
+## Kinds
+
+The script reports three audits, Strict, Truth and Boundary.
+Each hit carries a kind, and the ledger holds a ceiling per kind per file.
+
+Strict kinds read the surfaces, the host and the markup.
+- `Hoarding` is a field or event field in a surface type.
+- `Sharing` is a mutable static field in a driver type.
+- `Freelancing` is a surface member other than a constructor.
+- `Meddling` is a surface line that is not a plain call, or a field initializer that is not a literal.
+- `Prying` is a driver or surface naming a type from below the driver.
+- `Homoglyph` is an identifier carrying a non-ASCII glyph.
+- `Overworking` is a host line that does more than construction and wiring.
+- `Tethering` is a markup line that hooks logic into the markup.
+- `Branching` is markup that branches on a condition or computes in a property element or binding.
+- `Overreaching` is markup that does not parse, maps a logic namespace, reads a logic constant or names logic.
+- `Hardwiring` is a driver loading the surface through a built URI or naming a surface marker.
+- `Masquerading` is a driver type deriving from a type in `strict.masqueradingTypes`.
+- `Dangling` is a contract ID that is not a constant or has no element or resource in the surface.
+
+Truth kinds read the drivers.
+- `Laundering` is computing over the user input.
+- `Misfiring` is input deciding a request, or a second request for one action.
+- `Gatekeeping` is a held value or an engine answer deciding a request.
+- `Zeroing` is a literal `0`, `0L` or `default` sent toward a gate.
+- `Moonlighting` is comparing or computing over a value from below Conduct.
+- `Duplicating` is a field naming a state, holding an untyped value, caching a gate answer or holding a type from below Conduct.
+- `Contesting` is a field written both from a gate answer and from the driver own logic.
+- `Replaying` is a held value or a gate answer passed into a request.
+- `Tampering` is assigning a member of a logic object, or reordering a collection Conduct gave.
+- `Puppeteering` is a control member calling logic itself.
+- `Spoonfeeding` is handing the surface a type from below the cut, Conduct included.
+- `Mismatching` is a Conduct member one medium reaches and another never does.
+- `Homoglyph` is also reported here for the driver sources.
+
+The Boundary counters guard the walkers and carry no kind.
+They count forbidden state builds, state compares, hidden lines, reflection calls, skipped sources, logic panels and hold timers.
+They also count stale boundary rows.
+
+## Ceilings
+
+A ceiling is the hit count of one kind that one file may hold, written in `AuditUI.ledger.json`.
+A file above its ceiling fails, and a ceiling above its count is stale and fails.
+So a ceiling only walks down.
+A kind not written in the ledger holds a ceiling of zero.
+Driver disk lines and surface catalog lines keep no ceiling and must stay at zero.
+A kind in `truth.informative` gates nothing until its driver folders hold a source.
+
+## Exemptions
+
+Only two lists exempt anything, `strict.diskExempt` and `strict.catalogExempt`.
+Each names a file by its file name, and the file is spared the disk or catalog line check.
+A name that matches no line is stale and fails.
+The Truth and Strict kinds take no exemption.
+The Boundary settings keep their own rows, and a row that matches nothing fails.
+## In Llyn
+
+The ledger holds only Mismatching rows, which wait on the Demeanor folder.

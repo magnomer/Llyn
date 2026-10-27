@@ -12,7 +12,7 @@ internal static partial class TInterface
         new LEntryArchive(database);
 
     internal static LDraftVault TDraftVaultCreate(string root) =>
-        new LDraftArchive(root);
+        new LDossierEntrance(root);
 
     internal static LLanguageVault TLanguageVaultCreate() =>
         new LLanguageLoader(
@@ -81,7 +81,7 @@ internal static partial class TInterface
 
     internal static void TDraftDelete(this LDraftVault draftVault, long id)
     {
-        draftVault.LDraftDelete(id);
+        draftVault.LDraftFinish(id);
     }
 
     internal static LVaultFault TVaultFaultCreate(string message) =>

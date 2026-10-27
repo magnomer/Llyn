@@ -5,5 +5,4 @@ public sealed record LRigRehearsal(
     LDeckFolderVault LRigRehearsalFolders,
     LCueVault LRigRehearsalCues,
     LStencilVault LRigRehearsalStencils,
-    LDepot LRigRehearsalDepot,
-    LDeckManifestVault LRigRehearsalManifest);
+    LDepot LRigRehearsalDepot);

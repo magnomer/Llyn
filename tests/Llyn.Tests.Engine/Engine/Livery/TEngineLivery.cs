@@ -267,17 +267,6 @@ public sealed class TEngineLivery
     }
 
     [Fact]
-    public void CourierNoteBuild_OutsideEntry_ReturnsEmpty()
-    {
-        LEntry dog = TInterface.TEntryCreate(7, "dog", "English", 0, null, null);
-
-        Func<long, string> note = TInterface.TCourierNoteBuild("realm", [dog]);
-
-        Assert.Equal(32, note(7).Length);
-        Assert.Equal(string.Empty, note(8));
-    }
-
-    [Fact]
     public void LiveryStyleFormat_TokenTheme_ScopesRulesWithoutColour()
     {
         string css = TThemeStyleFormat();

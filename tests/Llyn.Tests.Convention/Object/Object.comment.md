@@ -157,11 +157,11 @@ A captured primary-constructor parameter is neither state nor mutable, a known l
 
 ## Stamp
 
-Commit: `90a13c9590ba`
+Commit: `1f3467bbe5c6`
 - `TAuditObject.cs` `d7c49bde47bed70d`
 - `TAuditObjectMember.cs` `a16c1d47d7995c6c`
 - `TAuditObjectPart.cs` `8d291a83366d68f8`
 - `TAuditObjectRow.cs` `4bab03b10990872d`
-- `TAuditObjectSetting.cs` `f137dbd3fdb5a20e`
+- `TAuditObjectSetting.cs` `9b500b3ff43551e5`
 - `TAuditObjectType.cs` `b202f87d774b9373`
 - `TAuditObjectWalker.cs` `30f80d6d1d86e20e`

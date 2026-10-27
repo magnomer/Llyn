@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Llyn.Core;
 
 namespace Llyn.Application;
@@ -7,29 +8,22 @@ namespace Llyn.Application;
 public sealed class LClaimClerk
 {
     private readonly LDraftVault _lClaimClerkDrafts;
-    private readonly LClaimVault _lClaimClerkClaims;
     private readonly LAuthorVault _lClaimClerkAuthors;
     private readonly LClock _lClaimClerkClock;
-    private readonly int _lClaimClerkProcess;
     private readonly LIdentity _lClaimClerkIdentity;
     private readonly LChronicleClerk _lClaimClerkChronicle;
-    private readonly LCourtClerk _lClaimClerkCourts;
     private readonly HashSet<long> _lClaimClerkHeld = [];
 
-    public LClaimClerk(LRig rig, LIdentity identity, LChronicleClerk chronicle, LCourtClerk courts)
+    public LClaimClerk(LRig rig, LIdentity identity, LChronicleClerk chronicle)
     {
         ArgumentNullException.ThrowIfNull(rig);
         ArgumentNullException.ThrowIfNull(identity);
         ArgumentNullException.ThrowIfNull(chronicle);
-        ArgumentNullException.ThrowIfNull(courts);
-        _lClaimClerkDrafts = rig.LRigDraft.LRigDraftDrafts;
-        _lClaimClerkClaims = rig.LRigDraft.LRigDraftClaims;
+        _lClaimClerkDrafts = rig.LRigDraft;
         _lClaimClerkAuthors = rig.LRigCitation.LRigCitationAuthors;
         _lClaimClerkClock = rig.LRigClock;
-        _lClaimClerkProcess = rig.LRigProcess;
         _lClaimClerkIdentity = identity;
         _lClaimClerkChronicle = chronicle;
-        _lClaimClerkCourts = courts;
     }
 
     public IReadOnlySet<long> LClaimClerkHeld => _lClaimClerkHeld;
@@ -54,10 +48,9 @@ public sealed class LClaimClerk
     {
         ArgumentNullException.ThrowIfNull(draft);
 
-        _lClaimClerkDrafts.LDraftSave(draft);
-        _lClaimClerkClaims.LClaimSave(_lClaimClerkClaims.LClaimCreate(draft.LDraftId));
-        _lClaimClerkHeld.Add(draft.LDraftId);
-        return draft;
+        LDraft started = _lClaimClerkDrafts.LDraftStart(draft);
+        _lClaimClerkHeld.Add(started.LDraftId);
+        return started;
     }
 
     public LDraft? LDraftRead(long id)
@@ -135,65 +128,85 @@ public sealed class LClaimClerk
 
     public bool LClaimClerkCheck(long id)
     {
-        LClaim? claim = _lClaimClerkClaims.LClaimCheck(id)
-            ? _lClaimClerkClaims.LClaimRead(id)
-            : null;
-
-        return claim is not null
-            && claim.LClaimProcess == _lClaimClerkProcess
-            && _lClaimClerkHeld.Contains(id);
+        return _lClaimClerkDrafts.LDraftClaimCheck(id) && _lClaimClerkHeld.Contains(id);
     }
 
     public bool LClaimForeignCheck(long id)
     {
-        if (!_lClaimClerkClaims.LClaimCheck(id))
-        {
-            return false;
-        }
-
-        LClaim? claim = _lClaimClerkClaims.LClaimRead(id);
-        return claim is not null && claim.LClaimProcess != _lClaimClerkProcess;
+        return _lClaimClerkDrafts.LDraftForeignCheck(id);
     }
 
     public void LClaimClerkFinish(long id)
     {
         _lClaimClerkHeld.Remove(id);
         _lClaimClerkChronicle.LChronicleClerkClear(id);
-        _lClaimClerkClaims.LClaimDelete(id);
-        _lClaimClerkDrafts.LDraftDelete(id);
+        _lClaimClerkDrafts.LDraftFinish(id);
     }
 
     public void LClaimClerkDelete(long id)
     {
         ArgumentOutOfRangeException.ThrowIfZero(id);
-        LCourtRemove(id);
-        LClaimClerkFinish(id);
+        try
+        {
+            LDraftReleaseApply(_lClaimClerkDrafts.LDraftDelete(id, _lClaimClerkHeld));
+        }
+        catch
+        {
+            LClaimClerkSync();
+            throw;
+        }
     }
 
     public void LClaimClerkCancel(long id)
     {
         ArgumentOutOfRangeException.ThrowIfZero(id);
-        LCourtRemove(id);
-        _lClaimClerkCourts.LCourtClerkSettle(id, 0);
-        LClaimClerkFinish(id);
+        try
+        {
+            LDraftReleaseApply(_lClaimClerkDrafts.LDraftCancel(id, _lClaimClerkHeld));
+        }
+        catch
+        {
+            LClaimClerkSync();
+            throw;
+        }
     }
 
     public void LClaimClerkSweep()
     {
-        IReadOnlyList<long> dropped = _lClaimClerkDrafts.LDraftSweep();
-        _lClaimClerkCourts.LCourtClerkSweep();
-
-        foreach (long id in dropped)
+        try
         {
-            LClaimClerkCancel(id);
+            LDraftReleaseApply(_lClaimClerkDrafts.LDraftSweep(_lClaimClerkHeld));
+        }
+        catch
+        {
+            LClaimClerkSync();
+            throw;
+        }
+    }
+
+    private void LClaimClerkSync()
+    {
+        foreach (long id in _lClaimClerkHeld.ToArray())
+        {
+            if (!_lClaimClerkDrafts.LDraftClaimCheck(id))
+            {
+                _lClaimClerkHeld.Remove(id);
+                _lClaimClerkChronicle.LChronicleClerkClear(id);
+            }
+        }
+    }
+
+    private void LDraftReleaseApply(LDraftRelease release)
+    {
+        foreach (long id in release.LDraftReleaseDrafts)
+        {
+            _lClaimClerkHeld.Remove(id);
+            _lClaimClerkChronicle.LChronicleClerkClear(id);
         }
 
-        foreach (LClaim claim in _lClaimClerkClaims.LClaimScan())
+        foreach (long id in release.LDraftReleaseOwners)
         {
-            if (_lClaimClerkDrafts.LDraftRead(claim.LClaimDraft) is null)
-            {
-                _lClaimClerkClaims.LClaimDelete(claim.LClaimDraft);
-            }
+            _lClaimClerkChronicle.LChronicleClerkClear(id);
         }
     }
 
@@ -211,52 +224,5 @@ public sealed class LClaimClerk
         }
 
         return draft with { LDraftAuthor = named };
-    }
-
-    private void LCourtRemove(long id)
-    {
-        IReadOnlyList<LCourt> court = _lClaimClerkCourts.LCourtClerkScan();
-
-        foreach (LCourt link in court)
-        {
-            if (link.LCourtOwnerId != id)
-            {
-                if (_lClaimClerkDrafts.LDraftRead(link.LCourtOwnerId) is null)
-                {
-                    _lClaimClerkCourts.LCourtClerkDelete(link.LCourtId);
-                }
-
-                continue;
-            }
-
-            _lClaimClerkCourts.LCourtClerkDelete(link.LCourtId);
-
-            if (link.LCourtTargetId == id)
-            {
-                continue;
-            }
-
-            bool claimed = false;
-            foreach (LCourt other in court)
-            {
-                if (other.LCourtOwnerId != id
-                    && other.LCourtTargetId == link.LCourtTargetId)
-                {
-                    claimed = true;
-                    break;
-                }
-            }
-
-            LDraft? target = _lClaimClerkDrafts.LDraftRead(link.LCourtTargetId);
-
-            if (claimed || target is null || !LClaimClerkCheck(link.LCourtTargetId))
-            {
-                continue;
-            }
-
-            _lClaimClerkHeld.Remove(link.LCourtTargetId);
-            _lClaimClerkClaims.LClaimDelete(link.LCourtTargetId);
-            _lClaimClerkDrafts.LDraftDelete(link.LCourtTargetId);
-        }
     }
 }

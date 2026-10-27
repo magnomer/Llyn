@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -9,15 +11,32 @@ using Llyn.Core;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LDepotFolder : LDepot
+internal sealed class LDepotFolder
 {
     private const string LDepotFolderText = "Text 1";
+    private const string LDepotFolderId = "ID";
     private const string LDepotFolderExtension = ".txt";
     private const string LDepotFolderMedia = " Media";
     private const string LDepotFolderPending = ".tmp";
     private const string LDepotFolderSetting = "*";
     private const string LDepotFolderBar = "|";
     private const int LDepotFolderDigest = 16;
+    private const int LDepotFolderSides = 5;
+    private const int LDepotFolderCategories = 4;
+
+    private static readonly IReadOnlyList<string> LDepotFolderOrder =
+    [
+        .. Enumerable.Range(1, LDepotFolderSides).SelectMany(static side => new[]
+        {
+            "Text " + side.ToString(CultureInfo.InvariantCulture),
+            "Picture " + side.ToString(CultureInfo.InvariantCulture),
+            "Sound " + side.ToString(CultureInfo.InvariantCulture),
+        }),
+        "Notes",
+        "Extra Info",
+        .. Enumerable.Range(1, LDepotFolderCategories)
+            .Select(static index => "Category " + index.ToString(CultureInfo.InvariantCulture)),
+    ];
 
     public async Task LDepotSave(
         string folder, string code, LDeckSheet sheet, bool basic, CancellationToken cancellation)
@@ -96,6 +115,57 @@ public sealed class LDepotFolder : LDepot
         }
 
         return builder.ToString();
+    }
+
+    public static IReadOnlyList<string> LDepotHeaderResolve(IReadOnlyList<LCueFace> faces)
+    {
+        ArgumentNullException.ThrowIfNull(faces);
+
+        HashSet<string> used = new(StringComparer.Ordinal) { LDepotFolderText };
+        foreach (LCueCell cell in faces.SelectMany(static face => face.LCueFaceCells))
+        {
+            if (cell.LCueCellValue.Length > 0 && LDepotColumnFormat(cell) is string name)
+            {
+                used.Add(name);
+            }
+        }
+
+        return [.. LDepotFolderOrder.Where(used.Contains), LDepotFolderId];
+    }
+
+    public static IReadOnlyList<string> LDepotRowFormat(long cue, LCueFace face, IReadOnlyList<string> header)
+    {
+        ArgumentNullException.ThrowIfNull(face);
+        ArgumentNullException.ThrowIfNull(header);
+
+        Dictionary<string, string> values = new(StringComparer.Ordinal);
+        foreach (LCueCell cell in face.LCueFaceCells)
+        {
+            if (cell.LCueCellValue.Length > 0 && LDepotColumnFormat(cell) is string name)
+            {
+                values.TryAdd(name, cell.LCueCellValue);
+            }
+        }
+
+        values[LDepotFolderId] = cue.ToString(CultureInfo.InvariantCulture);
+        return [.. header.Select(name => values.GetValueOrDefault(name, string.Empty))];
+    }
+
+    private static string? LDepotColumnFormat(LCueCell cell)
+    {
+        string index = cell.LCueCellIndex.ToString(CultureInfo.InvariantCulture);
+        string? name = cell.LCueCellColumn switch
+        {
+            LCueColumn.LCueColumnText => "Text " + index,
+            LCueColumn.LCueColumnPicture => "Picture " + index,
+            LCueColumn.LCueColumnSound => "Sound " + index,
+            LCueColumn.LCueColumnNotes => "Notes",
+            LCueColumn.LCueColumnExtra => "Extra Info",
+            LCueColumn.LCueColumnCategory => "Category " + index,
+            _ => null,
+        };
+
+        return name is not null && LDepotFolderOrder.Contains(name) ? name : null;
     }
 
     private static string? LDepotFolderResolve(string folder, string code)

@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Net.Http;
 using System.Threading;
 using Llyn.Application;
 using Llyn.Conduct;
@@ -53,12 +52,12 @@ Func<LEngine, LSettingsOutlet, Action<Action>, bool, CAtelier> atelier = static 
 
 Func<int> console = () =>
 {
-    HttpClient client = LRigFactory.LRigClientCreate();
-    LUsher usher = new LUsherShell(new LUsherFile());
-    LPress press = new LPressBrowser();
-    LPressQueue queue = new LPressSpooler();
-    LWarrant warrant = new LWarrantShield();
-    LPhonograph phonograph = new LPhonographMedia();
+    using LRigFactory foundry = new(
+        new LUsherShell(new LUsherFile()),
+        new LPressBrowser(),
+        new LPressSpooler(),
+        new LWarrantShield(),
+        new LPhonographMedia());
     BBootstrap bootstrap = new(new BConsoleStream(), new ABootstrap());
 
     int status = bootstrap.BBootstrapIntroduce(
@@ -67,8 +66,8 @@ Func<int> console = () =>
         () => LLocalization.LLocalizationLoad(new LLocalizationLoader(), LLocalization.LLocalizationDefault),
         LWorkspaceRoot.LWorkspaceRootRead,
         (workspace, leased) => new LEngine(
-            LRigFactory.LRigFactoryBuild(workspace, client, usher, press, queue, warrant, phonograph),
-            path => LRigFactory.LRigFactoryBuild(path, client, usher, press, queue, warrant, phonograph),
+            foundry.LRigFactoryBuild(workspace),
+            path => foundry.LRigFactoryBuild(path),
             LWorkspaceRoot.LWorkspaceRootChange,
             leased),
         LDoctor.LDoctorBusyCheck,
@@ -94,7 +93,6 @@ Func<int> console = () =>
             engine.Dispose();
             return run;
         });
-    client.Dispose();
     return status;
 };
 
@@ -103,12 +101,12 @@ Func<int> window = () =>
     int code = 1;
     Thread thread = new(() =>
     {
-        HttpClient client = LRigFactory.LRigClientCreate();
-        LUsher usher = new LUsherShell(new LUsherFile());
-        LPress press = new LPressBrowser();
-        LPressQueue queue = new LPressSpooler();
-        LWarrant warrant = new LWarrantShield();
-        LPhonograph phonograph = new LPhonographMedia();
+        using LRigFactory foundry = new(
+            new LUsherShell(new LUsherFile()),
+            new LPressBrowser(),
+            new LPressSpooler(),
+            new LWarrantShield(),
+            new LPhonographMedia());
         PBootstrap application = new();
         QBootstrap bootstrap = new();
 
@@ -117,8 +115,8 @@ Func<int> window = () =>
             () => LLocalization.LLocalizationLoad(new LLocalizationLoader(), LLocalization.LLocalizationDefault),
             LWorkspaceRoot.LWorkspaceRootRead,
             workspace => new LEngine(
-                LRigFactory.LRigFactoryBuild(workspace, client, usher, press, queue, warrant, phonograph),
-                path => LRigFactory.LRigFactoryBuild(path, client, usher, press, queue, warrant, phonograph),
+                foundry.LRigFactoryBuild(workspace),
+                path => foundry.LRigFactoryBuild(path),
                 LWorkspaceRoot.LWorkspaceRootChange,
                 true),
             LDoctor.LDoctorBusyCheck,
@@ -139,7 +137,6 @@ Func<int> window = () =>
                 code = application.Run();
                 engine.Dispose();
             });
-        client.Dispose();
     });
     thread.SetApartmentState(ApartmentState.STA);
     thread.Start();

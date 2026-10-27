@@ -138,25 +138,29 @@ public sealed class TDraftArchive
     }
 
     [Fact]
-    public void CourtArchiveSettle_WaitingLinks_DropsAll()
+    public void CourtArchiveSettle_WaitingLinks_RewritesOwners()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         long target = TInterface.TIdentityCreate();
-        LCourt first = TInterface.TDraftLinkCreate(TInterface.TIdentityCreate(), target, "hearth");
+        long real = TInterface.TIdentityCreate();
+        LDraft owner = TDraftTranslationCreate(target);
+        LCourt first = TInterface.TDraftLinkCreate(owner.LDraftId, target, "hearth");
         LCourt second = TInterface.TDraftLinkCreate(TInterface.TIdentityCreate(), target, "hearth");
 
+        TInterface.TDraftArchiveSave(workspace.TWorkspaceFolder, owner);
         TInterface.TCourtArchiveSave(workspace.TWorkspaceFolder, first);
         TInterface.TCourtArchiveSave(workspace.TWorkspaceFolder, second);
 
-        IReadOnlyList<LCourt> settled = TInterface.TCourtArchiveSettle(
+        IReadOnlyList<long> settled = TInterface.TCourtArchiveSettle(
             workspace.TWorkspaceFolder,
-            target);
+            target,
+            real);
 
-        Assert.Equal(2, settled.Count);
-        Assert.Contains(settled, link => link.LCourtId == first.LCourtId);
-        Assert.Contains(settled, link => link.LCourtId == second.LCourtId);
-        Assert.Contains(settled, link => link.LCourtOwnerId == first.LCourtOwnerId);
-        Assert.Contains(settled, link => link.LCourtOwnerId == second.LCourtOwnerId);
+        Assert.Equal([owner.LDraftId], settled);
+        LCardDraft card = TInterface.TDraftArchiveRead(workspace.TWorkspaceFolder, owner.LDraftId)!
+            .LDraftContent.LEntryDraftMeanings[0];
+        Assert.Equal([real], card.LCardDraftTranslation);
+        Assert.Equal([real], card.LCardDraftChild[0].LCardDraftTranslation);
         Assert.Null(TInterface.TCourtArchiveRead(workspace.TWorkspaceFolder, first.LCourtId));
         Assert.Null(TInterface.TCourtArchiveRead(workspace.TWorkspaceFolder, second.LCourtId));
         Assert.Empty(TInterface.TCourtArchiveScan(workspace.TWorkspaceFolder));
@@ -173,7 +177,7 @@ public sealed class TDraftArchive
 
         TInterface.TCourtArchiveSave(workspace.TWorkspaceFolder, settled);
         TInterface.TCourtArchiveSave(workspace.TWorkspaceFolder, kept);
-        TInterface.TCourtArchiveSettle(workspace.TWorkspaceFolder, target);
+        TInterface.TCourtArchiveSettle(workspace.TWorkspaceFolder, target, 0);
 
         IReadOnlyList<LCourt> remaining = TInterface.TCourtArchiveScan(workspace.TWorkspaceFolder);
 
@@ -181,7 +185,7 @@ public sealed class TDraftArchive
         Assert.Equal(kept.LCourtId, remaining[0].LCourtId);
         Assert.Equal(other, remaining[0].LCourtTargetId);
 
-        Assert.Empty(TInterface.TCourtArchiveSettle(workspace.TWorkspaceFolder, target));
+        Assert.Empty(TInterface.TCourtArchiveSettle(workspace.TWorkspaceFolder, target, 0));
         Assert.NotNull(TInterface.TCourtArchiveRead(workspace.TWorkspaceFolder, kept.LCourtId));
     }
 
@@ -199,5 +203,23 @@ public sealed class TDraftArchive
         Assert.Equal(link.LCourtTargetId, loaded.LCourtTargetId);
         Assert.Equal(link.LCourtHeadword, loaded.LCourtHeadword);
         Assert.Equal(link.LCourtLanguage, loaded.LCourtLanguage);
+    }
+
+    private static LDraft TDraftTranslationCreate(long target)
+    {
+        LDraft owner = TInterface.TDraftNestedCreate("Library", "ember");
+        LCardDraft child = TInterface.TDraftCardCreate("a cooling coal") with
+        {
+            LCardDraftId = TInterface.TIdentityCreate(),
+            LCardDraftTranslation = [target],
+        };
+        LCardDraft card = TInterface.TDraftCardCreate("a glowing coal") with
+        {
+            LCardDraftId = TInterface.TIdentityCreate(),
+            LCardDraftTranslation = [target],
+            LCardDraftChild = [child],
+        };
+
+        return owner with { LDraftContent = owner.LDraftContent with { LEntryDraftMeanings = [card] } };
     }
 }

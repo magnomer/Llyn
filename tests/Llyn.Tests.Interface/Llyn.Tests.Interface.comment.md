@@ -101,7 +101,6 @@ Disposing removes the folder.
 The connection pool is cleared first.
 A pooled connection would otherwise keep the file open and the delete would fail on Windows.
 Disposing a workspace clears every pooled SQLite connection in the process.
-So test parallelization is disabled for the assembly, and two workspaces must not be alive in parallel.
 The create method makes an empty folder whose database is not initialized yet.
 The prepare method makes a folder whose database is initialized and ready to use.
 The clock, press, printer queue, print setting store and phonograph are the fakes every rig of this workspace carries.
@@ -122,7 +121,8 @@ Binds an engine to this workspace folder, so a test never constructs one itself.
 The plain form fetches through a stub that answers 404 to every address, so no test reaches the network.
 A saved entry starts a background frequency fetch, and a real client would hit the language pack's web sources.
 The client form fetches through the given client, so a discovery test runs against a stub handler.
-The rig is built through the real factory, so the suite starts its engines the way the bootstrap does.
+The rig is built through one real `LRigFactory` made with the workspace's fakes.
+So the suite starts its engines the way the bootstrap does.
 A workspace change builds its rig the same way, and no test ever writes the user's workspace pointer.
 The clock is swapped for the workspace's `TClockFake`, so a test can set time through `TWorkspaceClockSet`.
 The rig carries the workspace's `TPress`, `TPressQueue`, `TPressVault` and `TPhonographFake`, and a `TWarrantFake`.
@@ -166,7 +166,7 @@ A file the operating system has not released yet is not a test failure.
 
 ## Stamp
 
-Commit: `c37ca1837ded`
+Commit: `1f3467bbe5c6`
 - `Llyn.Tests.Interface.csproj` `1785ae59ab2bec8b`
 - `TEditorFixture.cs` `a42623dacfe4b6f9`
 - `TInterfaceBoundary.cs` `c098561a2150175f`
@@ -174,4 +174,4 @@ Commit: `c37ca1837ded`
 - `TInterfaceGuestroom.cs` `4c7ea47855c961dc`
 - `TInterfaceMarkdown.cs` `e3d48d9e8ac783fa`
 - `TInterfaceSettings.cs` `97958cc99cb10fe6`
-- `TWorkspace.cs` `2cc686a2ca627691`
+- `TWorkspace.cs` `c3a4a88066286bd6`

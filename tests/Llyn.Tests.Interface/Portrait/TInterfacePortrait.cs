@@ -69,41 +69,49 @@ internal static partial class TInterface
 
     internal static string TOutlineFormat(LPortraitPage page) => LOutline.LOutlineFormat(page);
 
+    internal static LEngraverEntrance TLiveryEngraverCreate() => new(TThemeLoad());
+
+    internal static string TLiveryMarkRead() =>
+        TLiveryEngraverCreate().LEngraverEntranceRead(new string('a', 32));
+
     internal static LLiveryNote TLiveryFormat(
         LLiveryPage page,
         Func<string, string> lookup,
         Func<long, string>? note = null,
         Func<string, string, string, string>? link = null) =>
-        new LLiverySheet(TThemeLoad()).LLiveryFormat(
+        TLiveryEngraverCreate().LEngraverEntranceFormat(
             page,
-            new string('a', 32),
+            TLiveryMarkRead(),
             note ?? (static id => id.ToString(CultureInfo.InvariantCulture)),
             link ?? (static (_, _, _) => string.Empty),
             lookup);
 
     internal static LLiveryNote TLiveryFormat(
         LLiveryStem stem, Func<string, string> lookup, Func<long, string>? note = null) =>
-        new LLiverySheet(TThemeLoad()).LLiveryFormat(
+        TLiveryEngraverCreate().LEngraverEntranceFormat(
             stem,
-            new string('a', 32),
+            TLiveryMarkRead(),
             note ?? (static id => id.ToString(CultureInfo.InvariantCulture)),
             lookup);
 
     internal static LLiveryNote TLiveryFormat(
         LLiveryDiwei diwei, Func<string, string> lookup, Func<long, string>? note = null) =>
-        new LLiverySheet(TThemeLoad()).LLiveryFormat(
+        TLiveryEngraverCreate().LEngraverEntranceFormat(
             diwei,
-            new string('a', 32),
+            TLiveryMarkRead(),
             note ?? (static id => id.ToString(CultureInfo.InvariantCulture)),
             lookup);
-
-    internal static Func<long, string> TCourierNoteBuild(string stamp, IReadOnlyList<LEntry> entries) =>
-        LCourierNote.LCourierNoteBuild(new LLiverySheet(TThemeLoad()), stamp, entries);
 
     internal static Task<LReceipt> TCourierSend(
         LEngine engine, Func<long, LLiveryPage?> page, Func<string, LLiveryLanguage> language) =>
         engine.LEngineHearth.LEngineStaffHeld.LEngineStaffWorkspace.LWorkspaceStaffCourier.LCourierClerkSend(
             page, language, static key => key, CancellationToken.None);
+
+    internal static string TOutpostLookupRead(LOutpostCargo cargo, string key) => cargo.LOutpostCargoLookup(key);
+
+    internal static Task<string> TCourierAttach(LEngine engine) =>
+        engine.LEngineHearth.LEngineStaffHeld.LEngineStaffWorkspace.LWorkspaceStaffCourier.LCourierClerkAttach(
+            CancellationToken.None);
 
     internal static LLiveryLanguage TLiveryLanguageBuild(
         string name, IReadOnlyList<LLiveryStem> stem, IReadOnlyList<LLiveryDiwei> diwei) =>
@@ -147,7 +155,12 @@ internal static partial class TInterface
 
     internal static LTheme TThemeCreate(IReadOnlyDictionary<string, string> colors) => new(colors);
 
-    internal static string TLiveryStyleFormat(LTheme theme) => LLiveryStyle.LLiveryStyleFormat(theme);
+    internal static string TLiveryStyleFormat(LTheme theme)
+    {
+        string sheet = new LEngraverEntrance(theme).LEngraverEntranceRead();
+        int start = sheet.IndexOf("```css\n", StringComparison.Ordinal) + "```css\n".Length;
+        return sheet[start..sheet.LastIndexOf("\n```", StringComparison.Ordinal)];
+    }
 
     internal static LTranslationTarget TTranslationTargetCreate(long id, string headword, string language) =>
         new(id, headword, language);

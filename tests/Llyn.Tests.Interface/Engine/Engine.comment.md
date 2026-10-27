@@ -193,7 +193,7 @@ Each relay is transparent.
 
 ## `TEngineWorkspaceOpen`
 
-Builds a rig for the path through the real factory, then applies it as the bootstrap does.
+Builds a rig for the path through one real `LRigFactory`, then applies it as the bootstrap does.
 Its sources, press, printer queue, warrant and phonograph are all fakes.
 The clock is set to a `TClockFake`, which reads the real time until a test sets it.
 
@@ -211,7 +211,7 @@ Each relay is transparent, except that the author create and update also raise t
 
 ## Stamp
 
-Commit: `c37ca1837ded`
+Commit: `1f3467bbe5c6`
 - `TInterfaceContent.cs` `2f1032ea1bb4d887`
 - `TInterfaceEngine.cs` `918679693bd37518`
 - `TInterfaceEngineFanqie.cs` `3e7c158c1c15322e`
@@ -219,5 +219,5 @@ Commit: `c37ca1837ded`
 - `TInterfaceEngineMarkup.cs` `26a61d688b58bff1`
 - `TInterfaceEnginePortrait.cs` `0b846a638698dde8`
 - `TInterfaceEngineSettings.cs` `86ffacd21d12d364`
-- `TInterfaceEngineWorkspace.cs` `d2bd34564bfd2ac8`
+- `TInterfaceEngineWorkspace.cs` `67063293aa0593f4`
 - `TInterfaceReference.cs` `33defb3a50ab83aa`

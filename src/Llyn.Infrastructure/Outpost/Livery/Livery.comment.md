@@ -2,16 +2,17 @@
 
 This folder holds the livery adapter, its style note, and the bodies of the series and rime-table category notes.
 
-## `LLiverySheet`
+## `LEngraverEntrance`
 
-The adapter behind the livery port.
+The module's public entrance, which writes Joplin note bodies for the outpost batch.
 It writes the style note, the entry bodies and the reconstruction bodies.
 The entry body is Markdown, so a note looks like the entry in view mode.
-The theme is taken once, so no push re-reads the embedded resource.
+The theme is taken once at construction, so no push re-reads the embedded resource.
+Everything else in the folder is internal, so the batch reaches the writers only through this class.
 
 ### Body order
 
-The style import from `LLiveryMarkFormat` opens the body, since Joplin's import plugin only sees an opening import.
+The `mark` argument, the style import line, opens the body, since Joplin's import plugin only sees an opening import.
 The `.llyn` wrapper follows with a blank line after it, so Joplin reads the Markdown inside.
 The writers then run in view mode's order.
   - Header, then sound, then chips, then rime, then script, then cards, then etymology, then the stored note, then the stamps.
@@ -26,7 +27,7 @@ Every fixed word comes through `lookup`, and every other word is stored page dat
 The stamps close the entry body, right before the closing div.
 A rule, then the created and updated stamps in one paragraph split by a backslash break.
 An empty stamp is left out, and two empty stamps write no rule.
-They live with the sheet, since they describe the stored page, not a section of the entry.
+They live with the entrance, since they describe the stored page, not a section of the entry.
 
 ### Media passes
 
@@ -38,36 +39,18 @@ An `<audio>` or `<video>` source would stay unresolved and play nothing.
 A Markdown link to an audio or video resource gets Joplin's own player.
 The `LLiveryAudioHead` and `LLiveryVideoHead` constants are shared with their writers, so writer and swap never drift apart.
 
-### `LLiveryRead`
+### `LEngraverEntranceRead`
 
 Writes the warning line, a blank line, and the style CSS in a `css` fence.
 Every rule sits under `.llyn`, since Joplin applies the style to its whole viewer page.
 Backticks are stripped from the CSS, so theme text can never close the fence early.
 
-### `LLiveryFormat`
+### `LEngraverEntranceFormat`
 
+The entry overload takes the caller's `mark`, `note`, `link` and `lookup` and checks each for null before writing.
 The series and rime-table overloads write through `LLiverySheetBuild`.
-They check their arguments first, so a null part throws before any text is written.
 A reconstruction note holds no pictures or recordings, so it answers no parcels.
-
-### `LLiveryMarkFormat` and `LLiveryStyleCheck`
-
-The mark is the style import line that opens every body.
-A style id must be 32 lowercase hex characters, the only form Joplin resolves.
-A bad id would otherwise silently leave the entry unstyled.
-So a bad id throws `ArgumentException` here as in the body.
-
-### `LLiveryIdFormat`
-
-The id is the first 32 hex characters of the SHA-256 over the UTF-8 bytes of the seed.
-These are the bytes the courier hashed before, so no pushed note changes its id.
-
-### `LLiveryDigestFormat`
-
-It hashes the title, folder and body, then the sorted tags, then the parcel ids.
-A null character ends each field and `\u0001` ends each tag or parcel id.
-No text holds those separators, so one field's end never passes for another's start.
-The bytes match the courier's former digest, so the manifest's digests stay valid.
+The id and digest of a note are not computed here, so this class never hashes a note's identity.
 
 ### `LLiveryImageApply`
 
@@ -96,7 +79,7 @@ An IO or access failure also answers null, so a locked file only drops its playe
 
 ## `LLiveryStyle`
 
-It writes the CSS of the style note and is public so engine tests can call it without the sheet.
+It writes the CSS of the style note and is internal, since only the entrance reads it.
 Every selector starts with `.llyn`, so no rule reaches Joplin's own page.
 Every colour comes from `LTheme.LThemeRead`, so no colour is a literal.
 `LThemeRead` falls back to the spare palette, so a theme missing a role still yields CSS.
@@ -257,8 +240,8 @@ The empty cell keeps the marks in the column the characters use.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
-- `LLiverySheet.cs` `960715135a175c55`
-- `LLiveryStyle.cs` `c5e268204a726c80`
+Commit: `1f3467bbe5c6`
+- `LEngraverEntrance.cs` `96facd48395ecf52`
+- `LLiveryStyle.cs` `3aa36e1cd5777e45`
 - `LLiveryXiesheng.cs` `7fe0c4fa2c46ae6e`
 - `LLiveryYunjing.cs` `fdb8c41af05a7c10`

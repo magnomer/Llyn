@@ -40,7 +40,7 @@ internal sealed class LCourierFacade
                 cancellation)
                 .ConfigureAwait(false);
         }
-        catch (Exception exception) when (LCourierWarrant.LCourierWarrantCheck(exception))
+        catch (Exception exception) when (LCourierClerk.LCourierClerkMatch(exception))
         {
             LEngineWarrantClear();
             throw;

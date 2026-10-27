@@ -2,7 +2,7 @@ using Llyn.Core;
 
 namespace Llyn.Infrastructure;
 
-public static class LRigFactorySound
+internal static class LRigFactorySound
 {
     public static LRigSound LRigSoundBuild(LDatabase database) =>
         new(

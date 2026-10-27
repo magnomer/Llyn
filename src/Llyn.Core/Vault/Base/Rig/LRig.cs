@@ -10,7 +10,7 @@ public sealed record LRig(
     LEntryVault LRigEntries,
     LEntryQueryVault LRigEntryQuery,
     LRigLexicon LRigLexicon,
-    LRigDraft LRigDraft,
+    LDraftVault LRigDraft,
     LRigCitation LRigCitation,
     LRigSound LRigSound,
     LRigSentence LRigSentence,
@@ -28,5 +28,4 @@ public sealed record LRig(
     LTrail LRigTrail,
     LClock LRigClock,
     LLease LRigLease,
-    int LRigProcess,
     string LRigWorkspace);

@@ -30,7 +30,7 @@ A name whose meaning must change is renamed everywhere in the same change.
 | Name | Meaning | Scripts |
 |---|---|---|
 | `-Help`, `-?` | Print the help and exit without doing anything else. | all |
-| `-Root` | Project root to work on, defaulting to the parent of `scripts/`. | AuditEncoding, AuditFake, AuditNames, AuditNamesNew, AuditObject, AuditPlatform, AuditStructure, SyncNames |
+| `-Root` | Project root to work on, defaulting to the parent of `scripts/`. | AuditEncoding, AuditFake, AuditModule, AuditNames, AuditNamesNew, AuditObject, AuditPlatform, AuditStructure, SyncNames |
 | `-ConfigPath` | JSON configuration file, defaulting to the script's own file beside it. | Audit, AuditComments, AuditEncoding, AuditLines, AuditUI, ScanTest |
 | `-Configuration` | Build configuration, `Debug` or `Release`. | AuditUI, Test |
 | `-SourceRoots` | Source roots to scan, overriding `sources.roots`. | AuditComments, AuditLines |
@@ -41,13 +41,13 @@ A name whose meaning must change is renamed everywhere in the same change.
 | `-LimitThreshold` | Last line count that passes, overriding `thresholds.limit`. | AuditLines |
 | `-WarningThreshold` | Last line count below the warning band, overriding `thresholds.warning`. | AuditLines |
 | `-Commits` | How many recent commits feed the statistics. | AuditLines, VEstimate |
-| `-Top` | How many rows a console table shows. | AuditFake, AuditObject, AuditStructure, ScanTest, StatsSyntax, StatsWords, VEstimate |
+| `-Top` | How many rows a console table shows. | AuditFake, AuditModule, AuditObject, AuditStructure, ScanTest, StatsSyntax, StatsWords, VEstimate |
 | `-OutputPath` | File the Markdown output is written to. | AuditComments, AuditLines, AuditUI, TraceValue |
-| `-ReportDirectory` | Folder the Markdown report is written to under its versioned name. | AuditFake, AuditObject, AuditPlatform, AuditStructure, ScanTest |
+| `-ReportDirectory` | Folder the Markdown report is written to under its versioned name. | AuditFake, AuditModule, AuditObject, AuditPlatform, AuditStructure, ScanTest |
 | `-Keep` | Keep the existing output instead of clearing it first. | Audit, Report |
-| `-Open` | Open the report once the run finishes. | AuditComments, AuditEncoding, AuditFake, AuditLines, AuditNames, AuditObject, AuditPlatform, AuditStructure, AuditUI, Check, ScanTest |
-| `-NoOpen` | Write the page without opening it. | Audit, AuditComments, AuditEncoding, AuditFake, AuditLines, AuditLinesHistory, AuditNames, AuditObject, AuditObjectHistory, AuditPlatform, AuditStructure, AuditUI, Report, ScanTest, StatsSyntax, StatsWords |
-| `-NoPause` | Never stop at a console page. | AuditComments, AuditFake, AuditLines, AuditNames, AuditObject, AuditPlatform, AuditStructure, ScanTest, StatsSyntax, StatsWords, VEstimate |
+| `-Open` | Open the report once the run finishes. | AuditComments, AuditEncoding, AuditFake, AuditLines, AuditModule, AuditNames, AuditObject, AuditPlatform, AuditStructure, AuditUI, Check, ScanTest |
+| `-NoOpen` | Write the page without opening it. | Audit, AuditComments, AuditEncoding, AuditFake, AuditLines, AuditLinesHistory, AuditModule, AuditNames, AuditObject, AuditObjectHistory, AuditPlatform, AuditStructure, AuditUI, Report, ScanTest, StatsSyntax, StatsWords |
+| `-NoPause` | Never stop at a console page. | AuditComments, AuditFake, AuditLines, AuditModule, AuditNames, AuditObject, AuditPlatform, AuditStructure, ScanTest, StatsSyntax, StatsWords, VEstimate |
 | `-Name` | Symbol names the walk starts from. | Test, TraceSymbol |
 | `-Changed` | Narrow the run to the symbols holding the lines changed since `-Since`, staged or not. | Test, TraceSymbol |
 | `-Since` | Revision or tree that `-Changed` compares the working tree with, HEAD by default. | Test, TraceSymbol |

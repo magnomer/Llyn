@@ -2,7 +2,7 @@ using Llyn.Core;
 
 namespace Llyn.Infrastructure;
 
-public static class LRigFactoryLexicon
+internal static class LRigFactoryLexicon
 {
     public static LRigLexicon LRigLexiconBuild(LDatabase database) =>
         new(

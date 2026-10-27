@@ -233,9 +233,10 @@ It answers whether a run holds the latch, for the busy read of the deck view.
 
 ## `LDepotClerk`
 
-The clerk writes one deck to the phone folder and copies its media beside it.
-It copies the courier's locking.
-The reads and the manifest save hold the engine gate, and file work runs outside it.
+The clerk gathers one deck for the phone and hands it to the depot as one shipment.
+The deck and its faces are read under the engine gate.
+The export runs outside it.
+The depot keeps the phone file's format, the digest check, the media and the manifest under its own lock.
 The workspace staff hands it the workspace latch, so it holds no busy flag of its own.
 
 ### `LDepotClerkExport`
@@ -243,49 +244,28 @@ The workspace staff hands it the workspace latch, so it holds no busy flag of it
 A run that loses the latch refuses as busy and changes nothing.
 The phone folder comes from the settings and must stay under the workspace root.
 The setting passes `LTrailPathValidate` again, so a stored path outside the root is refused.
-An unset or unresolvable folder refuses with `Refusal.DepotMissing` before any read or file work begins.
+An unset or unresolvable folder refuses with `LRefusal.LRefusalDepot` before any read or file work begins.
   A refusal reaches the user as a sentence, where a plain throw would read as a fault.
 
-A deck file whose digest differs from the manifest's is a phone export.
-The run refuses it, because Llyn never overwrites a file it has not read.
-A file present with no manifest entry is refused the same way.
-
 The cues and their faces come from `LStencilFaceRead`, so resting cues never reach the phone.
+The depot's refusal of a file the phone wrote reaches the caller unchanged.
 
-### Media
+### `LDepotCellResolve`
 
-A local picture or sound is copied under the name the depot gives its content.
-The same content is copied once, and an existing name is never rewritten.
-An http picture is written as its address.
-A video address and an http sound are left empty, because the phone plays neither.
-A location that resolves to nothing is named in the receipt's failures.
-
-The media are copied before the deck file is saved.
-So a saved file never names a media file that is missing.
-
-### Ownership
-
-The manifest lists only the names this deck copied.
-A name that was already in the folder is used but never claimed.
-After the save, an owned name the deck no longer uses is deleted.
-So a file the phone or the user placed there is never deleted.
-
-The manifest is saved in a `finally`, so a failed run still records what it copied.
-A failed save keeps the digest Llyn last wrote.
-A failed delete keeps its name, so the next run tries again.
-
-### `LDepotHeaderResolve`
-
-The header holds `Text 1`, every column some cue fills, and `ID` last.
-Columns follow side order, then notes, extra info and categories.
-Wrong answers and statistics stay out in phase 1.
+A picture or sound location is resolved through the trail before the shipment leaves.
+A local file is shipped as its full path, which the depot copies.
+An http picture is shipped as its address.
+A video address and an http sound are shipped empty, because the phone plays neither.
+A location that resolves to nothing is shipped empty.
+The typed row keeps the typed text of every such cell and of every local file.
+The depot names that text in the receipt's failures when it cannot copy the file.
 
 ## Stamp
 
-Commit: `bd299c638b2c`
+Commit: `1f3467bbe5c6`
 - `LCueClerk.cs` `034cedc7f2076454`
 - `LDeckClerk.cs` `78691b90d1a74996`
-- `LDepotClerk.cs` `68913dedea8246f8`
+- `LDepotClerk.cs` `0dab1d09ab7dd1e3`
 - `LDepotLatch.cs` `fc94d5346f3c0f68`
 - `LStencilClerk.cs` `1c2b43f4c4b3e277`
 - `LStencilReader.cs` `e300f7e601e1ca04`

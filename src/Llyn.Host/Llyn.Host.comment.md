@@ -58,6 +58,8 @@ So the WebView2 `.xml` documentation is not published.
 
 The file uses top-level statements, since a method named `Main` fails the name audit.
 The host builds the console start and the window start.
+Each start creates one `LRigFactory` with the Windows adapters and builds its first rig and every later rig from it.
+The factory is disposed when the start returns, so it releases the client it owns.
 The console start hands the UI four seams.
 They are the file presence check, the folder and file listings and the logical drives.
 So the console's path prompt reads the disk only through the host.
@@ -67,6 +69,6 @@ The choice reads no console and no operating system, since the launcher alone ca
 
 ## Stamp
 
-Commit: `78fc0ebfff7c`
-- `LHost.cs` `dfa8d8ed147ea95a`
+Commit: `1f3467bbe5c6`
+- `LHost.cs` `21dca8e35a4728e2`
 - `Llyn.Host.csproj` `2e9c42cd1033e477`

@@ -63,7 +63,7 @@ An unreadable file is reported once, under Unreadable files, and never as a miss
 
 AuditComments.json shape:
   {
-    "generation": 26,
+    "generation": 27,
     "project": "Llyn",
     "enforced": true,
     "sources": {
@@ -139,7 +139,7 @@ AuditComments -Segments 2
 AuditComments -SourceRoots .\src -MaxWords 25
 #>
 #requires -Version 5.1
-# AUDITCOMMENTS - AUDIT GENERATION 26.
+# AUDITCOMMENTS - AUDIT GENERATION 27.
 # A generation is not a revision count. It names functionality, not edits, so editing one of these
 # files is never on its own a reason to raise it. Raise it only when the audited outcome changes.
 # A generation names the set of checks the audit applies. Two projects on the same generation audit
@@ -301,7 +301,7 @@ $ErrorActionPreference = "Stop"
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $OutputEncoding = [Console]::OutputEncoding
 
-$script:AuditGeneration = 26
+$script:AuditGeneration = 27
 
 # Console paging. A page is one window of rows; the audit stops at each page boundary and waits
 # for a key so the reader can inspect the output before it scrolls away. Any key shows the next

@@ -4,7 +4,7 @@ using Llyn.Core;
 
 namespace Llyn.Infrastructure;
 
-public static class LRigFactorySource
+internal static class LRigFactorySource
 {
     private static readonly TimeSpan LRigSourcePatience = TimeSpan.FromSeconds(2);
 

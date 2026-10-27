@@ -79,17 +79,17 @@ internal static partial class TInterface
     internal static LRig TRigClaimCreate() =>
         TRigClerkCreate(new TVaultFake()) with
         {
-            LRigDraft = new LRigDraft(new TVaultFakeDraft(), new TVaultFakeClaim(1), new TVaultFakeCourt()),
+            LRigDraft = new TVaultFakeDraft(1),
         };
 
     internal static LRig TRigProcessSet(this LRig rig, int process)
     {
-        ((TVaultFakeClaim)rig.LRigDraft.LRigDraftClaims).TClaimProcessSet(process);
-        return rig with { LRigProcess = process };
+        ((TVaultFakeDraft)rig.LRigDraft).TClaimProcessSet(process);
+        return rig;
     }
 
     internal static void TDraftStaleSet(this LRig rig, long id) =>
-        ((TVaultFakeDraft)rig.LRigDraft.LRigDraftDrafts).TDraftStaleSet(id);
+        ((TVaultFakeDraft)rig.LRigDraft).TDraftStaleSet(id);
 
     internal static LTombstone? TTombstoneRead(this LRig rig, long entryId) =>
         ((TVaultFakeTombstone)rig.LRigKeeping.LRigKeepingTombstones).TTombstoneRead(entryId);
@@ -110,14 +110,15 @@ internal static partial class TInterface
     {
         LIdentity identity = new(rig.LRigKeeping.LRigKeepingWorkspaces);
         LChronicleClerk chronicle = new(rig);
-        return new LClaimClerk(rig, identity, chronicle, TCourtClerkCreate(rig, identity, chronicle));
+        return new LClaimClerk(rig, identity, chronicle);
     }
 
     internal static LCourtClerk TCourtClerkCreate(LRig rig) =>
-        TCourtClerkCreate(rig, new LIdentity(rig.LRigKeeping.LRigKeepingWorkspaces), new LChronicleClerk(rig));
-
-    private static LCourtClerk TCourtClerkCreate(LRig rig, LIdentity identity, LChronicleClerk chronicle) =>
-        new(rig, identity, chronicle, new LTranslationClerk(rig, new LRevisionClerk(rig)));
+        new(
+            rig,
+            new LIdentity(rig.LRigKeeping.LRigKeepingWorkspaces),
+            new LChronicleClerk(rig),
+            new LTranslationClerk(rig, new LRevisionClerk(rig)));
 
     internal static LDraft TClaimClerkStart(this LClaimClerk clerk, string origin, long entryId) =>
         clerk.LClaimClerkStart(clerk.LDraftCreate(origin, entryId, LClaimClerk.LDraftBlank));
@@ -138,10 +139,15 @@ internal static partial class TInterface
 
     internal static void TClaimClerkSweep(this LClaimClerk clerk) => clerk.LClaimClerkSweep();
 
+    internal static void TClaimClerkDelete(this LClaimClerk clerk, long id) => clerk.LClaimClerkDelete(id);
+
+    internal static void TDraftDoomedSet(this LRig rig, long id) =>
+        ((TVaultFakeDraft)rig.LRigDraft).TDraftDoomedSet(id);
+
     internal static LCourt TCourtClerkSave(this LCourtClerk clerk, long ownerId, long targetId, string headword) =>
         clerk.LCourtClerkSave(ownerId, targetId, headword, "English");
 
-    internal static IReadOnlyList<LCourt> TCourtClerkScan(this LCourtClerk clerk) => clerk.LCourtClerkScan();
+    internal static IReadOnlyList<LCourt> TCourtScan(this LRig rig) => rig.LRigDraft.LDraftCourtScan();
 
     internal static LPortraitPage TExamplePageRead(
         LExample example, LReference? cited, int count, LPortraitLegend legend) =>

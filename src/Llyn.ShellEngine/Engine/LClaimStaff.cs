@@ -15,7 +15,7 @@ internal sealed record LClaimStaff(
         LDraftClerk draft = new(rig, identity, cache);
         LChronicleClerk chronicle = new(rig);
         LCourtClerk court = new(rig, identity, chronicle, catalog.LCatalogStaffTranslation);
-        LClaimClerk claim = new(rig, identity, chronicle, court);
+        LClaimClerk claim = new(rig, identity, chronicle);
 
         return new LClaimStaff(draft, chronicle, court, claim);
     }

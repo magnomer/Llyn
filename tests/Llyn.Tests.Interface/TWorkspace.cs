@@ -85,14 +85,13 @@ internal sealed class TWorkspace : IDisposable
 
         return new LEngine(
             TWorkspaceSourcesApply(TWorkspaceRigCreate(client)),
-            workspace => TWorkspaceSourcesApply(LRigFactory.LRigFactoryBuild(
-                workspace,
+            workspace => TWorkspaceSourcesApply(new LRigFactory(
                 client,
                 new LUsherFile(),
                 TWorkspacePress,
                 TWorkspaceQueue,
                 new TWarrantFake(),
-                TWorkspacePhonograph) with
+                TWorkspacePhonograph).LRigFactoryBuild(workspace) with
             {
                 LRigPressVault = TWorkspacePressVault,
                 LRigClock = TWorkspaceClock,
@@ -107,14 +106,13 @@ internal sealed class TWorkspace : IDisposable
 
     public LRig TWorkspaceRigCreate(HttpClient client)
     {
-        LRig rig = LRigFactory.LRigFactoryBuild(
-            _tWorkspaceRoot,
+        LRig rig = new LRigFactory(
             client,
             new LUsherFile(),
             TWorkspacePress,
             TWorkspaceQueue,
             new TWarrantFake(),
-            TWorkspacePhonograph);
+            TWorkspacePhonograph).LRigFactoryBuild(_tWorkspaceRoot);
         return rig with { LRigPressVault = TWorkspacePressVault, LRigClock = TWorkspaceClock };
     }
 

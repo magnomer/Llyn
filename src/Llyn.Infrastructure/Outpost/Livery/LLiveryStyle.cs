@@ -3,7 +3,7 @@ using Llyn.Core;
 
 namespace Llyn.Infrastructure;
 
-public static class LLiveryStyle
+internal static class LLiveryStyle
 {
     public static string LLiveryStyleFormat(LTheme theme)
     {

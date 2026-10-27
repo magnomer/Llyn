@@ -79,7 +79,7 @@ public sealed class TClaimClerk
 
         clerk.TClaimClerkCancel(owner.LDraftId);
 
-        Assert.Empty(courts.TCourtClerkScan());
+        Assert.Empty(rig.TCourtScan());
         Assert.Null(clerk.TClaimDraftRead(owner.LDraftId));
         Assert.Null(clerk.TClaimDraftRead(target.LDraftId));
         Assert.Empty(clerk.TClaimHeldRead());
@@ -99,9 +99,24 @@ public sealed class TClaimClerk
 
         clerk.TClaimClerkCancel(owner.LDraftId);
 
-        LCourt left = Assert.Single(courts.TCourtClerkScan());
+        LCourt left = Assert.Single(rig.TCourtScan());
         Assert.Equal(other.LDraftId, left.LCourtOwnerId);
         Assert.NotNull(clerk.TClaimDraftRead(target.LDraftId));
         Assert.True(clerk.TClaimClerkCheck(target.LDraftId));
+    }
+
+    [Fact]
+    public void ClaimClerkDelete_CascadeFailsAfterTarget_DropsDeletedTargetFromHeld()
+    {
+        LRig rig = TInterface.TRigClaimCreate();
+        LClaimClerk clerk = TInterface.TClaimClerkCreate(rig);
+        LDraft owner = clerk.TClaimClerkStart("editor", 0);
+        LDraft target = clerk.TClaimClerkStart("editor", 0);
+        rig.TDraftDoomedSet(target.LDraftId);
+
+        Assert.Throws<InvalidOperationException>(() => clerk.TClaimClerkDelete(owner.LDraftId));
+
+        Assert.DoesNotContain(target.LDraftId, clerk.TClaimHeldRead());
+        Assert.Contains(owner.LDraftId, clerk.TClaimHeldRead());
     }
 }

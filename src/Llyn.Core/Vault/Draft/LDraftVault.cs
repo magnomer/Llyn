@@ -4,13 +4,31 @@ namespace Llyn.Core;
 
 public interface LDraftVault
 {
-    void LDraftSave(LDraft draft);
+    LDraft LDraftStart(LDraft draft);
 
     LDraft? LDraftRead(long id);
 
     IReadOnlyList<LDraft> LDraftScan();
 
-    void LDraftDelete(long id);
+    void LDraftSave(LDraft draft);
 
-    IReadOnlyList<long> LDraftSweep();
+    bool LDraftClaimCheck(long id);
+
+    bool LDraftForeignCheck(long id);
+
+    void LDraftFinish(long id);
+
+    LDraftRelease LDraftDelete(long id, IReadOnlySet<long> held);
+
+    LDraftRelease LDraftCancel(long id, IReadOnlySet<long> held);
+
+    LDraftRelease LDraftSweep(IReadOnlySet<long> held);
+
+    void LDraftCourtSave(LCourt link);
+
+    IReadOnlyList<LCourt> LDraftCourtScan();
+
+    void LDraftCourtDelete(long linkId);
+
+    IReadOnlyList<long> LDraftCourtSettle(long draftId, long realId);
 }

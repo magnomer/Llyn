@@ -1,15 +1,17 @@
 # Draft
 
-This folder holds the archive relays for drafts, sample drafts and the in-memory claim, court and draft stores.
+This folder holds the archive relays for drafts, sample drafts and the in-memory dossier.
 
 ## TInterfaceCourt
 
 The relays for the draft-folder archives.
 They hand the workspace folder its draft, court and claim files and read them back.
+Draft and court relays go through the dossier port, as production does.
+The claim relays read and write the claim files as raw JSON.
+So a test can plant a claim of any process.
 `TCourtCreate` builds one court row, for a fake port to answer.
-`TClaimCreate` builds one claim.
 `TCourtArchiveRead` alone picks its row from a scan.
-Every other relay passes one archive call through.
+Every other relay passes one call through.
 
 ## TInterfaceDraft
 
@@ -22,32 +24,22 @@ The match relay is the draft equality the save and the dirty check share.
 The reflex draft builder makes an English entry with one plain meaning and the given reflex rows.
 Both reflex test classes build their entries through it, so the rows are the only variable.
 
-## `TVaultFakeClaim`
-
-An in-memory claim folder keyed by draft id, so a clerk test can pose as one process and then another.
-Every claim is live, since no process is checked, and a new claim names the process the fake was told.
-The constructor seats the process of the test's first rig.
-`TClaimProcessSet` changes it, for a second rig posing as another copy of the program.
-
-## `TVaultFakeCourt`
-
-An in-memory court keyed by link id.
-A clerk test can link a draft to a tentative target on it and cancel the draft.
-Settling answers and removes the rows pointing at the target, as the archive does.
-The sweep drops nothing, since the fake holds no files of another version.
-
 ## `TVaultFakeDraft`
 
-An in-memory drafts folder keyed by draft id.
-A clerk test can hold and finish a draft on it without a workspace.
-The sweep answers the ids a test marked stale, as the archive answers the files of another version.
+An in-memory dossier keyed by draft id.
+A clerk test can hold, claim, link and finish drafts on it without a workspace.
+It carries the claims and the court the real dossier keeps, since one port covers all three.
+The constructor seats the process of the test's first rig, and a new claim names that process.
+`TClaimProcessSet` changes it, for a second rig posing as another copy of the program.
+Every claim is live, since no process is checked.
+Settling rewrites the owner drafts and answers them, and removes the rows pointing at the target, as the dossier does.
+The sweep drops the ids a test marked stale, cancels each, and drops the claims left without a draft.
 `TDraftStaleSet` marks one draft as what the next sweep drops.
+`TDraftDoomedSet` names a draft that the next delete finishes first, and then throws, as a cascade failing midway would.
 
 ## Stamp
 
-Commit: `c37ca1837ded`
-- `TInterfaceCourt.cs` `ae7365a93bb85d2d`
+Commit: `1f3467bbe5c6`
+- `TInterfaceCourt.cs` `8f3034314b82e5d4`
 - `TInterfaceDraft.cs` `eb4c15bc2bf700ab`
-- `TVaultFakeClaim.cs` `df75b32eafaf645b`
-- `TVaultFakeCourt.cs` `fd8a0700210e2d85`
-- `TVaultFakeDraft.cs` `d96b3d7a5a5022e9`
+- `TVaultFakeDraft.cs` `417f2add702df5ec`

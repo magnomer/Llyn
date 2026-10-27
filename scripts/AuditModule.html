@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>__TITLE__ module audit</title>
+  <style>
+    :root{color-scheme:dark;background:#101318;color:#e7edf4;font:15px system-ui,sans-serif}body{max-width:1200px;margin:auto;padding:2rem}h1,h2{color:#9dc7ff}input{width:100%;box-sizing:border-box;padding:.65rem;background:#19202a;color:inherit;border:1px solid #394657;border-radius:.4rem}table{width:100%;border-collapse:collapse;margin:1rem 0}th,td{text-align:left;vertical-align:top;border-bottom:1px solid #2b3542;padding:.55rem}code{color:#ffd58a}.muted{color:#9aa8b8}.pass{color:#83d69a}.fail{color:#ff8f8f}
+  </style>
+</head>
+<body>
+  <h1>__TITLE__ module audit</h1>
+  <p id="summary"></p>
+  <p id="freshness" class="muted"></p>
+  <input id="filter" type="search" placeholder="Filter findings, modules, or files">
+  <h2>Authoritative findings</h2>
+  <table><thead><tr><th>Kind</th><th>Owner</th><th>Finding</th><th>Detail</th></tr></thead><tbody id="findings"></tbody></table>
+  <h2>Declared-module dependency graph</h2>
+  <p id="modules"></p>
+  <h2>Review evidence</h2>
+  <p id="evidence"></p>
+  <h2>Advisory call-cohesion candidates</h2>
+  <p class="muted">Candidates are relational review evidence, not semantic module or ownership proof.</p>
+  <table><thead><tr><th>Files</th><th>Entrance candidates</th><th>Internal</th><th>Boundary</th></tr></thead><tbody id="candidates"></tbody></table>
+  <script>const data=/*__DATA__*/;const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));const body=(rows,render,id)=>{document.getElementById(id).innerHTML=rows.map(render).join('')||'<tr><td colspan="4">None.</td></tr>'};function draw(){const q=document.getElementById('filter').value.toLowerCase();const keep=v=>JSON.stringify(v).toLowerCase().includes(q);body(data.findings.filter(keep),v=>`<tr><td>${esc(v.Kind)}</td><td>${esc(v.Owner)}</td><td><code>${esc(v.Key)}</code></td><td>${esc(v.Detail)}</td></tr>`,'findings');body(data.candidates.filter(keep),v=>`<tr><td>${esc(v.Files.join(', '))}</td><td>${esc(v.Entrances.join(', '))}</td><td>${v.InternalWeight}</td><td>${v.BoundaryWeight}</td></tr>`,'candidates');document.getElementById('evidence').innerHTML=data.evidence.filter(keep).map(v=>esc(v)).join('<br>')||'None.'}document.getElementById('summary').innerHTML=`Version ${esc(data.version)}; <span class="${data.gates.length?'fail':'pass'}">${data.gates.length?'FAIL':'PASS'}</span>; ${data.modules.length} module(s); ${data.findings.length} finding(s).`;document.getElementById('freshness').textContent='Graft: '+data.freshness;document.getElementById('modules').textContent=data.modules.join(' -> ')||'No modules announced.';document.getElementById('filter').addEventListener('input',draw);draw();</script>
+</body>
+</html>
+

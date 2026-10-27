@@ -20,7 +20,7 @@ The language reader is the other `LEngineLiveryRead` overload over `LSettingsFac
 That source answers null for a missing key, as the rime-table page builder expects.
 The Rime table panel passes the same source, so a category reads the same in Llyn and Joplin.
 A push already running finishes against the workspace it started in.
-A refused token, as `LCourierWarrantCheck` judges it, is cleared before the refusal goes on.
+A refused token, as `LCourierClerkMatch` judges it, is cleared before the refusal goes on.
 So the shell offers Connect again instead of a connection that no longer works.
 
 `LEngineCourierAttach` awaits the grant, then stores the hidden token in the settings.
@@ -309,8 +309,8 @@ It answers empty while neither exists.
 
 ## Stamp
 
-Commit: `bd299c638b2c`
-- `LCourierFacade.cs` `316cb119faa9202c`
+Commit: `1f3467bbe5c6`
+- `LCourierFacade.cs` `c36c5361b95928ed`
 - `LDeckFacade.cs` `461426b985ad509d`
 - `LFanqieFacade.cs` `19ca044c7f98d17f`
 - `LLiveryFacade.cs` `ce684cbdeb2ca3c4`

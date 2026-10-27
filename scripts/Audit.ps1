@@ -56,7 +56,7 @@ Audit
 Audit -Keep -NoOpen
 #>
 #requires -Version 5.1
-# AUDIT - AUDIT GENERATION 26.
+# AUDIT - AUDIT GENERATION 27.
 [CmdletBinding()]
 param(
     [string]$ConfigPath,
@@ -136,7 +136,7 @@ EXAMPLES
     exit 0
 }
 
-Write-Host 'AUDIT - AUDIT GENERATION 26' -ForegroundColor Blue
+Write-Host 'AUDIT - AUDIT GENERATION 27' -ForegroundColor Blue
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'

@@ -6,7 +6,6 @@ namespace Llyn.Application;
 
 public sealed class LCourtClerk
 {
-    private readonly LCourtVault _lCourtClerkCourts;
     private readonly LDraftVault _lCourtClerkDrafts;
     private readonly LEntryVault _lCourtClerkEntries;
     private readonly LIdentity _lCourtClerkIdentity;
@@ -19,8 +18,7 @@ public sealed class LCourtClerk
         ArgumentNullException.ThrowIfNull(identity);
         ArgumentNullException.ThrowIfNull(chronicle);
         ArgumentNullException.ThrowIfNull(translations);
-        _lCourtClerkCourts = rig.LRigDraft.LRigDraftCourts;
-        _lCourtClerkDrafts = rig.LRigDraft.LRigDraftDrafts;
+        _lCourtClerkDrafts = rig.LRigDraft;
         _lCourtClerkEntries = rig.LRigEntries;
         _lCourtClerkIdentity = identity;
         _lCourtClerkChronicle = chronicle;
@@ -40,19 +38,14 @@ public sealed class LCourtClerk
             headword,
             language ?? string.Empty);
 
-        _lCourtClerkCourts.LCourtSave(link);
+        _lCourtClerkDrafts.LDraftCourtSave(link);
         return link;
-    }
-
-    public IReadOnlyList<LCourt> LCourtClerkScan()
-    {
-        return _lCourtClerkCourts.LCourtScan();
     }
 
     public IReadOnlyList<LCourt> LCourtClerkScan(long ownerId)
     {
         List<LCourt> owned = [];
-        foreach (LCourt link in _lCourtClerkCourts.LCourtScan())
+        foreach (LCourt link in _lCourtClerkDrafts.LDraftCourtScan())
         {
             if (link.LCourtOwnerId == ownerId)
             {
@@ -82,20 +75,15 @@ public sealed class LCourtClerk
     public void LCourtClerkDelete(long linkId)
     {
         ArgumentOutOfRangeException.ThrowIfZero(linkId);
-        _lCourtClerkCourts.LCourtDelete(linkId);
+        _lCourtClerkDrafts.LDraftCourtDelete(linkId);
     }
 
     public void LCourtClerkSettle(long draftId, long realId)
     {
-        foreach (LCourt link in _lCourtClerkCourts.LCourtSettle(draftId))
+        foreach (long ownerId in _lCourtClerkDrafts.LDraftCourtSettle(draftId, realId))
         {
-            LCourtClerkUpdate(link, realId);
+            _lCourtClerkChronicle.LChronicleClerkClear(ownerId);
         }
-    }
-
-    public void LCourtClerkSweep()
-    {
-        _lCourtClerkCourts.LCourtSweep();
     }
 
     public void LCourtClerkApply(
@@ -211,52 +199,5 @@ public sealed class LCourtClerk
 
         ids.Add(entryId);
         _lCourtClerkTranslations.LTranslationClerkSave(ownerId, ids, collocation);
-    }
-
-    private void LCourtClerkUpdate(LCourt link, long realId)
-    {
-        LDraft? owner = _lCourtClerkDrafts.LDraftRead(link.LCourtOwnerId);
-        if (owner is null)
-        {
-            return;
-        }
-
-        LEntryDraft content = owner.LDraftContent with
-        {
-            LEntryDraftMeanings =
-                LTranslationUpdate(owner.LDraftContent.LEntryDraftMeanings, link.LCourtTargetId, realId),
-            LEntryDraftCollocations =
-                LTranslationUpdate(owner.LDraftContent.LEntryDraftCollocations, link.LCourtTargetId, realId),
-        };
-
-        _lCourtClerkChronicle.LChronicleClerkClear(owner.LDraftId);
-        _lCourtClerkDrafts.LDraftSave(owner with { LDraftContent = content });
-    }
-
-    private static IReadOnlyList<LCardDraft> LTranslationUpdate(
-        IReadOnlyList<LCardDraft> cards, long draftId, long realId)
-    {
-        List<LCardDraft> written = new(cards.Count);
-        foreach (LCardDraft card in cards)
-        {
-            List<long> translations = new(card.LCardDraftTranslation.Count);
-            foreach (long translation in card.LCardDraftTranslation)
-            {
-                if (translation != draftId)
-                {
-                    translations.Add(translation);
-                    continue;
-                }
-
-                if (realId != 0)
-                {
-                    translations.Add(realId);
-                }
-            }
-
-            written.Add(card with { LCardDraftTranslation = translations });
-        }
-
-        return written;
     }
 }

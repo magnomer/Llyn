@@ -12,9 +12,9 @@ using Llyn.Core;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LOutpostWire
+internal sealed class LOutpostWire
 {
-    private static readonly HttpClient LOutpostWireClient = new(
+    internal static readonly HttpClient LOutpostWireClient = new(
         new HttpClientHandler { AllowAutoRedirect = false, UseProxy = false })
     {
         Timeout = TimeSpan.FromSeconds(100),
@@ -26,6 +26,14 @@ public sealed class LOutpostWire
 
     private static readonly TimeSpan LOutpostWirePatience = TimeSpan.FromSeconds(1);
 
+    private readonly HttpClient _lOutpostWireClient;
+
+    public LOutpostWire(HttpClient client)
+    {
+        ArgumentNullException.ThrowIfNull(client);
+        _lOutpostWireClient = client;
+    }
+
     public async Task<bool> LOutpostWireCheck(int port, CancellationToken cancellation)
     {
         using CancellationTokenSource limit = CancellationTokenSource.CreateLinkedTokenSource(cancellation);
@@ -33,7 +41,7 @@ public sealed class LOutpostWire
         try
         {
             using HttpRequestMessage request = new(HttpMethod.Get, LOutpostWireFormat(port, "ping", null));
-            using HttpResponseMessage response = await LOutpostWireClient.SendAsync(request, limit.Token)
+            using HttpResponseMessage response = await _lOutpostWireClient.SendAsync(request, limit.Token)
                 .ConfigureAwait(false);
             if (!response.IsSuccessStatusCode)
             {
@@ -65,7 +73,7 @@ public sealed class LOutpostWire
         HttpResponseMessage response;
         try
         {
-            response = await LOutpostWireClient.SendAsync(request, cancellation).ConfigureAwait(false);
+            response = await _lOutpostWireClient.SendAsync(request, cancellation).ConfigureAwait(false);
         }
         catch (OperationCanceledException exception) when (!cancellation.IsCancellationRequested)
         {

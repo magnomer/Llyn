@@ -23,6 +23,9 @@ The entry-level detail travels as the shapes the archives store, never as flatte
 `LEntryDraftPronunciation` is the first of the list, or null, and the surfaces that show one reading read it.
 `LEntryDraftAccents` holds every pronunciation after the primary one.
 `LEntryDraftNormalize` walks every card and is called only after the user agreed to lose what the store could not read.
+`LEntryDraftSettle` rewrites every translation link that names a tentative draft id, through child cards too.
+A real id takes its place, once and only when the card does not already link it.
+A real id of zero drops the link, which is how a cancelled draft leaves no dangling chip.
 
 ## `LEntryChip`
 
@@ -83,11 +86,11 @@ The editor, the reading view and the exports name a unit through `LUnitKeyRead`,
 
 ## Stamp
 
-Commit: `aae5349dbb94`
+Commit: `1f3467bbe5c6`
 - `LEntry.cs` `33570d75bb87f462`
 - `LEntryChip.cs` `4e5cafe96cf4c9f2`
 - `LEntryChipKind.cs` `9368a296b1bee07f`
-- `LEntryDraft.cs` `9d5be3296a8b37ff`
+- `LEntryDraft.cs` `7945d3dc4742680a`
 - `LFoldBox.cs` `1cc4cf7e5a366082`
 - `LForm.cs` `08608a643507cab0`
 - `LFreedom.cs` `a9233b2e06da7c36`

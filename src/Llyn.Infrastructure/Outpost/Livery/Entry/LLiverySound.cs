@@ -142,7 +142,7 @@ internal static class LLiverySound
         string audio = recorded?.LPronunciationDraftAudio ?? string.Empty;
         return audio.Length == 0
             ? string.Empty
-            : " " + LLiverySheet.LLiveryAudioHead + WebUtility.HtmlEncode(audio) + "\"></audio>";
+            : " " + LEngraverEntrance.LLiveryAudioHead + WebUtility.HtmlEncode(audio) + "\"></audio>";
     }
 
     private static string LLiveryToneFormat(string text, bool toned)

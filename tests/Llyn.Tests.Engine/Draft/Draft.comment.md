@@ -18,6 +18,10 @@ The id alone would let it hold work hostage.
 A draft nobody claims reports nothing held.
 A draft another running copy claims is not offered as a leftover, and becomes one once that copy is gone.
 Committing or cancelling a draft removes its claim, since nothing asks about a draft that is gone.
+The dossier cancel tests run on the archives alone, with a held set handed in.
+Cancelling an owner whose target no other draft links drops the row, the target, its claim and its file.
+The release lists the target first and the owner last, and names no rewritten owner.
+A target another draft still links stays with its file and claim, and the release lists only the owner.
 
 ## `TClaimClerk.cs`
 
@@ -28,6 +32,9 @@ Finishing a draft empties the held set, the file and the claim.
 Sweeping a stale draft cancels it with its claim, and the live draft beside it is kept.
 Cancelling the only draft linking a tentative target takes the row and the target with it.
 Cancelling one of two drafts linking a target drops that draft's row and leaves the target held.
+A delete whose cascade fails after it dropped a target still takes that target out of the held set.
+The owner stays held, since its own delete did not finish.
+The failure is thrown on, so the caller still sees it.
 
 ## `TDraftArchive.cs`
 
@@ -41,8 +48,10 @@ A Situation draft keeps its pictures and clips, ids and spans included, so a cra
 The listing returns every draft written, since recovery is useless if it misses any.
 A file holding invalid JSON is skipped instead of throwing.
 A crash mid-write is when a truncated file appears, which is when the listing matters most.
-Settling a target drops every waiting link and its file, and returns the links with their owners.
-The engine needs the owners to rewrite the drafts holding those links.
+Settling a target drops every waiting link and its file, and returns the owners it rewrote.
+A settle with a real id replaces the tentative id in each owner's cards, children included.
+The stored owner file then carries the real id.
+That is how a committed target reaches the draft that linked it.
 Settling leaves links to other targets, because the court is shared by every pending link.
 Settling the same target twice returns nothing the second time.
 A saved link keeps its headword and language, which are shown before the target is real.
@@ -175,13 +184,13 @@ The card carries a negative id from the test counter, not one the engine minted.
 
 ## Stamp
 
-Commit: `9377e657b395`
-- `TClaim.cs` `107e9e254699fd1f`
-- `TClaimClerk.cs` `3710c188abe922ed`
-- `TDraftArchive.cs` `792fe8def8a7a166`
+Commit: `1f3467bbe5c6`
+- `TClaim.cs` `ce83927675bfd1aa`
+- `TClaimClerk.cs` `5dff4f594367299b`
+- `TDraftArchive.cs` `8a0ee7dda9021aac`
 - `TDraftClerk.cs` `48692075f65688b4`
 - `TDraftExample.cs` `56722bde5ce2c08c`
-- `TDraftLeftover.cs` `26dbd00073567596`
+- `TDraftLeftover.cs` `afb2059c563f2948`
 - `TDraftReference.cs` `cd9fe87ba89c014a`
 - `TDraftSituation.cs` `6c294f084cc7f170`
 - `TIdentity.cs` `62097428604cb5af`

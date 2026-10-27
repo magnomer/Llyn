@@ -324,31 +324,31 @@ internal static partial class TInterface
         port.LEngineStencilSave(deckId, name);
     }
 
-    internal static LDepotFolder TDepotFolderCreate() => new();
+    internal static LDepot TLockerEntranceCreate(string root) =>
+        new LLockerEntrance(new LKeepFile(root), new TClockFake());
 
-    internal static LDeckManifestFile TDeckManifestCreate(string root) => new(new LKeepFile(root));
+    internal static LDepotShipment TDepotShipmentCreate(
+        string folder, string code, bool basic, params IReadOnlyList<LCueCell>[] cues) =>
+        new(
+            folder,
+            1,
+            code,
+            basic,
+            [.. Enumerable.Range(1, cues.Length).Select(static cue => (long)cue)],
+            [.. cues.Select(static cells => new LCueFace(cells))],
+            [.. cues.Select(static cells => (IReadOnlyList<string?>)[.. cells.Select(TDepotTypedRead)])]);
 
-    internal static LDeckManifest TDeckManifestRead(this LDeckManifestFile file) => file.LDeckManifestRead();
+    private static string? TDepotTypedRead(LCueCell cell) =>
+        cell.LCueCellColumn is LCueColumn.LCueColumnPicture or LCueColumn.LCueColumnSound
+        && Path.IsPathFullyQualified(cell.LCueCellValue.Trim())
+            ? cell.LCueCellValue.Trim()
+            : null;
 
-    internal static void TDeckManifestSave(this LDeckManifestFile file, LDeckManifest manifest)
-    {
-        file.LDeckManifestSave(manifest);
-    }
+    internal static Task<LDeckReceipt> TDepotExport(this LDepot depot, LDepotShipment shipment) =>
+        depot.LDepotExport(shipment, static _ => { }, CancellationToken.None);
 
-    internal static LDeckManifest TDeckManifestCreate(
-        IReadOnlyDictionary<long, (string, IReadOnlyList<string>, string)> decks) =>
-        new(decks);
-
-    internal static void TDeckManifestSave(this LDeckManifestVault vault, LDeckManifest manifest)
-    {
-        vault.LDeckManifestSave(manifest);
-    }
-
-    internal static LRig TDepotRigCreate(this LRig rig, LDepot depot, LDeckManifestVault manifest) =>
-        rig with
-        {
-            LRigRehearsal = rig.LRigRehearsal with { LRigRehearsalDepot = depot, LRigRehearsalManifest = manifest },
-        };
+    internal static LRig TDepotRigCreate(this LRig rig, LDepot depot) =>
+        rig with { LRigRehearsal = rig.LRigRehearsal with { LRigRehearsalDepot = depot } };
 
     internal static LDepotClerk TDepotClerkCreate(LRig rig, LDepotLatch latch) =>
         TDepotClerkCreate(rig, latch, "Phone");
@@ -379,14 +379,4 @@ internal static partial class TInterface
     }
 
     internal static bool TDepotLatchCheck(this LDepotLatch latch) => latch.LDepotLatchCheck();
-
-    internal static LDeckSheet TDeckSheetCreate(
-        IReadOnlyList<(string, string)> settings, IReadOnlyList<string> header, params IReadOnlyList<string>[] rows) =>
-        new(settings, header, rows);
-
-    internal static string? TDepotDigestRead(this LDepot depot, string folder, string code) =>
-        depot.LDepotDigestRead(folder, code);
-
-    internal static Task TDepotSave(this LDepot depot, string folder, string code, LDeckSheet sheet, bool basic) =>
-        depot.LDepotSave(folder, code, sheet, basic, CancellationToken.None);
 }

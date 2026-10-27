@@ -23,7 +23,7 @@ public sealed class LChronicleClerk
     public LChronicleClerk(LRig rig)
     {
         ArgumentNullException.ThrowIfNull(rig);
-        _lChronicleClerkDrafts = rig.LRigDraft.LRigDraftDrafts;
+        _lChronicleClerkDrafts = rig.LRigDraft;
         _lChronicleClerkClock = rig.LRigClock;
     }
 

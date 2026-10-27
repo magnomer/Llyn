@@ -96,9 +96,9 @@ Git line-ending settings or a downloaded copy therefore never change the value.
 
 ## Stamp
 
-Commit: `8c403d1df768`
+Commit: `1f3467bbe5c6`
 - `TAuditComment.cs` `75ff40287e6ac7b3`
 - `TAuditCommentFile.cs` `2f985b13b8af43f1`
 - `TAuditCommentLine.cs` `cc1bd66f2202a39b`
-- `TAuditCommentSetting.cs` `9e24f376cc3bbf81`
+- `TAuditCommentSetting.cs` `6c21b3f995741949`
 - `TAuditCommentStamp.cs` `3cb323a65e5d3e86`

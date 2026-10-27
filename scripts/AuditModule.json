@@ -1,0 +1,82 @@
+{
+  "generation": 27,
+  "project": "Llyn",
+  "enforced": true,
+  "helper": { "framework": "net10.0" },
+  "source": "src/",
+  "modules": [
+    {
+      "project": "Llyn.Infrastructure",
+      "name": "LLockerModule",
+      "entrance": "Llyn.Infrastructure.LLockerEntrance",
+      "files": [
+        "src/Llyn.Infrastructure/Rehearsal/LDeckManifest.cs",
+        "src/Llyn.Infrastructure/Rehearsal/LDeckManifestFile.cs",
+        "src/Llyn.Infrastructure/Rehearsal/LDeckSheet.cs",
+        "src/Llyn.Infrastructure/Rehearsal/LDepotFolder.cs",
+        "src/Llyn.Infrastructure/Rehearsal/LLockerEntrance.cs"
+      ],
+      "contracts": []
+    },
+    {
+      "project": "Llyn.Infrastructure",
+      "name": "LDossierModule",
+      "entrance": "Llyn.Infrastructure.LDossierEntrance",
+      "files": [
+        "src/Llyn.Infrastructure/Draft/LClaim.cs",
+        "src/Llyn.Infrastructure/Draft/LClaimArchive.cs",
+        "src/Llyn.Infrastructure/Draft/LCourtArchive.cs",
+        "src/Llyn.Infrastructure/Draft/LDossierEntrance.cs",
+        "src/Llyn.Infrastructure/Draft/LDraftArchive.cs"
+      ],
+      "contracts": []
+    },
+    {
+      "project": "Llyn.Infrastructure",
+      "name": "LEmbassyModule",
+      "entrance": "Llyn.Infrastructure.LEmbassyEntrance",
+      "files": [
+        "src/Llyn.Infrastructure/Outpost/LEmbassyEntrance.cs",
+        "src/Llyn.Infrastructure/Outpost/LManifest.cs",
+        "src/Llyn.Infrastructure/Outpost/LManifestFile.cs",
+        "src/Llyn.Infrastructure/Outpost/LOutpostBatch.cs",
+        "src/Llyn.Infrastructure/Outpost/LOutpostHttp.cs",
+        "src/Llyn.Infrastructure/Outpost/LOutpostPairing.cs",
+        "src/Llyn.Infrastructure/Outpost/LOutpostSeal.cs",
+        "src/Llyn.Infrastructure/Outpost/LOutpostShelf.cs",
+        "src/Llyn.Infrastructure/Outpost/LOutpostWire.cs"
+      ],
+      "contracts": []
+    },
+    {
+      "project": "Llyn.Infrastructure",
+      "name": "LEngraverModule",
+      "entrance": "Llyn.Infrastructure.LEngraverEntrance",
+      "files": [
+        "src/Llyn.Infrastructure/Outpost/Livery/Entry/LLiveryCard.cs",
+        "src/Llyn.Infrastructure/Outpost/Livery/Entry/LLiveryCollocation.cs",
+        "src/Llyn.Infrastructure/Outpost/Livery/Entry/LLiveryEtymology.cs",
+        "src/Llyn.Infrastructure/Outpost/Livery/Entry/LLiveryHeader.cs",
+        "src/Llyn.Infrastructure/Outpost/Livery/Entry/LLiveryInflection.cs",
+        "src/Llyn.Infrastructure/Outpost/Livery/Entry/LLiveryLink.cs",
+        "src/Llyn.Infrastructure/Outpost/Livery/Entry/LLiveryRime.cs",
+        "src/Llyn.Infrastructure/Outpost/Livery/Entry/LLiveryScript.cs",
+        "src/Llyn.Infrastructure/Outpost/Livery/Entry/LLiverySound.cs",
+        "src/Llyn.Infrastructure/Outpost/Livery/LEngraverEntrance.cs",
+        "src/Llyn.Infrastructure/Outpost/Livery/LLiveryStyle.cs",
+        "src/Llyn.Infrastructure/Outpost/Livery/LLiveryXiesheng.cs",
+        "src/Llyn.Infrastructure/Outpost/Livery/LLiveryYunjing.cs"
+      ],
+      "contracts": []
+    }
+  ],
+  "suggestions": { "wiring": "graft/.graph/wiring.json", "minimumFiles": 2 },
+  "ceilings": {},
+  "console": { "top": 50 },
+  "report": {
+    "directory": "docs-analysis",
+    "versionFile": "version.json",
+    "versionKey": "current-version",
+    "prefix": "AuditModule-"
+  }
+}

@@ -11,84 +11,76 @@ namespace Llyn.Tests;
 public sealed class TDepotClerk
 {
     [Fact]
-    public async Task DepotClerkExport_PhoneFilePending_Refuses()
+    public async Task DepotClerkExport_LocalImage_ShipsFullPath()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         TDepotFake depot = new();
-        LRig rig = workspace.TWorkspaceRigCreate().TDepotRigCreate(depot, new TDeckManifestFake());
-        LDeck deck = TDepotDeckCreate(rig, [[TInterface.TCueCellCreate(LCueColumn.LCueColumnText, 1, "bank")]]);
-        LDeckSheet phone = TInterface.TDeckSheetCreate([], ["Text 1"], [["shore"]]);
-        depot.TDepotFakeFiles[deck.LDeckCode] = phone;
-        depot.TDepotFakeDigest[deck.LDeckCode] = "phone";
+        LRig rig = workspace.TWorkspaceRigCreate().TDepotRigCreate(depot);
+        string image = Path.Combine(workspace.TWorkspaceFolder, "bank.png");
+        LDeck deck = TDepotDeckCreate(rig, [TDepotCellCreate("bank", image)]);
 
-        LRefusal refusal = await Assert.ThrowsAsync<LRefusal>(
-            () => TInterface.TDepotClerkCreate(rig, TInterface.TDepotLatchCreate()).TDepotClerkExport(deck.LDeckId));
+        await TInterface.TDepotClerkCreate(rig, TInterface.TDepotLatchCreate()).TDepotClerkExport(deck.LDeckId);
 
-        Assert.Equal(LRefusal.LRefusalPhone, refusal.LRefusalReason);
-        Assert.Same(phone, depot.TDepotFakeFiles[deck.LDeckCode]);
+        LDepotShipment shipment = Assert.Single(depot.TDepotFakeShipments);
+        Assert.Equal(deck.LDeckId, shipment.LDepotShipmentDeck);
+        Assert.Equal(deck.LDeckCode, shipment.LDepotShipmentCode);
+        Assert.Equal([image], TDepotColumnRead(shipment, LCueColumn.LCueColumnPicture));
     }
 
     [Fact]
-    public async Task DepotClerkExport_SameImage_CopiesOnce()
+    public async Task DepotClerkExport_HttpImage_ShipsAddress()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         TDepotFake depot = new();
-        LRig rig = workspace.TWorkspaceRigCreate().TDepotRigCreate(depot, new TDeckManifestFake());
-        string first = Path.Combine(workspace.TWorkspaceFolder, "bank.png");
-        string second = Path.Combine(workspace.TWorkspaceFolder, "shore.png");
-        depot.TDepotFakeNames[first] = "0123456789abcdef.png";
-        depot.TDepotFakeNames[second] = "0123456789abcdef.png";
-        LDeck deck = TDepotDeckCreate(rig, [TDepotCellCreate("bank", first), TDepotCellCreate("shore", second)]);
-        LDepotClerk clerk = TInterface.TDepotClerkCreate(rig, TInterface.TDepotLatchCreate());
-
-        LDeckReceipt receipt = await clerk.TDepotClerkExport(deck.LDeckId);
-
-        Assert.Equal(["0123456789abcdef.png"], depot.TDepotFakeCopied);
-        Assert.Equal(1, receipt.LDeckReceiptCopied);
-        Assert.Equal(
-            ["0123456789abcdef.png", "0123456789abcdef.png"],
-            TDepotColumnRead(depot.TDepotFakeFiles[deck.LDeckCode], "Picture 1"));
-    }
-
-    [Fact]
-    public async Task DepotClerkExport_DroppedImage_DeletesOnlyOwn()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        TDepotFake depot = new();
-        TDeckManifestFake manifest = new();
-        LRig rig = workspace.TWorkspaceRigCreate().TDepotRigCreate(depot, manifest);
-        LDeck deck = TDepotDeckCreate(rig, [[TInterface.TCueCellCreate(LCueColumn.LCueColumnText, 1, "bank")]]);
-        manifest.TDeckManifestSave(TInterface.TDeckManifestCreate(
-            new Dictionary<long, (string, IReadOnlyList<string>, string)>
-            {
-                [deck.LDeckId] = (string.Empty, ["dropped.png"], "2026-01-01 00:00:00"),
-            }));
-        depot.TDepotFakeMedia.Add((deck.LDeckCode, "dropped.png"));
-        depot.TDepotFakeMedia.Add((deck.LDeckCode, "phone.png"));
-        LDepotClerk clerk = TInterface.TDepotClerkCreate(rig, TInterface.TDepotLatchCreate());
-
-        LDeckReceipt receipt = await clerk.TDepotClerkExport(deck.LDeckId);
-
-        Assert.Equal(["dropped.png"], depot.TDepotFakeDeleted);
-        Assert.Equal(1, receipt.LDeckReceiptRemoved);
-        Assert.Contains((deck.LDeckCode, "phone.png"), depot.TDepotFakeMedia);
-        Assert.Empty(manifest.TDeckManifestStored.LDeckManifestDecks[deck.LDeckId].LDeckManifestMedia);
-    }
-
-    [Fact]
-    public async Task DepotClerkExport_HttpImage_WritesAddress()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        TDepotFake depot = new();
-        LRig rig = workspace.TWorkspaceRigCreate().TDepotRigCreate(depot, new TDeckManifestFake());
+        LRig rig = workspace.TWorkspaceRigCreate().TDepotRigCreate(depot);
         LDeck deck = TDepotDeckCreate(rig, [TDepotCellCreate("bank", "https://example.com/bank.png")]);
 
         await TInterface.TDepotClerkCreate(rig, TInterface.TDepotLatchCreate()).TDepotClerkExport(deck.LDeckId);
 
-        Assert.Empty(depot.TDepotFakeCopied);
-        Assert.Equal(
-            ["https://example.com/bank.png"],
-            TDepotColumnRead(depot.TDepotFakeFiles[deck.LDeckCode], "Picture 1"));
+        LDepotShipment shipment = Assert.Single(depot.TDepotFakeShipments);
+        Assert.Equal(["https://example.com/bank.png"], TDepotColumnRead(shipment, LCueColumn.LCueColumnPicture));
+    }
+
+    [Fact]
+    public async Task DepotClerkExport_TrailUnresolved_ShipsTypedTextWithEmptyValue()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        TDepotFake depot = new();
+        LRig rig = workspace.TWorkspaceRigCreate().TDepotRigCreate(depot);
+        LDeck deck = TDepotDeckCreate(rig, [TDepotCellCreate("bank", "/bank.png")]);
+
+        await TInterface.TDepotClerkCreate(rig, TInterface.TDepotLatchCreate()).TDepotClerkExport(deck.LDeckId);
+
+        LDepotShipment shipment = Assert.Single(depot.TDepotFakeShipments);
+        Assert.Equal([string.Empty], TDepotColumnRead(shipment, LCueColumn.LCueColumnPicture));
+        Assert.Equal(["/bank.png"], TDepotTypedRead(shipment, LCueColumn.LCueColumnPicture));
+    }
+
+    [Fact]
+    public async Task DepotClerkExport_LocalImage_ShipsTypedText()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        TDepotFake depot = new();
+        LRig rig = workspace.TWorkspaceRigCreate().TDepotRigCreate(depot);
+        string image = Path.Combine(workspace.TWorkspaceFolder, "bank.png");
+        LDeck deck = TDepotDeckCreate(rig, [TDepotCellCreate("bank", image)]);
+
+        await TInterface.TDepotClerkCreate(rig, TInterface.TDepotLatchCreate()).TDepotClerkExport(deck.LDeckId);
+
+        Assert.Equal([image], TDepotTypedRead(Assert.Single(depot.TDepotFakeShipments), LCueColumn.LCueColumnPicture));
+    }
+
+    [Fact]
+    public async Task DepotClerkExport_HttpImage_ShipsNoTypedText()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        TDepotFake depot = new();
+        LRig rig = workspace.TWorkspaceRigCreate().TDepotRigCreate(depot);
+        LDeck deck = TDepotDeckCreate(rig, [TDepotCellCreate("bank", "https://example.com/bank.png")]);
+
+        await TInterface.TDepotClerkCreate(rig, TInterface.TDepotLatchCreate()).TDepotClerkExport(deck.LDeckId);
+
+        Assert.Equal([null], TDepotTypedRead(Assert.Single(depot.TDepotFakeShipments), LCueColumn.LCueColumnPicture));
     }
 
     [Fact]
@@ -96,7 +88,7 @@ public sealed class TDepotClerk
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         TDepotFake depot = new();
-        LRig rig = workspace.TWorkspaceRigCreate().TDepotRigCreate(depot, new TDeckManifestFake());
+        LRig rig = workspace.TWorkspaceRigCreate().TDepotRigCreate(depot);
         LDeck deck = TDepotDeckCreate(rig, [[TInterface.TCueCellCreate(LCueColumn.LCueColumnText, 1, "bank")]]);
         LDepotLatch latch = TInterface.TDepotLatchCreate();
         Assert.True(latch.TDepotLatchStart());
@@ -105,7 +97,7 @@ public sealed class TDepotClerk
             () => TInterface.TDepotClerkCreate(rig, latch).TDepotClerkExport(deck.LDeckId));
 
         Assert.Equal(LRefusal.LRefusalBusy, refusal.LRefusalReason);
-        Assert.Empty(depot.TDepotFakeFiles);
+        Assert.Empty(depot.TDepotFakeShipments);
         Assert.True(latch.TDepotLatchCheck());
     }
 
@@ -114,7 +106,7 @@ public sealed class TDepotClerk
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         TDepotFake depot = new();
-        LRig rig = workspace.TWorkspaceRigCreate().TDepotRigCreate(depot, new TDeckManifestFake());
+        LRig rig = workspace.TWorkspaceRigCreate().TDepotRigCreate(depot);
         LDeck deck = TDepotDeckCreate(rig, [[TInterface.TCueCellCreate(LCueColumn.LCueColumnText, 1, "bank")]]);
         LDepotLatch latch = TInterface.TDepotLatchCreate();
 
@@ -122,7 +114,7 @@ public sealed class TDepotClerk
             () => TInterface.TDepotClerkCreate(rig, latch, " ").TDepotClerkExport(deck.LDeckId));
 
         Assert.Equal(LRefusal.LRefusalDepot, refusal.LRefusalReason);
-        Assert.Empty(depot.TDepotFakeFiles);
+        Assert.Empty(depot.TDepotFakeShipments);
         Assert.False(latch.TDepotLatchCheck());
     }
 
@@ -131,16 +123,15 @@ public sealed class TDepotClerk
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         TDepotFake depot = new();
-        LRig rig = workspace.TWorkspaceRigCreate().TDepotRigCreate(depot, new TDeckManifestFake());
+        LRig rig = workspace.TWorkspaceRigCreate().TDepotRigCreate(depot);
         LDeck deck = TDepotDeckCreate(rig, [[TInterface.TCueCellCreate(LCueColumn.LCueColumnText, 1, "bank")]]);
         LDepotLatch other = TInterface.TDepotLatchCreate();
         Assert.True(other.TDepotLatchStart());
         LDepotLatch latch = TInterface.TDepotLatchCreate();
 
-        LDeckReceipt receipt = await TInterface.TDepotClerkCreate(rig, latch).TDepotClerkExport(deck.LDeckId);
+        await TInterface.TDepotClerkCreate(rig, latch).TDepotClerkExport(deck.LDeckId);
 
-        Assert.Equal(1, receipt.LDeckReceiptCards);
-        Assert.True(depot.TDepotFakeFiles.ContainsKey(deck.LDeckCode));
+        Assert.Single(Assert.Single(depot.TDepotFakeShipments).LDepotShipmentFaces);
         Assert.False(latch.TDepotLatchCheck());
     }
 
@@ -149,7 +140,7 @@ public sealed class TDepotClerk
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         TDepotFake depot = new();
-        LRig rig = workspace.TWorkspaceRigCreate().TDepotRigCreate(depot, new TDeckManifestFake());
+        LRig rig = workspace.TWorkspaceRigCreate().TDepotRigCreate(depot);
         LDeck deck = TDepotDeckCreate(rig, [[TInterface.TCueCellCreate(LCueColumn.LCueColumnText, 1, "bank")]]);
         LCue orphan = TInterface.TCueCreate(LGrain.LGrainMeaning, null, null, null, null, null)
             with { LCueDeckId = deck.LDeckId };
@@ -158,11 +149,9 @@ public sealed class TDepotClerk
             .Single(static cue => cue.LCueGrain == LGrain.LGrainFree).LCueId;
         LDepotClerk clerk = TInterface.TDepotClerkCreate(rig, TInterface.TDepotLatchCreate());
 
-        LDeckReceipt receipt = await clerk.TDepotClerkExport(deck.LDeckId);
+        await clerk.TDepotClerkExport(deck.LDeckId);
 
-        Assert.Equal(1, receipt.LDeckReceiptCards);
-        Assert.Equal([kept.ToString(System.Globalization.CultureInfo.InvariantCulture)],
-            TDepotColumnRead(depot.TDepotFakeFiles[deck.LDeckCode], "ID"));
+        Assert.Equal([kept], Assert.Single(depot.TDepotFakeShipments).LDepotShipmentCues);
     }
 
     private static LDeck TDepotDeckCreate(LRig rig, IReadOnlyList<IReadOnlyList<LCueCell>> cues)
@@ -183,9 +172,16 @@ public sealed class TDepotClerk
             TInterface.TCueCellCreate(LCueColumn.LCueColumnPicture, 1, picture),
         ];
 
-    private static IReadOnlyList<string> TDepotColumnRead(LDeckSheet sheet, string column)
-    {
-        int index = sheet.LDeckSheetHeader.ToList().IndexOf(column);
-        return [.. sheet.LDeckSheetRows.Select(row => row[index])];
-    }
+    private static IReadOnlyList<string?> TDepotTypedRead(LDepotShipment shipment, LCueColumn column) =>
+        [
+            .. shipment.LDepotShipmentFaces.Select((face, index) => shipment.LDepotShipmentTyped[index][
+                face.LCueFaceCells.ToList().FindIndex(cell =>
+                    cell.LCueCellColumn == column && cell.LCueCellIndex == 1)]),
+        ];
+
+    private static IReadOnlyList<string> TDepotColumnRead(LDepotShipment shipment, LCueColumn column) =>
+        [
+            .. shipment.LDepotShipmentFaces.Select(face => face.LCueFaceCells
+                .First(cell => cell.LCueCellColumn == column && cell.LCueCellIndex == 1).LCueCellValue),
+        ];
 }

@@ -167,8 +167,7 @@ public sealed class TDraftLeftover
     public void LeftoverSweep_ClaimWithoutDraftFile_DropsClaim()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
-        TInterface.TClaimArchiveSave(
-            workspace.TWorkspaceFolder, TInterface.TClaimCreate(-9, 1, DateTimeOffset.UtcNow));
+        TInterface.TClaimArchiveSave(workspace.TWorkspaceFolder, -9, 1, DateTimeOffset.UtcNow);
 
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
@@ -188,8 +187,7 @@ public sealed class TDraftLeftover
 
         TInterface.TDraftArchiveSave(workspace.TWorkspaceFolder, owner);
         TInterface.TCourtArchiveSave(workspace.TWorkspaceFolder, link);
-        TInterface.TClaimArchiveSave(
-            workspace.TWorkspaceFolder, TInterface.TClaimCreate(draft.LDraftId, 1, DateTimeOffset.UtcNow));
+        TInterface.TClaimArchiveSave(workspace.TWorkspaceFolder, draft.LDraftId, 1, DateTimeOffset.UtcNow);
 
         string folder = TInterface.TWorkspaceDraftRead(workspace.TWorkspaceFolder);
         string path = Path.Combine(folder, draft.LDraftId + ".json");

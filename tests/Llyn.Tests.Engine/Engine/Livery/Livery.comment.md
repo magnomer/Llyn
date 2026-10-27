@@ -22,7 +22,6 @@ A stored recording becomes one audio parcel behind a Markdown link, with no `<au
 A missing recording file leaves no parcel and no player, while the pronunciation still prints.
 A rime book repeated across two sources prints its book chip once, while both source badges print.
 A full page keeps view mode's order for paradigm, series, book chip, note and stamps.
-The courier note map sends the entry's id to a 32-character note id and any other id to empty.
 
 ## `LiveryStyleFormat_TokenTheme_ScopesRulesWithoutColour`
 
@@ -136,8 +135,8 @@ Each box keeps its tongue and gloss spans, and the headword closes the tree in `
 
 ## Stamp
 
-Commit: `9377e657b395`
-- `TEngineLivery.cs` `852bf3e89f2a9533`
+Commit: `1f3467bbe5c6`
+- `TEngineLivery.cs` `5fb8558b1aaf5020`
 - `TEngineLiveryCard.cs` `bb7cbe21e304d642`
 - `TEngineLiveryInflection.cs` `a92d7b883ae1703a`
 - `TEngineLiveryLanguage.cs` `2abb0f06bea208f0`

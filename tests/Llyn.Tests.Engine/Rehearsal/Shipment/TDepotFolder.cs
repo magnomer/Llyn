@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Llyn.Core;
@@ -10,82 +12,123 @@ public sealed class TDepotFolder
     private const string TDepotFolderCode = "Spanish";
 
     [Fact]
-    public async Task DepotSave_CellWithBreak_QuotesAndDoublesQuotes()
+    public async Task DepotExport_CellWithBreak_QuotesAndDoublesQuotes()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
-        LDeckSheet sheet = TInterface.TDeckSheetCreate([], ["Text 1", "Text 2"], ["speak", "hablo\n\"hablas\""]);
 
-        string text = await TDepotFolderSave(workspace, sheet, false);
+        string text = await TDepotFolderExport(workspace, false, [
+            TInterface.TCueCellCreate(LCueColumn.LCueColumnText, 1, "speak"),
+            TInterface.TCueCellCreate(LCueColumn.LCueColumnText, 2, "hablo\n\"hablas\""),
+        ]);
 
-        Assert.Equal("Text 1\tText 2\nspeak\t\"hablo\n\"\"hablas\"\"\"\n", text);
+        Assert.Equal("Text 1\tText 2\tID\nspeak\t\"hablo\n\"\"hablas\"\"\"\t1\n", text);
     }
 
     [Fact]
-    public async Task DepotSave_BasicStyle_WritesBarForBreak()
+    public async Task DepotExport_BasicStyle_WritesBarForBreak()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
-        LDeckSheet sheet = TInterface.TDeckSheetCreate(
-            [], ["Text 1", "Notes"],["speak", "a \"verb\"\r\nthird person"]);
 
-        string text = await TDepotFolderSave(workspace, sheet, true);
+        string text = await TDepotFolderExport(workspace, true, [
+            TInterface.TCueCellCreate(LCueColumn.LCueColumnText, 1, "speak"),
+            TInterface.TCueCellCreate(LCueColumn.LCueColumnNotes, 1, "a \"verb\"\r\nthird person"),
+        ]);
 
-        Assert.Equal("Text 1\tNotes\nspeak\ta \"verb\"|third person\n", text);
+        Assert.Equal("Text 1\tNotes\tID\nspeak\ta \"verb\"|third person\t1\n", text);
     }
 
     [Fact]
-    public async Task DepotSave_SettingLine_WritesThreeCells()
+    public async Task DepotExport_ColumnsOutOfOrder_WritesPhoneOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
-        LDeckSheet sheet = TInterface.TDeckSheetCreate(
-            [("tsv", "true"), ("max-new-cards", "10")], ["Text 1"], ["book"]);
 
-        string text = await TDepotFolderSave(workspace, sheet, false);
+        string text = await TDepotFolderExport(workspace, false, [
+            TInterface.TCueCellCreate(LCueColumn.LCueColumnCategory, 1, "verb"),
+            TInterface.TCueCellCreate(LCueColumn.LCueColumnText, 2, "libro"),
+            TInterface.TCueCellCreate(LCueColumn.LCueColumnText, 1, "book"),
+        ]);
 
-        Assert.Equal("*\ttsv\ttrue\n*\tmax-new-cards\t10\nText 1\nbook\n", text);
+        Assert.Equal("Text 1\tText 2\tCategory 1\tID\nbook\tlibro\tverb\t1\n", text);
     }
 
     [Fact]
-    public async Task DepotSave_IdColumn_WritesAfterText()
+    public async Task DepotExport_AnyFile_WritesNoByteOrderMark()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
-        LDeckSheet sheet = TInterface.TDeckSheetCreate([], ["ID", "Text 1", "Text 2"], ["7", "book", "libro"]);
 
-        string text = await TDepotFolderSave(workspace, sheet, false);
+        await TDepotFolderExport(
+            workspace, false, [TInterface.TCueCellCreate(LCueColumn.LCueColumnText, 1, "ünïcode")]);
 
-        Assert.Equal("Text 1\tID\tText 2\nbook\t7\tlibro\n", text);
-    }
-
-    [Fact]
-    public async Task DepotSave_AnyFile_WritesNoByteOrderMark()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
-        LDeckSheet sheet = TInterface.TDeckSheetCreate([], ["Text 1"], ["ünïcode"]);
-
-        await TDepotFolderSave(workspace, sheet, false);
-
-        byte[] content = File.ReadAllBytes(Path.Combine(workspace.TWorkspaceFolder, TDepotFolderCode + ".txt"));
+        byte[] content = File.ReadAllBytes(Path.Combine(TDepotPhoneRead(workspace), TDepotFolderCode + ".txt"));
         Assert.Equal((byte)'T', content[0]);
     }
 
     [Fact]
-    public async Task DepotDigestRead_BackupsFolder_SkipsFolder()
+    public async Task DepotExport_SameImage_CopiesOnce()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
-        string backups = Path.Combine(workspace.TWorkspaceFolder, "Backups");
-        Directory.CreateDirectory(backups);
-        File.WriteAllText(Path.Combine(backups, TDepotFolderCode + ".txt"), "Text 1\nbackup\n");
-        LDepot depot = TInterface.TDepotFolderCreate();
+        string first = Path.Combine(workspace.TWorkspaceFolder, "bank.png");
+        string second = Path.Combine(workspace.TWorkspaceFolder, "shore.png");
+        File.WriteAllBytes(first, [1, 2, 3]);
+        File.WriteAllBytes(second, [1, 2, 3]);
+        LDepot depot = TInterface.TLockerEntranceCreate(workspace.TWorkspaceFolder);
 
-        Assert.Null(depot.TDepotDigestRead(workspace.TWorkspaceFolder, TDepotFolderCode));
-        Assert.Null(depot.TDepotDigestRead(workspace.TWorkspaceFolder, Path.Combine("Backups", TDepotFolderCode)));
+        LDeckReceipt receipt = await depot.TDepotExport(TInterface.TDepotShipmentCreate(
+            TDepotPhoneRead(workspace), TDepotFolderCode, false,
+            [TInterface.TCueCellCreate(LCueColumn.LCueColumnPicture, 1, first)],
+            [TInterface.TCueCellCreate(LCueColumn.LCueColumnPicture, 1, second)]));
 
-        await TDepotFolderSave(workspace, TInterface.TDeckSheetCreate([], ["Text 1"], ["book"]), false);
-        Assert.NotNull(depot.TDepotDigestRead(workspace.TWorkspaceFolder, TDepotFolderCode));
+        Assert.Equal(1, receipt.LDeckReceiptCopied);
+        Assert.Empty(receipt.LDeckReceiptFailed);
+        string media = Path.Combine(TDepotPhoneRead(workspace), TDepotFolderCode + " Media");
+        string name = Path.GetFileName(Assert.Single(Directory.GetFiles(media)));
+        Assert.EndsWith(".png", name, StringComparison.Ordinal);
+        Assert.Contains("\n\t" + name + "\t1\n\t" + name + "\t2\n", await TDepotFolderRead(workspace));
     }
 
-    private static async Task<string> TDepotFolderSave(TWorkspace workspace, LDeckSheet sheet, bool basic)
+    [Fact]
+    public async Task DepotExport_ImageMissing_FailsAndLeavesCellEmpty()
     {
-        await TInterface.TDepotFolderCreate().TDepotSave(workspace.TWorkspaceFolder, TDepotFolderCode, sheet, basic);
-        return File.ReadAllText(Path.Combine(workspace.TWorkspaceFolder, TDepotFolderCode + ".txt"));
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        string image = Path.Combine(workspace.TWorkspaceFolder, "missing.png");
+        LDepot depot = TInterface.TLockerEntranceCreate(workspace.TWorkspaceFolder);
+
+        LDeckReceipt receipt = await depot.TDepotExport(TInterface.TDepotShipmentCreate(
+            TDepotPhoneRead(workspace), TDepotFolderCode, false,
+            [
+                TInterface.TCueCellCreate(LCueColumn.LCueColumnText, 1, "bank"),
+                TInterface.TCueCellCreate(LCueColumn.LCueColumnPicture, 1, image),
+            ]));
+
+        Assert.Equal([image], receipt.LDeckReceiptFailed);
+        Assert.Equal(0, receipt.LDeckReceiptCopied);
+        Assert.Equal("Text 1\tID\nbank\t1\n", await TDepotFolderRead(workspace));
+    }
+
+    [Fact]
+    public async Task DepotExport_HttpImage_WritesAddress()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+
+        string text = await TDepotFolderExport(workspace, false, [
+            TInterface.TCueCellCreate(LCueColumn.LCueColumnText, 1, "bank"),
+            TInterface.TCueCellCreate(LCueColumn.LCueColumnPicture, 1, "https://example.com/bank.png"),
+        ]);
+
+        Assert.Equal("Text 1\tPicture 1\tID\nbank\thttps://example.com/bank.png\t1\n", text);
+    }
+
+    private static string TDepotPhoneRead(TWorkspace workspace) =>
+        Path.Combine(workspace.TWorkspaceFolder, "Phone");
+
+    private static Task<string> TDepotFolderRead(TWorkspace workspace) =>
+        File.ReadAllTextAsync(Path.Combine(TDepotPhoneRead(workspace), TDepotFolderCode + ".txt"));
+
+    private static async Task<string> TDepotFolderExport(
+        TWorkspace workspace, bool basic, IReadOnlyList<LCueCell> cells)
+    {
+        await TInterface.TLockerEntranceCreate(workspace.TWorkspaceFolder)
+            .TDepotExport(TInterface.TDepotShipmentCreate(TDepotPhoneRead(workspace), TDepotFolderCode, basic, cells));
+        return await TDepotFolderRead(workspace);
     }
 }

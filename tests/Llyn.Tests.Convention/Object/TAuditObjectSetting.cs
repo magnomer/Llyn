@@ -2,7 +2,7 @@ namespace Convention.Tests;
 
 internal static class TAuditObjectSetting
 {
-    public const int TAuditGeneration = 26;
+    public const int TAuditGeneration = 27;
     public const bool TAuditObjectEnforced = true;
     public const string TAuditObjectPath = "temp/audit/Object-{0}.md";
 

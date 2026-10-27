@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -6,52 +7,61 @@ namespace Llyn.Tests;
 internal static partial class TInterface
 {
     internal static bool TClaimArchiveCheck(string root, long draftId) =>
-        new LClaimArchive(root).LClaimCheck(draftId);
+        TDraftVaultCreate(root).LDraftClaimCheck(draftId);
 
-    internal static LClaim? TClaimArchiveRead(string root, long draftId) =>
-        new LClaimArchive(root).LClaimRead(draftId);
-
-    internal static void TClaimArchiveSave(string root, LClaim claim)
+    internal static string? TClaimArchiveRead(string root, long draftId)
     {
-        new LClaimArchive(root).LClaimSave(claim);
+        string path = Path.Combine(LWorkspaceRoot.LWorkspaceClaimRead(root), draftId + ".json");
+        return File.Exists(path) ? File.ReadAllText(path) : null;
     }
 
-    internal static IReadOnlyList<LClaim> TClaimArchiveScan(string root) =>
-        new LClaimArchive(root).LClaimScan();
+    internal static void TClaimArchiveSave(string root, long draftId, int process, DateTimeOffset moment)
+    {
+        string path = Path.Combine(LWorkspaceRoot.LWorkspaceClaimRead(root), draftId + ".json");
+        File.WriteAllText(
+            path,
+            JsonSerializer.Serialize(new { LClaimDraft = draftId, LClaimProcess = process, LClaimMoment = moment }));
+    }
 
-    internal static LClaim TClaimCreate(long draftId, int process, DateTimeOffset moment) =>
-        new(draftId, process, moment);
+    internal static IReadOnlyList<string> TClaimArchiveScan(string root) =>
+        Directory.GetFiles(LWorkspaceRoot.LWorkspaceClaimRead(root), "*.json");
 
     internal static LCourt? TCourtArchiveRead(string root, long id) =>
-        new LCourtArchive(root).LCourtScan().FirstOrDefault(link => link.LCourtId == id);
+        TDraftVaultCreate(root).LDraftCourtScan().FirstOrDefault(link => link.LCourtId == id);
 
     internal static void TCourtArchiveSave(string root, LCourt link)
     {
-        new LCourtArchive(root).LCourtSave(link);
+        TDraftVaultCreate(root).LDraftCourtSave(link);
     }
 
     internal static IReadOnlyList<LCourt> TCourtArchiveScan(string root) =>
-        new LCourtArchive(root).LCourtScan();
+        TDraftVaultCreate(root).LDraftCourtScan();
 
-    internal static IReadOnlyList<LCourt> TCourtArchiveSettle(string root, long draftId) =>
-        new LCourtArchive(root).LCourtSettle(draftId);
+    internal static IReadOnlyList<long> TCourtArchiveSettle(string root, long draftId, long realId) =>
+        TDraftVaultCreate(root).LDraftCourtSettle(draftId, realId);
 
     internal static LCourt TCourtCreate(long id, long ownerId, long targetId, string headword, string language) =>
         new(id, ownerId, targetId, headword, language);
 
+    internal static LDraft TDraftArchiveStart(string root, LDraft draft) =>
+        TDraftVaultCreate(root).LDraftStart(draft);
+
+    internal static LDraftRelease TDraftArchiveCancel(string root, long id, IReadOnlySet<long> held) =>
+        TDraftVaultCreate(root).LDraftCancel(id, held);
+
     internal static void TDraftArchiveDelete(string root, long id)
     {
-        new LDraftArchive(root).LDraftDelete(id);
+        TDraftVaultCreate(root).LDraftFinish(id);
     }
 
     internal static LDraft? TDraftArchiveRead(string root, long id) =>
-        new LDraftArchive(root).LDraftRead(id);
+        TDraftVaultCreate(root).LDraftRead(id);
 
     internal static void TDraftArchiveSave(string root, LDraft draft)
     {
-        new LDraftArchive(root).LDraftSave(draft);
+        TDraftVaultCreate(root).LDraftSave(draft);
     }
 
     internal static IReadOnlyList<LDraft> TDraftArchiveScan(string root) =>
-        new LDraftArchive(root).LDraftScan();
+        TDraftVaultCreate(root).LDraftScan();
 }

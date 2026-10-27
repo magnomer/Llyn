@@ -1,76 +1,51 @@
 # Outpost
 
-This folder holds the ports and records for the one-way push of entries to Joplin.
+This folder holds the port and the records for the one-way push of entries to Joplin.
 Joplin is an outside program reached over its local Data API, so Core names neither the client nor the address.
-Llyn's copy always wins, and the manifest lets the next push send only what changed.
+Llyn's copy always wins, and a manifest kept by the entrance lets the next push send only what changed.
 
 ## `LOutpost`
 
-The port for Joplin's local Data API, which receives Llyn's entries one way.
-Every call takes the port first, because Joplin may answer on a port other than its default.
-Every id is 32 lowercase hex characters, and any other id throws `ArgumentException`.
-Every call carrying a token throws `LRefusal` with `LRefusalWarrant` when Joplin refuses the token.
-So the caller asks for a new token instead of failing each note.
-Every call takes a cancellation last, so a slow or stalled Joplin never holds a push open.
-Every call but `LOutpostFind` throws `TimeoutException` for a stalled or unreachable Joplin.
-So the caller can stop instead of retrying each note.
+The port to Joplin's local Data API, which receives Llyn's entries one way.
+The entrance in Infrastructure is the only implementation, so Core never learns the protocol.
+It offers two calls, one to pair with Joplin and one to push everything.
+Both take a cancellation last, so a slow or stalled Joplin never holds a push open.
+A refusal reaches the caller as an `LRefusal`.
+Every other cause of an unreachable Joplin reads the same to the user.
 
-## `LOutpostFind`
+### `LOutpostAttach`
 
-Finds the port Joplin answers on, trying the given port before any other.
-It answers null when Joplin is not running, so the caller can say so instead of failing.
+Asks Joplin for a token and answers it once the user accepts the request inside Joplin.
+The port is the stored one, which is tried before any other.
+The fault sink receives every caught failure before it is turned into a refusal.
+A Joplin that answers on no port refuses, since no request can reach it.
+A rejection refuses with `LRefusalWarrant`, and running out of polls refuses with `LRefusalPending`.
 
-## `LOutpostWarrantStart`
+### `LOutpostSend`
 
-Asks Joplin for a token and answers with the ticket of the pending request.
-The user must accept that request inside Joplin before any token exists.
-
-## `LOutpostWarrantCheck`
-
-Polls the ticket for the user's decision.
-The token arrives only in an accepted answer.
-
-## `LOutpostFolderSave`
-
-Creates or updates the notebook with that fixed id, placed under the notebook `parent`.
-An empty `parent` places it at the top level.
-A fixed id lets every push land in the same notebook without searching by title.
-The save also moves the notebook back under `parent` if the user moved it in Joplin.
-
-## `LOutpostNoteSave`
-
-Creates or overwrites the note with that fixed id.
-Llyn owns the note, so any edit made inside Joplin is replaced.
-The save also brings a note back from Joplin's trash and back into its notebook.
-The push is one way, so Llyn's copy wins.
-
-## `LOutpostNoteRead`
-
-Answers the body Joplin holds, but only while the note sits untrashed in `folder` under `title`.
-It answers null for a missing, moved, renamed or trashed note, so the caller sends it again.
-That lets a push repair edits made inside Joplin, or a fresh Joplin profile.
-
-## `LOutpostNoteRemove`
-
-Moves the note to Joplin's trash rather than deleting it.
-It trashes only a note proven to be Llyn's, untrashed in one of `folders` with a body starting with `mark`.
+Pushes one cargo and answers the receipt of what happened.
+Llyn owns every note it writes, so an edit made inside Joplin is replaced.
+A note gone from the workspace is trashed.
+A note is trashed only when it is proven to be Llyn's.
 Llyn must never act on a Joplin item it did not create.
-It answers true only when it trashed, so the caller counts nothing else.
-The user can still recover a note whose entry was removed by mistake.
+The user can still recover a note trashed by mistake, since trashing is not deleting.
+The push stops on a refusal or a cancellation, and a failed note does not stop it.
 
-## `LOutpostTagSave`
+## `LOutpostCargo`
 
-Makes the note's tags exactly the given tags, adding missing ones and dropping the rest.
-
-## `LOutpostParcelSave`
-
-Uploads an attachment unless one with its id already exists.
-Attachments rarely change, so skipping known ids keeps a repeated push cheap.
+Everything one push needs, gathered by the application clerk so the outpost holds no engine state.
+It carries the port, the token, the top notebook title, the realm text, the entries and the language names.
+The page, sound and lookup functions let the outpost read pages while it sends.
+They cover each entry's page and each language's reconstruction side.
+Reading is lazy, so a failed read costs one entry or one language and not the whole push.
+The fault sink receives every caught failure.
+The realm binds the push to the workspace that wrote the manifest.
 
 ## `LOutpostNote`
 
 One Joplin note as Llyn pushes it.
 A stable id lets a later push overwrite the same note instead of adding a copy.
+The id is 32 lowercase hex characters, the only form Joplin resolves.
 The body is Markdown.
 
 ## `LParcel`
@@ -78,25 +53,8 @@ The body is Markdown.
 One attachment pushed to Joplin as a resource that notes can link to.
 Its id derives from the file content, so a changed image gets a new id.
 The note body that references the id changes too, so the note is pushed again.
-That is why `LOutpostParcelSave` may skip an id that already exists.
+That is why a push may skip an id Joplin already holds.
 The id is fixed, so a note body can name it before the upload happens.
-
-## `LManifest`
-
-What Llyn last pushed to Joplin, kept so the next push sends only what changed.
-The digest covers everything pushed for one note: title, notebook, body and the sorted tag set.
-A change to any of them must push the note again.
-A note whose digest matches is skipped.
-A note id present here but absent from the workspace is trashed.
-The realm binds the manifest to the workspace that wrote it.
-A rebuilt database or a foreign file must never drive trashing.
-The realm is in `Guid` "N" format, or empty when unknown.
-
-## `LManifestVault`
-
-The port that keeps the push manifest under the workspace root.
-The manifest travels with the workspace, so a moved workspace remembers what it pushed.
-Saving replaces the stored manifest whole.
 
 ## `LReceipt`
 
@@ -139,10 +97,9 @@ An unknown or expired ticket is reported as rejected, so polling never runs fore
 
 ## Stamp
 
-Commit: `c2f335c331fe`
-- `LManifest.cs` `43c8b7aa272af521`
-- `LManifestVault.cs` `7c0d122f72ebe66b`
-- `LOutpost.cs` `39a63f3599c3707c`
+Commit: `1f3467bbe5c6`
+- `LOutpost.cs` `21ccdda98ef1879f`
+- `LOutpostCargo.cs` `afaf1af63f2d4749`
 - `LOutpostNote.cs` `54e940cc97fb43e6`
 - `LParcel.cs` `1ad3b2f7ad138c3e`
 - `LReceipt.cs` `a2abbd39386ba268`

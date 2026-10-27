@@ -7,7 +7,7 @@ using Llyn.Core;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LCourtArchive : LCourtVault
+internal sealed class LCourtArchive
 {
     private readonly string _lCourtArchiveRoot;
 

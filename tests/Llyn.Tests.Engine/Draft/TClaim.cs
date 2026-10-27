@@ -15,8 +15,7 @@ public sealed class TClaim
         using Process running = Process.GetCurrentProcess();
 
         TInterface.TClaimArchiveSave(
-            workspace.TWorkspaceFolder,
-            TInterface.TClaimCreate(-1, running.Id, new DateTimeOffset(running.StartTime)));
+            workspace.TWorkspaceFolder, -1, running.Id, new DateTimeOffset(running.StartTime));
 
         Assert.True(TInterface.TClaimArchiveCheck(workspace.TWorkspaceFolder, -1));
         Assert.NotNull(TInterface.TClaimArchiveRead(workspace.TWorkspaceFolder, -1));
@@ -29,11 +28,11 @@ public sealed class TClaim
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
 
         Process held = TClaimProcessStart();
-        LClaim claim = TInterface.TClaimCreate(
-            -1, held.Id, new DateTimeOffset(held.StartTime));
+        int process = held.Id;
+        DateTimeOffset moment = new(held.StartTime);
         TClaimProcessStop(held);
 
-        TInterface.TClaimArchiveSave(workspace.TWorkspaceFolder, claim);
+        TInterface.TClaimArchiveSave(workspace.TWorkspaceFolder, -1, process, moment);
 
         Assert.False(TInterface.TClaimArchiveCheck(workspace.TWorkspaceFolder, -1));
         Assert.Null(TInterface.TClaimArchiveRead(workspace.TWorkspaceFolder, -1));
@@ -47,9 +46,7 @@ public sealed class TClaim
         using Process running = Process.GetCurrentProcess();
 
         TInterface.TClaimArchiveSave(
-            workspace.TWorkspaceFolder,
-            TInterface.TClaimCreate(
-                -1, running.Id, new DateTimeOffset(running.StartTime).AddMinutes(-5)));
+            workspace.TWorkspaceFolder, -1, running.Id, new DateTimeOffset(running.StartTime).AddMinutes(-5));
 
         Assert.False(TInterface.TClaimArchiveCheck(workspace.TWorkspaceFolder, -1));
         Assert.Null(TInterface.TClaimArchiveRead(workspace.TWorkspaceFolder, -1));
@@ -72,8 +69,7 @@ public sealed class TClaim
         long draftId = TClaimDraftCreate(workspace);
 
         TInterface.TClaimArchiveSave(
-            workspace.TWorkspaceFolder,
-            TInterface.TClaimCreate(draftId, held.Id, new DateTimeOffset(held.StartTime)));
+            workspace.TWorkspaceFolder, draftId, held.Id, new DateTimeOffset(held.StartTime));
 
         using (LEngine launched = workspace.TWorkspaceEngineStart())
         {
@@ -116,6 +112,47 @@ public sealed class TClaim
         engine.TEngineDraftCancel(started.LDraftId);
 
         Assert.Null(TInterface.TClaimArchiveRead(workspace.TWorkspaceFolder, started.LDraftId));
+    }
+
+    [Fact]
+    public void DossierCancel_TentativeOwner_DropsTargetAndRow()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        string root = workspace.TWorkspaceFolder;
+        LDraft owner = TInterface.TDraftArchiveStart(root, TInterface.TDraftNestedCreate("Library", "ember"));
+        LDraft target = TInterface.TDraftArchiveStart(root, TInterface.TDraftNestedCreate("Input", "kindle"));
+        TInterface.TCourtArchiveSave(root, TInterface.TDraftLinkCreate(owner.LDraftId, target.LDraftId, "kindle"));
+
+        LDraftRelease release = TInterface.TDraftArchiveCancel(
+            root, owner.LDraftId, new HashSet<long> { owner.LDraftId, target.LDraftId });
+
+        Assert.Empty(TInterface.TCourtArchiveScan(root));
+        Assert.Null(TInterface.TDraftArchiveRead(root, owner.LDraftId));
+        Assert.Null(TInterface.TDraftArchiveRead(root, target.LDraftId));
+        Assert.Null(TInterface.TClaimArchiveRead(root, target.LDraftId));
+        Assert.Equal([target.LDraftId, owner.LDraftId], release.LDraftReleaseDrafts);
+        Assert.Empty(release.LDraftReleaseOwners);
+    }
+
+    [Fact]
+    public void DossierCancel_TargetLinkedElsewhere_KeepsTarget()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        string root = workspace.TWorkspaceFolder;
+        LDraft owner = TInterface.TDraftArchiveStart(root, TInterface.TDraftNestedCreate("Library", "ember"));
+        LDraft other = TInterface.TDraftArchiveStart(root, TInterface.TDraftNestedCreate("Library", "hearth"));
+        LDraft target = TInterface.TDraftArchiveStart(root, TInterface.TDraftNestedCreate("Input", "kindle"));
+        TInterface.TCourtArchiveSave(root, TInterface.TDraftLinkCreate(owner.LDraftId, target.LDraftId, "kindle"));
+        TInterface.TCourtArchiveSave(root, TInterface.TDraftLinkCreate(other.LDraftId, target.LDraftId, "kindle"));
+
+        LDraftRelease release = TInterface.TDraftArchiveCancel(
+            root, owner.LDraftId, new HashSet<long> { owner.LDraftId, other.LDraftId, target.LDraftId });
+
+        LCourt left = Assert.Single(TInterface.TCourtArchiveScan(root));
+        Assert.Equal(other.LDraftId, left.LCourtOwnerId);
+        Assert.NotNull(TInterface.TDraftArchiveRead(root, target.LDraftId));
+        Assert.True(TInterface.TClaimArchiveCheck(root, target.LDraftId));
+        Assert.Equal([owner.LDraftId], release.LDraftReleaseDrafts);
     }
 
     private static long TClaimDraftCreate(TWorkspace workspace)

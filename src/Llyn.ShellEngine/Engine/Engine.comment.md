@@ -34,6 +34,9 @@ It is built after the catalog group.
 The court reads the catalog's translation clerk, so a pending link resolves through translations.
 The court manages links from a held draft to a target not yet stored.
 The draft, court and claim clerks share the one identity issuer, so no id is issued twice.
+The claim clerk takes no court clerk.
+The draft vault settles court rows when it deletes or cancels a draft.
+The claim clerk shares the chronicle clerk, so its releases drop the same held drafts.
 
 ## `LEngineStaff`
 
@@ -268,10 +271,10 @@ So a subscriber can detach without disturbing iteration.
 
 ## Stamp
 
-Commit: `52c21d68b4c4`
+Commit: `1f3467bbe5c6`
 - `LBulletinRoster.cs` `089b003a16e92876`
 - `LCatalogStaff.cs` `23816a2bb79aced1`
-- `LClaimStaff.cs` `fc2ed893e2af6438`
+- `LClaimStaff.cs` `c09d11a40b2f2efd`
 - `LEngine.cs` `47fe498848314fbf`
 - `LEngineHearth.cs` `17ccd1f0c9342b91`
 - `LEngineStaff.cs` `1282514bb49cde5e`

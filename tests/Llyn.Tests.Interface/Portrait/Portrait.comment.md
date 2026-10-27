@@ -83,25 +83,38 @@ It words the caption over a meaning's homed collocations as "Collocations", with
 
 A fixed English legend with no reference kind names, so a page read needs no localization files.
 
+## `TLiveryEngraverCreate`
+
+Builds the engraver over the loaded theme, so every format relay writes through the production entrance.
+
+## `TLiveryMarkRead`
+
+The mark every relay passes as the opening style import.
+It comes from the engraver, so a test never writes the import line by hand.
+
 ## `TLiveryFormat`
 
-Writes a Joplin entry body through `LLiverySheet.LLiveryFormat` over the loaded theme.
-It passes a fixed style id and the `note` it is handed.
+Writes a Joplin entry body through `LEngraverEntrance.LEngraverEntranceFormat` over the loaded theme.
+It passes the mark and the `note` it is handed.
 With no `note`, every entry id stands as its own note id.
 It passes the `link` it is handed, or one that answers empty, so every chip stays plain by default.
 It answers the whole note, so a test reads the body and the parcels.
-The series and rime-table overloads use the matching production overload with the same style id and default `note`.
-
-## `TCourierNoteBuild`
-
-Builds the courier's `note` map through `LCourierNote.LCourierNoteBuild`.
-It hands over a `LLiverySheet` over the loaded theme, so the ids match a real push.
+The series and rime-table overloads use the matching production overload with the same mark and default `note`.
 
 ## `TCourierSend`
 
 Runs one push through the engine's courier clerk with the readers it is handed.
 A test can then shape the entry pages and the language reads without fetching anything.
-Its lookup answers each key itself, so a test finds notebooks and notes by their keys.
+Its lookup answers each key itself, so a test reads the keys the cargo carries.
+
+## `TCourierAttach`
+
+Runs one attach through the engine's courier clerk, reaching it by the workspace staff.
+A test then reads what the clerk stored and what the fake outpost was asked.
+
+## `TOutpostLookupRead`
+
+Answers what a cargo's lookup returns for a key, so a test reads the words the push carries.
 
 ## `TLiveryLanguageBuild`
 
@@ -151,38 +164,13 @@ The short overload leaves the favorite flag and the lines at their defaults.
 
 ## `TOutpostFake`
 
-A Joplin that lives in memory, so a push test needs no running Joplin and no network.
-It records every notebook, note, save and trash, so a test reads back what the push did.
-It fails only a note save whose title a test lists, so a push fact can watch one note fail.
-Its trash keeps Joplin's guard, so a push fact sees which trash the guard refuses.
-The find answers a fixed port whatever port is asked, so the push never refuses for an absent Joplin.
-The warrant start and check throw, since the push facts never connect.
-The tag and parcel saves keep nothing, since no push fact reads them.
-The notebook list holds every notebook by id with its parent and title.
-A later save replaces an earlier one as Joplin does.
-The note list holds every note as last saved, without the trashed ones.
-The saved list holds the id of each note save in order.
-So a test tells a kept note from a sent one.
-The trash list holds each trash asked for in order, whether the guard let it through or refused it.
-
-## `TOutpostFakeRefusal`
-
-The titles whose note save fails, empty unless a test lists one.
-A listed title throws before anything is held or recorded.
-The throw is no timeout and no refusal, so the push counts the note as failed and goes on.
-
-## `LOutpostNoteRead`
-
-Answers the held body, or null for a note never saved or already trashed.
-So the push keeps a note only while the fake still holds it unchanged.
-
-## `LOutpostNoteRemove`
-
-Records the trash ask, then applies the rule `LOutpostHttp.LOutpostNoteRemove` applies.
-It refuses a note it does not hold and a note outside the given folders.
-It also refuses a body that does not start with the mark.
-A refused trash answers false and drops nothing, so a note outside Llyn's notebooks survives.
-Otherwise it drops the note and answers true.
+A Joplin entrance that lives in memory, so a clerk test needs no running Joplin and no network.
+It implements the two calls of the `LOutpost` port and does no protocol work.
+It records every cargo it was sent and every port it was asked to attach on.
+So a test reads back what the clerk gathered.
+The attach answers a fixed raw token a test may replace.
+The send answers a receipt a test may replace, so a clerk test sees the receipt travel back unchanged.
+The push's own order, trash and manifest are proved against the real entrance, not here.
 
 ## `TPress`
 
@@ -282,11 +270,11 @@ A test sets it to stand for a store that cannot be written.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
+Commit: `1f3467bbe5c6`
 - `TExemplar.cs` `113831e430921ef2`
 - `TExemplarText.cs` `10b64d46827e6b52`
-- `TInterfacePortrait.cs` `7235e4186cbd7169`
-- `TOutpostFake.cs` `cee6a1e7570dc877`
+- `TInterfacePortrait.cs` `ea4cded959512432`
+- `TOutpostFake.cs` `bedc2eb0d7d6377d`
 - `TPress.cs` `655181875f05072d`
 - `TPressBoard.cs` `e9775568b2cd1543`
 - `TPressProof.cs` `a7d147e6f63d54d9`

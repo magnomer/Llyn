@@ -1,5 +1,5 @@
 {
-  "generation": 26,
+  "generation": 27,
   "bases": [
     "Accent",
     "Accession",
@@ -88,6 +88,7 @@
     "Diwei",
     "Docket",
     "Doctor",
+    "Dossier",
     "Downloader",
     "Draft",
     "Drawer",
@@ -99,7 +100,9 @@
     "Easel",
     "Echelon",
     "Editor",
+    "Embassy",
     "Engine",
+    "Engraver",
     "Ensign",
     "Entry",
     "Envelope",
@@ -198,6 +201,7 @@
     "Listener",
     "Livery",
     "Localization",
+    "Locker",
     "Lodestar",
     "Logo",
     "Look",

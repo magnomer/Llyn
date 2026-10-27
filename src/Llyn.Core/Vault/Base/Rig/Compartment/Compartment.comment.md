@@ -1,10 +1,10 @@
 # Compartment
 
-This folder holds the ten group records of the rig.
+This folder holds the nine group records of the rig.
 
 ## Rig groups
 
-Ten records group the ports, so the rig stays small while each port keeps its own slot.
+Nine records group the ports, so the rig stays small while each port keeps its own slot.
 `LRig` holds each as `LRig{Group}`, and each property is named `LRig{Group}{Base}`.
 The composition root builds each through `LRigFactory{Group}`, and a test builds it from fakes.
 Each group lets a consumer of one kind of port read them through one slot.
@@ -12,7 +12,7 @@ Each group lets a consumer of one kind of port read them through one slot.
 ## `LRigAsset`
 
 The ports that read and write workspace and theme files.
-It covers the manifest, localization, markup, portrait and livery.
+It covers localization, markup and portrait.
 
 ## `LRigCitation`
 
@@ -23,10 +23,6 @@ It covers authors, images, references and videos.
 
 The ports that say where and how a word is used.
 It covers registers, situations and tags.
-
-## `LRigDraft`
-
-The ports that keep drafts, the claims on them and the courts.
 
 ## `LRigKeeping`
 
@@ -42,7 +38,7 @@ It covers etymology maps, collocations, glosses, inflections, lacunae, meanings,
 
 The ports that keep flashcard study.
 It covers decks with their bearings, deck folders, cues with their cells, and stencils.
-It also holds the phone folder port and the deck manifest store.
+It also holds the depot, the one port that sends a deck to the phone folder.
 Rehearsal points at lexical rows, and no lexical port points back.
 
 ## `LRigSentence`
@@ -62,14 +58,13 @@ It covers the source factory, the four fetchers and the recordings.
 
 ## Stamp
 
-Commit: `aae5349dbb94`
-- `LRigAsset.cs` `353ad140ea730368`
+Commit: `1f3467bbe5c6`
+- `LRigAsset.cs` `60e432e79d1d926a`
 - `LRigCitation.cs` `b5f32e8248f44af8`
 - `LRigContext.cs` `4019730f09188fc7`
-- `LRigDraft.cs` `3d1e48eaa8039edd`
 - `LRigKeeping.cs` `e2b8f853ca537642`
 - `LRigLexicon.cs` `2e1e7ac85cf3fa00`
-- `LRigRehearsal.cs` `1fbbc0696ed26fd3`
+- `LRigRehearsal.cs` `a273893e7cb5b41f`
 - `LRigSentence.cs` `0efa207365b2e66c`
 - `LRigSound.cs` `8226c2ce0a371822`
 - `LRigSource.cs` `443817afa7375534`

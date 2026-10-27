@@ -1,6 +1,6 @@
 // Generated file. Do not edit by hand: every line is overwritten when it is rebuilt.
 //
-// AUDITNAMES GENERATION 26 - name registry for Llyn.
+// AUDITNAMES GENERATION 27 - name registry for Llyn.
 // One of the generated files in the convention-test project. Together they carry the
 // registered bases, verbs and exemptions and nothing else; every audit setting is hand-written
 // tracked test code and must never be added here.
@@ -12,7 +12,7 @@ namespace Convention.Tests;
 
 internal static class TAuditLogicRegistry
 {
-    public const int TAuditGeneration = 26;
+    public const int TAuditGeneration = 27;
 
     // AUDIT:SIDECAR:BASES:START
     public static readonly string[] TAuditBases =
@@ -44,9 +44,12 @@ internal static class TAuditLogicRegistry
         "Descent",
         "Destination",
         "Doctor",
+        "Dossier",
         "Draft",
         "Drill",
+        "Embassy",
         "Engine",
+        "Engraver",
         "Entry",
         "Envelope",
         "Epoch",
@@ -74,6 +77,7 @@ internal static class TAuditLogicRegistry
         "Lineage",
         "Listener",
         "Livery",
+        "Locker",
         "Lookup",
         "Loop",
         "Manifest",

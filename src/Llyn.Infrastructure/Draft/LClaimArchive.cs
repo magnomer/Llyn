@@ -9,7 +9,7 @@ using Llyn.Core;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LClaimArchive : LClaimVault
+internal sealed class LClaimArchive
 {
     private readonly string _lClaimArchiveRoot;
 

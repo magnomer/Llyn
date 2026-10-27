@@ -6,7 +6,7 @@ using Llyn.Core;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LManifestFile : LManifestVault
+internal sealed class LManifestFile
 {
     private const string LManifestFileKeep = "joplin";
     private const string LManifestFileNotes = "notes";

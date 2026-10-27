@@ -253,13 +253,13 @@ The surface walk and the driver walk each count it under their own audit.
 
 ## Stamp
 
-Commit: `c37ca1837ded`
+Commit: `1f3467bbe5c6`
 - `TAuditHostWalker.cs` `2a48c5d2dab0f8e1`
 - `TAuditReachWalker.cs` `e54546f894fc3f86`
 - `TAuditStrict.cs` `0dbd626aa2a3540d`
 - `TAuditStrictCondition.cs` `920bd6f4febc550a`
 - `TAuditStrictLedger.json` `b964a1e8c46e04b7`
 - `TAuditStrictMeddling.cs` `dd697aec78b53c98`
-- `TAuditStrictSetting.cs` `385c613ee2cf5422`
+- `TAuditStrictSetting.cs` `44f97f53cf92a230`
 - `TAuditStrictSource.cs` `7b7ff6d00aa27bff`
 - `TAuditStrictWalker.cs` `723eb9e5bd2465ff`

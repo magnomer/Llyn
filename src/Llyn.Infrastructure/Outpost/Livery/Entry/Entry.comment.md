@@ -100,7 +100,7 @@ The old sound uses the separator shared with the HTML export.
 
 ### `LLiveryPlayerFormat`
 
-It writes a space and an `<audio>` player opening with `LLiverySheet.LLiveryAudioHead`.
+It writes a space and an `<audio>` player opening with `LEngraverEntrance.LLiveryAudioHead`.
 The sheet finds the player and swaps it for a resource link.
 No pronunciation or an empty audio path writes nothing.
 
@@ -261,7 +261,7 @@ Each stored image, then each stored video, is its own paragraph.
 A web address becomes a Markdown link, and nothing is fetched.
 An image file goes through `LLiveryPictureFormat`.
 A relative or unreadable image path writes nothing.
-A video file becomes a player that `LLiverySheet` later swaps for a resource or drops when unreadable.
+A video file becomes a player that `LEngraverEntrance` later swaps for a resource or drops when unreadable.
 A stored video span follows as a chip.
 
 ### `LLiveryIncomingAppend`
@@ -367,8 +367,8 @@ So a stored line break survives inside one paragraph without inline HTML.
 
 ## Stamp
 
-Commit: `36e31eb71c98`
-- `LLiveryCard.cs` `07bbb9d49c3ed52a`
+Commit: `1f3467bbe5c6`
+- `LLiveryCard.cs` `df117353090826d5`
 - `LLiveryCollocation.cs` `7c2874f59d638f66`
 - `LLiveryEtymology.cs` `8037c0b43dfd6fec`
 - `LLiveryHeader.cs` `759bcc84399d7e72`
@@ -376,4 +376,4 @@ Commit: `36e31eb71c98`
 - `LLiveryLink.cs` `fe209a81b5072d60`
 - `LLiveryRime.cs` `4db006890840f32c`
 - `LLiveryScript.cs` `ff9a864059db6a9f`
-- `LLiverySound.cs` `57129c2f5e3fc34f`
+- `LLiverySound.cs` `c13ae1dff2812c1b`

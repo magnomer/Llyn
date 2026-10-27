@@ -2,13 +2,13 @@ using Llyn.Core;
 
 namespace Llyn.Infrastructure;
 
-public static class LRigFactoryAsset
+internal static class LRigFactoryAsset
 {
-    public static LRigAsset LRigAssetBuild(string root, LTheme theme) =>
-        new(
-            new LManifestFile(new LKeepFile(root)),
+    public static LRigAsset LRigAssetBuild(LTheme theme)
+    {
+        return new(
             new LLocalizationLoader(),
             new LMarkupFile(),
-            new LPortraitFile(theme),
-            new LLiverySheet(theme));
+            new LPortraitFile(theme));
+    }
 }

@@ -19,9 +19,42 @@ A save killed between write and move leaves a pending file that listings ignore.
 Nothing else collects it, so each sweep does.
 A pending file younger than an hour may belong to a save in flight, so the sweep leaves it.
 
+## `LDossierEntrance`
+
+The one entrance of the drafts in flight, answering Core's `LDraftVault` for one workspace.
+It keeps the drafts, the claims and the court consistent.
+A claim or a link without its draft is invalid.
+Its members are explicit implementations of the port, so its public surface is the constructor alone.
+The three archives behind it are internal and carry no Core interface.
+The process a claim names is this process, as `LClaimCreate` takes it.
+The callers already hold the engine gate, so the entrance adds no lock.
+
+`LDraftDelete` and `LDraftCancel` run `LCourtRemove`, and cancelling then settles the rows pointing at the draft to nothing.
+Both end with the claim and the file, and answer an `LDraftRelease`.
+The release lists every draft gone, the draft itself last, and every owner draft rewritten.
+The caller drops those from its held set and its chronicle.
+
+`LCourtRemove` drops every court row one draft owns, and the tentative target each row named when nothing else wants it.
+A target another draft still links to stays, because that draft's chip would otherwise point at nothing.
+A target goes only while this process claims it and the caller's held set holds it.
+So another window's editor is never emptied.
+A target whose claim is gone was left by an earlier launch, and its own recovery will offer it back.
+A row whose owner draft is gone is dropped as well, wherever the sweep meets one.
+
+`LDraftSweep` sweeps the draft and court files and cancels each draft of another version.
+It then drops each claim whose draft file is gone.
+
+`LDraftCourtSettle` settles the rows pointing at a draft and rewrites each owner through Core's `LEntryDraft.LEntryDraftSettle`.
+It answers the owners it rewrote.
+An owner whose file is gone is skipped.
+
+## `LClaim`
+
+The claim record, internal to this folder, since no caller outside the entrance reads a claim.
+
 ## `LDraftArchive`
 
-The adapter of `LDraftVault` for one workspace, keeping one file per draft named after its id.
+The draft file store behind `LDossierEntrance`, keeping one file per draft named after its id.
 
 ## `LDraftArchiveIndent`
 
@@ -75,7 +108,7 @@ Removes the file for an id, which is how a draft ends once its record is saved o
 
 Deletes every half-written .json.tmp in the drafts folder that is older than an hour.
 It also sets aside every draft file of another version and returns the ids they carried.
-The engine drops the claim and the court rows of each returned id, which only it can reach.
+The entrance cancels each returned id, which drops its claim and its court rows.
 A file that does not read as a draft at all is of no version.
 It is set aside but not returned.
 Nothing else can name such a file.
@@ -160,8 +193,8 @@ So raising it abandons every tentative link a workspace holds.
 
 Settles every link pointing at a draft, whether that draft became a real entry or was abandoned.
 The link files disappear and the links themselves are returned.
-Each returned link names the draft that owns it, so the caller can rewrite that draft's stored content.
-Rewriting is not done here, because the engine owns the draft file.
+Each returned link names the draft that owns it, so the entrance can rewrite that draft's stored content.
+Rewriting is not done here, because the draft archive owns the draft file.
 Resolution and cancellation were two names for this one deletion.
 The real id one of them demanded was never stored anywhere.
 The caller already knows what to put in place of the tentative id.
@@ -187,7 +220,9 @@ Taking it would break a write the other copy of the program is making.
 
 ## Stamp
 
-Commit: `c6e60141a172`
-- `LClaimArchive.cs` `551b48a3edb9dbff`
-- `LCourtArchive.cs` `53d5d3156cd48a56`
-- `LDraftArchive.cs` `a51003910d1a4557`
+Commit: `1f3467bbe5c6`
+- `LClaim.cs` `bdeb202449d99380`
+- `LClaimArchive.cs` `b40097f5fc67e90a`
+- `LCourtArchive.cs` `ae05d267e5d64588`
+- `LDossierEntrance.cs` `348ed36de8fcdf39`
+- `LDraftArchive.cs` `48759eb8160760dd`

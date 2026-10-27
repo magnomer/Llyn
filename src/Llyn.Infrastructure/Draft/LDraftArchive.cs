@@ -8,7 +8,7 @@ using Llyn.Core;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LDraftArchive : LDraftVault
+internal sealed class LDraftArchive
 {
     private readonly string _lDraftArchiveRoot;
 

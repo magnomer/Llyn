@@ -78,13 +78,17 @@ That is enough for an entry clerk save to run without SQLite.
 
 ## `TRigClaimCreate`
 
-The clerk rig with the draft, claim and court ports seated by in-memory fakes, posing as process one.
-The process setter makes the same rig pose as another process, its claim fake naming that process from now on.
+The clerk rig with the one draft port seated by an in-memory `TVaultFakeDraft`, posing as process one.
+The port carries the drafts, the claims and the court rows.
+The process setter makes the same rig pose as another process, its fake naming that process from now on.
+The doomed setter names a draft that the next delete finishes before it throws.
+So a test can fail a cascade midway.
 
 ## `TCourtClerkCreate`
 
 The court clerk takes its own issuer and chronicle over the same rig.
-The claim clerk shares its issuer and chronicle with the court clerk it holds.
+The claim clerk takes its own issuer and chronicle and holds no court clerk.
+The court scan relay reads the rows from the rig's draft port.
 The court's translation clerk stamps through a revision clerk over the same rig.
 
 ## `TRequestStray`
@@ -179,11 +183,10 @@ The entries fill both entry slots, so a stored row is found by the same fake tha
 The trail is the real system adapter, since path rules touch no disk, and the clock is a `TClockFake`.
 The press is a `TPress`, the printer queue a `TPressQueue` and the print setting store a `TPressVault`.
 The warrant is a `TWarrantFake`, so no test touches the operating system store.
-The process id is one.
 The posture is a `TPostureFake` and the phonograph is a `TPhonographFake`.
 The pronunciation and reflex ports are an empty `TVaultFakePronunciation` and `TVaultFakeReflex`.
 The workspace open reads them for every entry to renew stale respellings, so they answer instead of throwing.
-Every other port, besides the fakes below, is a throwing stub, the livery, manifest, outpost and lease ports among them.
+Every other port, besides the fakes below, is a throwing stub, the outpost and lease ports among them.
 The lease stub is never reached, since an engine built unleased opens no lease.
 
 ## `TRigSourceCreate`
@@ -236,13 +239,13 @@ One reversal is shared between hiding and restoring.
 
 ## Stamp
 
-Commit: `9377e657b395`
+Commit: `1f3467bbe5c6`
 - `TClockFake.cs` `891d06355fcde29c`
 - `TEngineFake.cs` `364e90d7a21a82f8`
 - `TEngineFault.cs` `deab7d5e61cdcbfb`
 - `TEnvoyFake.cs` `6d5bffee0960fa06`
-- `TInterfaceClerk.cs` `aef7298e67077c3f`
+- `TInterfaceClerk.cs` `38e1cf7f610b275c`
 - `TPhonographFake.cs` `78d1f82eea929e6a`
 - `TPostureFake.cs` `85c13ab0bfe0439a`
-- `TRigFake.cs` `ac2dfbafea247d4e`
+- `TRigFake.cs` `0a11c1c8f91d3be0`
 - `TWarrantFake.cs` `7cef68fe9f435952`

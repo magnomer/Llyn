@@ -1,7 +1,7 @@
 # Rig
 
 This folder holds the bundle of ports the engine is built over.
-Its ten group records live in `Compartment`.
+Its nine group records live in `Compartment`.
 
 ## `LRig`
 
@@ -20,18 +20,16 @@ It hands in the printer list `LRigQueue` beside `LRigPress`, since both serve pr
 `LRigWarrant` is the token protector, handed in by the root since protection depends on the operating system.
 `LRigPhonograph` is the player, handed in by the root for the same reason.
 `LRigOutpost` is the Joplin push port, set beside the fetch ports since it too speaks HTTP.
-`LRigAsset.LRigAssetManifest` remembers what was last pushed to Joplin and is kept with the other workspace files.
-`LRigAsset.LRigAssetLivery` answers the style note Joplin imports, set beside the portrait port since both wear the theme.
+It owns the manifest of what was last pushed, so no manifest port sits in the rig.
+`LRigDraft` is the dossier port, which keeps drafts with their claims and court links in the workspace draft folder.
 `LRigTrail` and `LRigClock` are the two ambient facts the engine may not read itself, the path rules and the time.
 `LRigLease` is the workspace lease port, built over the same root as the other root-bound adapters.
 The engine opens it only when built as leased.
 A workspace change swaps it with the rest of the rig.
 `LRigEntryQuery` is the read-only entry query port, set beside `LRigEntries` since both cover entries.
-`LRigProcess` is the id of the process the rig was built in.
-A claim on a draft is compared against it.
 `LRigWorkspace` is the root every root-bound adapter was built over, kept so the engine can say where it stands.
 
 ## Stamp
 
-Commit: `52c21d68b4c4`
-- `LRig.cs` `7ddb98921165af73`
+Commit: `1f3467bbe5c6`
+- `LRig.cs` `6db9b61e91677f20`
